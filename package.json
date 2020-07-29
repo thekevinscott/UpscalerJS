@@ -1,10 +1,14 @@
 {
   "name": "upscalerjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "keywords": ["image enhancement", "image superresolution", "tensorflow.js"],
+  "keywords": [
+    "image enhancement",
+    "image superresolution",
+    "tensorflow.js"
+  ],
   "files": [
     "dist/**/*"
   ],
@@ -12,7 +16,7 @@
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
-    "version" : "yarn format && git add -A src",
+    "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
