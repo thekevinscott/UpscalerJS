@@ -1,0 +1,42 @@
+{
+  "name": "upscalerjs",
+  "version": "0.1.0",
+  "description": "Increase image resolution with a Neural Network",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": ["image enhancement", "image superresolution", "tensorflow.js"],
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn test && yarn lint",
+    "preversion": "yarn lint",
+    "version" : "yarn format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "test": "jest --config jestconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thekevinscott/UpscalerJS/issues"
+  },
+  "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^26.0.7",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5",
+    "ts-jest": "^26.1.4",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.7"
+  }
+}
