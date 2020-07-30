@@ -11,9 +11,7 @@ describe('predict', () => {
       squeeze: jest.fn(() => 'foo'),
     };
     const model = ({
-      predict: jest.fn(async () => {
-        return pred;
-      }),
+      predict: jest.fn(() => pred),
     } as unknown) as tf.LayersModel;
     const result = await predict(model, img.expandDims(0));
     expect(model.predict).toHaveBeenCalledWith(
