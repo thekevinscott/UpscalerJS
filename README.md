@@ -11,9 +11,7 @@ There will be a blog post diving into the technical bits.
 
 ## Demo
 
-View a live demo somewhere.
-
-[There are also runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples).
+A live demo of the code can be seen at [https://upscale.ai](https://upscale.ai), or you can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
 
 ## Quick Start
 
