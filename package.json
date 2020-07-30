@@ -14,6 +14,7 @@
     "models/**/*"
   ],
   "scripts": {
+    "docs:serve": "docsify serve docs --port 3030",
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@tensorflow/tfjs-node": "^2.0.1",
     "@types/jest": "^26.0.7",
+    "docsify-cli": "^4.4.1",
     "jest": "^26.1.0",
     "jest-canvas-mock": "^2.2.0",
     "prettier": "^2.0.5",

@@ -1,0 +1,17 @@
+{
+  "name": "basic",
+  "version": "1.0.0",
+  "description": "Demonstration of basic usage of UpscalerJS",
+  "main": "index.js",
+  "scripts": {
+    "link-local": "yalc link",
+    "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
+    "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "parcel": "^1.12.4"
+  }
+}
