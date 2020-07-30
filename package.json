@@ -18,7 +18,7 @@
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
-    "postversion": "git push && git push --tags",
+    "postversion": "git add package.json src/version.ts examples && git push && git push --tags",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -51,7 +51,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "0.0.10",
+  "version": "0.0.11",
   "dependencies": {
     "dot-prop": "^5.1.1"
   }
