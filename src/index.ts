@@ -1,1 +1,2 @@
-export const Hi = (name: string) => `Hello ${name}`;
+export { default as default } from './upscaler';
+

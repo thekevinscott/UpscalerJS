@@ -4,8 +4,10 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "strict": true
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "strict": true,
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
