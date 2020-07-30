@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",
+    "codecov": "^3.7.2",
     "docsify-cli": "^4.4.1",
     "jest": "^26.1.0",
     "jest-canvas-mock": "^2.2.0",
