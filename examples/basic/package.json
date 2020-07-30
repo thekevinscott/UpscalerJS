@@ -15,6 +15,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "upscaler": "^0.0.2"
+    "@tensorflow/tfjs": "^2.0.1",
+    "upscaler": "0.0.3"
   }
 }
