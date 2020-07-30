@@ -13,6 +13,8 @@ There will be a blog post diving into the technical bits.
 
 View a live demo somewhere.
 
+[There are also runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples).
+
 ## Quick Start
 
 ```
@@ -21,20 +23,6 @@ const upscaler = new Upscaler();
 upscaler.upscale('/path/to/image').then(upscaledImage => {
   console.log(upscaledImage); // base64 representation of image src
 });
-```
-
-## Install
-
-Install the package with `yarn`:
-
-```
-yarn add upscaler
-```
-
-Or `npm`:
-
-```
-npm install upscaler
 ```
 
 ## Documentation
