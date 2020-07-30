@@ -2090,7 +2090,7 @@ domutils@^1.5.1, domutils@^1.7.0:
     dom-serializer "0"
     domelementtype "1"
 
-dot-prop@^5.2.0:
+dot-prop@^5.1.1, dot-prop@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-5.2.0.tgz#c34ecc29556dc45f1f4c22697b6f4904e0cc4fcb"
   integrity sha512-uEUyaDKoSQ1M4Oq8l45hSE26SnTxL6snNnqvK/VWx5wJhmff5z0FUVJDKDanor/6w3kzE3i7XZOk+7wC0EXr1A==
@@ -5058,10 +5058,12 @@ upath@^1.1.1:
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-upscaler@0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.10.tgz#f7d4be21e99012ee5f100d5e6528908d976831d4"
-  integrity sha512-ujgNrMbYSZNlIMlRfw3gzouL/lRsj8jo+DceG2coeLSffUT9LAlUUeShjJpKP/HqcSCArkPbl5RJ6jzF3qFMGw==
+upscaler@0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.11.tgz#b515f594ac8ab1804b9f58ed9bf3452f7de48b4b"
+  integrity sha512-Rviw80azlstHB4wsPeIIxsAxBcKTKFuZS5rW4pgKCgzZPGjctF4DwQR3TCTbpHo8TlMfA8GlSw7mAPNz01ftFg==
+  dependencies:
+    dot-prop "^5.1.1"
 
 uri-js@^4.2.2:
   version "4.2.2"

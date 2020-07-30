@@ -18,7 +18,6 @@
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
-    "postversion": "git add package.json src/version.ts examples && git push && git push --tags",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -39,7 +38,6 @@
     "@tensorflow/tfjs": "^2.0.1"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-node": "^2.0.1",
     "@types/jest": "^26.0.7",
     "docsify-cli": "^4.4.1",
     "jest": "^26.1.0",
@@ -51,7 +49,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "0.0.11",
+  "version": "0.0.12",
   "dependencies": {
     "dot-prop": "^5.1.1"
   }
