@@ -3,9 +3,9 @@ import { IUpscaleOptions } from './types';
 
 export const predict = async (
   model: tf.LayersModel,
-  pixels: tf.Tensor3D,
+  pixels: tf.Tensor4D,
 ): Promise<tf.Tensor3D> => {
-  const pred = (await model.predict(pixels.expandDims(0))) as tf.Tensor4D;
+  const pred = (await model.predict(pixels)) as tf.Tensor4D;
   return pred.squeeze() as tf.Tensor3D;
 };
 

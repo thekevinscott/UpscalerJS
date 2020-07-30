@@ -5058,10 +5058,10 @@ upath@^1.1.1:
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-upscaler@0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.11.tgz#b515f594ac8ab1804b9f58ed9bf3452f7de48b4b"
-  integrity sha512-Rviw80azlstHB4wsPeIIxsAxBcKTKFuZS5rW4pgKCgzZPGjctF4DwQR3TCTbpHo8TlMfA8GlSw7mAPNz01ftFg==
+upscaler@0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.12.tgz#c27f7158ee570ac92838129855d80140945951a2"
+  integrity sha512-q53YdG0J/4bYXZTbt0qcfyNHaE+3ljvMVngbxZ7EhQ8ynlv3zXelOxeX6QRnt+ayZaTvRA9SBDkwLzO1KM0X6w==
   dependencies:
     dot-prop "^5.1.1"
 
