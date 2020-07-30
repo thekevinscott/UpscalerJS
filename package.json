@@ -10,7 +10,8 @@
     "tensorflow.js"
   ],
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "models/**/*"
   ],
   "scripts": {
     "prepare": "yarn build",
