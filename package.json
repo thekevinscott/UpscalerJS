@@ -1,6 +1,6 @@
 {
   "name": "upscalerjs",
-  "version": "0.1.2",
+  "version": "0.0.1",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,8 @@
     "preversion": "yarn lint",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags",
-    "build": "tsc",
+    "build": "rimraf dist && tsc --skipLibCheck",
+    "watch": "rimraf dist && tsc --watch --skipLibCheck",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json"
@@ -33,11 +34,16 @@
     "url": "https://github.com/thekevinscott/UpscalerJS/issues"
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
-  "dependencies": {},
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^2.0.1"
+  },
   "devDependencies": {
+    "@tensorflow/tfjs-node": "^2.0.1",
     "@types/jest": "^26.0.7",
     "jest": "^26.1.0",
+    "jest-canvas-mock": "^2.2.0",
     "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.1.4",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
