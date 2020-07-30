@@ -22,12 +22,17 @@ const isString = (pixels: any): pixels is string => {
 };
 
 const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
-  return pixels instanceof HTMLImageElement;
+  try {
+    return pixels instanceof HTMLImageElement;
+  } catch (err) {
+    // may be in a webworker, or in Node
+    return false;
+  }
 };
 
 const isFourDimensionalTensor = (pixels: tf.Tensor): pixels is tf.Tensor4D => {
   return pixels.shape.length === 4;
-}
+};
 
 const getPixels = async (
   pixels: string | HTMLImageElement | tf.Tensor,
@@ -35,7 +40,7 @@ const getPixels = async (
   if (isString(pixels)) {
     const img = await loadImage(pixels);
     return tf.browser.fromPixels(img).expandDims(0);
- }
+  }
 
   if (isHTMLImageElement(pixels)) {
     return tf.browser.fromPixels(pixels).expandDims(0);

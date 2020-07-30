@@ -1,32 +1,76 @@
 <html>
 <head>
+  <title>Basic Example | Upscaler.JS</title>
   <style>
     body {
-      padding: 100px;
+      padding: 40px;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
     button {
       margin-top: 20px;
       display: block;
+      padding: 10px 40px;
     }
     #target {
       background: #EEE;
       border: 1px solid #DDD;
       display: inline-block;
-      width: 256px;
-      height: 256px;
+      width: 512px;
+      height: 512px;
     }
     #flower {
       border: 1px solid #DDD;
     }
+    pre {
+      padding: 10px;
+      background: #EEE;
+      border: 1px solid #DDD;
+      border-radius: 5px;
+    }
+    table td {
+      vertical-align: top;
+    }
   </style>
 </head>
 <body>
-  <img src="/flower.png" id="flower" />
-  <div id="target">
-  </div>
+  <h1>Basic Example</h1>
+  <p>A basic example showing how to upscale an image with <a href="https://github.com/thekevinscott/UpscalerJS">UpscalerJS</a>.</p>
+  <pre><code>import Upscaler from 'upscaler';
+import img from './flower.png';
+const target = document.getElementById('target');
+const button = document.getElementById('button');
+
+let upscaler;
+button.onclick = () => {
+  if (!upscaler) {
+    upscaler = new Upscaler({
+      model: 'psnr_small',
+    });
+  }
+  upscaler.upscale(img).then((upscaledImgSrc) => {
+    const img = document.createElement('img');
+    img.src = upscaledImgSrc;
+    target.replaceChild(img);
+  });
+};</code></pre>
+<p>Click the upload button to upload the photo.</p>
   <button id="button">Upscale</button>
   <p id="info"></p>
+<table>
+  <thead>
+    <tr><td>Original</td><td>Upscaled</td></tr>
+  </thead>
+  <tbody>
+    <tr><td>
+  <img src="/flower.png" id="flower" />
+    </td>
+  <td>
+    <div id="target">
+
+    </div>
+  </td></tr>
+  </tbody>
+</table>
   <script src="./index.js"></script>
 </body>
 </html>
