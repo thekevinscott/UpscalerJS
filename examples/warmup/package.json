@@ -1,6 +1,6 @@
 {
   "name": "basic",
-  "version": "1.0.0",
+  "version": "0.0.7",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {

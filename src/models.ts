@@ -1,6 +1,6 @@
-const ROOT = 'https://unpkg.com/upscaler'
+const ROOT = 'https://unpkg.com/upscaler';
 const MODEL_DIR = 'models';
-const VERSION = '0.0.6';
+import VERSION from './version';
 
 const buildURL = (modelFolder: string) => {
   return `${ROOT}@${VERSION}/${MODEL_DIR}/${modelFolder}/model.json`;
@@ -9,7 +9,7 @@ const buildURL = (modelFolder: string) => {
 interface IModels {
   [index: string]: {
     url: string;
-  }
+  };
 }
 
 const MODELS: IModels = {
@@ -22,10 +22,10 @@ const MODELS: IModels = {
   '4x': {
     url: buildURL('div2k-017-4x'),
   },
-  'psnr_small': {
+  psnr_small: {
     url: buildURL('psnr-small-quant-uint8'),
   },
-}
+};
 
 export default MODELS;
 

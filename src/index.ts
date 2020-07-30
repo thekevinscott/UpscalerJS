@@ -1,2 +1,1 @@
-export { default as default } from './upscaler';
-
+export { default } from './upscaler';

@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscalerOptions } from "./types";
+import { IUpscalerOptions } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 
 const getModelPath = (model: string = DEFAULT_MODEL) => {

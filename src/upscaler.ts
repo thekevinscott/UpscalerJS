@@ -20,7 +20,7 @@ class Upscaler {
   upscale = async (pixels: tf.Tensor3D, options: IUpscaleOptions = {}) => {
     const model = await this._model;
     return upscale(model, pixels, options);
-  }
+  };
 }
 
 export default Upscaler;

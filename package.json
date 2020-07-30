@@ -1,6 +1,5 @@
 {
   "name": "upscaler",
-  "version": "0.0.6",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +17,7 @@
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
-    "version": "yarn format && git add -A src",
+    "bump_version": "yarn format && git add -A src && node scripts/bump_version.j",
     "postversion": "git push && git push --tags",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
@@ -51,5 +50,6 @@
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
-  }
+  },
+  "version": "0.0.7"
 }

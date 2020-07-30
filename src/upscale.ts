@@ -5,7 +5,7 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor3D,
 ): Promise<tf.Tensor3D> => {
-  const pred = await model.predict(pixels.expandDims(0)) as tf.Tensor4D;
+  const pred = (await model.predict(pixels.expandDims(0))) as tf.Tensor4D;
   return pred.squeeze() as tf.Tensor3D;
 };
 
@@ -38,9 +38,9 @@ export const tensorAsBuffer = async (tensor: tf.Tensor3D) => {
       i += 3;
     }
   }
-  imageData.data.set(buffer)
+  imageData.data.set(buffer);
   return imageData;
-}
+};
 
 export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
   const [height, width] = tensor.shape;
@@ -48,7 +48,7 @@ export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   ctx.putImageData(imageData, 0, 0);
   return canvas.toDataURL();
 };

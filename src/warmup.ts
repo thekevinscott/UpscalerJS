@@ -10,6 +10,6 @@ const warmup = async (model: Promise<tf.LayersModel>, sizes: WarmupSizes) => {
     pred.dataSync();
     pred.dispose();
   }
-}
+};
 
 export default warmup;
