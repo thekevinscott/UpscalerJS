@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "0.0.6"
+    "upscaler": "0.0.7"
   }
 }

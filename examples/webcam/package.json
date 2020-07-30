@@ -13,5 +13,8 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "upscaler": "0.0.7"
   }
 }

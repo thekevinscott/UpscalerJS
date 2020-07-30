@@ -3,9 +3,12 @@ const path = require('path');
 const version = process.argv.pop();
 const ROOT = path.resolve(__dirname, '..');
 
-const updatePackageJSON = (packagePath, version) => {
+const updatePackageJSON = (packagePath, version, callback) => {
   const package = require(packagePath);
   package.version = version;
+  if (callback) {
+    callback(package);
+  }
   fs.writeFileSync(packagePath, JSON.stringify(package, null, 2));
 }
 
@@ -25,7 +28,13 @@ const examples = fs.readdirSync(examplesPath)
 examples.forEach(example => {
   const dirPath = path.resolve(examplesPath, example);
   if (fs.lstatSync(dirPath).isDirectory()) {
-    updatePackageJSON(path.resolve(dirPath, 'package.json'), version);
+    const examplePackagePath = path.resolve(dirPath, 'package.json');
+    updatePackageJSON(examplePackagePath, version, package => {
+      if (!package.dependencies) {
+        package.dependencies = {};
+      }
+      package.dependencies.upscaler = version;
+    });
   }
 });
 
