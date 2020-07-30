@@ -1,6 +1,6 @@
 const ROOT = 'https://unpkg.com/upscaler'
 const MODEL_DIR = 'models';
-const VERSION = '0.0.5';
+const VERSION = '0.0.6';
 
 const buildURL = (modelFolder: string) => {
   return `${ROOT}@${VERSION}/${MODEL_DIR}/${modelFolder}/model.json`;

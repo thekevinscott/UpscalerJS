@@ -1,12 +1,29 @@
 <html>
 <head>
   <style>
+    body {
+      padding: 100px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button {
+      margin-top: 20px;
+      display: block;
+    }
+    #target {
+      background: #EEE;
+      border: 1px solid #DDD;
+      display: inline-block;
+      width: 256px;
+      height: 256px;
+    }
   </style>
 </head>
 <body>
-  <div id="root">
   <img src="/flower.png" id="flower" />
+  <div id="target">
   </div>
+  <button id="button">Upscale</button>
+  <p id="info"></p>
   <script src="./index.js"></script>
 </body>
 </html>

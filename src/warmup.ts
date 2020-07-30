@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs-node';
+import * as tf from '@tensorflow/tfjs';
 import { WarmupSizes } from './types';
 
 const warmup = async (model: Promise<tf.LayersModel>, sizes: WarmupSizes) => {

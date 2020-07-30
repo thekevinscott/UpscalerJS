@@ -1,8 +1,16 @@
-import * as tfjs from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 const flower = document.getElementById('flower');
-const root = document.getElementById('root');
-const upscaler = new Upscaler({
-  model: '2x',
-});
-root.innerHTML = 'fooey';
+const target = document.getElementById('target');
+const button = document.getElementById('button');
+
+button.onclick = () => {
+  // const upscaler = new Upscaler({
+  //   model: '2x',
+  // });
+  // console.log(upscaler);
+  // upscaler.upscale(flower.src).then((upscaledImgSrc) => {
+  //   const img = document.createElement('img');
+  //   img.src = upscaledImgSrc;
+  //   target.appendChild(img);
+  // });
+};
