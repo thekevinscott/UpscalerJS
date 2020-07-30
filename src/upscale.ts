@@ -25,19 +25,23 @@ const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
   return pixels instanceof HTMLImageElement;
 };
 
+const isFourDimensionalTensor = (pixels: tf.Tensor): pixels is tf.Tensor4D => {
+  return pixels.shape.length === 4;
+}
+
 const getPixels = async (
   pixels: string | HTMLImageElement | tf.Tensor,
-): Promise<tf.Tensor> => {
+): Promise<tf.Tensor4D> => {
   if (isString(pixels)) {
     const img = await loadImage(pixels);
     return tf.browser.fromPixels(img).expandDims(0);
-  }
+ }
 
   if (isHTMLImageElement(pixels)) {
     return tf.browser.fromPixels(pixels).expandDims(0);
   }
 
-  if (pixels.shape.length === 4) {
+  if (isFourDimensionalTensor(pixels)) {
     return pixels;
   }
 
@@ -59,7 +63,7 @@ const upscale = async (
   options: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D | string> => {
   const pixels = await getPixels(image);
-  const upscaledTensor = await predict(model, pixels as tf.Tensor3D);
+  const upscaledTensor = await predict(model, pixels as tf.Tensor4D);
 
   if (options.output === 'tensor') {
     return upscaledTensor;

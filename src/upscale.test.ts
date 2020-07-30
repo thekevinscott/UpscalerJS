@@ -15,7 +15,7 @@ describe('predict', () => {
         return pred;
       }),
     } as unknown) as tf.LayersModel;
-    const result = await predict(model, img);
+    const result = await predict(model, img.expandDims(0));
     expect(model.predict).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3],
