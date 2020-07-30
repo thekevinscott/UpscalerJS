@@ -1,12 +1,14 @@
 import * as tf from '@tensorflow/tfjs';
 import { IUpscaleOptions } from './types';
 
-export const predict = async (
+export const predict = (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
-): Promise<tf.Tensor3D> => {
-  const pred = (await model.predict(pixels)) as tf.Tensor4D;
-  return pred.squeeze() as tf.Tensor3D;
+): tf.Tensor3D => {
+  return tf.tidy(() => {
+    const pred = model.predict(pixels) as tf.Tensor4D;
+    return pred.squeeze() as tf.Tensor3D;
+  });
 };
 
 const loadImage = (src: string): Promise<HTMLImageElement> =>
@@ -68,7 +70,8 @@ const upscale = async (
   options: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D | string> => {
   const pixels = await getPixels(image);
-  const upscaledTensor = await predict(model, pixels as tf.Tensor4D);
+  const upscaledTensor = predict(model, pixels as tf.Tensor4D);
+  pixels.dispose();
 
   if (options.output === 'tensor') {
     return upscaledTensor;

@@ -1,14 +1,25 @@
 import Upscaler from 'upscaler';
+import * as tf from '@tensorflow/tfjs';
 let upscaler;
 
-onmessage = (e) => {
-  console.log(e.data);
+const upscaleImage = ([ data, shape ]) => {
   if (!upscaler) {
     upscaler = new Upscaler({
       model: 'psnr_small',
     });
   }
-  upscaler.upscale(e.data).then((upscaledImgSrc) => {
-    postMessage(upscaledImgSrc);
-  });
+  const tensor = tf.tensor(data, shape);
+  upscaler
+    .upscale(tensor, {
+      output: 'tensor',
+    })
+    .then((upscaledImg) => {
+      const shape = upscaledImg.shape;
+      const upscaledData = upscaledImg.dataSync();
+      postMessage([upscaledData, shape]);
+    });
+}
+
+onmessage = (e) => {
+  upscaleImage(e.data);
 }
