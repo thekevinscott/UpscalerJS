@@ -3,3 +3,5 @@ node_js:
   - 12
 before_install:
   - "yarn add @tensorflow/tfjs"
+after_success:
+  - codecov
