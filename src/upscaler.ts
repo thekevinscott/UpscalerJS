@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscalerOptions, IUpscaleOptions } from './types';
+import { IUpscalerOptions, IUpscaleOptions, WarmupSizes } from './types';
 import loadModel from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
@@ -15,7 +15,7 @@ class Upscaler {
   }
 
   getModel = () => this._model;
-  warmup = (warmupSizes: Array<[number, number]>) => warmup(this._model, warmupSizes);
+  warmup = (warmupSizes: WarmupSizes) => warmup(this._model, warmupSizes);
 
   upscale = async (pixels: tf.Tensor3D, options: IUpscaleOptions = {}) => {
     const model = await this._model;

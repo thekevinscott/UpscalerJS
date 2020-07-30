@@ -1,9 +1,9 @@
 import * as tf from '@tensorflow/tfjs-node';
+import { WarmupSizes } from './types';
 
-const warmup = async (model: Promise<tf.LayersModel>, sizes: Array<[number, number]>) => {
+const warmup = async (model: Promise<tf.LayersModel>, sizes: WarmupSizes) => {
   const resolvedModel = await model;
-  for (let i = 0; i < sizes.length; i++) {
-    const [width, height] = sizes[i];
+  for (let [width, height] of sizes) {
     const pred = (await resolvedModel.predict(
       tf.zeros([1, height, width, 3]),
     )) as tf.Tensor;

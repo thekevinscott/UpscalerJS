@@ -1,6 +1,7 @@
+export type WarmupSizes = [number, number][];
 export interface IUpscalerOptions {
   model?: string;
-  warmupSizes?: Array<[number, number]>;
+  warmupSizes?: WarmupSizes;
 }
 
 export interface IUpscaleOptions {
