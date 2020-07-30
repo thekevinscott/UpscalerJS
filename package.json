@@ -17,7 +17,7 @@
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
-    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js && git add src/version.ts package.json",
+    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
     "postversion": "git push && git push --tags",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
@@ -51,5 +51,8 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "/mnt/Castellan/code/esrgan/upscalerjs/scripts/bump_version.js"
+  "version": "0.0.10",
+  "dependencies": {
+    "dot-prop": "^5.1.1"
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "basic",
-  "version": "/mnt/Castellan/code/esrgan/upscalerjs/scripts/bump_version.js",
+  "version": "0.0.10",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "/mnt/Castellan/code/esrgan/upscalerjs/scripts/bump_version.js"
+    "upscaler": "0.0.10"
   }
 }
