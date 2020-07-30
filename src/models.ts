@@ -1,6 +1,7 @@
 const ROOT = 'https://unpkg.com/upscaler'
 const MODEL_DIR = 'models';
-const { version } = require('../package.json');
+import * as pkg from '../package.json';
+const { version } = pkg;
 
 const buildURL = (modelFolder: string) => {
   return `${ROOT}@${version}/${MODEL_DIR}/${modelFolder}/model.json`;

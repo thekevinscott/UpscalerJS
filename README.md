@@ -1,5 +1,11 @@
 # UpscalerJS
 
+![Travis (.org)](https://img.shields.io/travis/thekevinscott/upscalerjs)
+![Codecov](https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs)
+![npm bundle size](https://img.shields.io/bundlephobia/min/upscalerjs)
+![npm](https://img.shields.io/npm/dw/upscalerjs)
+![GitHub issues](https://img.shields.io/github/issues/thekevinscott/upscalerjs)
+
 UpscalerJS is a tool for increasing image resolution in Javascript. It uses a Neural Network to enhance photos up to 4x.
 
 There will be a blog post diving into the technical bits.
