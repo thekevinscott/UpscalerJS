@@ -1,11 +1,9 @@
 const ROOT = 'https://unpkg.com/upscaler'
 const MODEL_DIR = 'models';
-/* tslint:disable */
-const { version } = require('../package.json');
-/* tslint:enable */
+const VERSION = '0.0.5';
 
 const buildURL = (modelFolder: string) => {
-  return `${ROOT}@${version}/${MODEL_DIR}/${modelFolder}/model.json`;
+  return `${ROOT}@${VERSION}/${MODEL_DIR}/${modelFolder}/model.json`;
 };
 
 interface IModels {

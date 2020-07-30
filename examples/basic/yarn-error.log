@@ -2,7 +2,7 @@ Arguments:
   /usr/local/bin/node /usr/share/yarn/bin/yarn.js add upscalerjs
 
 PATH: 
-  /tmp/yarn--1596132560312-0.8507742693214813:/mnt/Castellan/code/esrgan/upscalerjs/examples/basic/node_modules/.bin:/home/tower/.config/yarn/link/node_modules/.bin:/home/tower/.yarn/bin:/usr/local/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
+  /tmp/yarn--1596133660053-0.8133870313773495:/mnt/Castellan/code/esrgan/upscalerjs/examples/basic/node_modules/.bin:/home/tower/.config/yarn/link/node_modules/.bin:/home/tower/.yarn/bin:/usr/local/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games
 
 Yarn version: 
   1.22.4
@@ -45,7 +45,7 @@ npm manifest:
     },
     "dependencies": {
       "@tensorflow/tfjs": "^2.0.1",
-      "upscaler": "0.0.3"
+      "upscaler": "0.0.4"
     }
   }
 
@@ -5113,10 +5113,10 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
     integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
   
-  upscaler@0.0.3:
-    version "0.0.3"
-    resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.3.tgz#a89cfd6510a4de70385ddbd9b4bf8a11bdfa044d"
-    integrity sha512-f1NpqnZIsKlVzzrHuOQyQZQUH6NWs7PUqGX2j+TNPjTxQogcUvNM9pej2c3I/PQnznTC3Yq3XmOBL+Oto/FvrQ==
+  upscaler@0.0.4:
+    version "0.0.4"
+    resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.4.tgz#84aa515173ab70ac1c218e91c2d371bd86fbd5e8"
+    integrity sha512-yJeZGMt+8A4ypZpM0jAoCSsXIc6v1od5PDTqd/5zRbLCGXfx+ElM8ptOKKix+8DEwVdPxFSNlwTY768ajQX7rQ==
   
   uri-js@^4.2.2:
     version "4.2.2"
