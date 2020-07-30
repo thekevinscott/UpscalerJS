@@ -9,12 +9,58 @@ export const predict = async (
   return pred.squeeze() as tf.Tensor3D;
 };
 
+const loadImage = (src: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+  });
+
+const isString = (pixels: any): pixels is string => {
+  return typeof pixels === 'string';
+};
+
+const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
+  return pixels instanceof HTMLImageElement;
+};
+
+const getPixels = async (
+  pixels: string | HTMLImageElement | tf.Tensor,
+): Promise<tf.Tensor> => {
+  if (isString(pixels)) {
+    const img = await loadImage(pixels);
+    return tf.browser.fromPixels(img).expandDims(0);
+  }
+
+  if (isHTMLImageElement(pixels)) {
+    return tf.browser.fromPixels(pixels).expandDims(0);
+  }
+
+  if (pixels.shape.length === 4) {
+    return pixels;
+  }
+
+  if (pixels.shape.length === 3) {
+    return pixels.expandDims(0);
+  }
+
+  throw new Error(
+    [
+      `Unsupported dimensions for incoming pixels: ${pixels.shape.length}.`,
+      'Only 3 or 4 dimension tensors are supported.',
+    ].join(' '),
+  );
+};
+
 const upscale = async (
   model: tf.LayersModel,
-  pixels: tf.Tensor3D,
+  image: string | HTMLImageElement | tf.Tensor3D,
   options: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D | string> => {
-  const upscaledTensor = await predict(model, pixels.expandDims(0));
+  const pixels = await getPixels(image);
+  const upscaledTensor = await predict(model, pixels as tf.Tensor3D);
+
   if (options.output === 'tensor') {
     return upscaledTensor;
   }

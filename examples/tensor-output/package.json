@@ -1,6 +1,6 @@
 {
   "name": "basic",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,6 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "upscaler": "0.0.7"
+    "upscaler": "0.0.9"
   }
 }
