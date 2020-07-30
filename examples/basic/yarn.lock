@@ -5058,10 +5058,10 @@ upath@^1.1.1:
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-upscaler@0.0.7:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.6.tgz#59796f4b7c5bd0b742052f01f08fecce50fe99ad"
-  integrity sha512-NR+wRvZzup5+J2inhdbxz9DrxW1NCIMkyb3j36k62ImQjtT8hjcQJPiP65aoGqnLoCxriHWNh2w8M5ToS6rvrg==
+upscaler@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.0.9.tgz#5cc1176fd465c04fe4ee3960dfd4d5f536f698c6"
+  integrity sha512-YiWRGUFFsFjwvGbpbo6S6TN7v3DuqqVY2s05TVm0tN+/Uyf4BAaciMlNfKhjc0XsprzBSJ0hg8htHnt22nT2Tg==
 
 uri-js@^4.2.2:
   version "4.2.2"
