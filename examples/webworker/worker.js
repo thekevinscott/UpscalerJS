@@ -5,9 +5,7 @@ const upscaleImage = async ([ data, shape ]) => {
   const upscaler = new Upscaler({
     model: '2x',
   });
-  console.log(data, shape);
   const tensor = tf.tensor(data, shape);
-  tensor.print();
   const upscaledImg = await upscaler.upscale(tensor, {
     output: 'tensor',
   });
