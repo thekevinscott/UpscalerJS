@@ -1,23 +1,18 @@
 import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-let upscaler;
+tf.setBackend('webgl');
 
-const upscaleImage = ([ data, shape ]) => {
-  if (!upscaler) {
-    upscaler = new Upscaler({
-      model: '2x',
-    });
-  }
+const upscaler = new Upscaler({
+  model: '2x',
+});
+const upscaleImage = async ([ data, shape ]) => {
   const tensor = tf.tensor(data, shape);
-  upscaler
-    .upscale(tensor, {
-      output: 'tensor',
-    })
-    .then((upscaledImg) => {
-      const shape = upscaledImg.shape;
-      const upscaledData = upscaledImg.dataSync();
-      postMessage([upscaledData, shape]);
-    });
+  const upscaledImg = await upscaler.upscale(tensor, {
+    output: 'tensor',
+  });
+  const upscaledShape = upscaledImg.shape;
+  const upscaledData = await upscaledImg.data();
+  postMessage([upscaledData, upscaledShape]);
 }
 
 onmessage = (e) => {

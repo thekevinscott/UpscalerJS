@@ -7,6 +7,9 @@
     "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
     "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
   },
+  "browserslist": [
+    "since 2017-06"
+  ],
   "author": "Kevin Scott",
   "license": "MIT",
   "devDependencies": {

@@ -2,34 +2,17 @@ import "regenerator-runtime/runtime.js";
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import img from './flower.png';
-const target = document.getElementById('target');
 const buttonWithWW = document.getElementById('button-webworker');
 const buttonWithoutWW = document.getElementById('button-no-webworker');
-const info = document.getElementById('info');
+import { writeOutput, disable } from './ui';
 
-let upscaler;
+const upscaler = new Upscaler({
+  model: '2x',
+});
 const worker = new Worker('worker.js');
 
-const writeOutput = (src) => {
-  const img = document.createElement('img');
-  img.src = src;
-  target.innerHTML = '';
-  target.appendChild(img);
-  info.innerText = 'Upscaled';
-}
-
-const disable = () => {
-  buttonWithWW.disable = true;
-  buttonWithoutWW.disable = true;
-};
-const enable = () => {
-  buttonWithWW.disable = false;
-  buttonWithoutWW.disable = false;
-};
-
 buttonWithWW.onclick = async () => {
-  disable();
-  info.innerText = 'Upscaling...';
+  await disable();
   const image = new Image();
   image.src = img;
   const pixels = tf.browser.fromPixels(image);
@@ -39,7 +22,6 @@ buttonWithWW.onclick = async () => {
     data,
     pixels.shape,
   ]);
-  enable();
 };
 worker.onmessage = async (e) => {
   const [ data, shape ] = e.data;
@@ -48,16 +30,9 @@ worker.onmessage = async (e) => {
   writeOutput(src);
 }
 
-buttonWithoutWW.onclick = () => {
-  disable();
-  info.innerText = 'Upscaling...';
-  if (!upscaler) {
-    upscaler = new Upscaler({
-      model: '2x',
-    });
-  }
+buttonWithoutWW.onclick = async () => {
+  await disable();
   upscaler.upscale(img).then(writeOutput);
-  enable();
 };
 
 export const tensorAsBase64 = async (tensor) => {
