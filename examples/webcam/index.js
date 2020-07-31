@@ -1,11 +1,38 @@
-import Upscaler from 'upscaler';
-const table = document.getElementById('table');
-const original = document.getElementById('original');
-const target = document.getElementById('target');
-const file = document.getElementById('file');
-const info = document.getElementById('info');
-const video = document.getElementById('video');
+import Upscaler from "upscaler";
+const target = document.getElementById("target");
+const info = document.getElementById("info");
+const video = document.getElementById("video");
+const button = document.getElementById("button");
+const canvas = document.createElement("canvas");
+canvas.width = video.width;
+canvas.height = video.height;
 
 const upscaler = new Upscaler({
-  model: '2x',
+  model: "2x"
 });
+
+navigator.mediaDevices
+  .getUserMedia({ audio: true, video: true })
+  .then(stream => {
+    video.srcObject = stream;
+    button.disabled = false;
+
+    button.onclick = () => {
+      const context = canvas.getContext("2d");
+      context.fillStyle = "#AAA";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const data = canvas.toDataURL("image/png");
+      info.innerText = "Upscaling...";
+      const start = new Date().getTime();
+      upscaler.upscale(data).then(upscaledImgSrc => {
+        const img = document.createElement("img");
+        img.src = upscaledImgSrc;
+        target.innerHTML = "";
+        target.appendChild(img);
+        const ms = new Date().getTime() - start;
+        info.innerText = `Upscaled in ${ms} ms`;
+      });
+    };
+  });
