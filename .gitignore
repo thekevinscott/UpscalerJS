@@ -4,3 +4,4 @@ node_modules
 /examples/**/.cache
 coverage
 yarn-error.log
+.DS_Store
