@@ -6,22 +6,19 @@ const buttonWithWW = document.getElementById('button-webworker');
 const buttonWithoutWW = document.getElementById('button-no-webworker');
 import { writeOutput, disable } from './ui';
 
-const upscaler = new Upscaler({
-  model: '2x',
-});
 const worker = new Worker('worker.js');
 
 buttonWithWW.onclick = async () => {
   await disable();
   const image = new Image();
   image.src = img;
-  const pixels = tf.browser.fromPixels(image);
-  await tf.nextFrame();
-  const data = await pixels.data();
-  worker.postMessage([
-    data,
-    pixels.shape,
-  ]);
+  image.crossOrigin = 'anonymous';
+  image.onload = async () => {
+    const pixels = tf.browser.fromPixels(image);
+    await tf.nextFrame();
+    const data = await pixels.data();
+    worker.postMessage([data, pixels.shape]);
+  };
 };
 worker.onmessage = async (e) => {
   const [ data, shape ] = e.data;
@@ -31,6 +28,9 @@ worker.onmessage = async (e) => {
 }
 
 buttonWithoutWW.onclick = async () => {
+  const upscaler = new Upscaler({
+    model: '2x',
+  });
   await disable();
   upscaler.upscale(img).then(writeOutput);
 };
