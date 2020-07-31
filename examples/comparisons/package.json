@@ -12,8 +12,7 @@
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "parcel": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.4.3"
+    "parcel": "^1.12.4"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",

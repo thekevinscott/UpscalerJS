@@ -1,0 +1,37 @@
+<html>
+<head>
+  <title>Comparisons | Upscaler.JS</title>
+  <style>
+    body {
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    table td {
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Comparisons</h1>
+  <p>Comparisons of the differences between different upscaling techniques.</p>
+  <table>
+    <thead>
+      <tr><td>Original, no upscaling</td><td>Bicubic upscaling</td><td>UpscalerJS upscaling</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <img src="/flower.png" id="flower" style="image-rendering: pixelated;" width="256" />
+        </td>
+        <td>
+          <img src="/flower.png" id="flower" width="256" />
+        </td>
+        <td>
+          <div id="target"></div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <script src="./index.js"></script>
+</body>
+</html>
