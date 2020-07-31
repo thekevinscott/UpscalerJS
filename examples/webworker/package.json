@@ -1,7 +1,7 @@
 {
-  "name": "basic",
+  "name": "WebWorker",
   "version": "0.1.0",
-  "description": "Demonstration of basic usage of UpscalerJS",
+  "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
     "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
@@ -14,6 +14,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
+    "regenerator-runtime": "^0.13.7",
     "upscaler": "0.1.0"
   }
 }

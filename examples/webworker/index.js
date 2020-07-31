@@ -53,7 +53,7 @@ buttonWithoutWW.onclick = () => {
   info.innerText = 'Upscaling...';
   if (!upscaler) {
     upscaler = new Upscaler({
-      model: 'psnr_small',
+      model: '2x',
     });
   }
   upscaler.upscale(img).then(writeOutput);

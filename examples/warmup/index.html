@@ -1,10 +1,59 @@
 <html>
 <head>
+  <title>Warmup Example | Upscaler.JS</title>
   <style>
+    body {
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button {
+      margin-top: 20px;
+      display: block;
+      padding: 10px 40px;
+    }
+    #target {
+      background: #EEE;
+      border: 1px solid #DDD;
+      display: inline-block;
+      width: 256px;
+      height: 256px;
+    }
+    #flower {
+      border: 1px solid #DDD;
+    }
+    pre {
+      padding: 10px;
+      background: #EEE;
+      border: 1px solid #DDD;
+      border-radius: 5px;
+    }
+    table td {
+      vertical-align: top;
+    }
   </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script src="./index.js"></script>
-</body>
+  <h1>Warmup Example</h1>
+  <p>On first inference pass, the model will perform slower than on subsequent runs. You can avoid this by "warming up" the model, or passing through some dummy data at startup time.</p> <p>This example shows how to warm up <a href="https://github.com/thekevinscott/UpscalerJS">UpscalerJS</a>.</p>
+  <p>Click the upscale button to upscale the photo.</p>
+  <button id="button">Upscale</button>
+  <p id="info"></p>
+  <table>
+    <thead>
+      <tr><td>Original</td><td>Upscaled</td></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+      <img src="/flower.png" id="flower" />
+        </td>
+      <td>
+        <div id="target">
+
+        </div>
+      </td>
+    </tr>
+      </tbody>
+    </table>
+    <script src="./index.js"></script>
+  </body>
 </html>

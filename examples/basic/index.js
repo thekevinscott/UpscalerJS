@@ -4,14 +4,11 @@ const target = document.getElementById('target');
 const button = document.getElementById('button');
 const info = document.getElementById('info');
 
-let upscaler;
+const upscaler = new Upscaler({
+  model: '2x',
+});
 button.onclick = () => {
   info.innerText = 'Upscaling...';
-  if (!upscaler) {
-    upscaler = new Upscaler({
-      model: 'psnr_small',
-    });
-  }
   const start = new Date().getTime();
   upscaler.upscale(img).then((upscaledImgSrc) => {
     const img = document.createElement('img');

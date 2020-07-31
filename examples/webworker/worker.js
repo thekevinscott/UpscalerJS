@@ -5,7 +5,7 @@ let upscaler;
 const upscaleImage = ([ data, shape ]) => {
   if (!upscaler) {
     upscaler = new Upscaler({
-      model: 'psnr_small',
+      model: '2x',
     });
   }
   const tensor = tf.tensor(data, shape);

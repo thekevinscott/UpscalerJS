@@ -1,7 +1,7 @@
 {
-  "name": "basic",
-  "version": "0.0.14",
-  "description": "Demonstration of basic usage of UpscalerJS",
+  "name": "comparisons",
+  "version": "0.1.0",
+  "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
     "link-local": "yalc link",
@@ -12,10 +12,11 @@
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "parcel": "^1.12.4"
+    "parcel": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.4.3"
   },
   "dependencies": {
-    "regenerator-runtime": "^0.13.7",
-    "upscaler": "0.0.14"
+    "@tensorflow/tfjs": "^2.0.1",
+    "upscaler": "0.1.0"
   }
 }

@@ -30,40 +30,11 @@
 <body>
   <h1>Tensor Example</h1>
   <p>An example of using a tensor as input and output with <a href="https://github.com/thekevinscott/UpscalerJS">UpscalerJS</a>.</p>
-  <pre id="code"><code>import * as tf from '@tensorflow/tfjs';
-import Upscaler from 'upscaler';
-const target = document.getElementById('target');
-const button = document.getElementById('button');
-const info = document.getElementById('info');
-
-let upscaler;
-button.onclick = () => {
-  info.innerText = 'Upscaling...';
-  if (!upscaler) {
-    upscaler = new Upscaler({
-      model: 'psnr_small',
-    });
-  }
-  const start = new Date().getTime();
-  const img = new Image();
-  img.src = flower.src;
-  const pixels = tf.browser.fromPixels(img);
-  upscaler.upscale(pixels, {
-    output: 'tensor',
-  }).then((upscaledImg) => {
-    const data = upscaledImg.dataSync();
-    target.innerHTML = JSON.stringify(data);
-    const ms = new Date().getTime() - start;
-    info.innerText = `Upscaled in ${ms} ms`;
-  });
-};</code></pre>
-<p>Click the upload button to upload the photo.</p>
+  <p>Click the upload button to upload the photo.</p>
   <button id="button">Upscale</button>
   <p id="info"></p>
   <label>Original:</label>
   <img src="/flower.png" id="flower" />
-  <label>Tensor output:</label>
-    <pre id="target"></pre>
   <script src="./index.js"></script>
 </body>
 </html>
