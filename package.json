@@ -50,7 +50,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "0.0.14",
+  "version": "0.1.0",
   "dependencies": {
     "dot-prop": "^5.1.1"
   }
