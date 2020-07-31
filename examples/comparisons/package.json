@@ -1,6 +1,6 @@
 {
   "name": "comparisons",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "0.1.0"
+    "upscaler": "0.1.1"
   }
 }
