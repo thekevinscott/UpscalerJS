@@ -1,5 +1,5 @@
 {
-  "name": "WebWorker",
+  "name": "webworker",
   "version": "0.1.1",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
@@ -17,7 +17,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "regenerator-runtime": "^0.13.7",
+    "@tensorflow/tfjs": "^2.0.1",
     "upscaler": "0.1.1"
   }
 }
