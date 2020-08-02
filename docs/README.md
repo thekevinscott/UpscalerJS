@@ -1,10 +1,12 @@
 # UpscalerJS
 
-UpscalerJS is a tool for increasing image resolution up to 4x in Javascript via a Neural Network. 
+<a href="https://travis-ci.org/github/thekevinscott/UpscalerJS"><img alt="Travis (.org)" src="https://img.shields.io/travis/thekevinscott/upscalerjs"></a>
+<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs"></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="npm" src="https://img.shields.io/npm/dw/upscalerjs"></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/issues"><img alt="Github issues" src="https://img.shields.io/github/issues/thekevinscott/upscalerjs"></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler"></a>
 
-## Demo
-
-View a live demo somewhere.
+UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
 ## Quick Start
 
@@ -16,19 +18,63 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 });
 ```
 
+## Why?
+
+Increasing an image's size results in a pixelated image:
+
+![Pixelated 3x](./assets/image-3x.png)
+
+To get around this, you can use bicubic interpolation. By default, most browsers implement this algorithm when you increase the resolution of an image:
+
+![Bicubic 3x](./assets/image-bicubic-3x.png)
+
+However, this loses image quality and results in a blurrier image.
+
+Neural Networks [can allow us to "paint in" the expanded sections of the image](https://paperswithcode.com/task/image-super-resolution), enhancing quality.
+
+![Upscaled 2x](./assets/image-upscaled-2x.png)
+
+### Why do this in the browser?
+
+Most cutting edge Neural Networks demand heavy computation and big GPUs, but UpscalerJS leverages Tensorflow.js to run directly in your browser. Users' data can stay on their machines, and you don't need to set up a server.
+
+## Features
+
+* 🚀 Browser Support
+* 📦 ️Simple modern ES6 interface
+* 🤖 Choose from a variety of pre-trained models, or provide your own
+* 📷 Scale images at 2x, 3x, and 4x resolutions.
+* ⚛️ Integration with React
+* 🛡️ Rigorously tested with 100% code coverage
+
 ## Install
 
-Install the package with `yarn`:
+Yarn:
 
 ```
 yarn add upscaler
 ```
 
-Or `npm`:
+NPM:
 
 ```
 npm install upscaler
 ```
+
+## Examples 
+
+You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
+
+## Pretrained Models
+
+There are a number of pretrained models provided with the package:
+
+| Key | Dataset | Scale | Example |
+| --- | --- | --- | --- |
+| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS) |
+| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS) |
+| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS) |
+
 
 ## Usage
 
@@ -84,25 +130,6 @@ The available types for output are:
 
 * `src` - A src URL of the upscaled image.
 * `tf.Tensor3D` - The raw tensor.
-
-## Pretrained Models
-
-There are a number of pretrained models provided with the package:
-
-| Dataset | Scale | Epoch | Example |
-| --- | --- |
-| div2k | 2x | 100 | |
-| div2k | 2x | 200 | |
-| div2k | 2x | 300 | |
-| div2k | 3x | 100 | |
-| div2k | 3x | 200 | |
-| div2k | 3x | 300 | |
-| div2k | 4x | 100 | |
-| div2k | 4x | 200 | |
-| div2k | 4x | 300 | |
-| div2k | 8x | 100 | |
-| div2k | 8x | 200 | |
-| div2k | 8x | 300 | |
 
 ## API
 
@@ -171,6 +198,20 @@ upscaler.getModel().then(model => {
 })
 ```
 
+## Contributions 
+
+Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.
+
+To contribute pretrained models, head over to [UpscalerJS-models](https://github.com/thekevinscott/UpscalerJS-models).
+
+## Support
+
+* Create a [Github issue](https://github.com/thekevinscott/UpscalerJS/issues) for bug reports, feature requests, or questions
+* Follow [@thekevinscott](https://twitter.com/thekevinscott) for announcements
+* Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=javascript,image-enhancement,tensorflow.js,super-resolution) to support the project!
+
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE) for details.
+
+Copyright (c) Kevin Scott (@thekevinscott)
