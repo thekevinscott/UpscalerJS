@@ -1,11 +1,11 @@
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import img from './flower-256.png';
-const buttonWithWW = document.getElementById('button-webworker');
-const buttonWithoutWW = document.getElementById('button-no-webworker');
 import { writeOutput, disable } from './ui';
 import tensorAsBase64 from 'tensor-as-base64';
 
+const buttonWithWW = document.getElementById('button-webworker');
+const buttonWithoutWW = document.getElementById('button-no-webworker');
 const worker = new Worker('worker.js');
 
 buttonWithWW.onclick = async () => {

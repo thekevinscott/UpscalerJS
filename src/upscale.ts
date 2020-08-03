@@ -71,19 +71,14 @@ export const getTensorDimensions = (
     size[2] = minimumWidth + padding;
     origin[2] -= diff;
   }
-  console.log('origin & size', origin, size);
   const sliceOrigin = [0, originRowPadding * scale, originColPadding * scale];
-  console.log('sliceOrigin', sliceOrigin, originRowPadding, originColPadding);
-  console.log(sizeHeightPadding, sizeWidthPadding);
   const sliceSize = [
     -1,
     size[1] * scale - sliceOrigin[1],
     size[2] * scale - sliceOrigin[2],
   ];
-  console.log('sliceSize', sliceSize);
   sliceSize[1] = sliceSize[1] - sizeWidthPadding * scale;
   sliceSize[2] = sliceSize[2] - sizeHeightPadding * scale;
-  console.log('post sliceSize', sliceSize);
 
   return {
     origin,
