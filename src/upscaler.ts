@@ -18,9 +18,7 @@ class Upscaler {
 
   getModel = () => this._model;
   warmup = async (warmupSizes: WarmupSizes) => {
-    console.log('1');
     await warmup(this._model, warmupSizes);
-    console.log('2');
   };
 
   upscale = async (pixels: tf.Tensor3D, options: IUpscaleOptions = {}) => {
