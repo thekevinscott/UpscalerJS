@@ -4842,6 +4842,11 @@ symbol-tree@^3.2.2:
   resolved "https://registry.yarnpkg.com/symbol-tree/-/symbol-tree-3.2.4.tgz#430637d248ba77e078883951fb9aa0eed7c63fa2"
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
+tensor-as-base64@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tensor-as-base64/-/tensor-as-base64-0.1.1.tgz#8ca71e14630f620401c06d492da0a38aadc08024"
+  integrity sha512-wSRXJzKYpKzVeWBTomxjxrh2+q8yF5ISJbicRJNYwvAcixo6l/CezNDqU9Ot35mgLJPaKR1zM3lhaTyog1JlpA==
+
 terser@^3.7.3:
   version "3.17.0"
   resolved "https://registry.yarnpkg.com/terser/-/terser-3.17.0.tgz#f88ffbeda0deb5637f9d24b0da66f4e15ab10cb2"

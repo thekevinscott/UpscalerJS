@@ -2,6 +2,7 @@
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
+  "testEnvironment": "node",
   "setupFiles": ["./jest.setup.ts", "jest-canvas-mock"],
   "collectCoverage": true,
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",

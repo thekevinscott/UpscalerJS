@@ -8,7 +8,7 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.2",
     "react-scripts": "3.4.1",
-    "upscaler": "^0.1.1"
+    "upscaler": "0.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,5 +30,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "version": "0.2.0"
 }

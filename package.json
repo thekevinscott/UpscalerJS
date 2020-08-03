@@ -38,6 +38,7 @@
     "@tensorflow/tfjs": "^2.0.1"
   },
   "devDependencies": {
+    "@tensorflow/tfjs": "^2.0.1",
     "@types/jest": "^26.0.7",
     "codecov": "^3.7.2",
     "docsify-cli": "^4.4.1",
@@ -50,8 +51,9 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "0.1.1",
+  "version": "0.2.0",
   "dependencies": {
-    "dot-prop": "^5.1.1"
+    "dot-prop": "^5.1.1",
+    "tensor-as-base64": "^0.1.1"
   }
 }

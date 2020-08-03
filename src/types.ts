@@ -6,4 +6,7 @@ export interface IUpscalerOptions {
 
 export interface IUpscaleOptions {
   output?: 'src' | 'tensor';
+  patchSize?: number;
+  padding?: number;
+  minimumPatchSize?: number;
 }

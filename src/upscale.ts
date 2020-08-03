@@ -1,77 +1,190 @@
 import * as tf from '@tensorflow/tfjs';
 import { IUpscaleOptions } from './types';
+import { getImageAsPixels } from './image';
+import tensorAsBase64 from 'tensor-as-base64';
 
-export const predict = (
+// export const getPatchSize = ({
+//   patchSize,
+//   padding = 0,
+// }: IUpscaleOptions = {}): null | number => {
+//   if (patchSize) {
+//     const calculatedPatchSize = patchSize + padding;
+//     if (calculatedPatchSize > minimumPatchSize) {
+//       return calculatedPatchSize;
+//     }
+
+//     return minimumPatchSize;
+//   }
+
+//   return null;
+// };
+
+export const getRowsAndColumns = (
+  pixels: tf.Tensor4D,
+  patchSize: number,
+): {
+  rows: number;
+  columns: number;
+} => {
+  const [_, height, width, _2] = pixels.shape;
+
+  return {
+    rows: Math.ceil(height / patchSize),
+    columns: Math.ceil(width / patchSize),
+  };
+};
+
+export const getTensorDimensions = (
+  row: number,
+  col: number,
+  patchSize: number,
+  padding: number,
+  scale: number,
+  height: number,
+  width: number,
+  minimumHeight = 0,
+  minimumWidth = 0,
+) => {
+  let originRowPadding = padding;
+  let originColPadding = padding;
+  let sizeHeightPadding = padding;
+  let sizeWidthPadding = padding;
+  const origin = [
+    0,
+    col * patchSize - originRowPadding,
+    row * patchSize - originColPadding,
+  ];
+  if (origin[1] < 0) {
+    origin[1] = 0;
+    originRowPadding = 0;
+  }
+  if (origin[2] < 0) {
+    origin[2] = 0;
+    originColPadding = 0;
+  }
+  const size = [
+    -1,
+    origin[1] + patchSize + originRowPadding + sizeHeightPadding,
+    origin[2] + patchSize + originColPadding + sizeWidthPadding,
+  ];
+  console.log('origin & size 1', origin, size);
+  if (size[1] > height) {
+    size[1] = height;
+    sizeWidthPadding = 0;
+  }
+  if (size[2] > width) {
+    size[2] = width;
+    sizeHeightPadding = 0;
+  }
+  size[1] = size[1] - origin[1];
+  size[2] = size[2] - origin[2];
+  if (size[1] < minimumHeight + padding) {
+    const diff = minimumHeight + padding - size[1];
+    size[1] = minimumHeight + padding;
+    origin[1] -= diff;
+  }
+  if (size[2] < minimumWidth + padding) {
+    const diff = minimumWidth + padding - size[2];
+    size[2] = minimumWidth + padding;
+    origin[2] -= diff;
+  }
+  console.log('origin & size', origin, size);
+  const sliceOrigin = [0, originRowPadding * scale, originColPadding * scale];
+  console.log('sliceOrigin', sliceOrigin, originRowPadding, originColPadding);
+  // const sliceSize = [
+  //   -1,
+  //   (size[1] * scale) - (sizeHeightPadding * scale),
+  //   (size[2] * scale) - (sizeWidthPadding * scale),
+  // ];
+  console.log(sizeHeightPadding, sizeWidthPadding);
+  const sliceSize = [
+    -1,
+    size[1] * scale - sliceOrigin[1],
+    size[2] * scale - sliceOrigin[2],
+  ];
+  console.log('sliceSize', sliceSize);
+  sliceSize[1] = sliceSize[1] - sizeWidthPadding * scale;
+  sliceSize[2] = sliceSize[2] - sizeHeightPadding * scale;
+  console.log('post sliceSize', sliceSize);
+
+  return {
+    origin,
+    size,
+    sliceOrigin,
+    sliceSize,
+  };
+};
+
+export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
-): tf.Tensor3D => {
+  scale: number,
+  { patchSize, padding = 0, minimumPatchSize }: IUpscaleOptions = {},
+): Promise<tf.Tensor3D> => {
+  if (patchSize) {
+    let pred: tf.Tensor4D;
+    const { rows, columns } = getRowsAndColumns(pixels, patchSize);
+    const [_, height, width] = pixels.shape;
+    for (let row = 0; row < rows; row++) {
+      let rowTensor: tf.Tensor4D;
+      for (let col = 0; col < columns; col++) {
+        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
+          row,
+          col,
+          patchSize,
+          padding,
+          scale,
+          height,
+          width,
+          minimumPatchSize,
+          minimumPatchSize,
+        );
+        const slicedPixels = pixels.slice(origin, size);
+        const slicedPrediction = (model.predict(
+          slicedPixels,
+        ) as tf.Tensor4D).slice(sliceOrigin, sliceSize);
+        await tf.nextFrame();
+        slicedPixels.dispose();
+
+        if (!rowTensor) {
+          rowTensor = slicedPrediction;
+        } else {
+          rowTensor = rowTensor.concat(slicedPrediction, 1);
+          slicedPrediction.dispose();
+        }
+      }
+      if (!pred) {
+        pred = rowTensor;
+      } else {
+        pred = pred.concat(rowTensor, 2);
+        rowTensor.dispose();
+      }
+    }
+    if (!pred) {
+      throw new Error('Prediction tensor was never initialized.');
+    }
+    return pred.squeeze() as tf.Tensor3D;
+  }
+
   return tf.tidy(() => {
     const pred = model.predict(pixels) as tf.Tensor4D;
     return pred.squeeze() as tf.Tensor3D;
   });
 };
 
-const loadImage = (src: string): Promise<HTMLImageElement> =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-  });
-
-const isString = (pixels: any): pixels is string => {
-  return typeof pixels === 'string';
-};
-
-const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
-  try {
-    return pixels instanceof HTMLImageElement;
-  } catch (err) {
-    // may be in a webworker, or in Node
-    return false;
-  }
-};
-
-const isFourDimensionalTensor = (pixels: tf.Tensor): pixels is tf.Tensor4D => {
-  return pixels.shape.length === 4;
-};
-
-const getPixels = async (
-  pixels: string | HTMLImageElement | tf.Tensor,
-): Promise<tf.Tensor4D> => {
-  if (isString(pixels)) {
-    const img = await loadImage(pixels);
-    return tf.browser.fromPixels(img).expandDims(0);
-  }
-
-  if (isHTMLImageElement(pixels)) {
-    return tf.browser.fromPixels(pixels).expandDims(0);
-  }
-
-  if (isFourDimensionalTensor(pixels)) {
-    return pixels;
-  }
-
-  if (pixels.shape.length === 3) {
-    return pixels.expandDims(0);
-  }
-
-  throw new Error(
-    [
-      `Unsupported dimensions for incoming pixels: ${pixels.shape.length}.`,
-      'Only 3 or 4 dimension tensors are supported.',
-    ].join(' '),
-  );
-};
-
 const upscale = async (
   model: tf.LayersModel,
   image: string | HTMLImageElement | tf.Tensor3D,
+  scale: number,
   options: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D | string> => {
-  const pixels = await getPixels(image);
-  const upscaledTensor = predict(model, pixels as tf.Tensor4D);
+  const pixels = await getImageAsPixels(image);
+  const upscaledTensor = await predict(
+    model,
+    pixels as tf.Tensor4D,
+    scale,
+    options,
+  );
   pixels.dispose();
 
   if (options.output === 'tensor') {
@@ -79,37 +192,6 @@ const upscale = async (
   }
 
   return tensorAsBase64(upscaledTensor);
-};
-
-export const tensorAsBuffer = async (tensor: tf.Tensor3D) => {
-  const [height, width] = tensor.shape;
-  const buffer = new Uint8ClampedArray(width * height * 4);
-  const imageData = new ImageData(width, height);
-  const data = await tensor.data();
-  let i = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const pos = (y * width + x) * 4; // position in buffer based on x and y
-      buffer[pos] = data[i]; // some R value [0, 255]
-      buffer[pos + 1] = data[i + 1]; // some G value
-      buffer[pos + 2] = data[i + 2]; // some B value
-      buffer[pos + 3] = 255; // set alpha channel
-      i += 3;
-    }
-  }
-  imageData.data.set(buffer);
-  return imageData;
-};
-
-export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
-  const [height, width] = tensor.shape;
-  const imageData = await tensorAsBuffer(tensor);
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  ctx.putImageData(imageData, 0, 0);
-  return canvas.toDataURL();
 };
 
 export default upscale;
