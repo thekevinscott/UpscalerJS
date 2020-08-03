@@ -3,22 +3,6 @@ import { IUpscaleOptions } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
 
-// export const getPatchSize = ({
-//   patchSize,
-//   padding = 0,
-// }: IUpscaleOptions = {}): null | number => {
-//   if (patchSize) {
-//     const calculatedPatchSize = patchSize + padding;
-//     if (calculatedPatchSize > minimumPatchSize) {
-//       return calculatedPatchSize;
-//     }
-
-//     return minimumPatchSize;
-//   }
-
-//   return null;
-// };
-
 export const getRowsAndColumns = (
   pixels: tf.Tensor4D,
   patchSize: number,
@@ -67,7 +51,6 @@ export const getTensorDimensions = (
     origin[1] + patchSize + originRowPadding + sizeHeightPadding,
     origin[2] + patchSize + originColPadding + sizeWidthPadding,
   ];
-  console.log('origin & size 1', origin, size);
   if (size[1] > height) {
     size[1] = height;
     sizeWidthPadding = 0;
@@ -88,24 +71,14 @@ export const getTensorDimensions = (
     size[2] = minimumWidth + padding;
     origin[2] -= diff;
   }
-  console.log('origin & size', origin, size);
   const sliceOrigin = [0, originRowPadding * scale, originColPadding * scale];
-  console.log('sliceOrigin', sliceOrigin, originRowPadding, originColPadding);
-  // const sliceSize = [
-  //   -1,
-  //   (size[1] * scale) - (sizeHeightPadding * scale),
-  //   (size[2] * scale) - (sizeWidthPadding * scale),
-  // ];
-  console.log(sizeHeightPadding, sizeWidthPadding);
   const sliceSize = [
     -1,
     size[1] * scale - sliceOrigin[1],
     size[2] * scale - sliceOrigin[2],
   ];
-  console.log('sliceSize', sliceSize);
   sliceSize[1] = sliceSize[1] - sizeWidthPadding * scale;
   sliceSize[2] = sliceSize[2] - sizeHeightPadding * scale;
-  console.log('post sliceSize', sliceSize);
 
   return {
     origin,
