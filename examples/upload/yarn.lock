@@ -5063,10 +5063,10 @@ upath@^1.1.1:
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
   integrity sha512-aZwGpamFO61g3OlfT7OQCHqhGnW43ieH9WZeP7QxN/G/jS4jfqUkZxoryvJgVPEcrl5NL/ggHsSmLMHuH64Lhg==
 
-upscaler@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.2.0.tgz#078560aa4bdaa2b062e47132d5888463141fb87c"
-  integrity sha512-Zys+QQJlPSNzZ7KejrfYZgiJX84hAo3Ggcbs2nP9r84yEzGF9Elh1uEP5d8+BTY+ov/ooQ0F0sJJ75U1LMrJfg==
+upscaler@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.2.1.tgz#ee204d04522931630998e25c22052a3bc412112c"
+  integrity sha512-9dgZda5W4Knad7T6pB96Mi3PdYndPOLAKfrxU2uufJcXc/0qqhknwBrpkQwuaoiKuKZGJgKoElRWAyksIg/eIQ==
   dependencies:
     dot-prop "^5.1.1"
     tensor-as-base64 "^0.1.1"

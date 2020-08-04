@@ -1,5 +1,5 @@
 {
-  "name": "comparisons",
+  "name": "testing",
   "version": "0.2.1",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",

@@ -1,18 +1,13 @@
+import { IModelDefinition } from "./types";
+
 const ROOT = 'https://unpkg.com/upscalerjs-models';
 const MODEL_DIR = 'models';
 
-const buildURL = (modelFolder: string) => {
-  return `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/model.json`;
-};
+const buildURL = (modelFolder: string) => `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/model.json`;
 
-interface IModels {
-  [index: string]: {
-    url: string;
-    scale: number;
-  };
-}
-
-const MODELS: IModels = {
+const MODELS: {
+  [index: string]: IModelDefinition;
+} = {
   '2x': {
     url: buildURL('div2k/005-2x'),
     scale: 2,

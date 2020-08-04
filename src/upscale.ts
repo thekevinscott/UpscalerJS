@@ -23,62 +23,63 @@ export const getTensorDimensions = (
   col: number,
   patchSize: number,
   padding: number,
-  scale: number,
   height: number,
   width: number,
-  minimumHeight = 0,
-  minimumWidth = 0,
 ) => {
+  // console.log(row, col);
   let originRowPadding = padding;
   let originColPadding = padding;
   let sizeHeightPadding = padding;
   let sizeWidthPadding = padding;
   const origin = [
-    0,
-    col * patchSize - originRowPadding,
-    row * patchSize - originColPadding,
+    row * patchSize - originRowPadding,
+    col * patchSize - originColPadding,
   ];
+  if (origin[0] < 0) {
+    // console.log('modify origin height', padding, 0 - origin[0])
+    originRowPadding = padding - (0 - origin[0]);
+    origin[0] = 0;
+  }
   if (origin[1] < 0) {
+    // console.log('modify origin width')
+    originColPadding = padding - (0 - origin[1]);
     origin[1] = 0;
-    originRowPadding = 0;
   }
-  if (origin[2] < 0) {
-    origin[2] = 0;
-    originColPadding = 0;
+  // console.log('origin', origin);
+  const endPosition = [
+    (row * patchSize) + patchSize + sizeHeightPadding,
+    (col * patchSize) + patchSize + sizeWidthPadding,
+  ];
+  // console.log('pre endPosition', endPosition);
+  if (endPosition[0] > height) {
+    sizeHeightPadding = padding - (endPosition[0] - height);
+    if (sizeHeightPadding < 0) {
+      sizeHeightPadding = 0;
+    }
+    // console.log('decrease the size')
+    endPosition[0] = height;
   }
+  if (endPosition[1] > width) {
+    sizeWidthPadding = padding - (endPosition[1] - width);
+    if (sizeWidthPadding < 0) {
+      sizeWidthPadding = 0;
+    }
+    endPosition[1] = width;
+  }
+  // console.log('post endPosition', endPosition);
   const size = [
-    -1,
-    origin[1] + patchSize + originRowPadding + sizeHeightPadding,
-    origin[2] + patchSize + originColPadding + sizeWidthPadding,
+    endPosition[0] - origin[0],
+    endPosition[1] - origin[1],
   ];
-  if (size[1] > height) {
-    size[1] = height;
-    sizeWidthPadding = 0;
-  }
-  if (size[2] > width) {
-    size[2] = width;
-    sizeHeightPadding = 0;
-  }
-  size[1] = size[1] - origin[1];
-  size[2] = size[2] - origin[2];
-  if (size[1] < minimumHeight + padding) {
-    const diff = minimumHeight + padding - size[1];
-    size[1] = minimumHeight + padding;
-    origin[1] -= diff;
-  }
-  if (size[2] < minimumWidth + padding) {
-    const diff = minimumWidth + padding - size[2];
-    size[2] = minimumWidth + padding;
-    origin[2] -= diff;
-  }
-  const sliceOrigin = [0, originRowPadding * scale, originColPadding * scale];
+  // console.log('size', size);
+  const sliceOrigin = [originRowPadding, originColPadding];
+  // console.log('sliceOrigin', sliceOrigin);
+  // console.log('sizeHeightPadding', sizeHeightPadding);
   const sliceSize = [
-    -1,
-    size[1] * scale - sliceOrigin[1],
-    size[2] * scale - sliceOrigin[2],
+    size[0] - sliceOrigin[0] - sizeHeightPadding,
+    size[1] - sliceOrigin[1] - sizeWidthPadding,
   ];
-  sliceSize[1] = sliceSize[1] - sizeWidthPadding * scale;
-  sliceSize[2] = sliceSize[2] - sizeHeightPadding * scale;
+  // console.log('sliceSize', sliceSize);
 
   return {
     origin,
@@ -92,45 +93,61 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   scale: number,
-  { patchSize, padding = 0, minimumPatchSize }: IUpscaleOptions = {},
+  { patchSize, padding = 0 }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   if (patchSize) {
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
     const [_, height, width] = pixels.shape;
     for (let row = 0; row < rows; row++) {
-      let rowTensor: tf.Tensor4D;
+      let colTensor: tf.Tensor4D;
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
           row,
           col,
           patchSize,
           padding,
-          scale,
           height,
           width,
-          minimumPatchSize,
-          minimumPatchSize,
         );
-        const slicedPixels = pixels.slice(origin, size);
-        const slicedPrediction = (model.predict(
+        const slicedPixels = pixels.slice([
+          0,
+          origin[0],
+          origin[1],
+        ], [
+          -1,
+          size[0],
+          size[1]
+        ]);
+        const prediction = (model.predict(
           slicedPixels,
-        ) as tf.Tensor4D).slice(sliceOrigin, sliceSize);
+        ) as tf.Tensor4D);
         await tf.nextFrame();
         slicedPixels.dispose();
+        const slicedPrediction = prediction.slice([
+          0,
+          sliceOrigin[0] * scale,
+          sliceOrigin[1] * scale,
+        ], [
+          -1,
+          sliceSize[0] * scale,
+          sliceSize[1] * scale,
+        ]);
+        prediction.dispose();
 
-        if (!rowTensor) {
-          rowTensor = slicedPrediction;
+        if (!colTensor) {
+          colTensor = slicedPrediction;
         } else {
-          rowTensor = rowTensor.concat(slicedPrediction, 1);
+          // console.log('colTensor exists, append it', slicedPrediction.shape, colTensor.shape);
+          colTensor = colTensor.concat(slicedPrediction, 2);
           slicedPrediction.dispose();
         }
       }
       if (!pred) {
-        pred = rowTensor;
+        pred = colTensor;
       } else {
-        pred = pred.concat(rowTensor, 2);
-        rowTensor.dispose();
+        pred = pred.concat(colTensor, 1);
+        colTensor.dispose();
       }
     }
     if (!pred) {
