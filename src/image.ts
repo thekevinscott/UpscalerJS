@@ -15,11 +15,11 @@ export const getImageAsPixels = async (
 ): Promise<tf.Tensor4D> => {
   if (isString(pixels)) {
     const img = await loadImage(pixels);
-    return tf.browser.fromPixels(img).expandDims(0);
+    return tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
   }
 
   if (isHTMLImageElement(pixels)) {
-    return tf.browser.fromPixels(pixels).expandDims(0);
+    return tf.browser.fromPixels(pixels).expandDims(0) as tf.Tensor4D;
   }
 
   if (isFourDimensionalTensor(pixels)) {
@@ -27,7 +27,7 @@ export const getImageAsPixels = async (
   }
 
   if (pixels.shape.length === 3) {
-    return pixels.expandDims(0);
+    return pixels.expandDims(0) as tf.Tensor4D;
   }
 
   throw new Error(
