@@ -35,10 +35,5 @@ examples.forEach(example => {
       }
       package.dependencies.upscaler = version;
     });
-    fs.writeFileSync(path.resolve(dirPath, 'sandbox.config.json'), JSON.stringify({
-      "infiniteLoopProtection": false,
-      "hardReloadOnChange": true,
-      "view": "browser"
-    }, null, 2));
   }
 });
