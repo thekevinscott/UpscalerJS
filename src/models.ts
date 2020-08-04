@@ -21,6 +21,18 @@ const MODELS: {
     url: buildURL('div2k/017-4x'),
     scale: 4,
   },
+  'div2k-2x': {
+    url: buildURL('div2k/005-2x'),
+    scale: 2,
+  },
+  'div2k-3x': {
+    url: buildURL('div2k/019-3x'),
+    scale: 3,
+  },
+  'div2k-4x': {
+    url: buildURL('div2k/017-4x'),
+    scale: 4,
+  },
   psnr: {
     url: buildURL('psnr-small-quant-uint8'),
     scale: 2,
@@ -29,4 +41,4 @@ const MODELS: {
 
 export default MODELS;
 
-export const DEFAULT_MODEL = '2x';
+export const DEFAULT_MODEL = 'div2k-2x';
