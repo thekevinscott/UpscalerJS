@@ -16,7 +16,7 @@ const createImage = (targetDiv, src) => {
 
 const upscaler = new Upscaler({
   model: 'div2k-2x',
-  warmupSizes: [64, 64],
+  warmupSizes: [[64, 64]],
 });
 async function handleFiles() {
   info.innerText = "Upscaling...";
@@ -30,7 +30,6 @@ async function handleFiles() {
     const upscaledImgSrc = await upscaler.upscale(img, {
       patchSize: 64,
       padding: 5,
-      minimumPatchSize: 10,
     });
     createImage(target, upscaledImgSrc);
     const ms = new Date().getTime() - start;

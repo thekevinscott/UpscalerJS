@@ -43,7 +43,7 @@ Most cutting edge Neural Networks demand heavy computation and big GPUs, but Ups
 * 🤖 Choose from a variety of pre-trained models, or provide your own
 * 📷 Scale images at 2x, 3x, and 4x resolutions.
 * ⚛️ Integration with React
-* 🛡️ Rigorously tested with 100% code coverage
+* 🛡️ Rigorously tested with close to 100% code coverage
 
 ## Install
 
@@ -69,9 +69,9 @@ There are a number of pretrained models provided with the package:
 
 | Key | Dataset | Scale | Example |
 | --- | --- | --- | --- |
-| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS) |
-| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS) |
-| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS) |
+| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#2x) |
+| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#3x) |
+| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#4x) |
 
 
 ## Usage
@@ -84,7 +84,7 @@ UpscalerJS provides a number of pretrained models out of the box. UpscalerJS wil
 
 ```
 const upscaler = new Upscaler({
-  model: 'div2k-300-2x',
+  model: 'div2k-2x',
 });
 ```
 
@@ -93,10 +93,13 @@ Alternatively, you can provide a path to a pre-trained model of your own:
 ```
 const upscaler = new Upscaler({
   model: '/path/to/model',
+  scale: 2,
 });
 ```
 
-A full list of models is available below.
+When providing your own model, **you must provide an explicit scale**. Conversely, if you are requesting a pretrained model, **do not** provide an explicit scale.
+
+[A full list of pretrained models is available in the models repo](https://github.com/thekevinscott/UpscalerJS-models).
 
 ### Upscaling
 
@@ -129,6 +132,21 @@ The available types for output are:
 * `src` - A src URL of the upscaled image.
 * `tf.Tensor3D` - The raw tensor.
 
+#### Performance
+
+For larger images, attempting to run inference can impact UI performance. To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
+
+```
+upscaler.upscale('/path/to/image', {
+  patchSize: 64,
+  padding: 5,
+})
+```
+
+Without padding, images will usually end up with unsightly artifacting at the seams between patches. You should use as small a padding value as you can get away with (usually anything above 3 will avoid artifacting).
+
+Smaller patch sizes will block the UI less, but also increase overall inference time for a given image.
+
 ## API
 
 ### `constructor`
@@ -139,7 +157,8 @@ Instantiates an instance of UpscalerJS.
 
 ```
 const upscaler = new Upscaler({
-  model: 'div2k-300-2x',
+  model: 'div2k-2x',
+  scale: 2,
   warmupSizes: [[256, 256]]
 });
 ```
@@ -147,7 +166,15 @@ const upscaler = new Upscaler({
 #### Options
 
 * `model` (`string`) - A string of a pretrained model, or a URL to load a custom pretrained model.
+* `scale` (`number`) - The scale of the custom pretrained model. Required if providing a custom model. If a pretrained model is specified, providing `scale` will throw an error.
 * `warmupSizes` (Optional, `Array<[number, number]`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
+
+Possible model values are:
+
+* `div2k-2x` - Scale of 2x
+* `div2k-3x` - Scale of 3x
+* `div2k-4x` - Scale of 4x
+* `psnr` - Scale of 2x
 
 ### `upscale`
 
@@ -168,6 +195,8 @@ upscaler.upscale('/path/to/image', {
 * `src` (`str|HTMLImage|tf.Tensor3D`) - Path to the image, or an `HTMLImage` representation of the image, or a 3-dimensional tensor representation of the image.
 * `options`
   * `output` (`src|tensor`) - The desired output of the function. Defaults to a base 64 `src` representation.
+  * `patchSize` (`number`) - The desired patch size to use for inference.
+  * `padding` (`number`) - Extra padding to be applied to the patch size during inference.
 
 ### `warmup`
 

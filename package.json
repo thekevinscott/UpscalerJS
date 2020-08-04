@@ -9,6 +9,7 @@
     "tensorflow.js"
   ],
   "files": [
+    "LICENSE",
     "dist/**/*",
     "models/**/*"
   ],
