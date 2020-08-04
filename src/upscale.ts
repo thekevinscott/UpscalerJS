@@ -85,6 +85,7 @@ export const predict = async (
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
     const [_, height, width] = pixels.shape;
+    const total = rows * columns;
     for (let row = 0; row < rows; row++) {
       let colTensor: tf.Tensor4D;
       for (let col = 0; col < columns; col++) {
@@ -103,14 +104,18 @@ export const predict = async (
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         await tf.nextFrame();
         if (progress) {
-          progress((row * columns + col + 1) / (rows * columns));
+          const index = row * columns + col + 1;
+          console.log(index, total);
+          progress(index / total);
         }
         slicedPixels.dispose();
+        await tf.nextFrame();
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale],
         );
         prediction.dispose();
+        await tf.nextFrame();
 
         if (!colTensor) {
           colTensor = slicedPrediction;
@@ -118,6 +123,7 @@ export const predict = async (
           colTensor = colTensor.concat(slicedPrediction, 2);
           slicedPrediction.dispose();
         }
+        await tf.nextFrame();
       }
       if (!pred) {
         pred = colTensor;
@@ -125,6 +131,7 @@ export const predict = async (
         pred = pred.concat(colTensor, 1);
         colTensor.dispose();
       }
+      await tf.nextFrame();
     }
     if (!pred) {
       throw new Error('Prediction tensor was never initialized.');

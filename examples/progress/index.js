@@ -33,7 +33,7 @@ async function handleFiles() {
       patchSize: 64,
       padding: 5,
       progress: (progress) => {
-        info.innerText = `Upscaling: ${progress * 100}%`;
+        info.innerText = `Upscaling: ${(progress * 100).toFixed(2)}%`;
       },
     });
     createImage(target, upscaledImgSrc);

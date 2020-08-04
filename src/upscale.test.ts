@@ -846,11 +846,9 @@ describe('predict', () => {
         return tf.fill([2, 2, 3], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown) as tf.LayersModel;
-    const progress = jest.fn();
     const result = await predict(model, img.expandDims(0), 2, {
       patchSize: 1,
       padding: 0,
-      progress,
     });
     expect(result.dataSync()).toEqual(
       tf
@@ -883,6 +881,25 @@ describe('predict', () => {
         .expandDims(0)
         .dataSync(),
     );
+  });
+
+  it('should callback with progress on patchSize', async () => {
+    const img: tf.Tensor4D = tf.ones(
+      [4, 4, 3],
+    ).expandDims(0);
+    const scale = 2;
+    const patchSize = 2;
+    const model = ({
+      predict: jest.fn((pixel) => {
+        return tf.fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0]).expandDims(0);
+      }),
+    } as unknown) as tf.LayersModel;
+    const progress = jest.fn();
+    await predict(model, img, scale, {
+      patchSize,
+      padding: 0,
+      progress,
+    });
     expect(progress).toHaveBeenCalledWith(0.25);
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
