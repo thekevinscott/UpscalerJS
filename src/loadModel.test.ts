@@ -1,4 +1,4 @@
-import loadModel, { getModelPath } from './loadModel';
+import loadModel, { getModelDefinition } from './loadModel';
 import * as models from './models';
 import * as tf from '@tensorflow/tfjs';
 jest.mock('./models');
@@ -15,10 +15,18 @@ describe('getModelPath', () => {
       default: {
         [key]: {
           url: val,
+          scale: 2,
         },
       },
     });
-    expect(getModelPath(key)).toEqual(val);
+    expect(
+      getModelDefinition({
+        model: key,
+      }),
+    ).toEqual({
+      url: val,
+      scale: 2,
+    });
   });
 
   it('returns the model string if no model could be found', () => {
@@ -29,7 +37,15 @@ describe('getModelPath', () => {
         },
       },
     });
-    expect(getModelPath('foo')).toEqual('foo');
+    expect(
+      getModelDefinition({
+        model: 'foo',
+        scale: 2,
+      }),
+    ).toEqual({
+      url: 'foo',
+      scale: 2,
+    });
   });
 
   it('gets a default model if no model is provided', () => {
@@ -39,11 +55,46 @@ describe('getModelPath', () => {
       default: {
         [key]: {
           url: val,
+          scale: 3,
         },
       },
       DEFAULT_MODEL: key,
     });
-    expect(getModelPath()).toEqual(val);
+    expect(getModelDefinition()).toEqual({
+      url: val,
+      scale: 3,
+    });
+  });
+
+  it('throws if a model is provided without a scale', () => {
+    mockModels({
+      default: {
+        bar: {
+          url: 'bar',
+        },
+      },
+    });
+    expect(() =>
+      getModelDefinition({
+        model: 'foo',
+      }),
+    ).toThrow();
+  });
+
+  it('throws if a model key is provided, but a scale is also provided', () => {
+    mockModels({
+      default: {
+        bar: {
+          url: 'bar',
+        },
+      },
+    });
+    expect(() =>
+      getModelDefinition({
+        model: 'bar',
+        scale: 2,
+      }),
+    ).toThrow();
   });
 });
 

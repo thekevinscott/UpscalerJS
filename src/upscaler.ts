@@ -1,12 +1,20 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscalerOptions, IUpscaleOptions, WarmupSizes } from './types';
+import {
+  IUpscalerOptions,
+  IUpscaleOptions,
+  WarmupSizes,
+  IModelDefinition,
+} from './types';
 import loadModel from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
 
 class Upscaler {
   _opts: IUpscalerOptions;
-  _model: Promise<tf.LayersModel>;
+  _model: Promise<{
+    model: tf.LayersModel;
+    modelDefinition: IModelDefinition;
+  }>;
 
   constructor(opts: IUpscalerOptions = {}) {
     this._opts = {
@@ -22,13 +30,8 @@ class Upscaler {
   };
 
   upscale = async (pixels: tf.Tensor3D, options: IUpscaleOptions = {}) => {
-    const model = await this._model;
-    /****
-     * Need to figure out how to pass scale automatically
-     * 
-     * If passing a custom model, its scale must be specified as well
-     */
-    return upscale(model, pixels, 2, options);
+    const { model, modelDefinition } = await this._model;
+    return upscale(model, pixels, modelDefinition.scale, options);
   };
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "upload",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Demonstration of uploading an image to UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "0.2.1"
+    "upscaler": "0.2.2"
   },
   "browserslist": {
     "production": [

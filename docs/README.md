@@ -198,6 +198,33 @@ upscaler.getModel().then(model => {
 })
 ```
 
+## Troubleshooting
+
+### "You must provide an explicit scale"
+
+When initializing UpscalerJS with a custom model, you need to also denote the numeric scale of the model (2x, 3x, 4x). UpscalerJS needs to know the scale in order to patch correctly.
+
+Scale can be provided at initialization with:
+
+```
+const upscaler = new Upscaler({
+  model: '/your/custom/model',
+  scale: 2,
+})
+```
+
+### "You are requesting the pretrained model but are providing an explicit scale"
+
+A pretrained model is trained to upscale to a specific scale. If you initialize UpscalerJS with a pretrained model and also provide an explicit scale, UpscalerJS will throw an error.
+
+You can fix this by not providing a `scale` property if using a pretrained model:
+
+```
+const upscaler = new Upscaler({
+  model: 'div2k-2x',
+})
+```
+
 ## Contributions 
 
 Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.

@@ -1,6 +1,7 @@
 export type WarmupSizes = [number, number][];
 export interface IUpscalerOptions {
   model?: string;
+  scale?: number;
   warmupSizes?: WarmupSizes;
 }
 
@@ -9,4 +10,9 @@ export interface IUpscaleOptions {
   patchSize?: number;
   padding?: number;
   minimumPatchSize?: number;
+}
+
+export interface IModelDefinition {
+  url: string;
+  scale: number;
 }
