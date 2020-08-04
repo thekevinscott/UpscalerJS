@@ -5,7 +5,7 @@ const button = document.getElementById("button");
 const info = document.getElementById("info");
 
 const upscaler = new Upscaler({
-  model: "2x"
+  model: 'div2k-2x',
 });
 button.onclick = () => {
   info.innerText = "Upscaling...";

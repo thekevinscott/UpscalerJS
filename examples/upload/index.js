@@ -15,7 +15,7 @@ const createImage = (targetDiv, src) => {
 };
 
 const upscaler = new Upscaler({
-  model: "2x",
+  model: 'div2k-2x',
   warmupSizes: [64, 64],
 });
 async function handleFiles() {

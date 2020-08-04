@@ -4,7 +4,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 const upscaler = new Upscaler({
-  model: "3x"
+  model: "div2k-3x"
 });
 function App() {
   const [src, setSrc] = useState();

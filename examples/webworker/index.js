@@ -29,8 +29,11 @@ worker.onmessage = async (e) => {
 
 buttonWithoutWW.onclick = async () => {
   const upscaler = new Upscaler({
-    model: '2x',
+    model: 'div2k-2x',
   });
   await disable();
-  upscaler.upscale(img).then(writeOutput);
+  upscaler.upscale(img, {
+    patchSize: 64,
+    padding: 4,
+  }).then(writeOutput);
 };

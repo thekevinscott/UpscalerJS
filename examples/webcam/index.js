@@ -8,7 +8,7 @@ canvas.width = video.width;
 canvas.height = video.height;
 
 const upscaler = new Upscaler({
-  model: "2x"
+  model: 'div2k-2x',
 });
 
 navigator.mediaDevices
@@ -26,7 +26,10 @@ navigator.mediaDevices
       const data = canvas.toDataURL("image/png");
       info.innerText = "Upscaling...";
       const start = new Date().getTime();
-      upscaler.upscale(data).then(upscaledImgSrc => {
+      upscaler.upscale(data, {
+        patchSize: 64,
+        padding: 4,
+      }).then(upscaledImgSrc => {
         const img = document.createElement("img");
         img.src = upscaledImgSrc;
         target.innerHTML = "";
