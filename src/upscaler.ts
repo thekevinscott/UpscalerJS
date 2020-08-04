@@ -23,7 +23,12 @@ class Upscaler {
 
   upscale = async (pixels: tf.Tensor3D, options: IUpscaleOptions = {}) => {
     const model = await this._model;
-    return upscale(model, pixels, 4, options);
+    /****
+     * Need to figure out how to pass scale automatically
+     * 
+     * If passing a custom model, its scale must be specified as well
+     */
+    return upscale(model, pixels, 2, options);
   };
 }
 

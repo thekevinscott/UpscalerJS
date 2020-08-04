@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { IUpscaleOptions } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
+import { assert } from 'console';
 
 export const getRowsAndColumns = (
   pixels: tf.Tensor4D,
@@ -26,8 +27,6 @@ export const getTensorDimensions = (
   scale: number,
   height: number,
   width: number,
-  minimumHeight = 0,
-  minimumWidth = 0,
 ) => {
   let originRowPadding = padding;
   let originColPadding = padding;
@@ -35,8 +34,8 @@ export const getTensorDimensions = (
   let sizeWidthPadding = padding;
   const origin = [
     0,
-    col * patchSize - originRowPadding,
-    row * patchSize - originColPadding,
+    row * patchSize - originRowPadding,
+    col * patchSize - originColPadding,
   ];
   if (origin[1] < 0) {
     origin[1] = 0;
@@ -61,16 +60,8 @@ export const getTensorDimensions = (
   }
   size[1] = size[1] - origin[1];
   size[2] = size[2] - origin[2];
-  if (size[1] < minimumHeight + padding) {
-    const diff = minimumHeight + padding - size[1];
-    size[1] = minimumHeight + padding;
-    origin[1] -= diff;
-  }
-  if (size[2] < minimumWidth + padding) {
-    const diff = minimumWidth + padding - size[2];
-    size[2] = minimumWidth + padding;
-    origin[2] -= diff;
-  }
+  assert(size[1] > 0);
+  assert(size[2] > 0);
   const sliceOrigin = [0, originRowPadding * scale, originColPadding * scale];
   const sliceSize = [
     -1,
@@ -92,7 +83,7 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   scale: number,
-  { patchSize, padding = 0, minimumPatchSize }: IUpscaleOptions = {},
+  { patchSize, padding = 0 }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   if (patchSize) {
     let pred: tf.Tensor4D;
@@ -109,9 +100,13 @@ export const predict = async (
           scale,
           height,
           width,
-          minimumPatchSize,
-          minimumPatchSize,
         );
+        // console.log({
+        //   origin: origin.slice(1),
+        //   size: size.slice(1),
+        //   sliceOrigin: sliceOrigin.slice(1),
+        //   sliceSize: sliceSize.slice(1),
+        // });
         const slicedPixels = pixels.slice(origin, size);
         const slicedPrediction = (model.predict(
           slicedPixels,
@@ -136,6 +131,7 @@ export const predict = async (
     if (!pred) {
       throw new Error('Prediction tensor was never initialized.');
     }
+    assert(pred.shape === [pixels.shape[0], height * scale, width * scale, pixels.shape[3]]);
     return pred.squeeze() as tf.Tensor3D;
   }
 

@@ -10,233 +10,562 @@ import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image';
 
 describe('getTensorDimensions', () => {
-  it('gets full size if patchSize is equal to size', () => {
-    const row = 0;
-    const col = 0;
-    const patchSize = 64;
-    const padding = 0;
-    const scale = 2;
-    const height = 64;
-    const width = 64;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 0],
-      size: [-1, patchSize, patchSize],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, height * scale, width * scale],
-    });
+  interface IOpts {
+    width: number;
+    height: number;
+    patchSize: number;
+    padding: number;
+    scale: number;
+  }
+  interface IExpectation {
+    row: number;
+    col: number;
+    expectation: {
+      origin: [number, number];
+      size: [number, number];
+      sliceOrigin?: [number, number];
+      sliceSize: [number, number];
+    }
+  }
+
+  const testGetTensorDimensions = (opts: IOpts, expectations: Array<IExpectation>) => {
+    for (let i = 0; i < expectations.length; i++) {
+      const { row, col, expectation: {
+        origin,
+        size,
+        sliceOrigin = [0, 0],
+        sliceSize,
+      } } = expectations[i];
+      try {
+        expect(
+          getTensorDimensions(row, col, opts.patchSize, opts.padding, opts.scale, opts.height, opts.width),
+        ).toEqual({
+          origin: [0, ...origin],
+          size: [-1, ...size],
+          sliceOrigin: [0, ...sliceOrigin],
+          sliceSize: [-1, ...sliceSize],
+        });
+      } catch (err) {
+        err.message = `*******\n${row} | ${col}\n*******\n${err.message}`;
+        throw err;
+      }
+    }
+  }
+
+  it('gets tensor dimensions for a fully-covered patch size', () => {
+    testGetTensorDimensions({
+      width: 2,
+      height: 2,
+      patchSize: 2,
+      padding: 0,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size: [2, 2],
+        sliceSize: [4, 4],
+      },
+    }]);
   });
 
-  it('gets a subset of size if patch size is smaller', () => {
-    const row = 0;
-    const col = 0;
-    const patchSize = 2;
-    const padding = 0;
-    const scale = 2;
-    const height = 4;
-    const width = 4;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 0],
-      size: [-1, 2, 2],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, 4, 4],
-    });
+  it('gets tensor dimensions for a subset patch size that fits equally', () => {
+    const sliceSize: [number, number] = [4, 4];
+    const size: [number, number] = [2, 2];
+    testGetTensorDimensions({
+      width: 4,
+      height: 4,
+      patchSize: 2,
+      padding: 0,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 1,
+      col: 0,
+      expectation: {
+        origin: [2, 0],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 0,
+      col: 1,
+      expectation: {
+        origin: [0, 2],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 1,
+      col: 1,
+      expectation: {
+        origin: [2, 2],
+        size,
+        sliceSize,
+      },
+    }]);
   });
 
-  it('gets a subset of size if patch size is smaller for an ending column and row', () => {
-    const row = 1;
-    const col = 1;
-    const patchSize = 2;
-    const padding = 0;
-    const scale = 2;
-    const height = 4;
-    const width = 4;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 2, 2],
-      size: [-1, 2, 2],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, 4, 4],
-    });
+  it('gets tensor dimensions for a subset patch size that is unequal', () => {
+    testGetTensorDimensions({
+      width: 6,
+      height: 6,
+      patchSize: 4,
+      padding: 0,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size: [4, 4],
+        sliceSize: [8, 8],
+      },
+    }, {
+      row: 1,
+      col: 0,
+      expectation: {
+        origin: [4, 0],
+        size: [2, 4],
+        sliceSize: [4, 8],
+      },
+    }, {
+      row: 0,
+      col: 1,
+      expectation: {
+        origin: [0, 4],
+        size: [4, 2],
+        sliceSize: [8, 4],
+      },
+    }, {
+      row: 1,
+      col: 1,
+      expectation: {
+        origin: [4, 4],
+        size: [2, 2],
+        sliceSize: [4, 4],
+      },
+    }]);
   });
 
-  it('gets a subset of size if patch size is smaller with padding', () => {
-    const row = 0;
-    const col = 0;
-    const patchSize = 3;
-    const padding = 1;
-    const scale = 2;
-    const height = 9;
-    const width = 9;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 0],
-      size: [-1, 4, 4],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, 6, 6],
-    });
+  it('gets tensor dimensions for an uneven subset patch size that fits equally', () => {
+    const size: [number, number] = [2, 2]
+    const sliceSize: [number, number] = [4, 4]
+    testGetTensorDimensions({
+      width: 6,
+      height: 4,
+      patchSize: 2,
+      padding: 0,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 1,
+      col: 0,
+      expectation: {
+        origin: [2, 0],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 0,
+      col: 1,
+      expectation: {
+        origin: [0, 2],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 1,
+      col: 1,
+      expectation: {
+        origin: [2, 2],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 0,
+      col: 2,
+      expectation: {
+        origin: [0, 4],
+        size,
+        sliceSize,
+      },
+    }, {
+      row: 1,
+      col: 2,
+      expectation: {
+        origin: [2, 4],
+        size,
+        sliceSize,
+      },
+    }]);
   });
 
-  it('gets a subset of size if patch size is smaller for an ending column and row with padding', () => {
-    const row = 1;
-    const col = 1;
-    const patchSize = 3;
-    const padding = 1;
-    const scale = 2;
-    const height = 9;
-    const width = 9;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 2, 2],
-      size: [-1, 5, 5],
-      sliceOrigin: [0, 2, 2],
-      sliceSize: [-1, 6, 6],
-    });
+  it('gets tensor dimensions for an uneven subset patch size that fits unequally', () => {
+    testGetTensorDimensions({
+      width: 10,
+      height: 5,
+      patchSize: 4,
+      padding: 0,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size: [4, 4],
+        sliceSize: [8, 8],
+      },
+    }, {
+      row: 1,
+      col: 0,
+      expectation: {
+        origin: [4, 0],
+        size: [1, 4],
+        sliceSize: [2, 8],
+      },
+    }, {
+      row: 0,
+      col: 1,
+      expectation: {
+        origin: [0, 4],
+        size: [4, 4],
+        sliceSize: [8, 8],
+      },
+    }, {
+      row: 1,
+      col: 1,
+      expectation: {
+        origin: [4, 4],
+        size: [1, 4],
+        sliceSize: [2, 8],
+      },
+    }, {
+      row: 0,
+      col: 2,
+      expectation: {
+        origin: [0, 8],
+        size: [4, 2],
+        sliceSize: [8, 4],
+      },
+    }, {
+      row: 1,
+      col: 2,
+      expectation: {
+        origin: [4, 8],
+        size: [1, 2],
+        sliceSize: [2, 4],
+      },
+    }]);
   });
 
-  it('gets a fully padded square if it is in the middle', () => {
-    const row = 1;
-    const col = 1;
-    const patchSize = 3;
-    const padding = 1;
-    const scale = 2;
-    const height = 9;
-    const width = 9;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 2, 2],
-      size: [-1, 5, 5],
-      sliceOrigin: [0, 2, 2],
-      sliceSize: [-1, 6, 6],
+  describe('Padding', () => {
+    it('gets tensor dimensions for a fully-covered patch size with padding', () => {
+      testGetTensorDimensions({
+        width: 2,
+        height: 2,
+        patchSize: 2,
+        padding: 1,
+        scale: 2,
+      }, [{
+        row: 0,
+        col: 0,
+        expectation: {
+          origin: [0, 0],
+          size: [2, 2],
+          sliceSize: [4, 4],
+        },
+      }]);
     });
+
+    it('gets tensor dimensions for a subset patch size that fits equally with padding', () => {
+      testGetTensorDimensions({
+        width: 9,
+        height: 9,
+        patchSize: 3,
+        padding: 1,
+        scale: 2,
+      }, [{
+        row: 0,
+        col: 0,
+        expectation: {
+          origin: [0, 0],
+          size: [4, 4],
+          sliceOrigin: [0, 0],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 1,
+        col: 0,
+        expectation: {
+          origin: [2, 0],
+          size: [5, 4],
+          sliceOrigin: [2, 0],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 2,
+        col: 0,
+        expectation: {
+          origin: [5, 0],
+          size: [4, 4],
+          sliceOrigin: [2, 0],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 0,
+        col: 1,
+        expectation: {
+          origin: [0, 2],
+          size: [4, 5],
+          sliceOrigin: [0, 2],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 1,
+        col: 1,
+        expectation: {
+          origin: [2, 2],
+          size: [5, 5],
+          sliceOrigin: [2, 2],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 2,
+        col: 1,
+        expectation: {
+          origin: [5, 2],
+          size: [4, 5],
+          sliceOrigin: [2, 2],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 0,
+        col: 2,
+        expectation: {
+          origin: [0, 5],
+          size: [4, 4],
+          sliceOrigin: [0, 2],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 1,
+        col: 2,
+        expectation: {
+          origin: [2, 5],
+          size: [5, 4],
+          sliceOrigin: [2, 2],
+          sliceSize: [6, 6],
+        },
+      }, {
+        row: 2,
+        col: 2,
+        expectation: {
+          origin: [5, 5],
+          size: [4, 4],
+          sliceOrigin: [2, 2],
+          sliceSize: [6, 6],
+        },
+      }]);
+    });
+
+  it('gets tensor dimensions for a subset patch size that is unequal with padding', () => {
+    testGetTensorDimensions({
+      width: 9,
+      height: 9,
+      patchSize: 4,
+      padding: 1,
+      scale: 2,
+    }, [{
+      row: 0,
+      col: 0,
+      expectation: {
+        origin: [0, 3],
+        size: [6, 5],
+        sliceOrigin: [0, 2],
+        sliceSize: [8, 8],
+      },
+    }, {
+      row: 1,
+      col: 0,
+      expectation: {
+        origin: [0, 0],
+        size: [5, 5],
+        sliceOrigin: [0, 0],
+        sliceSize: [8, 8],
+      },
+    }]);
   });
 
-  it('gets part of a patch if it is a remainder', () => {
-    const row = 2;
-    const col = 0;
-    const patchSize = 5;
-    const padding = 0;
-    const scale = 2;
-    const height = 12;
-    const width = 12;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 10],
-      size: [-1, 5, 2],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, 10, 4],
-    });
+  // it('gets tensor dimensions for an uneven subset patch size that fits equally', () => {
+  //   const size: [number, number] = [2, 2]
+  //   const sliceSize: [number, number] = [4, 4]
+  //   testGetTensorDimensions({
+  //     width: 6,
+  //     height: 4,
+  //     patchSize: 2,
+  //     padding: 0,
+  //     scale: 2,
+  //   }, [{
+  //     row: 0,
+  //     col: 0,
+  //     expectation: {
+  //       origin: [0, 0],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 0,
+  //     expectation: {
+  //       origin: [2, 0],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }, {
+  //     row: 0,
+  //     col: 1,
+  //     expectation: {
+  //       origin: [0, 2],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 1,
+  //     expectation: {
+  //       origin: [2, 2],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }, {
+  //     row: 0,
+  //     col: 2,
+  //     expectation: {
+  //       origin: [0, 4],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 2,
+  //     expectation: {
+  //       origin: [2, 4],
+  //       size,
+  //       sliceSize,
+  //     },
+  //   }]);
+  // });
+
+  // it('gets tensor dimensions for an uneven subset patch size that fits unequally', () => {
+  //   testGetTensorDimensions({
+  //     width: 10,
+  //     height: 5,
+  //     patchSize: 4,
+  //     padding: 0,
+  //     scale: 2,
+  //   }, [{
+  //     row: 0,
+  //     col: 0,
+  //     expectation: {
+  //       origin: [0, 0],
+  //       size: [4, 4],
+  //       sliceSize: [8, 8],
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 0,
+  //     expectation: {
+  //       origin: [4, 0],
+  //       size: [1, 4],
+  //       sliceSize: [2, 8],
+  //     },
+  //   }, {
+  //     row: 0,
+  //     col: 1,
+  //     expectation: {
+  //       origin: [0, 4],
+  //       size: [4, 4],
+  //       sliceSize: [8, 8],
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 1,
+  //     expectation: {
+  //       origin: [4, 4],
+  //       size: [1, 4],
+  //       sliceSize: [2, 8],
+  //     },
+  //   }, {
+  //     row: 0,
+  //     col: 2,
+  //     expectation: {
+  //       origin: [0, 8],
+  //       size: [4, 2],
+  //       sliceSize: [8, 4],
+  //     },
+  //   }, {
+  //     row: 1,
+  //     col: 2,
+  //     expectation: {
+  //       origin: [4, 8],
+  //       size: [1, 2],
+  //       sliceSize: [2, 4],
+  //     },
+  //   }]);
+  // });
   });
 
-  it('gets part of a patch with padding if it is a remainder', () => {
-    const row = 2;
-    const col = 0;
-    const patchSize = 5;
-    const padding = 1;
-    const scale = 2;
-    const height = 12;
-    const width = 12;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 9],
-      size: [-1, 6, 3],
-      sliceOrigin: [0, 0, 2],
-      sliceSize: [-1, 10, 4],
-    });
-  });
+  // it('handles other scales', () => {
+  //   const row = 1;
+  //   const col = 1;
+  //   const patchSize = 2;
+  //   const padding = 0;
+  //   const scale = 3;
+  //   const height = 4;
+  //   const width = 4;
+  //   expect(
+  //     getTensorDimensions(row, col, patchSize, padding, scale, height, width),
+  //   ).toEqual({
+  //     origin: [0, 2, 2],
+  //     size: [-1, 2, 2],
+  //     sliceOrigin: [0, 0, 0],
+  //     sliceSize: [-1, 6, 6],
+  //   });
+  // });
 
-  it('gets part of a patch with padding if it is a remainder', () => {
-    const row = 2;
-    const col = 0;
-    const patchSize = 5;
-    const padding = 1;
-    const scale = 2;
-    const height = 12;
-    const width = 12;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 0, 9],
-      size: [-1, 6, 3],
-      sliceOrigin: [0, 0, 2],
-      sliceSize: [-1, 10, 4],
-    });
-  });
-
-  it('gets at least a minimum if it is a remainder', () => {
-    const row = 2;
-    const col = 0;
-    const patchSize = 5;
-    const padding = 1;
-    const scale = 2;
-    const height = 12;
-    const width = 12;
-    const minimumHeight = 0;
-    const minimumWidth = 4;
-    expect(
-      getTensorDimensions(
-        row,
-        col,
-        patchSize,
-        padding,
-        scale,
-        height,
-        width,
-        minimumHeight,
-        minimumWidth,
-      ),
-    ).toEqual({
-      origin: [0, 0, 7],
-      size: [-1, 6, 5],
-      sliceOrigin: [0, 0, 2],
-      sliceSize: [-1, 10, 8],
-    });
-  });
-
-  it('handles other scales', () => {
-    const row = 1;
-    const col = 1;
-    const patchSize = 2;
-    const padding = 0;
-    const scale = 3;
-    const height = 4;
-    const width = 4;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 2, 2],
-      size: [-1, 2, 2],
-      sliceOrigin: [0, 0, 0],
-      sliceSize: [-1, 6, 6],
-    });
-  });
-
-  it('handles other scales with padding', () => {
-    const row = 1;
-    const col = 1;
-    const patchSize = 2;
-    const padding = 1;
-    const scale = 3;
-    const height = 4;
-    const width = 4;
-    expect(
-      getTensorDimensions(row, col, patchSize, padding, scale, height, width),
-    ).toEqual({
-      origin: [0, 1, 1],
-      size: [-1, 3, 3],
-      sliceOrigin: [0, 3, 3],
-      sliceSize: [-1, 6, 6],
-    });
-  });
+  // it('handles other scales with padding', () => {
+  //   const row = 1;
+  //   const col = 1;
+  //   const patchSize = 2;
+  //   const padding = 1;
+  //   const scale = 3;
+  //   const height = 4;
+  //   const width = 4;
+  //   expect(
+  //     getTensorDimensions(row, col, patchSize, padding, scale, height, width),
+  //   ).toEqual({
+  //     origin: [0, 1, 1],
+  //     size: [-1, 3, 3],
+  //     sliceOrigin: [0, 3, 3],
+  //     sliceSize: [-1, 6, 6],
+  //   });
+  // });
 });
 
 describe('getRowsAndColumns', () => {
