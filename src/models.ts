@@ -9,18 +9,6 @@ const buildURL = (modelFolder: string) =>
 const MODELS: {
   [index: string]: IModelDefinition;
 } = {
-  '2x': {
-    url: buildURL('div2k/005-2x'),
-    scale: 2,
-  },
-  '3x': {
-    url: buildURL('div2k/019-3x'),
-    scale: 3,
-  },
-  '4x': {
-    url: buildURL('div2k/017-4x'),
-    scale: 4,
-  },
   'div2k-2x': {
     url: buildURL('div2k/005-2x'),
     scale: 2,

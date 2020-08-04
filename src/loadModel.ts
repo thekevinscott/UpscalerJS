@@ -11,25 +11,6 @@ export const getModelDefinition = ({
   model = DEFAULT_MODEL,
   scale,
 }: IUpscalerOptions = {}): IModelDefinition => {
-  if (model === '2x') {
-    // tslint:disable-next-line:no-console
-    console.warn(
-      `The key ${model} is deprecated. Please switch to "div2k-2x". "2x" will be removed in 0.3.0`,
-    );
-  }
-  if (model === '3x') {
-    // tslint:disable-next-line:no-console
-    console.warn(
-      `The key ${model} is deprecated. Please switch to "div2k-3x". "3x" will be removed in 0.3.0`,
-    );
-  }
-  if (model === '4x') {
-    // tslint:disable-next-line:no-console
-    console.warn(
-      `The key ${model} is deprecated. Please switch to "div2k-4x". "4x" will be removed in 0.3.0`,
-    );
-  }
-
   if (model in MODELS) {
     const modelDefinition = MODELS[model];
     if (scale) {
