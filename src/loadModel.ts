@@ -2,6 +2,9 @@ import * as tf from '@tensorflow/tfjs';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 
+const ERROR_URL_EXPLICIT_SCALE_REQUIRED = 'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
+const ERROR_URL_EXPLICIT_SCALE_DISALLOWED = 'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
+
 export const getModelDefinition = ({
   model = DEFAULT_MODEL,
   scale,
@@ -9,17 +12,20 @@ export const getModelDefinition = ({
   if (model in MODELS) {
     const modelDefinition = MODELS[model];
     if (scale) {
-      throw new Error(
-        `You are requesting the pretrained model ${model} but are providing an explicit scale. This is not allowed. For more details, see https://thekevinscott.github.io/UpscalerJS/#`,
-      );
+      throw new Error([
+        `You are requesting the pretrained model ${model} but are providing an explicit scale.`,
+        'This is not allowed.',
+        `For more details, see ${ERROR_URL_EXPLICIT_SCALE_DISALLOWED}`,
+      ].join(' '));
     }
     return modelDefinition;
   }
 
   if (!scale) {
-    throw new Error(
-      `If providing a custom model, you must provide an explicit scale. For more details, see https://thekevinscott.github.io/UpscalerJS/#`,
-    );
+    throw new Error([
+      `If providing a custom model, you must provide an explicit scale.`,
+      `For more details, see ${ERROR_URL_EXPLICIT_SCALE_REQUIRED}`,
+    ].join(' '));
   }
 
   return {
