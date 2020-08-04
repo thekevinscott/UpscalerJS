@@ -126,10 +126,6 @@ export const predict = async (
     if (!pred) {
       throw new Error('Prediction tensor was never initialized.');
     }
-    assert(
-      pred.shape ===
-        [pixels.shape[0], height * scale, width * scale, pixels.shape[3]],
-    );
     return pred.squeeze() as tf.Tensor3D;
   }
 
