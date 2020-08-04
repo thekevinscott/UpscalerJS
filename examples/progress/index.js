@@ -1,10 +1,11 @@
-import * as tf from "@tensorflow/tfjs";
+// import * as tf from "@tensorflow/tfjs";
 import Upscaler from "upscaler";
 const table = document.getElementById("table");
 const original = document.getElementById("original");
 const target = document.getElementById("target");
 const file = document.getElementById("file");
 const info = document.getElementById("info");
+const progressLabel = document.getElementById("progress");
 
 const createImage = (targetDiv, src) => {
   const img = document.createElement("img");
@@ -22,7 +23,6 @@ async function handleFiles() {
   info.innerText = "Loading...";
   target.innerHTML = "";
   table.style = "";
-  await tf.nextFrame();
   const file = this.files[0];
   const fr = new FileReader();
   fr.onload = async () => {
@@ -32,8 +32,8 @@ async function handleFiles() {
     const upscaledImgSrc = await upscaler.upscale(img, {
       patchSize: 64,
       padding: 5,
-      progress: (progress) => {
-        info.innerText = `Upscaling: ${(progress * 100).toFixed(2)}%`;
+      progress: (amount) => {
+        progressLabel.innerText = `${(amount * 100).toFixed(2)}%`;
       },
     });
     createImage(target, upscaledImgSrc);

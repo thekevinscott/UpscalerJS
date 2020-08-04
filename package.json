@@ -52,7 +52,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.9.7"
   },
-  "version": "0.4.0",
+  "version": "0.4.1",
   "dependencies": {
     "dot-prop": "^5.1.1",
     "tensor-as-base64": "^0.1.1"

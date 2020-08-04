@@ -101,19 +101,20 @@ export const predict = async (
           [0, origin[0], origin[1]],
           [-1, size[0], size[1]],
         );
+        await tf.nextFrame();
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
+        await tf.nextFrame();
+        slicedPixels.dispose();
         await tf.nextFrame();
         if (progress) {
           const index = row * columns + col + 1;
-          console.log(index, total);
           progress(index / total);
         }
-        slicedPixels.dispose();
-        await tf.nextFrame();
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale],
         );
+        await tf.nextFrame();
         prediction.dispose();
         await tf.nextFrame();
 
@@ -121,6 +122,7 @@ export const predict = async (
           colTensor = slicedPrediction;
         } else {
           colTensor = colTensor.concat(slicedPrediction, 2);
+          await tf.nextFrame();
           slicedPrediction.dispose();
         }
         await tf.nextFrame();
@@ -129,6 +131,7 @@ export const predict = async (
         pred = colTensor;
       } else {
         pred = pred.concat(colTensor, 1);
+        await tf.nextFrame();
         colTensor.dispose();
       }
       await tf.nextFrame();

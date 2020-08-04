@@ -884,14 +884,14 @@ describe('predict', () => {
   });
 
   it('should callback with progress on patchSize', async () => {
-    const img: tf.Tensor4D = tf.ones(
-      [4, 4, 3],
-    ).expandDims(0);
+    const img: tf.Tensor4D = tf.ones([4, 4, 3]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
     const model = ({
       predict: jest.fn((pixel) => {
-        return tf.fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0]).expandDims(0);
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0])
+          .expandDims(0);
       }),
     } as unknown) as tf.LayersModel;
     const progress = jest.fn();
