@@ -22,13 +22,11 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 Increasing an image's size results in a pixelated image:
 
-![Pixelated 3x](./assets/image-3x.png)
+![Pixelated 3x](./assets/image-2x.png)
 
-To get around this, you can use bicubic interpolation. By default, most browsers implement this algorithm when you increase the resolution of an image:
+Most browsers by default use an algorith called bicubic interpolation to get a more pleasing version, but this loses image quality and increases blurriness:
 
-![Bicubic 3x](./assets/image-bicubic-3x.png)
-
-However, this loses image quality and results in a blurrier image.
+![Bicubic 3x](./assets/image-bicubic-2x.png)
 
 Neural Networks [can allow us to "paint in" the expanded sections of the image](https://paperswithcode.com/task/image-super-resolution), enhancing quality.
 
