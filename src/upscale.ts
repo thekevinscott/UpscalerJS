@@ -79,7 +79,7 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   scale: number,
-  { patchSize, padding = 0 }: IUpscaleOptions = {},
+  { progress = () => {}, patchSize, padding = 0 }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   if (patchSize) {
     let pred: tf.Tensor4D;
@@ -102,6 +102,7 @@ export const predict = async (
         );
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         await tf.nextFrame();
+        progress((row * columns + col + 1) / (rows * columns));
         slicedPixels.dispose();
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale],
@@ -131,6 +132,7 @@ export const predict = async (
 
   return tf.tidy(() => {
     const pred = model.predict(pixels) as tf.Tensor4D;
+    progress(1);
     return pred.squeeze() as tf.Tensor3D;
   });
 };

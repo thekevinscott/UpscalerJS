@@ -5,11 +5,13 @@ export interface IUpscalerOptions {
   warmupSizes?: WarmupSizes;
 }
 
+export type Progress = (amount: number) => void;
+
 export interface IUpscaleOptions {
   output?: 'src' | 'tensor';
   patchSize?: number;
   padding?: number;
-  minimumPatchSize?: number;
+  progress?: Progress;
 }
 
 export interface IModelDefinition {

@@ -16,10 +16,10 @@ const createImage = (targetDiv, src) => {
 
 const upscaler = new Upscaler({
   model: 'div2k-2x',
-  warmupSizes: [[64, 64]],
 });
+
 async function handleFiles() {
-  info.innerText = "Upscaling...";
+  info.innerText = "Loading...";
   target.innerHTML = "";
   table.style = "";
   await tf.nextFrame();
@@ -28,9 +28,13 @@ async function handleFiles() {
   fr.onload = async () => {
     const img = createImage(original, fr.result);
     const start = new Date().getTime();
+    info.innerText = "Upscaling...";
     const upscaledImgSrc = await upscaler.upscale(img, {
       patchSize: 64,
       padding: 5,
+      progress: (progress) => {
+        info.innerText = `Upscaling: ${progress * 100}%`;
+      },
     });
     createImage(target, upscaledImgSrc);
     const ms = new Date().getTime() - start;

@@ -846,9 +846,11 @@ describe('predict', () => {
         return tf.fill([2, 2, 3], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown) as tf.LayersModel;
+    const progress = jest.fn();
     const result = await predict(model, img.expandDims(0), 2, {
       patchSize: 1,
       padding: 0,
+      progress,
     });
     expect(result.dataSync()).toEqual(
       tf
@@ -881,6 +883,10 @@ describe('predict', () => {
         .expandDims(0)
         .dataSync(),
     );
+    expect(progress).toHaveBeenCalledWith(0.25);
+    expect(progress).toHaveBeenCalledWith(0.5);
+    expect(progress).toHaveBeenCalledWith(0.75);
+    expect(progress).toHaveBeenCalledWith(1);
   });
 });
 

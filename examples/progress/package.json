@@ -1,11 +1,21 @@
 {
-  "name": "webworker",
+  "name": "progress",
   "version": "0.4.0",
-  "description": "Demonstration of webworker integration with UpscalerJS",
+  "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",
   "scripts": {
     "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
     "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "parcel": "^1.12.4"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^2.0.1",
+    "upscaler": "0.4.0"
   },
   "browserslist": {
     "production": [
@@ -18,16 +28,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "author": "Kevin Scott",
-  "license": "MIT",
-  "devDependencies": {
-    "cross-env": "^7.0.2",
-    "parcel": "^1.12.4"
-  },
-  "dependencies": {
-    "@tensorflow/tfjs": "^2.0.1",
-    "tensor-as-base64": "^0.1.1",
-    "upscaler": "0.4.0"
   }
 }

@@ -10,8 +10,10 @@ const warmup = async (
 ) => {
   const { model } = await modelPackage;
   for (const size of sizes) {
-    if (typeof(size[0]) !== 'number' || typeof(size[1]) !== 'number') {
-      throw new Error(`Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${size}`)
+    if (typeof size[0] !== 'number' || typeof size[1] !== 'number') {
+      throw new Error(
+        `Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${size}`,
+      );
     }
     const [width, height] = size;
     const pred = (await model.predict(

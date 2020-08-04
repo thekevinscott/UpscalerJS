@@ -185,6 +185,11 @@ Accepts an image and returns a promise resolving to the upscaled version of the 
 ```
 upscaler.upscale('/path/to/image', {
   output: 'tensor',
+  patchSize: 64,
+  padding: 5,
+  progress: (amount) => {
+    console.log(`Progress: ${amount}%`);
+  }
 }).then(upscaledImage => {
   ...
 });
@@ -197,6 +202,7 @@ upscaler.upscale('/path/to/image', {
   * `output` (`src|tensor`) - The desired output of the function. Defaults to a base 64 `src` representation.
   * `patchSize` (`number`) - The desired patch size to use for inference.
   * `padding` (`number`) - Extra padding to be applied to the patch size during inference.
+  * `progress` (`(amount: number) => void`) - A progress callback denoting the number of patches processed.
 
 ### `warmup`
 
