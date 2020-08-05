@@ -1,6 +1,6 @@
 {
   "name": "webcam",
-  "version": "0.4.3",
+  "version": "0.4.2",
   "description": "Demonstration of webcam usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "0.4.3"
+    "upscaler": "0.4.2"
   },
   "browserslist": {
     "production": [
