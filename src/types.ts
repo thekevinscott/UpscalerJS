@@ -17,4 +17,7 @@ export interface IUpscaleOptions {
 export interface IModelDefinition {
   url: string;
   scale: number;
+  configURL?: string;
+  description?: string;
+  deprecated?: boolean;
 }

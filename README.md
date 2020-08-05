@@ -16,7 +16,7 @@ You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJ
 
 ## Quick Start
 
-```
+```javascript
 import Upscaler from 'upscaler';
 const upscaler = new Upscaler();
 upscaler.upscale('/path/to/image').then(upscaledImage => {
@@ -28,7 +28,7 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 [View the docs here.](https://thekevinscott.github.io/UpscalerJS/)
 
-### License
+## License
 
 [MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
 

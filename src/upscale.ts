@@ -156,21 +156,28 @@ const upscale = async (
   image: string | HTMLImageElement | tf.Tensor3D,
   scale: number,
   options: IUpscaleOptions = {},
-): Promise<tf.Tensor3D | string> => {
-  const pixels = await getImageAsPixels(image);
+) => {
+  const { tensor: pixels, type } = await getImageAsPixels(image);
   const upscaledTensor = await predict(
     model,
     pixels as tf.Tensor4D,
     scale,
     options,
   );
-  pixels.dispose();
 
-  if (options.output === 'tensor') {
-    return upscaledTensor;
+  if (type !== 'tensor') {
+    // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
+    // if it is a tensor, it is user provided and thus should not be disposed of.
+    pixels.dispose();
   }
 
-  return tensorAsBase64(upscaledTensor);
+  if (options.output === 'tensor') {
+    return upscaledTensor as tf.Tensor;
+  }
+
+  const base64Src = tensorAsBase64(upscaledTensor);
+  upscaledTensor.dispose();
+  return base64Src;
 };
 
 export default upscale;

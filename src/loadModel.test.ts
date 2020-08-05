@@ -1,4 +1,7 @@
-import loadModel, { getModelDefinition } from './loadModel';
+import loadModel, {
+  prepareModelDefinitions,
+  getModelDefinition,
+} from './loadModel';
 import * as models from './models';
 import * as tf from '@tensorflow/tfjs';
 jest.mock('./models');
@@ -6,6 +9,68 @@ jest.mock('@tensorflow/tfjs');
 
 const mockModels = (obj: { [index: string]: any }) =>
   Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));
+
+describe('getModelDefinitions', () => {
+  afterEach(() => {
+    (global.fetch as any).mockClear();
+    delete global.fetch;
+  });
+
+  it('gets model definitions from undefined', async () => {
+    global.fetch = jest.fn().mockImplementation((configURL: string) => {
+      if (configURL.includes('baz')) {
+        return Promise.reject();
+      }
+      return Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            description: configURL,
+          }),
+      });
+    });
+
+    (models as any).buildConfigURL = (key: string) => key;
+    (models as any).default = {
+      foo: {
+        url: 'foo',
+        scale: 2,
+        configURL: 'foo',
+      },
+      bar: {
+        url: 'bar',
+        scale: 3,
+        configURL: 'bar',
+      },
+      baz: {
+        url: 'baz',
+        scale: 3,
+        configURL: 'baz',
+      },
+    };
+
+    const result = await prepareModelDefinitions();
+    expect(result).toEqual({
+      foo: {
+        url: 'foo',
+        scale: 2,
+        description: 'foo',
+        configURL: 'foo',
+      },
+      bar: {
+        url: 'bar',
+        scale: 3,
+        description: 'bar',
+        configURL: 'bar',
+      },
+      baz: {
+        url: 'baz',
+        scale: 3,
+        description: '',
+        configURL: 'baz',
+      },
+    });
+  });
+});
 
 describe('getModelPath', () => {
   it('gets a model if it exists', () => {

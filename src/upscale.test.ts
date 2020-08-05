@@ -820,8 +820,9 @@ describe('predict', () => {
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
       [2, 2, 3],
     );
+    const upscaledTensor = tf.ones([1, 2, 2, 3]);
     const pred = {
-      squeeze: jest.fn(() => 'foo'),
+      squeeze: jest.fn(() => upscaledTensor),
     };
     const model = ({
       predict: jest.fn(() => pred),
@@ -832,8 +833,7 @@ describe('predict', () => {
         shape: [1, 2, 2, 3],
       }),
     );
-    expect(pred.squeeze).toHaveBeenCalled();
-    expect(result).toEqual('foo');
+    expect(result).toEqual(upscaledTensor);
   });
 
   it('should make a prediction with a patchSize', async () => {
@@ -919,13 +919,12 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => img;
-    const pred = {
-      squeeze: jest.fn(() => 'foo'),
-      dispose: jest.fn(),
-    };
+    (image as any).getImageAsPixels = () => ({
+      tensor: img,
+      type: 'tensor',
+    });
     const model = ({
-      predict: jest.fn(() => pred),
+      predict: jest.fn(() => tf.ones([1, 2, 2, 3])),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
     const result = await upscale(model, img, 2);
@@ -943,19 +942,21 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => img;
-    const predOutput = 'foo';
-    const pred = {
-      squeeze: jest.fn(() => predOutput),
-      dispose: jest.fn(),
-    };
+    (image as any).getImageAsPixels = () => ({
+      tensor: img,
+      type: 'tensor',
+    });
+    const upscaledTensor = tf.ones([1, 2, 2, 3]);
     const model = ({
-      predict: jest.fn(() => pred),
+      predict: jest.fn(() => upscaledTensor),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
     const result = await upscale(model, img, 2, {
       output: 'tensor',
     });
-    expect(result).toEqual(predOutput);
+    if (typeof result === 'string') {
+      throw new Error('Unexpected string type');
+    }
+    expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
   });
 });

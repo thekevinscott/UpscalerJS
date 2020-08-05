@@ -29,7 +29,7 @@ worker.onmessage = async (e) => {
 
 buttonWithoutWW.onclick = async () => {
   const upscaler = new Upscaler({
-    model: 'div2k-2x',
+    model: 'div2k/rdn-C3-D10-G64-G064-x2',
   });
   await disable();
   upscaler.upscale(img, {

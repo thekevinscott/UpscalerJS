@@ -8,7 +8,7 @@ canvas.width = video.width;
 canvas.height = video.height;
 
 const upscaler = new Upscaler({
-  model: 'div2k-2x',
+  model: 'div2k/rdn-C3-D10-G64-G064-x2',
 });
 
 navigator.mediaDevices

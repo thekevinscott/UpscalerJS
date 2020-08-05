@@ -1,12 +1,11 @@
 {
-  "name": "react-demo",
-  "description": "Demonstration of React integration with UpscalerJS",
+  "name": "models",
+  "description": "Side-by-side comparisons of pretrained models with UpscalerJS",
   "main": "index.js",
   "private": true,
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-dropzone": "^11.0.2",
     "react-scripts": "3.4.1",
     "upscaler": "0.5.1"
   },
