@@ -7,12 +7,12 @@ const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
-// tslint:disable-next-line:no-console
 const warnDeprecatedModel = (
   key: string,
   nextKey: string,
   expirationVersion: string,
 ) =>
+  // tslint:disable-next-line:no-console
   console.warn(
     [
       `The key ${key} has been deprecated and will be removed in the next release (${expirationVersion}).`,
@@ -98,19 +98,19 @@ export const getModelDefinitions = async () => {
 };
 
 export const prepareModelDefinitions = async (
-  modelDefinitions: ModelDefinitions = {},
+  preparedModelDefinitions: ModelDefinitions = {},
 ) => {
   const entries = Object.entries(MODELS);
   await Promise.all(
     entries.map(async ([key, val]) => {
       try {
         const config = await fetch(val.configURL).then((resp) => resp.json());
-        modelDefinitions[key] = {
+        preparedModelDefinitions[key] = {
           ...val,
           description: config.description,
         };
       } catch (err) {
-        modelDefinitions[key] = {
+        preparedModelDefinitions[key] = {
           ...val,
           description: '',
         };
@@ -118,5 +118,5 @@ export const prepareModelDefinitions = async (
     }),
   );
 
-  return modelDefinitions;
+  return preparedModelDefinitions;
 };

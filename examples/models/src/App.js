@@ -72,7 +72,7 @@ function App() {
                       <td>{key}</td>
                       <td className="description">
                         {def.description.split('\n').map(line => (<p key={line}>{line}</p>))}
-                        </td>
+                      </td>
                       <td>{upscaledImages[key] ? (
                         <img src={upscaledImages[key]} alt={key} />
                       ) : 'Upscaling...'}</td>
