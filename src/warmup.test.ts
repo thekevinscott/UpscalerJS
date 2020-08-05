@@ -76,6 +76,6 @@ describe('Warmup', () => {
     }>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2 } }),
     );
-    expect(() => warmup(model, [20, 20] as any)).toThrow();
+    expect(warmup(model, [20, 20] as any)).rejects.toEqual(expect.anything());
   });
 });
