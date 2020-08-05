@@ -155,7 +155,7 @@ There are a number of pretrained models provided with the package:
 | `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#3x) |
 | `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#4x) |
 
-
+You can read more about the pretrained models at the dedicated repo [UpscalerJS-models](https://github.com/thekevinscott/UpscalerJS-models).
 
 ## API
 
