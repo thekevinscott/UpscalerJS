@@ -12,7 +12,7 @@ const upscaler = new Upscaler({
 });
 
 navigator.mediaDevices
-  .getUserMedia({ audio: true, video: true })
+  .getUserMedia({ audio: false, video: true })
   .then(stream => {
     video.srcObject = stream;
     button.disabled = false;
