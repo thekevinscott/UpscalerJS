@@ -43,4 +43,4 @@ const MODELS: {
 
 export default MODELS;
 
-export const DEFAULT_MODEL = 'div2k/rdn-C3-D10-G64-G064-x2';
+export const DEFAULT_MODEL = 'idealo/gans';
