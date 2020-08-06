@@ -30,6 +30,9 @@ const checkDeprecatedModels = (model: string) => {
   if (model === 'div2k-4x') {
     warnDeprecatedModel('div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.6.0');
   }
+  if (model === 'psnr') {
+    warnDeprecatedModel('psnr', 'idealo/psnr-small', '0.6.0');
+  }
 };
 
 export const getModelDefinition = ({

@@ -46,9 +46,20 @@ const MODELS: {
     configURL: buildConfigURL('div2k/017-4x'),
   },
   psnr: {
-    url: buildURL('psnr-small-quant-uint8'),
-    configURL: buildConfigURL('psnr-small-quant-uint8'),
+    deprecated: true,
+    url: buildURL('idealo/psnr-small-quant-uint8'),
+    configURL: buildConfigURL('idealo/psnr-small-quant-uint8'),
     scale: 2,
+  },
+  'idealo/psnr-small': {
+    url: buildURL('idealo/psnr-small-quant-uint8'),
+    configURL: buildConfigURL('idealo/psnr-small-quant-uint8'),
+    scale: 2,
+  },
+  'idealo/gans': {
+    url: buildURL('idealo/gans'),
+    configURL: buildConfigURL('idealo/gans'),
+    scale: 4,
   },
 };
 
