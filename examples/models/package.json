@@ -7,7 +7,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "upscaler": "0.5.3"
+    "upscaler": "0.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,5 +30,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "0.5.3"
+  "version": "0.6.0"
 }

@@ -6,20 +6,22 @@ function App() {
   const img = useRef();
   const [modelDefinitions, setModelDefinitions] = useState();
   const [upscaledImages, setUpscaledImages] = useState({});
+  const [elapsedTimes, setElapsedTimes] = useState({});
+  const [started, setStarted] = useState({});
 
   const upscaleImage = async (key) => {
     const upscaler = new Upscaler({
       model: key,
     });
-    const upscaledImage = await upscaler.upscale(img.current, {
-      patchSize: 64,
-      padding: 5,
-    });
+    await upscaler.warmup([[img.current.height, img.current.width]]);
+    const start = new Date().getTime();
+    const upscaledImage = await upscaler.upscale(img.current);
+    const elapsedTime = new Date().getTime() - start;
 
-    setUpscaledImages(prev => ({
-      ...prev,
-      [key]: upscaledImage,
-    }));
+    return {
+      elapsedTime,
+      src: upscaledImage,
+    }
   };
 
   const getModelDefinitions = async () => {
@@ -27,7 +29,6 @@ function App() {
     setModelDefinitions(Object.entries(_modelDefinitions).reduce((obj, [key, val]) => {
       if (!val.deprecated) {
         const scale = val.scale;
-        upscaleImage(key);
         return {
           ...obj,
           [scale]: {
@@ -39,6 +40,39 @@ function App() {
       return obj;
     }, {}));
   };
+
+  useEffect(() => {
+    (async () => {
+      const scaleEntries = Object.entries(modelDefinitions || {});
+      for (let j = 0; j < scaleEntries.length; j++) {
+        const [_, modelDefinitionsForScales] = scaleEntries[j];
+        const entries = Object.entries(modelDefinitionsForScales || {});
+        for (let i = 0; i < entries.length; i++) {
+          const [key] = entries[i];
+          if (!started[key]) {
+            setStarted(prev => ({
+              ...prev,
+              [key]: true,
+            }))
+            const {
+              elapsedTime,
+              src,
+            } = await upscaleImage(key);
+
+            setElapsedTimes(prev => ({
+              ...prev,
+              [key]: elapsedTime,
+            }))
+
+            setUpscaledImages(prev => ({
+              ...prev,
+              [key]: src,
+            }));
+          }
+        }
+      }
+    })();
+  }, [modelDefinitions]);
 
   useEffect(() => {
     if (img.current && !modelDefinitions) {
@@ -63,6 +97,7 @@ function App() {
                     <td>Key</td>
                     <td>Description</td>
                     <td>Output</td>
+                    <td>Elapsed Time</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,6 +111,7 @@ function App() {
                       <td>{upscaledImages[key] ? (
                         <img src={upscaledImages[key]} alt={key} />
                       ) : 'Upscaling...'}</td>
+                      <td>{elapsedTimes[key]}</td>
                     </tr>
                   );
                 })}
@@ -92,6 +128,7 @@ function App() {
     <div>
       <label>Sample image</label>
       <img ref={img} src="/flower.png" />
+      <p>Loading models...</p>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscaleOptions } from './types';
+import { IUpscaleOptions, IModelDefinition } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
 
@@ -78,9 +78,10 @@ export const getTensorDimensions = (
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
-  scale: number,
+  modelDefinition: IModelDefinition,
   { progress, patchSize, padding = 0 }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
+  const scale = modelDefinition.scale;
   if (patchSize) {
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
@@ -154,16 +155,30 @@ export const predict = async (
 const upscale = async (
   model: tf.LayersModel,
   image: string | HTMLImageElement | tf.Tensor3D,
-  scale: number,
+  modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) => {
   const { tensor: pixels, type } = await getImageAsPixels(image);
+  let preprocessedPixels: tf.Tensor4D;
+  if (modelDefinition.preprocess) {
+    preprocessedPixels = modelDefinition.preprocess(pixels);
+    pixels.dispose();
+  } else {
+    preprocessedPixels = pixels;
+  }
   const upscaledTensor = await predict(
     model,
-    pixels as tf.Tensor4D,
-    scale,
+    preprocessedPixels,
+    modelDefinition,
     options,
   );
+  let postprocessedPixels: tf.Tensor3D;
+  if (modelDefinition.postprocess) {
+    postprocessedPixels = modelDefinition.postprocess(upscaledTensor);
+    upscaledTensor.dispose();
+  } else {
+    postprocessedPixels = upscaledTensor;
+  }
 
   if (type !== 'tensor') {
     // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
@@ -172,11 +187,11 @@ const upscale = async (
   }
 
   if (options.output === 'tensor') {
-    return upscaledTensor as tf.Tensor;
+    return postprocessedPixels as tf.Tensor;
   }
 
-  const base64Src = tensorAsBase64(upscaledTensor);
-  upscaledTensor.dispose();
+  const base64Src = tensorAsBase64(postprocessedPixels);
+  postprocessedPixels.dispose();
   return base64Src;
 };
 
