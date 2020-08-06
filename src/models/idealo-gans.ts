@@ -4,9 +4,9 @@ import { IIntermediaryModelDefinition } from '../types';
 const SCALE = 4;
 const BETA = 0.2;
 
-type Inputs = tf.Tensor4D | Array<tf.Tensor4D>;
+type Inputs = tf.Tensor4D | tf.Tensor4D[];
 
-const isTensorArray = (inputs: Inputs): inputs is Array<tf.Tensor4D> => {
+const isTensorArray = (inputs: Inputs): inputs is tf.Tensor4D[] => {
   return Array.isArray(inputs);
 };
 
@@ -40,7 +40,7 @@ class PixelShuffle extends tf.layers.Layer {
     this.scale = SCALE;
   }
 
-  computeOutputShape(inputShape: Array<number>) {
+  computeOutputShape(inputShape: number[]) {
     return [inputShape[0], inputShape[1], inputShape[2], 3];
   }
 

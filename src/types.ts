@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { SerializableConstructor } from '@tensorflow/tfjs-core/dist/serialization';
 
 export type WarmupSizes = [number, number][];
 export interface IUpscalerOptions {
@@ -24,9 +25,7 @@ export interface IModelDefinition {
   deprecated?: boolean;
   preprocess?: (t: tf.Tensor4D) => tf.Tensor4D;
   postprocess?: (t: tf.Tensor3D) => tf.Tensor3D;
-  // TODO: Work out correct typing for this
-  // customLayers?: Array<tf.layers.Layer>;
-  customLayers?: Array<any>;
+  customLayers?: SerializableConstructor<tf.layers.Layer>[];
 }
 
 export type IIntermediaryModelDefinition = Omit<

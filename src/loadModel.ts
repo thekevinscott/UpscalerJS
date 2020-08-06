@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscalerOptions, IModelDefinition, Layer } from './types';
+import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
