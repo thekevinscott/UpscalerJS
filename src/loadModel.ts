@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscalerOptions, IModelDefinition } from './types';
-import MODELS, { DEFAULT_MODEL, buildConfigURL } from './models';
+import { IUpscalerOptions, IModelDefinition, Layer } from './types';
+import MODELS, { DEFAULT_MODEL } from './models';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -78,6 +78,11 @@ const loadModel = async (
   modelDefinition: IModelDefinition;
 }> => {
   const modelDefinition = getModelDefinition(opts);
+  if (modelDefinition.customLayers) {
+    modelDefinition.customLayers.forEach((layer) => {
+      tf.serialization.registerClass(layer);
+    });
+  }
   const model = await tf.loadLayersModel(modelDefinition.url);
   return {
     model,

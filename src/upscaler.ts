@@ -34,7 +34,7 @@ class Upscaler {
     options: IUpscaleOptions = {},
   ) => {
     const { model, modelDefinition } = await this._model;
-    return upscale(model, image, modelDefinition.scale, options);
+    return upscale(model, image, modelDefinition, options);
   };
 
   getModelDefinitions = () => {

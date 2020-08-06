@@ -8,6 +8,7 @@ jest.mock('./image');
 jest.mock('tensor-as-base64');
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image';
+import { IModelDefinition } from './types';
 
 describe('getTensorDimensions', () => {
   interface IOpts {
@@ -827,7 +828,9 @@ describe('predict', () => {
     const model = ({
       predict: jest.fn(() => pred),
     } as unknown) as tf.LayersModel;
-    const result = await predict(model, img.expandDims(0), 2);
+    const result = await predict(model, img.expandDims(0), {
+      scale: 2,
+    } as IModelDefinition);
     expect(model.predict).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3],
@@ -846,10 +849,15 @@ describe('predict', () => {
         return tf.fill([2, 2, 3], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown) as tf.LayersModel;
-    const result = await predict(model, img.expandDims(0), 2, {
-      patchSize: 1,
-      padding: 0,
-    });
+    const result = await predict(
+      model,
+      img.expandDims(0),
+      { scale: 2 } as IModelDefinition,
+      {
+        patchSize: 1,
+        padding: 0,
+      },
+    );
     expect(result.dataSync()).toEqual(
       tf
         .tensor([
@@ -895,7 +903,7 @@ describe('predict', () => {
       }),
     } as unknown) as tf.LayersModel;
     const progress = jest.fn();
-    await predict(model, img, scale, {
+    await predict(model, img, { scale } as IModelDefinition, {
       patchSize,
       padding: 0,
       progress,
@@ -927,7 +935,7 @@ describe('upscale', () => {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3])),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
-    const result = await upscale(model, img, 2);
+    const result = await upscale(model, img, { scale: 2 } as IModelDefinition);
     expect(result).toEqual('foobarbaz');
   });
 
@@ -951,7 +959,7 @@ describe('upscale', () => {
       predict: jest.fn(() => upscaledTensor),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
-    const result = await upscale(model, img, 2, {
+    const result = await upscale(model, img, { scale: 2 } as IModelDefinition, {
       output: 'tensor',
     });
     if (typeof result === 'string') {

@@ -19,3 +19,12 @@ export const isFourDimensionalTensor = (
 ): pixels is tf.Tensor4D => {
   return pixels.shape.length === 4;
 };
+
+const ROOT = 'https://unpkg.com/upscalerjs-models';
+const MODEL_DIR = 'models';
+
+export const buildURL = (modelFolder: string) =>
+  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/model.json`;
+
+export const buildConfigURL = (modelFolder: string) =>
+  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/config.json`;
