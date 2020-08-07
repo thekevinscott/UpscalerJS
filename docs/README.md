@@ -268,6 +268,32 @@ const upscaler = new Upscaler({
 })
 ```
 
+### Padding is undefined
+
+If specifying a patch size but not padding, you will likely encounter artifacting in the upscaled image.
+
+![Image with artifacting](./assets/image-with-artifacting.png)
+
+Most of the time, this artifacting is undesired. To resolve the artifacting, add an explicit padding:
+
+```
+upscaler.upscale('/path/to/img', {
+  patchSize: 64,
+  padding: 4,
+})
+```
+
+![Image with artifacting](./assets/image-without-artifacting.png)
+
+If you would like to keep artifacting but hide the warning message, pass an explicit padding value of 0:
+
+```
+upscaler.upscale('/path/to/img', {
+  patchSize: 64,
+  padding: 0,
+})
+```
+
 ## Contributions 
 
 Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.

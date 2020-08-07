@@ -9,6 +9,7 @@ jest.mock('tensor-as-base64');
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image';
 import { IModelDefinition } from './types';
+import { hasUncaughtExceptionCaptureCallback } from 'process';
 
 describe('getTensorDimensions', () => {
   interface IOpts {
@@ -816,6 +817,11 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
+  const origWarn = console.warn;
+  afterEach(() => {
+    console.warn = origWarn;
+  });
+
   it('should make a prediction', async () => {
     const img: tf.Tensor3D = tf.tensor(
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
@@ -912,6 +918,24 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
     expect(progress).toHaveBeenCalledWith(1);
+  });
+
+  it('should warn if provided a patch size without a padding', async () => {
+    console.warn = jest.fn();
+    const img: tf.Tensor4D = tf.ones([4, 4, 3]).expandDims(0);
+    const scale = 2;
+    const patchSize = 2;
+    const model = ({
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown) as tf.LayersModel;
+    await predict(model, img, { scale } as IModelDefinition, {
+      patchSize,
+    });
+    expect(console.warn).toHaveBeenCalled();
   });
 });
 

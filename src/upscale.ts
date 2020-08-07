@@ -3,14 +3,33 @@ import { IUpscaleOptions, IModelDefinition } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
 
+const ERROR_UNDEFINED_PADDING =
+  'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
+
+const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
+  if (tensor.shape.length === 4) {
+    return tensor.shape.slice(1, 3);
+  }
+
+  if (tensor.shape.length === 3) {
+    return tensor.shape.slice(0, 2);
+  }
+
+  throw new Error(
+    `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
+      tensor.shape,
+    )}`,
+  );
+};
+
 export const getRowsAndColumns = (
-  pixels: tf.Tensor4D,
+  pixels: tf.Tensor3D | tf.Tensor4D,
   patchSize: number,
 ): {
   rows: number;
   columns: number;
 } => {
-  const [_, height, width, _2] = pixels.shape;
+  const [height, width] = getWidthAndHeight(pixels);
 
   return {
     rows: Math.ceil(height / patchSize),
@@ -22,7 +41,7 @@ export const getTensorDimensions = (
   row: number,
   col: number,
   patchSize: number,
-  padding: number,
+  padding: number = 0,
   height: number,
   width: number,
 ) => {
@@ -79,10 +98,20 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { progress, patchSize, padding = 0 }: IUpscaleOptions = {},
+  { progress, patchSize, padding }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   const scale = modelDefinition.scale;
   if (patchSize) {
+    if (padding === undefined) {
+      console.warn(
+        [
+          '"padding" is undefined, but "patchSize" is explicitly defined.',
+          'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
+          `For more information, see ${ERROR_UNDEFINED_PADDING}.`,
+          'To hide this warning, pass an explicit padding of "0".',
+        ].join('\n'),
+      );
+    }
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
     const [_, height, width] = pixels.shape;

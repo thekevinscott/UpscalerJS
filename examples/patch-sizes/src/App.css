@@ -14,10 +14,12 @@ html, body, #root {
   height: 100%;
 }
 
-#app {
+.app {
   display: flex;
   flex-direction: column;
   flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 #image-container {
@@ -59,4 +61,8 @@ table#upscaled-image {
 
 table#upscaled-image td {
   padding: 5px;
+}
+
+table#upscaled-image td img {
+  display: block;
 }
