@@ -1,5 +1,4 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscaleOptions } from './types';
 
 export const isString = (pixels: any): pixels is string => {
   return typeof pixels === 'string';
@@ -28,3 +27,13 @@ export const buildURL = (modelFolder: string) =>
 
 export const buildConfigURL = (modelFolder: string) =>
   `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/config.json`;
+
+export const warn = (msg: string | string[]) => {
+  if (Array.isArray(msg)) {
+    // tslint:disable-next-line:no-console
+    console.warn(msg.join('\n'));
+  } else {
+    // tslint:disable-next-line:no-console
+    console.warn(msg);
+  }
+}

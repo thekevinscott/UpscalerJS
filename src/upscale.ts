@@ -2,6 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { IUpscaleOptions, IModelDefinition } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
+import { warn } from './utils';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -103,14 +104,12 @@ export const predict = async (
   const scale = modelDefinition.scale;
   if (patchSize) {
     if (padding === undefined) {
-      console.warn(
-        [
-          '"padding" is undefined, but "patchSize" is explicitly defined.',
-          'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
-          `For more information, see ${ERROR_UNDEFINED_PADDING}.`,
-          'To hide this warning, pass an explicit padding of "0".',
-        ].join('\n'),
-      );
+      warn([
+        '"padding" is undefined, but "patchSize" is explicitly defined.',
+        'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
+        `For more information, see ${ERROR_UNDEFINED_PADDING}.`,
+        'To hide this warning, pass an explicit padding of "0".',
+      ]);
     }
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);

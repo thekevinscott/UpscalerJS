@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
+import { warn } from './utils';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -12,12 +13,11 @@ const warnDeprecatedModel = (
   nextKey: string,
   expirationVersion: string,
 ) =>
-  // tslint:disable-next-line:no-console
-  console.warn(
+  warn(
     [
       `The key ${key} has been deprecated and will be removed in the next release (${expirationVersion}).`,
       `Please switch to the following key: ${nextKey}`,
-    ].join('\n'),
+    ]
   );
 
 const checkDeprecatedModels = (model: string) => {
