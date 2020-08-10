@@ -1,13 +1,20 @@
 {
   "name": "upscaler",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
+    "super resolution",
+    "image",
+    "scale",
+    "resize",
+    "esrgan",
+    "upscaling",
     "image enhancement",
-    "image superresolution",
-    "tensorflow.js"
+    "image super resolution",
+    "tensorflow.js",
+    "tfjs"
   ],
   "files": [
     "LICENSE",

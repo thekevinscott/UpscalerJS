@@ -10,6 +10,8 @@ UpscalerJS is a tool for increasing image resolution in Javascript via a Neural 
 
 ![Demo](assets/demo.gif)
 
+[A live demo is here](https://upscaler.ai).
+
 **Features**
 
 * 🚀 Browser Support

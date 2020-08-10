@@ -8,6 +8,7 @@ const warmup = async (
   }>,
   sizes: WarmupSizes,
 ) => {
+  await tf.nextFrame();
   const { model } = await modelPackage;
   for (const size of sizes) {
     if (typeof size[0] !== 'number' || typeof size[1] !== 'number') {
@@ -19,6 +20,7 @@ const warmup = async (
     const pred = (await model.predict(
       tf.zeros([1, height, width, 3]),
     )) as tf.Tensor;
+    await tf.nextFrame();
     pred.dataSync();
     pred.dispose();
   }

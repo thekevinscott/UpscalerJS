@@ -13,12 +13,10 @@ const warnDeprecatedModel = (
   nextKey: string,
   expirationVersion: string,
 ) =>
-  warn(
-    [
-      `The key ${key} has been deprecated and will be removed in the next release (${expirationVersion}).`,
-      `Please switch to the following key: ${nextKey}`,
-    ]
-  );
+  warn([
+    `The key ${key} has been deprecated and will be removed in the next release (${expirationVersion}).`,
+    `Please switch to the following key: ${nextKey}`,
+  ]);
 
 const checkDeprecatedModels = (model: string) => {
   if (model === 'div2k-2x') {

@@ -36,4 +36,4 @@ export const warn = (msg: string | string[]) => {
     // tslint:disable-next-line:no-console
     console.warn(msg);
   }
-}
+};
