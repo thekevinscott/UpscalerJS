@@ -25,7 +25,7 @@ class Upscaler {
   }
 
   getModel = () => this._model;
-  warmup = async (warmupSizes: WarmupSizes) => {
+  warmup = async (warmupSizes: WarmupSizes[]) => {
     await warmup(this._model, warmupSizes);
   };
 

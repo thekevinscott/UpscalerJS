@@ -179,7 +179,7 @@ const upscaler = new Upscaler({
 
 * `model` (`string`) - A string of a pretrained model, or a URL to load a custom pretrained model.
 * `scale` (`number`) - The scale of the custom pretrained model. Required if providing a custom model. If a pretrained model is specified, providing `scale` will throw an error.
-* `warmupSizes` (Optional, `Array<[number, number]`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
+* `warmupSizes` (Optional, `Array<[number, number] | { patchSize: number, padding?: number }`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
 
 Possible model values are:
 
@@ -224,6 +224,17 @@ If desired, the model can be "warmed up" after instantiation by calling `warmup`
 
 ```javascript
 upscaler.warmup([[256, 256]]).then(() => {
+  // all done.
+});
+```
+
+Or you can provide a patch size and padding:
+
+```javascript
+upscaler.warmup([{
+  patchSize: 64,
+  padding: 5,
+}]).then(() => {
   // all done.
 });
 ```

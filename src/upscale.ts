@@ -38,7 +38,7 @@ export const getRowsAndColumns = (
   };
 };
 
-export const getTensorDimensions = (
+export const getVariableTensorDimensions = (
   row: number,
   col: number,
   patchSize: number,
@@ -95,6 +95,207 @@ export const getTensorDimensions = (
   };
 };
 
+export const getConstantTensorDimensionsBackup = (
+  row: number,
+  col: number,
+  patchSize: number,
+  padding: number = 0,
+  height: number,
+  width: number,
+) => {
+  let originRowPadding = padding;
+  let originColPadding = padding;
+  let sizeHeightPadding = padding;
+  let sizeWidthPadding = padding;
+  // if (originRowPadding > height) {
+  //   originRowPadding = height;
+  // }
+  // if (originColPadding > width) {
+  //   originColPadding = width;
+  // }
+  const yPatchSize = patchSize + padding * 2;
+  const xPatchSize = patchSize + padding * 2;
+  const origin = [row * patchSize - padding, col * patchSize - padding];
+  console.log(yPatchSize, xPatchSize, padding);
+  console.log('origin', origin);
+  const sliceOrigin = [padding, padding];
+
+  if (origin[0] === 0) {
+    originRowPadding += padding;
+    sliceOrigin[0] = 0;
+  } else if (origin[0] < 0) {
+    // originRowPadding = padding - (0 - origin[0]);
+    originRowPadding += padding;
+    origin[0] = 0;
+    sliceOrigin[0] = 0;
+  }
+  if (origin[1] === 0) {
+    originColPadding += padding;
+    sliceOrigin[1] = 0;
+  } else if (origin[1] < 0) {
+    // originColPadding = padding - (0 - origin[1]);
+    originColPadding += padding;
+    origin[1] = 0;
+    sliceOrigin[1] = 0;
+  }
+  console.log('sliceOrigin', sliceOrigin);
+  const endPosition = [origin[0] + yPatchSize, origin[1] + xPatchSize];
+  if (endPosition[0] - origin[0] > height) {
+    console.log('greater height');
+    endPosition[0] = height;
+  }
+  if (endPosition[1] - origin[1] > width) {
+    console.log('greater width');
+    endPosition[1] = width;
+  }
+  if (endPosition[0] > height) {
+    // sizeHeightPadding = padding - (endPosition[0] - height);
+    // // console.log(sizeHeightPadding);
+    // if (sizeHeightPadding < 0) {
+    //   sizeHeightPadding = 0;
+    // }
+    // origin[0] += sizeHeightPadding;
+    const amount = padding - (endPosition[0] - height);
+    origin[0] += amount;
+    // sliceOrigin[0] -= amount;
+    if (origin[0] <= 0) {
+      origin[0] = 0;
+    }
+    endPosition[0] = height;
+  }
+  if (endPosition[1] > width) {
+    // sizeWidthPadding = padding - (endPosition[1] - width);
+    // console.log(sizeWidthPadding);
+    // if (sizeWidthPadding < 0) {
+    //   sizeWidthPadding = 0;
+    // }
+    const amount = padding - (endPosition[1] - width);
+    origin[1] += amount;
+    // sliceOrigin[1] -= amount;
+    if (origin[1] <= 0) {
+      origin[1] = 0;
+    }
+    endPosition[1] = width;
+  }
+  const size = [endPosition[0] - origin[0], endPosition[1] - origin[1]];
+  const sliceSize = [
+    size[0] - sliceOrigin[0] - originRowPadding,
+    size[1] - sliceOrigin[1] - originColPadding,
+    // patchSize,
+    // patchSize,
+  ];
+  console.log(
+    origin,
+    size,
+    sliceOrigin,
+    sliceSize,
+    originRowPadding,
+    originColPadding,
+  );
+  if (sliceSize[0] > height) {
+    sliceSize[0] = height;
+  }
+  if (sliceSize[1] > width) {
+    sliceSize[1] = width;
+  }
+
+  return {
+    origin,
+    size,
+    sliceOrigin,
+    sliceSize,
+  };
+};
+
+// check that padding has not pushed our origins off the board
+const checkAndAdjustStartingPosition = (
+  dimension: number,
+  origin: [number, number],
+  sliceOrigin: [number, number],
+) => {
+  // check that our origin is not off the board.
+  if (origin[dimension] < 0) {
+    // first, find out how much it overhangs
+    const amount = 0 - origin[dimension];
+
+    // then, increase origin by that amount (could also just set it to 0.)
+    origin[dimension] += amount;
+
+    // and increase sliceOrigin to accommodate
+    sliceOrigin[dimension] -= amount;
+  }
+};
+
+const checkAndAdjustEndingPosition = (
+  size: number,
+  dimension: number,
+  endPosition: [number, number],
+  origin: [number, number],
+  sliceOrigin: [number, number],
+) => {
+  // check that our final positions are not off the board
+  if (endPosition[dimension] > size) {
+    // box overhangs in the y direction, bring origin back and cut off the appropriate section.
+
+    // first determine the amount of overhang
+    let amount = endPosition[dimension] - size;
+
+    let compensatingAmount = 0;
+    if (origin[dimension] - amount < 0) {
+      compensatingAmount = 0 - (origin[dimension] - amount);
+    }
+
+    // reduce origin to accommodate overhang
+    origin[dimension] -= amount - compensatingAmount;
+    // then, reduce endPosition by the same amount.
+    endPosition[dimension] -= amount;
+
+    // then, increase sliceOrigin amount
+    sliceOrigin[dimension] += amount - compensatingAmount;
+  }
+};
+
+export const getTensorDimensions = (
+  row: number,
+  col: number,
+  patchSize: number,
+  padding: number = 0,
+  height: number,
+  width: number,
+) => {
+  let yPatchSize = patchSize;
+  let xPatchSize = patchSize;
+  if (yPatchSize > height) {
+    yPatchSize = height;
+  }
+  if (xPatchSize > width) {
+    xPatchSize = width;
+  }
+  const origin: [number, number] = [
+    row * patchSize - padding,
+    col * patchSize - padding,
+  ];
+  const sliceOrigin: [number, number] = [padding, padding];
+
+  checkAndAdjustStartingPosition(0, origin, sliceOrigin);
+  checkAndAdjustStartingPosition(1, origin, sliceOrigin);
+
+  const endPosition: [number, number] = [
+    origin[0] + yPatchSize + padding * 2,
+    origin[1] + xPatchSize + padding * 2,
+  ];
+
+  checkAndAdjustEndingPosition(height, 0, endPosition, origin, sliceOrigin);
+  checkAndAdjustEndingPosition(width, 1, endPosition, origin, sliceOrigin);
+
+  return {
+    origin,
+    size: [endPosition[0] - origin[0], endPosition[1] - origin[1]],
+    sliceOrigin,
+    sliceSize: [yPatchSize, xPatchSize],
+  };
+};
+
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
@@ -102,6 +303,7 @@ export const predict = async (
   { progress, patchSize, padding }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   const scale = modelDefinition.scale;
+
   if (patchSize) {
     if (padding === undefined) {
       warn([

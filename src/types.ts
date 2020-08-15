@@ -1,11 +1,15 @@
 import * as tf from '@tensorflow/tfjs';
 import { SerializableConstructor } from '@tensorflow/tfjs-core/dist/serialization';
 
-export type WarmupSizes = [number, number][];
+export type WarmupSizesByPatchSize = {
+  patchSize: number;
+  padding?: number;
+};
+export type WarmupSizes = [number, number] | WarmupSizesByPatchSize;
 export interface IUpscalerOptions {
   model?: string;
   scale?: number;
-  warmupSizes?: WarmupSizes;
+  warmupSizes?: WarmupSizes[];
 }
 
 export type Progress = (amount: number) => void;

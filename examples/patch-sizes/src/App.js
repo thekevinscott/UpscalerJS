@@ -18,7 +18,7 @@ function App() {
   const [img, setImg] = useState();
   const [upscaling, setUpscaling] = useState(false);
   const [state, setState] = useState({
-    patchSize: 50,
+    patchSize: 20,
     padding: 5,
     space: 2,
   });
@@ -52,9 +52,12 @@ function App() {
           [size[0], size[1]],
         );
         await tf.nextFrame();
+        console.time('upscale');
         const prediction = await upscaler.upscale(slicedPixels, {
           output: 'tensor',
+          useConsistentDimensions: true,
         });
+        console.timeEnd('upscale');
         await tf.nextFrame();
         
         slicedPixels.dispose();
