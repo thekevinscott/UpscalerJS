@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^2.0.1"
+    "@tensorflow/tfjs": "^2.1.0"
   },
   "devDependencies": {
     "@tensorflow/tfjs": "^2.1.0",

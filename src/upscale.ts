@@ -159,6 +159,7 @@ export const predict = async (
           height,
           width,
         );
+        console.log(height, width, origin, size, sliceOrigin, sliceSize);
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1]],
           [-1, size[0], size[1]],
