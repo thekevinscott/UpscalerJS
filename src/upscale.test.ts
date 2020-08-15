@@ -157,9 +157,8 @@ describe('getConsistentTensorDimensions', () => {
     );
   });
 
-  it('gets tensor dimensions for a subset patch size that is unequal', () => {
+  it('gets tensor dimensions for a subset patch size that is unequal without padding', () => {
     const size: [number, number] = [4, 4];
-    const sliceSize: [number, number] = [4, 4];
     testGetTensorDimensions(
       {
         width: 6,
@@ -175,7 +174,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [0, 0],
             size,
             sliceOrigin: [0, 0],
-            sliceSize,
+            sliceSize: [4, 4],
           },
         },
         {
@@ -185,7 +184,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [2, 0],
             size,
             sliceOrigin: [2, 0],
-            sliceSize,
+            sliceSize: [2, 4],
           },
         },
         {
@@ -195,7 +194,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [0, 2],
             size,
             sliceOrigin: [0, 2],
-            sliceSize,
+            sliceSize: [4, 2],
           },
         },
         {
@@ -205,7 +204,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [2, 2],
             size,
             sliceOrigin: [2, 2],
-            sliceSize,
+            sliceSize: [2, 2],
           },
         },
       ],
@@ -282,9 +281,8 @@ describe('getConsistentTensorDimensions', () => {
     );
   });
 
-  it('gets tensor dimensions for an uneven subset patch size that fits unequally', () => {
+  it('gets tensor dimensions for an uneven subset patch size that fits unequally without padding', () => {
     const size: [number, number] = [4, 4];
-    const sliceSize: [number, number] = [4, 4];
     testGetTensorDimensions(
       {
         width: 10,
@@ -300,7 +298,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [0, 0],
             sliceOrigin: [0, 0],
             size,
-            sliceSize,
+            sliceSize: [4, 4],
           },
         },
         {
@@ -310,7 +308,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [1, 0],
             sliceOrigin: [3, 0],
             size,
-            sliceSize,
+            sliceSize: [1, 4],
           },
         },
         {
@@ -320,7 +318,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [0, 4],
             sliceOrigin: [0, 0],
             size,
-            sliceSize,
+            sliceSize: [4, 4],
           },
         },
         {
@@ -330,7 +328,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [1, 4],
             sliceOrigin: [3, 0],
             size,
-            sliceSize,
+            sliceSize: [1, 4],
           },
         },
         {
@@ -340,7 +338,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [0, 6],
             sliceOrigin: [0, 2],
             size,
-            sliceSize,
+            sliceSize: [4, 2],
           },
         },
         {
@@ -350,7 +348,7 @@ describe('getConsistentTensorDimensions', () => {
             origin: [1, 6],
             sliceOrigin: [3, 2],
             size,
-            sliceSize,
+            sliceSize: [1, 2],
           },
         },
       ],
@@ -543,7 +541,6 @@ describe('getConsistentTensorDimensions', () => {
 
     it('gets tensor dimensions for a subset patch size that is unequal with padding for constant patch size', () => {
       const size: [number, number] = [6, 6];
-      const sliceSize: [number, number] = [4, 4];
       testGetTensorDimensions(
         {
           width: 9,
@@ -559,7 +556,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 0],
               sliceOrigin: [0, 0],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -569,7 +566,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 0],
               sliceOrigin: [1, 0],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -579,7 +576,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 0],
               sliceOrigin: [5, 0],
               size,
-              sliceSize,
+              sliceSize: [1, 4],
             },
           },
           {
@@ -589,7 +586,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [0, 1],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -599,7 +596,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 3],
               sliceOrigin: [1, 1],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -609,7 +606,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 3],
               sliceOrigin: [5, 1],
               size,
-              sliceSize,
+              sliceSize: [1, 4],
             },
           },
           {
@@ -619,7 +616,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [0, 5],
               size,
-              sliceSize,
+              sliceSize: [4, 1],
             },
           },
           {
@@ -629,7 +626,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 3],
               sliceOrigin: [1, 5],
               size,
-              sliceSize,
+              sliceSize: [4, 1],
             },
           },
           {
@@ -639,7 +636,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [3, 3],
               sliceOrigin: [5, 5],
               size,
-              sliceSize,
+              sliceSize: [1, 1],
             },
           },
         ],
@@ -723,7 +720,6 @@ describe('getConsistentTensorDimensions', () => {
 
     it('gets tensor dimensions for an uneven subset patch size that fits unequally with padding for constant patch size', () => {
       const size: [number, number] = [6, 6];
-      const sliceSize: [number, number] = [4, 4];
       testGetTensorDimensions(
         {
           width: 9,
@@ -739,7 +735,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 0],
               sliceOrigin: [0, 0],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -749,7 +745,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 0],
               sliceOrigin: [4, 0],
               size,
-              sliceSize,
+              sliceSize: [2, 4],
             },
           },
           {
@@ -759,7 +755,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [0, 1],
               size,
-              sliceSize,
+              sliceSize: [4, 4],
             },
           },
           {
@@ -769,7 +765,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [4, 1],
               size,
-              sliceSize,
+              sliceSize: [2, 4],
             },
           },
           {
@@ -779,7 +775,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [0, 5],
               size,
-              sliceSize,
+              sliceSize: [4, 1],
             },
           },
           {
@@ -789,7 +785,7 @@ describe('getConsistentTensorDimensions', () => {
               origin: [0, 3],
               sliceOrigin: [4, 5],
               size,
-              sliceSize,
+              sliceSize: [2, 1],
             },
           },
         ],
@@ -845,6 +841,61 @@ describe('getConsistentTensorDimensions', () => {
               size: [2, 9],
               sliceOrigin: [1, 4],
               sliceSize,
+            },
+          },
+        ],
+      );
+    });
+
+    it('gets tensor dimensions for a larger image at constant patch size', () => {
+      const size: [number, number] = [40, 40];
+      const sliceSize: [number, number] = [32, 32];
+      testGetTensorDimensions(
+        {
+          width: 100,
+          height: 100,
+          patchSize: 32,
+          padding: 4,
+        },
+        [
+          {
+            row: 0,
+            col: 0,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [0, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 0,
+            expectation: {
+              origin: [28, 0],
+              sliceOrigin: [4, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 2,
+            col: 0,
+            expectation: {
+              origin: [60, 0],
+              sliceOrigin: [4, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 3,
+            col: 0,
+            expectation: {
+              origin: [60, 0],
+              sliceOrigin: [36, 0],
+              size,
+              sliceSize: [4, 32],
             },
           },
         ],

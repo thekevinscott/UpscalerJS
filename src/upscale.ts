@@ -63,6 +63,7 @@ const checkAndAdjustEndingPosition = (
   endPosition: [number, number],
   origin: [number, number],
   sliceOrigin: [number, number],
+  sliceEndPosition: [number, number],
 ) => {
   // check that our final positions are not off the board
   if (endPosition[dimension] > size) {
@@ -78,11 +79,24 @@ const checkAndAdjustEndingPosition = (
 
     // reduce origin to accommodate overhang
     origin[dimension] -= amount - compensatingAmount;
+
     // then, reduce endPosition by the same amount.
     endPosition[dimension] -= amount;
 
     // then, increase sliceOrigin amount
-    sliceOrigin[dimension] += amount - compensatingAmount;
+    const sliceAmount = amount - compensatingAmount;
+    sliceOrigin[dimension] += sliceAmount;
+    sliceEndPosition[dimension] += sliceAmount;
+  }
+};
+
+const checkAndAdjustSliceSize = (
+  dimension: number,
+  size: [number, number],
+  sliceEndPosition: [number, number],
+) => {
+  if (sliceEndPosition[dimension] > size[dimension]) {
+    sliceEndPosition[dimension] = size[dimension];
   }
 };
 
@@ -115,15 +129,45 @@ export const getTensorDimensions = (
     origin[0] + yPatchSize + padding * 2,
     origin[1] + xPatchSize + padding * 2,
   ];
+  const sliceEndPosition: [number, number] = [
+    sliceOrigin[0] + yPatchSize,
+    sliceOrigin[1] + xPatchSize,
+  ];
 
-  checkAndAdjustEndingPosition(height, 0, endPosition, origin, sliceOrigin);
-  checkAndAdjustEndingPosition(width, 1, endPosition, origin, sliceOrigin);
+  checkAndAdjustEndingPosition(
+    height,
+    0,
+    endPosition,
+    origin,
+    sliceOrigin,
+    sliceEndPosition,
+  );
+  checkAndAdjustEndingPosition(
+    width,
+    1,
+    endPosition,
+    origin,
+    sliceOrigin,
+    sliceEndPosition,
+  );
+
+  const size: [number, number] = [
+    endPosition[0] - origin[0],
+    endPosition[1] - origin[1],
+  ];
+
+  checkAndAdjustSliceSize(0, size, sliceEndPosition);
+  checkAndAdjustSliceSize(1, size, sliceEndPosition);
+  const sliceSize: [number, number] = [
+    sliceEndPosition[0] - sliceOrigin[0],
+    sliceEndPosition[1] - sliceOrigin[1],
+  ];
 
   return {
     origin,
-    size: [endPosition[0] - origin[0], endPosition[1] - origin[1]],
     sliceOrigin,
-    sliceSize: [yPatchSize, xPatchSize],
+    size,
+    sliceSize,
   };
 };
 
@@ -159,7 +203,6 @@ export const predict = async (
           height,
           width,
         );
-        console.log(height, width, origin, size, sliceOrigin, sliceSize);
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1]],
           [-1, size[0], size[1]],
