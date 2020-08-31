@@ -8,8 +8,9 @@ jest.mock('./image');
 jest.mock('tensor-as-base64');
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image';
+import { IModelDefinition } from './types';
 
-describe('getTensorDimensions', () => {
+describe('getConsistentTensorDimensions', () => {
   interface IOpts {
     width: number;
     height: number;
@@ -82,6 +83,29 @@ describe('getTensorDimensions', () => {
     );
   });
 
+  it('gets tensor dimensions for a larger patch size', () => {
+    testGetTensorDimensions(
+      {
+        width: 2,
+        height: 2,
+        patchSize: 4,
+        padding: 0,
+      },
+      [
+        {
+          row: 0,
+          col: 0,
+          expectation: {
+            origin: [0, 0],
+            size: [2, 2],
+            sliceOrigin: [0, 0],
+            sliceSize: [2, 2],
+          },
+        },
+      ],
+    );
+  });
+
   it('gets tensor dimensions for a subset patch size that fits equally', () => {
     const sliceSize: [number, number] = [2, 2];
     const size: [number, number] = [2, 2];
@@ -133,7 +157,8 @@ describe('getTensorDimensions', () => {
     );
   });
 
-  it('gets tensor dimensions for a subset patch size that is unequal', () => {
+  it('gets tensor dimensions for a subset patch size that is unequal without padding', () => {
+    const size: [number, number] = [4, 4];
     testGetTensorDimensions(
       {
         width: 6,
@@ -147,7 +172,8 @@ describe('getTensorDimensions', () => {
           col: 0,
           expectation: {
             origin: [0, 0],
-            size: [4, 4],
+            size,
+            sliceOrigin: [0, 0],
             sliceSize: [4, 4],
           },
         },
@@ -155,8 +181,9 @@ describe('getTensorDimensions', () => {
           row: 1,
           col: 0,
           expectation: {
-            origin: [4, 0],
-            size: [2, 4],
+            origin: [2, 0],
+            size,
+            sliceOrigin: [2, 0],
             sliceSize: [2, 4],
           },
         },
@@ -164,8 +191,9 @@ describe('getTensorDimensions', () => {
           row: 0,
           col: 1,
           expectation: {
-            origin: [0, 4],
-            size: [4, 2],
+            origin: [0, 2],
+            size,
+            sliceOrigin: [0, 2],
             sliceSize: [4, 2],
           },
         },
@@ -173,8 +201,9 @@ describe('getTensorDimensions', () => {
           row: 1,
           col: 1,
           expectation: {
-            origin: [4, 4],
-            size: [2, 2],
+            origin: [2, 2],
+            size,
+            sliceOrigin: [2, 2],
             sliceSize: [2, 2],
           },
         },
@@ -199,6 +228,7 @@ describe('getTensorDimensions', () => {
           expectation: {
             origin: [0, 0],
             size,
+            sliceOrigin: [0, 0],
             sliceSize,
           },
         },
@@ -251,7 +281,8 @@ describe('getTensorDimensions', () => {
     );
   });
 
-  it('gets tensor dimensions for an uneven subset patch size that fits unequally', () => {
+  it('gets tensor dimensions for an uneven subset patch size that fits unequally without padding', () => {
+    const size: [number, number] = [4, 4];
     testGetTensorDimensions(
       {
         width: 10,
@@ -265,7 +296,8 @@ describe('getTensorDimensions', () => {
           col: 0,
           expectation: {
             origin: [0, 0],
-            size: [4, 4],
+            sliceOrigin: [0, 0],
+            size,
             sliceSize: [4, 4],
           },
         },
@@ -273,8 +305,9 @@ describe('getTensorDimensions', () => {
           row: 1,
           col: 0,
           expectation: {
-            origin: [4, 0],
-            size: [1, 4],
+            origin: [1, 0],
+            sliceOrigin: [3, 0],
+            size,
             sliceSize: [1, 4],
           },
         },
@@ -283,7 +316,8 @@ describe('getTensorDimensions', () => {
           col: 1,
           expectation: {
             origin: [0, 4],
-            size: [4, 4],
+            sliceOrigin: [0, 0],
+            size,
             sliceSize: [4, 4],
           },
         },
@@ -291,8 +325,9 @@ describe('getTensorDimensions', () => {
           row: 1,
           col: 1,
           expectation: {
-            origin: [4, 4],
-            size: [1, 4],
+            origin: [1, 4],
+            sliceOrigin: [3, 0],
+            size,
             sliceSize: [1, 4],
           },
         },
@@ -300,8 +335,9 @@ describe('getTensorDimensions', () => {
           row: 0,
           col: 2,
           expectation: {
-            origin: [0, 8],
-            size: [4, 2],
+            origin: [0, 6],
+            sliceOrigin: [0, 2],
+            size,
             sliceSize: [4, 2],
           },
         },
@@ -309,8 +345,9 @@ describe('getTensorDimensions', () => {
           row: 1,
           col: 2,
           expectation: {
-            origin: [4, 8],
-            size: [1, 2],
+            origin: [1, 6],
+            sliceOrigin: [3, 2],
+            size,
             sliceSize: [1, 2],
           },
         },
@@ -318,8 +355,168 @@ describe('getTensorDimensions', () => {
     );
   });
 
-  describe('Padding', () => {
-    it('gets tensor dimensions for a fully-covered patch size with padding', () => {
+  describe('Padding for constant sized slices', () => {
+    it('gets tensor dimensions for a subset patch size that fits equally with padding', () => {
+      const size: [number, number] = [4, 4];
+      const sliceSize: [number, number] = [2, 2];
+      testGetTensorDimensions(
+        {
+          width: 4,
+          height: 4,
+          patchSize: 2,
+          padding: 1,
+        },
+        [
+          {
+            row: 0,
+            col: 0,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [0, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 0,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [2, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 0,
+            col: 1,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [0, 2],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 1,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [2, 2],
+              size,
+              sliceSize,
+            },
+          },
+        ],
+      );
+    });
+
+    it('gets tensor dimensions for a subset patch size that fits equally with padding with more dimensions', () => {
+      const size: [number, number] = [5, 5];
+      const sliceSize: [number, number] = [3, 3];
+      testGetTensorDimensions(
+        {
+          width: 9,
+          height: 9,
+          patchSize: 3,
+          padding: 1,
+        },
+        [
+          {
+            row: 0,
+            col: 0,
+            expectation: {
+              origin: [0, 0],
+              sliceOrigin: [0, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 0,
+            expectation: {
+              origin: [2, 0],
+              sliceOrigin: [1, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 2,
+            col: 0,
+            expectation: {
+              origin: [4, 0],
+              sliceOrigin: [2, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 0,
+            col: 1,
+            expectation: {
+              origin: [0, 2],
+              sliceOrigin: [0, 1],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 1,
+            expectation: {
+              origin: [2, 2],
+              sliceOrigin: [1, 1],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 2,
+            col: 1,
+            expectation: {
+              origin: [4, 2],
+              sliceOrigin: [2, 1],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 0,
+            col: 2,
+            expectation: {
+              origin: [0, 4],
+              sliceOrigin: [0, 2],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 2,
+            expectation: {
+              origin: [2, 4],
+              sliceOrigin: [1, 2],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 2,
+            col: 2,
+            expectation: {
+              origin: [4, 4],
+              sliceOrigin: [2, 2],
+              size,
+              sliceSize,
+            },
+          },
+        ],
+      );
+    });
+
+    it('gets tensor dimensions for a fully-covered patch size with padding for constant patch', () => {
       testGetTensorDimensions(
         {
           width: 2,
@@ -334,6 +531,7 @@ describe('getTensorDimensions', () => {
             expectation: {
               origin: [0, 0],
               size: [2, 2],
+              sliceOrigin: [0, 0],
               sliceSize: [2, 2],
             },
           },
@@ -341,110 +539,8 @@ describe('getTensorDimensions', () => {
       );
     });
 
-    it('gets tensor dimensions for a subset patch size that fits equally with padding', () => {
-      testGetTensorDimensions(
-        {
-          width: 9,
-          height: 9,
-          patchSize: 3,
-          padding: 1,
-        },
-        [
-          {
-            row: 0,
-            col: 0,
-            expectation: {
-              origin: [0, 0],
-              size: [4, 4],
-              sliceOrigin: [0, 0],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 1,
-            col: 0,
-            expectation: {
-              origin: [2, 0],
-              size: [5, 4],
-              sliceOrigin: [1, 0],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 2,
-            col: 0,
-            expectation: {
-              origin: [5, 0],
-              size: [4, 4],
-              sliceOrigin: [1, 0],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 0,
-            col: 1,
-            expectation: {
-              origin: [0, 2],
-              size: [4, 5],
-              sliceOrigin: [0, 1],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 1,
-            col: 1,
-            expectation: {
-              origin: [2, 2],
-              size: [5, 5],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 2,
-            col: 1,
-            expectation: {
-              origin: [5, 2],
-              size: [4, 5],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 0,
-            col: 2,
-            expectation: {
-              origin: [0, 5],
-              size: [4, 4],
-              sliceOrigin: [0, 1],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 1,
-            col: 2,
-            expectation: {
-              origin: [2, 5],
-              size: [5, 4],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
-            },
-          },
-          {
-            row: 2,
-            col: 2,
-            expectation: {
-              origin: [5, 5],
-              size: [4, 4],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
-            },
-          },
-        ],
-      );
-    });
-
-    it('gets tensor dimensions for a subset patch size that is unequal with padding', () => {
+    it('gets tensor dimensions for a subset patch size that is unequal with padding for constant patch size', () => {
+      const size: [number, number] = [6, 6];
       testGetTensorDimensions(
         {
           width: 9,
@@ -458,8 +554,8 @@ describe('getTensorDimensions', () => {
             col: 0,
             expectation: {
               origin: [0, 0],
-              size: [5, 5],
               sliceOrigin: [0, 0],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -468,8 +564,8 @@ describe('getTensorDimensions', () => {
             col: 0,
             expectation: {
               origin: [3, 0],
-              size: [6, 5],
               sliceOrigin: [1, 0],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -477,9 +573,9 @@ describe('getTensorDimensions', () => {
             row: 2,
             col: 0,
             expectation: {
-              origin: [7, 0],
-              size: [2, 5],
-              sliceOrigin: [1, 0],
+              origin: [3, 0],
+              sliceOrigin: [5, 0],
+              size,
               sliceSize: [1, 4],
             },
           },
@@ -488,8 +584,8 @@ describe('getTensorDimensions', () => {
             col: 1,
             expectation: {
               origin: [0, 3],
-              size: [5, 6],
               sliceOrigin: [0, 1],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -498,8 +594,8 @@ describe('getTensorDimensions', () => {
             col: 1,
             expectation: {
               origin: [3, 3],
-              size: [6, 6],
               sliceOrigin: [1, 1],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -507,9 +603,9 @@ describe('getTensorDimensions', () => {
             row: 2,
             col: 1,
             expectation: {
-              origin: [7, 3],
-              size: [2, 6],
-              sliceOrigin: [1, 1],
+              origin: [3, 3],
+              sliceOrigin: [5, 1],
+              size,
               sliceSize: [1, 4],
             },
           },
@@ -517,9 +613,9 @@ describe('getTensorDimensions', () => {
             row: 0,
             col: 2,
             expectation: {
-              origin: [0, 7],
-              size: [5, 2],
-              sliceOrigin: [0, 1],
+              origin: [0, 3],
+              sliceOrigin: [0, 5],
+              size,
               sliceSize: [4, 1],
             },
           },
@@ -527,9 +623,9 @@ describe('getTensorDimensions', () => {
             row: 1,
             col: 2,
             expectation: {
-              origin: [3, 7],
-              size: [6, 2],
-              sliceOrigin: [1, 1],
+              origin: [3, 3],
+              sliceOrigin: [1, 5],
+              size,
               sliceSize: [4, 1],
             },
           },
@@ -537,9 +633,9 @@ describe('getTensorDimensions', () => {
             row: 2,
             col: 2,
             expectation: {
-              origin: [7, 7],
-              size: [2, 2],
-              sliceOrigin: [1, 1],
+              origin: [3, 3],
+              sliceOrigin: [5, 5],
+              size,
               sliceSize: [1, 1],
             },
           },
@@ -547,7 +643,9 @@ describe('getTensorDimensions', () => {
       );
     });
 
-    it('gets tensor dimensions for an uneven subset patch size that fits equally with padding', () => {
+    it('gets tensor dimensions for an uneven subset patch size that fits equally with padding for a constant patch size', () => {
+      const size: [number, number] = [5, 5];
+      const sliceSize: [number, number] = [3, 3];
       testGetTensorDimensions(
         {
           width: 9,
@@ -561,19 +659,19 @@ describe('getTensorDimensions', () => {
             col: 0,
             expectation: {
               origin: [0, 0],
-              size: [4, 4],
               sliceOrigin: [0, 0],
-              sliceSize: [3, 3],
+              size,
+              sliceSize,
             },
           },
           {
             row: 1,
             col: 0,
             expectation: {
-              origin: [2, 0],
-              size: [4, 4],
-              sliceOrigin: [1, 0],
-              sliceSize: [3, 3],
+              origin: [1, 0],
+              sliceOrigin: [2, 0],
+              size,
+              sliceSize,
             },
           },
           {
@@ -581,46 +679,47 @@ describe('getTensorDimensions', () => {
             col: 1,
             expectation: {
               origin: [0, 2],
-              size: [4, 5],
               sliceOrigin: [0, 1],
-              sliceSize: [3, 3],
+              size,
+              sliceSize,
             },
           },
           {
             row: 1,
             col: 1,
             expectation: {
-              origin: [2, 2],
-              size: [4, 5],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
+              origin: [1, 2],
+              sliceOrigin: [2, 1],
+              size,
+              sliceSize,
             },
           },
           {
             row: 0,
             col: 2,
             expectation: {
-              origin: [0, 5],
-              size: [4, 4],
-              sliceOrigin: [0, 1],
-              sliceSize: [3, 3],
+              origin: [0, 4],
+              sliceOrigin: [0, 2],
+              size,
+              sliceSize,
             },
           },
           {
             row: 1,
             col: 2,
             expectation: {
-              origin: [2, 5],
-              size: [4, 4],
-              sliceOrigin: [1, 1],
-              sliceSize: [3, 3],
+              origin: [1, 4],
+              sliceOrigin: [2, 2],
+              size,
+              sliceSize,
             },
           },
         ],
       );
     });
 
-    it('gets tensor dimensions for an uneven subset patch size that fits unequally with padding', () => {
+    it('gets tensor dimensions for an uneven subset patch size that fits unequally with padding for constant patch size', () => {
+      const size: [number, number] = [6, 6];
       testGetTensorDimensions(
         {
           width: 9,
@@ -634,8 +733,8 @@ describe('getTensorDimensions', () => {
             col: 0,
             expectation: {
               origin: [0, 0],
-              size: [5, 5],
               sliceOrigin: [0, 0],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -643,9 +742,9 @@ describe('getTensorDimensions', () => {
             row: 1,
             col: 0,
             expectation: {
-              origin: [3, 0],
-              size: [3, 5],
-              sliceOrigin: [1, 0],
+              origin: [0, 0],
+              sliceOrigin: [4, 0],
+              size,
               sliceSize: [2, 4],
             },
           },
@@ -654,8 +753,8 @@ describe('getTensorDimensions', () => {
             col: 1,
             expectation: {
               origin: [0, 3],
-              size: [5, 6],
               sliceOrigin: [0, 1],
+              size,
               sliceSize: [4, 4],
             },
           },
@@ -663,9 +762,9 @@ describe('getTensorDimensions', () => {
             row: 1,
             col: 1,
             expectation: {
-              origin: [3, 3],
-              size: [3, 6],
-              sliceOrigin: [1, 1],
+              origin: [0, 3],
+              sliceOrigin: [4, 1],
+              size,
               sliceSize: [2, 4],
             },
           },
@@ -673,9 +772,9 @@ describe('getTensorDimensions', () => {
             row: 0,
             col: 2,
             expectation: {
-              origin: [0, 7],
-              size: [5, 2],
-              sliceOrigin: [0, 1],
+              origin: [0, 3],
+              sliceOrigin: [0, 5],
+              size,
               sliceSize: [4, 1],
             },
           },
@@ -683,9 +782,9 @@ describe('getTensorDimensions', () => {
             row: 1,
             col: 2,
             expectation: {
-              origin: [3, 7],
-              size: [3, 2],
-              sliceOrigin: [1, 1],
+              origin: [0, 3],
+              sliceOrigin: [4, 5],
+              size,
               sliceSize: [2, 1],
             },
           },
@@ -693,13 +792,15 @@ describe('getTensorDimensions', () => {
       );
     });
 
-    it('gets tensor dimensions for a very small patch size', () => {
+    it('gets tensor dimensions for a very small patch size for constant patch size', () => {
+      // const size: [number, number] = [9, 9];
+      const sliceSize: [number, number] = [1, 1];
       testGetTensorDimensions(
         {
           width: 13,
           height: 2,
           patchSize: 1,
-          padding: 8,
+          padding: 4,
         },
         [
           {
@@ -709,7 +810,7 @@ describe('getTensorDimensions', () => {
               origin: [0, 0],
               size: [2, 9],
               sliceOrigin: [0, 0],
-              sliceSize: [1, 1],
+              sliceSize,
             },
           },
           {
@@ -719,27 +820,82 @@ describe('getTensorDimensions', () => {
               origin: [0, 0],
               size: [2, 9],
               sliceOrigin: [1, 0],
-              sliceSize: [1, 1],
+              sliceSize,
             },
           },
           {
             row: 0,
             col: 8,
             expectation: {
-              origin: [0, 0],
-              size: [2, 13],
-              sliceOrigin: [0, 8],
-              sliceSize: [1, 1],
+              origin: [0, 4],
+              size: [2, 9],
+              sliceOrigin: [0, 4],
+              sliceSize,
             },
           },
           {
             row: 1,
             col: 8,
             expectation: {
+              origin: [0, 4],
+              size: [2, 9],
+              sliceOrigin: [1, 4],
+              sliceSize,
+            },
+          },
+        ],
+      );
+    });
+
+    it('gets tensor dimensions for a larger image at constant patch size', () => {
+      const size: [number, number] = [40, 40];
+      const sliceSize: [number, number] = [32, 32];
+      testGetTensorDimensions(
+        {
+          width: 100,
+          height: 100,
+          patchSize: 32,
+          padding: 4,
+        },
+        [
+          {
+            row: 0,
+            col: 0,
+            expectation: {
               origin: [0, 0],
-              size: [2, 13],
-              sliceOrigin: [1, 8],
-              sliceSize: [1, 1],
+              sliceOrigin: [0, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 1,
+            col: 0,
+            expectation: {
+              origin: [28, 0],
+              sliceOrigin: [4, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 2,
+            col: 0,
+            expectation: {
+              origin: [60, 0],
+              sliceOrigin: [4, 0],
+              size,
+              sliceSize,
+            },
+          },
+          {
+            row: 3,
+            col: 0,
+            expectation: {
+              origin: [60, 0],
+              sliceOrigin: [36, 0],
+              size,
+              sliceSize: [4, 32],
             },
           },
         ],
@@ -815,25 +971,32 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
+  const origWarn = console.warn;
+  afterEach(() => {
+    console.warn = origWarn;
+  });
+
   it('should make a prediction', async () => {
     const img: tf.Tensor3D = tf.tensor(
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4],
       [2, 2, 3],
     );
+    const upscaledTensor = tf.ones([1, 2, 2, 3]);
     const pred = {
-      squeeze: jest.fn(() => 'foo'),
+      squeeze: jest.fn(() => upscaledTensor),
     };
     const model = ({
       predict: jest.fn(() => pred),
     } as unknown) as tf.LayersModel;
-    const result = await predict(model, img.expandDims(0), 2);
+    const result = await predict(model, img.expandDims(0), {
+      scale: 2,
+    } as IModelDefinition);
     expect(model.predict).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3],
       }),
     );
-    expect(pred.squeeze).toHaveBeenCalled();
-    expect(result).toEqual('foo');
+    expect(result).toEqual(upscaledTensor);
   });
 
   it('should make a prediction with a patchSize', async () => {
@@ -846,10 +1009,15 @@ describe('predict', () => {
         return tf.fill([2, 2, 3], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown) as tf.LayersModel;
-    const result = await predict(model, img.expandDims(0), 2, {
-      patchSize: 1,
-      padding: 0,
-    });
+    const result = await predict(
+      model,
+      img.expandDims(0),
+      { scale: 2 } as IModelDefinition,
+      {
+        patchSize: 1,
+        padding: 0,
+      },
+    );
     expect(result.dataSync()).toEqual(
       tf
         .tensor([
@@ -895,7 +1063,7 @@ describe('predict', () => {
       }),
     } as unknown) as tf.LayersModel;
     const progress = jest.fn();
-    await predict(model, img, scale, {
+    await predict(model, img, { scale } as IModelDefinition, {
       patchSize,
       padding: 0,
       progress,
@@ -904,6 +1072,24 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
     expect(progress).toHaveBeenCalledWith(1);
+  });
+
+  it('should warn if provided a patch size without a padding', async () => {
+    console.warn = jest.fn();
+    const img: tf.Tensor4D = tf.ones([4, 4, 3]).expandDims(0);
+    const scale = 2;
+    const patchSize = 2;
+    const model = ({
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown) as tf.LayersModel;
+    await predict(model, img, { scale } as IModelDefinition, {
+      patchSize,
+    });
+    expect(console.warn).toHaveBeenCalled();
   });
 });
 
@@ -919,16 +1105,15 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => img;
-    const pred = {
-      squeeze: jest.fn(() => 'foo'),
-      dispose: jest.fn(),
-    };
+    (image as any).getImageAsPixels = () => ({
+      tensor: img,
+      type: 'tensor',
+    });
     const model = ({
-      predict: jest.fn(() => pred),
+      predict: jest.fn(() => tf.ones([1, 2, 2, 3])),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
-    const result = await upscale(model, img, 2);
+    const result = await upscale(model, img, { scale: 2 } as IModelDefinition);
     expect(result).toEqual('foobarbaz');
   });
 
@@ -943,19 +1128,21 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => img;
-    const predOutput = 'foo';
-    const pred = {
-      squeeze: jest.fn(() => predOutput),
-      dispose: jest.fn(),
-    };
+    (image as any).getImageAsPixels = () => ({
+      tensor: img,
+      type: 'tensor',
+    });
+    const upscaledTensor = tf.ones([1, 2, 2, 3]);
     const model = ({
-      predict: jest.fn(() => pred),
+      predict: jest.fn(() => upscaledTensor),
     } as unknown) as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
-    const result = await upscale(model, img, 2, {
+    const result = await upscale(model, img, { scale: 2 } as IModelDefinition, {
       output: 'tensor',
     });
-    expect(result).toEqual(predOutput);
+    if (typeof result === 'string') {
+      throw new Error('Unexpected string type');
+    }
+    expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
   });
 });

@@ -12,22 +12,37 @@ export const loadImage = (src: string): Promise<HTMLImageElement> =>
 
 export const getImageAsPixels = async (
   pixels: string | HTMLImageElement | tf.Tensor,
-): Promise<tf.Tensor4D> => {
+): Promise<{
+  tensor: tf.Tensor4D;
+  type: 'string' | 'HTMLImageElement' | 'tensor';
+}> => {
   if (isString(pixels)) {
     const img = await loadImage(pixels);
-    return tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
+    return {
+      tensor: tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D,
+      type: 'string',
+    };
   }
 
   if (isHTMLImageElement(pixels)) {
-    return tf.browser.fromPixels(pixels).expandDims(0) as tf.Tensor4D;
+    return {
+      tensor: tf.browser.fromPixels(pixels).expandDims(0) as tf.Tensor4D,
+      type: 'HTMLImageElement',
+    };
   }
 
   if (isFourDimensionalTensor(pixels)) {
-    return pixels;
+    return {
+      tensor: pixels,
+      type: 'tensor',
+    };
   }
 
   if (pixels.shape.length === 3) {
-    return pixels.expandDims(0) as tf.Tensor4D;
+    return {
+      tensor: pixels.expandDims(0) as tf.Tensor4D,
+      type: 'tensor',
+    };
   }
 
   throw new Error(

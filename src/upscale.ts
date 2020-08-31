@@ -1,16 +1,36 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscaleOptions } from './types';
+import { IUpscaleOptions, IModelDefinition } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
+import { warn } from './utils';
+
+const ERROR_UNDEFINED_PADDING =
+  'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
+
+const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
+  if (tensor.shape.length === 4) {
+    return tensor.shape.slice(1, 3);
+  }
+
+  if (tensor.shape.length === 3) {
+    return tensor.shape.slice(0, 2);
+  }
+
+  throw new Error(
+    `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
+      tensor.shape,
+    )}`,
+  );
+};
 
 export const getRowsAndColumns = (
-  pixels: tf.Tensor4D,
+  pixels: tf.Tensor3D | tf.Tensor4D,
   patchSize: number,
 ): {
   rows: number;
   columns: number;
 } => {
-  const [_, height, width, _2] = pixels.shape;
+  const [height, width] = getWidthAndHeight(pixels);
 
   return {
     rows: Math.ceil(height / patchSize),
@@ -18,59 +38,135 @@ export const getRowsAndColumns = (
   };
 };
 
+// check that padding has not pushed our origins off the board
+const checkAndAdjustStartingPosition = (
+  dimension: number,
+  origin: [number, number],
+  sliceOrigin: [number, number],
+) => {
+  // check that our origin is not off the board.
+  if (origin[dimension] < 0) {
+    // first, find out how much it overhangs
+    const amount = 0 - origin[dimension];
+
+    // then, increase origin by that amount (could also just set it to 0.)
+    origin[dimension] += amount;
+
+    // and increase sliceOrigin to accommodate
+    sliceOrigin[dimension] -= amount;
+  }
+};
+
+const checkAndAdjustEndingPosition = (
+  size: number,
+  dimension: number,
+  endPosition: [number, number],
+  origin: [number, number],
+  sliceOrigin: [number, number],
+  sliceEndPosition: [number, number],
+) => {
+  // check that our final positions are not off the board
+  if (endPosition[dimension] > size) {
+    // box overhangs in the y direction, bring origin back and cut off the appropriate section.
+
+    // first determine the amount of overhang
+    const amount = endPosition[dimension] - size;
+
+    let compensatingAmount = 0;
+    if (origin[dimension] - amount < 0) {
+      compensatingAmount = 0 - (origin[dimension] - amount);
+    }
+
+    // reduce origin to accommodate overhang
+    origin[dimension] -= amount - compensatingAmount;
+
+    // then, reduce endPosition by the same amount.
+    endPosition[dimension] -= amount;
+
+    // then, increase sliceOrigin amount
+    const sliceAmount = amount - compensatingAmount;
+    sliceOrigin[dimension] += sliceAmount;
+    sliceEndPosition[dimension] += sliceAmount;
+  }
+};
+
+const checkAndAdjustSliceSize = (
+  dimension: number,
+  size: [number, number],
+  sliceEndPosition: [number, number],
+) => {
+  if (sliceEndPosition[dimension] > size[dimension]) {
+    sliceEndPosition[dimension] = size[dimension];
+  }
+};
+
 export const getTensorDimensions = (
   row: number,
   col: number,
   patchSize: number,
-  padding: number,
+  padding: number = 0,
   height: number,
   width: number,
 ) => {
-  let originRowPadding = padding;
-  let originColPadding = padding;
-  let sizeHeightPadding = padding;
-  let sizeWidthPadding = padding;
-  const origin = [
-    row * patchSize - originRowPadding,
-    col * patchSize - originColPadding,
+  let yPatchSize = patchSize;
+  let xPatchSize = patchSize;
+  if (yPatchSize > height) {
+    yPatchSize = height;
+  }
+  if (xPatchSize > width) {
+    xPatchSize = width;
+  }
+  const origin: [number, number] = [
+    row * patchSize - padding,
+    col * patchSize - padding,
   ];
-  if (origin[0] < 0) {
-    originRowPadding = padding - (0 - origin[0]);
-    origin[0] = 0;
-  }
-  if (origin[1] < 0) {
-    originColPadding = padding - (0 - origin[1]);
-    origin[1] = 0;
-  }
-  const endPosition = [
-    row * patchSize + patchSize + sizeHeightPadding,
-    col * patchSize + patchSize + sizeWidthPadding,
+  const sliceOrigin: [number, number] = [padding, padding];
+
+  checkAndAdjustStartingPosition(0, origin, sliceOrigin);
+  checkAndAdjustStartingPosition(1, origin, sliceOrigin);
+
+  const endPosition: [number, number] = [
+    origin[0] + yPatchSize + padding * 2,
+    origin[1] + xPatchSize + padding * 2,
   ];
-  if (endPosition[0] > height) {
-    sizeHeightPadding = padding - (endPosition[0] - height);
-    if (sizeHeightPadding < 0) {
-      sizeHeightPadding = 0;
-    }
-    endPosition[0] = height;
-  }
-  if (endPosition[1] > width) {
-    sizeWidthPadding = padding - (endPosition[1] - width);
-    if (sizeWidthPadding < 0) {
-      sizeWidthPadding = 0;
-    }
-    endPosition[1] = width;
-  }
-  const size = [endPosition[0] - origin[0], endPosition[1] - origin[1]];
-  const sliceOrigin = [originRowPadding, originColPadding];
-  const sliceSize = [
-    size[0] - sliceOrigin[0] - sizeHeightPadding,
-    size[1] - sliceOrigin[1] - sizeWidthPadding,
+  const sliceEndPosition: [number, number] = [
+    sliceOrigin[0] + yPatchSize,
+    sliceOrigin[1] + xPatchSize,
+  ];
+
+  checkAndAdjustEndingPosition(
+    height,
+    0,
+    endPosition,
+    origin,
+    sliceOrigin,
+    sliceEndPosition,
+  );
+  checkAndAdjustEndingPosition(
+    width,
+    1,
+    endPosition,
+    origin,
+    sliceOrigin,
+    sliceEndPosition,
+  );
+
+  const size: [number, number] = [
+    endPosition[0] - origin[0],
+    endPosition[1] - origin[1],
+  ];
+
+  checkAndAdjustSliceSize(0, size, sliceEndPosition);
+  checkAndAdjustSliceSize(1, size, sliceEndPosition);
+  const sliceSize: [number, number] = [
+    sliceEndPosition[0] - sliceOrigin[0],
+    sliceEndPosition[1] - sliceOrigin[1],
   ];
 
   return {
     origin,
-    size,
     sliceOrigin,
+    size,
     sliceSize,
   };
 };
@@ -78,10 +174,20 @@ export const getTensorDimensions = (
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
-  scale: number,
-  { progress, patchSize, padding = 0 }: IUpscaleOptions = {},
+  modelDefinition: IModelDefinition,
+  { progress, patchSize, padding }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
+  const scale = modelDefinition.scale;
+
   if (patchSize) {
+    if (padding === undefined) {
+      warn([
+        '"padding" is undefined, but "patchSize" is explicitly defined.',
+        'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
+        `For more information, see ${ERROR_UNDEFINED_PADDING}.`,
+        'To hide this warning, pass an explicit padding of "0".',
+      ]);
+    }
     let pred: tf.Tensor4D;
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
     const [_, height, width] = pixels.shape;
@@ -154,23 +260,44 @@ export const predict = async (
 const upscale = async (
   model: tf.LayersModel,
   image: string | HTMLImageElement | tf.Tensor3D,
-  scale: number,
+  modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
-): Promise<tf.Tensor3D | string> => {
-  const pixels = await getImageAsPixels(image);
+) => {
+  const { tensor: pixels, type } = await getImageAsPixels(image);
+  let preprocessedPixels: tf.Tensor4D;
+  if (modelDefinition.preprocess) {
+    preprocessedPixels = modelDefinition.preprocess(pixels);
+    pixels.dispose();
+  } else {
+    preprocessedPixels = pixels;
+  }
   const upscaledTensor = await predict(
     model,
-    pixels as tf.Tensor4D,
-    scale,
+    preprocessedPixels,
+    modelDefinition,
     options,
   );
-  pixels.dispose();
-
-  if (options.output === 'tensor') {
-    return upscaledTensor;
+  let postprocessedPixels: tf.Tensor3D;
+  if (modelDefinition.postprocess) {
+    postprocessedPixels = modelDefinition.postprocess(upscaledTensor);
+    upscaledTensor.dispose();
+  } else {
+    postprocessedPixels = upscaledTensor;
   }
 
-  return tensorAsBase64(upscaledTensor);
+  if (type !== 'tensor') {
+    // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
+    // if it is a tensor, it is user provided and thus should not be disposed of.
+    pixels.dispose();
+  }
+
+  if (options.output === 'tensor') {
+    return postprocessedPixels as tf.Tensor;
+  }
+
+  const base64Src = tensorAsBase64(postprocessedPixels);
+  postprocessedPixels.dispose();
+  return base64Src;
 };
 
 export default upscale;

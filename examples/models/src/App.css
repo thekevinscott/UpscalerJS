@@ -1,0 +1,44 @@
+body {
+  padding: 40px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+}
+* {
+  box-sizing: border-box;
+}
+#root {
+  display: flex;
+}
+html, body, #root {
+  width: 100%;
+  height: 100%;
+}
+
+.app {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead {
+  background: #DDD;
+  text-shadow: 0 1px rgba(255,255,255,0.4);
+}
+thead td {
+  border: 1px solid #CCC;
+}
+
+td {
+  border: 1px solid #EEE;
+  padding: 10px;
+}
+
+label {
+  display: block;
+}

@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 
 const upscaleImage = async ([ data, shape ]) => {
   const upscaler = new Upscaler({
-    model: 'div2k-2x',
+    model: 'div2k/rdn-C3-D10-G64-G064-x2',
   });
   const tensor = tf.tensor(data, shape);
   const upscaledImg = await upscaler.upscale(tensor, {

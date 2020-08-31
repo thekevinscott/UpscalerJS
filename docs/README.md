@@ -8,35 +8,11 @@
 
 UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
-## Quick Start
+![Demo](assets/demo.gif)
 
-```
-import Upscaler from 'upscaler';
-const upscaler = new Upscaler();
-upscaler.upscale('/path/to/image').then(upscaledImage => {
-  console.log(upscaledImage); // base64 representation of image src
-});
-```
+[A live demo is here](https://upscaler.ai).
 
-## Why?
-
-Increasing an image's size results in a pixelated image:
-
-![Pixelated 2x](./assets/image-2x.png)
-
-Most browsers by default use an algorith called bicubic interpolation to get a more pleasing version, but this loses image quality and increases blurriness:
-
-![Bicubic 2x](./assets/image-bicubic-2x.png)
-
-Neural Networks [can allow us to "paint in" the expanded sections of the image](https://paperswithcode.com/task/image-super-resolution), enhancing quality.
-
-![Upscaled 2x](./assets/image-upscaled-2x.png)
-
-### Why do this in the browser?
-
-Most cutting edge Neural Networks demand heavy computation and big GPUs, but UpscalerJS leverages Tensorflow.js to run directly in your browser. Users' data can stay on their machines, and you don't need to set up a server.
-
-## Features
+**Features**
 
 * 🚀 Browser Support
 * 📦 ️Simple modern ES6 interface
@@ -45,7 +21,42 @@ Most cutting edge Neural Networks demand heavy computation and big GPUs, but Ups
 * ⚛️ Integration with React
 * 🛡️ Rigorously tested with close to 100% code coverage
 
-## Install
+## Motivation
+
+### Why?
+
+Increasing an image's size results in a pixelated image:
+
+![Pixelated 2x](./assets/image-2x.png)
+
+Most browsers by default use an algorithm called bicubic interpolation to get a more pleasing version, but this loses image quality and increases blurriness:
+
+![Bicubic 2x](./assets/image-bicubic-2x.png)
+
+Neural Networks [can allow us to "paint in" the expanded sections of the image](https://paperswithcode.com/task/image-super-resolution), enhancing quality.
+
+![Upscaled 2x](./assets/image-upscaled-2x.png)
+
+### Benefits of the Browser
+
+Why do this in the browser?
+
+Most cutting edge Neural Networks demand heavy computation and big GPUs, but UpscalerJS leverages Tensorflow.js to run directly in your browser. Users' data can stay on their machines, and you don't need to set up a server.
+
+## Getting Started
+
+### Quick Start
+
+```javascript
+import Upscaler from 'upscaler';
+const upscaler = new Upscaler();
+upscaler.upscale('/path/to/image').then(upscaledImage => {
+  console.log(upscaledImage); // base64 representation of image src
+});
+```
+
+
+### Install
 
 Yarn:
 
@@ -59,20 +70,9 @@ NPM:
 npm install upscaler
 ```
 
-## Examples 
+### Examples 
 
 You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
-
-## Pretrained Models
-
-There are a number of pretrained models provided with the package:
-
-| Key | Dataset | Scale | Example |
-| --- | --- | --- | --- |
-| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#2x) |
-| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#3x) |
-| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#4x) |
-
 
 ## Usage
 
@@ -82,7 +82,7 @@ When instantiating UpscalerJS, you must provide a model, which determines the im
 
 UpscalerJS provides a number of pretrained models out of the box. UpscalerJS will automatically choose one, or you can pick a pretrained one:
 
-```
+```javascript
 const upscaler = new Upscaler({
   model: 'div2k-2x',
 });
@@ -90,7 +90,7 @@ const upscaler = new Upscaler({
 
 Alternatively, you can provide a path to a pre-trained model of your own:
 
-```
+```javascript
 const upscaler = new Upscaler({
   model: '/path/to/model',
   scale: 2,
@@ -105,7 +105,7 @@ When providing your own model, **you must provide an explicit scale**. Conversel
 
 You can upscale an image with the following code:
 
-```
+```javascript
 upscaler.upscale('/path/to/image').then(img => {
   console.log(img);
 });
@@ -119,7 +119,7 @@ You can provide the image in any of the following formats:
 
 By default, a base64-encoded `src` attribute is returned. You can change the output type like so:
 
-```
+```javascript
 upscaler.upscale('/path/to/image', {
   output: 'tensor',
 }).then(img => {
@@ -137,7 +137,7 @@ The available types for output are:
 For larger images, attempting to run inference can impact UI performance. To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
 
 ```
-upscaler.upscale('/path/to/image', {
+```javascript
   patchSize: 64,
   padding: 5,
 })
@@ -147,6 +147,18 @@ Without padding, images will usually end up with unsightly artifacting at the se
 
 Smaller patch sizes will block the UI less, but also increase overall inference time for a given image.
 
+### Pretrained Models
+
+There are a number of pretrained models provided with the package:
+
+| Key | Dataset | Scale | Example |
+| --- | --- | --- | --- |
+| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#2x) |
+| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#3x) |
+| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#4x) |
+
+You can read more about the pretrained models at the dedicated repo [UpscalerJS-models](https://github.com/thekevinscott/UpscalerJS-models).
+
 ## API
 
 ### `constructor`
@@ -155,7 +167,7 @@ Instantiates an instance of UpscalerJS.
 
 #### Example
 
-```
+```javascript
 const upscaler = new Upscaler({
   model: 'div2k-2x',
   scale: 2,
@@ -167,7 +179,7 @@ const upscaler = new Upscaler({
 
 * `model` (`string`) - A string of a pretrained model, or a URL to load a custom pretrained model.
 * `scale` (`number`) - The scale of the custom pretrained model. Required if providing a custom model. If a pretrained model is specified, providing `scale` will throw an error.
-* `warmupSizes` (Optional, `Array<[number, number]`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
+* `warmupSizes` (Optional, `Array<[number, number] | { patchSize: number, padding?: number }`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
 
 Possible model values are:
 
@@ -182,7 +194,7 @@ Accepts an image and returns a promise resolving to the upscaled version of the 
 
 #### Example
 
-```
+```javascript
 upscaler.upscale('/path/to/image', {
   output: 'tensor',
   patchSize: 64,
@@ -210,8 +222,19 @@ If desired, the model can be "warmed up" after instantiation by calling `warmup`
 
 #### Example
 
-```
+```javascript
 upscaler.warmup([[256, 256]]).then(() => {
+  // all done.
+});
+```
+
+Or you can provide a patch size and padding:
+
+```javascript
+upscaler.warmup([{
+  patchSize: 64,
+  padding: 5,
+}]).then(() => {
   // all done.
 });
 ```
@@ -226,7 +249,7 @@ Gets the underlying model.
 
 #### Example
 
-```
+```javascript
 upscaler.getModel().then(model => {
 })
 ```
@@ -239,7 +262,7 @@ When initializing UpscalerJS with a custom model, you need to also denote the nu
 
 Scale can be provided at initialization with:
 
-```
+```javascript
 const upscaler = new Upscaler({
   model: '/your/custom/model',
   scale: 2,
@@ -252,9 +275,35 @@ A pretrained model is trained to upscale to a specific scale. If you initialize 
 
 You can fix this by not providing a `scale` property if using a pretrained model:
 
-```
+```javascript
 const upscaler = new Upscaler({
   model: 'div2k-2x',
+})
+```
+
+### Padding is undefined
+
+If specifying a patch size but not padding, you will likely encounter artifacting in the upscaled image.
+
+![Image with artifacting](./assets/image-with-artifacting.png)
+
+Most of the time, this artifacting is undesired. To resolve the artifacting, add an explicit padding:
+
+```
+upscaler.upscale('/path/to/img', {
+  patchSize: 64,
+  padding: 4,
+})
+```
+
+![Image with artifacting](./assets/image-without-artifacting.png)
+
+If you would like to keep artifacting but hide the warning message, pass an explicit padding value of 0:
+
+```
+upscaler.upscale('/path/to/img', {
+  patchSize: 64,
+  padding: 0,
 })
 ```
 
@@ -274,4 +323,4 @@ To contribute pretrained models, head over to [UpscalerJS-models](https://github
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE) for details.
 
-Copyright (c) Kevin Scott (@thekevinscott)
+Copyright (c) Kevin Scott ([@thekevinscott](https://thekevinscott.com))

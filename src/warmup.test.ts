@@ -67,4 +67,15 @@ describe('Warmup', () => {
       }),
     );
   });
+
+  it('throws if given an invalid set of warmup sizes', () => {
+    const fakeModel = getFakeModel();
+    const model = new Promise<{
+      model: tf.LayersModel;
+      modelDefinition: IModelDefinition;
+    }>((resolve) =>
+      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2 } }),
+    );
+    expect(warmup(model, [20, 20] as any)).rejects.toEqual(expect.anything());
+  });
 });

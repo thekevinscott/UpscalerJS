@@ -6,17 +6,19 @@
 <a href="https://github.com/thekevinscott/UpscalerJS/issues"><img alt="Github issues" src="https://img.shields.io/github/issues/thekevinscott/upscalerjs"></a>
 <a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler"></a>
 
-UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
+UpscalerJS is a tool for increasing image resolution in Javascript via a [Neural Network](https://github.com/thekevinscott/upscalerjs-models) up to 4x.
 
 ![Demo](assets/demo.gif)
 
-## Demo
+[A live demo is here](https://upscaler.ai).
+
+## Examples
 
 You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
 
 ## Quick Start
 
-```
+```javascript
 import Upscaler from 'upscaler';
 const upscaler = new Upscaler();
 upscaler.upscale('/path/to/image').then(upscaledImage => {
@@ -28,7 +30,7 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 [View the docs here.](https://thekevinscott.github.io/UpscalerJS/)
 
-### License
+## License
 
 [MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
 

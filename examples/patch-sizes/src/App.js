@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import './App.css';
 import Upscaler from 'upscaler';
-import { getTensorDimensions, getRowsAndColumns } from 'upscaler/upscale';
+import { getTensorDimensions, getRowsAndColumns } from 'upscaler/dist/upscale';
 import React, { useState, useEffect } from 'react';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
@@ -11,18 +11,18 @@ const size = 100;
 const src = `https://picsum.photos/${size}/${size}`;
 
 const upscaler = new Upscaler({
-  model: "div2k-2x"
+  model: "div2k/rdn-C3-D10-G64-G064-x2"
 });
 const scale = 2;
 function App() {
   const [img, setImg] = useState();
   const [upscaling, setUpscaling] = useState(false);
   const [state, setState] = useState({
-    patchSize: 50,
+    patchSize: 20,
     padding: 5,
     space: 2,
   });
-  const [upscaledImageSources, setUpscaledImageSources] = useState();
+  const [upscaledImageSources, setUpscaledImageSources] = useState({});
 
   useEffect(() => {
     const _img = new Image();
@@ -36,42 +36,41 @@ function App() {
     setUpscaling(true);
     const pixels = tf.browser.fromPixels(img);
     const { rows, columns } = getRowsAndColumns(pixels, state.patchSize);
-    const [_, height, width] = pixels.shape;
-    const total = rows * columns;
+    const [height, width] = pixels.shape;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
           row,
           col,
-          state.patchSize,
-          state.padding,
+          Number(state.patchSize),
+          Number(state.padding),
           height,
           width,
         );
         const slicedPixels = pixels.slice(
-          [0, origin[0], origin[1]],
-          [-1, size[0], size[1]],
+          [origin[0], origin[1]],
+          [size[0], size[1]],
         );
         await tf.nextFrame();
-        const prediction = upscaler.upscale(slicedPixels, {
+        console.time('upscale');
+        const prediction = await upscaler.upscale(slicedPixels, {
           output: 'tensor',
+          useConsistentDimensions: true,
         });
+        console.timeEnd('upscale');
         await tf.nextFrame();
+        
         slicedPixels.dispose();
-        await tf.nextFrame();
-        if (progress) {
-          const index = row * columns + col + 1;
-          progress(index / total);
-        }
         const slicedPrediction = prediction.slice(
-          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale],
-          [-1, sliceSize[0] * scale, sliceSize[1] * scale],
-        ).squeeze();
+          [sliceOrigin[0] * scale, sliceOrigin[1] * scale],
+          [sliceSize[0] * scale, sliceSize[1] * scale],
+        );
         await tf.nextFrame();
         prediction.dispose();
         await tf.nextFrame();
 
         const src = await tensorAsBase64(slicedPrediction);
+        slicedPrediction.dispose();
 
         setUpscaledImageSources(prev => ({
           ...prev,
@@ -79,7 +78,7 @@ function App() {
             ...prev[row],
             [col]: src,
           }
-        }))
+        }));
       }
     }
     setUpscaling(false);
@@ -95,7 +94,7 @@ function App() {
       <div id="image-container">
         <div>
           <span>(Actual image is {size}x{size})</span><br />
-          <a href={src} target="_blank"><img src={src} height={100} /></a>
+          <a href={src} target="_blank" rel="noopener noreferrer"><img alt="Original" src={src} height={100} /></a>
         </div>
         <div id="inputs">
           <div className="input">
@@ -104,7 +103,7 @@ function App() {
               disabled={upscaling}
               maxValue={size}
               minValue={0}
-              defaultValue={state.patchSize}
+              value={state.patchSize}
               onChange={handleChange('patchSize')}
             />
           </div>
@@ -114,7 +113,7 @@ function App() {
               disabled={upscaling}
               maxValue={size}
               minValue={0}
-              defaultValue={state.padding}
+              value={state.padding}
               onChange={handleChange('padding')}
             />
           </div>
@@ -124,32 +123,38 @@ function App() {
               disabled={upscaling}
               maxValue={20}
               minValue={0}
-              defaultValue={state.space}
+              value={state.space}
               onChange={handleChange('space')}
             />
           </div>
           <button id="upscale" onClick={upscale}>Upscale</button>
         </div>
-        <table id="upscaled-image">
-          <tbody>
-            {Object.keys(upscaledImageSources).sort().map(rowKey => {
-              const row = upscaledImageSources[rowKey]
-              return (
-              <tr key={rowKey}>
-                  {Object.keys(row).sort().map(colKey => {
-                    const src = row[colKey];
-                    return (
-                      <td key={colKey}>
-                        <img src={src} />
-                      </td>
-                    );
-                  })}
-              </tr>
-              );
-            })}
-
-          </tbody>
-        </table>
+        <div>
+          <table id="upscaled-image">
+            <tbody>
+              {Object.keys(upscaledImageSources).sort().map(rowKey => {
+                const row = upscaledImageSources[rowKey]
+                return (
+                  <tr key={rowKey}>
+                    {Object.keys(row).sort().map(colKey => {
+                      const src = row[colKey];
+                      return (
+                        <td
+                          key={colKey}
+                          style={{
+                            padding: state.space,
+                          }}
+                        >
+                          <img src={src} alt={`Patch ${rowKey}-${colKey}`} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
