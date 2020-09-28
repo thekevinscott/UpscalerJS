@@ -4,11 +4,11 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "@tensorflow/tfjs": "^2.0.1",
+    "@tensorflow/tfjs": "2.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "upscaler": "0.7.4"
+    "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,5 +31,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "0.7.4"
+  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
 }

@@ -1,6 +1,6 @@
 {
   "name": "comparisons",
-  "version": "0.7.4",
+  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^2.0.1",
-    "upscaler": "0.7.4"
+    "@tensorflow/tfjs": "2.0.1",
+    "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
   },
   "browserslist": {
     "production": [
