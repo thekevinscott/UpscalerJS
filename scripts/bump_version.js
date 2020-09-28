@@ -34,7 +34,7 @@ examples.forEach(example => {
         package.dependencies = {};
       }
       package.dependencies.upscaler = version;
-      package.dependencies['@tensorflow/tfjs'] = '2.0.1';
+      package.dependencies['@tensorflow/tfjs'] = '2.1.0';
     });
   }
 });

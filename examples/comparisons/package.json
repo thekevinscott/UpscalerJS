@@ -14,7 +14,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "2.0.1",
+    "@tensorflow/tfjs": "2.1.0",
     "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
   },
   "browserslist": {
