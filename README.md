@@ -26,6 +26,12 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 });
 ```
 
+## Models
+
+Pre-trained models live in [this repo](https://github.com/thekevinscott/UpscalerJS-models).
+
+All models are trained using [`image-super-resolution`](https://github.com/idealo/image-super-resolution), an implementation of [ESRGAN](https://arxiv.org/pdf/1809.00219v2.pdf) by [@idealo](https://github.com/idealo).
+
 ## Documentation
 
 [View the docs here.](https://thekevinscott.github.io/UpscalerJS/)
