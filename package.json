@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js",
+  "version": "0.7.5",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -58,7 +58,8 @@
     "ts-jest": "^26.1.4",
     "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "yargs": "^16.2.0"
   },
   "dependencies": {
     "dot-prop": "^5.1.1",

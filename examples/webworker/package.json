@@ -1,6 +1,6 @@
 {
   "name": "webworker",
-  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js",
+  "version": "0.7.5",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,6 @@
   "dependencies": {
     "@tensorflow/tfjs": "2.1.0",
     "tensor-as-base64": "^0.1.1",
-    "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
+    "upscaler": "0.7.5"
   }
 }

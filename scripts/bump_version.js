@@ -1,6 +1,14 @@
 const fs = require('fs');
 const path = require('path');
-const version = process.argv.pop();
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+
+const args = yargs(hideBin(process.argv)).argv;
+const version = args['_'].pop();
+if (!version) {
+  throw new Error('missing version');
+}
+console.log(`Upgrading to ${version}`);
 const ROOT = path.resolve(__dirname, '..');
 
 const updatePackageJSON = (packagePath, version, callback) => {
@@ -10,6 +18,7 @@ const updatePackageJSON = (packagePath, version, callback) => {
     callback(package);
   }
   fs.writeFileSync(packagePath, JSON.stringify(package, null, 2));
+  console.log(`Wrote file ${packagePath}`);
 }
 
 updatePackageJSON(path.resolve(ROOT, 'package.json'), version);

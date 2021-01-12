@@ -1,6 +1,6 @@
 {
   "name": "progress",
-  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js",
+  "version": "0.7.5",
   "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.1.0",
-    "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
+    "upscaler": "0.7.5"
   },
   "browserslist": {
     "production": [

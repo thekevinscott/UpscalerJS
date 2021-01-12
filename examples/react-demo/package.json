@@ -9,7 +9,7 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.2",
     "react-scripts": "3.4.1",
-    "upscaler": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
+    "upscaler": "0.7.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,5 +32,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "/mnt/Castellan/code/upscalerjs/scripts/bump_version.js"
+  "version": "0.7.5"
 }
