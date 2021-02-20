@@ -1,6 +1,7 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "rules": {
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "curly": true
   }
 }
