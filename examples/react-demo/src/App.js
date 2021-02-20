@@ -130,6 +130,7 @@ function App() {
           <div className="image-container original">
             <img
               src={src}
+              alt="Original"
               width={originalSize ? originalSize.width * scale : null}
               style={{
                 imageRendering: interpolation === 'none' ? 'pixelated' : null,
@@ -148,6 +149,7 @@ function App() {
                 style={{
                   left: ((originalSize.width * scale * left) / 100) * -1,
                 }}
+                alt="Upscaled"
                 src={upscaledImageSrc}
                 width={originalSize ? originalSize.width * scale : null}
               />
