@@ -7,7 +7,7 @@
     "@tensorflow/tfjs": "2.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^4.0.2",
     "upscaler": "0.7.5"
   },
   "scripts": {
