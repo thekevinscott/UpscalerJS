@@ -7,4 +7,6 @@ name = "javascript"
 enabled = true
 
   [analyzers.meta]
+  dialect = "typescript"
+  style_guide = "airbnb"
   environment = ["browser"]
