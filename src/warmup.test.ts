@@ -16,6 +16,7 @@ const getFakeModel = () => {
 };
 
 describe('Warmup', () => {
+  
   it('throws if given an invalid size', async () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
