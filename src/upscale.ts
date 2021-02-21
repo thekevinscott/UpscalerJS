@@ -188,12 +188,21 @@ export const predict = async (
         'To hide this warning, pass an explicit padding of "0".',
       ]);
     }
-    let pred: tf.Tensor4D;
+    const channels = 3;
+    const [height, width] = pixels.shape.slice(1);
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
-    const [_, height, width] = pixels.shape;
+    const { size } = getTensorDimensions(
+      0,
+      0,
+      patchSize,
+      padding,
+      height,
+      width,
+    );
+    let pred: tf.Tensor4D = tf.zeros([1, 0, size[1] * scale, channels]);
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
-      let colTensor: tf.Tensor4D;
+      let colTensor: tf.Tensor4D = tf.zeros([1, size[0] * scale, 0, channels]);
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
           row,
@@ -224,26 +233,16 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-        if (!colTensor) {
-          colTensor = slicedPrediction;
-        } else {
-          colTensor = colTensor.concat(slicedPrediction, 2);
-          await tf.nextFrame();
-          slicedPrediction.dispose();
-        }
+        colTensor = colTensor.concat(slicedPrediction, 2);
+        await tf.nextFrame();
+        slicedPrediction.dispose();
         await tf.nextFrame();
       }
-      if (!pred) {
-        pred = colTensor;
-      } else {
-        pred = pred.concat(colTensor, 1);
-        await tf.nextFrame();
-        colTensor.dispose();
-      }
+
+      pred = pred.concat(colTensor, 1);
       await tf.nextFrame();
-    }
-    if (!pred) {
-      throw new Error('Prediction tensor was never initialized.');
+      colTensor.dispose();
+      await tf.nextFrame();
     }
     return pred.squeeze() as tf.Tensor3D;
   }
