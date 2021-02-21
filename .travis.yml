@@ -5,4 +5,7 @@ before_install:
   - "yarn add @tensorflow/tfjs"
 after_success:
   - codecov
-script: yarn test-lint-format
+script: 
+  - "yarn test"
+  - "yarn lint"
+  - "yarn format"
