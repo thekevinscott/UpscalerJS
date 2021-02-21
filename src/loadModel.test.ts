@@ -1,6 +1,7 @@
 import loadModel, {
   prepareModelDefinitions,
   getModelDefinition,
+  getModelDescription,
 } from './loadModel';
 import * as models from './models';
 import * as tf from '@tensorflow/tfjs';
@@ -9,6 +10,40 @@ jest.mock('@tensorflow/tfjs');
 
 const mockModels = (obj: { [index: string]: any }) =>
   Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));
+
+describe('getModelDescription', () => {
+  afterEach(() => {
+    try {
+      (global.fetch as any).mockClear();
+      delete global.fetch;
+    } catch (err) {}
+  });
+
+  it('returns empty string if no config URL is provided', async () => {
+    const result = await getModelDescription({
+      url: 'foo',
+      scale: 2,
+    });
+    expect(result).toEqual('');
+  });
+
+  it('returns empty string if no config URL is provided', async () => {
+    global.fetch = jest.fn().mockImplementation((configURL: string) => {
+      return Promise.resolve({
+        json: () =>
+          Promise.resolve({
+            description: configURL,
+          }),
+      });
+    });
+    const result = await getModelDescription({
+      url: 'foo',
+      scale: 2,
+      configURL: 'foo',
+    });
+    expect(result).toEqual('foo');
+  });
+});
 
 describe('getModelDefinitions', () => {
   afterEach(() => {

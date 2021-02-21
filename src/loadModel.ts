@@ -98,9 +98,21 @@ let modelDefinitions: undefined | ModelDefinitions;
 
 export const getModelDefinitions = async () => {
   if (!modelDefinitions) {
-    modelDefinitions = await prepareModelDefinitions({ ...modelDefinitions });
+    modelDefinitions = await prepareModelDefinitions();
   }
   return modelDefinitions;
+};
+
+export const getModelDescription = async (
+  val: IModelDefinition,
+): Promise<string> => {
+  try {
+    if (val.configURL) {
+      const response = await fetch(val.configURL).then((resp) => resp.json());
+      return response.description;
+    }
+  } catch (err) {}
+  return '';
 };
 
 export const prepareModelDefinitions = async (
@@ -109,18 +121,11 @@ export const prepareModelDefinitions = async (
   const entries = Object.entries(MODELS);
   await Promise.all(
     entries.map(async ([key, val]) => {
-      try {
-        const config = await fetch(val.configURL).then((resp) => resp.json());
-        preparedModelDefinitions[key] = {
-          ...val,
-          description: config.description,
-        };
-      } catch (err) {
-        preparedModelDefinitions[key] = {
-          ...val,
-          description: '',
-        };
-      }
+      const config = await getModelDescription(val);
+      preparedModelDefinitions[key] = {
+        ...val,
+        description: config,
+      };
     }),
   );
 
