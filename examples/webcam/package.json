@@ -14,7 +14,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "2.1.0",
+    "@tensorflow/tfjs": "2.8.6",
     "upscaler": "0.7.6"
   },
   "browserslist": {
