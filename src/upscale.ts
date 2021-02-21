@@ -191,7 +191,7 @@ export const predict = async (
     const channels = 3;
     const [height, width] = pixels.shape.slice(1);
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
-    const { size } = getTensorDimensions(
+    const { size: originalSize } = getTensorDimensions(
       0,
       0,
       patchSize,
@@ -199,10 +199,20 @@ export const predict = async (
       height,
       width,
     );
-    let pred: tf.Tensor4D = tf.zeros([1, 0, size[1] * scale, channels]);
+    let upscaledTensor: tf.Tensor4D = tf.zeros([
+      1,
+      0,
+      originalSize[1] * scale,
+      channels,
+    ]);
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
-      let colTensor: tf.Tensor4D = tf.zeros([1, size[0] * scale, 0, channels]);
+      let colTensor: tf.Tensor4D = tf.zeros([
+        1,
+        originalSize[0] * scale,
+        0,
+        channels,
+      ]);
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
           row,
@@ -239,12 +249,12 @@ export const predict = async (
         await tf.nextFrame();
       }
 
-      pred = pred.concat(colTensor, 1);
+      upscaledTensor = upscaledTensor.concat(colTensor, 1);
       await tf.nextFrame();
       colTensor.dispose();
       await tf.nextFrame();
     }
-    return pred.squeeze() as tf.Tensor3D;
+    return upscaledTensor.squeeze() as tf.Tensor3D;
   }
 
   return tf.tidy(() => {

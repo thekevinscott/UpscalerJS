@@ -11,6 +11,10 @@ if (!version) {
 console.log(`Upgrading to ${version}`);
 const ROOT = path.resolve(__dirname, '..');
 
+const ROOT_PACKAGE = require(path.resolve(ROOT, 'package.json'));
+
+const peerDependencies = ROOT_PACKAGE['peerDependencies'];
+
 const updatePackageJSON = (packagePath, version, callback) => {
   const package = require(packagePath);
   package.version = version;
@@ -43,7 +47,8 @@ examples.forEach(example => {
         package.dependencies = {};
       }
       package.dependencies.upscaler = version;
-      package.dependencies['@tensorflow/tfjs'] = '2.1.0';
+      
+      package.dependencies['@tensorflow/tfjs'] = peerDependencies['@tensorflow/tfjs'];
     });
   }
 });
