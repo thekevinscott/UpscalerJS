@@ -30,10 +30,11 @@
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json"
   },
   "pre-commit": [
+    "lint",
     "format"
   ],
   "repository": {
