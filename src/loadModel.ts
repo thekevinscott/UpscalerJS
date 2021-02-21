@@ -24,7 +24,7 @@ const DEPRECATION_WARNINGS: {
   'div2k-2x': ['div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.8.0'],
   'div2k-3x': ['div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.8.0'],
   'div2k-4x': ['div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.8.0'],
-  'psnr': ['psnr', 'idealo/psnr-small', '0.8.0'],
+  psnr: ['psnr', 'idealo/psnr-small', '0.8.0'],
 };
 
 const checkDeprecatedModels = (model: string) => {
