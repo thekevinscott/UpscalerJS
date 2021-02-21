@@ -26,10 +26,11 @@
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
     "preversion": "yarn lint",
-    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
+    "bump_version": "yarn format --write && git add -A src && node scripts/bump_version.js",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "test-lint-format": "yarn lint && yarn format && yarn test",
+    "format": "prettier \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json"
   },
