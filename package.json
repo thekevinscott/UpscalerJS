@@ -29,7 +29,7 @@
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json"
   },
