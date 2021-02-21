@@ -29,10 +29,14 @@
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
     "build": "rimraf dist && tsc --skipLibCheck",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
+    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json"
   },
+  "pre-commit": [
+    "lint",
+    "format"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
@@ -53,6 +57,7 @@
     "docsify-cli": "^4.4.2",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
+    "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.1.4",
