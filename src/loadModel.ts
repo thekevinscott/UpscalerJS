@@ -18,18 +18,19 @@ const warnDeprecatedModel = (
     `Please switch to the following key: ${nextKey}`,
   ]);
 
+const DEPRECATION_WARNINGS: {
+  [index: string]: [string, string, string];
+} = {
+  'div2k-2x': ['div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.8.0'],
+  'div2k-3x': ['div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.8.0'],
+  'div2k-4x': ['div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.8.0'],
+  'psnr': ['psnr', 'idealo/psnr-small', '0.8.0'],
+};
+
 const checkDeprecatedModels = (model: string) => {
-  if (model === 'div2k-2x') {
-    warnDeprecatedModel('div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.6.0');
-  }
-  if (model === 'div2k-3x') {
-    warnDeprecatedModel('div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.6.0');
-  }
-  if (model === 'div2k-4x') {
-    warnDeprecatedModel('div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.6.0');
-  }
-  if (model === 'psnr') {
-    warnDeprecatedModel('psnr', 'idealo/psnr-small', '0.6.0');
+  const deprecationWarning = DEPRECATION_WARNINGS[model];
+  if (deprecationWarning) {
+    warnDeprecatedModel(...deprecationWarning);
   }
 };
 
