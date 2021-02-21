@@ -1,13 +1,10 @@
 version = 1
 
+test_patterns = ["src/**/*.ts"]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
 
   [analyzers.meta]
-  style_guide = "airbnb"
-  dialect = "typescript"
-  environment = [
-    "nodejs",
-    "browser"
-  ]
+  environment = ["browser"]
