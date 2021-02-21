@@ -8,4 +8,3 @@ after_success:
 script: 
   - "yarn test"
   - "yarn lint"
-  - "yarn format"
