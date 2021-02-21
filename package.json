@@ -50,7 +50,7 @@
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
     "codecov": "^3.7.2",
-    "docsify-cli": "^4.4.1",
+    "docsify-cli": "^4.4.2",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
     "prettier": "^2.0.5",
