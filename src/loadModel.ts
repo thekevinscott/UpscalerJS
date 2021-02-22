@@ -8,7 +8,7 @@ const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
-const warnDeprecatedModel = (
+export const warnDeprecatedModel = (
   key: string,
   nextKey: string,
   expirationVersion: string,
@@ -18,17 +18,19 @@ const warnDeprecatedModel = (
     `Please switch to the following key: ${nextKey}`,
   ]);
 
-const DEPRECATION_WARNINGS: {
+export interface DeprecationWarnings {
   [index: string]: [string, string, string];
-} = {
+}
+
+const DEPRECATION_WARNINGS: DeprecationWarnings = {
   'div2k-2x': ['div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.8.0'],
   'div2k-3x': ['div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.8.0'],
   'div2k-4x': ['div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.8.0'],
   psnr: ['psnr', 'idealo/psnr-small', '0.8.0'],
 };
 
-const checkDeprecatedModels = (model: string) => {
-  const deprecationWarning = DEPRECATION_WARNINGS[model];
+export const checkDeprecatedModels = (warnings: DeprecationWarnings, model: string) => {
+  const deprecationWarning = warnings[model];
   if (deprecationWarning) {
     warnDeprecatedModel(...deprecationWarning);
   }
@@ -41,7 +43,7 @@ export const getModelDefinition = ({
   if (model in MODELS) {
     const modelDefinition = MODELS[model];
     if (modelDefinition.deprecated) {
-      checkDeprecatedModels(model);
+      checkDeprecatedModels(DEPRECATION_WARNINGS, model);
     }
     if (scale) {
       throw new Error(
