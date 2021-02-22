@@ -30,7 +30,9 @@ const warmup = async (
     } else {
       if (typeof size[0] !== 'number' || typeof size[1] !== 'number') {
         throw new Error(
-          `Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${size}`,
+          `Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${size.join(
+            ',',
+          )}`,
         );
       }
       const [width, height] = size;
