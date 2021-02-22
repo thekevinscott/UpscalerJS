@@ -11,7 +11,7 @@ import * as utils from './utils';
 jest.mock('./models');
 jest.mock('@tensorflow/tfjs');
 jest.mock('./utils', () => ({
-  ...jest.requireActual('./utils'),
+  ...(jest.requireActual('./utils') as any),
   warn: jest.fn(),
 }));
 
@@ -25,19 +25,28 @@ describe('checkDeprecatedModels', () => {
   });
 
   it('does report if a deprecated model', () => {
-    checkDeprecatedModels({
-      foo: ['foo', 'bar', 'baz'],
-    }, 'foo');
+    checkDeprecatedModels(
+      {
+        foo: ['foo', 'bar', 'baz'],
+      },
+      'foo',
+    );
     expect(utils.warn).toBeCalled();
   });
 });
 
 describe('warnDeprecatedModel', () => {
   it('gives a warning message', () => {
-    const args: [string, string, string] = ['psnr', 'idealo/psnr-small', '0.8.0'];
+    const args: [string, string, string] = [
+      'psnr',
+      'idealo/psnr-small',
+      '0.8.0',
+    ];
     warnDeprecatedModel(...args);
-    expect(utils.warn).toBeCalledWith(expect.arrayContaining([expect.stringContaining('psnr')]));
-  })
+    expect(utils.warn).toBeCalledWith(
+      expect.arrayContaining([expect.stringContaining('psnr')]),
+    );
+  });
 });
 
 describe('getModelDescription', () => {

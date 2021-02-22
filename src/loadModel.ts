@@ -29,7 +29,10 @@ const DEPRECATION_WARNINGS: DeprecationWarnings = {
   psnr: ['psnr', 'idealo/psnr-small', '0.8.0'],
 };
 
-export const checkDeprecatedModels = (warnings: DeprecationWarnings, model: string) => {
+export const checkDeprecatedModels = (
+  warnings: DeprecationWarnings,
+  model: string,
+) => {
   const deprecationWarning = warnings[model];
   if (deprecationWarning) {
     warnDeprecatedModel(...deprecationWarning);
