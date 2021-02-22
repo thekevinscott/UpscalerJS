@@ -2,14 +2,52 @@ import loadModel, {
   prepareModelDefinitions,
   getModelDefinition,
   getModelDescription,
+  warnDeprecatedModel,
+  checkDeprecatedModels,
 } from './loadModel';
 import * as models from './models';
 import * as tf from '@tensorflow/tfjs';
+import * as utils from './utils';
 jest.mock('./models');
 jest.mock('@tensorflow/tfjs');
+jest.mock('./utils', () => ({
+  ...(jest.requireActual('./utils') as any),
+  warn: jest.fn(),
+}));
 
 const mockModels = (obj: { [index: string]: any }) =>
   Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));
+
+describe('checkDeprecatedModels', () => {
+  it('does not report if not a deprecated model', () => {
+    checkDeprecatedModels({}, 'foo');
+    expect(utils.warn).not.toBeCalled();
+  });
+
+  it('does report if a deprecated model', () => {
+    checkDeprecatedModels(
+      {
+        foo: ['foo', 'bar', 'baz'],
+      },
+      'foo',
+    );
+    expect(utils.warn).toBeCalled();
+  });
+});
+
+describe('warnDeprecatedModel', () => {
+  it('gives a warning message', () => {
+    const args: [string, string, string] = [
+      'psnr',
+      'idealo/psnr-small',
+      '0.8.0',
+    ];
+    warnDeprecatedModel(...args);
+    expect(utils.warn).toBeCalledWith(
+      expect.arrayContaining([expect.stringContaining('psnr')]),
+    );
+  });
+});
 
 describe('getModelDescription', () => {
   afterEach(() => {
@@ -45,7 +83,7 @@ describe('getModelDescription', () => {
   });
 });
 
-describe('getModelDefinitions', () => {
+describe('getModelDefinition', () => {
   afterEach(() => {
     (global.fetch as any).mockClear();
     delete global.fetch;

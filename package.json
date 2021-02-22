@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
