@@ -54,7 +54,7 @@ var capabilities = {
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
 }
 
-var driver = new webdriver.Builder()
+driver = new webdriver.Builder()
   .usingServer('http://hub-cloud.browserstack.com/wd/hub')
   .withCapabilities(capabilities)
   .build();
