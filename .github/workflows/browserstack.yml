@@ -1,8 +1,8 @@
-name: 'BrowserStack Test'
+name: 'Integration Tests'
 on: [pull_request]
 jobs:
   ubuntu-job:
-    name: 'Browser Integration Tests'
+    name: 'Browser'
     runs-on: ubuntu-latest  # Can be self-hosted runner also
     steps:
 

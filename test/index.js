@@ -1,4 +1,6 @@
 const webdriver = require('selenium-webdriver');
+const chai = require('chai');
+const expect = require('chai').expect;
 
 const CAPABILITIES = [
 {
@@ -33,6 +35,8 @@ CAPABILITIES.map(capabilities => ({
     .withCapabilities(capabilities)
     .build()
     .get('http://localhost:8099');
+  const title = await driver.getTitle();
+  expect(title).to.equal('Some title');
 
   driver.quit();
 });
