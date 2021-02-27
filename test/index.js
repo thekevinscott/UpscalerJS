@@ -33,8 +33,8 @@ CAPABILITIES.map(capabilities => ({
   const driver = new webdriver.Builder()
     .usingServer('http://hub-cloud.browserstack.com/wd/hub')
     .withCapabilities(capabilities)
-    .build()
-    .get('http://localhost:8099');
+    .build();
+  await driver.get('http://localhost:8099');
   const title = await driver.getTitle();
   expect(title).to.equal('Some title');
 
