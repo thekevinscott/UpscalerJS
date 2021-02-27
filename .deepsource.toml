@@ -2,7 +2,7 @@ version = 1
 
 test_patterns = ["src/**/*.ts", tsconfig.json]
 
-exclude_patterns = ["src/**/*.test.ts", "examples/**", "scripts/**", "jest.setup.ts"]
+exclude_patterns = ["src/**/*.test.ts", "examples/**", "scripts/**"]
 
 [[analyzers]]
 name = "javascript"
