@@ -1,75 +1,8 @@
 name: 'BrowserStack Test'
 on: [pull_request]
 jobs:
-  macos-job:
-    name: 'BrowserStack Test on Mac OS'
-    runs-on: macos-latest  # Can be self-hosted runner also
-    steps:
-
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: 'BrowserStack Local Tunnel Setup'  # Invokes the setup-local action
-        uses: browserstack/github-actions/setup-local@master
-        with:
-          local-testing: start
-          local-identifier: random
-
-      - name: 'Checkout the repository'
-        uses: actions/checkout@v2
-
-      - name: 'Building web application to be tested'
-        run: yarn
-
-      - name: 'Running application under test'
-        run: yarn test:integration:browser:start-server &
-
-      - name: 'Running test on BrowserStack'  # Invokes the actual test script that would run on BrowserStack browsers
-        run: yarn test:integration:browser
-
-      - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
-        uses: browserstack/github-actions/setup-local@master
-        with:
-          local-testing: stop
-  windows-job:
-    name: 'BrowserStack Test on Windows'
-    runs-on: windows-latest  # Can be self-hosted runner also
-    steps:
-
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: 'BrowserStack Local Tunnel Setup'  # Invokes the setup-local action
-        uses: browserstack/github-actions/setup-local@master
-        with:
-          local-testing: start
-          local-identifier: random
-
-      - name: 'Checkout the repository'
-        uses: actions/checkout@v2
-
-      - name: 'Building web application to be tested'
-        run: yarn
-
-      - name: 'Running application under test'
-        run: yarn test:integration:browser:start-server &
-
-      - name: 'Running test on BrowserStack'  # Invokes the actual test script that would run on BrowserStack browsers
-        run: yarn test:integration:browser
-
-      - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
-        uses: browserstack/github-actions/setup-local@master
-        with:
-          local-testing: stop
-
   ubuntu-job:
-    name: 'BrowserStack Test on Ubuntu'
+    name: 'Browser Integration Tests'
     runs-on: ubuntu-latest  # Can be self-hosted runner also
     steps:
 
@@ -85,19 +18,19 @@ jobs:
           local-testing: start
           local-identifier: random
 
-      - name: 'Checkout the repository'
+      - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Building web application to be tested'
+      - name: 'Building'
         run: yarn
 
-      - name: 'Running application under test'
+      - name: 'Running application'
         run: yarn test:integration:browser:start-server &
 
-      - name: 'Running test on BrowserStack'  # Invokes the actual test script that would run on BrowserStack browsers
+      - name: 'Running test'  # Invokes the actual test script that would run on BrowserStack browsers
         run: yarn test:integration:browser
 
-      - name: 'BrowserStackLocal Stop'  # Terminating the BrowserStackLocal tunnel connection
+      - name: 'Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: stop
