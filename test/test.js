@@ -1,5 +1,4 @@
 const webdriver = require('selenium-webdriver');
-const expect = require('chai').expect;
 
 const CAPABILITIES = [
 {
@@ -39,14 +38,14 @@ describe("integration tests", () => {
   let driver;
 
   beforeAll(async () => {
-    driver = getDriver(CAPABILITIES[0]);
+    driver = getDriverForCapabilities(CAPABILITIES[0]);
   });
 
   afterAll(async () => {
     await driver.quit();
   });
 
-  test("test", async () => {
+  it("test", async () => {
     await driver.get('http://localhost:8099');
     const title = await driver.getTitle();
     expect(title).to.equal('Some title');
