@@ -27,7 +27,7 @@ jobs:
         run: yarn
 
       - name: 'Running application under test'
-        run: yarn test:integration:browser:start-server
+        run: yarn test:integration:browser:start-server &
 
       - name: 'Running test on BrowserStack'  # Invokes the actual test script that would run on BrowserStack browsers
         run: yarn test:integration:browser
