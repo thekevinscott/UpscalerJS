@@ -44,22 +44,27 @@ const DEFAULT_CAPABILITIES = {
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
 };
 
-describe("integration tests", () => {
+describe.each([
+  {
+    'os': 'windows',
+    'os_version': '10',
+    'browserName': 'firefox',
+  },
+  {
+    'os': 'windows',
+    'os_version': '10',
+    'browserName': 'chrome',
+  },
+])("integration tests", (capabilities) => {
   let driver;
 
   beforeAll(async () => {
-    // driver = getDriverForCapabilities(CAPABILITIES[0]);
-
-    const capabilities = {
-      'os': 'windows',
-      'os_version': '10',
-      'browserName': 'chrome',
-      ...DEFAULT_CAPABILITIES,
-    };
-
     driver = new webdriver.Builder()
       .usingServer('http://hub-cloud.browserstack.com/wd/hub')
-      .withCapabilities(capabilities)
+      .withCapabilities({
+        ...capabilities,
+        ...DEFAULT_CAPABILITIES,
+      })
       .build();
   });
 
@@ -73,7 +78,7 @@ describe("integration tests", () => {
     await driver.get('http://localhost:8099');
     console.log('test 2')
     const title = await driver.getTitle();
-    console.log('test 3')
+    console.log('test 3', title)
     expect(title).to.equal('Some title');
     console.log('test 4')
   });
