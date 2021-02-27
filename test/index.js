@@ -5,13 +5,23 @@ const CAPABILITIES = [
   'os': 'windows',
   'os_version': '10',
   'browserName': 'chrome',
-  'browser_version' : 'latest',
-  'browserstack.local': 'true',
-}
-]
+},
+{
+  'os': 'windows',
+  'os_version': '10',
+  'browserName': 'firefox',
+}, 
+{
+  'os': 'windows',
+  'os_version': '8.1',
+  'browserName': 'chrome',
+},
+];
 
 CAPABILITIES.map(capabilities => ({
   ...capabilities,
+  'browser_version' : 'latest',
+  'browserstack.local': 'true',
   'build': process.env.BROWSERSTACK_BUILD_NAME,
   'project': process.env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
