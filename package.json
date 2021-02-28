@@ -32,7 +32,7 @@
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
-    "test:integration:browser:start-server": "http-server -p 8099 test/server",
+    "test:integration:browser:ci": "jest test/test.js --ci",
     "test:integration:browser": "jest test/test.js"
   },
   "pre-commit": [
@@ -55,6 +55,7 @@
   "devDependencies": {
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
+    "browserstack-local": "^1.4.8",
     "codecov": "^3.7.2",
     "docsify-cli": "^4.4.2",
     "http-server": "^0.12.3",

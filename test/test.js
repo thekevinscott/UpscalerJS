@@ -1,4 +1,11 @@
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv)).argv
 const webdriver = require('selenium-webdriver');
+const browserstack = require('browserstack-local');
+const httpServer = require('http-server');
+jest.setTimeout(30000);
+
 
 const CAPABILITIES = [
 {
@@ -50,15 +57,32 @@ describe.each([
     'os_version': '10',
     'browserName': 'firefox',
   },
-  {
-    'os': 'windows',
-    'os_version': '10',
-    'browserName': 'chrome',
-  },
+  // {
+  //   'os': 'windows',
+  //   'os_version': '10',
+  //   'browserName': 'chrome',
+  // },
 ])("integration tests", (capabilities) => {
   let driver;
+  let bsLocal;
+  let server;
 
   beforeAll(async () => {
+    server = httpServer.createServer({
+      root: 'test/server',
+    });
+    server.listen(8099);
+
+    if (argv.ci !== true) {
+      bsLocal = new browserstack.Local();
+      // starts the Local instance with the required arguments
+      bsLocal.start({
+        'key': process.env.BROWSERSTACK_ACCESS_KEY,
+      }, function () {
+        console.log("Started BrowserStackLocal");
+      });
+    }
+
     driver = new webdriver.Builder()
       .usingServer('http://hub-cloud.browserstack.com/wd/hub')
       .withCapabilities({
@@ -69,17 +93,19 @@ describe.each([
   });
 
   afterAll(async () => {
+    server.close();
     await driver.quit();
+    if (argv.ci !== true && bsLocal && bsLocal.isRunning()) {
+      bsLocal.stop(function () {
+        console.log("Stopped BrowserStackLocal");
+      });
+      bsLocal = undefined;
+    }
   });
 
   it("test", async () => {
-    console.log('test 1')
-    console.log(driver);
     await driver.get('http://localhost:8099');
-    console.log('test 2')
     const title = await driver.getTitle();
-    console.log('test 3', title)
-    expect(title).to.equal('Some title');
-    console.log('test 4')
+    expect(title).toEqual('Some title');
   });
 });

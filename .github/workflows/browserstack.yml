@@ -24,11 +24,8 @@ jobs:
       - name: 'Building'
         run: yarn
 
-      - name: 'Running application'
-        run: yarn test:integration:browser:start-server &
-
-      - name: 'Running test'  # Invokes the actual test script that would run on BrowserStack browsers
-        run: yarn test:integration:browser
+      - name: 'Running test'
+        run: yarn test:integration:browser --ci
 
       - name: 'Stop'  # Terminating the BrowserStackLocal tunnel connection
         uses: browserstack/github-actions/setup-local@master
