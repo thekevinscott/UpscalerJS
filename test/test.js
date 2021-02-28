@@ -1,11 +1,12 @@
+require('dotenv').config();
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv)).argv
 const webdriver = require('selenium-webdriver');
 const browserstack = require('browserstack-local');
-const httpServer = require('http-server');
+const handler = require('serve-handler');
+const http = require('http');
 jest.setTimeout(30000);
-
 
 const CAPABILITIES = [
 {
@@ -68,9 +69,9 @@ describe.each([
   let server;
 
   beforeAll(async () => {
-    server = httpServer.createServer({
-      root: 'test/server',
-    });
+    const server = http.createServer((request, response) => handler(request, response, {
+      public: 'test/server',
+    }));
     server.listen(8099);
 
     if (argv.ci !== true) {
@@ -78,9 +79,7 @@ describe.each([
       // starts the Local instance with the required arguments
       bsLocal.start({
         'key': process.env.BROWSERSTACK_ACCESS_KEY,
-      }, function () {
-        console.log("Started BrowserStackLocal");
-      });
+      }, () => {});
     }
 
     driver = new webdriver.Builder()
@@ -93,13 +92,10 @@ describe.each([
   });
 
   afterAll(async () => {
-    server.close();
+    server.stop();
     await driver.quit();
     if (argv.ci !== true && bsLocal && bsLocal.isRunning()) {
-      bsLocal.stop(function () {
-        console.log("Stopped BrowserStackLocal");
-      });
-      bsLocal = undefined;
+      bsLocal.stop(() => {});
     }
   });
 
