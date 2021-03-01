@@ -92,11 +92,11 @@ describe.each([
   });
 
   afterAll(async () => {
-    server.stop();
     await driver.quit();
     if (argv.ci !== true && bsLocal && bsLocal.isRunning()) {
       bsLocal.stop(() => {});
     }
+    server.stop();
   });
 
   it("test", async () => {
