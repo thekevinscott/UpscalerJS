@@ -76,7 +76,6 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "dot-prop": "^5.1.1",
     "tensor-as-base64": "^0.1.1"
   }
 }
