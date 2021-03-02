@@ -1,6 +1,6 @@
 version = 1
 
-test_patterns = ["src/**/*.ts", tsconfig.json]
+test_patterns = ["src/**/*.ts"]
 
 exclude_patterns = ["src/**/*.test.ts", "examples/**", "scripts/**", "jest.setup.ts"]
 
