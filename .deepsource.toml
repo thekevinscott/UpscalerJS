@@ -1,13 +1,17 @@
 version = 1
 
-test_patterns = ["src/**/*.ts", tsconfig.json]
+test_patterns = ["src/**/*.ts"]
 
-exclude_patterns = ["src/**/*.test.ts", "examples/**", "scripts/**", "jest.setup.ts"]
+exclude_patterns = ["\"src/**/*.test.ts\", \"examples/**\", \"scripts/**\", \"jest.setup.ts\""]
 
 [[analyzers]]
 name = "javascript"
 enabled = true
 
   [analyzers.meta]
-  environment = ["browser"]
+  environment = [
+    "browser",
+    "nodejs",
+    "jest"
+  ]
   dialect = "typescript"
