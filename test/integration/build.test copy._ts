@@ -1,0 +1,184 @@
+jest.setTimeout(30000);
+
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const playwright = require('playwright');
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const argv = yargs(hideBin(process.argv)).argv
+const webdriver = require('selenium-webdriver');
+const browserstack = require('browserstack-local');
+const webpack = require('webpack');
+
+const handler = require('serve-handler');
+const http = require('http');
+const rimraf = require('rimraf');
+const path = require('path');
+
+let compiler;
+const bundle = (ROOT, DIST) => new Promise((resolve, reject) => {
+  rimraf.sync(DIST);
+
+  if (!compiler) {
+    const entryFiles = path.join(ROOT, 'index.js');
+
+    compiler = webpack({
+      mode: 'production',
+      context: ROOT,
+      entry: entryFiles,
+      stats: 'errors-only',
+      plugins: [new HtmlWebpackPlugin()],
+      output: {
+        path: DIST,
+      },
+      module: {
+        rules: [
+          {
+            test: /\.(png|svg|jpg|jpeg|gif)$/i,
+            type: 'asset/resource',
+          },
+        ],
+      },
+    });
+  }
+
+  compiler.run((err, stats) => {
+    if (err || stats.hasErrors()) {
+      reject(err || stats.toJson('errors-only').errors.map(e => e.message));
+    } else {
+      resolve();
+    }
+  });
+});
+
+const startServer = (DIST, PORT) => new Promise(resolve => {
+  const server = http.createServer((request, response) => handler(request, response, {
+    public: DIST,
+  }));
+  server.listen(PORT, () => {
+    resolve(server);
+  });
+})
+
+const ROOT = path.join(__dirname, '../lib/webpack-bundler');
+const DIST = path.join(ROOT, '/dist');
+
+const DEFAULT_CAPABILITIES = {
+  'browser_version': 'latest',
+  'browserstack.local': 'true',
+  'build': process.env.BROWSERSTACK_BUILD_NAME,
+  'project': process.env.BROWSERSTACK_PROJECT_NAME,
+  'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+  'browserstack.user': process.env.BROWSERSTACK_USERNAME,
+  'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,
+  'os': 'windows',
+  'os_version': '10',
+  'browserName': 'firefox',
+};
+
+describe("building UpscalerJS", () => {
+  // let driver;
+  // let bsLocal;
+  let server;
+
+  const PORT = 8099;
+
+  beforeAll(async () => {
+    try {
+      await bundle(ROOT, DIST);
+      server = await startServer(DIST, PORT);
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }, 60000);
+
+  // beforeAll(async (done) => {
+  //   const PARCEL_DIST = path.join(__dirname, '../lib/parcel-bundler/dist');
+  //   await parcelBundle(PARCEL_DIST);
+  //   server = http.createServer((request, response) => handler(request, response, {
+  //     public: PARCEL_DIST,
+  //   }));
+
+  //   // if (argv.ci !== true) {
+  //   //   bsLocal = new browserstack.Local();
+  //   //   // starts the Local instance with the required arguments
+  //   //   bsLocal.start({
+  //   //     'key': process.env.BROWSERSTACK_ACCESS_KEY,
+  //   //   }, () => { });
+  //   // }
+
+  //   // driver = new webdriver.Builder()
+  //   //   .usingServer('http://hub-cloud.browserstack.com/wd/hub')
+  //   //   .withCapabilities(DEFAULT_CAPABILITIES)
+  //   //   .build();
+
+  //   server.listen(PORT, done);
+  // });
+
+  afterAll(async (done) => {
+    console.log('after 1')
+    // if (driver) {
+    //   await driver.quit();
+    // } else {
+    //   console.warn('No driver found')
+    // }
+    // if (argv.ci !== true && bsLocal && bsLocal.isRunning()) {
+    //   bsLocal.stop(() => {});
+    // }
+    if (server) {
+      server.close(done);
+    } else {
+      console.warn('No server found')
+    }
+  });
+
+  it("imports local src as part of a bundler (webpack)", async () => {
+    console.log('test 1')
+    const browser = await playwright['chromium'].launch();
+    console.log('test 2')
+    const context = await browser.newContext();
+    console.log('test 3')
+    const page = await context.newPage();
+    console.log('test 4')
+    await page.goto(`http://localhost:${PORT}`);
+    console.log('test 5')
+    const wait = dur => new Promise(resolve => setTimeout(resolve, dur));
+    console.log('test 6')
+    await wait(5000);
+    console.log('test 7')
+    try {
+    await page.screenshot({ path: 'foo2.png'});
+    } catch(err) {
+      console.error(err);
+
+    }
+    console.log('test 8')
+    await browser.close();
+    console.log('test 9')
+  });
+
+  // it("imports as a UMD file (imported as a script tag)", async () => {
+  //   await driver.get(`http://localhost:${PORT}`);
+
+  //   const return_value = await driver.executeScript('return Upscaler');
+  //   expect(return_value).toEqual(2);
+  //   console.log('done!')
+  // });
+
+  // it("imports as a minified UMD file (imported as a script tag)", async () => {
+  //   await driver.get(`http://localhost:${PORT}`);
+
+  //   const return_value = await driver.executeScript('return Upscaler');
+  //   expect(return_value).toEqual(2);
+  //   console.log('done!')
+  // });
+
+  // it("imports as an ES module (via skypack CDN)", async () => {
+  //   await driver.get(`http://localhost:${PORT}`);
+
+  //   const return_value = await driver.executeScript('return Upscaler');
+  //   expect(return_value).toEqual(2);
+  //   console.log('done!')
+  // });
+});
+

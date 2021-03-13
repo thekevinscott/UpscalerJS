@@ -1,0 +1,9 @@
+{
+  "name": "webpack-bundler",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.2.0",
+    "upscaler": "^0.8.1"
+  }
+}

@@ -1,4 +1,5 @@
-require('dotenv').config();
+/*
+jest.setTimeout(30000);
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 const argv = yargs(hideBin(process.argv)).argv
@@ -6,7 +7,6 @@ const webdriver = require('selenium-webdriver');
 const browserstack = require('browserstack-local');
 const handler = require('serve-handler');
 const http = require('http');
-jest.setTimeout(30000);
 
 const DEFAULT_CAPABILITIES = {
   'browser_version': 'latest',
@@ -38,7 +38,7 @@ describe.each([
 
   beforeAll(async (done) => {
     server = http.createServer((request, response) => handler(request, response, {
-      public: 'test/server',
+      public: '../lib/server',
     }));
 
     if (argv.ci !== true) {
@@ -70,10 +70,14 @@ describe.each([
 
   it("test", async () => {
     await driver.get(`http://localhost:${PORT}`);
-    const img = await driver.findElement(webdriver.By.css('img'))
+    // const img = await driver.findElement(webdriver.By.css('img'))
+    // console.log(img);
 
     const return_value = await driver.executeScript('return Upscaler');
     expect(return_value).toEqual(2);
     console.log('done!')
   });
 });
+
+
+*/
