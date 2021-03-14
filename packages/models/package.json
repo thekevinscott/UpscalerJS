@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/models",
-  "version": "0.8.7",
+  "version": "0.8.2",
   "description": "Models for UpscalerJS",
   "keywords": [
     "image super resolution",
@@ -16,5 +16,5 @@
   "scripts": {},
   "author": "Kevin Scott",
   "license": "MIT",
-  "gitHead": "123f48c4d0a5b14468977c4ad587187b7d241966"
+  "gitHead": "bfe361ac5e1a40340c01ba16f4baa86fca72ce30"
 }
