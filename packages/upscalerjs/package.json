@@ -26,11 +26,10 @@
   "scripts": {
     "docs:serve": "docsify serve docs --port 3030",
     "prepare": "yarn build",
-    "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
-    "build": "rimraf dist && yarn build:cjs",
+    "build": "rimraf dist && yarn build:cjs && yarn build:esnext",
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esnext": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esnext",
     "build:es5": "tsc --module amd --moduleResolution node --target es5 --outFile dist/es5/index.js",
@@ -55,5 +54,5 @@
   "dependencies": {
     "tensor-as-base64": "^0.1.1"
   },
-  "gitHead": "56964d41d5add4bb7980ed74973064307087665d"
+  "gitHead": "123f48c4d0a5b14468977c4ad587187b7d241966"
 }
