@@ -104,9 +104,9 @@ export const getTensorDimensions = (
   row: number,
   col: number,
   patchSize: number,
-  padding = 0,
   height: number,
   width: number,
+  padding = 0,
 ) => {
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
