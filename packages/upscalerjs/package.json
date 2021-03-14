@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/cjs/index.js",
   "module": "dist/esnext/index.js",
