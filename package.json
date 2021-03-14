@@ -8,7 +8,7 @@
   "scripts": {
     "format": "lerna run format",
     "lint": "lerna run lint",
-    "push": "lerna publish --create-release=github --conventional-commits",
+    "push": "lerna publish --conventional-commits --create-release=github",
     "bootstrap": "lerna bootstrap --hoist"
   },
   "pre-commit": [
