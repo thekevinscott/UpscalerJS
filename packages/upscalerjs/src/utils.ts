@@ -19,7 +19,7 @@ export const isFourDimensionalTensor = (
   return pixels.shape.length === 4;
 };
 
-const ROOT = 'https://unpkg.com/upscalerjs-models';
+const ROOT = 'https://unpkg.com/@upscalerjs/models';
 const MODEL_DIR = 'models';
 
 export const buildURL = (modelFolder: string) =>
