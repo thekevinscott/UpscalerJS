@@ -266,7 +266,10 @@ export const predict = async (
   });
 };
 
-function getProcessedPixels<T extends tf.Tensor> (processFn: undefined | ProcessFn<T>, upscaledTensor: T): T {
+function getProcessedPixels<T extends tf.Tensor>(
+  processFn: undefined | ProcessFn<T>,
+  upscaledTensor: T,
+): T {
   if (processFn) {
     const postprocessedPixels = processFn(upscaledTensor);
     upscaledTensor.dispose();
@@ -283,7 +286,10 @@ const upscale = async (
 ) => {
   const { tensor: pixels, type } = await getImageAsPixels(image);
 
-  const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(modelDefinition.preprocess, pixels);
+  const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
+    modelDefinition.preprocess,
+    pixels,
+  );
 
   const upscaledTensor = await predict(
     model,
@@ -292,7 +298,10 @@ const upscale = async (
     options,
   );
 
-  const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(modelDefinition.postprocess, upscaledTensor);
+  const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
+    modelDefinition.postprocess,
+    upscaledTensor,
+  );
 
   if (type !== 'tensor') {
     // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
