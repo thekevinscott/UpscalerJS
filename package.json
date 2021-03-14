@@ -7,7 +7,7 @@
   "scripts": {
     "format": "echo 'Formatting code' && prettier --write \"packages/upscalerjs/src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
-    "publish": "lerna publish",
+    "push": "lerna publish",
     "bootstrap": "lerna bootstrap --hoist"
   },
   "pre-commit": [
