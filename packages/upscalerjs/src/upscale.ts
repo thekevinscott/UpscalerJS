@@ -100,13 +100,21 @@ const checkAndAdjustSliceSize = (
   }
 };
 
-export const getTensorDimensions = (
-  row: number,
+export const getTensorDimensions = ({
+  row,
+  col,
+  patchSize,
+  height,
+  width,
+  padding = 0,
+}: {
+  row: number;
   col: number,
   patchSize: number,
   height: number,
   width: number,
-  padding = 0,
+  padding?: number,
+},
 ) => {
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
@@ -191,13 +199,14 @@ export const predict = async (
     const channels = 3;
     const [height, width] = pixels.shape.slice(1);
     const { rows, columns } = getRowsAndColumns(pixels, patchSize);
-    const { size: originalSize } = getTensorDimensions(
-      0,
-      0,
+    const { size: originalSize } = getTensorDimensions({
+      row: 0,
+      col: 0,
       patchSize,
-      padding,
       height,
       width,
+      padding,
+    },
     );
     let upscaledTensor: tf.Tensor4D = tf.zeros([
       1,
@@ -214,13 +223,14 @@ export const predict = async (
         channels,
       ]);
       for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
+        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions({
           row,
           col,
           patchSize,
           padding,
           height,
           width,
+        },
         );
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1]],
