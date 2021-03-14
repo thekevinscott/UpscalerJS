@@ -1,5 +1,5 @@
 {
-  "name": "upscalerjs",
+  "name": "upscaler",
   "version": "0.8.1",
   "description": "Increase image resolution with a Neural Network",
   "main": "dist/cjs/index.js",

@@ -42,3 +42,4 @@ Once you've converted a model, you'll want to follow this checklist:
 ## Credits
 
 All models are trained using [`image-super-resolution`](https://github.com/idealo/image-super-resolution), an implementation of [ESRGAN](https://arxiv.org/pdf/1809.00219v2.pdf) by [@idealo](https://github.com/idealo).
+

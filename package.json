@@ -1,9 +1,13 @@
 {
-  "version": "0.8.1",
+  "version": "0.8.5",
   "description": "Increase image resolution with a Neural Network",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "format": "echo 'Formatting code' && prettier --write \"packages/upscalerjs/src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
+    "publish": "lerna publish",
     "bootstrap": "lerna bootstrap --hoist"
   },
   "pre-commit": [
@@ -30,7 +34,7 @@
     "docsify-cli": "^4.4.2",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
-    "lerna": "^2.2.0",
+    "lerna": "^3.14.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
