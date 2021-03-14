@@ -109,13 +109,12 @@ export const getTensorDimensions = ({
   padding = 0,
 }: {
   row: number;
-  col: number,
-  patchSize: number,
-  height: number,
-  width: number,
-  padding?: number,
-},
-) => {
+  col: number;
+  patchSize: number;
+  height: number;
+  width: number;
+  padding?: number;
+}) => {
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
   if (yPatchSize > height) {
@@ -206,8 +205,7 @@ export const predict = async (
       height,
       width,
       padding,
-    },
-    );
+    });
     let upscaledTensor: tf.Tensor4D = tf.zeros([
       1,
       0,
@@ -230,8 +228,7 @@ export const predict = async (
           padding,
           height,
           width,
-        },
-        );
+        });
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1]],
           [-1, size[0], size[1]],
