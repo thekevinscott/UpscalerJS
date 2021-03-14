@@ -40,14 +40,14 @@ describe('getConsistentTensorDimensions', () => {
       } = expectations[i];
       try {
         expect(
-          getTensorDimensions(
+          getTensorDimensions({
             row,
             col,
-            opts.patchSize,
-            opts.padding,
-            opts.height,
-            opts.width,
-          ),
+            patchSize: opts.patchSize,
+            padding: opts.padding,
+            height: opts.height,
+            width: opts.width,
+          }),
         ).toEqual({
           origin,
           size,
