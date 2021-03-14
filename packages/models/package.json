@@ -1,0 +1,19 @@
+{
+  "name": "upscalerjs-models",
+  "version": "0.8.2",
+  "description": "Models for UpscalerJS",
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models"
+  ],
+  "files": [
+    "LICENSE",
+    "models/**/*"
+  ],
+  "scripts": {},
+  "author": "Kevin Scott",
+  "license": "MIT"
+}
