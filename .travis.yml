@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - 12
 before_install:
-  - "yarn add @tensorflow/tfjs"
+  - "yarn add @tensorflow/tfjs -W"
 after_success:
   - codecov
 script: 
