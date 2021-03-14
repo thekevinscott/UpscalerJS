@@ -27,7 +27,6 @@
     "docs:serve": "docsify serve docs --port 3030",
     "prepare": "yarn build",
     "prepublishOnly": "yarn test && yarn lint",
-    "preversion": "yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
