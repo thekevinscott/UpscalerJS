@@ -54,5 +54,6 @@
   },
   "dependencies": {
     "tensor-as-base64": "^0.1.1"
-  }
+  },
+  "gitHead": "56964d41d5add4bb7980ed74973064307087665d"
 }
