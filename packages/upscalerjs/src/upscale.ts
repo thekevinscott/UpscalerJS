@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IUpscaleOptions, IModelDefinition } from './types';
+import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn } from './utils';
@@ -266,6 +266,15 @@ export const predict = async (
   });
 };
 
+function getProcessedPixels<T extends tf.Tensor> (processFn: undefined | ProcessFn<T>, upscaledTensor: T): T {
+  if (processFn) {
+    const postprocessedPixels = processFn(upscaledTensor);
+    upscaledTensor.dispose();
+    return postprocessedPixels;
+  }
+  return upscaledTensor;
+}
+
 const upscale = async (
   model: tf.LayersModel,
   image: string | HTMLImageElement | tf.Tensor3D,
@@ -273,26 +282,17 @@ const upscale = async (
   options: IUpscaleOptions = {},
 ) => {
   const { tensor: pixels, type } = await getImageAsPixels(image);
-  let preprocessedPixels: tf.Tensor4D;
-  if (modelDefinition.preprocess) {
-    preprocessedPixels = modelDefinition.preprocess(pixels);
-    pixels.dispose();
-  } else {
-    preprocessedPixels = pixels;
-  }
+
+  const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(modelDefinition.preprocess, pixels);
+
   const upscaledTensor = await predict(
     model,
     preprocessedPixels,
     modelDefinition,
     options,
   );
-  let postprocessedPixels: tf.Tensor3D;
-  if (modelDefinition.postprocess) {
-    postprocessedPixels = modelDefinition.postprocess(upscaledTensor);
-    upscaledTensor.dispose();
-  } else {
-    postprocessedPixels = upscaledTensor;
-  }
+
+  const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(modelDefinition.postprocess, upscaledTensor);
 
   if (type !== 'tensor') {
     // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
