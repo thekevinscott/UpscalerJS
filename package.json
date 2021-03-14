@@ -5,8 +5,8 @@
     "packages/*"
   ],
   "scripts": {
-    "format": "echo 'Formatting code' && prettier --write \"packages/upscalerjs/src/**/*.ts\"",
-    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
+    "format": "lerna run format",
+    "lint": "lerna run lint",
     "push": "lerna publish",
     "bootstrap": "lerna bootstrap --hoist"
   },

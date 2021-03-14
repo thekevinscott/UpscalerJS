@@ -2,7 +2,6 @@
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
-  "rootDir": "packages/upscalerjs",
   "testEnvironment": "node",
   "setupFiles": ["./jest.setup.ts", "jest-canvas-mock"],
   "collectCoverage": true,

@@ -6,5 +6,5 @@ before_install:
 after_success:
   - codecov
 script: 
-  - "yarn test"
-  - "yarn lint"
+  - "yarn lerna run test"
+  - "yarn lerna run lint"
