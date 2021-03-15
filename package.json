@@ -12,7 +12,9 @@
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
-    "bootstrap": "lerna bootstrap --hoist"
+    "bootstrap": "lerna bootstrap --hoist",
+    "test:integration:browser:ci": "yarn test:integration:browser --ci",
+    "test:integration:browser": "yarn lerna run test:integration:browser"
   },
   "pre-commit": [
     "lint",
