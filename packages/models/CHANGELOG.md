@@ -5,12 +5,4 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.8.6](https://github.com/thekevinscott/UpscalerJS/compare/v0.1.2...v0.8.6) (2021-03-15)
 
-**Note:** Version bump only for package upscaler
-
-
-
-
-
-## [0.8.6-alpha.1](https://github.com/thekevinscott/UpscalerJS/compare/v0.8.6-alpha.0...v0.8.6-alpha.1) (2021-03-14)
-
-**Note:** Version bump only for package upscaler
+**Note:** Version bump only for package @upscalerjs/models
