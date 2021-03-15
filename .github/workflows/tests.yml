@@ -55,7 +55,7 @@ jobs:
  
       - name: Run Sauce Pipeline Test
         run: |
-          cd build/ && python3 -m http.server 8000 &
+          yarn serve &
 
           saucectl run -c ./.sauce/config.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce
 
