@@ -28,7 +28,6 @@
     "prepare": "yarn build",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
-    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
     "build": "rimraf dist && yarn build:cjs && yarn build:esnext",
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esnext": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esnext",
