@@ -21,14 +21,16 @@ export interface IUpscaleOptions {
   progress?: Progress;
 }
 
+export type ProcessFn<T extends tf.Tensor> = (t: T) => T;
+
 export interface IModelDefinition {
   url: string;
   scale: number;
   configURL?: string;
   description?: string;
   deprecated?: boolean;
-  preprocess?: (t: tf.Tensor4D) => tf.Tensor4D;
-  postprocess?: (t: tf.Tensor3D) => tf.Tensor3D;
+  preprocess?: ProcessFn<tf.Tensor4D>;
+  postprocess?: ProcessFn<tf.Tensor3D>;
   customLayers?: SerializableConstructor<tf.layers.Layer>[];
 }
 

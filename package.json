@@ -1,47 +1,15 @@
 {
-  "name": "upscaler",
-  "version": "0.8.1",
+  "version": "0.8.8",
+  "private": true,
   "description": "Increase image resolution with a Neural Network",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esnext/index.js",
-  "types": "dist/esnext/index.d.ts",
-  "keywords": [
-    "super resolution",
-    "image",
-    "scale",
-    "resize",
-    "esrgan",
-    "upscaling",
-    "upscaler",
-    "image enhancement",
-    "image super resolution",
-    "tensorflow.js",
-    "tfjs"
-  ],
-  "files": [
-    "LICENSE",
-    "dist/**/*",
-    "models/**/*"
+  "workspaces": [
+    "packages/*"
   ],
   "scripts": {
-    "docs:serve": "docsify serve docs --port 3030",
-    "prepare": "yarn build",
-    "prepublishOnly": "yarn test && yarn lint",
-    "preversion": "yarn lint",
-    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
-    "build_old": "rimraf dist && yarn build:cjs && yarn build:esnext && yarn build:umd && yarn build:umd:min",
-    "build": "rimraf dist && yarn build:cjs && yarn build:esnext",
-    "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
-    "build:esnext": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esnext",
-    "build:es5": "tsc --module amd --moduleResolution node --target es5 --outFile dist/es5/index.js",
-    "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
-    "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
-    "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
-    "test": "jest --config jestconfig.json",
-    "test:integration:browser:ci": "yarn test:integration:browser --ci",
-    "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles"
+    "format": "lerna run format",
+    "lint": "lerna run lint",
+    "push": "lerna publish --conventional-commits --create-release=github",
+    "bootstrap": "lerna bootstrap --hoist"
   },
   "pre-commit": [
     "lint",
@@ -79,6 +47,7 @@
     "pixelmatch": "^5.2.1",
     "playwright": "^1.9.1",
     "pngjs": "^6.0.0",
+    "lerna": "^3.14.0",
     "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
@@ -94,7 +63,6 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
-    "dot-prop": "^5.1.1",
     "tensor-as-base64": "^0.1.1"
   }
 }

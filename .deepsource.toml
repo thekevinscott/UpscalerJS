@@ -1,8 +1,8 @@
 version = 1
 
-test_patterns = ["src/**/*.ts"]
+test_patterns = ["packages/upscalerjs/src/**/*.ts"]
 
-exclude_patterns = ["\"src/**/*.test.ts\", \"examples/**\", \"scripts/**\", \"jest.setup.ts\""]
+exclude_patterns = ["packages/upscalerjs/src/**/*.test.ts", "examples/**", "scripts/**", "packages/upscalerjs/jest.setup.ts"]
 
 [[analyzers]]
 name = "javascript"

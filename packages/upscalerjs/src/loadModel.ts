@@ -102,6 +102,23 @@ type ModelDefinitions = {
 
 let modelDefinitions: undefined | ModelDefinitions;
 
+export const prepareModelDefinitions = async (
+  preparedModelDefinitions: ModelDefinitions = {},
+) => {
+  const entries = Object.entries(MODELS);
+  await Promise.all(
+    entries.map(async ([key, val]) => {
+      const config = await getModelDescription(val);
+      preparedModelDefinitions[key] = {
+        ...val,
+        description: config,
+      };
+    }),
+  );
+
+  return preparedModelDefinitions;
+};
+
 export const getModelDefinitions = async () => {
   if (!modelDefinitions) {
     modelDefinitions = await prepareModelDefinitions();
@@ -119,21 +136,4 @@ export const getModelDescription = async (
     }
   } catch (err) {}
   return '';
-};
-
-export const prepareModelDefinitions = async (
-  preparedModelDefinitions: ModelDefinitions = {},
-) => {
-  const entries = Object.entries(MODELS);
-  await Promise.all(
-    entries.map(async ([key, val]) => {
-      const config = await getModelDescription(val);
-      preparedModelDefinitions[key] = {
-        ...val,
-        description: config,
-      };
-    }),
-  );
-
-  return preparedModelDefinitions;
 };
