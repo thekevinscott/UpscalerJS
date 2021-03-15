@@ -1,6 +1,6 @@
 {
   "name": "progress",
-  "version": "0.8.1",
+  "version": "0.8.22",
   "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.1"
+    "upscaler": "0.8.22"
   },
   "browserslist": {
     "production": [

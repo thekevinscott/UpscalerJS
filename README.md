@@ -41,4 +41,3 @@ All models are trained using [`image-super-resolution`](https://github.com/ideal
 ## License
 
 [MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
-

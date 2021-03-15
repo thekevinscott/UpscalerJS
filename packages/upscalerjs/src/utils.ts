@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { ROOT } from './constants';
 
 export const isString = (pixels: any): pixels is string => {
   return typeof pixels === 'string';
@@ -19,15 +20,13 @@ export const isFourDimensionalTensor = (
   return pixels.shape.length === 4;
 };
 
-const ROOT = 'https://unpkg.com/@upscalerjs/models';
-// https://unpkg.com/@upscalerjs/models@0.8.6-alpha.0/index.js
 const MODEL_DIR = 'models';
 
 export const buildURL = (modelFolder: string) =>
-  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/model.json`;
+  `${ROOT}/${MODEL_DIR}/${modelFolder}/model.json`;
 
 export const buildConfigURL = (modelFolder: string) =>
-  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/config.json`;
+  `${ROOT}/${MODEL_DIR}/${modelFolder}/config.json`;
 
 export const warn = (msg: string | string[]) => {
   if (Array.isArray(msg)) {
