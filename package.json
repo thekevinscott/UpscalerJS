@@ -8,7 +8,8 @@
     "format": "lerna run format",
     "lint": "lerna run lint",
     "push": "lerna publish --conventional-commits --create-release=github",
-    "pin-cdn": "node scripts/pin-cdn.js && git add packages/upscalerjs/src/constants.ts && git add *examples/*/package.json* && git commit -m \"Updating CDN && example versions\"",
+    "pin-cdn": "node scripts/pin-cdn.js && yarn commit-latest-version-changes",
+    "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts && git add *examples/*/package.json* && git commit -m \"Updating CDN && example versions\"",
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist"
