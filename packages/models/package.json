@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/models",
-  "version": "0.8.21",
+  "version": "0.8.22",
   "description": "Neural Network Models for upscalerjs",
   "keywords": [
     "image super resolution",
