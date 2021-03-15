@@ -18,7 +18,7 @@ env:
   SAUCECTL_VERSION: 0.30.0
 
 jobs:
-  playwright:
+  upscale-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,31 @@ jobs:
  
       - name: Run Sauce Pipeline Test
         run: |
-          yarn sauce run -c ./packages/upscalerjs/.sauce/playwright.yml
+          yarn sauce 
+
+        env:
+          SKIP_CI: true
+          BUILD_ID: ${{ github.run_id }}
+          BUILD_ENV: GitHub Actions
+
+  browser-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Workaround for container permissions
+        run: sudo chmod -R 777 ./packages/upscalerjs/tests/
+
+      - name: Yarn install
+        run: yarn
+ 
+      - name: Run Sauce Pipeline Test
+        run: |
+          cd build/ && python3 -m http.server 8000 &
+
+          saucectl run -c ./.sauce/config.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce
 
         env:
           SKIP_CI: true
