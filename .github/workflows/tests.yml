@@ -1,0 +1,43 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Sauce Pipeline Browser Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    paths:
+      - '!docs/**'
+      - '!website/**'
+
+env:
+  SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+  SAUCE_USERNAME: ${{secrets.SAUCE_USERNAME}}
+  SAUCECTL_VERSION: 0.30.0
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Download saucectl
+        run: |
+          SAUCECTL_BINARY=saucectl_${SAUCECTL_VERSION}_linux_64-bit.tar.gz
+          curl -L -o ${SAUCECTL_BINARY} \
+              -H "Accept: application/octet-stream" \
+              https://github.com/saucelabs/saucectl/releases/download/v${SAUCECTL_VERSION}/${SAUCECTL_BINARY} \
+              && tar -xvzf ${SAUCECTL_BINARY}
+      - name: Workaround for container permissions
+        run: sudo chmod -R 777 tests/
+ 
+      - name: Run Sauce Pipeline Test
+        run: |
+          ./saucectl run -c ./packages/upscaler/.sauce/playwright.yml
+        env:
+          SKIP_CI: true
+          BUILD_ID: ${{ github.run_id }}
+          BUILD_ENV: GitHub Actions

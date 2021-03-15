@@ -13,3 +13,4 @@ log
 results
 lerna-debug.log
 package-lock.json
+credentials.yml
