@@ -13,7 +13,7 @@
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist",
-    "test:integration:browser:ci": "yarn test:integration:browser --ci",
+    "test:integration:browser:ci": "yarn test:integration:browser -- -- -- --ci",
     "test:integration:browser": "yarn lerna run test:integration:browser"
   },
   "pre-commit": [
