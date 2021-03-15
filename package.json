@@ -1,7 +1,6 @@
 {
   "version": "0.8.10",
   "private": true,
-  "description": "Increase image resolution with Tensorflow.js",
   "workspaces": [
     "packages/*"
   ],
@@ -9,6 +8,9 @@
     "format": "lerna run format",
     "lint": "lerna run lint",
     "push": "lerna publish --conventional-commits --create-release=github",
+    "pin-cdn": "node scripts/pin-cdn.js",
+    "version": "yarn pin-cdn",
+    "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist"
   },
   "pre-commit": [
@@ -21,10 +23,7 @@
   },
   "author": "Kevin Scott",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/thekevinscott/UpscalerJS/issues"
-  },
-  "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
+  "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
     "@tensorflow/tfjs": "2.8.6"
   },
