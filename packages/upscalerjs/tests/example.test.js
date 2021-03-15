@@ -19,3 +19,8 @@ it('is a basic test with the page', async ({ page }) => {
   await page.goto('https://playwright.dev/');
   expect(await page.innerText('.navbar__title')).toBe('Playwright');
 });
+
+it('tests the local server', async ({ page }) => {
+  await page.goto('http://localhost:8000');
+  expect(await page.innerText('header h1')).toBe('Index of UpscalerJS');
+});
