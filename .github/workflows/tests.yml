@@ -55,7 +55,7 @@ jobs:
  
       - name: Run Sauce Pipeline Test
         run: |
-          yarn serve &
+          yarn serve -p 8000 &
 
           yarn sauce:cloud
 
