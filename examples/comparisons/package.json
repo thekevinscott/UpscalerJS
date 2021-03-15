@@ -1,6 +1,6 @@
 {
   "name": "comparisons",
-  "version": "0.8.20",
+  "version": "0.8.21",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.20"
+    "upscaler": "0.8.21"
   },
   "browserslist": {
     "production": [
