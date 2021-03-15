@@ -1,5 +1,5 @@
 {
-  "version": "0.8.14",
+  "version": "0.8.17",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -8,7 +8,8 @@
     "format": "lerna run format",
     "lint": "lerna run lint",
     "push": "lerna publish --conventional-commits --create-release=github",
-    "pin-cdn": "node scripts/pin-cdn.js",
+    "pin-cdn": "node scripts/pin-cdn.js && yarn commit-latest-version-changes",
+    "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist"
