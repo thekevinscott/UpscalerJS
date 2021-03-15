@@ -82,8 +82,13 @@ describe("building UpscalerJS", () => {
   const PORT = 8099;
 
   beforeAll(async () => {
-    browser = await playwright['webkit'].launch();
-    context = await browser.newContext();
+    try {
+      browser = await playwright['webkit'].launch();
+      context = await browser.newContext();
+    } catch(err) {
+      console.error(err);
+      throw err;
+    }
     try {
       await bundle(ROOT, DIST);
       server = await startServer(DIST, PORT);
@@ -94,7 +99,11 @@ describe("building UpscalerJS", () => {
   }, 60000);
 
   afterAll(async (done) => {
-    await browser.close();
+    if (browser) {
+      await browser.close();
+    } else {
+      console.warn('No browser found');
+    }
     if (server) {
       server.close(done);
     } else {
@@ -116,6 +125,7 @@ describe("building UpscalerJS", () => {
     }
     expect(mismatched).toEqual(0);
   }
+
 
   it("upscales an imported local image path", async () => {
     const page = await context.newPage();
