@@ -33,7 +33,7 @@ jobs:
  
       - name: Run Sauce Pipeline Test
         run: |
-          yarn sauce 
+          yarn sauce:docker
 
         env:
           SKIP_CI: true
@@ -57,7 +57,7 @@ jobs:
         run: |
           yarn serve &
 
-          saucectl run -c ./.sauce/config.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce
+          yarn sauce:cloud
 
         env:
           SKIP_CI: true

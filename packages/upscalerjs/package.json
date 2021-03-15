@@ -37,7 +37,8 @@
     "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
     "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "sauce": "yarn saucectl run -c ./.sauce/playwright.yml",
+    "sauce:docker": "yarn saucectl run -c ./.sauce/playwright.yml",
+    "sauce:cloud": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce",
     "test:unit": "jest --config jestconfig.json",
     "test:integration:browser:ci": "yarn test:integration:browser --ci",
     "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles"

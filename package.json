@@ -13,7 +13,8 @@
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist",
-    "sauce": "lerna run sauce",
+    "sauce:docker": "lerna run sauce:docker",
+    "sauce:cloud": "lerna run sauce:cloud",
     "test:integration:browser:ci": "yarn test:integration:browser -- -- -- --ci",
     "test:integration:browser": "yarn lerna run test:integration:browser"
   },
