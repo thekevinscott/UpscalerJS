@@ -32,11 +32,11 @@ jobs:
               https://github.com/saucelabs/saucectl/releases/download/v${SAUCECTL_VERSION}/${SAUCECTL_BINARY} \
               && tar -xvzf ${SAUCECTL_BINARY}
       - name: Workaround for container permissions
-        run: sudo chmod -R 777 ./packages/upscaler/tests/
+        run: sudo chmod -R 777 ./packages/upscalerjs/tests/
  
       - name: Run Sauce Pipeline Test
         run: |
-          ./saucectl run -c ./packages/upscaler/.sauce/playwright.yml
+          ./saucectl run -c ./packages/upscalerjs/.sauce/playwright.yml
         env:
           SKIP_CI: true
           BUILD_ID: ${{ github.run_id }}
