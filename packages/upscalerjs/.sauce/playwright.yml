@@ -1,0 +1,40 @@
+apiVersion: v1alpha
+kind: playwright
+sauce:
+  region: us-west-1
+  concurrency: 1
+## Tunnel allows you to specify an existing sauce connect tunnel when running playwright inside the Sauce cloud.
+## This has no effect when running tests inside docker.
+#  tunnel:
+#    id: your_tunnel_id
+#    parent: parent_owner_of_tunnel # if applicable, specify the owner of the tunnel
+  metadata:
+    name: Testing Playwright Support
+    tags:
+      - e2e
+    build: "$BUILD_ID"
+docker:
+  # fileTransfer controls how test files are transferred to the docker container before tests are run (choice: mount|copy).
+  # `mount` will mount files and folders into the container. Changes to these files and folders will be reflected on the
+  # host as well (and vice versa). However, you may run into permission issues depending on your docker or host settings.
+  # In this case the usage of `copy` is advised. `copy` will simply copy files and folders into the container.
+  fileTransfer: mount
+  # image controls which images to be used for local testing. Change this value is you want to use a custom image.
+  # image: saucelabs/stt-playwright-jest-node:v1.7.1
+playwright:
+  projectPath: tests/playwright/
+  version: 1.7.1
+  params:
+    browserName: firefox
+suites:
+  - name: "saucy test"
+    platformName: "Windows 10"
+    testMatch: '**/*.js'
+    env:
+      hello: world
+
+    # Playwright-test settings
+    params:
+      browserName: "firefox"
+      headful: false
+      slowMo: 1000
