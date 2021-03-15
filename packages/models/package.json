@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/models",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "Models for UpscalerJS",
   "keywords": [
     "image super resolution",
