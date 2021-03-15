@@ -44,6 +44,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: saucelabs/sauce-connect-action@v1
+        with:
+          username: ${{ secrets.SAUCE_USERNAME }}
+          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
+          tunnelIdentifier: github-action-tunnel
+
       - name: Checkout Code
         uses: actions/checkout@v2
 
@@ -57,9 +63,9 @@ jobs:
         run: |
           yarn serve -p 8000 &
 
-          yarn sauce:cloud
-
         env:
           SKIP_CI: true
           BUILD_ID: ${{ github.run_id }}
           BUILD_ENV: GitHub Actions
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}arn sauce:cloud
