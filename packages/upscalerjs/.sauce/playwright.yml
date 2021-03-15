@@ -22,7 +22,7 @@ docker:
   # image controls which images to be used for local testing. Change this value is you want to use a custom image.
   # image: saucelabs/stt-playwright-jest-node:v1.7.1
 playwright:
-  projectPath: tests/playwright/
+  projectPath: tests
   version: 1.7.1
   params:
     browserName: firefox
