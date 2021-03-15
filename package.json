@@ -7,7 +7,7 @@
   "scripts": {
     "format": "lerna run format",
     "lint": "lerna run lint",
-    "push": "lerna publish --conventional-commits --create-release=github",
+    "push": "lerna publish --conventional-commits --create-release=github from-package",
     "pin-cdn": "node scripts/pin-cdn.js",
     "version": "yarn pin-cdn",
     "postversion": "lerna run build",
