@@ -23,10 +23,10 @@ export const isFourDimensionalTensor = (
 const MODEL_DIR = 'models';
 
 export const buildURL = (modelFolder: string) =>
-  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/model.json`;
+  `${ROOT}/${MODEL_DIR}/${modelFolder}/model.json`;
 
 export const buildConfigURL = (modelFolder: string) =>
-  `${ROOT}@latest/${MODEL_DIR}/${modelFolder}/config.json`;
+  `${ROOT}/${MODEL_DIR}/${modelFolder}/config.json`;
 
 export const warn = (msg: string | string[]) => {
   if (Array.isArray(msg)) {
