@@ -1,8 +1,11 @@
 node_modules
-/dist
-/examples/**/dist
-/examples/**/.cache
+dist
+examples/**/dist
+examples/**/.cache
 coverage
 yarn-error.log
 **/yarn-error.log
 .DS_Store
+lerna-debug.log
+.env
+package-lock.json

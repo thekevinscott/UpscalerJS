@@ -1,0 +1,58 @@
+{
+  "name": "upscaler",
+  "version": "0.8.6-alpha.1",
+  "description": "Increase image resolution with a Neural Network",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esnext/index.js",
+  "types": "dist/esnext/index.d.ts",
+  "keywords": [
+    "super resolution",
+    "image",
+    "scale",
+    "resize",
+    "esrgan",
+    "upscaling",
+    "upscaler",
+    "image enhancement",
+    "image super resolution",
+    "tensorflow.js",
+    "tfjs"
+  ],
+  "files": [
+    "LICENSE",
+    "dist/**/*",
+    "models/**/*"
+  ],
+  "scripts": {
+    "docs:serve": "docsify serve docs --port 3030",
+    "prepare": "yarn build",
+    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
+    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
+    "bump_version": "yarn format && git add -A src && node scripts/bump_version.js",
+    "build": "rimraf dist && yarn build:cjs && yarn build:esnext",
+    "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
+    "build:esnext": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esnext",
+    "build:es5": "tsc --module amd --moduleResolution node --target es5 --outFile dist/es5/index.js",
+    "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
+    "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
+    "watch": "rimraf dist && tsc --watch --skipLibCheck",
+    "test": "jest --config jestconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thekevinscott/UpscalerJS/issues"
+  },
+  "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
+  "peerDependencies": {
+    "@tensorflow/tfjs": "2.8.6"
+  },
+  "dependencies": {
+    "tensor-as-base64": "^0.1.1"
+  },
+  "gitHead": "c3f5b7041273115ab7c6a55e0feca4a399f692cb"
+}
