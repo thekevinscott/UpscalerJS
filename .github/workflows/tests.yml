@@ -24,19 +24,17 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-      - name: Download saucectl
-        run: |
-          SAUCECTL_BINARY=saucectl_${SAUCECTL_VERSION}_linux_64-bit.tar.gz
-          curl -L -o ${SAUCECTL_BINARY} \
-              -H "Accept: application/octet-stream" \
-              https://github.com/saucelabs/saucectl/releases/download/v${SAUCECTL_VERSION}/${SAUCECTL_BINARY} \
-              && tar -xvzf ${SAUCECTL_BINARY}
+
       - name: Workaround for container permissions
         run: sudo chmod -R 777 ./packages/upscalerjs/tests/
+
+      - name: Yarn install
+        run: yarn
  
       - name: Run Sauce Pipeline Test
         run: |
-          ./saucectl run -c ./packages/upscalerjs/.sauce/playwright.yml
+          yarn sauce run -c ./packages/upscalerjs/.sauce/playwright.yml
+
         env:
           SKIP_CI: true
           BUILD_ID: ${{ github.run_id }}
