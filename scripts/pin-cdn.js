@@ -1,3 +1,10 @@
+/*****
+ * This script does two things:
+ * 
+ * - pins the current version of UpscalerJS to the correct CDN path, so that version x.x.x of upscaler
+ *      points to the same version of @upscaler/models
+ * - updates the upscaler dependencies in each examples folder to the current version
+ */
 const fs = require('fs');
 const path = require('path');
 
