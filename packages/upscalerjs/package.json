@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.8.20",
+  "version": "0.8.21",
   "description": "Increase Image Resolution with Tensorflow.js",
   "main": "dist/cjs/index.js",
   "module": "dist/esnext/index.js",
