@@ -34,7 +34,7 @@ jobs:
       - name: Run Sauce Pipeline Test
         run: |
           yarn serve -p 8000 &
-          yarn sauce:docker
+          yarn sauce:docker:ci
 
         env:
           SKIP_CI: true
@@ -63,7 +63,7 @@ jobs:
       - name: Run Sauce Pipeline Test
         run: |
           yarn serve -p 8000 &
-          yarn sauce:cloud:github
+          yarn sauce:cloud:ci
 
         env:
           SKIP_CI: true
