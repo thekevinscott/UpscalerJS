@@ -5,27 +5,13 @@ jobs:
     name: 'Browser'
     runs-on: ubuntu-latest  # Can be self-hosted runner also
     steps:
+      - uses: microsoft/playwright-github-action@v1
 
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
         with:
           username:  ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: Install dependencies
-        run: sudo apt-get install libegl1\
-              libopus0\
-              libwoff1\
-              libharfbuzz-icu0\
-              libgstreamer-plugins-base1.0-0\
-              libgstreamer-gl1.0-0\
-              libgstreamer-plugins-bad1.0-0\
-              libopenjp2-7\
-              libwebpdemux2\
-              libenchant1c2a\
-              libhyphen0\
-              libgles2\
-              gstreamer1.0-libav
 
       - name: 'BrowserStack Local Tunnel Setup'  # Invokes the setup-local action
         uses: browserstack/github-actions/setup-local@master
