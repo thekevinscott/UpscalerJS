@@ -17,6 +17,7 @@
 console.log(process.env)
 console.log(process.env.platform)
 const PLATFORM = process.env.platform;
+const DOCKER = process.env.docker;
 const { it, expect } = require('@playwright/test');
 
 it('is a basic test with the page', async ({ page }) => {
@@ -26,7 +27,7 @@ it('is a basic test with the page', async ({ page }) => {
 
 it('tests the local server', async ({ browser }) => {
   const page = await browser.newPage();
-  await page.goto(PLATFORM === 'cloud' ? 'http://localhost:8000' : 'http://host.docker.internal:8000');
+  await page.goto(DOCKER !== undefined ? 'http://localhost:8000' : 'http://host.docker.internal:8000');
   const title = await page.title();
   expect(title).toBe('UpscalerJS Integration Test Webpack Bundler Server')
 });
