@@ -14,8 +14,8 @@
     "postversion": "lerna run build",
     "bootstrap": "lerna bootstrap --hoist",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
-    "sauce:docker": "DEBUG=pw:api lerna run sauce:docker",
-    "sauce:cloud": "lerna run sauce:cloud",
+    "sauce:docker:ci": "lerna run sauce:docker:ci",
+    "sauce:cloud:ci": "lerna run sauce:cloud:ci",
     "test:integration:browser:ci": "yarn test:integration:browser -- -- -- --ci",
     "test:integration:browser": "yarn lerna run test:integration:browser"
   },
