@@ -3,11 +3,6 @@ kind: playwright
 sauce:
   region: us-west-1
   concurrency: 1
-## Tunnel allows you to specify an existing sauce connect tunnel when running playwright inside the Sauce cloud.
-## This has no effect when running tests inside docker.
-#  tunnel:
-#    id: your_tunnel_id
-#    parent: parent_owner_of_tunnel # if applicable, specify the owner of the tunnel
   metadata:
     name: Testing Playwright Support
     tags:
