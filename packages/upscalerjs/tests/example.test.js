@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-console.log(process.env)
-console.log(process.env.platform)
-const PLATFORM = process.env.platform;
 const DOCKER = process.env.docker;
 const { it, expect } = require('@playwright/test');
 
@@ -26,8 +23,15 @@ it('is a basic test with the page', async ({ page }) => {
 });
 
 it('tests the local server', async ({ browser }) => {
+  console.log('1')
   const page = await browser.newPage();
-  await page.goto(DOCKER !== undefined ? 'http://localhost:8000' : 'http://host.docker.internal:8000');
+  console.log('2')
+  const url = DOCKER !== undefined ? 'http://localhost:8000' : 'http://host.docker.internal:8000';
+  console.log('3', url)
+  await page.goto(url);
+  console.log('4')
   const title = await page.title();
+  console.log('5', title)
   expect(title).toBe('UpscalerJS Integration Test Webpack Bundler Server')
+  console.log('6')
 });
