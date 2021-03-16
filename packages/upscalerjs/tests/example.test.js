@@ -20,7 +20,9 @@ it('is a basic test with the page', async ({ page }) => {
   expect(await page.innerText('.navbar__title')).toBe('Playwright');
 });
 
-it('tests the local server', async ({ page }) => {
-  await page.goto('http://localhost:8000');
-  expect(await page.innerText('header h1')).toBe('Index of UpscalerJS');
+it('tests the local server', async ({ browser }) => {
+  const page = await browser.newPage();
+  await page.goto('http://host.docker.internal:8000');
+  const title = await page.title();
+  expect(title).toBe('UpscalerJS Integration Test Webpack Bundler Server')
 });
