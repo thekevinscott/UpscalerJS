@@ -35,5 +35,5 @@ describe('sample', () => {
       );
     }
     await driver.quit();
-  });
+  }, 120000);
 });

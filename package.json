@@ -16,6 +16,7 @@
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "sauce:docker:ci": "lerna run sauce:docker:ci",
     "sauce:cloud:ci": "lerna run sauce:cloud:ci",
+    "test:unit": "yarn lerna run test:unit",
     "test:integration:browser:ci": "yarn lerna run test:integration:browser:ci",
     "test:integration:browser": "yarn lerna run test:integration:browser"
   },
