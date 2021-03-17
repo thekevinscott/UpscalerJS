@@ -15,7 +15,7 @@ jobs:
         run: yarn test:unit
 
   integration-browser:
-    name: 'Integration // Browser'
+    name: 'Integration / Browser'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action

@@ -9,31 +9,37 @@ const capabilities = {
  'name': 'BStack-[NodeJS] Sample Test', // test name
  'build': 'BStack Build Number 1' // CI/CD job or build name
 }
-describe('sample', () => {
-  it('tests a sample', async () => {
-    let driver = new webdriver.Builder()
-      .usingServer('http://kevinscott3:VqZ44zEoYmzqzdhFDrRM@hub-cloud.browserstack.com/wd/hub')
-      .withCapabilities(capabilities)
-      .build();
-    await driver.get("http://www.google.com");
-    const inputField = await driver.findElement(webdriver.By.name("q"));
-    await inputField.sendKeys("BrowserStack", webdriver.Key.ENTER); // this submits on desktop browsers
-    try {
-      await driver.wait(webdriver.until.titleMatches(/BrowserStack/i), 5000);
-    } catch (e) {
-      await inputField.submit(); // this helps in mobile browsers
-    }
-    try {
-      await driver.wait(webdriver.until.titleMatches(/BrowserStack/i), 5000);
-      console.log(await driver.getTitle());
-      await driver.executeScript(
-        'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "Title contains BrowserStack!"}}'
-      );
-    } catch (e) {
-      await driver.executeScript(
-        'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "Page could not load in time"}}'
-      );
-    }
+
+describe('executing test scenario on the website www.selenium.dev', () => {
+  let driver;
+
+  beforeAll(async () => {
+    driver = new webdriver().build();
+ 
+    await driver.get(
+      'https://www.selenium.dev',
+    );
+  }, 10000);
+ 
+  afterAll(async () => {
     await driver.quit();
-  }, 120000);
-});
+  }, 15000);
+  
+  test('it performs a validation of title on the home page', async () => {
+    await browser.get(url)
+    const title = await browser.findElement(by.tagName('h1')).getText()
+    expect(title).toContain('SeleniumHQ Browser Automation')
+  })
+ 
+  test('it performs a validation of the search box on the page', async () => {
+    const foundAndLoadedCheck = async () => {
+      await until.elementLocated(by.id('search'))
+      const value = await browser.findElement(by.id('search')).getText()
+      return value !== '~'
+    }
+ 
+    await browser.wait(foundAndLoadedCheck, 3000)
+    const search = await browser.findElement(by.id('search')).getText()
+    expect(search).toEqual('')
+  });
+})
