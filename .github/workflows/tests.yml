@@ -1,7 +1,7 @@
 name: 'Tests'
 on: [pull_request]
 jobs:
-  ubuntu-job:
+  unit:
     name: 'Unit'
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +14,7 @@ jobs:
       - name: 'Running test'
         run: yarn test:unit
 
-  ubuntu-job:
+  integration-browser:
     name: 'Integration // Browser'
     runs-on: ubuntu-latest
     steps:
