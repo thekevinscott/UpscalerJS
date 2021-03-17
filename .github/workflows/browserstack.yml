@@ -1,12 +1,10 @@
-name: 'Integration Tests'
+name: 'Tests'
 on: [pull_request]
 jobs:
   ubuntu-job:
-    name: 'Browser'
+    name: 'Integration // Browser'
     runs-on: ubuntu-latest  # Can be self-hosted runner also
     steps:
-      - uses: microsoft/playwright-github-action@v1
-
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
         with:
