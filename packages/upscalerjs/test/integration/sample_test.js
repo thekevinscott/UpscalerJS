@@ -12,7 +12,6 @@ const capabilities = {
 
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-console.log(username, accessKey);
 describe('sample', () => {
   let driver;
 
