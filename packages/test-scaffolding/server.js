@@ -47,12 +47,15 @@ const bundle = () => new Promise((resolve, reject) => {
 });
 
 module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
-  console.log('starting server')
+  console.log('starting server 1')
   await bundle();
+  console.log('starting server 2')
   const server = http.createServer((request, response) => handler(request, response, {
     public: DIST,
   }));
+  console.log('starting server 3')
   server.listen(PORT, () => {
+    console.log('starting server 4')
     if (callback) { callback(); }
     resolve(server);
   });
