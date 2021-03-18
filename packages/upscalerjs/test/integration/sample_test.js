@@ -28,25 +28,6 @@ describe('sample', () => {
   }, 60000);
 
   it('tests a sample', async () => {
-    // const inputField = await driver.findElement(webdriver.By.name("q"));
-    // await inputField.sendKeys("BrowserStack", webdriver.Key.ENTER); // this submits on desktop browsers
-    // try {
-    //   await driver.wait(webdriver.until.titleMatches(/BrowserStack/i), 5000);
-    // } catch (e) {
-    //   await inputField.submit(); // this helps in mobile browsers
-    // }
-    // try {
-    //   await driver.wait(webdriver.until.titleMatches(/BrowserStack/i), 5000);
-    //   console.log(await driver.getTitle());
-    //   await driver.executeScript(
-    //     'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"passed","reason": "Title contains BrowserStack!"}}'
-    //   );
-    // } catch (e) {
-    //   await driver.executeScript(
-    //     'browserstack_executor: {"action": "setSessionStatus", "arguments": {"status":"failed","reason": "Page could not load in time"}}'
-    //   );
-    // }
-
     await driver.get(url)
     const title = await driver.findElement(by.tagName('h1')).getText()
     expect(title).toContain('SeleniumHQ Browser Automation')
