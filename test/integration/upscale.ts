@@ -86,7 +86,7 @@ describe.each([
   });
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
-    const rootURL = 'http://localhost';
+    const rootURL = 'http://127.0.0.1';
     const url = `${rootURL}:${PORT}`;
     await driver.get(url);
     const title = await driver.getTitle();
