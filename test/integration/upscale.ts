@@ -95,8 +95,7 @@ describe.each([
     await driver.get(url);
     const title = await driver.getTitle();
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
-    await new Promise(resolve => setTimeout(resolve, 2 * 60000));
-  }, 2 * 60000);
+  });
 
   // it("upscales an imported local image path", async () => {
   //   await driver.get(`http://localhost:${PORT}`);
