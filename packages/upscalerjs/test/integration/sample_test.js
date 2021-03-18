@@ -28,7 +28,6 @@ describe('sample', () => {
   }, 60000);
 
   it('tests a sample', async () => {
-    await driver.get("http://www.selenium.dev");
     // const inputField = await driver.findElement(webdriver.By.name("q"));
     // await inputField.sendKeys("BrowserStack", webdriver.Key.ENTER); // this submits on desktop browsers
     // try {
@@ -48,8 +47,8 @@ describe('sample', () => {
     //   );
     // }
 
-    await browser.get(url)
-    const title = await browser.findElement(by.tagName('h1')).getText()
+    await driver.get(url)
+    const title = await driver.findElement(by.tagName('h1')).getText()
     expect(title).toContain('SeleniumHQ Browser Automation')
   }, 60000);
 });
