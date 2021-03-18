@@ -18,9 +18,6 @@ describe('sample', () => {
       .withCapabilities(capabilities)
       .build();
  
-    await driver.get(
-      'https://www.selenium.dev',
-    );
   }, 60000);
  
   afterAll(async () => {
@@ -28,7 +25,7 @@ describe('sample', () => {
   }, 60000);
 
   it('tests a sample', async () => {
-    await driver.get(url)
+    await driver.get('https://www.selenium.dev');
     const title = await driver.findElement(by.tagName('h1')).getText()
     expect(title).toContain('SeleniumHQ Browser Automation')
   }, 60000);
