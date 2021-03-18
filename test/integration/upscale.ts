@@ -18,6 +18,19 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
+const startBsLocal = (bsLocal) => new Promise(resolve => {
+  bsLocal.start({
+    'key': process.env.BROWSERSTACK_ACCESS_KEY,
+    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+    'force': true,
+    'onlyAutomate': 'true',
+    'forceLocal': 'true',
+  }, () => {
+    console.log('bs local has started')
+    resolve();
+  });
+});
+
 describe.each([
   {
     'os': 'windows',
@@ -47,15 +60,8 @@ describe.each([
       })
       .build();
 
-      console.log('not in ci, start up browserstack-local')
-      bsLocal = new browserstack.Local();
-      bsLocal.start({
-        'key': process.env.BROWSERSTACK_ACCESS_KEY,
-        // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-        'force': true,
-        'onlyAutomate': 'true',
-        'forceLocal': 'true',
-      }, () => { });
+    bsLocal = new browserstack.Local();
+    await startBsLocal(bsLocal);
     
     try {
       await bundle();
