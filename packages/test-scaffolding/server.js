@@ -1,26 +1,15 @@
-const pixelmatch = require('pixelmatch');
-const PNG = require('pngjs').PNG;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const playwright = require('playwright');
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
-const argv = yargs(hideBin(process.argv)).argv
-const webdriver = require('selenium-webdriver');
-const browserstack = require('browserstack-local');
 const webpack = require('webpack');
-const fs = require('fs');
-
 const handler = require('serve-handler');
 const http = require('http');
 const rimraf = require('rimraf');
 const path = require('path');
-const imageToBase64 = require('image-to-base64');
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');
 
 let compiler = undefined;
-module.exports.bundle = () => new Promise((resolve, reject) => {
+const bundle = () => new Promise((resolve, reject) => {
   rimraf.sync(DIST);
 
   if (compiler === undefined) {
