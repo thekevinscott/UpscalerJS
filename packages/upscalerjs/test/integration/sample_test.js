@@ -1,24 +1,37 @@
 const webdriver = require('selenium-webdriver');
-// Input capabilities
-const capabilities = {
- 'os_version' : '10',
- 'resolution' : '1920x1080',
- 'browserName' : 'Chrome',
- 'browser_version' : 'latest',
- 'os' : 'Windows',
+
+const DEFAULT_CAPABILITIES = {
  'name': 'BStack-[NodeJS] Sample Test', // test name
  'build': 'BStack Build Number 1' // CI/CD job or build name
 }
 
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-describe('sample', () => {
+const server = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`
+
+describe.each([
+  {
+    'os': 'windows',
+    'os_version': '10',
+    'browserName': 'firefox',
+    'browser_version' : 'latest',
+  },
+  {
+    'os': 'windows',
+    'os_version': '10',
+    'browserName': 'chrome',
+    'browser_version' : 'latest',
+  },
+])("integration tests", (capabilities) => {
   let driver;
 
   beforeAll(async () => {
     driver = new webdriver.Builder()
-      .usingServer(`http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`)
-      .withCapabilities(capabilities)
+      .usingServer(server)
+      .withCapabilities({
+        ...DEFAULT_CAPABILITIES,
+        ...capabilities,
+      })
       .build();
   }, 60000)
 
