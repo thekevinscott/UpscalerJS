@@ -1,0 +1,9 @@
+{
+  "transform": {
+    "^.+\\.(t|j)sx?$": "babel-jest"
+  },
+  "setupFiles": ["./jest.setup.js"],
+  "collectCoverage": false,
+  "testRegex": "(/integration/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+}

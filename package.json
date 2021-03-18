@@ -17,8 +17,8 @@
     "sauce:docker:ci": "lerna run sauce:docker:ci",
     "sauce:cloud:ci": "lerna run sauce:cloud:ci",
     "test:unit": "yarn lerna run test:unit",
-    "test:integration:browser:ci": "yarn lerna run test:integration:browser:ci",
-    "test:integration:browser": "yarn lerna run test:integration:browser"
+    "test:integration:browser:ci": "yarn test:integration:browser --ci",
+    "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles"
   },
   "pre-commit": [
     "lint",

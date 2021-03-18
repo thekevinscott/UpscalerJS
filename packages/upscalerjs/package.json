@@ -43,9 +43,7 @@
     "sauce:cloud:local": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id local-proxy-tunnel --test-env sauce",
     "sauce:cloud:ci": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id github-action-tunnel --test-env sauce",
     "sauce:cloud:github_backup": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce",
-    "test:unit": "jest --config jestconfig.json",
-    "test:integration:browser:ci": "yarn test:integration:browser --ci",
-    "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles"
+    "test:unit": "jest --config jestconfig.json"
   },
   "repository": {
     "type": "git",
@@ -65,6 +63,7 @@
   },
   "gitHead": "c3f5b7041273115ab7c6a55e0feca4a399f692cb",
   "devDependencies": {
-    "saucectl": "^0.32.2"
+    "saucectl": "^0.32.2",
+    "selenium-webdriver": "^4.0.0-beta.2"
   }
 }

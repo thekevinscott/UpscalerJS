@@ -1,8 +1,0 @@
-{
-  "setupFiles": ["./jest.setup.js"],
-  "collectCoverage": true,
-  "testRegex": "(/integration/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-  "transform": {
-  }
-}

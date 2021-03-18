@@ -15,64 +15,8 @@ const handler = require('serve-handler');
 const http = require('http');
 const rimraf = require('rimraf');
 const path = require('path');
-const imageToBase64 = require('image-to-base64');
+const serverStuff = require('../lib/webpack-bundler/server')
 
-let compiler = undefined;
-const bundle = (ROOT, DIST) => new Promise((resolve, reject) => {
-  rimraf.sync(DIST);
-
-  if (compiler === undefined) {
-    const entryFiles = path.join(ROOT, 'index.js');
-
-    compiler = webpack({
-      mode: 'production',
-      context: ROOT,
-      entry: entryFiles,
-      stats: 'errors-only',
-      plugins: [new HtmlWebpackPlugin({
-        title: 'UpscalerJS Integration Test Webpack Bundler Server',
-      })],
-      output: {
-        path: DIST,
-      },
-      module: {
-        rules: [
-          {
-            test: /\.(png|svg|jpg|jpeg|gif)$/i,
-            type: 'asset/resource',
-          },
-        ],
-      },
-    });
-  }
-
-  compiler.run((err, stats) => {
-    if (err || stats.hasErrors()) {
-      reject(err || stats.toJson('errors-only').errors.map(e => e.message));
-    } else {
-      resolve();
-    }
-  });
-});
-
-const startServer = (DIST, PORT) => new Promise(resolve => {
-  const server = http.createServer((request, response) => handler(request, response, {
-    public: DIST,
-  }));
-  server.listen(PORT, () => {
-    resolve(server);
-  });
-})
-
-const ROOT = path.join(__dirname, '../lib/webpack-bundler');
-const DIST = path.join(ROOT, '/dist');
-
-const getFixtureAsBuffer = (pathname) => {
-  const fullpath = path.resolve(__dirname, "__fixtures__", pathname);
-  const data = fs.readFileSync(fullpath);
-  // return Buffer.from(data, 'binary');
-  return PNG.sync.read(data);
-};
 
 describe("building UpscalerJS", () => {
   let browser;
