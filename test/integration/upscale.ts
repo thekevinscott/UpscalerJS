@@ -16,7 +16,8 @@ const DEFAULT_CAPABILITIES = {
 
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-const serverURL = argv.ci ? 'http://hub-cloud.browserstack.com/wd/hub' : `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`
+// const serverURL = argv.ci ? 'http://hub-cloud.browserstack.com/wd/hub' : `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
+const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 describe.each([
   {
