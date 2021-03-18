@@ -11,7 +11,7 @@ const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
   'project': process.env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.local': true,
-  'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+  // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
 }
 
 const username = process.env.BROWSERSTACK_USERNAME;
@@ -52,7 +52,7 @@ describe.each([
       bsLocal = new browserstack.Local();
       bsLocal.start({
         'key': process.env.BROWSERSTACK_ACCESS_KEY,
-        'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+        // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
         'force': true,
         'onlyAutomate': 'true',
         'forceLocal': 'true',
