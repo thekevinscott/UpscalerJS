@@ -16,7 +16,6 @@ const DEFAULT_CAPABILITIES = {
 
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-// const serverURL = argv.ci ? 'http://hub-cloud.browserstack.com/wd/hub' : `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 describe.each([
@@ -48,7 +47,6 @@ describe.each([
       })
       .build();
 
-    if (argv.ci !== true || true) {
       console.log('not in ci, start up browserstack-local')
       bsLocal = new browserstack.Local();
       bsLocal.start({
@@ -58,9 +56,6 @@ describe.each([
         'onlyAutomate': 'true',
         'forceLocal': 'true',
       }, () => { });
-    } else {
-      console.log('in ci, no need for browserstack-local')
-    }
     
     try {
       await bundle();
@@ -74,7 +69,7 @@ describe.each([
   afterAll(async (done) => {
     await driver.quit();
 
-    if (argv.ci !== true && bsLocal && bsLocal.isRunning() || true) {
+    if (bsLocal && bsLocal.isRunning()) {
       bsLocal.stop(() => {});
     }
     

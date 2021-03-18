@@ -37,12 +37,6 @@
     "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
     "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
     "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "sauce:proxy": "yarn sl sc -i local-proxy-tunnel",
-    "sauce:docker:ci": "yarn saucectl run -c ./.sauce/playwright.yml",
-    "sauce:docker:local": "yarn saucectl run -c ./.sauce/playwright.yml -e docker=1",
-    "sauce:cloud:local": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id local-proxy-tunnel --test-env sauce",
-    "sauce:cloud:ci": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id github-action-tunnel --test-env sauce",
-    "sauce:cloud:github_backup": "yarn saucectl run -c ./.sauce/playwright.yml --tunnel-id proxy-tunnel-$GITHUB_RUN_ID --test-env sauce",
     "test:unit": "jest --config jestconfig.json"
   },
   "repository": {
