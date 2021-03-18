@@ -1,6 +1,6 @@
 jest.setTimeout(60000);
 const webdriver = require('selenium-webdriver');
-const { bundle, startServer } = require('../lib/webpack-bundler/server')
+const { startServer } = require('../../packages/test-scaffolding/server')
 const checkImage = require('../lib/utils/checkImage');
 const browserstack = require('browserstack-local');
 const yargs = require('yargs/yargs')
@@ -52,6 +52,10 @@ describe.each([
   const PORT = 8099;
 
   beforeAll(async () => {
+    bsLocal = new browserstack.Local();
+    await startBsLocal(bsLocal);
+
+    console.log('attempt to build driver')
     driver = new webdriver.Builder()
       .usingServer(serverURL)
       .withCapabilities({
@@ -59,13 +63,12 @@ describe.each([
         ...capabilities,
       })
       .build();
-
-    bsLocal = new browserstack.Local();
-    await startBsLocal(bsLocal);
+    console.log('built driver')
     
     try {
-      await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, () => {
+        console.log(`** server is up and running on PORT ${PORT}`);
+      });
     } catch (err) {
       console.error(err);
       throw err;
@@ -92,7 +95,8 @@ describe.each([
     await driver.get(url);
     const title = await driver.getTitle();
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
-  }, 60000);
+    await new Promise(resolve => setTimeout(resolve, 2 * 60000));
+  }, 2 * 60000);
 
   // it("upscales an imported local image path", async () => {
   //   await driver.get(`http://localhost:${PORT}`);

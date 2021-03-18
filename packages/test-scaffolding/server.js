@@ -57,12 +57,13 @@ module.exports.bundle = () => new Promise((resolve, reject) => {
   });
 });
 
-module.exports.startServer = (PORT) => new Promise(resolve => {
+module.exports.startServer = (PORT, callback) => new Promise(resolve => {
+  await bundle();
   const server = http.createServer((request, response) => handler(request, response, {
     public: DIST,
   }));
   server.listen(PORT, () => {
-    console.log(`** server is up and running on PORT ${PORT}`);
+    if (callback) { callback(); }
     resolve(server);
   });
 })
