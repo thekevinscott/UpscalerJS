@@ -47,6 +47,7 @@ const bundle = () => new Promise((resolve, reject) => {
 });
 
 module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
+  console.log('starting server')
   await bundle();
   const server = http.createServer((request, response) => handler(request, response, {
     public: DIST,
