@@ -48,7 +48,7 @@ describe.each([
       })
       .build();
 
-    if (argv.ci !== true) {
+    if (argv.ci !== true || true) {
       console.log('not in ci, start up browserstack-local')
       bsLocal = new browserstack.Local();
       bsLocal.start({
@@ -74,7 +74,7 @@ describe.each([
   afterAll(async (done) => {
     await driver.quit();
 
-    if (argv.ci !== true && bsLocal && bsLocal.isRunning()) {
+    if (argv.ci !== true && bsLocal && bsLocal.isRunning() || true) {
       bsLocal.stop(() => {});
     }
     
