@@ -1,4 +1,4 @@
-jest.setTimeout(2 * 60 * 1000); // 2 minute timeout
+jest.setTimeout(5 * 60 * 1000); // 2 minute timeout
 const webdriver = require('selenium-webdriver');
 const { startServer } = require('../../packages/test-scaffolding/server')
 const checkImage = require('../lib/utils/checkImage');
@@ -94,7 +94,14 @@ describe.each([
 
   it("upscales an imported local image path", async () => {
     await driver.get(`http://localhost:${PORT}`);
-    const upscaledSrc = await driver.executeAsyncScript("return window.upscaler.upscale(window.flower);");
+    // const upscaledSrc = await driver.executeAsyncScript("return window.upscaler.upscale(window.flower);");
+    const upscaledSrc = await driver.executeScript(function () {
+      // return new Promise(resolve => setTimeout(() => {
+      //   resolve(2345);
+      // }, 1000));
+      return window.upscaler.upscale(window.flower);
+    });
+    console.log('upscaled src', upscaledSrc);
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
 });
