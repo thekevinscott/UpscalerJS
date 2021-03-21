@@ -55,7 +55,6 @@ describe.each([
     bsLocal = new browserstack.Local();
     await startBsLocal(bsLocal);
 
-    console.log('attempt to build driver')
     driver = new webdriver.Builder()
       .usingServer(serverURL)
       .withCapabilities({
@@ -63,7 +62,6 @@ describe.each([
         ...capabilities,
       })
       .build();
-    console.log('built driver')
     
     try {
       server = await startServer(PORT, () => {
