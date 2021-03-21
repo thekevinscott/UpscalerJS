@@ -26,7 +26,6 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'onlyAutomate': 'true',
     'forceLocal': 'true',
   }, () => {
-    console.log('bs local has started')
     resolve();
   });
 });
