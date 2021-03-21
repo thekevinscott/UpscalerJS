@@ -1,4 +1,4 @@
-jest.setTimeout(60000);
+jest.setTimeout(30000);
 const webdriver = require('selenium-webdriver');
 const { startServer } = require('../../packages/test-scaffolding/server')
 const checkImage = require('../lib/utils/checkImage');
@@ -70,7 +70,7 @@ describe.each([
       console.error(err);
       throw err;
     }
-  })
+  }, 120000);
 
   afterAll(async (done) => {
     await driver.quit();
@@ -84,7 +84,7 @@ describe.each([
     } else {
       console.warn('No server found')
     }
-  });
+  }, 120000);
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
     const rootURL = 'http://127.0.0.1';
