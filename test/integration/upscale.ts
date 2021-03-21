@@ -51,7 +51,7 @@ describe.each([
 
   const PORT = 8099;
 
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     bsLocal = new browserstack.Local();
     await startBsLocal(bsLocal);
 
@@ -65,7 +65,7 @@ describe.each([
     
     try {
       server = await startServer(PORT, () => {
-        console.log(`** server is up and running on PORT ${PORT}`);
+        done();
       });
     } catch (err) {
       console.error(err);
