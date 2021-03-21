@@ -63,7 +63,10 @@ describe.each([
       .build();
     
     try {
-      server = await startServer(PORT, done);
+      server = await startServer(PORT, async () => {
+        await driver.get(`http://localhost:${PORT}`);
+        done();
+      });
     } catch (err) {
       console.error(err);
       throw err;
@@ -85,16 +88,57 @@ describe.each([
   }, 5 * 60000);
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
-    const rootURL = 'http://127.0.0.1';
-    const url = `${rootURL}:${PORT}`;
-    await driver.get(url);
     const title = await driver.getTitle();
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
   it("upscales an imported local image path", async () => {
-    await driver.get(`http://localhost:${PORT}`);
     const upscaledSrc = await driver.executeScript(() => window.upscaler.upscale(window.flower));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+
+  it("upscales an HTML image element", async () => {
+    const upscaledSrc = await driver.executeScript(() => {
+      const img = document.createElement('img');
+      img.src = window.flower;
+      return window.upscaler.upscale(img);
+    });
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
+
+  /*
+  it("upscales a tensor", async () => {
+    const page = await context.newPage();
+    await page.goto(`http://localhost:${PORT}`);
+    page.on('console', console.log);
+    const upscaledSrc = await page.evaluate(async ([]) => {
+      const img = document.createElement('img');
+      img.src = window.flower;
+      const tensor = window.tfjs.fromPixels(img);
+      return await window.upscaler.upscale(tensor);
+    }, []);
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
+
+  it("upscales a base64 png path", async () => {
+    const originalImage = getFixtureAsBuffer('flower.png');
+    const page = await context.newPage();
+    await page.goto(`http://localhost:${PORT}`);
+    page.on('console', console.log);
+    const upscaledSrc = await page.evaluate(async ([flower]) => {
+      return await window.upscaler.upscale(flower);
+    }, [originalImage]);
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
+
+  // it("upscales an image from the interwebs", async () => {
+  //   const page = await context.newPage();
+  //   await page.goto(`http://localhost:${PORT}`);
+  //   page.on('console', console.log);
+  //   const upscaledSrc = await page.evaluate(async ([]) => {
+  //     return await window.upscaler.upscale(window.flower);
+  //   }, []);
+  //   checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  // });
+  */
 });
