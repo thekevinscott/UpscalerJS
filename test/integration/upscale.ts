@@ -97,6 +97,7 @@ describe.each([
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
 
+  /*
   it("upscales an HTML image element", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = document.createElement('img');
