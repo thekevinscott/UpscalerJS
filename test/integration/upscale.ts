@@ -1,4 +1,4 @@
-jest.setTimeout(30000);
+jest.setTimeout(2 * 60 * 1000); // 2 minute timeout
 const webdriver = require('selenium-webdriver');
 const { startServer } = require('../../packages/test-scaffolding/server')
 const checkImage = require('../lib/utils/checkImage');
@@ -63,14 +63,12 @@ describe.each([
       .build();
     
     try {
-      server = await startServer(PORT, () => {
-        done();
-      });
+      server = await startServer(PORT, done);
     } catch (err) {
       console.error(err);
       throw err;
     }
-  }, 120000);
+  }, 5 * 60000);
 
   afterAll(async (done) => {
     await driver.quit();
@@ -84,7 +82,7 @@ describe.each([
     } else {
       console.warn('No server found')
     }
-  }, 120000);
+  }, 5 * 60000);
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
     const rootURL = 'http://127.0.0.1';
@@ -94,11 +92,9 @@ describe.each([
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
-  // it("upscales an imported local image path", async () => {
-  //   await driver.get(`http://localhost:${PORT}`);
-  //   const upscaledSrc = await page.evaluate(async ([]) => {
-  //     return await window.upscaler.upscale(window.flower);
-  //   }, []);
-  //   checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
-  // });
+  it("upscales an imported local image path", async () => {
+    await driver.get(`http://localhost:${PORT}`);
+    const upscaledSrc = await driver.executeAsyncScript("return window.upscaler.upscale(window.flower);");
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
 });

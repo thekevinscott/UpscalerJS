@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const getFixtureAsBuffer = (pathname) => {
-  const fullpath = path.resolve(__dirname, "__fixtures__", pathname);
+  const fullpath = path.resolve(__dirname, "../../__fixtures__", pathname);
   const data = fs.readFileSync(fullpath);
   // return Buffer.from(data, 'binary');
   return PNG.sync.read(data);
@@ -13,7 +13,12 @@ const getFixtureAsBuffer = (pathname) => {
 
 const checkImage = (src, fixtureSrc, diffSrc) => {
   const fixture = getFixtureAsBuffer(fixtureSrc);
-  const upscaledImage = PNG.sync.read(Buffer.from(src.split('base64,').pop(), 'base64'));
+  console.log('src', src);
+  if (!src.includes('base64,')) {
+    throw new Error('No "base64," tag found in the incoming src, this may indicate a bad src attribute.');
+  }
+  const upscaledImageBuffer = Buffer.from(src.split('base64,').pop(), 'base64');
+  const upscaledImage = PNG.sync.read(upscaledImageBuffer);
 
   expect(upscaledImage.width).toEqual(fixture.width);
   expect(upscaledImage.height).toEqual(fixture.height);
