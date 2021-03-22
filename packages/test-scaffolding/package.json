@@ -1,5 +1,6 @@
 {
   "name": "webpack-bundler",
+  "private": true,
   "version": "0.8.22",
   "main": "index.js",
   "workspaceDependencies": {
