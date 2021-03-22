@@ -55,9 +55,5 @@
   "dependencies": {
     "tensor-as-base64": "^0.1.1"
   },
-  "gitHead": "c3f5b7041273115ab7c6a55e0feca4a399f692cb",
-  "devDependencies": {
-    "saucectl": "^0.32.2",
-    "selenium-webdriver": "^4.0.0-beta.2"
-  }
+  "gitHead": "c3f5b7041273115ab7c6a55e0feca4a399f692cb"
 }

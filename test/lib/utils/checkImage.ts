@@ -7,7 +7,6 @@ const path = require('path');
 const getFixtureAsBuffer = (pathname) => {
   const fullpath = path.resolve(__dirname, "../../__fixtures__", pathname);
   const data = fs.readFileSync(fullpath);
-  // return Buffer.from(data, 'binary');
   return PNG.sync.read(data);
 };
 
