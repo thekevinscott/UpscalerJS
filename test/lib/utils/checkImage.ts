@@ -12,7 +12,6 @@ const getFixtureAsBuffer = (pathname) => {
 
 const checkImage = (src, fixtureSrc, diffSrc) => {
   const fixture = getFixtureAsBuffer(fixtureSrc);
-  console.log('src', src);
   if (!src.includes('base64,')) {
     throw new Error('No "base64," tag found in the incoming src, this may indicate a bad src attribute.');
   }
