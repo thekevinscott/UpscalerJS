@@ -1,0 +1,34 @@
+name: 'Tests'
+on: [pull_request]
+jobs:
+  unit:
+    name: 'Unit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Building'
+        run: yarn
+
+      - name: 'Running test'
+        run: yarn test:unit
+
+  integration-browser:
+    name: 'Integration / Browser'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Building'
+        run: yarn && yarn build
+
+      - name: 'Running test'
+        run: yarn test:integration:browser --ci

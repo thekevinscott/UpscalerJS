@@ -6,6 +6,11 @@ coverage
 yarn-error.log
 **/yarn-error.log
 .DS_Store
-lerna-debug.log
+local.log
+browserstack.err
 .env
+log
+results
+lerna-debug.log
 package-lock.json
+credentials.yml

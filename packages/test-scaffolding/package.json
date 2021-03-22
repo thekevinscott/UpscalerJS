@@ -1,0 +1,12 @@
+{
+  "name": "webpack-bundler",
+  "private": true,
+  "version": "0.8.22",
+  "main": "index.js",
+  "workspaceDependencies": {
+    "upscaler": "0.8.22"
+	},
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.2.0"
+  }
+}
