@@ -44,6 +44,7 @@
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
     "lerna": "^3.14.0",
+    "loader-utils": "^2.0.0",
     "pixelmatch": "^5.2.1",
     "pngjs": "^6.0.0",
     "pre-commit": "^1.2.2",
