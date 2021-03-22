@@ -1,6 +1,6 @@
 {
   "name": "webpack-bundler",
-  "version": "1.0.0",
+  "version": "0.8.22",
   "main": "index.js",
   "workspaceDependencies": {
     "upscaler": "0.8.22"
