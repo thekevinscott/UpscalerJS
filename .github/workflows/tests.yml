@@ -5,7 +5,7 @@ on:
 
 jobs:
   unit:
-    name: 'Unit'
+    name: 'Unit with Cov'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
