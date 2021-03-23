@@ -36,8 +36,7 @@
     "build:es5": "tsc --module amd --moduleResolution node --target es5 --outFile dist/es5/index.js",
     "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
     "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
-    "watch": "rimraf dist && tsc --watch --skipLibCheck",
-    "test:unit": "jest --config jestconfig.json"
+    "watch": "rimraf dist && tsc --watch --skipLibCheck"
   },
   "repository": {
     "type": "git",
