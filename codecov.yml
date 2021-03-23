@@ -7,3 +7,8 @@ ignore:
   - "scripts"
   - "test"
   - "packages/test-scaffolding"
+
+flags:
+  upscalerjs:
+    paths:
+      - packages/upscalerjs
