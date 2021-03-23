@@ -17,6 +17,9 @@ jobs:
       - name: 'Running test'
         run: yarn test:unit
 
+      - name: 'Move coverage to root'
+        run: mv packages/upscalerjs/coverage ./coverage
+
   integration-browser:
     name: 'Integration / Browser'
     runs-on: ubuntu-latest
