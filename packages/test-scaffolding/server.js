@@ -1,17 +1,35 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const fs = require('fs');
 const webpack = require('webpack');
 const handler = require('serve-handler');
 const http = require('http');
 const rimraf = require('rimraf');
 const path = require('path');
+const esbuild = require('esbuild');
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');
 
-let compiler = undefined;
-const bundle = () => new Promise((resolve, reject) => {
+const bundle = () => {
   rimraf.sync(DIST);
+  const entryFiles = path.join(ROOT, 'src/index.js');
+  try {
+    esbuild.buildSync({
+      entryPoints: [entryFiles],
+      bundle: true,
+      loader: {
+        '.png': 'file',
+      },
+      outdir: DIST,
+    });
+    fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST,'index.html'))
+  } catch (err) {
+    console.error(err);
+  }
+}
 
+let compiler = undefined;
+const bundleWebpack = () => new Promise((resolve, reject) => {
   if (compiler === undefined) {
     const entryFiles = path.join(ROOT, 'index.js');
 
@@ -45,10 +63,10 @@ const bundle = () => new Promise((resolve, reject) => {
     }
   });
 });
+module.exports.bundle = bundle;
 
 module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
   try {
-    await bundle();
     const server = http.createServer((request, response) => handler(request, response, {
       public: DIST,
     }));

@@ -1,6 +1,7 @@
-jest.setTimeout(5 * 60 * 1000); // 2 minute timeout
+const minute = 60 * 1000;
+jest.setTimeout(5 * minute); // 2 minute timeout
 const webdriver = require('selenium-webdriver');
-const { startServer } = require('../../packages/test-scaffolding/server')
+const { bundle, startServer } = require('../../packages/test-scaffolding/server')
 const checkImage = require('../lib/utils/checkImage');
 const browserstack = require('browserstack-local');
 const yargs = require('yargs/yargs')
@@ -34,13 +35,24 @@ describe.each([
   {
     'os': 'windows',
     'os_version': '10',
-    'browserName': 'firefox',
+    'browserName': 'chrome',
     'browser_version' : 'latest',
   },
   // {
   //   'os': 'windows',
   //   'os_version': '10',
+  //   'browserName': 'firefox',
+  //   'browser_version' : 'latest',
+  // },
+  // {
+  //   'os': 'windows',
+  //   'os_version': '10',
   //   'browserName': 'chrome',
+  //   'browser_version' : 'latest',
+  // },
+  // {
+  //   'os': 'mac',
+  //   'browserName': 'safari',
   //   'browser_version' : 'latest',
   // },
 ])("Upscale", (capabilities) => {
@@ -50,42 +62,58 @@ describe.each([
 
   const PORT = 8099;
 
-  beforeAll(async (done) => {
-    bsLocal = new browserstack.Local();
-    await startBsLocal(bsLocal);
-
-    driver = new webdriver.Builder()
-      .usingServer(serverURL)
-      .withCapabilities({
-        ...DEFAULT_CAPABILITIES,
-        ...capabilities,
+  beforeAll(async () => {
+    // const start = new Date().getTime();
+    await Promise.all([
+      (async () => {
+        bsLocal = new browserstack.Local();
+        await startBsLocal(bsLocal);
+      })(),
+      (async () => {
+        driver = new webdriver.Builder()
+          .usingServer(serverURL)
+          .withCapabilities({
+            ...DEFAULT_CAPABILITIES,
+            ...capabilities,
+          })
+          .build();
+      })(),
+      new Promise(async (resolve, reject) => {
+        try {
+          await bundle();
+          server = await startServer(PORT, resolve);
+        } catch (err) {
+          reject(err);
+        }
       })
-      .build();
+    ]);
+
+    // const end = new Date().getTime();
+    // console.log(`Total build took ${Math.round((end - start) / 1000)} seconds`);
     
-    try {
-      server = await startServer(PORT, async () => {
-        await driver.get(`http://localhost:${PORT}`);
-        done();
-      });
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }, 5 * 60000);
+  });
 
   afterAll(async (done) => {
-    await driver.quit();
+    await Promise.all([
+      driver.quit(),
+      (async () => {
+        if (bsLocal && bsLocal.isRunning()) {
+          bsLocal.stop(() => {});
+        }
+      })(),
+      (async () => {
+        if (server) {
+          server.close(done);
+        } else {
+          console.warn('No server found')
+        }
+      })(),
+    ]);
+  });
 
-    if (bsLocal && bsLocal.isRunning()) {
-      bsLocal.stop(() => {});
-    }
-    
-    if (server) {
-      server.close(done);
-    } else {
-      console.warn('No server found')
-    }
-  }, 5 * 60000);
+  beforeEach(async () => {
+    await driver.get(`http://localhost:${PORT}`)
+  });
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
     const title = await driver.getTitle();
@@ -93,34 +121,41 @@ describe.each([
   });
 
   it("upscales an imported local image path", async () => {
-    const upscaledSrc = await driver.executeScript(() => window.upscaler.upscale(window.flower));
+    const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
 
-  /*
-  it("upscales an HTML image element", async () => {
+  it("upscales an HTML Image", async () => {
+    const upscaledSrc = await driver.executeScript(() => {
+      const img = new Image();
+      img.src = window['flower'];
+      return window['upscaler'].upscale(img);
+    });
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
+
+  it("upscales an HTML Image from the page", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = document.createElement('img');
-      img.src = window.flower;
-      return window.upscaler.upscale(img);
+      img.id = 'img';
+      img.src = window['flower'];
+      document.body.appendChild(img)
+      return window['upscaler'].upscale(document.getElementById('img'));
+    });
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
+
+  it("upscales a tensor", async () => {
+    const upscaledSrc = await driver.executeScript(() => {
+      const img = new Image();
+      img.src = window['flower'];
+      const tensor = window['tfjs'].fromPixels(img);
+      return window['upscaler'].upscale(tensor);
     });
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
 
   /*
-  it("upscales a tensor", async () => {
-    const page = await context.newPage();
-    await page.goto(`http://localhost:${PORT}`);
-    page.on('console', console.log);
-    const upscaledSrc = await page.evaluate(async ([]) => {
-      const img = document.createElement('img');
-      img.src = window.flower;
-      const tensor = window.tfjs.fromPixels(img);
-      return await window.upscaler.upscale(tensor);
-    }, []);
-    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
-  });
-
   it("upscales a base64 png path", async () => {
     const originalImage = getFixtureAsBuffer('flower.png');
     const page = await context.newPage();
