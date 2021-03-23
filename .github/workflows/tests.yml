@@ -1,5 +1,5 @@
 name: 'Tests'
-on: [pull_request]
+on: [pull_request, pull_request_target]
 jobs:
   unit:
     name: 'Unit'
@@ -21,7 +21,7 @@ jobs:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
         with:
-          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
       - name: 'Checkout repository'
