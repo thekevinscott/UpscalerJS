@@ -1,5 +1,9 @@
 ignore:
+  - ".github"
+  - "assert"
   - "dist"
   - "examples"
   - "docs"
   - "scripts"
+  - "test"
+  - "packages/test-scaffolding"

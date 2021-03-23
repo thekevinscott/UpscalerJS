@@ -15,7 +15,7 @@
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
-    "test:unit": "yarn lerna run test:unit",
+    "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "node test/lib/startServer.js"
   },

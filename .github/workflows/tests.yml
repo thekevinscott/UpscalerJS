@@ -1,5 +1,8 @@
 name: 'Tests'
-on: [pull_request, pull_request_target]
+on:
+  pull_request_target:
+    types: [opened]
+
 jobs:
   unit:
     name: 'Unit'
@@ -13,6 +16,9 @@ jobs:
 
       - name: 'Running test'
         run: yarn test:unit
+
+      - name: 'Move coverage to root'
+        run: mv packages/upscalerjs/coverage ./coverage
 
   integration-browser:
     name: 'Integration / Browser'
