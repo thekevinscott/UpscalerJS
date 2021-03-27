@@ -11,16 +11,17 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Set up codecov'
-        uses: codecov/codecov-action@v1
-        with:
-          files: ./packages/upscalerjs/coverage/coverage-final.json
-
       - name: 'Building'
         run: yarn
 
       - name: 'Running test'
         run: yarn test:unit
+
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./packages/upscalerjs/coverage/coverage-final.json
+
 
   integration-browser:
     name: 'Integration / Browser'
