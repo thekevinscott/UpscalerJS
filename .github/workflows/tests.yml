@@ -21,6 +21,7 @@ jobs:
         uses: codecov/codecov-action@v1
         with:
           directory: ./packages/upscalerjs/coverage
+          verbose: true
 
 
   integration-browser:
