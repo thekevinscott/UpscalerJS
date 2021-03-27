@@ -5,11 +5,13 @@ on:
 
 jobs:
   unit:
-    name: 'Unit'
+    name: 'Unit (latest)'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@master
+
+      - name: 'Set up codecov'
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
