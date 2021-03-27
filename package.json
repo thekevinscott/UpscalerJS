@@ -40,6 +40,7 @@
     "codecov": "^3.7.2",
     "docsify-cli": "^4.4.2",
     "dotenv": "^8.2.0",
+    "esbuild": "^0.9.6",
     "html-webpack-plugin": "^5.3.0",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
