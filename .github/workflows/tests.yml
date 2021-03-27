@@ -1,4 +1,4 @@
-name: 'Tests 2'
+name: 'Tests'
 on:
   pull_request_target:
     types: [opened]
