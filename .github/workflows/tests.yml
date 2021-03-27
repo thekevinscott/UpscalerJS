@@ -20,7 +20,7 @@ jobs:
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
         with:
-          files: ./packages/upscalerjs/coverage/coverage-final.json
+          directory: ./packages/upscalerjs/coverage
 
 
   integration-browser:
