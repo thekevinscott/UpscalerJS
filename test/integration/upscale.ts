@@ -63,51 +63,60 @@ describe.each([
   const PORT = 8099;
 
   beforeAll(async () => {
-    // const start = new Date().getTime();
+    const start = new Date().getTime();
+    const startBrowserStack = async () => {
+      bsLocal = new browserstack.Local();
+      await startBsLocal(bsLocal);
+    };
+
+    const startDriver = async () => {
+      driver = new webdriver.Builder()
+        .usingServer(serverURL)
+        .withCapabilities({
+          ...DEFAULT_CAPABILITIES,
+          ...capabilities,
+        })
+        .build();
+    };
+
+    const startServerWrapper = () => new Promise(async (resolve, reject) => {
+      try {
+        await bundle();
+        server = await startServer(PORT, resolve);
+      } catch (err) {
+        reject(err);
+      }
+    })
+
     await Promise.all([
-      (async () => {
-        bsLocal = new browserstack.Local();
-        await startBsLocal(bsLocal);
-      })(),
-      (async () => {
-        driver = new webdriver.Builder()
-          .usingServer(serverURL)
-          .withCapabilities({
-            ...DEFAULT_CAPABILITIES,
-            ...capabilities,
-          })
-          .build();
-      })(),
-      new Promise(async (resolve, reject) => {
-        try {
-          await bundle();
-          server = await startServer(PORT, resolve);
-        } catch (err) {
-          reject(err);
-        }
-      })
+      startBrowserStack(),
+      startDriver(),
+      startServerWrapper(),
     ]);
 
-    // const end = new Date().getTime();
-    // console.log(`Total build took ${Math.round((end - start) / 1000)} seconds`);
-    
+    const end = new Date().getTime();
+    console.log(`Started tests in ${Math.round((end - start) / 1000)} seconds`);
   });
 
-  afterAll(async (done) => {
+  afterAll(async () => {
+    const stopBrowserstack = () => new Promise(resolve => {
+      if (bsLocal && bsLocal.isRunning()) {
+        bsLocal.stop(resolve);
+      }
+    });
+
+    const stopServer = () => new Promise((resolve) => {
+      if (server) {
+        server.close(resolve);
+      } else {
+        console.warn('No server found')
+        resolve();
+      }
+    });
     await Promise.all([
       driver.quit(),
-      (async () => {
-        if (bsLocal && bsLocal.isRunning()) {
-          bsLocal.stop(() => {});
-        }
-      })(),
-      (async () => {
-        if (server) {
-          server.close(done);
-        } else {
-          console.warn('No server found')
-        }
-      })(),
+      stopBrowserstack(),
+      stopServer(),
     ]);
   });
 
