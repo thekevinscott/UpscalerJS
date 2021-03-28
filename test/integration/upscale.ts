@@ -26,7 +26,8 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'force': true,
     'onlyAutomate': 'true',
     'forceLocal': 'true',
-  }, () => {
+  }, (...params) => {
+  console.log('bsLocal', params)
     resolve();
   });
 });
@@ -62,14 +63,14 @@ describe.each([
 
   const PORT = 8099;
 
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);
     };
 
-    const startDriver = async () => {
+    const startDriver = () => {
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
@@ -79,26 +80,24 @@ describe.each([
         .build();
     };
 
-    const startServerWrapper = () => new Promise(async (resolve, reject) => {
-      try {
-        await bundle();
-        server = await startServer(PORT, resolve);
-      } catch (err) {
-        reject(err);
-      }
-    })
+    const startServerWrapper = async () => {
+      await bundle();
+      server = await startServer(PORT);
+    };
 
     await Promise.all([
       startBrowserStack(),
-      startDriver(),
       startServerWrapper(),
     ]);
+    startDriver();
 
     const end = new Date().getTime();
-    console.log(`Started tests in ${Math.round((end - start) / 1000)} seconds`);
+    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    done();
   });
 
-  afterAll(async () => {
+  afterAll(async (done) => {
+    const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
         bsLocal.stop(resolve);
@@ -118,6 +117,9 @@ describe.each([
       stopBrowserstack(),
       stopServer(),
     ]);
+    const end = new Date().getTime();
+    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    done();
   });
 
   beforeEach(async () => {
@@ -129,6 +131,7 @@ describe.each([
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
+/*
   it("upscales an imported local image path", async () => {
     const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
