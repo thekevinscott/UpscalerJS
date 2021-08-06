@@ -1,6 +1,6 @@
 {
   "name": "warmup",
-  "version": "0.8.24",
+  "version": "0.8.25",
   "description": "Demonstration of warming up UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.24"
+    "upscaler": "0.8.25"
   },
   "browserslist": {
     "production": [
