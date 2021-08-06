@@ -9,7 +9,7 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.2",
     "react-scripts": "^4.0.2",
-    "upscaler": "0.8.25"
+    "upscaler": "0.8.23"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,5 +32,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "0.8.25"
+  "version": "0.8.23"
 }
