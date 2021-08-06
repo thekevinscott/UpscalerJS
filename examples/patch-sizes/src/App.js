@@ -1,7 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import './App.css';
-import Upscaler from 'upscaler';
-import { getTensorDimensions, getRowsAndColumns } from 'upscaler/dist/upscale';
+import Upscaler, { getTensorDimensions, getRowsAndColumns } from 'upscaler';
 import React, { useState, useEffect } from 'react';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';

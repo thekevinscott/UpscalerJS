@@ -7,7 +7,8 @@
   "scripts": {
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
-    "push": "yarn lerna publish --conventional-commits --create-release=github",
+    "push": "yarn lerna publish",
+    "push_old": "yarn lerna publish --conventional-commits --create-release=github",
     "pin-cdn": "node scripts/pin-cdn.js && yarn commit-latest-version-changes",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "yarn pin-cdn",
@@ -15,6 +16,7 @@
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
+    "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "node test/lib/startServer.js"
