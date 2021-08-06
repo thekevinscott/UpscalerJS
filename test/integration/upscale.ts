@@ -26,10 +26,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'force': true,
     'onlyAutomate': 'true',
     'forceLocal': 'true',
-  }, (...params) => {
-  console.log('bsLocal', params)
-    resolve();
-  });
+  }, resolve);
 });
 
 describe.each([
@@ -127,10 +124,13 @@ describe.each([
   });
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
+    console.log('test 1');
     const title = await driver.getTitle();
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
+    console.log('test 2');
   });
 
+/*
   it("upscales an imported local image path", async () => {
     const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
