@@ -15,6 +15,10 @@ html, body, #root {
 }
 
 .dropzone {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
   width: 100%;
   display: flex;
   justify-content: center;
