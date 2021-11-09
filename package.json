@@ -2,9 +2,11 @@
   "version": "0.8.17",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
+    "example": "node ./scripts/example.js",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
     "push": "yarn lerna publish",

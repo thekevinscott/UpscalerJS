@@ -50,7 +50,7 @@ examples.forEach(example => {
   const dirPath = path.resolve(examplesPath, example);
   if (fs.lstatSync(dirPath).isDirectory()) {
     const examplePackagePath = path.resolve(dirPath, 'package.json');
-    updatePackageJSON(examplePackagePath, upscalerVersion, package => {
+    updatePackageJSON(examplePackagePath, "link:../../packages/upscalerjs", package => {
       if (!package.dependencies) {
         package.dependencies = {};
       }
