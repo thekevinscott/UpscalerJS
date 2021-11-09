@@ -115,6 +115,23 @@ export const getTensorDimensions = ({
   width: number;
   padding?: number;
 }) => {
+  // non typescript code can call this function, so we add runtime
+  // checks to ensure required values are present
+  if (row === undefined) {
+    throw new Error('row is undefined');
+  }
+  if (col === undefined) {
+    throw new Error('col is undefined');
+  }
+  if (patchSize === undefined) {
+    throw new Error('patchSize is undefined');
+  }
+  if (height === undefined) {
+    throw new Error('height is undefined');
+  }
+  if (width === undefined) {
+    throw new Error('width is undefined');
+  }
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
   if (yPatchSize > height) {
