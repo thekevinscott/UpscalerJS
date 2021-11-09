@@ -4,8 +4,6 @@ import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn } from './utils';
 
-console.log('upscale: 1')
-
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
 

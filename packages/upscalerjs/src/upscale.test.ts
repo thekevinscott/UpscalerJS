@@ -926,7 +926,6 @@ describe('getConsistentTensorDimensions', () => {
   });
 });
 
-
 describe('getRowsAndColumns', () => {
   it('gets rows and columns', () => {
     const img: tf.Tensor4D = tf.tensor(
