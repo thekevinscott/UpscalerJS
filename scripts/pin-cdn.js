@@ -54,7 +54,7 @@ examples.forEach(example => {
       if (!package.dependencies) {
         package.dependencies = {};
       }
-      package.dependencies.upscaler = "link:../../packages/upscalerjs";
+      package.dependencies.upscaler = upscalerVersion;
       
       package.dependencies['@tensorflow/tfjs'] = peerDependencies['@tensorflow/tfjs'];
     });
