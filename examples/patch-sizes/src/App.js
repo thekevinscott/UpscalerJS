@@ -7,7 +7,7 @@ import 'react-input-range/lib/css/index.css';
 import tensorAsBase64 from 'tensor-as-base64';
 
 const size = 100;
-const src = `https://picsum.photos/${size}/${size}`;
+const src = `https://picsum.photos/id/220/${size}/${size}`;
 
 const upscaler = new Upscaler({
   model: "div2k/rdn-C3-D10-G64-G064-x2"
