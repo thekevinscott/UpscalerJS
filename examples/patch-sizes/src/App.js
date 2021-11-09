@@ -161,7 +161,7 @@ function App() {
   return 'Loading...';
 }
 
-export default () => {
+const main = () => {
   return (
     <div className="app">
       <h1>Patch Sizes</h1>
@@ -170,3 +170,5 @@ export default () => {
     </div>
   );
 };
+
+export default main;
