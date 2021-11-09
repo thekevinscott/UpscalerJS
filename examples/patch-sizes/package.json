@@ -13,8 +13,7 @@
     "upscaler": "0.8.27"
   },
   "scripts": {
-    "start": "PORT=1234 react-scripts start",
-    "start:local": "PORT=1234 react-scripts start"
+    "start": "PORT=1234 react-scripts start"
   },
   "eslintConfig": {
     "extends": "react-app"
