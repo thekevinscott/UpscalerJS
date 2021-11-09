@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import './App.css';
 import Upscaler, { getTensorDimensions, getRowsAndColumns } from 'upscaler';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import tensorAsBase64 from 'tensor-as-base64';
@@ -30,9 +30,9 @@ function App() {
     _img.crossOrigin = 'anonymous';
     _img.src = src;
     _img.onload = () => setImg(_img);
-  });
+  }, []);
 
-  const upscale = async (e) => {
+  const upscale = useCallback(async (e) => {
     e.preventDefault();
     setUpscaling(true);
     const pixels = tf.browser.fromPixels(img);
@@ -83,12 +83,12 @@ function App() {
       }
     }
     setUpscaling(false);
-  };
+  }, [img, state.padding, state.patchSize]);
 
-  const handleChange = (key) => value => setState(prev => ({
+  const handleChange = useCallback((key) => value => setState(prev => ({
     ...prev,
     [key]: value,
-  }));
+  })), []);
 
   if (img) {
     return (
