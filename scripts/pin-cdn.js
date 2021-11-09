@@ -50,11 +50,11 @@ examples.forEach(example => {
   const dirPath = path.resolve(examplesPath, example);
   if (fs.lstatSync(dirPath).isDirectory()) {
     const examplePackagePath = path.resolve(dirPath, 'package.json');
-    updatePackageJSON(examplePackagePath, "link:../../packages/upscalerjs", package => {
+    updatePackageJSON(examplePackagePath, upscalerVersion, package => {
       if (!package.dependencies) {
         package.dependencies = {};
       }
-      package.dependencies.upscaler = upscalerVersion;
+      package.dependencies.upscaler = "link:../../packages/upscalerjs";
       
       package.dependencies['@tensorflow/tfjs'] = peerDependencies['@tensorflow/tfjs'];
     });

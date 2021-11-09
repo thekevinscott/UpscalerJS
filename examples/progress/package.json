@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.27"
+    "upscaler": "link:../../packages/upscalerjs"
   },
   "browserslist": {
     "production": [
