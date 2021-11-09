@@ -14,3 +14,4 @@ results
 lerna-debug.log
 package-lock.json
 credentials.yml
+.yarn
