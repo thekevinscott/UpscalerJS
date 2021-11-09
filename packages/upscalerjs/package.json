@@ -37,7 +37,7 @@
     "build:umd": "yarn build:es5 && rollup dist/es5/index.js --format umd --name Upscaler --output.file dist/umd/upscaler.js && rimraf dist/es5",
     "build:umd:min": "cd dist/umd && uglifyjs --compress --mangle --source-map --comments --o upscaler.min.js -- upscaler.js && gzip upscaler.min.js -c > upscaler.min.js.gz",
     "test": "jest --config jestconfig.json",
-    "watch": "rimraf dist && tsc --watch --skipLibCheck"
+    "watch:esnext": "watch 'yarn build:esnext' ./src"
   },
   "repository": {
     "type": "git",

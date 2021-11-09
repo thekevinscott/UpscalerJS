@@ -10,7 +10,7 @@
     "react-input-range": "^1.3.0",
     "react-scripts": "^4.0.2",
     "tensor-as-base64": "^0.1.1",
-    "upscaler": "workspace:*"
+    "upscaler": "link:../../packages/upscalerjs"
   },
   "scripts": {
     "start": "PORT=1234 react-scripts start",

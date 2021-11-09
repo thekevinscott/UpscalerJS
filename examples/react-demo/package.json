@@ -9,7 +9,7 @@
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.2",
     "react-scripts": "^4.0.2",
-    "upscaler": "0.8.27"
+    "upscaler": "link:../../packages/upscalerjs"
   },
   "scripts": {
     "start": "react-scripts start",

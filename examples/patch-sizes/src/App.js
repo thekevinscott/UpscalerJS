@@ -9,8 +9,6 @@ import tensorAsBase64 from 'tensor-as-base64';
 const size = 100;
 const src = `https://picsum.photos/${size}/${size}`;
 
-console.log('example 1')
-
 const upscaler = new Upscaler({
   model: "div2k/rdn-C3-D10-G64-G064-x2"
 });
