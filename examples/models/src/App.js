@@ -1,6 +1,6 @@
 import './App.css';
 import Upscaler from 'upscaler';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 
 function App() {
   const img = useRef();
@@ -9,7 +9,7 @@ function App() {
   const [elapsedTimes, setElapsedTimes] = useState({});
   const [started, setStarted] = useState({});
 
-  const upscaleImage = async (key) => {
+  const upscaleImage = useCallback(async (key) => {
     const upscaler = new Upscaler({
       model: key,
     });
@@ -22,9 +22,9 @@ function App() {
       elapsedTime,
       src: upscaledImage,
     }
-  };
+  }, [img]);
 
-  const getModelDefinitions = async () => {
+  const getModelDefinitions = useCallback(async () => {
     const _modelDefinitions = await (new Upscaler()).getModelDefinitions();
     setModelDefinitions(Object.entries(_modelDefinitions).reduce((obj, [key, val]) => {
       if (!val.deprecated) {
@@ -39,7 +39,7 @@ function App() {
       }
       return obj;
     }, {}));
-  };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -72,20 +72,20 @@ function App() {
         }
       }
     })();
-  }, [modelDefinitions]);
+  }, [started, modelDefinitions, upscaleImage]);
 
   useEffect(() => {
     if (img.current && !modelDefinitions) {
       getModelDefinitions();
     }
-  }, [img]);
+  }, [img, modelDefinitions, getModelDefinitions]);
 
   if (modelDefinitions) {
     return (
       <div>
         <div>
           <label>Sample image</label>
-          <img ref={img} src="/flower.png" />
+          <img ref={img} src="/flower.png" alt="Flower" crossorigin="anonymous" />
         </div>
         {Object.entries(modelDefinitions).map(([scale, defs]) => {
           return (
@@ -127,13 +127,13 @@ function App() {
   return (
     <div>
       <label>Sample image</label>
-      <img ref={img} src="/flower.png" />
+      <img ref={img} src="/flower.png" alt="Flower" crossorigin="anonymous" />
       <p>Loading models...</p>
     </div>
   )
 }
 
-export default () => {
+const main = () => {
   return (
     <div className="app">
       <h1>Pre-trained Model Comparison</h1>
@@ -141,3 +141,5 @@ export default () => {
     </div>
   );
 };
+
+export default main;

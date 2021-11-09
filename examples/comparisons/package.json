@@ -1,21 +1,21 @@
 {
   "name": "comparisons",
-  "version": "0.8.22",
+  "version": "0.8.27",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
+    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
     "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
   },
   "author": "Kevin Scott",
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "parcel": "^1.12.4"
+    "parcel": "1.12.3"
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.22"
+    "upscaler": "0.8.27"
   },
   "browserslist": {
     "production": [

@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/models",
-  "version": "0.8.22",
+  "version": "0.8.27",
   "description": "Neural Network Models for upscalerjs",
   "keywords": [
     "image super resolution",
@@ -13,7 +13,6 @@
     "LICENSE",
     "models/**/*"
   ],
-  "scripts": {},
   "author": "Kevin Scott",
   "license": "MIT",
   "gitHead": "c3f5b7041273115ab7c6a55e0feca4a399f692cb"

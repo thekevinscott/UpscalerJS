@@ -1,10 +1,10 @@
 {
   "name": "webworker",
-  "version": "0.8.22",
+  "version": "0.8.27",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
+    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
     "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
   },
   "browserslist": {
@@ -23,11 +23,11 @@
   "license": "MIT",
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "parcel": "^1.12.4"
+    "parcel": "1.12.3"
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
     "tensor-as-base64": "^0.1.1",
-    "upscaler": "0.8.22"
+    "upscaler": "0.8.27"
   }
 }

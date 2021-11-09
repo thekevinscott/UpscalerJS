@@ -1,14 +1,13 @@
 import * as tf from '@tensorflow/tfjs';
 import './App.css';
-import Upscaler from 'upscaler';
-import { getTensorDimensions, getRowsAndColumns } from 'upscaler/dist/upscale';
-import React, { useState, useEffect } from 'react';
+import Upscaler, { getTensorDimensions, getRowsAndColumns } from 'upscaler';
+import React, { useState, useEffect, useCallback } from 'react';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import tensorAsBase64 from 'tensor-as-base64';
 
 const size = 100;
-const src = `https://picsum.photos/${size}/${size}`;
+const src = `https://picsum.photos/id/220/${size}/${size}`;
 
 const upscaler = new Upscaler({
   model: "div2k/rdn-C3-D10-G64-G064-x2"
@@ -29,9 +28,9 @@ function App() {
     _img.crossOrigin = 'anonymous';
     _img.src = src;
     _img.onload = () => setImg(_img);
-  });
+  }, []);
 
-  const upscale = async (e) => {
+  const upscale = useCallback(async (e) => {
     e.preventDefault();
     setUpscaling(true);
     const pixels = tf.browser.fromPixels(img);
@@ -39,14 +38,14 @@ function App() {
     const [height, width] = pixels.shape;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
+        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions({
           row,
           col,
-          Number(state.patchSize),
-          Number(state.padding),
           height,
           width,
-        );
+          patchSize: Number(state.patchSize),
+          padding: Number(state.padding),
+        });
         const slicedPixels = pixels.slice(
           [origin[0], origin[1]],
           [size[0], size[1]],
@@ -82,12 +81,12 @@ function App() {
       }
     }
     setUpscaling(false);
-  };
+  }, [img, state.padding, state.patchSize]);
 
-  const handleChange = (key) => value => setState(prev => ({
+  const handleChange = useCallback((key) => value => setState(prev => ({
     ...prev,
     [key]: value,
-  }));
+  })), []);
 
   if (img) {
     return (
@@ -162,7 +161,7 @@ function App() {
   return 'Loading...';
 }
 
-export default () => {
+const main = () => {
   return (
     <div className="app">
       <h1>Patch Sizes</h1>
@@ -171,3 +170,5 @@ export default () => {
     </div>
   );
 };
+
+export default main;
