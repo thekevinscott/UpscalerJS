@@ -902,7 +902,30 @@ describe('getConsistentTensorDimensions', () => {
       );
     });
   });
+
+  it('gets tensor dimensions for the patch size example app', () => {
+    testGetTensorDimensions(
+      {
+        width: 100,
+        height: 100,
+        patchSize: 20,
+        padding: 5,
+      },
+      [
+        {
+          row: 0,
+          col: 0,
+          expectation: {
+            origin: [0, 0],
+            size: [30, 30],
+            sliceSize: [20, 20],
+          },
+        },
+      ],
+    );
+  });
 });
+
 
 describe('getRowsAndColumns', () => {
   it('gets rows and columns', () => {

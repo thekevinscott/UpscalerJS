@@ -9,6 +9,8 @@ import tensorAsBase64 from 'tensor-as-base64';
 const size = 100;
 const src = `https://picsum.photos/${size}/${size}`;
 
+console.log('Example: 1')
+
 const upscaler = new Upscaler({
   model: "div2k/rdn-C3-D10-G64-G064-x2"
 });
@@ -161,7 +163,7 @@ function App() {
   return 'Loading...';
 }
 
-export default () => {
+const main = () => {
   return (
     <div className="app">
       <h1>Patch Sizes</h1>
@@ -170,3 +172,5 @@ export default () => {
     </div>
   );
 };
+
+export default main;
