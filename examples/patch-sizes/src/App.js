@@ -38,14 +38,14 @@ function App() {
     const [height, width] = pixels.shape;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions(
+        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions({
           row,
           col,
-          Number(state.patchSize),
-          Number(state.padding),
           height,
           width,
-        );
+          patchSize: Number(state.patchSize),
+          padding: Number(state.padding),
+        });
         const slicedPixels = pixels.slice(
           [origin[0], origin[1]],
           [size[0], size[1]],
