@@ -132,7 +132,6 @@ describe.each([
     const result = await driver.executeScript(() => {
       return window['upscaler'].upscale(window['flower']);
     });
-    console.log('local image path', result);
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
@@ -149,7 +148,6 @@ describe.each([
       document.body.appendChild(img2);
       return upscaledImgSrc;
     });
-    console.log('HTML image', upscaledSrc)
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
   */
