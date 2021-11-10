@@ -11,8 +11,11 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Installing'
+        run: yarn set version 1.22.17
+
       - name: 'Building'
-        run: yarn set version 1.22.17 && yarn
+        run: yarn
 
       - name: 'Running test'
         run: yarn test:unit
@@ -37,8 +40,11 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Installing'
+        run: yarn set version 1.22.17
+
       - name: 'Building'
-        run: yarn set version 1.22.17 && yarn && yarn build
+        run: yarn && yarn build
 
       - name: 'Running test'
         run: yarn test:integration:browser --ci
