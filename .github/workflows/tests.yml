@@ -5,14 +5,14 @@ on:
 
 jobs:
   unit:
-    name: 'Unit'
+    name: 'Tests: Unit'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Building'
-        run: yarn
+        run: yarn set version 1.22.17 && yarn
 
       - name: 'Running test'
         run: yarn test:unit
@@ -25,7 +25,7 @@ jobs:
 
 
   integration-browser:
-    name: 'Integration / Browser'
+    name: 'Tests: Integration / Browser'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Building'
-        run: yarn && yarn build
+        run: yarn set version 1.22.17 && yarn && yarn build
 
       - name: 'Running test'
         run: yarn test:integration:browser --ci
