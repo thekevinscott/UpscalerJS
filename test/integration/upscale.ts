@@ -112,7 +112,7 @@ describe.each([
     await Promise.all([
       driver.quit(),
       stopBrowserstack(),
-      // stopServer(),
+      stopServer(),
     ]);
     const end = new Date().getTime();
     console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
@@ -128,17 +128,14 @@ describe.each([
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
-/*
   it("upscales an imported local image path", async () => {
-    const result = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
-    if (typeof(result) === 'object' && 'error' in result) {
-      console.error(result);
-      throw new Error(result);
-    }
+    const result = await driver.executeScript(() => {
+      return window['upscaler'].upscale(window['flower']);
+    });
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
-/*
+  /*
   it("upscales an HTML Image", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = new Image();
