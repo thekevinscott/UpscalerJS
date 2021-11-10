@@ -26,9 +26,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'force': true,
     'onlyAutomate': 'true',
     'forceLocal': 'true',
-  }, () => {
-    resolve();
-  });
+  }, resolve);
 });
 
 describe.each([
@@ -62,57 +60,67 @@ describe.each([
 
   const PORT = 8099;
 
-  beforeAll(async () => {
-    // const start = new Date().getTime();
-    await Promise.all([
-      (async () => {
-        bsLocal = new browserstack.Local();
-        await startBsLocal(bsLocal);
-      })(),
-      (async () => {
-        driver = new webdriver.Builder()
-          .usingServer(serverURL)
-          .withCapabilities({
-            ...DEFAULT_CAPABILITIES,
-            ...capabilities,
-          })
-          .build();
-      })(),
-      new Promise(async (resolve, reject) => {
-        try {
-          await bundle();
-          server = await startServer(PORT, resolve);
-        } catch (err) {
-          reject(err);
-        }
-      })
-    ]);
+  beforeAll(async function beforeAll(done) {
+    const start = new Date().getTime();
+    const startBrowserStack = async () => {
+      bsLocal = new browserstack.Local();
+      await startBsLocal(bsLocal);
+    };
 
-    // const end = new Date().getTime();
-    // console.log(`Total build took ${Math.round((end - start) / 1000)} seconds`);
-    
+    const startDriver = () => {
+      driver = new webdriver.Builder()
+        .usingServer(serverURL)
+        .withCapabilities({
+          ...DEFAULT_CAPABILITIES,
+          ...capabilities,
+        })
+        .build();
+    };
+
+    const startServerWrapper = async () => {
+      await bundle();
+      server = await startServer(PORT);
+    };
+
+    await Promise.all([
+      startBrowserStack(),
+      startServerWrapper(),
+    ]);
+    startDriver();
+
+    const end = new Date().getTime();
+    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    done();
   });
 
-  afterAll(async (done) => {
+  afterAll(async function afterAll (done) {
+    const start = new Date().getTime();
+    const stopBrowserstack = () => new Promise(resolve => {
+      if (bsLocal && bsLocal.isRunning()) {
+        bsLocal.stop(resolve);
+      }
+    });
+
+    const stopServer = () => new Promise((resolve) => {
+      if (server) {
+        server.close(resolve);
+      } else {
+        console.warn('No server found')
+        resolve();
+      }
+    });
     await Promise.all([
       driver.quit(),
-      (async () => {
-        if (bsLocal && bsLocal.isRunning()) {
-          bsLocal.stop(() => {});
-        }
-      })(),
-      (async () => {
-        if (server) {
-          server.close(done);
-        } else {
-          console.warn('No server found')
-        }
-      })(),
+      stopBrowserstack(),
+      stopServer(),
     ]);
+    const end = new Date().getTime();
+    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    done();
   });
 
-  beforeEach(async () => {
-    await driver.get(`http://localhost:${PORT}`)
+  beforeEach(async function beforeEach () {
+    await driver.get(`http://localhost:${PORT}`);
   });
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
@@ -120,35 +128,49 @@ describe.each([
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
-/*
   it("upscales an imported local image path", async () => {
-    const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
-    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+    const result = await driver.executeScript(() => {
+      return window['upscaler'].upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
+  /*
   it("upscales an HTML Image", async () => {
-    const upscaledSrc = await driver.executeScript(() => {
+    const upscaledSrc = await driver.executeScript(async () => {
       const img = new Image();
       img.src = window['flower'];
-      return window['upscaler'].upscale(img);
+      img.crossOrigin = 'anonymous';
+      document.body.appendChild(img)
+      const upscaledImgSrc = await window['upscaler'].upscale(img);
+      const img2 = document.createElement("img");
+      img2.src = upscaledImgSrc;
+      document.body.appendChild(img2);
+      return upscaledImgSrc;
     });
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+  */
 
+  /*
   it("upscales an HTML Image from the page", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = document.createElement('img');
       img.id = 'img';
       img.src = window['flower'];
+      img.crossOrigin = 'anonymous';
       document.body.appendChild(img)
       return window['upscaler'].upscale(document.getElementById('img'));
     });
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+  */
 
+  /*
   it("upscales a tensor", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.src = window['flower'];
       const tensor = window['tfjs'].fromPixels(img);
       return window['upscaler'].upscale(tensor);

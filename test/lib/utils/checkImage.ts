@@ -10,7 +10,7 @@ const getFixtureAsBuffer = (pathname) => {
   return PNG.sync.read(data);
 };
 
-const checkImage = (src, fixtureSrc, diffSrc) => {
+module.exports = function checkImage (src, fixtureSrc, diffSrc) {
   const fixture = getFixtureAsBuffer(fixtureSrc);
   if (!src.includes('base64,')) {
     throw new Error('No "base64," tag found in the incoming src, this may indicate a bad src attribute.');
@@ -28,5 +28,3 @@ const checkImage = (src, fixtureSrc, diffSrc) => {
   }
   expect(mismatched).toEqual(0);
 }
-
-module.exports = checkImage;
