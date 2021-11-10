@@ -11,9 +11,6 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Installing'
-        run: yarn set version 1.22.17
-
       - name: 'Building'
         run: yarn
 
@@ -39,9 +36,6 @@ jobs:
 
       - name: 'Checkout repository'
         uses: actions/checkout@v2
-
-      - name: 'Installing'
-        run: yarn set version 1.22.17
 
       - name: 'Building'
         run: yarn && yarn build
