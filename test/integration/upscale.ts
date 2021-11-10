@@ -120,6 +120,7 @@ describe.each([
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
   });
 
+/*
   it("upscales an imported local image path", async () => {
     const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
