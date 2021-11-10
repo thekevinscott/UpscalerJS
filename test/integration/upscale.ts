@@ -132,33 +132,45 @@ describe.each([
     const result = await driver.executeScript(() => {
       return window['upscaler'].upscale(window['flower']);
     });
+    console.log('local image path', result);
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
   /*
   it("upscales an HTML Image", async () => {
-    const upscaledSrc = await driver.executeScript(() => {
+    const upscaledSrc = await driver.executeScript(async () => {
       const img = new Image();
       img.src = window['flower'];
-      return window['upscaler'].upscale(img);
+      img.crossOrigin = 'anonymous';
+      document.body.appendChild(img)
+      const upscaledImgSrc = await window['upscaler'].upscale(img);
+      const img2 = document.createElement("img");
+      img2.src = upscaledImgSrc;
+      document.body.appendChild(img2);
+      return upscaledImgSrc;
     });
+    console.log('HTML image', upscaledSrc)
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+  */
 
   it("upscales an HTML Image from the page", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = document.createElement('img');
       img.id = 'img';
       img.src = window['flower'];
+      img.crossOrigin = 'anonymous';
       document.body.appendChild(img)
       return window['upscaler'].upscale(document.getElementById('img'));
     });
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
 
+  /*
   it("upscales a tensor", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.src = window['flower'];
       const tensor = window['tfjs'].fromPixels(img);
       return window['upscaler'].upscale(tensor);
