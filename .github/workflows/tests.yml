@@ -5,7 +5,7 @@ on:
 
 jobs:
   unit:
-    name: 'Unit'
+    name: 'Tests: Unit'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -25,7 +25,7 @@ jobs:
 
 
   integration-browser:
-    name: 'Integration / Browser'
+    name: 'Tests: Integration / Browser'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
