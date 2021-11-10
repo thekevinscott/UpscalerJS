@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Building'
-        run: yarn && yarn workspace upscaler build && yarn workspace models build
+        run: yarn && yarn workspace upscaler build && yarn workspace @upscalerjs/models build
 
       - name: 'Running test'
         run: yarn test:integration:browser --ci
