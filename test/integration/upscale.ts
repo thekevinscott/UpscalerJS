@@ -60,7 +60,7 @@ describe.each([
 
   const PORT = 8099;
 
-  beforeAll(async (done) => {
+  beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
@@ -93,7 +93,7 @@ describe.each([
     done();
   });
 
-  afterAll(async (done) => {
+  afterAll(async function afterAll (done) {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
@@ -112,30 +112,32 @@ describe.each([
     await Promise.all([
       driver.quit(),
       stopBrowserstack(),
-      stopServer(),
+      // stopServer(),
     ]);
     const end = new Date().getTime();
     console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     done();
   });
 
-  beforeEach(async () => {
-    await driver.get(`http://localhost:${PORT}`)
+  beforeEach(async function beforeEach () {
+    await driver.get(`http://localhost:${PORT}`);
   });
 
   it(`sanity check | ${JSON.stringify(capabilities)}`, async () => {
-    console.log('test 1');
     const title = await driver.getTitle();
     expect(title).toEqual('UpscalerJS Integration Test Webpack Bundler Server');
-    console.log('test 2');
+  });
+
+  it("upscales an imported local image path", async () => {
+    const result = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
+    if (typeof(result) === 'object' && 'error' in result) {
+      console.error(result);
+      throw new Error(result);
+    }
+    checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
 /*
-  it("upscales an imported local image path", async () => {
-    const upscaledSrc = await driver.executeScript(() => window['upscaler'].upscale(window['flower']));
-    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
-  });
-
   it("upscales an HTML Image", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = new Image();
