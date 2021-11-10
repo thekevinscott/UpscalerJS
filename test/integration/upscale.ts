@@ -152,6 +152,7 @@ describe.each([
   });
   */
 
+  /*
   it("upscales an HTML Image from the page", async () => {
     const upscaledSrc = await driver.executeScript(() => {
       const img = document.createElement('img');
@@ -163,6 +164,7 @@ describe.each([
     });
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+  */
 
   /*
   it("upscales a tensor", async () => {
