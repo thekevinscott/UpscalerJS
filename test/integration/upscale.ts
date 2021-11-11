@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
@@ -146,8 +148,10 @@ describe('Upscale', () => {
     it("upscales a base64 png path", async () => {
       const test = await driver.executeScript(arg => arg, 'foo');
       console.log('test', test);
-      const originalImage = getFixtureAsBuffer('flower-small.png');
-      console.log('original', originalImage);
+      const fullpath = path.resolve(__dirname, "../__fixtures__", 'flower-small.png');
+      const data = fs.readFileSync(fullpath);
+      const originalImage = `data:image/png;base64,${data.toString('base64')}`;
+      console.log('originalImage', originalImage)
       const upscaledSrc = await driver.executeScript(async (src) => {
         return await window['upscaler'].upscale(src);
       }, originalImage);
