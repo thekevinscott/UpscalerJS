@@ -66,7 +66,7 @@ export const bundle = () => {
 // module.exports.bundle = bundle;
 
 // export const startServer = (PORT: number, callback) => new Promise(async resolve => {
-export const startServer = (PORT: number) => new Promise(async resolve => {
+export const startServer = (PORT) => new Promise(async resolve => {
   try {
     const server = http.createServer((request, response) => handler(request, response, {
       public: DIST,
