@@ -17,7 +17,7 @@ jobs:
       - name: 'Building'
         run: yarn
 
-      - name: 'Running test'
+      - name: 'Unit Tests'
         run: yarn test:unit
 
       - name: 'Codecov'
@@ -48,5 +48,5 @@ jobs:
       - name: 'Building'
         run: yarn && yarn workspace upscaler build
 
-      - name: 'Running test'
+      - name: 'Integration Tests'
         run: yarn test:integration:browser --ci
