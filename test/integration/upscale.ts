@@ -148,6 +148,7 @@ describe('Upscale', () => {
     let driver;
 
     beforeAll(function beforeAll() {
+      console.log('capabilities', capabilities)
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
