@@ -54,7 +54,7 @@ const browserOptions = [
     browsers: [
       'chrome',
       'firefox',
-      'safari',
+      // 'safari',
     ]
   },
 ].reduce((_arr, { os, os_version, browsers }) => {
@@ -65,12 +65,12 @@ const browserOptions = [
     browser_version: 'latest',
   }), _arr);
 }, [] as Array<BrowserOption>).concat([
-  // {
-  //   "os_version" : "15",
-  //   "device" : "iPhone XS",
-  //   "real_mobile" : "true",
-  //   "browserName" : "iPhone",
-  // },
+  {
+    "os_version" : "15",
+    "device" : "iPhone XS",
+    "real_mobile" : "true",
+    "browserName" : "iPhone",
+  },
   // {
   //   "browserName" : "Android",
   //   "os_version" : "11.0",
