@@ -44,23 +44,18 @@ const browserOptions = [
     os_version: '11',
     browsers: [
       'chrome',
-      'firefox',
-      'edge',
-    ]
-  },
-  {
-    os: 'OS X',
-    os_version: 'Big Sur',
-    browsers: [
-      'chrome',
-      'firefox',
-      'safari',
+      // 'firefox',
+      // 'edge',
     ]
   },
   // {
-  //   'os': 'mac',
-  //   'browserName': 'safari',
-  //   'browser_version' : 'latest',
+  //   os: 'OS X',
+  //   os_version: 'Big Sur',
+  //   browsers: [
+  //     'chrome',
+  //     'firefox',
+  //     'safari',
+  //   ]
   // },
 ].reduce((_arr, { os, os_version, browsers }) => {
   return browsers.reduce((browserOptions, browser) => browserOptions.concat({
@@ -70,18 +65,18 @@ const browserOptions = [
     browser_version: 'latest',
   }), _arr);
 }, [] as Array<BrowserOption>).concat([
-  {
-    "os_version" : "15",
-    "device" : "iPhone XS",
-    "real_mobile" : "true",
-    "browserName" : "iPhone",
-  },
-  {
-    "browserName" : "Android",
-    "os_version" : "11.0",
-    "device" : "Samsung Galaxy S21 Ultra",
-    "real_mobile" : "true",
-  },
+  // {
+  //   "os_version" : "15",
+  //   "device" : "iPhone XS",
+  //   "real_mobile" : "true",
+  //   "browserName" : "iPhone",
+  // },
+  // {
+  //   "browserName" : "Android",
+  //   "os_version" : "11.0",
+  //   "device" : "Samsung Galaxy S21 Ultra",
+  //   "real_mobile" : "true",
+  // },
   {
     "browserName" : "Android",
     "os_version" : "12.0",
