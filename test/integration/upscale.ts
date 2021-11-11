@@ -58,10 +58,10 @@ const browserOptions = [
   //   ]
   // },
 ].reduce((_arr, { os, os_version, browsers }) => {
-  return browsers.reduce((browserOptions, browser) => browserOptions.concat({
+  return browsers.reduce((browserOptions, browserName) => browserOptions.concat({
     os,
     os_version,
-    browser,
+    browserName,
     browser_version: 'latest',
   }), _arr);
 }, [] as Array<BrowserOption>).concat([
