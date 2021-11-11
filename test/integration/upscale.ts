@@ -44,19 +44,19 @@ const browserOptions = [
     os_version: '11',
     browsers: [
       'chrome',
-      // 'firefox',
-      // 'edge',
+      'firefox',
+      'edge',
     ]
   },
-  // {
-  //   os: 'OS X',
-  //   os_version: 'Big Sur',
-  //   browsers: [
-  //     'chrome',
-  //     'firefox',
-  //     'safari',
-  //   ]
-  // },
+  {
+    os: 'OS X',
+    os_version: 'Big Sur',
+    browsers: [
+      'chrome',
+      'firefox',
+      'safari',
+    ]
+  },
 ].reduce((_arr, { os, os_version, browsers }) => {
   return browsers.reduce((browserOptions, browserName) => browserOptions.concat({
     os,
@@ -84,7 +84,6 @@ const browserOptions = [
   //   "real_mobile" : "true",
   // },
 ]);
-console.log(browserOptions)
 
 describe('Upscale', () => {
   let server;
