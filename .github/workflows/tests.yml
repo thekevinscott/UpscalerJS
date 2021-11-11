@@ -9,10 +9,15 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: 'Building'
         run: yarn
 
-      - name: 'Running test'
+      - name: 'Unit Tests'
         run: yarn test:unit
 
       - name: 'Codecov'
@@ -35,8 +40,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: 'Building'
         run: yarn && yarn workspace upscaler build
 
-      - name: 'Running test'
+      - name: 'Integration Tests'
         run: yarn test:integration:browser --ci
