@@ -63,24 +63,24 @@ const browserOptions = [
     browser_version: 'latest',
   }), _arr);
 }, [] as Array<BrowserOption>).concat([
-  // {
-  //   "os_version" : "15",
-  //   "device" : "iPhone XS",
-  //   "real_mobile" : "true",
-  //   "browserName" : "iPhone",
-  // },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "11.0",
-  //   "device" : "Samsung Galaxy S21 Ultra",
-  //   "real_mobile" : "true",
-  // },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "12.0",
-  //   "device" : "Google Pixel 5",
-  //   "real_mobile" : "true",
-  // },
+  {
+    "os_version" : "15",
+    "device" : "iPhone XS",
+    "real_mobile" : "true",
+    "browserName" : "iPhone",
+  },
+  {
+    "browserName" : "Android",
+    "os_version" : "11.0",
+    "device" : "Samsung Galaxy S21 Ultra",
+    "real_mobile" : "true",
+  },
+  {
+    "browserName" : "Android",
+    "os_version" : "12.0",
+    "device" : "Google Pixel 5",
+    "real_mobile" : "true",
+  },
 ]);
 
 describe('Browser Tests', () => {
