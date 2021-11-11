@@ -125,37 +125,21 @@ describe('Upscale', () => {
     done();
   });
 
-  describe.each(browserOptions)("Browser Test", (capabilities) => {
+  describe.each(browserOptions)("Browser %j", (capabilities) => {
     let driver;
-    beforeAll(async function beforeAll(done) {
-      const start = new Date().getTime();
-      const startDriver = () => {
-        driver = new webdriver.Builder()
-          .usingServer(serverURL)
-          .withCapabilities({
-            ...DEFAULT_CAPABILITIES,
-            ...capabilities,
-          })
-          .build();
-        driver.manage().timeouts().setScriptTimeout(SELENIUM_SCRIPT_TIMEOUT);
 
-      };
-
-      startDriver();
-
-      const end = new Date().getTime();
-      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
-      done();
+    beforeAll(function beforeAll() {
+      driver = new webdriver.Builder()
+        .usingServer(serverURL)
+        .withCapabilities({
+          ...DEFAULT_CAPABILITIES,
+          ...capabilities,
+        })
+        .build();
     });
 
-    afterAll(async function afterAll(done) {
-      const start = new Date().getTime();
-      await Promise.all([
-        driver.quit(),
-      ]);
-      const end = new Date().getTime();
-      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
-      done();
+    afterAll(function afterAll() {
+      return driver.quit();
     });
 
     beforeEach(async function beforeEach() {
