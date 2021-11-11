@@ -1,6 +1,4 @@
-// const HtmlWebpackPlugin = require("html-webpack-plugin");
 const fs = require('fs');
-// const webpack = require('webpack');
 const handler = require('serve-handler');
 const http = require('http');
 const rimraf = require('rimraf');
@@ -28,6 +26,8 @@ const bundle = () => {
   }
 }
 
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
+// const webpack = require('webpack');
 // let compiler = undefined;
 // const bundleWebpack = () => new Promise((resolve, reject) => {
 //   if (compiler === undefined) {

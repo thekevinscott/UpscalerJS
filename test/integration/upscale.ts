@@ -15,7 +15,7 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
-jest.setTimeout(30 * 1000); // 30 seconds timeout
+jest.setTimeout(60 * 1000); // 60 seconds timeout
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({
