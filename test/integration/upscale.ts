@@ -32,7 +32,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
 interface BrowserOption {
   os: string;
   os_version: string;
-  browserName: string;
+  browser: string;
   browser_version: string;
 }
 const browserOptions = [
@@ -45,22 +45,27 @@ const browserOptions = [
       'edge',
     ]
   },
+  {
+    os: 'OS X',
+    os_version: 'Big Sur',
+    browsers: [
+      'chrome',
+      'firefox',
+      'safari',
+    ]
+  },
   // {
   //   'os': 'mac',
   //   'browserName': 'safari',
   //   'browser_version' : 'latest',
   // },
 ].reduce((_arr, { os, os_version, browsers }) => {
-  return browsers.reduce((browserOptions, browserName) => {
-    const browserOption: BrowserOption = {
-      os,
-      os_version,
-      browserName,
-      browser_version: 'latest',
-    }
-    return browserOptions.concat(browserOption)
-
-  }, _arr);
+  return browsers.reduce((browserOptions, browser) => browserOptions.concat({
+    os,
+    os_version,
+    browser,
+    browser_version: 'latest',
+  }), _arr);
 }, [] as Array<BrowserOption>);
 
 describe('Upscale', () => {
