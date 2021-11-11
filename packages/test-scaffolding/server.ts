@@ -1,9 +1,9 @@
-const fs = require('fs');
-const handler = require('serve-handler');
-const http = require('http');
-const rimraf = require('rimraf');
-const path = require('path');
-const esbuild = require('esbuild');
+import fs from 'fs';
+import handler from 'serve-handler';
+import http from 'http';
+import rimraf from 'rimraf';
+import path from 'path';
+import esbuild from 'esbuild';
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');

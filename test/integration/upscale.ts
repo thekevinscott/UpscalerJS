@@ -2,7 +2,7 @@ import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { getFixtureAsBuffer } from '../lib/utils/getFixtureAsBuffer';
-const { bundle, startServer } = require('../../packages/test-scaffolding/server')
+import { bundle, startServer } from '../../packages/test-scaffolding/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
