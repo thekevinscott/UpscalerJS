@@ -9,6 +9,10 @@ const DEFAULT_CAPABILITIES = {
   'project': process.env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.local': true,
   // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+  os: 'windows',
+  os_version: '11',
+  browserName: 'chrome',
+  browser_version: 'latest'
 }
 
 const username = process.env.BROWSERSTACK_USERNAME;
@@ -29,65 +33,10 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-interface BrowserOption {
-  os?: string;
-  os_version: string;
-  browser?: string;
-  browser_version?: string;
-  device?: string;
-  real_mobile?: 'true';
-  browserName?: string;
-}
-const browserOptions = [
-  {
-    os: 'windows',
-    os_version: '11',
-    browsers: [
-      'chrome',
-      'firefox',
-      'edge',
-    ]
-  },
-  {
-    os: 'OS X',
-    os_version: 'Big Sur',
-    browsers: [
-      'chrome',
-      'firefox',
-      // 'safari',
-    ]
-  },
-].reduce((_arr, { os, os_version, browsers }) => {
-  return browsers.reduce((browserOptions, browserName) => browserOptions.concat({
-    os,
-    os_version,
-    browserName,
-    browser_version: 'latest',
-  }), _arr);
-}, [] as Array<BrowserOption>).concat([
-  {
-    "os_version" : "15",
-    "device" : "iPhone XS",
-    "real_mobile" : "true",
-    "browserName" : "iPhone",
-  },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "11.0",
-  //   "device" : "Samsung Galaxy S21 Ultra",
-  //   "real_mobile" : "true",
-  // },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "12.0",
-  //   "device" : "Google Pixel 5",
-  //   "real_mobile" : "true",
-  // },
-]);
-
 describe('Upscale', () => {
   let server;
   let bsLocal;
+  let driver;
 
   const PORT = 8099;
 
@@ -108,8 +57,13 @@ describe('Upscale', () => {
       startServerWrapper(),
     ]);
 
+      driver = new webdriver.Builder()
+        .usingServer(serverURL)
+        .withCapabilities(DEFAULT_CAPABILITIES)
+        .build();
+
     const end = new Date().getTime();
-    console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     done();
   });
 
@@ -132,33 +86,17 @@ describe('Upscale', () => {
     await Promise.all([
       stopBrowserstack(),
       stopServer(),
+      driver.quit(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     done();
   });
 
-  describe.each(browserOptions)("Browser %j", (capabilities) => {
-    let driver;
 
-    beforeAll(function beforeAll() {
-      console.log('capabilities', capabilities)
-      driver = new webdriver.Builder()
-        .usingServer(serverURL)
-        .withCapabilities({
-          ...DEFAULT_CAPABILITIES,
-          ...capabilities,
-        })
-        .build();
-    });
-
-    afterAll(function afterAll() {
-      return driver.quit();
-    });
-
-    beforeEach(async function beforeEach() {
-      await driver.get(`http://localhost:${PORT}`);
-    });
+  beforeEach(async function beforeEach() {
+    await driver.get(`http://localhost:${PORT}`);
+  });
 
     it("upscales an imported local image path", async () => {
       const result = await driver.executeScript(() => {
@@ -166,7 +104,6 @@ describe('Upscale', () => {
       });
       checkImage(result, "upscaled-4x.png", 'diff.png');
     });
-    /*
 
     it("upscales an HTML Image", async () => {
       const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
@@ -180,7 +117,6 @@ describe('Upscale', () => {
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
 
-    /*
     it("upscales an HTML Image from the page", async () => {
       const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
         const img = document.createElement('img');
@@ -207,7 +143,6 @@ describe('Upscale', () => {
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
 
-    /*
     it("upscales a base64 png path", async () => {
       const test = await driver.executeScript(arg => arg, 'foo');
       console.log('test', test);
@@ -219,6 +154,4 @@ describe('Upscale', () => {
       // const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
-    */
-  });
 });
