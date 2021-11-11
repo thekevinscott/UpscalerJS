@@ -167,6 +167,7 @@ describe('Upscale', () => {
       });
       checkImage(result, "upscaled-4x.png", 'diff.png');
     });
+    /*
 
     it("upscales an HTML Image", async () => {
       const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
