@@ -128,7 +128,6 @@ describe.each([
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
-  /*
   it("upscales an HTML Image", async () => {
     const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
       const img = new Image();
@@ -166,8 +165,8 @@ describe.each([
     }));
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
-  */
 
+  /*
   it("upscales a base64 png path", async () => {
     const test = await driver.executeScript(arg => arg, 'foo');
     console.log('test', test);
@@ -179,4 +178,5 @@ describe.each([
     // const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
     checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
   });
+  */
 });
