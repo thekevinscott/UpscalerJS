@@ -125,8 +125,10 @@ describe('Upscale', () => {
         img.id = 'img';
         img.src = window['flower'];
         document.body.append(img);
-        const upscaledImgSrc = await window['upscaler'].upscale(document.getElementById('img'));
-        resolve(upscaledImgSrc);
+        img.onload = async () => {
+          const upscaledImgSrc = await window['upscaler'].upscale(document.getElementById('img'));
+          resolve(upscaledImgSrc);
+        }
       }));
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
@@ -146,16 +148,9 @@ describe('Upscale', () => {
     });
 
     it("upscales a base64 png path", async () => {
-      const test = await driver.executeScript(arg => arg, 'foo');
-      console.log('test', test);
-      const fullpath = path.resolve(__dirname, "../__fixtures__", 'flower-small.png');
-      const data = fs.readFileSync(fullpath);
-      const originalImage = `data:image/png;base64,${data.toString('base64')}`;
-      console.log('originalImage', originalImage)
-      const upscaledSrc = await driver.executeScript(async (src) => {
-        return await window['upscaler'].upscale(src);
-      }, originalImage);
-      // const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
+      const data = fs.readFileSync(path.resolve(__dirname, "../__fixtures__", 'flower-small.png')).toString('base64');
+      const originalImage = `data:image/png;base64,${data}`;
+      const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
 });
