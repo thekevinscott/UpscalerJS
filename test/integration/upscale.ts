@@ -41,8 +41,8 @@ const browserOptions = [
     os_version: '11',
     browsers: [
       'chrome',
-      // 'firefox',
-      // 'edge',
+      'firefox',
+      'edge',
     ]
   },
   // {
@@ -56,20 +56,11 @@ const browserOptions = [
       os,
       os_version,
       browserName,
-      'browser_version': 'latest',
+      browser_version: 'latest',
     }
     return browserOptions.concat(browserOption)
 
   }, _arr);
-  // return arr.concat({
-  //   os,
-  //   os_version,
-  //   browsers: [
-  // {
-  //   'browserName': 'chrome',
-  //   'browser_version' : 'latest',
-  // },
-  // })
 }, [] as Array<BrowserOption>);
 
 describe('Upscale', () => {
