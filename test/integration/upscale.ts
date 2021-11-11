@@ -77,12 +77,12 @@ const browserOptions = [
   //   "device" : "Samsung Galaxy S21 Ultra",
   //   "real_mobile" : "true",
   // },
-  {
-    "browserName" : "Android",
-    "os_version" : "12.0",
-    "device" : "Google Pixel 5",
-    "real_mobile" : "true",
-  },
+  // {
+  //   "browserName" : "Android",
+  //   "os_version" : "12.0",
+  //   "device" : "Google Pixel 5",
+  //   "real_mobile" : "true",
+  // },
 ]);
 console.log(browserOptions)
 
