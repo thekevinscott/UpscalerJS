@@ -30,10 +30,13 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
 });
 
 interface BrowserOption {
-  os: string;
+  os?: string;
   os_version: string;
-  browser: string;
-  browser_version: string;
+  browser?: string;
+  browser_version?: string;
+  device?: string;
+  real_mobile?: 'true';
+  browserName?: string;
 }
 const browserOptions = [
   {
@@ -66,7 +69,27 @@ const browserOptions = [
     browser,
     browser_version: 'latest',
   }), _arr);
-}, [] as Array<BrowserOption>);
+}, [] as Array<BrowserOption>).concat([
+  {
+    "os_version" : "15",
+    "device" : "iPhone XS",
+    "real_mobile" : "true",
+    "browserName" : "iPhone",
+  },
+  {
+    "browserName" : "Android",
+    "os_version" : "11.0",
+    "device" : "Samsung Galaxy S21 Ultra",
+    "real_mobile" : "true",
+  },
+  {
+    "browserName" : "Android",
+    "os_version" : "12.0",
+    "device" : "Google Pixel 5",
+    "real_mobile" : "true",
+  },
+]);
+console.log(browserOptions)
 
 describe('Upscale', () => {
   let server;
