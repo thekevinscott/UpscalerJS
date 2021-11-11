@@ -5,6 +5,19 @@
     "packages/*",
     "examples/*"
   ],
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    },
+    "presets": [
+      ["@babel/preset-env", {"targets": {"node": "current"}}],
+      "@babel/preset-typescript"
+    ]
+  },
   "scripts": {
     "example": "node ./scripts/example.js",
     "format": "yarn lerna run format",
@@ -38,6 +51,8 @@
     "@tensorflow/tfjs": "2.8.6"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
     "browserstack-local": "^1.4.8",

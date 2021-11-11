@@ -1,16 +1,13 @@
-const pixelmatch = require('pixelmatch');
+import fs from 'fs';
+import pixelmatch from 'pixelmatch';
+import { getFixtureAsBuffer } from './getFixtureAsBuffer';
+// import { PNG } from 'pngjs/browser';
 const PNG = require('pngjs').PNG;
-const fs = require('fs');
 
-const path = require('path');
-
-const getFixtureAsBuffer = (pathname) => {
-  const fullpath = path.resolve(__dirname, "../../__fixtures__", pathname);
-  const data = fs.readFileSync(fullpath);
-  return PNG.sync.read(data);
-};
-
-module.exports = function checkImage (src, fixtureSrc, diffSrc) {
+export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: string) => {
+  if (typeof(src) !== 'string') {
+    throw new Error(`Type of src is not string. src: ${JSON.stringify(src)}`)
+  }
   const fixture = getFixtureAsBuffer(fixtureSrc);
   if (!src.includes('base64,')) {
     throw new Error('No "base64," tag found in the incoming src, this may indicate a bad src attribute.');
