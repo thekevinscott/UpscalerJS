@@ -1,14 +1,14 @@
-import fs from 'fs';
-import handler from 'serve-handler';
-import http from 'http';
-import rimraf from 'rimraf';
-import path from 'path';
-import esbuild from 'esbuild';
+const fs = require('fs');
+const handler = require('serve-handler');
+const http = require('http');
+const rimraf = require('rimraf');
+const path = require('path');
+const esbuild = require('esbuild');
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');
 
-export const bundle = () => {
+const bundle = () => {
   rimraf.sync(DIST);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
@@ -63,16 +63,15 @@ export const bundle = () => {
 //     }
 //   });
 // });
-// module.exports.bundle = bundle;
+module.exports.bundle = bundle;
 
-// export const startServer = (PORT: number, callback) => new Promise(async resolve => {
-export const startServer = (PORT) => new Promise(async resolve => {
+module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
   try {
     const server = http.createServer((request, response) => handler(request, response, {
       public: DIST,
     }));
     server.listen(PORT, () => {
-      // if (callback) { callback(); }
+      if (callback) { callback(); }
       resolve(server);
     });
   } catch (err) {
