@@ -1,9 +1,8 @@
-import path from 'path';
-import fs from 'fs';
-import webdriver from 'selenium-webdriver';
-import browserstack from 'browserstack-local';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as browserstack from 'browserstack-local';
+import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { getFixtureAsBuffer } from '../lib/utils/getFixtureAsBuffer';
 import { bundle, startServer } from '../../packages/test-scaffolding/server';
 
 const DEFAULT_CAPABILITIES = {
@@ -22,7 +21,6 @@ const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
-const SELENIUM_SCRIPT_TIMEOUT = 45 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
@@ -34,6 +32,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'forceLocal': 'true',
   }, resolve);
 });
+
 
 describe('Upscale', () => {
   let server;
@@ -100,48 +99,45 @@ describe('Upscale', () => {
     await driver.get(`http://localhost:${PORT}`);
   });
 
-    it("upscales an imported local image path", async () => {
-      const result = await driver.executeScript(() => {
-        return window['upscaler'].upscale(window['flower']);
-      });
-      checkImage(result, "upscaled-4x.png", 'diff.png');
+  it("upscales an imported local image path", async () => {
+    const result = await driver.executeScript(() => {
+      return window['upscaler'].upscale(window['flower']);
     });
+    checkImage(result, "upscaled-4x.png", 'diff.png');
+  });
 
-    it("upscales an HTML Image", async () => {
-      const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
-        const img = new Image();
-        img.src = window['flower'];
-        img.onload = async function () {
-          const upscaledImgSrc = await window['upscaler'].upscale(img);
-          resolve(upscaledImgSrc);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
-    });
+  it("upscales an HTML Image", async () => {
+    const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+      const img = new Image();
+      img.src = window['flower'];
+      img.onload = function () {
+        window['upscaler'].upscale(img).then(resolve);
+      }
+    }));
+    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+  });
 
     it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
+      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
         const img = document.createElement('img');
         img.id = 'img';
         img.src = window['flower'];
         document.body.append(img);
-        img.onload = async () => {
-          const upscaledImgSrc = await window['upscaler'].upscale(document.getElementById('img'));
-          resolve(upscaledImgSrc);
+        img.onload = () => {
+          window['upscaler'].upscale(document.getElementById('img')).then(resolve);
         }
       }));
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
 
     it("upscales a tensor", async () => {
-      const upscaledSrc = await driver.executeScript(async () => await new Promise(async resolve => {
+      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
         const img = new Image();
         img.src = window['flower'];
         img.crossOrigin = 'anonymous';
-        img.onload = async function () {
+        img.onload = function () {
           const tensor = window['tfjs'].browser.fromPixels(img);
-          const upscaledImgSrc = await window['upscaler'].upscale(tensor);
-          resolve(upscaledImgSrc);
+          window['upscaler'].upscale(tensor).then(resolve);
         }
       }));
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');

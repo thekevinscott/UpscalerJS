@@ -4,9 +4,24 @@
   "version": "0.8.23",
   "main": "index.js",
   "workspaceDependencies": {
-    "upscaler": "0.8.22"
+    "upscaler": "0.8.27"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^3.2.0"
+    "@tensorflow/tfjs": "^3.2.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    },
+    "presets": [
+      ["@babel/preset-env", {"targets": {"node": "current"}}],
+      "@babel/preset-typescript"
+    ]
   }
 }

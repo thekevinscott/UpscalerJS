@@ -1,14 +1,14 @@
-const fs = require('fs');
-const handler = require('serve-handler');
-const http = require('http');
-const rimraf = require('rimraf');
-const path = require('path');
-const esbuild = require('esbuild');
+import * as fs from 'fs';
+import * as http from 'http';
+import * as path from 'path';
+import * as esbuild from 'esbuild';
+import * as rimraf from 'rimraf';
+import handler from 'serve-handler';
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');
 
-const bundle = () => {
+export const bundle = () => {
   rimraf.sync(DIST);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
@@ -29,7 +29,7 @@ const bundle = () => {
 // const HtmlWebpackPlugin = require("html-webpack-plugin");
 // const webpack = require('webpack');
 // let compiler = undefined;
-// const bundleWebpack = () => new Promise((resolve, reject) => {
+// export const bundleWebpack = () => new Promise((resolve, reject) => {
 //   if (compiler === undefined) {
 //     const entryFiles = path.join(ROOT, 'index.js');
 
@@ -63,9 +63,10 @@ const bundle = () => {
 //     }
 //   });
 // });
-module.exports.bundle = bundle;
 
-module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
+type Callback = () => void;
+type StartServer = (PORT: number, callback?: Callback) => Promise<http.Server>;
+export const startServer: StartServer = (PORT, callback) => new Promise(async resolve => {
   try {
     const server = http.createServer((request, response) => handler(request, response, {
       public: DIST,
@@ -79,3 +80,4 @@ module.exports.startServer = (PORT, callback) => new Promise(async resolve => {
     throw err;
   }
 });
+

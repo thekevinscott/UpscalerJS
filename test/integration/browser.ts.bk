@@ -1,5 +1,5 @@
-import webdriver from 'selenium-webdriver';
-import browserstack from 'browserstack-local';
+import * as webdriver from 'selenium-webdriver';
+import * as browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, startServer } from '../../packages/test-scaffolding/server';
 

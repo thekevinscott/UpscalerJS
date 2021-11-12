@@ -1,8 +1,8 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
-// import { PNG } from 'pngjs/browser';
-const PNG = require('pngjs').PNG;
+import * as _PNG from 'pngjs';
+const { PNG } = _PNG;
 
 export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: string) => {
   if (typeof(src) !== 'string') {
