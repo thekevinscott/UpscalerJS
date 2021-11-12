@@ -1,9 +1,29 @@
 {
+  "preset": "ts-jest",
   "transform": {
-    "^.+\\.(t|j)sx?$": "babel-jest"
+     "^.+\\.(ts|tsx)?$": "ts-jest",
+     "^.+\\.(js|jsx)$": "babel-jest"
   },
   "setupFiles": ["./jest.setup.js"],
   "collectCoverage": false,
   "testRegex": "(/integration/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+  "globals": {
+    "ts-jest": {
+      "tsConfig": {
+        "importHelpers": false,
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "sourceMap": true,
+        "noEmit": true,
+        "noEmitHelpers": false,
+        "strictNullChecks": false
+      }
+    }
+  }
 }
