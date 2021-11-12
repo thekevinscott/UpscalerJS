@@ -14,7 +14,14 @@
       }
     },
     "presets": [
-      ["@babel/preset-env", {"targets": {"node": "current"}}],
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/preset-typescript"
     ]
   },
@@ -55,6 +62,7 @@
     "@babel/preset-typescript": "^7.16.0",
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
+    "@types/pngjs": "^6.0.1",
     "browserstack-local": "^1.4.8",
     "codecov": "^3.7.2",
     "docsify-cli": "^4.4.2",

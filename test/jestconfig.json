@@ -1,6 +1,8 @@
 {
+  "preset": "ts-jest",
   "transform": {
-    "^.+\\.(t|j)sx?$": "babel-jest"
+     "^.+\\.(ts|tsx)?$": "ts-jest",
+     "^.+\\.(js|jsx)$": "babel-jest"
   },
   "setupFiles": ["./jest.setup.js"],
   "collectCoverage": false,

@@ -1,9 +1,8 @@
-import path from 'path';
-import fs from 'fs';
-import webdriver from 'selenium-webdriver';
-import browserstack from 'browserstack-local';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as browserstack from 'browserstack-local';
+import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { getFixtureAsBuffer } from '../lib/utils/getFixtureAsBuffer';
 import { bundle, startServer } from '../../packages/test-scaffolding/server';
 
 const DEFAULT_CAPABILITIES = {
@@ -34,6 +33,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
     'forceLocal': 'true',
   }, resolve);
 });
+
 
 describe('Upscale', () => {
   let server;
