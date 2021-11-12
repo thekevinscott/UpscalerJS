@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as pixelmatch from 'pixelmatch';
+import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
 import * as _PNG from 'pngjs';
 const { PNG } = _PNG;

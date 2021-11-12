@@ -3,7 +3,7 @@ import * as http from 'http';
 import * as path from 'path';
 import * as esbuild from 'esbuild';
 import * as rimraf from 'rimraf';
-import * as handler from 'serve-handler';
+import handler from 'serve-handler';
 
 const ROOT = path.join(__dirname);
 const DIST = path.join(ROOT, '/dist');
@@ -15,6 +15,7 @@ export const bundle = () => {
     esbuild.buildSync({
       entryPoints: [entryFiles],
       bundle: true,
+      tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
       loader: {
         '.png': 'file',
       },
