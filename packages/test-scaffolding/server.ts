@@ -15,7 +15,6 @@ export const bundle = () => {
     esbuild.buildSync({
       entryPoints: [entryFiles],
       bundle: true,
-      tsconfig: path.resolve(__dirname, '../../tsconfig.json'),
       loader: {
         '.png': 'file',
       },

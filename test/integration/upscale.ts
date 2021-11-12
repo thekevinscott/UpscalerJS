@@ -21,7 +21,6 @@ const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
-const SELENIUM_SCRIPT_TIMEOUT = 45 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
