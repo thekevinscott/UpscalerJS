@@ -4,3 +4,4 @@ import flower from './flower-small.png';
 window.tfjs = tfjs;
 window.flower = flower;
 window.upscaler = new Upscaler();
+document.getElementById('output').innerHTML = 'Page has been loaded.'
