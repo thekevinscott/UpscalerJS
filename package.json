@@ -60,6 +60,8 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
     "@types/pngjs": "^6.0.1",
@@ -82,6 +84,8 @@
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.40.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "selenium-webdriver": "^4.0.0-beta.1",
     "serve": "^11.3.2",
     "ts-jest": "^26.1.4",
