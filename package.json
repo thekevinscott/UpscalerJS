@@ -43,10 +43,6 @@
     "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "ts-node test/lib/startServer.ts"
   },
-  "pre-commit": [
-    "lint",
-    "format"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
@@ -80,7 +76,6 @@
     "loader-utils": "^2.0.0",
     "pixelmatch": "^5.2.1",
     "pngjs": "^6.0.0",
-    "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.40.0",
