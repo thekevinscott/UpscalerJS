@@ -24,6 +24,19 @@ const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd
 
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 
+//   {
+//     "os": "OS X",
+//     "os_version": "Big Sur",
+//     "browserName": "safari",
+//     "browser_version": "latest"
+//   },
+// {
+//   "os_version": "15",
+//   "device": "iPhone XS",
+//   "real_mobile": "true",
+//   "browserName": "iPhone"
+// },
+
 interface BrowserOption {
   os?: string;
   os_version: string;
