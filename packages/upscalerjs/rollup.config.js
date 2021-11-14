@@ -1,9 +1,8 @@
-import path from 'path';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
-  input: "dist/tmp/index.js",
+  input: "dist/tmp/umd.js",
   output: {
     file: "dist/umd/index.js",
     format: 'umd',
