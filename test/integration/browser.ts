@@ -1,7 +1,15 @@
-import * as webdriver from 'selenium-webdriver';
-import * as browserstack from 'browserstack-local';
+import fs from 'fs';
+import path from 'path';
+import webdriver from 'selenium-webdriver';
+import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, startServer } from '../../packages/test-scaffolding/server';
+
+const JEST_TIMEOUT = 60 * 1000;
+
+const PORT = 8099;
+const LOCALHOST = 'localhost';
+const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -14,8 +22,30 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
-const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+
+//   {
+//     "os": "OS X",
+//     "os_version": "Big Sur",
+//     "browserName": "safari",
+//     "browser_version": "latest"
+//   },
+// {
+//   "os_version": "15",
+//   "device": "iPhone XS",
+//   "real_mobile": "true",
+//   "browserName": "iPhone"
+// },
+
+interface BrowserOption {
+  os?: string;
+  os_version: string;
+  browser?: string;
+  browser_version?: string;
+  device?: string;
+  real_mobile?: 'true';
+  browserName?: string;
+}
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({
@@ -27,67 +57,12 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-interface BrowserOption {
-  os?: string;
-  os_version: string;
-  browser?: string;
-  browser_version?: string;
-  device?: string;
-  real_mobile?: 'true';
-  browserName?: string;
-}
-const browserOptions = [
-  {
-    os: 'windows',
-    os_version: '11',
-    browsers: [
-      'chrome',
-      'firefox',
-      'edge',
-    ]
-  },
-  {
-    os: 'OS X',
-    os_version: 'Big Sur',
-    browsers: [
-      'chrome',
-      'firefox',
-      // 'safari',
-    ]
-  },
-].reduce((_arr, { os, os_version, browsers }) => {
-  return browsers.reduce((browserOptions, browserName) => browserOptions.concat({
-    os,
-    os_version,
-    browserName,
-    browser_version: 'latest',
-  }), _arr);
-}, [] as Array<BrowserOption>).concat([
-  // {
-  //   "os_version" : "15",
-  //   "device" : "iPhone XS",
-  //   "real_mobile" : "true",
-  //   "browserName" : "iPhone",
-  // },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "11.0",
-  //   "device" : "Samsung Galaxy S21 Ultra",
-  //   "real_mobile" : "true",
-  // },
-  // {
-  //   "browserName" : "Android",
-  //   "os_version" : "12.0",
-  //   "device" : "Google Pixel 5",
-  //   "real_mobile" : "true",
-  // },
-]);
+const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(path.resolve(__dirname, './config/browserOptions.json'), 'utf8'))
 
 describe('Browser Tests', () => {
   let server;
   let bsLocal;
 
-  const PORT = 8099;
 
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
@@ -140,6 +115,7 @@ describe('Browser Tests', () => {
     let driver;
 
     beforeAll(function beforeAll() {
+      console.log(capabilities)
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
@@ -154,7 +130,7 @@ describe('Browser Tests', () => {
     });
 
     beforeEach(async function beforeEach() {
-      await driver.get(`http://localhost:${PORT}`);
+      await driver.get(ROOT_URL);
     });
 
     it("upscales an imported local image path", async () => {
