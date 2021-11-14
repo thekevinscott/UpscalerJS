@@ -33,7 +33,6 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-
 describe('Upscale', () => {
   let server;
   let bsLocal;
@@ -94,7 +93,6 @@ describe('Upscale', () => {
     done();
   });
 
-
   beforeEach(async function beforeEach() {
     await driver.get(`http://localhost:${PORT}`);
   });
@@ -129,6 +127,7 @@ describe('Upscale', () => {
       }));
       checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
     });
+
 
     it("upscales a tensor", async () => {
       const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
