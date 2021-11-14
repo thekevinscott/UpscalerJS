@@ -27,7 +27,6 @@ jobs:
           directory: ./packages/upscalerjs/coverage
           verbose: true
 
-
   integration-browser:
     name: 'Tests: Integration / Browser'
     runs-on: ubuntu-latest
