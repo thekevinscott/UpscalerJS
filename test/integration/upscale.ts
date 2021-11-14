@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../../packages/test-scaffolding/server';
+import { bundle, startServer } from '../lib/server/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
