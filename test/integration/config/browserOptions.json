@@ -36,12 +36,6 @@
     "browser_version": "latest"
   },
   {
-    "os_version": "15",
-    "device": "iPhone XS",
-    "real_mobile": "true",
-    "browserName": "iPhone"
-  },
-  {
     "browserName": "Android",
     "os_version": "11.0",
     "device": "Samsung Galaxy S21 Ultra",
