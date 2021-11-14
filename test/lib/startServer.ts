@@ -1,6 +1,6 @@
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
-import { startServer } from '../../packages/test-scaffolding/server';
+import { startServer } from './server/server';
 
 const argv = yargs(hideBin(process.argv)).argv as {
   port?: string;
