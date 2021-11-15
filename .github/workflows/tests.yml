@@ -1,6 +1,5 @@
 name: 'Tests'
 on: [push]
-          NODE_OPTIONS: '--max_old_space_size=4096'
 
 jobs:
   unit:
@@ -46,6 +45,8 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Building'
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
         run: yarn && yarn workspace upscaler build
 
       - name: 'Integration Tests'
