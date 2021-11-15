@@ -8,8 +8,7 @@ import { bundle, startServer } from '../lib/server/server';
 const JEST_TIMEOUT = 60 * 1000;
 
 const PORT = 8099;
-const LOCALHOST = 'localhost';
-const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
+const DEFAULT_LOCALHOST = 'localhost';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -30,12 +29,6 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 //     "browserName": "safari",
 //     "browser_version": "latest"
 //   },
-// {
-//   "os_version": "15",
-//   "device": "iPhone XS",
-//   "real_mobile": "true",
-//   "browserName": "iPhone"
-// },
 
 interface BrowserOption {
   os?: string;
@@ -45,6 +38,7 @@ interface BrowserOption {
   device?: string;
   real_mobile?: 'true';
   browserName?: string;
+  localhost?: string;
 }
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
@@ -130,6 +124,8 @@ describe('Browser Tests', () => {
     });
 
     beforeEach(async function beforeEach() {
+      const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
+      console.log('using root url', ROOT_URL);
       await driver.get(ROOT_URL);
     });
 
