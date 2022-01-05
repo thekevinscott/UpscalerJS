@@ -106,17 +106,22 @@ describe('Builds', () => {
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
-  // it("upscales using an ESM build using Webpack", async () => {
-  //   await before(PORT);
-  //   await driver.get(`http://localhost:${PORT}`);
-  //   const result = await driver.executeScript(() => {
-  //     console.log(window['foo']);
-  //     const Upscaler = window['Upscaler'];
-  //     console.log(Upscaler);
-  //     const upscaler = new Upscaler();
-  //     return upscaler.upscale(document.getElementById('flower'));
-  //   });
-  //   checkImage(result, "upscaled-4x.png", 'diff.png');
-  // });
+  it("upscales using an ESM build using Webpack", async () => {
+    const startServerWrapper = async () => {
+      await bundleWebpack();
+      server = await startWebpackServer(PORT);
+    };
+
+    await before(startServerWrapper);
+    await driver.get(`http://localhost:${PORT}`);
+    const result = await driver.executeScript(() => {
+      console.log(window['foo']);
+      const Upscaler = window['Upscaler'];
+      console.log(Upscaler);
+      const upscaler = new Upscaler();
+      return upscaler.upscale(document.getElementById('flower'));
+    });
+    checkImage(result, "upscaled-4x.png", 'diff.png');
+  });
 
 });
