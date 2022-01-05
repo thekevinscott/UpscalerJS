@@ -52,21 +52,6 @@ jobs:
       - name: 'rimraf'
         run: npx rimraf dist
 
-      - name: 'build cjs'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn build:cjs
-
-      - name: 'build umd'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn build:umd
-
-      - name: 'build esm'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn build:esm
-
       - name: 'Building'
         env:
           NODE_OPTIONS: --max_old_space_size=8192
