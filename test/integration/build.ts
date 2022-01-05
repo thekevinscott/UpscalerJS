@@ -45,14 +45,9 @@ describe('Builds', () => {
       await startBsLocal(bsLocal);
     };
 
-    const startServerWrapper = async () => {
-      await prepareScriptBundle();
-      server = await startServer(PORT);
-    };
-
     await Promise.all([
       startBrowserStack(),
-      startServerWrapper(),
+      // startServerWrapper(),
     ]);
 
       driver = new webdriver.Builder()
@@ -96,10 +91,13 @@ describe('Builds', () => {
   });
 
   it("upscales using a UMD build via a script tag", async () => {
+    await prepareScriptBundle();
+    server = await startServer(PORT);
     const result = await driver.executeScript(() => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
+
 });
