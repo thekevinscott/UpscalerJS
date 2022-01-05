@@ -44,10 +44,15 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
+      - name: 'Installing'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn
+
       - name: 'Building'
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn && yarn workspace upscaler build
+        run: yarn workspace upscaler build
 
       - name: 'Integration Tests'
         run: yarn test:integration:browser --ci
