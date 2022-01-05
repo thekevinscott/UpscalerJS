@@ -28,17 +28,5 @@
     "os_version": "Big Sur",
     "browserName": "firefox",
     "browser_version": "latest"
-  },
-  {
-    "browserName": "Android",
-    "os_version": "11.0",
-    "device": "Samsung Galaxy S21 Ultra",
-    "real_mobile": "true"
-  },
-  {
-    "browserName": "Android",
-    "os_version": "12.0",
-    "device": "Google Pixel 5",
-    "real_mobile": "true"
   }
 ]
