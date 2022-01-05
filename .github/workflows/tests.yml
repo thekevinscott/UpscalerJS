@@ -49,9 +49,6 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
         run: yarn
 
-      - name: 'rimraf'
-        run: npx rimraf dist
-
       - name: 'Building'
         env:
           NODE_OPTIONS: --max_old_space_size=8192
