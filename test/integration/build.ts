@@ -4,6 +4,7 @@ import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
 import { prepareScriptBundle, startServer } from '../lib/script/server';
+import { bundleWebpack, startServer as startWebpackServer } from '../lib/webpack/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -100,4 +101,13 @@ describe('Builds', () => {
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
 
+  it("upscales using an ESM build via webpack", async () => {
+    await bundleWebpack();
+    server = await startWebpackServer(PORT);
+    const result = await driver.executeScript(() => {
+      const upscaler = new window['Upscaler']();
+      return upscaler.upscale(document.getElementById('flower'));
+    });
+    checkImage(result, "upscaled-4x.png", 'diff.png');
+  });
 });
