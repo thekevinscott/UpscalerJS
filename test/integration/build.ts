@@ -64,7 +64,7 @@ describe('Builds', () => {
     console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
   }
 
-  afterAll(async function afterAll(done) {
+  afterEach(async function afterEach(done) {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
