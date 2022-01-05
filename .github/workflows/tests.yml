@@ -50,7 +50,7 @@ jobs:
         run: yarn
 
       - name: 'rimraf'
-        run: rimraf dist
+        run: npx rimraf dist
 
       - name: 'build cjs'
         env:
