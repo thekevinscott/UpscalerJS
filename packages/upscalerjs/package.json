@@ -35,7 +35,7 @@
     "build:umd:tsc": "tsc --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "npx rollup -c rollup.config.js --failAfterWarnings",
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
-    "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/index.min.js -- dist/umd/index.js",
+    "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
     "test": "jest --config jestconfig.json",

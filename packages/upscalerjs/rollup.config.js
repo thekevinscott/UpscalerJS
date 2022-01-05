@@ -4,9 +4,9 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 export default {
   input: "dist/tmp/umd.js",
   output: {
-    file: "dist/umd/index.js",
+    file: "dist/umd/upscaler.js",
     format: 'umd',
-    name: 'Foo',
+    name: 'Upscaler',
     globals: {
       '@tensorflow/tfjs': 'tf',
     }
