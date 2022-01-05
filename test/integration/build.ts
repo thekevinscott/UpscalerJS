@@ -38,16 +38,21 @@ describe('Builds', () => {
 
   const PORT = 8099;
 
-  beforeAll(async function beforeAll(done) {
+  const before = async (port: number) => {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);
     };
 
+    const startServerWrapper = async () => {
+      await prepareScriptBundle();
+      server = await startServer(port);
+    };
+
     await Promise.all([
       startBrowserStack(),
-      // startServerWrapper(),
+      startServerWrapper(),
     ]);
 
       driver = new webdriver.Builder()
@@ -57,8 +62,7 @@ describe('Builds', () => {
 
     const end = new Date().getTime();
     console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
-    done();
-  });
+  }
 
   afterAll(async function afterAll(done) {
     const start = new Date().getTime();
@@ -86,15 +90,14 @@ describe('Builds', () => {
     done();
   });
 
-  beforeEach(async function beforeEach() {
-    await driver.get(`http://localhost:${PORT}`);
-  });
-
   it("upscales using a UMD build via a script tag", async () => {
-    await prepareScriptBundle();
-    server = await startServer(PORT);
+    await before(PORT);
+    await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
-      const upscaler = new window['Upscaler']();
+      console.log(window['foo']);
+      const Upscaler = window['Upscaler'];
+      console.log(Upscaler);
+      const upscaler = new Upscaler();
       return upscaler.upscale(document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x.png", 'diff.png');
