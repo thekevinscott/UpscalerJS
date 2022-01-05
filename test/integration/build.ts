@@ -32,6 +32,8 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
+type StartServerWrapper = () => Promise<void>;
+
 describe('Builds', () => {
   let server;
   let bsLocal;
@@ -39,16 +41,11 @@ describe('Builds', () => {
 
   const PORT = 8099;
 
-  const before = async (port: number) => {
+  const before = async (startServerWrapper: StartServerWrapper) => {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);
-    };
-
-    const startServerWrapper = async () => {
-      await prepareScriptBundle();
-      server = await startServer(port);
     };
 
     await Promise.all([
@@ -92,7 +89,12 @@ describe('Builds', () => {
   });
 
   it("upscales using a UMD build via a script tag", async () => {
-    await before(PORT);
+    const startServerWrapper = async () => {
+      await prepareScriptBundle();
+      server = await startServer(PORT);
+    };
+
+    await before(startServerWrapper);
     await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
       console.log(window['foo']);
@@ -103,5 +105,18 @@ describe('Builds', () => {
     });
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
+
+  // it("upscales using an ESM build using Webpack", async () => {
+  //   await before(PORT);
+  //   await driver.get(`http://localhost:${PORT}`);
+  //   const result = await driver.executeScript(() => {
+  //     console.log(window['foo']);
+  //     const Upscaler = window['Upscaler'];
+  //     console.log(Upscaler);
+  //     const upscaler = new Upscaler();
+  //     return upscaler.upscale(document.getElementById('flower'));
+  //   });
+  //   checkImage(result, "upscaled-4x.png", 'diff.png');
+  // });
 
 });
