@@ -10,7 +10,7 @@
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "globals": {
     "ts-jest": {
-      "tsConfig": {
+      "tsconfig": {
         "importHelpers": false,
         "target": "es5",
         "module": "commonjs",
