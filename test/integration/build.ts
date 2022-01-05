@@ -97,9 +97,7 @@ describe('Builds', () => {
     await before(startServerWrapper);
     await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
-      console.log(window['foo']);
       const Upscaler = window['Upscaler'];
-      console.log(Upscaler);
       const upscaler = new Upscaler();
       return upscaler.upscale(document.getElementById('flower'));
     });
@@ -115,9 +113,7 @@ describe('Builds', () => {
     await before(startServerWrapper);
     await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
-      console.log(window['foo']);
       const Upscaler = window['Upscaler'];
-      console.log(Upscaler);
       const upscaler = new Upscaler();
       return upscaler.upscale(document.getElementById('flower'));
     });
