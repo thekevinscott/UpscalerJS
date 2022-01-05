@@ -115,7 +115,6 @@ describe('Browser Tests', () => {
     let driver;
 
     beforeAll(function beforeAll() {
-      console.log(capabilities)
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
