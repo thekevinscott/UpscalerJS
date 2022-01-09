@@ -17,6 +17,7 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
+const TRACK_TIME = false;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
@@ -60,7 +61,9 @@ describe('Builds', () => {
         .build();
 
     const end = new Date().getTime();
-    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    }
   }
 
   afterEach(async function afterEach(done) {
@@ -85,7 +88,9 @@ describe('Builds', () => {
       driver.quit(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
