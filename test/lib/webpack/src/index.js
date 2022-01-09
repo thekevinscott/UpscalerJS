@@ -3,5 +3,5 @@ import Upscaler from 'upscaler';
 import flower from './flower-small.png';
 window.tfjs = tfjs;
 window.flower = flower;
-window.upscaler = new Upscaler();
-document.getElementById('output').innerHTML = 'Page has been loaded.'
+window.Upscaler = Upscaler;
+document.body.innerHTML = 'Page has been loaded.'

@@ -3,7 +3,8 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/generic-server/server';
+import { startServer } from '../lib/shared/server';
 
 const JEST_TIMEOUT = 60 * 1000;
 
@@ -73,7 +74,7 @@ describe('Browser Tests', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([

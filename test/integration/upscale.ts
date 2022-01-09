@@ -3,7 +3,8 @@ import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/generic-server/server';
+import { startServer } from '../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -49,7 +50,7 @@ describe('Upscale', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([

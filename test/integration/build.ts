@@ -3,8 +3,9 @@ import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { prepareScriptBundle, startServer } from '../lib/script/server';
-import { bundleWebpack, startServer as startWebpackServer } from '../lib/webpack/server';
+import { prepareScriptBundle, DIST as SCRIPT_DIST } from '../lib/script/server';
+import { startServer } from '../lib/shared/server';
+import { prepareScriptBundleForWebpack, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/webpack/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -91,7 +92,7 @@ describe('Builds', () => {
   it("upscales using a UMD build via a script tag", async () => {
     const startServerWrapper = async () => {
       await prepareScriptBundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, SCRIPT_DIST);
     };
 
     await before(startServerWrapper);
@@ -106,8 +107,9 @@ describe('Builds', () => {
 
   it("upscales using an ESM build using Webpack", async () => {
     const startServerWrapper = async () => {
+      await prepareScriptBundleForWebpack();
       await bundleWebpack();
-      server = await startWebpackServer(PORT);
+      server = await startServer(PORT, WEBPACK_DIST);
     };
 
     await before(startServerWrapper);
@@ -115,7 +117,7 @@ describe('Builds', () => {
     const result = await driver.executeScript(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler();
-      return upscaler.upscale(document.getElementById('flower'));
+      return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x.png", 'diff.png');
   });
