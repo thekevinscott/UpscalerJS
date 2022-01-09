@@ -3,7 +3,8 @@ import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/generic-server/server';
+import { startServer } from '../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -16,6 +17,7 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
+const TRACK_TIME = false;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
@@ -49,7 +51,7 @@ describe('Upscale', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([
@@ -63,7 +65,9 @@ describe('Upscale', () => {
         .build();
 
     const end = new Date().getTime();
-    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -89,7 +93,9 @@ describe('Upscale', () => {
       driver.quit(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 

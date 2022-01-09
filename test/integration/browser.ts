@@ -3,10 +3,12 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/generic-server/server';
+import { startServer } from '../lib/shared/server';
 
 const JEST_TIMEOUT = 60 * 1000;
 
+const TRACK_TIME = false;
 const PORT = 8099;
 const LOCALHOST = 'localhost';
 const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
@@ -73,7 +75,7 @@ describe('Browser Tests', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([
@@ -82,7 +84,9 @@ describe('Browser Tests', () => {
     ]);
 
     const end = new Date().getTime();
-    console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -107,7 +111,9 @@ describe('Browser Tests', () => {
       stopServer(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
