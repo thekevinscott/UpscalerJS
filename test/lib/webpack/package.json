@@ -1,5 +1,5 @@
 {
-  "name": "webpack-bundler",
+  "name": "webpack-sample-server",
   "private": true,
   "version": "0.8.23",
   "main": "index.js",
