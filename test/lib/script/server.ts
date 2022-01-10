@@ -1,24 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
+import callExec from '../utils/callExec';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
-
-const { exec } = require("child_process");
-const callExec = (cmd: string, options: any) => new Promise((resolve, reject) => {
-  const spawnedProcess = exec(cmd, options, (error) => {
-    if (error) {
-      reject(error.message);
-    } else {
-      resolve();
-    }
-  });
-  spawnedProcess.stdout.pipe(process.stdout);
-  spawnedProcess.stderr.pipe(process.stderr);
-
-})
 
 export const prepareScriptBundle = async () => {
   rimraf.sync(DIST);
