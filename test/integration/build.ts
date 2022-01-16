@@ -6,6 +6,8 @@ import { checkImage } from '../lib/utils/checkImage';
 import { prepareScriptBundle, DIST as SCRIPT_DIST } from '../lib/script/server';
 import { startServer } from '../lib/shared/server';
 import { prepareScriptBundleForWebpack, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/webpack/server';
+import { prepareNodeDeps, prepareScriptBundleForNode, executeNodeScript } from '../lib/node/server';
+import callExec from "../lib/utils/callExec";
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -66,6 +68,11 @@ describe('Builds', () => {
     }
   }
 
+  beforeAll(async function beforeAll(done) {
+    await prepareNodeDeps();
+    done();
+  })
+
   afterEach(async function afterEach(done) {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
@@ -78,7 +85,7 @@ describe('Builds', () => {
       if (server) {
         server.close(resolve);
       } else {
-        console.warn('No server found')
+        // console.warn('No server found')
         resolve();
       }
     });
@@ -125,6 +132,15 @@ describe('Builds', () => {
       return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x.png", 'diff.png');
+  });
+
+  it("upscales using a CJS build in Node", async () => {
+    const startServerWrapper = async () => {
+      await prepareScriptBundleForNode();
+    };
+    await before(startServerWrapper);
+    const result = await executeNodeScript();
+    checkImage(result, "upscaled-4x.png", 'diff.png', 'upscaled.png');
   });
 
 });
