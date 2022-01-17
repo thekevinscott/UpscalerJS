@@ -100,7 +100,19 @@ type ModelDefinitions = {
   [index: string]: IModelDefinition;
 };
 
-let modelDefinitions: undefined | ModelDefinitions;
+let modelDefinitions: undefined | ModelDefinitions = undefined;
+
+export const getModelDescription = async (
+  val: IModelDefinition,
+): Promise<string> => {
+  try {
+    if (val.configURL) {
+      const response = await fetch(val.configURL).then((resp) => resp.json());
+      return response.description;
+    }
+  } catch (err) {}
+  return '';
+};
 
 export const prepareModelDefinitions = async (
   preparedModelDefinitions: ModelDefinitions = {},
@@ -124,16 +136,4 @@ export const getModelDefinitions = async () => {
     modelDefinitions = await prepareModelDefinitions();
   }
   return modelDefinitions;
-};
-
-export const getModelDescription = async (
-  val: IModelDefinition,
-): Promise<string> => {
-  try {
-    if (val.configURL) {
-      const response = await fetch(val.configURL).then((resp) => resp.json());
-      return response.description;
-    }
-  } catch (err) {}
-  return '';
 };
