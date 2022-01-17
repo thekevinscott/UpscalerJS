@@ -37,7 +37,7 @@ const exampleName = packageJSON.name;
 
 const main = () => {
   runProcess('yarn', ['workspace', exampleName, 'start'], 'example');
-  runProcess('yarn', ['workspace', 'upscaler', 'build:esm'], 'upscaler');
+  runProcess('yarn', ['workspace', 'upscaler', 'watch:esm'], 'upscaler');
 };
 
 main();

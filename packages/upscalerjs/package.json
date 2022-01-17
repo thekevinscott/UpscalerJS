@@ -39,7 +39,7 @@
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
     "test": "jest --config jestconfig.json",
-    "watch:esnext": "watch 'yarn build:esnext' ./src"
+    "watch:esm": "watch 'yarn build:esm' ./src"
   },
   "repository": {
     "type": "git",
