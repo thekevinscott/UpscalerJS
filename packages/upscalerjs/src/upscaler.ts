@@ -21,7 +21,7 @@ class Upscaler {
       ...opts,
     };
     this._model = loadModel(this._opts);
-    warmup(this._model, this._opts.warmupSizes || []);
+    void warmup(this._model, this._opts.warmupSizes || []);
   }
 
   getModel = () => this._model;
