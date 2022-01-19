@@ -3,7 +3,7 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/generic-server/server';
+import { bundle, DIST } from '../lib/esm-esbuild/server';
 import { startServer } from '../lib/shared/server';
 
 const JEST_TIMEOUT = 60 * 1000;
@@ -142,7 +142,7 @@ describe('Browser Tests', () => {
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x.png", 'diff.png');
+      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
     });
   });
 });

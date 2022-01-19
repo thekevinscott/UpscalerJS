@@ -3,11 +3,10 @@ import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { prepareScriptBundle, DIST as SCRIPT_DIST } from '../lib/script/server';
+import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../lib/umd/prepare';
 import { startServer } from '../lib/shared/server';
-import { prepareScriptBundleForWebpack, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/webpack/server';
-import { prepareNodeDeps, prepareScriptBundleForNode, executeNodeScript } from '../lib/node/server';
-import callExec from "../lib/utils/callExec";
+import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/esm-webpack/prepare';
+import { prepareNodeDeps, prepareScriptBundleForCJS, executeNodeScript } from '../lib/cjs/prepare';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -103,7 +102,7 @@ describe('Builds', () => {
 
   it("upscales using a UMD build via a script tag", async () => {
     const startServerWrapper = async () => {
-      await prepareScriptBundle();
+      await prepareScriptBundleForUMD();
       server = await startServer(PORT, SCRIPT_DIST);
     };
 
@@ -111,15 +110,18 @@ describe('Builds', () => {
     await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
       const Upscaler = window['Upscaler'];
-      const upscaler = new Upscaler();
+      const upscaler = new Upscaler({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
       return upscaler.upscale(document.getElementById('flower'));
     });
-    checkImage(result, "upscaled-4x.png", 'diff.png');
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("upscales using an ESM build using Webpack", async () => {
     const startServerWrapper = async () => {
-      await prepareScriptBundleForWebpack();
+      await prepareScriptBundleForESM();
       await bundleWebpack();
       server = await startServer(PORT, WEBPACK_DIST);
     };
@@ -128,19 +130,21 @@ describe('Builds', () => {
     await driver.get(`http://localhost:${PORT}`);
     const result = await driver.executeScript(() => {
       const Upscaler = window['Upscaler'];
-      const upscaler = new Upscaler();
+      const upscaler = new Upscaler({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x.png", 'diff.png');
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("upscales using a CJS build in Node", async () => {
     const startServerWrapper = async () => {
-      await prepareScriptBundleForNode();
+      await prepareScriptBundleForCJS();
     };
     await before(startServerWrapper);
     const result = await executeNodeScript();
-    checkImage(result, "upscaled-4x.png", 'diff.png', 'upscaled.png');
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
   });
-
 });
