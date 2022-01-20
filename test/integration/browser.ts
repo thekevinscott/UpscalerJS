@@ -135,7 +135,7 @@ describe('Browser Tests', () => {
 
     beforeEach(async function beforeEach() {
       await driver.get(ROOT_URL);
-      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000);
+      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
     it("upscales an imported local image path", async () => {
