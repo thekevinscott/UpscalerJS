@@ -121,6 +121,7 @@ describe('Builds', () => {
     await bundleWebpack();
     server = await startServer(PORT, WEBPACK_DIST);
     await driver.get(`http://localhost:${PORT}`);
+    await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000);
     const result = await driver.executeScript(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({

@@ -4,4 +4,4 @@ import flower from '../../../__fixtures__/flower-small.png';
 window.tfjs = tfjs;
 window.flower = flower;
 window.Upscaler = Upscaler;
-document.body.innerHTML = 'Page has been loaded.'
+document.title = `${document.title} | Loaded`;

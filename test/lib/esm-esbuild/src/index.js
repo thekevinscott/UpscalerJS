@@ -7,4 +7,4 @@ window.upscaler = new Upscaler({
   model: '/pixelator/pixelator.json',
   scale: 4,
 });
-document.getElementById('output').innerHTML = 'Page has been loaded.'
+document.title = `${document.title} | Loaded`;

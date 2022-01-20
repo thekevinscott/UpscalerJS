@@ -135,16 +135,17 @@ describe('Browser Tests', () => {
 
     beforeEach(async function beforeEach() {
       await driver.get(ROOT_URL);
+      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000);
     });
 
     it("upscales an imported local image path", async () => {
-      console.log('starting test');
+      console.log('starting test', capabilities);
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      console.log('got result');
+      console.log('got result', capabilities);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-      console.log('checked image');
+      console.log('checked image', capabilities);
     });
   });
 });
