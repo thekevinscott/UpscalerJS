@@ -6,7 +6,7 @@ import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const PORT = 8099;
 const LOCALHOST = 'localhost';
 const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
@@ -138,10 +138,13 @@ describe('Browser Tests', () => {
     });
 
     it("upscales an imported local image path", async () => {
+      console.log('starting test');
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
+      console.log('got result');
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      console.log('checked image');
     });
   });
 });
