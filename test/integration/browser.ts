@@ -8,7 +8,7 @@ import { startServer } from '../lib/shared/server';
 
 const JEST_TIMEOUT = 60 * 1000;
 
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const PORT = 8099;
 const LOCALHOST = 'localhost';
 const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
@@ -65,7 +65,6 @@ describe('Browser Tests', () => {
   let server;
   let bsLocal;
 
-
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
@@ -85,7 +84,7 @@ describe('Browser Tests', () => {
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
-      console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
     done();
   });

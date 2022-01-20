@@ -13,9 +13,9 @@ export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   fs.mkdirSync(DIST, { recursive: true });
 
-  await callExec('yarn install --frozen-lockfile', {
-    cwd: UPSCALER_PATH,
-  });
+  // await callExec('yarn install --frozen-lockfile', {
+  //   cwd: UPSCALER_PATH,
+  // });
 
   await callExec('yarn build:umd', {
     cwd: UPSCALER_PATH,
@@ -35,6 +35,5 @@ export const prepareScriptBundleForUMD = async () => {
       <img src="./flower-small.png" id="flower"/>
     </body>
     </html>
-
-    `);
+  `);
 };

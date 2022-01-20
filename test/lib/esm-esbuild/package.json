@@ -7,9 +7,9 @@
     "upscaler": "0.8.27"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "2.8.6",
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0"
+    "@babel/preset-typescript": "^7.16.0",
+    "@tensorflow/tfjs": "2.8.6"
   },
   "babel": {
     "env": {

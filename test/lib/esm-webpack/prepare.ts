@@ -8,21 +8,23 @@ import { copyFixtures } from '../utils/copyFixtures';
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+import { updateTFJSVersion } from '../utils/updateTFJSVersion';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require('webpack');
+const ROOT = path.join(__dirname);
+const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 let compiler = undefined;
 
 export const prepareScriptBundleForESM = async () => {
   rimraf.sync(DIST);
-  rimraf.sync(NODE_MODULES);
+  // rimraf.sync(NODE_MODULES);
   fs.mkdirSync(DIST, { recursive: true });
-  fs.mkdirSync(NODE_MODULES, { recursive: true });
+  // fs.mkdirSync(NODE_MODULES, { recursive: true });
 
-  await callExec('yarn install --frozen-lockfile', {
-    cwd: UPSCALER_PATH,
-  });
+  // await callExec('yarn install --frozen-lockfile', {
+  //   cwd: UPSCALER_PATH,
+  // });
 
   await callExec('yarn build:esm', {
     cwd: UPSCALER_PATH,
@@ -33,18 +35,11 @@ export const prepareScriptBundleForESM = async () => {
   });
 };
 
-const updateTFJSVersion = () => {
-  const packageJSONPath = path.join(__dirname, 'package.json');
-  const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
-  packageJSON.dependencies['@tensorflow/tfjs'] = getTFJSVersion();
-  fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-};
-
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
-  updateTFJSVersion();
-  await callExec('yarn install --frozen-lockfile', {
-    cwd: ROOT,
-  });
+  await updateTFJSVersion(ROOT);
+  // await callExec('yarn install --frozen-lockfile', {
+  //   cwd: ROOT,
+  // });
   copyFixtures(DIST);
 
   const entryFiles = path.join(ROOT, 'src/index.js');
