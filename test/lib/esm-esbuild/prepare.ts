@@ -20,7 +20,7 @@ const updateTFJSVersion = () => {
 
 export const bundle = async () => {
   updateTFJSVersion();
-  await callExec('yarn', {
+  await callExec('yarn install --frozen-lockfile', {
     cwd: ROOT,
   });
   rimraf.sync(DIST);

@@ -42,7 +42,7 @@ const updateTFJSVersion = () => {
 
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
   updateTFJSVersion();
-  await callExec('yarn', {
+  await callExec('yarn install --frozen-lockfile', {
     cwd: ROOT,
   });
   copyFixtures(DIST);
