@@ -139,12 +139,12 @@ describe('Builds', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("upscales using a CJS build in Node", async () => {
-    const startServerWrapper = async () => {
-      await prepareScriptBundleForCJS();
-    };
-    await before(startServerWrapper);
-    const result = await executeNodeScript();
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
-  });
+  // it("upscales using a CJS build in Node", async () => {
+  //   const startServerWrapper = async () => {
+  //     await prepareScriptBundleForCJS();
+  //   };
+  //   await before(startServerWrapper);
+  //   const result = await executeNodeScript();
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+  // });
 });

@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/esm-esbuild/server';
+import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {

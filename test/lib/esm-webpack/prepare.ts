@@ -38,7 +38,7 @@ const updateTFJSVersion = () => {
   const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
   packageJSON.dependencies['@tensorflow/tfjs'] = getTFJSVersion();
   fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-}
+};
 
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
   updateTFJSVersion();
