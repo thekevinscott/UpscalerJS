@@ -4,23 +4,5 @@
     "os_version": "11",
     "browserName": "chrome",
     "browser_version": "latest"
-  },
-  {
-    "os": "windows",
-    "os_version": "11",
-    "browserName": "firefox",
-    "browser_version": "latest"
-  },
-  {
-    "os": "windows",
-    "os_version": "11",
-    "browserName": "edge",
-    "browser_version": "latest"
-  },
-  {
-    "os": "OS X",
-    "os_version": "Big Sur",
-    "browserName": "chrome",
-    "browser_version": "latest"
   }
 ]
