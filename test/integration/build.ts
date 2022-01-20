@@ -18,13 +18,14 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
-const TRACK_TIME = true;
+const TRACK_TIME = false;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+jest.retryTimes(3);
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({

@@ -6,9 +6,7 @@ import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
-const JEST_TIMEOUT = 60 * 1000;
-
-const TRACK_TIME = true;
+const TRACK_TIME = false;
 const PORT = 8099;
 const LOCALHOST = 'localhost';
 const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
@@ -24,7 +22,9 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
+const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+jest.retryTimes(3);
 
 //   {
 //     "os": "OS X",
