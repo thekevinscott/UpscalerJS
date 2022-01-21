@@ -26,7 +26,6 @@ jobs:
           directory: ./packages/upscalerjs/coverage
           verbose: true
 
-
   integration-browser:
     name: 'Tests: Integration / Browser'
     runs-on: ubuntu-latest
@@ -45,8 +44,15 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
+      - name: 'Installing'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn
+
       - name: 'Building'
-        run: yarn && yarn workspace upscaler build
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn workspace upscaler build
 
       - name: 'Integration Tests'
         run: yarn test:integration:browser --ci

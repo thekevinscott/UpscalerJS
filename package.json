@@ -37,16 +37,15 @@
     "postversion": "yarn build",
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build",
+    "build:cjs": "yarn lerna run build:cjs",
+    "build:umd": "yarn lerna run build:umd",
+    "build:esm": "yarn lerna run build:esm",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "ts-node test/lib/startServer.ts"
   },
-  "pre-commit": [
-    "lint",
-    "format"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
@@ -60,6 +59,8 @@
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
     "@tensorflow/tfjs": "2.8.6",
     "@types/jest": "^26.0.7",
     "@types/pngjs": "^6.0.1",
@@ -78,10 +79,11 @@
     "loader-utils": "^2.0.0",
     "pixelmatch": "^5.2.1",
     "pngjs": "^6.0.0",
-    "pre-commit": "^1.2.2",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.40.0",
+    "rollup": "^2.63.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "selenium-webdriver": "^4.0.0-beta.1",
     "serve": "^11.3.2",
     "ts-jest": "^26.1.4",

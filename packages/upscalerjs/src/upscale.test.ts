@@ -954,33 +954,8 @@ describe('getRowsAndColumns', () => {
   it('gets uneven rows and columns by rounding up', () => {
     const img: tf.Tensor4D = tf.tensor(
       [
-        1,
-        1,
-        1,
-        2,
-        2,
-        2,
-        3,
-        3,
-        3,
-        4,
-        4,
-        4,
-        5,
-        5,
-        5,
-        6,
-        6,
-        6,
-        7,
-        7,
-        7,
-        8,
-        8,
-        8,
-        9,
-        9,
-        9,
+        1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8,
+        9, 9, 9,
       ],
       [1, 3, 3, 3],
     );
@@ -1007,9 +982,9 @@ describe('predict', () => {
     const pred = {
       squeeze: jest.fn(() => upscaledTensor),
     };
-    const model = ({
+    const model = {
       predict: jest.fn(() => pred),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     const result = await predict(model, img.expandDims(0), {
       scale: 2,
     } as IModelDefinition);
@@ -1026,11 +1001,11 @@ describe('predict', () => {
       [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
       [2, 2, 3],
     );
-    const model = ({
+    const model = {
       predict: jest.fn((pixel) => {
         return tf.fill([2, 2, 3], pixel.dataSync()[0]).expandDims(0);
       }),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     const result = await predict(
       model,
       img.expandDims(0),
@@ -1077,13 +1052,13 @@ describe('predict', () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
-    const model = ({
+    const model = {
       predict: jest.fn((pixel) => {
         return tf
           .fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0])
           .expandDims(0);
       }),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     const progress = jest.fn();
     await predict(model, img, { scale } as IModelDefinition, {
       patchSize,
@@ -1101,13 +1076,13 @@ describe('predict', () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
-    const model = ({
+    const model = {
       predict: jest.fn((pixel) => {
         return tf
           .fill([patchSize * scale, patchSize * scale, 3], pixel.dataSync()[0])
           .expandDims(0);
       }),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     await predict(model, img, { scale } as IModelDefinition, {
       patchSize,
     });
@@ -1131,9 +1106,9 @@ describe('upscale', () => {
       tensor: img,
       type: 'tensor',
     });
-    const model = ({
+    const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3])),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
     const result = await upscale(model, img, { scale: 2 } as IModelDefinition);
     expect(result).toEqual('foobarbaz');
@@ -1155,9 +1130,9 @@ describe('upscale', () => {
       type: 'tensor',
     });
     const upscaledTensor = tf.ones([1, 2, 2, 3]);
-    const model = ({
+    const model = {
       predict: jest.fn(() => upscaledTensor),
-    } as unknown) as tf.LayersModel;
+    } as unknown as tf.LayersModel;
     (tensorAsBase as any).default = () => 'foobarbaz';
     const result = await upscale(model, img, { scale: 2 } as IModelDefinition, {
       output: 'tensor',

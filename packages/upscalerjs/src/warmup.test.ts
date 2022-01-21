@@ -10,9 +10,9 @@ const getFakeModel = () => {
     };
   });
 
-  return ({
+  return {
     predict,
-  } as unknown) as tf.LayersModel;
+  } as unknown as tf.LayersModel;
 };
 
 describe('Warmup', () => {

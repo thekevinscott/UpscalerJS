@@ -1,5 +1,5 @@
 {
-  "name": "webpack-bundler",
+  "name": "generic-server-sample-server",
   "private": true,
   "version": "0.8.23",
   "main": "index.js",
@@ -7,9 +7,9 @@
     "upscaler": "0.8.27"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^3.2.0",
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
-    "@babel/preset-typescript": "^7.16.0"
+    "@babel/preset-typescript": "^7.16.0",
+    "@tensorflow/tfjs": "2.8.6"
   },
   "babel": {
     "env": {
@@ -20,7 +20,14 @@
       }
     },
     "presets": [
-      ["@babel/preset-env", {"targets": {"node": "current"}}],
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
       "@babel/preset-typescript"
     ]
   }

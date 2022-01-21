@@ -3,10 +3,10 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/esm-esbuild/prepare';
+import { startServer } from '../lib/shared/server';
 
-const JEST_TIMEOUT = 60 * 1000;
-
+const TRACK_TIME = true;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
 
@@ -21,7 +21,9 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
+const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+jest.retryTimes(3);
 
 //   {
 //     "os": "OS X",
@@ -57,7 +59,6 @@ describe('Browser Tests', () => {
   let server;
   let bsLocal;
 
-
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
@@ -67,7 +68,7 @@ describe('Browser Tests', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([
@@ -76,7 +77,9 @@ describe('Browser Tests', () => {
     ]);
 
     const end = new Date().getTime();
-    console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -101,7 +104,9 @@ describe('Browser Tests', () => {
       stopServer(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -109,7 +114,6 @@ describe('Browser Tests', () => {
     let driver;
 
     beforeAll(function beforeAll() {
-      console.log(capabilities)
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
@@ -127,13 +131,17 @@ describe('Browser Tests', () => {
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       console.log('using root url', ROOT_URL);
       await driver.get(ROOT_URL);
+      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
     it("upscales an imported local image path", async () => {
+      console.log('starting test', capabilities);
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x.png", 'diff.png');
+      console.log('got result', capabilities);
+      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      console.log('checked image', capabilities);
     });
   });
 });

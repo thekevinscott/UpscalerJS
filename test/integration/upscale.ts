@@ -1,9 +1,10 @@
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, startServer } from '../lib/server/server';
+import { bundle, DIST } from '../lib/esm-esbuild/prepare';
+import { startServer } from '../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -16,12 +17,14 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
+const TRACK_TIME = false;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+jest.retryTimes(3);
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({
@@ -49,7 +52,7 @@ describe('Upscale', () => {
 
     const startServerWrapper = async () => {
       await bundle();
-      server = await startServer(PORT);
+      server = await startServer(PORT, DIST);
     };
 
     await Promise.all([
@@ -63,7 +66,9 @@ describe('Upscale', () => {
         .build();
 
     const end = new Date().getTime();
-    console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -89,7 +94,9 @@ describe('Upscale', () => {
       driver.quit(),
     ]);
     const end = new Date().getTime();
-    console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    if (TRACK_TIME) {
+      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
+    }
     done();
   });
 
@@ -101,7 +108,7 @@ describe('Upscale', () => {
     const result = await driver.executeScript(() => {
       return window['upscaler'].upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x.png", 'diff.png');
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("upscales an HTML Image", async () => {
@@ -112,7 +119,7 @@ describe('Upscale', () => {
         window['upscaler'].upscale(img).then(resolve);
       }
     }));
-    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
     it("upscales an HTML Image from the page", async () => {
@@ -125,7 +132,7 @@ describe('Upscale', () => {
           window['upscaler'].upscale(document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
 
@@ -139,13 +146,13 @@ describe('Upscale', () => {
           window['upscaler'].upscale(tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 });
