@@ -3,12 +3,10 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/generic-server/server';
+import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
-const JEST_TIMEOUT = 60 * 1000;
-
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const PORT = 8099;
 const LOCALHOST = 'localhost';
 const ROOT_URL = `http://${LOCALHOST}:${PORT}`;
@@ -24,7 +22,9 @@ const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
+const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+jest.retryTimes(3);
 
 //   {
 //     "os": "OS X",
@@ -65,7 +65,6 @@ describe('Browser Tests', () => {
   let server;
   let bsLocal;
 
-
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
@@ -85,7 +84,7 @@ describe('Browser Tests', () => {
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
-      console.log(`Completed pre-pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
     done();
   });
@@ -136,13 +135,17 @@ describe('Browser Tests', () => {
 
     beforeEach(async function beforeEach() {
       await driver.get(ROOT_URL);
+      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
     it("upscales an imported local image path", async () => {
+      console.log('starting test', capabilities);
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x.png", 'diff.png');
+      console.log('got result', capabilities);
+      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      console.log('checked image', capabilities);
     });
   });
 });

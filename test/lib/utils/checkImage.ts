@@ -18,8 +18,8 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   const upscaledImageBuffer = Buffer.from(src.split('base64,').pop(), 'base64');
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);
 
-  expect(upscaledImage.width).toEqual(fixture.width);
-  expect(upscaledImage.height).toEqual(fixture.height);
+  expect(fixture.width).toEqual(upscaledImage.width);
+  expect(fixture.height).toEqual(upscaledImage.height);
 
   const diff = new PNG({ width: fixture.width, height: fixture.height });
   const mismatched = pixelmatch(fixture.data, upscaledImage.data, diff.data, fixture.width, fixture.height, { threshold: THRESHOLD });
