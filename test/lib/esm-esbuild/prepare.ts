@@ -1,15 +1,17 @@
 import * as fs from 'fs';
-import * as http from 'http';
 import * as path from 'path';
 import * as esbuild from 'esbuild';
 import * as rimraf from 'rimraf';
-import handler from 'serve-handler';
+import { copyFixtures } from '../utils/copyFixtures';
+import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 
-export const bundle = () => {
+export const bundle = async () => {
+  await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
+  copyFixtures(DIST, false);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
     esbuild.buildSync({

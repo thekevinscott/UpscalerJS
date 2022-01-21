@@ -2,20 +2,22 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 import * as fs from 'fs';
 import callExec from '../utils/callExec';
+import { getTFJSVersion } from '../utils/getTFJSVersion';
+import { copyFixtures } from '../utils/copyFixtures';
+import { updateTFJSVersion } from '../utils/updateTFJSVersion';
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const webpack = require('webpack');
+const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 let compiler = undefined;
 
-export const prepareScriptBundleForWebpack = async () => {
+export const prepareScriptBundleForESM = async () => {
   rimraf.sync(DIST);
-  rimraf.sync(NODE_MODULES);
-  fs.mkdirSync(NODE_MODULES, { recursive: true });
+  fs.mkdirSync(DIST, { recursive: true });
 
   await callExec('yarn build:esm', {
     cwd: UPSCALER_PATH,
@@ -27,6 +29,9 @@ export const prepareScriptBundleForWebpack = async () => {
 };
 
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
+  await updateTFJSVersion(ROOT);
+  copyFixtures(DIST);
+
   const entryFiles = path.join(ROOT, 'src/index.js');
 
   compiler = webpack({
@@ -43,7 +48,7 @@ export const bundleWebpack = () => new Promise(async (resolve, reject) => {
     module: {
       rules: [
         {
-          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          test: /\.(png|svg|jpg|jpeg|gif|json|bin)$/i,
           type: 'asset/resource',
         },
       ],

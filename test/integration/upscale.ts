@@ -1,9 +1,9 @@
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/generic-server/server';
+import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {
@@ -24,6 +24,7 @@ const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+jest.retryTimes(3);
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({
@@ -107,7 +108,7 @@ describe('Upscale', () => {
     const result = await driver.executeScript(() => {
       return window['upscaler'].upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x.png", 'diff.png');
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("upscales an HTML Image", async () => {
@@ -118,7 +119,7 @@ describe('Upscale', () => {
         window['upscaler'].upscale(img).then(resolve);
       }
     }));
-    checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
     it("upscales an HTML Image from the page", async () => {
@@ -131,7 +132,7 @@ describe('Upscale', () => {
           window['upscaler'].upscale(document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
 
@@ -145,13 +146,13 @@ describe('Upscale', () => {
           window['upscaler'].upscale(tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
-      checkImage(upscaledSrc, "upscaled-4x.png", 'diff.png');
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 });
