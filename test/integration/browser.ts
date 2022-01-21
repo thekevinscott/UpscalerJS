@@ -129,19 +129,19 @@ describe('Browser Tests', () => {
 
     beforeEach(async function beforeEach() {
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
-      console.log('using root url', ROOT_URL);
+      console.log('using root url', ROOT_URL, 'for', capabilities);
       await driver.get(ROOT_URL);
       await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
     it("upscales an imported local image path", async () => {
-      console.log('starting test', capabilities);
+      // console.log('starting test', capabilities);
       const result = await driver.executeScript(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      console.log('got result', capabilities);
+      // console.log('got result', capabilities);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-      console.log('checked image', capabilities);
+      // console.log('checked image', capabilities);
     });
   });
 });
