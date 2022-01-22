@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from './tfjs';
 import { isHTMLImageElement, isString, isFourDimensionalTensor } from './utils';
 
 export const loadImage = (src: string): Promise<HTMLImageElement> =>
