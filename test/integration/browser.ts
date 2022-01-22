@@ -5,6 +5,7 @@ import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
+import logging from 'selenium-webdriver/lib/logging';
 
 const TRACK_TIME = true;
 const PORT = 8099;
@@ -25,12 +26,6 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(3);
 
-//   {
-//     "os": "OS X",
-//     "os_version": "Big Sur",
-//     "browserName": "safari",
-//     "browser_version": "latest"
-//   },
 
 interface BrowserOption {
   os?: string;
@@ -53,7 +48,16 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(path.resolve(__dirname, './config/browserOptions.json'), 'utf8'))
+const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
+
+const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
+  return true;
+  // return false ||
+  // option.browserName.toLowerCase().includes('safari') ||
+  // // option.browserName.toLowerCase().includes('android') ||
+  // // option.browserName.toLowerCase().includes('iphone') ||
+  // false;
+})
 
 describe('Browser Tests', () => {
   let server;
@@ -113,7 +117,7 @@ describe('Browser Tests', () => {
   describe.each(browserOptions)("Browser %j", (capabilities) => {
     let driver;
 
-    beforeAll(function beforeAll() {
+    beforeAll(async function beforeAll() {
       driver = new webdriver.Builder()
         .usingServer(serverURL)
         .withCapabilities({
@@ -129,19 +133,30 @@ describe('Browser Tests', () => {
 
     beforeEach(async function beforeEach() {
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
-      console.log('using root url', ROOT_URL, 'for', capabilities);
       await driver.get(ROOT_URL);
       await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
     it("upscales an imported local image path", async () => {
-      // console.log('starting test', capabilities);
+      // const result1 = await driver.executeScript(() => {
+      //   return 'foo';
+      // });
+      // expect(result1).toEqual('foo');
+      // const result2 = await driver.executeScript(() => new Promise(resolve => resolve('bar')));
+      // expect(result2).toEqual('bar');
       const result = await driver.executeScript(() => {
+        // const log = msg => {
+        //   const p = document.createElement('p');
+        //   p.innerHTML = msg;
+        //   p.style.fontSize = '80px';
+        //   p.style.padding = '20px';
+        //   p.style.wordWrap = 'break-word';
+        //   document.body.appendChild(p);
+        // }
         return window['upscaler'].upscale(window['flower']);
       });
-      // console.log('got result', capabilities);
+      // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-      // console.log('checked image', capabilities);
     });
   });
 });

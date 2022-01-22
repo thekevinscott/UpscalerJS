@@ -13,7 +13,7 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   }
   const fixture = getFixtureAsBuffer(fixtureSrc);
   if (!src.includes('base64,')) {
-    throw new Error('No "base64," tag found in the incoming src, this may indicate a bad src attribute.');
+    throw new Error(`No "base64," tag found in the incoming src, this may indicate a bad src attribute. src: ${src}`);
   }
   const upscaledImageBuffer = Buffer.from(src.split('base64,').pop(), 'base64');
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);

@@ -30,6 +30,13 @@
     "browser_version": "latest"
   },
   {
+    "os": "OS X",
+    "os_version": "Big Sur",
+    "browserName": "safari",
+    "browser_version": "latest",
+    "localhost": "bs-local.com"
+  },
+  {
     "browserName": "Android",
     "os_version": "11.0",
     "device": "Samsung Galaxy S21 Ultra",
