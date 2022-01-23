@@ -149,13 +149,12 @@ describe('Browser Tests', () => {
         //   document.body.appendChild(p);
         // }
         const wait = (dur) => new Promise(resolve => setTimeout(resolve, dur));
-        const getUpscaler = async () => {
+        const getUpscaler = () => {
           if (window['upscaler']) {
             return window['upscaler'];
           }
 
-          await wait(100);
-          return getUpscaler();
+          return wait(100).then(() => getUpscaler());
         }
         return getUpscaler().then(upscaler => {
           return upscaler.upscale(window['flower']);

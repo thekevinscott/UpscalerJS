@@ -9,7 +9,7 @@
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
-    "@tensorflow/tfjs": "2.8.6"
+    "@tensorflow/tfjs": "^3.13.0"
   },
   "babel": {
     "env": {
