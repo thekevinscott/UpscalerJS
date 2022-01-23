@@ -100,7 +100,7 @@ type ModelDefinitions = {
   [index: string]: IModelDefinition;
 };
 
-let modelDefinitions: undefined | ModelDefinitions = undefined;
+let modelDefinitions: undefined | ModelDefinitions;
 
 export const getModelDescription = async (
   val: IModelDefinition,
