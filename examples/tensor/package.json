@@ -1,6 +1,6 @@
 {
   "name": "tensor",
-  "version": "0.8.17",
+  "version": "0.8.27",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "2.8.6",
-    "upscaler": "0.8.17"
+    "upscaler": "0.8.27"
   },
   "browserslist": {
     "production": [
