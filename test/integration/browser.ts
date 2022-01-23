@@ -51,12 +51,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
 const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
 
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
-  return true;
-  // return false ||
-  // option.browserName.toLowerCase().includes('safari') ||
-  // // option.browserName.toLowerCase().includes('android') ||
-  // // option.browserName.toLowerCase().includes('iphone') ||
-  // false;
+  return !option.browserName.toLowerCase().includes('iphone');
 })
 
 describe('Browser Tests', () => {
