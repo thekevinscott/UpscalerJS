@@ -11,7 +11,6 @@ const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
 const IMG = path.join(FIXTURES, 'flower-small.png');
 const argv = yargs(hideBin(process.argv)).argv;
 
-
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
   const upscaler = new Upscaler({
