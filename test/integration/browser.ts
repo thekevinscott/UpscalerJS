@@ -148,7 +148,17 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        return window['upscaler'].upscale(window['flower']);
+        const wait = (dur) => new Promise(resolve => setTimeout(resolve, dur));
+        const getUpscaler = async () => {
+          if (window['upscaler']) {
+            return window['upscaler'];
+          }
+
+          await wait(100);
+          return getUpscaler();
+        }
+        const upscaler = await getUpscaler();
+        return upscaler.upscale(window['flower']);
       });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
