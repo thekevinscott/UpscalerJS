@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/packages/upscalerjs'
+    schedule:
+      interval: 'daily'
+  - package-ecosystem: 'npm'
+    directory: '/packages/models'
+    schedule:
+      interval: 'daily'
+
