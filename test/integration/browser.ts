@@ -148,14 +148,17 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        const wait = (dur) => new Promise(resolve => setTimeout(resolve, dur));
-        const getUpscaler = () => {
+        function wait (dur) {
+          return new Promise(resolve => setTimeout(resolve, dur));
+        }
+        function getUpscaler() {
           if (window['upscaler']) {
             return window['upscaler'];
           }
 
           return wait(100).then(() => getUpscaler());
         }
+
         return getUpscaler().then(upscaler => {
           return upscaler.upscale(window['flower']);
         });
