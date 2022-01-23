@@ -5,7 +5,6 @@ import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
-import logging from 'selenium-webdriver/lib/logging';
 
 const TRACK_TIME = true;
 const PORT = 8099;
@@ -148,7 +147,23 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        return window['upscaler'].upscale(window['flower']);
+        function wait (dur) {
+          return new Promise(resolve => setTimeout(resolve, dur));
+        }
+        function getUpscaler(times = 0) {
+          if (times > 20) {
+            throw new Error('upscaler was not defined on window.')
+          }
+          if (window['upscaler']) {
+            return window['upscaler'];
+          }
+
+          return wait(100).then(() => getUpscaler(times + 1));
+        }
+
+        return getUpscaler().then(upscaler => {
+          return upscaler.upscale(window['flower']);
+        });
       });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
