@@ -2,10 +2,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
-import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/esm-esbuild/prepare';
-import { startServer } from '../lib/shared/server';
-import { buildUpscalerJS } from '../lib/utils/buildUpscalerJS';
+import { checkImage } from '../../lib/utils/checkImage';
+import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { startServer } from '../../lib/shared/server';
+import { buildUpscalerJS } from '../../lib/utils/buildUpscalerJS';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,

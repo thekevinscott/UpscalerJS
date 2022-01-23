@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import webdriver from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
-import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/esm-esbuild/prepare';
-import { startServer } from '../lib/shared/server';
-import { buildUpscalerJS } from '../lib/utils/buildUpscalerJS';
+import { checkImage } from '../../lib/utils/checkImage';
+import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { startServer } from '../../lib/shared/server';
+import { buildUpscalerJS } from '../../lib/utils/buildUpscalerJS';
 
 const TRACK_TIME = true;
 const PORT = 8099;

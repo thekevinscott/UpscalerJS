@@ -1,10 +1,10 @@
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
-import { checkImage } from '../lib/utils/checkImage';
-import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../lib/umd/prepare';
-import { startServer } from '../lib/shared/server';
-import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/esm-webpack/prepare';
-import { buildUpscalerJS } from '../lib/utils/buildUpscalerJS';
+import { checkImage } from '../../lib/utils/checkImage';
+import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
+import { startServer } from '../../lib/shared/server';
+import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
+import { buildUpscalerJS } from '../../lib/utils/buildUpscalerJS';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
