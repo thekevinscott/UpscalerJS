@@ -157,8 +157,9 @@ describe('Browser Tests', () => {
           await wait(100);
           return getUpscaler();
         }
-        const upscaler = await getUpscaler();
-        return upscaler.upscale(window['flower']);
+        return getUpscaler().then(upscaler => {
+          return upscaler.upscale(window['flower']);
+        });
       });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
