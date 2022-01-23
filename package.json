@@ -1,5 +1,5 @@
 {
-  "version": "0.8.17",
+  "version": "0.9.0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -26,10 +26,11 @@
     ]
   },
   "scripts": {
-    "example": "node ./scripts/example.js",
+    "example": "node ./scripts/start_example.js",
+    "update:examples": "node ./scripts/update_examples.js",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
-    "push": "yarn lerna publish",
+    "push": "yarn lerna publish from-package",
     "push_old": "yarn lerna publish --conventional-commits --create-release=github",
     "pin-cdn": "node scripts/pin-cdn.js && yarn commit-latest-version-changes",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
