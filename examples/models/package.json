@@ -4,7 +4,7 @@
   "main": "index.js",
   "private": true,
   "dependencies": {
-    "@tensorflow/tfjs": "2.8.6",
+    "@tensorflow/tfjs": "^3.13.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^4.0.2",
@@ -31,5 +31,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "0.9.0"
+  "version": "^0.9.0"
 }
