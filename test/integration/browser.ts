@@ -139,6 +139,8 @@ describe('Browser Tests', () => {
       // const result2 = await driver.executeScript(() => new Promise(resolve => resolve('bar')));
       // expect(result2).toEqual('bar');
       const result = await driver.executeScript(() => {
+        const TIMEOUT = 5000;
+        const start = (new Date()).getTime()
         // const log = msg => {
         //   const p = document.createElement('p');
         //   p.innerHTML = msg;
@@ -150,15 +152,16 @@ describe('Browser Tests', () => {
         function wait (dur) {
           return new Promise(resolve => setTimeout(resolve, dur));
         }
-        function getUpscaler(times = 0) {
-          if (times > 20) {
+        function getUpscaler() {
+          const now = (new Date()).getTime()
+          if (now - start > TIMEOUT) {
             throw new Error('upscaler was not defined on window.')
           }
           if (window['upscaler']) {
             return window['upscaler'];
           }
 
-          return wait(100).then(() => getUpscaler(times + 1));
+          return wait(100).then(() => getUpscaler());
         }
 
         return getUpscaler().then(upscaler => {
