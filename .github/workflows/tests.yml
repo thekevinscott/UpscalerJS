@@ -53,7 +53,7 @@ jobs:
         run: yarn test:integration:browser --ci
 
 
-  integration-nod:
+  integration-node:
     name: 'Tests: Integration / Node'
     runs-on: ubuntu-latest
     steps:
@@ -69,6 +69,11 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=8192
         run: yarn
+
+      - name: 'Installing Node-specific deps'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: cd test/lib/node && yarn
 
       - name: 'Integration Tests'
         run: yarn test:integration:node --ci
