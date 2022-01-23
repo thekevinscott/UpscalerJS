@@ -5,6 +5,7 @@ import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
+import { buildUpscalerJS } from '../lib/utils/buildUpscalerJS';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -45,6 +46,7 @@ describe('Upscale', () => {
 
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
+    buildUpscalerJS('browser');
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);

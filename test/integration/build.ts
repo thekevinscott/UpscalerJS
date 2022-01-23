@@ -1,12 +1,10 @@
-import * as path from 'path';
-import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../lib/utils/checkImage';
 import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../lib/umd/prepare';
 import { startServer } from '../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/esm-webpack/prepare';
-import { prepareNodeDeps, prepareScriptBundleForCJS, executeNodeScript } from '../lib/cjs/prepare';
+import { buildUpscalerJS } from '../lib/utils/buildUpscalerJS';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -36,8 +34,6 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-type StartServerWrapper = () => Promise<void>;
-
 describe('Builds', () => {
   let server;
   let bsLocal;
@@ -47,6 +43,7 @@ describe('Builds', () => {
 
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
+    buildUpscalerJS('browser');
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);

@@ -3,7 +3,8 @@
   "version": "0.8.27",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
-    "./node": "./dist/cjs/cjs.js"
+    "./node": "./dist/cjs/cjs.js",
+    ".": "./dist/esm/index.js"
   },
   "engines": {
     "node": ">=0.13"
@@ -31,7 +32,7 @@
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
 
-    "build:browser": "yarn set:tfjs '@tensorflow/tfjs' yarn lerna run build:umd && yarn lerna run build:esm",
+    "build:browser": "yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm",
     "build:node": "yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs",
     "build:node-gpu": "yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs",
 

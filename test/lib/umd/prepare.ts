@@ -17,9 +17,9 @@ export const prepareScriptBundleForUMD = async () => {
   //   cwd: UPSCALER_PATH,
   // });
 
-  await callExec('yarn build:umd', {
-    cwd: UPSCALER_PATH,
-  });
+  // await callExec('yarn build:browser', {
+  //   cwd: UPSCALER_PATH,
+  // });
 
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   copyFixtures(DIST);
