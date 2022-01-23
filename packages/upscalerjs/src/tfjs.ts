@@ -1,1 +1,1 @@
-export * from '@tensorflow/tfjs';
+export * from '@tensorflow/tfjs-node';

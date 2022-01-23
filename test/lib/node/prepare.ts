@@ -11,41 +11,20 @@ const SRC = path.join(ROOT, '/src');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
-// const updateTFJSVersion = () => {
-//   const packageJSONPath = path.join(__dirname, 'package.json');
-//   const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
-//   packageJSON.dependencies['@tensorflow/tfjs-node'] = getTFJSVersion();
-//   fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-// }
-
-// export const prepareNodeDeps = async () => {
-//   updateTFJSVersion();
-//   await callExec('yarn install --frozen-lockfile', {
-//     cwd: ROOT,
-//   });
-// }
-
 export const prepareScriptBundleForCJS = async () => {
   rimraf.sync(`${NODE_MODULES}/upscaler`);
-
-  // await callExec('yarn build:node', {
-  //   cwd: UPSCALER_PATH,
-  // });
 
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/upscaler`, {
     cwd: UPSCALER_PATH,
   });
 };
 
-export const executeNodeScript = async () => {
+export const executeNodeScript = async (scriptPath: string, args: string = '') => {
   await callExec('yarn', {
     cwd: ROOT,
   });
-  // copyFixtures(DIST);
-  // fs.copyFileSync(path.join(SRC, 'index.js'), path.join(DIST, 'index.js'))
-  // fs.copyFileSync(path.join(SRC, 'base64ArrayBuffer.js'), path.join(DIST, 'base64ArrayBuffer.js'))
   let data = '';
-  await callExec(`node ${SRC}/index.js`, {
+  await callExec(`node "${scriptPath}" ${args}`, {
     cwd: ROOT
   }, chunk => {
     data += chunk;

@@ -47,7 +47,7 @@
     "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration/browser --config test/jestconfig.json --detectOpenHandles",
-    "test:integration:node": "jest test/integration/node --config test/jestconfig.json --detectOpenHandles",
+    "test:integration:node": "jest test/integration/node/node.ts --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "ts-node test/lib/startServer.ts"
   },
   "repository": {
