@@ -147,7 +147,9 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        return window['upscaler'].upscale(window['flower']);
+        const data = window['upscaler'].upscale(window['flower']);
+        document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
+        return data;
       });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
