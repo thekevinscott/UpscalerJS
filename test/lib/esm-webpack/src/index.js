@@ -5,3 +5,4 @@ window.tfjs = tfjs;
 window.flower = flower;
 window.Upscaler = Upscaler;
 document.title = `${document.title} | Loaded`;
+document.body.querySelector('#output').innerHTML = `${document.title}`;
