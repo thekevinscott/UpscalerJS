@@ -41,6 +41,7 @@
     "build:cjs": "yarn lerna run build:cjs",
     "build:umd": "yarn lerna run build:umd",
     "build:esm": "yarn lerna run build:esm",
+    "watch:esm": "yarn lerna run watch:esm",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",

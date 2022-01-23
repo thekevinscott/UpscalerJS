@@ -8,3 +8,4 @@ window.upscaler = new Upscaler({
   scale: 4,
 });
 document.title = `${document.title} | Loaded`;
+document.body.querySelector('#output').innerHTML = `${document.title}`;
