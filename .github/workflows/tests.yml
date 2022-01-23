@@ -49,10 +49,26 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
         run: yarn
 
-      - name: 'Building'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn workspace upscaler build
-
       - name: 'Integration Tests'
         run: yarn test:integration:browser --ci
+
+
+  integration-nod:
+    name: 'Tests: Integration / Node'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn
+
+      - name: 'Integration Tests'
+        run: yarn test:integration:node --ci
