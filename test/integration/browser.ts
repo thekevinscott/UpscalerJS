@@ -139,8 +139,6 @@ describe('Browser Tests', () => {
       // const result2 = await driver.executeScript(() => new Promise(resolve => resolve('bar')));
       // expect(result2).toEqual('bar');
       const result = await driver.executeScript(() => {
-        const TIMEOUT = 2000;
-        const start = (new Date()).getTime()
         // const log = msg => {
         //   const p = document.createElement('p');
         //   p.innerHTML = msg;
@@ -149,24 +147,7 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        function wait (dur) {
-          return new Promise(resolve => setTimeout(resolve, dur));
-        }
-        function getUpscaler() {
-          const now = (new Date()).getTime()
-          if (now - start > TIMEOUT) {
-            throw new Error('upscaler was not defined on window.')
-          }
-          if (window['upscaler']) {
-            return window['upscaler'];
-          }
-
-          return wait(100).then(() => getUpscaler());
-        }
-
-        return getUpscaler().then(upscaler => {
-          return upscaler.upscale(window['flower']);
-        });
+        return window['upscaler'].upscale(window['flower']);
       });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
