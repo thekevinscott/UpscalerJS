@@ -1,20 +1,28 @@
 /*****
+ * Updates the root package JSON version
+ * Updates the packages/upscalerjs version
  * Updates the upscaler dependencies in each examples folder to the current version
  */
 const fs = require('fs');
 const path = require('path');
 
+const requestedVersion = process.argv.pop();
+
+if (!requestedVersion) {
+  throw new Error('No version provided.');
+}
+
 const ROOT = path.resolve(__dirname, '..');
 
 const ROOT_PACKAGE = require(path.resolve(ROOT, 'package.json'));
 const UPSCALERJS_PACKAGE = require(path.resolve(ROOT, 'packages/upscalerjs/package.json'));
-const MODELS_PACKAGE = require(path.resolve(ROOT, 'packages/models/package.json'));
 
 const peerDependencies = ROOT_PACKAGE['peerDependencies'];
-const upscalerVersion = UPSCALERJS_PACKAGE['version'];
-const modelsVersion = MODELS_PACKAGE['version'];
+const currentUpscalerVersion = UPSCALERJS_PACKAGE['version'];
 
-console.log(`Pinning version ${modelsVersion} in CDN definition`);
+if (parseFloat(currentUpscalerVersion) > requestedVersion) {
+  throw new Error(`Version requested ${requestedVersion} is less than current upscaler version ${currentUpscalerVersion}. Please specify an equal or higher version.`);
+}
 
 const updatePackageJSON = (packagePath, version, callback) => {
   const package = require(packagePath);
@@ -26,20 +34,23 @@ const updatePackageJSON = (packagePath, version, callback) => {
   console.log(`Wrote file ${packagePath}`);
 }
 
+updatePackageJSON(path.resolve(ROOT, 'packages/upscalerjs/package.json'), requestedVersion);
+updatePackageJSON(path.resolve(ROOT, 'package.json'), requestedVersion);
+
 const examplesPath = path.resolve(ROOT, 'examples');
 const examples = fs.readdirSync(examplesPath)
 examples.forEach(example => {
   const dirPath = path.resolve(examplesPath, example);
   if (fs.lstatSync(dirPath).isDirectory()) {
     const examplePackagePath = path.resolve(dirPath, 'package.json');
-    updatePackageJSON(examplePackagePath, upscalerVersion, package => {
+    updatePackageJSON(examplePackagePath, requestedVersion, package => {
       if (!package.dependencies) {
         package.dependencies = {};
       }
-      package.dependencies.upscaler = upscalerVersion;
+      package.dependencies.upscaler = requestedVersion;
       
       package.dependencies['@tensorflow/tfjs'] = peerDependencies['@tensorflow/tfjs'];
-      package.version = UPSCALERJS_PACKAGE.version;
     });
   }
 });
+
