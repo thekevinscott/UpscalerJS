@@ -58,7 +58,7 @@
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
-    "@tensorflow/tfjs": "2.8.6"
+    "@tensorflow/tfjs": "^3.13.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
