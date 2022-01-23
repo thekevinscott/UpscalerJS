@@ -47,6 +47,7 @@
     "set:tfjs": "node ../../scripts/set-tfjs.ts",
 
     "docs:serve": "docsify serve docs --port 3030",
+    "postinstall": "yarn set:tfjs '@tensorflow/tfjs'",
     "prepare": "yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
