@@ -28,7 +28,7 @@ const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 export const prepareScriptBundleForCJS = async () => {
   rimraf.sync(`${NODE_MODULES}/upscaler`);
 
-  await callExec('yarn build:cjs', {
+  await callExec('yarn build:node', {
     cwd: UPSCALER_PATH,
   });
 

@@ -23,8 +23,7 @@ const upscaleImageToUInt8Array = async (filename, progress) => {
 const main = async () => {
   const tensor = await upscaleImageToUInt8Array(IMG);
   const upscaledImage = await tf.node.encodePng(tensor)
-  const data = base64ArrayBuffer(upscaledImage);
-  return data;
+  return base64ArrayBuffer(upscaledImage);
 }
 
 (async () => {
