@@ -20,9 +20,7 @@ const UPSCALERJS_PACKAGE = require(path.resolve(ROOT, 'packages/upscalerjs/packa
 const peerDependencies = ROOT_PACKAGE['peerDependencies'];
 const currentUpscalerVersion = UPSCALERJS_PACKAGE['version'];
 
-if (parseFloat(currentUpscalerVersion) > requestedVersion) {
-  throw new Error(`Version requested ${requestedVersion} is less than current upscaler version ${currentUpscalerVersion}. Please specify an equal or higher version.`);
-}
+console.log(`Requested to upgrade version to ${requestedVersion}, current version is ${currentUpscalerVersion}`)
 
 const updatePackageJSON = (packagePath, version, callback) => {
   const package = require(packagePath);
