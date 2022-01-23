@@ -17,7 +17,7 @@ const ROOT = path.resolve(__dirname, '..');
 const ROOT_PACKAGE = require(path.resolve(ROOT, 'package.json'));
 const UPSCALERJS_PACKAGE = require(path.resolve(ROOT, 'packages/upscalerjs/package.json'));
 
-const peerDependencies = ROOT_PACKAGE['peerDependencies'];
+const peerDependencies = UPSCALERJS_PACKAGE['peerDependencies'];
 const currentUpscalerVersion = UPSCALERJS_PACKAGE['version'];
 
 console.log(`Requested to upgrade version to ${requestedVersion}, current version is ${currentUpscalerVersion}`)
@@ -32,8 +32,8 @@ const updatePackageJSON = (packagePath, version, callback) => {
   console.log(`Wrote file ${packagePath}`);
 }
 
-updatePackageJSON(path.resolve(ROOT, 'packages/upscalerjs/package.json'), requestedVersion);
-updatePackageJSON(path.resolve(ROOT, 'package.json'), requestedVersion);
+// updatePackageJSON(path.resolve(ROOT, 'packages/upscalerjs/package.json'), requestedVersion);
+// updatePackageJSON(path.resolve(ROOT, 'package.json'), requestedVersion);
 
 const examplesPath = path.resolve(ROOT, 'examples');
 const examples = fs.readdirSync(examplesPath)
