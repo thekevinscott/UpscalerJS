@@ -139,7 +139,7 @@ describe('Browser Tests', () => {
       // const result2 = await driver.executeScript(() => new Promise(resolve => resolve('bar')));
       // expect(result2).toEqual('bar');
       const result = await driver.executeScript(() => {
-        const TIMEOUT = 5000;
+        const TIMEOUT = 2000;
         const start = (new Date()).getTime()
         // const log = msg => {
         //   const p = document.createElement('p');
