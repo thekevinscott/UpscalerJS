@@ -1,10 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import webdriver from 'selenium-webdriver';
+import webdriver, { logging, Capabilities } from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
 import { checkImage } from '../lib/utils/checkImage';
 import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
+
+const prefs = new logging.Preferences();
+prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+
+const caps = Capabilities.chrome();
+caps.setLoggingPrefs(prefs);
 
 const TRACK_TIME = true;
 const PORT = 8099;
@@ -151,6 +157,12 @@ describe('Browser Tests', () => {
         document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
         return data;
       });
+      driver.manage().logs().get(logging.Type.BROWSER)
+     .then(function(entries) {
+        entries.forEach(function(entry) {
+          console.log('LOG [%s] %s', entry.level.name, entry.message);
+        });
+     });
       // console.log(result);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
     });
