@@ -8,12 +8,12 @@ import { startServer } from '../../lib/shared/server';
 import { buildUpscalerJS } from '../../lib/utils/buildUpscalerJS';
 
 const prefs = new logging.Preferences();
-prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
 
 const caps = Capabilities.chrome();
 caps.setLoggingPrefs(prefs);
 
-const TRACK_TIME = true;
+const TRACK_TIME = false;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
 
@@ -162,7 +162,9 @@ describe('Browser Tests', () => {
       driver.manage().logs().get(logging.Type.BROWSER)
      .then(function(entries) {
         entries.forEach(function(entry) {
-          console.log('LOG [%s] %s', entry.level.name, entry.message);
+          if (!entry.message.includes('favicon')) {
+            console.log('LOG [%s] %s', entry.level.name, entry.message);
+          }
         });
      });
       // console.log(result);
