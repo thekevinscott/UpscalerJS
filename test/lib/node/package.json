@@ -1,7 +1,7 @@
 {
   "name": "node",
   "dependencies": {
-    "@tensorflow/tfjs-node": "2.8.6",
+    "@tensorflow/tfjs-node": "^3.13.0",
     "yargs": "^17.3.1"
   }
 }

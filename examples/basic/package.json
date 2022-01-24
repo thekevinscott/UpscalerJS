@@ -4,8 +4,7 @@
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
-    "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
+    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open"
   },
   "author": "Kevin Scott",
   "license": "MIT",
