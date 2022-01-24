@@ -25,7 +25,7 @@ const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
-jest.retryTimes(3);
+jest.retryTimes(1);
 
 const startBsLocal = (bsLocal) => new Promise(resolve => {
   bsLocal.start({
