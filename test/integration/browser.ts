@@ -7,7 +7,7 @@ import { bundle, DIST } from '../lib/esm-esbuild/prepare';
 import { startServer } from '../lib/shared/server';
 
 const prefs = new logging.Preferences();
-prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG);
+prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
 
 const caps = Capabilities.chrome();
 caps.setLoggingPrefs(prefs);
