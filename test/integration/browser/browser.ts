@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import webdriver, { logging, Capabilities } from 'selenium-webdriver';
 import browserstack from 'browserstack-local';
-import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/esm-esbuild/prepare';
-import { startServer } from '../lib/shared/server';
+import { checkImage } from '../../lib/utils/checkImage';
+import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { startServer } from '../../lib/shared/server';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);

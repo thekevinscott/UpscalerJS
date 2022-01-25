@@ -33,9 +33,6 @@ export const prepareScriptBundleForCJS = async () => {
   await callExec('yarn install --frozen-lockfile', {
     cwd: UPSCALER_PATH,
   });
-  await callExec('yarn build:cjs', {
-    cwd: UPSCALER_PATH,
-  });
 
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
     cwd: UPSCALER_PATH,
