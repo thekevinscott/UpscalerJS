@@ -2,9 +2,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
-import { checkImage } from '../lib/utils/checkImage';
-import { bundle, DIST } from '../lib/esm-esbuild/prepare';
-import { startServer } from '../lib/shared/server';
+import { checkImage } from '../../lib/utils/checkImage';
+import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { startServer } from '../../lib/shared/server';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -150,7 +150,7 @@ describe('Upscale', () => {
     });
 
     it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../__fixtures__", 'flower-small.png')).toString('base64');
+      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');

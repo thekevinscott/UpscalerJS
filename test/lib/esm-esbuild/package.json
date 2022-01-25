@@ -4,7 +4,7 @@
   "version": "0.8.23",
   "main": "index.js",
   "workspaceDependencies": {
-    "upscaler": "0.8.27"
+    "upscaler": "0.9.0"
   },
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",

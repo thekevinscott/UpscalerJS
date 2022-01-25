@@ -4,6 +4,7 @@ import * as esbuild from 'esbuild';
 import * as rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
+import callExec from '../utils/callExec';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');

@@ -1,12 +1,9 @@
-import * as path from 'path';
-import * as fs from 'fs';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
-import { checkImage } from '../lib/utils/checkImage';
-import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../lib/umd/prepare';
-import { startServer } from '../lib/shared/server';
-import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../lib/esm-webpack/prepare';
-import { prepareNodeDeps, prepareScriptBundleForCJS, executeNodeScript } from '../lib/cjs/prepare';
+import { checkImage } from '../../lib/utils/checkImage';
+import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
+import { startServer } from '../../lib/shared/server';
+import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -132,10 +129,4 @@ describe('Builds', () => {
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
-
-  // it("upscales using a CJS build in Node", async () => {
-  //     await prepareScriptBundleForCJS();
-  //   const result = await executeNodeScript();
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
-  // });
 });
