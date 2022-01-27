@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from './tfjs';
 import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
 import { getImageAsPixels } from './image';
 import tensorAsBase64 from 'tensor-as-base64';
