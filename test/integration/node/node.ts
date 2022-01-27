@@ -9,7 +9,7 @@ const FIXTURES = path.join(__dirname, '../../../__fixtures__');
 const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
 
 const execute = async (modelPath: string = '') => {
-  return await executeNodeScript(path.resolve(__dirname, './tests/upscale_image.js'), `${modelPath}`);
+  return await executeNodeScript(`${modelPath}`);
 }
 
 describe('Builds', () => {
