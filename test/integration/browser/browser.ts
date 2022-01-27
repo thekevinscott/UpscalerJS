@@ -5,7 +5,6 @@ import browserstack from 'browserstack-local';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import { buildUpscalerJS } from '../../lib/utils/buildUpscalerJS';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -66,7 +65,6 @@ describe('Browser Tests', () => {
 
   beforeAll(async function beforeAll(done) {
     const start = new Date().getTime();
-    buildUpscalerJS('browser');
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
       await startBsLocal(bsLocal);

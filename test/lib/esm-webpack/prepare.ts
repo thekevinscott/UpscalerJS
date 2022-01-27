@@ -19,10 +19,6 @@ export const prepareScriptBundleForESM = async () => {
   rimraf.sync(DIST);
   fs.mkdirSync(DIST, { recursive: true });
 
-  // await callExec('yarn build:esm', {
-  //   cwd: UPSCALER_PATH,
-  // });
-
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
     cwd: UPSCALER_PATH,
   });
