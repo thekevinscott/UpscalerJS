@@ -1,5 +1,5 @@
 {
-  "version": "0.8.27",
+  "version": "0.9.0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -65,9 +65,9 @@
     "@babel/preset-typescript": "^7.16.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
-    "@tensorflow/tfjs": "2.8.6",
-    "@tensorflow/tfjs-node": "2.8.6",
-    "@tensorflow/tfjs-node-gpu": "2.8.6",
+    "@tensorflow/tfjs": "^3.13.0",
+    "@tensorflow/tfjs-node": "^3.13.0",
+    "@tensorflow/tfjs-node-gpu": "^3.13.0",
     "@types/jest": "^26.0.7",
     "@types/pngjs": "^6.0.1",
     "@types/rimraf": "^3.0.2",
