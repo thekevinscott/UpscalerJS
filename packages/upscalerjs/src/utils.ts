@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from './tfjs';
 import { ROOT } from './constants';
 
 export const isString = (pixels: any): pixels is string => {

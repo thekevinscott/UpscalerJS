@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from './tfjs';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';
@@ -88,6 +88,7 @@ const loadModel = async (
     });
   }
   const model = await tf.loadLayersModel(modelDefinition.url);
+
   return {
     model,
     modelDefinition,
