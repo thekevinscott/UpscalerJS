@@ -3093,7 +3093,6 @@
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-layers/-/tfjs-layers-3.13.0.tgz#bc311664eba4f46802ffe3b05bea7df795cae10d"
   integrity sha512-kTWJ/+9fbNCMDA9iQjDMYHmWivsiWz8CKNSOZdeCW7tiBwF1EiREBVQXMk1JI11ngQa8f+rYSLs7rkhp3SYl5Q==
 
-<<<<<<< HEAD
 "@tensorflow/tfjs-node-gpu@^3.13.0":
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-node-gpu/-/tfjs-node-gpu-3.13.0.tgz#a3f0ec27f20c0aa772b01adcd02e7752a03808f7"
@@ -3123,9 +3122,6 @@
     tar "^4.4.6"
 
 "@tensorflow/tfjs@3.13.0", "@tensorflow/tfjs@^3.13.0":
-=======
-"@tensorflow/tfjs@^3.13.0":
->>>>>>> main
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs/-/tfjs-3.13.0.tgz#ea0597e0208d403278e2ccbaa5faa479083a04d3"
   integrity sha512-B5HvNH+6hHhQQkn+AG+u4j5sxZBMYdsq4IWXlBZzioJcVygtZhBWXkxp01boSwngjqUBgi8S2DopBE7McAUKqQ==
