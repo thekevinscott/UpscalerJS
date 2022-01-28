@@ -1,0 +1,31 @@
+{
+  "name": "basic",
+  "version": "0.9.0",
+  "description": "Demonstration of basic usage of UpscalerJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "parcel": "1.12.3"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.13.0",
+    "upscaler": "0.9.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
