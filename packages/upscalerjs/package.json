@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.9.0",
+  "version": "0.10.0-canary.0",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/cjs/cjs.js",
@@ -39,7 +39,7 @@
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
     "build:umd:tsc": "tsc --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
-    "build:umd:rollup": "npx rollup -c rollup.config.js --failAfterWarnings",
+    "build:umd:rollup": "yarn rollup -c rollup.config.js --failAfterWarnings",
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
