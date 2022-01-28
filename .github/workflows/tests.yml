@@ -53,3 +53,29 @@ jobs:
         run: yarn test:integration:browser --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
+
+
+  integration-node:
+    name: 'Tests: Integration / Node'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn
+
+      - name: 'Installing Node-specific deps'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: cd test/lib/node && yarn
+
+      - name: 'Integration Tests'
+        run: yarn test:integration:node --ci

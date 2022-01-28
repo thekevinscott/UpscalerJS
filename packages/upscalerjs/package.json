@@ -2,7 +2,13 @@
   "name": "upscaler",
   "version": "0.9.0",
   "description": "Increase Image resolution with Tensorflow.js",
-  "main": "dist/cjs/index.js",
+  "exports": {
+    "./node": "./dist/cjs/cjs.js",
+    ".": "./dist/esm/index.js"
+  },
+  "engines": {
+    "node": ">=0.13"
+  },
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "keywords": [
@@ -25,7 +31,11 @@
   ],
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
-    "build:browser": "yarn lerna run build:umd && yarn lerna run build:esm",
+
+    "build:browser": "yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm",
+    "build:node": "yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs",
+    "build:node-gpu": "yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs",
+
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
     "build:umd:tsc": "tsc --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
@@ -33,7 +43,11 @@
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
+
+    "set:tfjs": "node ../../scripts/set-tfjs.ts",
+
     "docs:serve": "docsify serve docs --port 3030",
+    "postinstall": "yarn set:tfjs '@tensorflow/tfjs'",
     "prepare": "yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",

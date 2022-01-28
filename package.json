@@ -43,9 +43,11 @@
     "build:esm": "yarn lerna run build:esm",
     "watch:esm": "yarn lerna run watch:esm",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
+    "set:tfjs": "yarn lerna run set:tfjs",
     "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration/browser --config test/jestconfig.json --detectOpenHandles",
+    "test:integration:node": "jest test/integration/node --config test/jestconfig.json --detectOpenHandles",
     "test:startTestServer": "ts-node test/lib/startServer.ts"
   },
   "repository": {
@@ -64,6 +66,8 @@
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@tensorflow/tfjs": "^3.13.0",
+    "@tensorflow/tfjs-node": "^3.13.0",
+    "@tensorflow/tfjs-node-gpu": "^3.13.0",
     "@types/jest": "^26.0.7",
     "@types/pngjs": "^6.0.1",
     "@types/rimraf": "^3.0.2",

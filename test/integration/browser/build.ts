@@ -33,8 +33,6 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-type StartServerWrapper = () => Promise<void>;
-
 describe('Builds', () => {
   let server;
   let bsLocal;

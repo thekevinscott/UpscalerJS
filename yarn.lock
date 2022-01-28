@@ -2622,6 +2622,21 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
+"@mapbox/node-pre-gyp@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.4.tgz#6c76e7a40138eac39e1a4dc869a083e43e236c00"
+  integrity sha512-M669Qo4nRT7iDmQEjQYC7RU8Z6dpz9UmSbkJ1OFEja3uevCdLKh7IZZki7L1TZj02kRyl82snXFY8QqkyfowrQ==
+  dependencies:
+    detect-libc "^1.0.3"
+    https-proxy-agent "^5.0.0"
+    make-dir "^3.1.0"
+    node-fetch "^2.6.1"
+    nopt "^5.0.0"
+    npmlog "^4.1.2"
+    rimraf "^3.0.2"
+    semver "^7.3.4"
+    tar "^6.1.0"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -3078,7 +3093,39 @@
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-layers/-/tfjs-layers-3.13.0.tgz#bc311664eba4f46802ffe3b05bea7df795cae10d"
   integrity sha512-kTWJ/+9fbNCMDA9iQjDMYHmWivsiWz8CKNSOZdeCW7tiBwF1EiREBVQXMk1JI11ngQa8f+rYSLs7rkhp3SYl5Q==
 
+<<<<<<< HEAD
+"@tensorflow/tfjs-node-gpu@^3.13.0":
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-node-gpu/-/tfjs-node-gpu-3.13.0.tgz#a3f0ec27f20c0aa772b01adcd02e7752a03808f7"
+  integrity sha512-iHiaM3RNjYzf3XsodCiDwPYHoavW88SfsTXZnSufV9WK5xd3Nuhpo0HkOy19l3kv9oRxMAREYmuLo1xfOgdcgA==
+  dependencies:
+    "@mapbox/node-pre-gyp" "1.0.4"
+    "@tensorflow/tfjs" "3.13.0"
+    adm-zip "^0.5.2"
+    google-protobuf "^3.9.2"
+    https-proxy-agent "^2.2.1"
+    progress "^2.0.0"
+    rimraf "^2.6.2"
+    tar "^4.4.6"
+
+"@tensorflow/tfjs-node@^3.13.0":
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/@tensorflow/tfjs-node/-/tfjs-node-3.13.0.tgz#cb5270efd171d8893654f7037bc308cba2912ef8"
+  integrity sha512-LYM3ck/TyipxMFD23moX9qC3F23UBC3zbiw85HTxZ9FPlE1QNLP1UNlfFGeUTnPvY6CUcvPyQsrG9fBTvtwB1A==
+  dependencies:
+    "@mapbox/node-pre-gyp" "1.0.4"
+    "@tensorflow/tfjs" "3.13.0"
+    adm-zip "^0.5.2"
+    google-protobuf "^3.9.2"
+    https-proxy-agent "^2.2.1"
+    progress "^2.0.0"
+    rimraf "^2.6.2"
+    tar "^4.4.6"
+
+"@tensorflow/tfjs@3.13.0", "@tensorflow/tfjs@^3.13.0":
+=======
 "@tensorflow/tfjs@^3.13.0":
+>>>>>>> main
   version "3.13.0"
   resolved "https://registry.yarnpkg.com/@tensorflow/tfjs/-/tfjs-3.13.0.tgz#ea0597e0208d403278e2ccbaa5faa479083a04d3"
   integrity sha512-B5HvNH+6hHhQQkn+AG+u4j5sxZBMYdsq4IWXlBZzioJcVygtZhBWXkxp01boSwngjqUBgi8S2DopBE7McAUKqQ==
@@ -3943,6 +3990,11 @@ adjust-sourcemap-loader@3.0.0:
   dependencies:
     loader-utils "^2.0.0"
     regex-parser "^2.2.11"
+
+adm-zip@^0.5.2:
+  version "0.5.9"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.5.9.tgz#b33691028333821c0cf95c31374c5462f2905a83"
+  integrity sha512-s+3fXLkeeLjZ2kLjCBwQufpI5fuN+kIGBxu6530nVQZGVol0d7Y/M88/xw9HGGUcJjKf8LutN3VPRUBq6N7Ajg==
 
 agent-base@4, agent-base@^4.3.0:
   version "4.3.0"
@@ -6683,6 +6735,11 @@ detect-indent@^5.0.0:
   resolved "https://registry.yarnpkg.com/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
   integrity sha1-OHHMCmoALow+Wzz38zYmRnXwa50=
 
+detect-libc@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
+  integrity sha1-+hN8S9aY7fVc1c0CrFWfkaTEups=
+
 detect-newline@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
@@ -8588,6 +8645,11 @@ globby@^9.2.0:
     pify "^4.0.1"
     slash "^2.0.0"
 
+google-protobuf@^3.9.2:
+  version "3.19.3"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.19.3.tgz#2d5fb0c77584d675fca509a1fbc80c64fff471c9"
+  integrity sha512-3GRDj8o9XjcALYjgxNKeD7Wm6w/V8r1Jo4sLYMic9+VaIMLBx8TQeHP9yaoRoDymNONhnkmmveDPyjw/Fpw8+A==
+
 got@^9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
@@ -9180,7 +9242,7 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
-https-proxy-agent@^2.2.3:
+https-proxy-agent@^2.2.1, https-proxy-agent@^2.2.3:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-2.2.4.tgz#4ee7a737abd92678a293d9b34a1af4d0d08c787b"
   integrity sha512-OmvfoQ53WLjtA9HeYP9RNrWMJzzAz1JGaSFr1nijg0PVR1JaD/xbJq1mdEIIlxGpXp9eSe/O2LgU9DJmTPd0Eg==
@@ -11169,7 +11231,7 @@ make-dir@^2.0.0, make-dir@^2.1.0:
     pify "^4.0.1"
     semver "^5.6.0"
 
-make-dir@^3.0.0, make-dir@^3.0.2:
+make-dir@^3.0.0, make-dir@^3.0.2, make-dir@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-3.1.0.tgz#415e967046b3a7f1d185277d84aa58203726a13f"
   integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
@@ -16112,7 +16174,7 @@ tapable@^2.0.0, tapable@^2.1.1, tapable@^2.2.0:
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-2.2.1.tgz#1967a73ef4060a82f12ab96af86d52fdb76eeca0"
   integrity sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==
 
-tar@^4.4.10, tar@^4.4.12, tar@^4.4.8:
+tar@^4.4.10, tar@^4.4.12, tar@^4.4.6, tar@^4.4.8:
   version "4.4.19"
   resolved "https://registry.yarnpkg.com/tar/-/tar-4.4.19.tgz#2e4d7263df26f2b914dee10c825ab132123742f3"
   integrity sha512-a20gEsvHnWe0ygBY8JbxoM4w3SJdhc7ZAuxkLqh+nvNQN2IOt0B5lLgM490X5Hl8FF0dl0tOf2ewFYAlIFgzVA==
@@ -16125,7 +16187,7 @@ tar@^4.4.10, tar@^4.4.12, tar@^4.4.8:
     safe-buffer "^5.2.1"
     yallist "^3.1.1"
 
-tar@^6.0.2:
+tar@^6.0.2, tar@^6.1.0:
   version "6.1.11"
   resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.11.tgz#6760a38f003afa1b2ffd0ffe9e9abbd0eab3d621"
   integrity sha512-an/KZQzQUkZCkuoAA64hM92X0Urb6VpRhAFllDzz44U2mcD5scmT3zBc4VgVpkugF580+DQn8eAFSyoQt0tznA==
