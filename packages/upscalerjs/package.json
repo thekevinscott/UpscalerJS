@@ -47,8 +47,7 @@
     "set:tfjs": "node ../../scripts/set-tfjs.ts",
 
     "docs:serve": "docsify serve docs --port 3030",
-    "postinstall": "yarn set:tfjs '@tensorflow/tfjs'",
-    "prepare": "yarn build",
+    "prepare": "yarn set:tfjs '@tensorflow/tfjs' && yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
