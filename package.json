@@ -1,5 +1,5 @@
 {
-  "version": "0.9.0",
+  "version": "0.10.0-canary.0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -87,7 +87,7 @@
     "pngjs": "^6.0.0",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.63.0",
+    "rollup": "^2.66.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "selenium-webdriver": "^4.0.0-beta.1",
