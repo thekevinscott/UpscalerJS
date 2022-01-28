@@ -9,11 +9,11 @@
     "start": "nodemon src/index.js localhost 8080"
   },
   "dependencies": {
-    "@tensorflow/tfjs-gpu": "^3.13.0",
+    "@tensorflow/tfjs-node": "^3.13.0",
     "upscaler": "0.10.0-canary.0",
     "express": "4.16.4"
   },
   "devDependencies": {
     "nodemon": "1.18.4"
-  },
+  }
 }
