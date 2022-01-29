@@ -15,16 +15,6 @@ app.get("/", async (req, res) => {
 
 app.listen(8080);
 
-// Returns a PNG-encoded UInt8Array
-const upscaleImageToUInt8Array = async (image) => {
-  const upscaler = new Upscaler();
-  return await upscaler.upscale(image, {
-    output: 'tensor',
-    patchSize: 64,
-    padding: 6
-  });
-}
-
 const getUpscaledImage = async () => {
   const file = fs.readFileSync(path.resolve(__dirname, './flower-small.png'));
   const image = tf.node.decodeImage(file, 3);
