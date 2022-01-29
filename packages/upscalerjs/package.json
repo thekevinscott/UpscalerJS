@@ -61,7 +61,7 @@
     "watch:cjs": "chokidar \"src\" -c \"yarn build:cjs\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:browser": "chokidar \"src\" -c \"yarn build:browser\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:node": "chokidar \"src\" -c \"yarn build:node\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:node-gpu": "chokidar \"src\" -c \"yarn build:node-gpu\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:node-gpu": "chokidar \"src\" -c \"yarn build:node-gpu\" -i \"test.ts\" -i \"generated.ts\""
   },
   "repository": {
     "type": "git",
