@@ -15191,10 +15191,10 @@ rollup@^1.31.1:
     "@types/node" "*"
     acorn "^7.1.0"
 
-rollup@^2.63.0:
-  version "2.63.0"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.63.0.tgz#fe2f7fec2133f3fab9e022b9ac245628d817c6bb"
-  integrity sha512-nps0idjmD+NXl6OREfyYXMn/dar3WGcyKn+KBzPdaLecub3x/LrId0wUcthcr8oZUAcZAR8NKcfGGFlNgGL1kQ==
+rollup@^2.66.1:
+  version "2.66.1"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.66.1.tgz#366b0404de353c4331d538c3ad2963934fcb4937"
+  integrity sha512-crSgLhSkLMnKr4s9iZ/1qJCplgAgrRY+igWv8KhG/AjKOJ0YX/WpmANyn8oxrw+zenF3BXWDLa7Xl/QZISH+7w==
   optionalDependencies:
     fsevents "~2.3.2"
 
@@ -17348,6 +17348,13 @@ upscaler@0.10.0-canary.1:
   version "0.10.0-canary.1"
   resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.10.0-canary.1.tgz#3c6f97ef1832d23c1b04e9e95fda027fe3dd03f3"
   integrity sha512-t2cdjXSP3mMe9BUA4mYCl8YzSeMIvARl2JHacBlWmGE2oEkinSFVZRREGEVB8F9QCC6aMiSLoPbQt+BAUcyQJA==
+  dependencies:
+    tensor-as-base64 "^0.1.1"
+
+upscaler@0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.9.0.tgz#e60976eb6f2181de9ce72fb1557c7472550227e5"
+  integrity sha512-FkiuNICQr5Z2hi62APmANndwsIMH16PTtHYPPx8yZ9XHsMUAiC1TArD/7+RWwnWz22Sw+plL3RjohPxH92KI6Q==
   dependencies:
     tensor-as-base64 "^0.1.1"
 
