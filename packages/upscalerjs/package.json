@@ -54,11 +54,11 @@
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
 
-    "watch": "watch 'yarn build' ./src",
-    "watch:esm": "watch 'yarn build:esm' ./src",
-    "watch:umd": "watch 'yarn build:umd' ./src",
-    "watch:cjs": "watch 'yarn build:cjs' ./src",
-    "watch:browser": "watch 'yarn build:browser' ./src",
+    "watch": "watch 'yarn build'  --filter=../../scripts/watch-filter.js",
+    "watch:esm": "watch 'yarn build:esm'  --filter=../../scripts/watch-filter.js",
+    "watch:umd": "watch 'yarn build:umd'  --filter=../../scripts/watch-filter.js",
+    "watch:cjs": "watch 'yarn build:cjs'  --filter=../../scripts/watch-filter.js",
+    "watch:browser": "watch 'yarn build:browser'  --filter=../../scripts/watch-filter.js",
     "watch:node": "watch 'yarn build:node' --filter=../../scripts/watch-filter.js"
   },
   "repository": {

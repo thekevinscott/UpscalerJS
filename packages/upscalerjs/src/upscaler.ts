@@ -17,7 +17,6 @@ class Upscaler {
   }>;
 
   constructor(opts: IUpscalerOptions = {}) {
-    console.log('I AM THE UPSCALER constructor');
     this._opts = {
       ...opts,
     };
