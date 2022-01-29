@@ -54,7 +54,12 @@ class PixelShuffle extends tf.layers.Layer {
 const config: IIntermediaryModelDefinition = {
   urlPath: 'idealo/gans',
   scale: 4,
-  preprocess: (image) => tf.mul(image, 1 / 255),
+  preprocess: (image) => {
+    console.log('preproces divide!');
+    const res = tf.mul(image, 1 / 255) as tf.Tensor4D;
+    console.log('preproces post divide!');
+    return res
+  },
   postprocess: (output: tf.Tensor3D) => tf.mul(output.clipByValue(0, 1), 255),
   customLayers: [MultiplyBeta, PixelShuffle],
 };

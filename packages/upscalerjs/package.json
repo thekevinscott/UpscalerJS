@@ -60,7 +60,7 @@
     "watch:umd": "watch 'yarn build:umd' ./src",
     "watch:cjs": "watch 'yarn build:cjs' ./src",
     "watch:browser": "watch 'yarn build:browser' ./src",
-    "watch:node": "watch 'yarn build:node' ./src"
+    "watch:node": "watch 'yarn build:node' --filter=../../scripts/watch-filter.js"
   },
   "repository": {
     "type": "git",
