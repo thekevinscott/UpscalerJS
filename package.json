@@ -26,7 +26,7 @@
     ]
   },
   "scripts": {
-    "example": "node ./scripts/start_example.js",
+    "example": "node ./scripts/start-example.js",
     "update:version": "node ./scripts/version.js",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
