@@ -45,7 +45,7 @@ const getPlatform = () => {
   } else if (deps.includes('@tensorflow/tfjs-node')) {
     return 'node';
   } else if (deps.includes('@tensorflow/tfjs-node-gpu')) {
-    return 'node';
+    return 'node-gpu';
   }
 
   throw new Error('Could not determine valid TFJS dependency in example package.json')
