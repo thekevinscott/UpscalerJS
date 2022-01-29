@@ -53,7 +53,13 @@
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
-    "watch:esm": "watch 'yarn build:esm' ./src"
+
+    "watch": "watch 'yarn build'  --filter=../../scripts/watch-filter.js",
+    "watch:esm": "watch 'yarn build:esm'  --filter=../../scripts/watch-filter.js",
+    "watch:umd": "watch 'yarn build:umd'  --filter=../../scripts/watch-filter.js",
+    "watch:cjs": "watch 'yarn build:cjs'  --filter=../../scripts/watch-filter.js",
+    "watch:browser": "watch 'yarn build:browser'  --filter=../../scripts/watch-filter.js",
+    "watch:node": "watch 'yarn build:node' --filter=../../scripts/watch-filter.js"
   },
   "repository": {
     "type": "git",

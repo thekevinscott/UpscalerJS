@@ -1,4 +1,4 @@
-import * as tf from './tfjs';
+import * as tf from './tfjs.generated';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';

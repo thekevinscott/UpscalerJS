@@ -30,13 +30,27 @@ const runProcess = (command, args, name) => {
   });
 }
 
+const getPlatform = () => {
+  const deps = Object.keys(packageJSON.dependencies);
+  if (deps.includes('@tensorflow/tfjs')) {
+    return 'browser';
+  } else if (deps.includes('@tensorflow/tfjs-node')) {
+    return 'node';
+  } else if (deps.includes('@tensorflow/tfjs-node-gpu')) {
+    return 'node';
+  }
+
+  throw new Error('Could not determine valid TFJS dependency in example package.json')
+}
+
 // get package name from directory
 const packageJSON = JSON.parse(fs.readFileSync(`./examples/${exampleDirectory}/package.json`, 'utf8'));
 const exampleName = packageJSON.name;
+const platform = getPlatform();
 
 const main = () => {
   runProcess('yarn', ['workspace', exampleName, 'start'], 'example');
-  runProcess('yarn', ['workspace', 'upscaler', 'watch:esm'], 'upscaler');
+  runProcess('yarn', ['workspace', 'upscaler', `watch:${platform}`], 'upscaler');
 };
 
 main();

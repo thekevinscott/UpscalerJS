@@ -1,4 +1,4 @@
-import * as tf from './tfjs';
+import * as tf from './tfjs.generated';
 import { WarmupSizes, IModelDefinition, WarmupSizesByPatchSize } from './types';
 
 const isWarmupSizeByPatchSize = (
