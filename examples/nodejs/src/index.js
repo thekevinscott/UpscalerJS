@@ -1,32 +1,41 @@
-// import Upscaler from 'upscaler';
-// import img from './flower.png';
-// const target = document.getElementById('target');
-// const button = document.getElementById('button');
-// const info = document.getElementById('info');
-
-// const upscaler = new Upscaler({
-//   model: 'div2k/rdn-C3-D10-G64-G064-x2',
-// });
-// button.onclick = () => {
-//   info.innerText = 'Upscaling...';
-//   const start = new Date().getTime();
-//   upscaler.upscale(img).then((upscaledImgSrc) => {
-//     const img = document.createElement('img');
-//     img.src = upscaledImgSrc;
-//     target.innerHTML = '';
-//     target.appendChild(img);
-//     const ms = new Date().getTime() - start;
-//     info.innerText = `Upscaled in ${ms} ms`;
-//   });
-// };
-
-
 const express = require("express");
+const path = require('path');
+const fs = require('fs');
+const Upscaler = require('upscaler/node');
+const tf = require('@tensorflow/tfjs-node');
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("hello");
+app.get("/", async (req, res) => {
+  const upscaledImage = await getUpscaledImage();
+  res.set('Content-Type', 'image/png');
+  res.write(upscaledImage, 'binary');
+  res.end(null, 'binary');
 });
 
 app.listen(8080);
+
+// Returns a PNG-encoded UInt8Array
+const upscaleImageToUInt8Array = async (image) => {
+  const upscaler = new Upscaler();
+  return await upscaler.upscale(image, {
+    output: 'tensor',
+    patchSize: 64,
+    padding: 6
+  });
+}
+
+const getUpscaledImage = async () => {
+  const file = fs.readFileSync(path.resolve(__dirname, './flower-small.png'));
+  const image = tf.node.decodeImage(file, 3);
+  const upscaler = new Upscaler();
+  const tensor = await upscaler.upscale(image, {
+    output: 'tensor',
+    patchSize: 64,
+    padding: 6
+  });
+  image.dispose();
+  const upscaledTensor = await tf.node.encodePng(tensor);
+  tensor.dispose();
+  return upscaledTensor;
+}
