@@ -3,14 +3,15 @@
   "version": "0.10.0-canary.1",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
-    "./node": "./dist/cjs/cjs.js",
-    ".": "./dist/esm/index.js"
+    "./node": "./dist/node/cjs/cjs.js",
+    "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
+    ".": "./dist/browser/index.js"
   },
   "engines": {
     "node": ">=0.13"
   },
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
+  "module": "dist/browser/index.js",
+  "types": "dist/browser/index.d.ts",
   "keywords": [
     "super resolution",
     "image",
@@ -32,9 +33,9 @@
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
 
-    "build:browser": "yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm",
-    "build:node": "yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs",
-    "build:node-gpu": "yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs",
+    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
+    "build:node": "rimraf dist/node && mkdir -p dist/node && yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs && mv dist/cjs dist/node/cjs",
+    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
 
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
@@ -54,12 +55,13 @@
     "lint": "echo 'Linting code' && tslint -p tsconfig.json",
     "test": "jest --config jestconfig.json",
 
-    "watch": "watch 'yarn build'  --filter=../../scripts/watch-filter.js",
-    "watch:esm": "watch 'yarn build:esm'  --filter=../../scripts/watch-filter.js",
-    "watch:umd": "watch 'yarn build:umd'  --filter=../../scripts/watch-filter.js",
-    "watch:cjs": "watch 'yarn build:cjs'  --filter=../../scripts/watch-filter.js",
-    "watch:browser": "watch 'yarn build:browser'  --filter=../../scripts/watch-filter.js",
-    "watch:node": "watch 'yarn build:node' --filter=../../scripts/watch-filter.js"
+    "watch": "chokidar \"src\" -c \"yarn build\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:esm": "chokidar \"src\" -c \"yarn build:esm\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:umd": "chokidar \"src\" -c \"yarn build:umd\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:cjs": "chokidar \"src\" -c \"yarn build:cjs\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:browser": "chokidar \"src\" -c \"yarn build:browser\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:node": "chokidar \"src\" -c \"yarn build:node\" -i \"test.ts\" -i \"generated.ts\"",
+    "watch:node-gpu": "chokidar \"src\" -c \"yarn build:node-gpu\" -i \"test.ts\" -i \"generated.ts\"",
   },
   "repository": {
     "type": "git",
