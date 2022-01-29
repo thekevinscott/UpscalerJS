@@ -26,7 +26,7 @@
     ]
   },
   "scripts": {
-    "example": "node ./scripts/start_example.js",
+    "example": "node ./scripts/start-example.js",
     "update:version": "node ./scripts/version.js",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
@@ -38,10 +38,6 @@
     "postversion": "yarn build",
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build",
-    "build:cjs": "yarn lerna run build:cjs",
-    "build:umd": "yarn lerna run build:umd",
-    "build:esm": "yarn lerna run build:esm",
-    "watch:esm": "yarn lerna run watch:esm",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "set:tfjs": "yarn lerna run set:tfjs",
     "test": "yarn test:unit",
@@ -92,6 +88,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "selenium-webdriver": "^4.0.0-beta.1",
     "serve": "^11.3.2",
+    "tree-kill": "^1.2.2",
     "ts-jest": "^26.1.4",
     "ts-node": "^10.4.0",
     "tslint": "^6.1.2",
@@ -102,6 +99,7 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
+    "chokidar": "^3.5.3",
     "tensor-as-base64": "^0.1.1"
   },
   "packageManager": "yarn@3.1.0"
