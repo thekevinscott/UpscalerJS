@@ -25,7 +25,6 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
-
 describe('Model Loading Integration Tests', () => {
   let server;
   let driver;
