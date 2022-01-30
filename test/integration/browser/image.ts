@@ -161,7 +161,7 @@ describe('Image Format Integration Tests', () => {
         img.src = window['flower'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
-          const tensor = window['tfjs'].browser.fromPixels(img);
+          const tensor = window['tf'].browser.fromPixels(img);
           upscaler.upscale(tensor).then(resolve);
         }
       }));
