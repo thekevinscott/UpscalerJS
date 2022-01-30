@@ -99,7 +99,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("can load model definitions in the browser", async () => {
-    const result = await driver.executeScript(() => {
+    const result = await driver.executeScript(async () => {
       const upscaler = new window['Upscaler']();
       return await upscaler.getModelDefinitions();
     });
