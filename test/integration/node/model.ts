@@ -12,12 +12,14 @@ const execute = async (modelPath: string = '') => {
   return await executeNodeScript(`${modelPath}`);
 }
 
-describe('Builds', () => {
+describe('Model Loading Integration Tests', () => {
   beforeAll(async (done) => {
     await prepareScriptBundleForCJS();
     done();
   });
 
+  // it("loads a locally exposed model via file:// path", async () => {
+  // it("loads a model via tf.io.fileSystem", async () => {
   it("upscales using a CJS build in Node using a file:// model link", async () => {
     const result = await execute('--useTfIOFileSystem 0');
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');

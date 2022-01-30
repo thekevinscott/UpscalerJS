@@ -128,4 +128,16 @@ describe('Model Loading Integration Tests', () => {
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
+
+  it("loads a model via tf.io.fileSystem", async () => {
+    const result = await driver.executeScript(() => {
+      const model = window['tf'].io.fileSystem('/pixelator/pixelator.json');
+      const upscaler = new window['Upscaler']({
+        model,
+        scale: 4,
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 });
