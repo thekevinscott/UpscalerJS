@@ -2,6 +2,7 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
@@ -9,6 +10,7 @@ import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
+dotenv.config();
 
 const argv = yargs(hideBin(process.argv)).argv as {
   platform?: string;
@@ -24,19 +26,19 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   });
 });
 
-const startBrowserstack = async (): Promise<browserstack.Local> => new Promise(resolve => {
-
+const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((resolve, reject) => {
   const bsLocal = new browserstack.Local();
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    // 'onlyAutomate': 'true',
-    // 'forceLocal': 'true',
-    'onlyAutomate': true,
-    'forceLocal': true,
-  }, () => {
-    resolve(bsLocal)
+  const config: any = {
+    key: process.env.BROWSERSTACK_ACCESS_KEY,
+    force: true,
+    onlyAutomate: true,
+    forceLocal: true,
+  };
+  bsLocal.start(config, (error) => {
+    if (error) {
+      return reject(error);
+    }
+    resolve(bsLocal);
   });
 });
 
@@ -66,6 +68,9 @@ const main = async () => {
         await stopBrowserstack(bsLocal);
       }
     });
+    if (bsLocal.isRunning() !== true) {
+      throw new Error('Browserstack failed to start');
+    }
   }
  
   if (argv.skipBuild !== true) {
