@@ -9,11 +9,11 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 
-const prefs = new logging.Preferences();
-prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
+// const prefs = new logging.Preferences();
+// prefs.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
 
-const caps = Capabilities.chrome();
-caps.setLoggingPrefs(prefs);
+// const caps = Capabilities.chrome();
+// caps.setLoggingPrefs(prefs);
 
 const TRACK_TIME = false;
 const PORT = 8099;
