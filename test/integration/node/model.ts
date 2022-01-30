@@ -1,16 +1,9 @@
-import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/prepare';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const FIXTURES = path.join(__dirname, '../../../__fixtures__');
-const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
-
-type Fn = () => (string | Promise<string>);
-
-// const execute = async (modelPath: string = '') => {
 const execute = async (file: string) => {
   let data = '';
   await executeNodeScript(file, chunk => {
