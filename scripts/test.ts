@@ -59,7 +59,7 @@ const getPlatform = () => {
 const main = async () => {
   const bsLocal = await startBrowserstack();
   const platform = getPlatform();
-  // await buildUpscaler(platform);
+  await buildUpscaler(platform);
   const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
   await stopBrowserstack(bsLocal);
   if (code !== null) {
