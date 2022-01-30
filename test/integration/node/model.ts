@@ -21,9 +21,6 @@ describe('Model Loading Integration Tests', () => {
     await prepareScriptBundleForCJS();
   });
 
-  // it("loads a locally exposed model via file:// path", async () => {
-  // it("loads a model via tf.io.fileSystem", async () => {
-  // it("loads a model via URL", async () => {
   it("loads a locally exposed model via file:// path", async () => {
     const result = await execute("localFilePath.js");
     const formattedResult = `data:image/png;base64,${result}`;

@@ -103,9 +103,8 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.getModelDefinitions();
     });
-    expect(result['pixelator']).toEqual({
-      urlPath: 'pixelator',
-      scale: 4,
-    });
+    expect(result['pixelator']).not.toEqual(undefined);
+    expect(result['pixelator']['scale']).toEqual(4);
+    expect(result['pixelator']['urlPath']).toEqual('pixelator');
   });
 });
