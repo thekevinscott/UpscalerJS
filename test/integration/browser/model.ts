@@ -51,7 +51,7 @@ describe('Model Loading Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
-  });
+  }, 20000);
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
@@ -71,7 +71,7 @@ describe('Model Loading Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-  });
+  }, 10000);
 
   beforeEach(async function beforeEach() {
     await driver.get(`http://localhost:${PORT}`);
