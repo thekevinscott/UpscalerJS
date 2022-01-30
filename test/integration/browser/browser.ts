@@ -147,10 +147,12 @@ describe('Browser Integration Tests', () => {
         resolve();
       }
     });
+    console.log('prepare to stop all');
     await Promise.all([
       stopBrowserstack(),
       stopServer(),
     ]);
+    console.log('stopped all');
     const end = new Date().getTime();
     if (TRACK_TIME) {
       console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
