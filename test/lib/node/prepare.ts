@@ -18,13 +18,9 @@ export const prepareScriptBundleForCJS = async () => {
   });
 };
 
-export const executeNodeScript = async (args: string = '') => {
-  let data = '';
-  await callExec(`node "./src/upscale_image.js" ${args}`, {
+type Stdout = (data: string) => void;
+export const executeNodeScript = async (file: string, stdout?: Stdout) => {
+  await callExec(`node "./src/${file}"`, {
     cwd: ROOT
-  }, chunk => {
-    data += chunk;
-  });
-
-  return data.trim();
+  }, stdout);
 };

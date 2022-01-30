@@ -2,14 +2,11 @@ const tf = require('@tensorflow/tfjs-node');
 const Upscaler = require('upscaler/node');
 const path = require('path');
 const fs = require('fs');
-const base64ArrayBuffer = require('../../../lib/utils/base64ArrayBuffer')
-const yargs = require('yargs/yargs')
-const { hideBin } = require('yargs/helpers')
+const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
 
 const FIXTURES = path.join(__dirname, '../../../__fixtures__');
 const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
 const IMG = path.join(FIXTURES, 'flower-small.png');
-const argv = yargs(hideBin(process.argv)).argv;
 
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
@@ -33,13 +30,10 @@ const main = async (model) => {
 }
 
 const getModelPath = () => {
-  if (argv.useTfIOFileSystem) {
-    return tf.io.fileSystem(MODEL_PATH);
-  }
-  return `file://${path.resolve(MODEL_PATH)}`;
+  return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
 }
 
 (async () => {
   const data = await main(getModelPath());
-  console.log(`data:image/png;base64,${data}`);
+  console.log(`OUTPUT: ${data}`);
 })();

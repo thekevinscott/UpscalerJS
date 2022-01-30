@@ -1,9 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import * as fs from 'fs';
-import * as path from 'path';
-import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
@@ -19,7 +16,7 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
-const TRACK_TIME = true;
+const TRACK_TIME = false;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
@@ -76,8 +73,8 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    return await driver.get(`http://localhost:${PORT}`);
-  });
+    await driver.get(`http://localhost:${PORT}`);
+  }, 10000);
 
   it("loads a locally exposed model via implied HTTP", async () => {
     const result = await driver.executeScript(() => {
