@@ -3,8 +3,6 @@ const path = require('path');
 
 const dependency = process.argv.pop();
 
-const FILENAME = 'tfjs.generated.ts';
-
 const AVAILABLE_DEPENDENCIES = [
   '@tensorflow/tfjs',
   '@tensorflow/tfjs-node',
@@ -15,8 +13,9 @@ if (!AVAILABLE_DEPENDENCIES.includes(dependency)) {
   throw new Error(`No valid dependency specified, please specify one of ${AVAILABLE_DEPENDENCIES.join(', ')}. You specified: ${dependency}`);
 }
 
-const TFJS_OUTPUT_PATH = path.resolve(__dirname, `../packages/upscalerjs/src/${FILENAME}`);
+const writeFile = (filename: string, content: string) => {
+  const outputPath = path.resolve(__dirname, `../packages/upscalerjs/src/${filename}`);
+  fs.writeFileSync(outputPath, content);
+}
 
-const content = `export * from '${dependency}';`;
-
-fs.writeFileSync(TFJS_OUTPUT_PATH, content);
+writeFile('tfjs.generated.ts', `export * from '${dependency}';`);
