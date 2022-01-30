@@ -13,9 +13,8 @@ const execute = async (modelPath: string = '') => {
 }
 
 describe('Model Loading Integration Tests', () => {
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     await prepareScriptBundleForCJS();
-    done();
   });
 
   // it("loads a locally exposed model via file:// path", async () => {
