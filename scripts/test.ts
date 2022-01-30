@@ -2,6 +2,7 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
@@ -9,6 +10,7 @@ import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
+dotenv.config();
 
 const argv = yargs(hideBin(process.argv)).argv as {
   platform?: string;
@@ -28,14 +30,13 @@ const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((
   const bsLocal = new browserstack.Local();
   const config: any = {
     'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': 'true' as any,
-    'onlyAutomate': 'true' as any,
-    'forceLocal': 'true' as any,
-    // 'localIdentifier': 'BSTest'
+    force: true,
+    onlyAutomate: true,
+    forceLocal: true,
   };
   bsLocal.start(config, (error) => {
     if (error) {
+      console.log('uh oh, error', config)
       return reject(error);
     }
     resolve(bsLocal);
@@ -76,7 +77,6 @@ const main = async () => {
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
-  console.log('begin jest');
   const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
