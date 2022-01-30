@@ -13,7 +13,7 @@ const { By } = require('selenium-webdriver');
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
 
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
 
