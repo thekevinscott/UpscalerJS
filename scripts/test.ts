@@ -1,9 +1,8 @@
 /*****
- * 
+ * Script for wrapping and running integration tests for Browser and Node
  */
 
 import browserstack from 'browserstack-local';
-import path from 'path';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs/yargs';
@@ -58,13 +57,18 @@ const getPlatform = () => {
 }
 
 const main = async () => {
-  const bsLocal = await startBrowserstack();
+  let bsLocal: undefined | browserstack.Local;
   const platform = getPlatform();
+  if (platform === 'browser') {
+    bsLocal = await startBrowserstack();
+  }
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
   const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
-  await stopBrowserstack(bsLocal);
+  if (bsLocal !== undefined) {
+    await stopBrowserstack(bsLocal);
+  }
   if (code !== null) {
     process.exit(code);
   }
