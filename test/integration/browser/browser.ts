@@ -8,12 +8,10 @@ import browserstack from 'browserstack-local';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
+const { By } = require('selenium-webdriver');
 
-// const prefs = new logging.Preferences();
-// prefs.setLevel(logging.Type.BROWSER, logging.Level.WARNING);
-
-// const caps = Capabilities.chrome();
-// caps.setLoggingPrefs(prefs);
+const prefs = new logging.Preferences();
+prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
 
 const TRACK_TIME = false;
 const PORT = 8099;
@@ -59,8 +57,53 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
 const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
 
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
-  return !option.browserName.toLowerCase().includes('iphone');
-})
+  return true;
+  // return option?.os !== 'windows' && option?.os !== 'OS X';
+  // return option?.os === 'OS X';
+  // return !option.browserName.toLowerCase().includes('iphone');
+});
+
+const shouldPrintLogs = (entry, capabilities) => {
+  if (entry.message.includes('favicon')) {
+    return false;
+  }
+
+  // if running in IE, it appears TFJS is already available? Ignore warnings
+  // about the TFJS backend already being registered
+  if (entry.level.name === 'WARNING' && capabilities?.browserName === 'edge') {
+    return false;
+  }
+
+  return true;
+}
+
+const printLogs = (driver, capabilities) => {
+  if (capabilities?.browserName === 'firefox') {
+    if (capabilities?.os === 'windows') {
+      // There is a bug with Firefox not supporting the get logs method on Windows
+      // https://stackoverflow.com/questions/59192232/selenium-trying-to-get-firefox-console-logs-results-in-webdrivererror-http-me
+      return;
+    }
+    if (capabilities?.os === 'OS X') {
+      // Firefox does not seem to support logging on OS X either
+      // https://github.com/mozilla/geckodriver/issues/1698
+      return;
+    }
+  }
+
+  if (capabilities?.browserName === 'safari') {
+    // It looks like Safari also does not support logging
+    return;
+  }
+
+  driver.manage().logs().get(logging.Type.BROWSER).then(entries => {
+    entries.forEach(entry => {
+      if (shouldPrintLogs(entry, capabilities)) {
+        console.log('LOG [%s] %s', entry.level.name, entry.message, capabilities);
+      }
+    });
+  });
+}
 
 describe('Browser Integration Tests', () => {
   let server;
@@ -79,8 +122,8 @@ describe('Browser Integration Tests', () => {
     };
 
     await Promise.all([
-      startBrowserStack(),
       startServerWrapper(),
+      startBrowserStack(),
     ]);
 
     const end = new Date().getTime();
@@ -123,39 +166,27 @@ describe('Browser Integration Tests', () => {
     beforeAll(async function beforeAll() {
       driver = new webdriver.Builder()
         .usingServer(serverURL)
+        .setLoggingPrefs(prefs)
         .withCapabilities({
           ...DEFAULT_CAPABILITIES,
           ...capabilities,
         })
         .build();
-    });
-
-    afterAll(function afterAll() {
-      return driver.quit();
-    });
-
-    beforeEach(async function beforeEach() {
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
       await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
     });
 
+    afterAll(async function afterAll() {
+      try {
+        return await driver.quit();
+      } catch (err) {
+        console.log('there was an error quitting driver', err)
+      }
+    });
+
     it("upscales an imported local image path", async () => {
-      // const result1 = await driver.executeScript(() => {
-      //   return 'foo';
-      // });
-      // expect(result1).toEqual('foo');
-      // const result2 = await driver.executeScript(() => new Promise(resolve => resolve('bar')));
-      // expect(result2).toEqual('bar');
       const result = await driver.executeScript(() => {
-        // const log = msg => {
-        //   const p = document.createElement('p');
-        //   p.innerHTML = msg;
-        //   p.style.fontSize = '80px';
-        //   p.style.padding = '20px';
-        //   p.style.wordWrap = 'break-word';
-        //   document.body.appendChild(p);
-        // }
         const upscaler = new window['Upscaler']({
           model: '/pixelator/pixelator.json',
           scale: 4,
@@ -164,15 +195,8 @@ describe('Browser Integration Tests', () => {
         document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
         return data;
       });
-      driver.manage().logs().get(logging.Type.BROWSER)
-     .then(function(entries) {
-        entries.forEach(function(entry) {
-          if (!entry.message.includes('favicon')) {
-            console.log('LOG [%s] %s', entry.level.name, entry.message);
-          }
-        });
-     });
-      // console.log(result);
+
+      printLogs(driver, capabilities);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
     });
   });
