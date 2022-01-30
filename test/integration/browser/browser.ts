@@ -94,6 +94,17 @@ const printLogs = (driver, capabilities) => {
   });
 }
 
+const getCapabilityName = (capability) => {
+  if (capability.os) {
+    return `${capability.os} | ${capability.browserName}`;
+  }
+  if (capability.device) {
+    return `${capability.browserName} | ${capability.device}`;
+  }
+
+  return JSON.stringify(capability)
+}
+
 describe('Browser Integration Tests', () => {
   let server;
 
@@ -135,7 +146,7 @@ describe('Browser Integration Tests', () => {
 
   describe.each(browserOptions)("Browser %j", (capabilities) => {
     it("upscales an imported local image path", async () => {
-      console.log('test', capabilities)
+      console.log('test', getCapabilityName(capabilities))
       const driver = new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
