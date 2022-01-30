@@ -1,9 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import * as fs from 'fs';
-import * as path from 'path';
-import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
@@ -55,10 +52,6 @@ describe('Model Loading Integration Tests', () => {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
   });
-
-  afterAll(async function afterAll(done) {
-    const start = new Date().getTime();
-  }, 20000);
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
