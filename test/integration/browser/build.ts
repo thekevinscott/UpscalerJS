@@ -43,7 +43,7 @@ describe('Build Integration Tests', () => {
 
   const PORT = 8099;
 
-  beforeAll(async function beforeAll(done) {
+  beforeAll(async function beforeAll() {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
@@ -63,10 +63,9 @@ describe('Build Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
   });
 
-  afterAll(async function afterAll(done) {
+  afterAll(async function afterAll() {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
@@ -82,10 +81,9 @@ describe('Build Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
   });
 
-  afterEach(async function afterEach(done) {
+  afterEach(async function afterEach() {
     const stopServer = () => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
@@ -96,7 +94,6 @@ describe('Build Integration Tests', () => {
     await Promise.all([
       stopServer(),
     ]);
-    done();
   });
 
   it("upscales using a UMD build via a script tag", async () => {
