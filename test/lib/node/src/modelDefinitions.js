@@ -2,6 +2,6 @@ const Upscaler = require('upscaler/node');
 
 (async () => {
   const upscaler = new Upscaler();
-  const data = JSON.stringify(upscaler.getModelDefinitions());
-  console.log(`OUTPUT: ${data}`);
+  const data = await upscaler.getModelDefinitions();
+  console.log(`OUTPUT: ${JSON.stringify(data)}`);
 })();

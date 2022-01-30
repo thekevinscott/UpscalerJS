@@ -37,8 +37,8 @@ class Upscaler {
     return upscale(model, image, modelDefinition, options);
   };
 
-  getModelDefinitions = () => {
-    return getModelDefinitions();
+  getModelDefinitions = async () => {
+    return await getModelDefinitions();
   };
 }
 

@@ -45,7 +45,7 @@
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
 
-    "set:tfjs": "node ../../scripts/set-tfjs.ts",
+    "set:tfjs": "ts-node ../../scripts/set-tfjs.ts",
 
     "docs:serve": "docsify serve docs --port 3030",
     "prepare": "yarn set:tfjs '@tensorflow/tfjs' && yarn build",

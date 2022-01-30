@@ -41,9 +41,9 @@ describe('Model Loading Integration Tests', () => {
 
   it("can load model definitions in Node", async () => {
     const result = await execute("modelDefinitions.js");
-    expect(result['pixelator']).toEqual({
-      urlPath: 'pixelator',
-      scale: 4,
-    });
+    const parsedResult = JSON.parse(result);
+    expect(parsedResult['pixelator']).not.toEqual(undefined);
+    expect(parsedResult['pixelator']['scale']).toEqual(4);
+    expect(parsedResult['pixelator']['urlPath']).toEqual('pixelator');
   });
 });

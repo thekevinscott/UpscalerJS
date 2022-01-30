@@ -9,7 +9,7 @@ const AVAILABLE_DEPENDENCIES = [
   '@tensorflow/tfjs-node-gpu',
 ];
 
-if (!AVAILABLE_DEPENDENCIES.includes(dependency)) {
+if (dependency === undefined || !AVAILABLE_DEPENDENCIES.includes(dependency)) {
   throw new Error(`No valid dependency specified, please specify one of ${AVAILABLE_DEPENDENCIES.join(', ')}. You specified: ${dependency}`);
 }
 
