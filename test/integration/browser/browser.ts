@@ -30,7 +30,7 @@ const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(3);
+jest.retryTimes(10);
 
 
 interface BrowserOption {
@@ -108,7 +108,7 @@ describe('Browser Integration Tests', () => {
   let server;
   let bsLocal;
 
-  beforeAll(async function beforeAll(done) {
+  beforeAll(async function beforeAll() {
     const start = new Date().getTime();
     const startBrowserStack = async () => {
       bsLocal = new browserstack.Local();
@@ -129,10 +129,9 @@ describe('Browser Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
   });
 
-  afterAll(async function afterAll(done) {
+  afterAll(async function afterAll() {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
@@ -156,14 +155,36 @@ describe('Browser Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
   });
 
   describe.each(browserOptions)("Browser %j", (capabilities) => {
-    let driver;
+    // let driver;
 
-    beforeAll(async function beforeAll() {
-      driver = new webdriver.Builder()
+    // beforeAll(async function beforeAll() {
+    //   driver = new webdriver.Builder()
+    //     .usingServer(serverURL)
+    //     .setLoggingPrefs(prefs)
+    //     .withCapabilities({
+    //       ...DEFAULT_CAPABILITIES,
+    //       ...capabilities,
+    //     })
+    //     .build();
+    //   const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
+    //   await driver.get(ROOT_URL);
+    //   await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
+    // });
+
+    // afterAll(async function afterAll() {
+    //   try {
+    //     return await driver.quit();
+    //   } catch (err) {
+    //     console.log('there was an error quitting driver', err)
+    //   }
+    // });
+
+    it("upscales an imported local image path", async () => {
+      console.log('test', capabilities)
+      const driver = new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
         .withCapabilities({
@@ -174,17 +195,6 @@ describe('Browser Integration Tests', () => {
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
       await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
-    });
-
-    afterAll(async function afterAll() {
-      try {
-        return await driver.quit();
-      } catch (err) {
-        console.log('there was an error quitting driver', err)
-      }
-    });
-
-    it("upscales an imported local image path", async () => {
       const result = await driver.executeScript(() => {
         const upscaler = new window['Upscaler']({
           model: '/pixelator/pixelator.json',
@@ -197,6 +207,7 @@ describe('Browser Integration Tests', () => {
 
       printLogs(driver, capabilities);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      await driver.quit();
     });
   });
 });
