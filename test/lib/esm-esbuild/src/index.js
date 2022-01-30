@@ -1,11 +1,8 @@
-import * as tfjs from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import flower from '../../../__fixtures__/flower-small.png';
-window.tfjs = tfjs;
+window.tf = tf;
 window.flower = flower;
-window.upscaler = new Upscaler({
-  model: '/pixelator/pixelator.json',
-  scale: 4,
-});
+window.Upscaler = Upscaler;
 document.title = `${document.title} | Loaded`;
 document.body.querySelector('#output').innerHTML = `${document.title}`;

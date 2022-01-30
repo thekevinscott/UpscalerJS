@@ -13,9 +13,8 @@ const execute = async (modelPath: string = '') => {
 }
 
 describe('Builds', () => {
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     await prepareScriptBundleForCJS();
-    done();
   });
 
   it("upscales using a CJS build in Node using a file:// model link", async () => {

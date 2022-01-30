@@ -1,12 +1,13 @@
 /****
- * Tests that different build outputs all function correctly
+ * Tests that different approaches to loading a model all load correctly
  */
+import * as fs from 'fs';
+import * as path from 'path';
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
+import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 
 const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
@@ -18,16 +19,16 @@ const DEFAULT_CAPABILITIES = {
   browser_version: 'latest'
 }
 
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
-describe('Build Integration Tests', () => {
+describe('Model Loading Integration Tests', () => {
   let server;
   let driver;
 
@@ -35,6 +36,13 @@ describe('Build Integration Tests', () => {
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
+
+    const startServerWrapper = async () => {
+      await bundle();
+      server = await startServer(PORT, DIST);
+    };
+
+    await startServerWrapper();
 
     driver = new webdriver.Builder()
       .usingServer(serverURL)
@@ -47,10 +55,18 @@ describe('Build Integration Tests', () => {
     }
   }, 20000);
 
-  afterAll(async function buildAfterAll() {
+  afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
-
+    const stopServer = () => new Promise((resolve) => {
+      if (server) {
+        server.close(resolve);
+      } else {
+        console.warn('No server found')
+        resolve();
+      }
+    });
     await Promise.all([
+      stopServer(),
       driver.quit(),
     ]);
     const end = new Date().getTime();
@@ -59,44 +75,25 @@ describe('Build Integration Tests', () => {
     }
   }, 10000);
 
-  afterEach(async function afterEach() {
-    const stopServer = () => new Promise((resolve) => {
-      if (server) {
-        server.close(resolve);
-      } else {
-        resolve();
-      }
-    });
-    await Promise.all([
-      stopServer(),
-    ]);
+  beforeEach(async function beforeEach() {
+    return await driver.get(`http://localhost:${PORT}`);
   });
 
-  it("upscales using a UMD build via a script tag", async () => {
-    await prepareScriptBundleForUMD();
-    server = await startServer(PORT, SCRIPT_DIST);
-    await driver.get(`http://localhost:${PORT}`);
+  it("loads a locally exposed model via implied HTTP", async () => {
     const result = await driver.executeScript(() => {
-      const Upscaler = window['Upscaler'];
-      const upscaler = new Upscaler({
+      const upscaler = new window['Upscaler']({
         model: '/pixelator/pixelator.json',
         scale: 4,
       });
-      return upscaler.upscale(document.getElementById('flower'));
+      return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("upscales using an ESM build using Webpack", async () => {
-    await prepareScriptBundleForESM();
-    await bundleWebpack();
-    server = await startServer(PORT, WEBPACK_DIST);
-    await driver.get(`http://localhost:${PORT}`);
-    await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
+  it("loads a locally exposed model via absolute HTTP", async () => {
     const result = await driver.executeScript(() => {
-      const Upscaler = window['Upscaler'];
-      const upscaler = new Upscaler({
-        model: '/pixelator/pixelator.json',
+      const upscaler = new window['Upscaler']({
+        model: `${window.location.origin}/pixelator/pixelator.json`,
         scale: 4,
       });
       return upscaler.upscale(window['flower']);

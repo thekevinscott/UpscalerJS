@@ -1,3 +1,6 @@
+/****
+ * Tests that different supported image formats all upscale correctly.
+ */
 import * as fs from 'fs';
 import * as path from 'path';
 import * as browserstack from 'browserstack-local';
@@ -26,29 +29,14 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
-describe('Upscale', () => {
+describe('Image Format Integration Tests', () => {
   let server;
-  let bsLocal;
   let driver;
 
   const PORT = 8099;
 
-  beforeAll(async function beforeAll(done) {
+  beforeAll(async function beforeAll() {
     const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
 
     const startServerWrapper = async () => {
       await bundle();
@@ -56,7 +44,6 @@ describe('Upscale', () => {
     };
 
     await Promise.all([
-      startBrowserStack(),
       startServerWrapper(),
     ]);
 
@@ -69,16 +56,10 @@ describe('Upscale', () => {
     if (TRACK_TIME) {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
-  });
+  }, 20000);
 
-  afterAll(async function afterAll(done) {
+  afterAll(async function imageAfterAll() {
     const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
 
     const stopServer = () => new Promise((resolve) => {
       if (server) {
@@ -89,7 +70,6 @@ describe('Upscale', () => {
       }
     });
     await Promise.all([
-      stopBrowserstack(),
       stopServer(),
       driver.quit(),
     ]);
@@ -97,8 +77,7 @@ describe('Upscale', () => {
     if (TRACK_TIME) {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-    done();
-  });
+  }, 10000);
 
   beforeEach(async function beforeEach() {
     await driver.get(`http://localhost:${PORT}`);
@@ -106,17 +85,25 @@ describe('Upscale', () => {
 
   it("upscales an imported local image path", async () => {
     const result = await driver.executeScript(() => {
-      return window['upscaler'].upscale(window['flower']);
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
+      return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("upscales an HTML Image", async () => {
     const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
       const img = new Image();
       img.src = window['flower'];
       img.onload = function () {
-        window['upscaler'].upscale(img).then(resolve);
+        upscaler.upscale(img).then(resolve);
       }
     }));
     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
@@ -124,12 +111,16 @@ describe('Upscale', () => {
 
     it("upscales an HTML Image from the page", async () => {
       const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
         const img = document.createElement('img');
         img.id = 'img';
         img.src = window['flower'];
         document.body.append(img);
         img.onload = () => {
-          window['upscaler'].upscale(document.getElementById('img')).then(resolve);
+          upscaler.upscale(document.getElementById('img')).then(resolve);
         }
       }));
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
@@ -138,12 +129,16 @@ describe('Upscale', () => {
 
     it("upscales a tensor", async () => {
       const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
         const img = new Image();
         img.src = window['flower'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
-          const tensor = window['tfjs'].browser.fromPixels(img);
-          window['upscaler'].upscale(tensor).then(resolve);
+          const tensor = window['tf'].browser.fromPixels(img);
+          upscaler.upscale(tensor).then(resolve);
         }
       }));
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
@@ -152,7 +147,13 @@ describe('Upscale', () => {
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await driver.executeScript(src => window['upscaler'].upscale(src), originalImage);
+      const upscaledSrc = await driver.executeScript(src => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        return upscaler.upscale(src);
+      }, originalImage);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 });
