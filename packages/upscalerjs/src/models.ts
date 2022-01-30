@@ -39,6 +39,10 @@ const MODELS: {
     scale: 2,
   },
   'idealo/gans': idealoGans,
+  'pixelator': {
+    urlPath: 'pixelator',
+    scale: 4,
+  },
 });
 
 export default MODELS;
