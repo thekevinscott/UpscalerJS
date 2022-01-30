@@ -97,4 +97,12 @@ describe('Model Loading Integration Tests', () => {
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
+
+  // it("can load model definitions in the browser", async () => {
+  //   const result = await driver.executeScript(() => {
+  //     const upscaler = new window['Upscaler']();
+  //     return upscaler.getModelDefinitions();
+  //   });
+  //   expect(result).toEqual('foo');
+  // });
 });

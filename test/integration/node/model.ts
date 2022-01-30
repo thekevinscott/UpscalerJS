@@ -48,4 +48,10 @@ describe('Model Loading Integration Tests', () => {
     const formattedResult = `data:image/png;base64,${result}`;
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
   });
+
+  it("can load model definitions in Node", async () => {
+    const result = await execute("modelDefinitions.js");
+    const formattedResult = `data:image/png;base64,${result}`;
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+  });
 });
