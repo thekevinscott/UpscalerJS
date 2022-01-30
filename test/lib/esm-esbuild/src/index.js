@@ -3,9 +3,6 @@ import Upscaler from 'upscaler';
 import flower from '../../../__fixtures__/flower-small.png';
 window.tfjs = tfjs;
 window.flower = flower;
-window.upscaler = new Upscaler({
-  model: '/pixelator/pixelator.json',
-  scale: 4,
-});
+window.Upscaler = Upscaler;
 document.title = `${document.title} | Loaded`;
 document.body.querySelector('#output').innerHTML = `${document.title}`;

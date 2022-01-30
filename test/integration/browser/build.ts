@@ -1,3 +1,6 @@
+/****
+ * Tests that different build outputs all function correctly
+ */
 import * as browserstack from 'browserstack-local';
 import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
@@ -33,7 +36,7 @@ const startBsLocal = (bsLocal) => new Promise(resolve => {
   }, resolve);
 });
 
-describe('Builds', () => {
+describe('Build Integration Tests', () => {
   let server;
   let bsLocal;
   let driver;

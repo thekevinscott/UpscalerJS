@@ -1,3 +1,6 @@
+/****
+ * Tests that different browsers all upscale correctly
+ */
 import fs from 'fs';
 import path from 'path';
 import webdriver, { logging, Capabilities } from 'selenium-webdriver';
@@ -59,7 +62,7 @@ const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserO
   return !option.browserName.toLowerCase().includes('iphone');
 })
 
-describe('Browser Tests', () => {
+describe('Browser Integration Tests', () => {
   let server;
   let bsLocal;
 
@@ -153,7 +156,11 @@ describe('Browser Tests', () => {
         //   p.style.wordWrap = 'break-word';
         //   document.body.appendChild(p);
         // }
-        const data = window['upscaler'].upscale(window['flower']);
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        const data = upscaler.upscale(window['flower']);
         document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
         return data;
       });
