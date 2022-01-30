@@ -24,19 +24,21 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   });
 });
 
-const startBrowserstack = async (): Promise<browserstack.Local> => new Promise(resolve => {
-
+const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((resolve, reject) => {
   const bsLocal = new browserstack.Local();
-  bsLocal.start({
+  const config: any = {
     'key': process.env.BROWSERSTACK_ACCESS_KEY,
     // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    // 'onlyAutomate': 'true',
-    // 'forceLocal': 'true',
-    'onlyAutomate': true,
-    'forceLocal': true,
-  }, () => {
-    resolve(bsLocal)
+    'force': 'true' as any,
+    'onlyAutomate': 'true' as any,
+    'forceLocal': 'true' as any,
+    // 'localIdentifier': 'BSTest'
+  };
+  bsLocal.start(config, (error) => {
+    if (error) {
+      return reject(error);
+    }
+    resolve(bsLocal);
   });
 });
 
@@ -66,11 +68,15 @@ const main = async () => {
         await stopBrowserstack(bsLocal);
       }
     });
+    if (bsLocal.isRunning() !== true) {
+      throw new Error('Browserstack failed to start');
+    }
   }
  
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
+  console.log('begin jest');
   const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
