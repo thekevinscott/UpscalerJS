@@ -29,14 +29,13 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((resolve, reject) => {
   const bsLocal = new browserstack.Local();
   const config: any = {
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
+    key: process.env.BROWSERSTACK_ACCESS_KEY,
     force: true,
     onlyAutomate: true,
     forceLocal: true,
   };
   bsLocal.start(config, (error) => {
     if (error) {
-      console.log('uh oh, error', config)
       return reject(error);
     }
     resolve(bsLocal);
