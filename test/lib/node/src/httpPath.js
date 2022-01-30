@@ -30,7 +30,7 @@ const main = async (model) => {
 }
 
 const getModelPath = () => {
-  return 'https://unpkg.com/@upscalerjs/models@0.9.0/models/idealo/gans/model.json';
+  return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
 }
 
 (async () => {
