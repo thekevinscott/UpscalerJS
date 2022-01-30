@@ -44,7 +44,9 @@
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "jest test/integration/browser --config test/jestconfig.json --detectOpenHandles",
     "test:integration:node": "jest test/integration/node --config test/jestconfig.json --detectOpenHandles",
-    "test:startTestServer": "ts-node test/lib/startServer.ts"
+    "test:startTestServer": "ts-node test/lib/startServer.ts",
+    "test:memoryLeaks": "yarn lerna run build:node && node test/misc/memory/test.js",
+    "test:memoryLeaks:backup": "yarn lerna run build:node && node test/misc/memory/test.js"
   },
   "repository": {
     "type": "git",
@@ -74,6 +76,7 @@
     "docsify-cli": "^4.4.2",
     "dotenv": "^8.2.0",
     "esbuild": "^0.9.6",
+    "heapdump": "^0.3.15",
     "html-webpack-plugin": "^5.3.0",
     "jest": "^26.6.3",
     "jest-canvas-mock": "^2.2.0",
@@ -88,6 +91,7 @@
     "rollup-plugin-node-resolve": "^5.2.0",
     "selenium-webdriver": "^4.0.0-beta.1",
     "serve": "^11.3.2",
+    "tape": "^5.5.0",
     "tree-kill": "^1.2.2",
     "ts-jest": "^26.1.4",
     "ts-node": "^10.4.0",
