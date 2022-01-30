@@ -6,7 +6,6 @@
      "^.+\\.(js|jsx)$": "babel-jest"
   },
   "setupFiles": ["./jest.setup.js"],
-  "globalSetup": "./jest.globalsetup.ts",
   "collectCoverage": false,
   "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],

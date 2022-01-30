@@ -44,16 +44,6 @@ interface BrowserOption {
   localhost?: string;
 }
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
 const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
 
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
@@ -106,24 +96,16 @@ const printLogs = (driver, capabilities) => {
 
 describe('Browser Integration Tests', () => {
   let server;
-  let bsLocal;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
 
     const startServerWrapper = async () => {
       await bundle();
       server = await startServer(PORT, DIST);
     };
 
-    await Promise.all([
-      startServerWrapper(),
-      startBrowserStack(),
-    ]);
+    await startServerWrapper();
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -133,11 +115,6 @@ describe('Browser Integration Tests', () => {
 
   afterAll(async function browserAfterAll() {
     const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
 
     const stopServer = () => new Promise((resolve) => {
       if (server) {
@@ -149,7 +126,6 @@ describe('Browser Integration Tests', () => {
     });
     console.log('prepare to stop all');
     await Promise.all([
-      stopBrowserstack(),
       stopServer(),
     ]);
     console.log('stopped all');

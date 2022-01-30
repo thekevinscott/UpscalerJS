@@ -29,29 +29,14 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
 describe('Image Format Integration Tests', () => {
   let server;
-  let bsLocal;
   let driver;
 
   const PORT = 8099;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
 
     const startServerWrapper = async () => {
       await bundle();
@@ -59,7 +44,6 @@ describe('Image Format Integration Tests', () => {
     };
 
     await Promise.all([
-      startBrowserStack(),
       startServerWrapper(),
     ]);
 
@@ -76,11 +60,6 @@ describe('Image Format Integration Tests', () => {
 
   afterAll(async function imageAfterAll() {
     const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
 
     const stopServer = () => new Promise((resolve) => {
       if (server) {
@@ -91,7 +70,6 @@ describe('Image Format Integration Tests', () => {
       }
     });
     await Promise.all([
-      stopBrowserstack(),
       stopServer(),
       driver.quit(),
     ]);

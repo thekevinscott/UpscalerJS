@@ -13,14 +13,13 @@ const DEFAULT_CAPABILITIES = {
   'build': process.env.BROWSERSTACK_BUILD_NAME,
   'project': process.env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.local': true,
-  // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
   os: 'windows',
   os_version: '11',
   browserName: 'chrome',
   browser_version: 'latest'
 }
 
-const TRACK_TIME = false;
+const TRACK_TIME = true;
 const username = process.env.BROWSERSTACK_USERNAME;
 const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
@@ -29,44 +28,26 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    // 'localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
 describe('Model Loading Integration Tests', () => {
   let server;
-  let bsLocal;
   let driver;
 
   const PORT = 8099;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
 
     const startServerWrapper = async () => {
       await bundle();
       server = await startServer(PORT, DIST);
     };
 
-    await Promise.all([
-      startBrowserStack(),
-      startServerWrapper(),
-    ]);
+    await startServerWrapper();
 
-      driver = new webdriver.Builder()
-        .usingServer(serverURL)
-        .withCapabilities(DEFAULT_CAPABILITIES)
-        .build();
+    driver = new webdriver.Builder()
+      .usingServer(serverURL)
+      .withCapabilities(DEFAULT_CAPABILITIES)
+      .build();
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -76,12 +57,6 @@ describe('Model Loading Integration Tests', () => {
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
-
     const stopServer = () => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
@@ -91,7 +66,6 @@ describe('Model Loading Integration Tests', () => {
       }
     });
     await Promise.all([
-      stopBrowserstack(),
       stopServer(),
       driver.quit(),
     ]);
@@ -102,7 +76,7 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    await driver.get(`http://localhost:${PORT}`);
+    return await driver.get(`http://localhost:${PORT}`);
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {

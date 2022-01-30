@@ -27,37 +27,19 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 jest.retryTimes(1);
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
 describe('Build Integration Tests', () => {
   let server;
-  let bsLocal;
   let driver;
 
   const PORT = 8099;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
 
-    await Promise.all([
-      startBrowserStack(),
-    ]);
-
-      driver = new webdriver.Builder()
-        .usingServer(serverURL)
-        .withCapabilities(DEFAULT_CAPABILITIES)
-        .build();
+    driver = new webdriver.Builder()
+      .usingServer(serverURL)
+      .withCapabilities(DEFAULT_CAPABILITIES)
+      .build();
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -67,14 +49,8 @@ describe('Build Integration Tests', () => {
 
   afterAll(async function buildAfterAll() {
     const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
 
     await Promise.all([
-      stopBrowserstack(),
       driver.quit(),
     ]);
     const end = new Date().getTime();
