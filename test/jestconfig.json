@@ -7,7 +7,7 @@
   "setupFiles": ["./jest.setup.js"],
   "globalSetup": "./jest.globalsetup.ts",
   "collectCoverage": false,
-  "testRegex": "(/integration/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "globals": {
     "ts-jest": {
