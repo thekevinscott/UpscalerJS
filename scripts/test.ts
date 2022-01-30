@@ -47,7 +47,7 @@ const isValidPlatform = (platform?: string): platform is 'browser' | 'node' => {
 }
 
 const getPlatform = () => {
-  const platform = argv.platform;
+  const platform = argv.platform?.trim();
 
   if (isValidPlatform(platform)) {
     return platform;
@@ -61,7 +61,13 @@ const main = async () => {
   const platform = getPlatform();
   if (platform === 'browser') {
     bsLocal = await startBrowserstack();
+    process.on('exit', async () => {
+      if (bsLocal !== undefined && bsLocal.isRunning()) {
+        await stopBrowserstack(bsLocal);
+      }
+    });
   }
+ 
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
@@ -72,6 +78,8 @@ const main = async () => {
   if (code !== null) {
     process.exit(code);
   }
+
+
 };
 
 main();
