@@ -13,6 +13,7 @@ import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
 const argv = yargs(hideBin(process.argv)).argv as {
   platform?: string;
+  skipBuild?: boolean;
   _: Array<string>;
 }
 
@@ -59,7 +60,9 @@ const getPlatform = () => {
 const main = async () => {
   const bsLocal = await startBrowserstack();
   const platform = getPlatform();
-  await buildUpscaler(platform);
+  if (argv.skipBuild !== true) {
+    await buildUpscaler(platform);
+  }
   const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
   await stopBrowserstack(bsLocal);
   if (code !== null) {

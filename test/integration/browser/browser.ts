@@ -124,11 +124,9 @@ describe('Browser Integration Tests', () => {
         resolve();
       }
     });
-    console.log('prepare to stop all');
     await Promise.all([
       stopServer(),
     ]);
-    console.log('stopped all');
     const end = new Date().getTime();
     if (TRACK_TIME) {
       console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
@@ -136,30 +134,6 @@ describe('Browser Integration Tests', () => {
   }, 10000);
 
   describe.each(browserOptions)("Browser %j", (capabilities) => {
-    // let driver;
-
-    // beforeAll(async function beforeAll() {
-    //   driver = new webdriver.Builder()
-    //     .usingServer(serverURL)
-    //     .setLoggingPrefs(prefs)
-    //     .withCapabilities({
-    //       ...DEFAULT_CAPABILITIES,
-    //       ...capabilities,
-    //     })
-    //     .build();
-    //   const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
-    //   await driver.get(ROOT_URL);
-    //   await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
-    // });
-
-    // afterAll(async function afterAll() {
-    //   try {
-    //     return await driver.quit();
-    //   } catch (err) {
-    //     console.log('there was an error quitting driver', err)
-    //   }
-    // });
-
     it("upscales an imported local image path", async () => {
       console.log('test', capabilities)
       const driver = new webdriver.Builder()
