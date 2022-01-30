@@ -74,7 +74,7 @@ describe('Model Loading Integration Tests', () => {
     }
   }, 20000);
 
-  afterAll(async function afterAll() {
+  afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {

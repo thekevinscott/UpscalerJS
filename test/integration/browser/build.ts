@@ -65,7 +65,7 @@ describe('Build Integration Tests', () => {
     }
   }, 20000);
 
-  afterAll(async function afterAll() {
+  afterAll(async function buildAfterAll() {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {

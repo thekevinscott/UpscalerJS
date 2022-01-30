@@ -74,7 +74,7 @@ describe('Image Format Integration Tests', () => {
     }
   }, 20000);
 
-  afterAll(async function afterAll() {
+  afterAll(async function imageAfterAll() {
     const start = new Date().getTime();
     const stopBrowserstack = () => new Promise(resolve => {
       if (bsLocal && bsLocal.isRunning()) {
