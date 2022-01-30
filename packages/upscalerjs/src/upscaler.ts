@@ -5,7 +5,8 @@ import {
   WarmupSizes,
   IModelDefinition,
 } from './types';
-import loadModel, { getModelDefinitions } from './loadModel';
+import { getModelDefinitions } from './loadModel';
+// import loadModel, { getModelDefinitions } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
 
@@ -20,8 +21,9 @@ class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts);
-    void warmup(this._model, this._opts.warmupSizes || []);
+    this._model = new Promise(() => {})
+    // this._model = loadModel(this._opts);
+    // void warmup(this._model, this._opts.warmupSizes || []);
   }
 
   getModel = () => this._model;

@@ -45,7 +45,7 @@ const getUpscaledImage = async (image) => {
   const image = tf.node.decodeImage(file, 3);
   for (let i = 0; i < argv.iterations; i++) {
     await getUpscaledImage(image);
-    console.log(`rss: ${process.memoryUsage().rss}`);
+    console.log(`rss: ${process.memoryUsage().rss} | ${i}`);
     global.gc();
   }
 })();

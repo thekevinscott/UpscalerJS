@@ -3,7 +3,7 @@ const { spawn } = require('child_process');
 const test = require('tape');
 const kill = require('tree-kill');
 
-const THRESHOLD = .02 * 1000; // how much can resident set grow before we consider it a memory leak?
+const THRESHOLD = .1; // how much can resident set grow before we consider it a memory leak?
 
 const runProcess = (command, args, stdout) => {
   const spawnedProcess = spawn(command, args);
@@ -50,9 +50,7 @@ class Monitor {
     this.rss.push(rss);
     if (this.rss.length > this.averageLength) {
       this.rss.shift();
-
       this.report();
-
     }
   }
 
@@ -76,15 +74,18 @@ class Monitor {
 }
 
 test('check Node memory leaks with pixelator model and no patch sizes', async (t) => new Promise((resolve, reject) => {
-  const ITERATIONS = 1000 * 2;
+  const ITERATIONS = 1000 * 1;
   let process;
+  let lastIteration = 0;
   const monitor = new Monitor((err) => {
     kill(process.pid);
-    reject(err);
+    reject(`${err} | at iteration ${lastIteration}`);
   }, THRESHOLD);
   process = runProcess('node', ['--expose-gc', path.resolve(__dirname, './leak.js'), '--model', 'pixelator', '--iterations', ITERATIONS], data => {
     if (data.startsWith('rss: ')) {
-      monitor.addRss(Number(data.split('rss: ').pop()));
+      const [rss, iteration] = data.split('rss: ').pop().split('|').map(e => e.trim());
+      lastIteration = iteration;
+      monitor.addRss(Number(rss));
     }
   });
   process.on('exit', () => {

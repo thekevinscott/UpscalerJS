@@ -75,6 +75,8 @@ export const getModelDefinition = ({
   };
 };
 
+const models: Record<string, tf.LayersModel> = {};
+
 const loadModel = async (
   opts: IUpscalerOptions,
 ): Promise<{
@@ -87,12 +89,15 @@ const loadModel = async (
       tf.serialization.registerClass(layer);
     });
   }
-  const model = await tf.loadLayersModel(modelDefinition.url);
+
+  if (!models[modelDefinition.url]) {
+    models[modelDefinition.url] = await tf.loadLayersModel(modelDefinition.url);
+  }
 
   return {
-    model,
+    model: models[modelDefinition.url],
     modelDefinition,
-  };
+  } as any;
 };
 
 export default loadModel;
