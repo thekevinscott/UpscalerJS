@@ -5,7 +5,7 @@
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
     "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
-    ".": "./dist/browser/index.js"
+    ".": "./dist/browser/esm/index.js"
   },
   "engines": {
     "node": ">=0.13"
