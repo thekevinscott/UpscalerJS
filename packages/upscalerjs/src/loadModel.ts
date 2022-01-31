@@ -1,8 +1,7 @@
-import * as tf from './tfjs.generated';
+import { tf, fetch } from './dependencies.generated';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';
-import fetch from 'isomorphic-fetch';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -109,7 +108,7 @@ export const getModelDescription = async (
 ): Promise<string> => {
   try {
     if (val.configURL) {
-      const response = await fetch(val.configURL).then((resp) => resp.json());
+      const response = await fetch(val.configURL).then((resp) => resp.json()) as { description: string };
       return response.description;
     }
   } catch (err) {}

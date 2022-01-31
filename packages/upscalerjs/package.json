@@ -33,9 +33,9 @@
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
 
-    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
-    "build:node": "rimraf dist/node && mkdir -p dist/node && yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs && mv dist/cjs dist/node/cjs",
-    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
+    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn scaffold:platform '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
+    "build:node": "rimraf dist/node && mkdir -p dist/node && yarn scaffold:platform '@tensorflow/tfjs-node' && yarn lerna run build:cjs && mv dist/cjs dist/node/cjs",
+    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn scaffold:platform '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
 
     "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
@@ -45,10 +45,10 @@
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
 
-    "set:tfjs": "ts-node ../../scripts/set-tfjs.ts",
+    "scaffold:platform": "ts-node ../../scripts/scaffold-platform.ts",
 
     "docs:serve": "docsify serve docs --port 3030",
-    "prepare": "yarn set:tfjs '@tensorflow/tfjs' && yarn build",
+    "prepare": "yarn scaffold:platform '@tensorflow/tfjs' && yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
@@ -78,11 +78,7 @@
   },
   "dependencies": {
     "tensor-as-base64": "^0.1.1",
-    "isomorphic-fetch": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/isomorphic-fetch": "^0.0.35"
-
+    "node-fetch": "^3.2.0"
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f"
 }

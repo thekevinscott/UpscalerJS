@@ -39,7 +39,7 @@
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build --scope upscaler",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
-    "set:tfjs": "yarn lerna run set:tfjs",
+    "scaffold:platform": "yarn lerna run scaffold:platform",
     "test": "yarn test:unit",
     "test:unit": "jest --config packages/upscalerjs/jestconfig.json",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
