@@ -78,7 +78,7 @@
   },
   "dependencies": {
     "tensor-as-base64": "^0.1.1",
-    "cross-fetch": "^3.1.5"
+    "isomorphic-fetch": "^3.0.0"
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f"
 }

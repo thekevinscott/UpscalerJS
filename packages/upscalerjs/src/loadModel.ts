@@ -2,7 +2,7 @@ import * as tf from './tfjs.generated';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';
-import fetch from 'cross-fetch';
+import fetch from 'isomorphic-fetch';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
