@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.10.0-canary.1",
+  "version": "0.10.0-canary.2",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
@@ -48,7 +48,7 @@
     "scaffold:platform": "ts-node ../../scripts/scaffold-platform.ts",
 
     "docs:serve": "docsify serve docs --port 3030",
-    "prepare": "yarn scaffold:platform '@tensorflow/tfjs' && yarn build",
+    "prepare": "yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
