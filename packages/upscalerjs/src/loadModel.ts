@@ -1,4 +1,4 @@
-import * as tf from './tfjs.generated';
+import { tf } from './dependencies.generated';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';
@@ -108,10 +108,10 @@ export const getModelDescription = async (
 ): Promise<string> => {
   try {
     if (val.configURL) {
-      const response = await fetch(val.configURL).then((resp) => resp.json());
+      const response = await fetch(val.configURL).then((resp) => resp.json()) as { description: string };
       return response.description;
     }
-  } catch (err) {}
+  } catch (err) { }
   return '';
 };
 

@@ -1,4 +1,4 @@
-import * as tf from './tfjs.generated';
+import { tf } from './dependencies.generated';
 import {
   IUpscalerOptions,
   IUpscaleOptions,
@@ -37,8 +37,8 @@ class Upscaler {
     return upscale(model, image, modelDefinition, options);
   };
 
-  getModelDefinitions = () => {
-    return getModelDefinitions();
+  getModelDefinitions = async () => {
+    return await getModelDefinitions();
   };
 }
 
