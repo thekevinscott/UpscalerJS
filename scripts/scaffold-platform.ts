@@ -33,23 +33,25 @@ const getDependency = (platform: Platform): Dependency => {
   return '@tensorflow/tfjs';
 }
 
-const getAdditionalDependencies = (platform: Platform) => {
+const getAdditionalDependencies = (platform: Platform): Array<string> => {
   if (platform === 'browser') {
-    return '';
+    return [];
   }
 
-  return `import 'isomorphic-fetch';`;
+  return [
+    `import 'isomorphic-fetch';`,
+  ];
 }
 
 const platform = getPlatform(process.argv.pop());
 const dependency = getDependency(platform);
 
-const writeFile = (filename: string, content: string) => {
+const writeFile = (filename: string, content: Array<string>) => {
   const outputPath = path.resolve(__dirname, `../packages/upscalerjs/src/${filename}`);
-  fs.writeFileSync(outputPath, content);
+  fs.writeFileSync(outputPath, content.map(l => l.trim()).join('\n'));
 };
 
-writeFile('./dependencies.generated.ts', `
-export * as tf from '${dependency}';
-${getAdditionalDependencies(platform)}
-`);
+writeFile('./dependencies.generated.ts', [
+  `export * as tf from '${dependency}';`,
+  ...getAdditionalDependencies(platform),
+]);
