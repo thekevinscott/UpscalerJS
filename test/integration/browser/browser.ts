@@ -145,7 +145,7 @@ describe('Browser Integration Tests', () => {
   }, 10000);
 
   describe.each(browserOptions)("Browser %j", (capabilities) => {
-    it("upscales an imported local image path", async () => {
+    it('tests that browser executes correctly sync', async () => {
       console.log('test', getCapabilityName(capabilities))
       const driver = new webdriver.Builder()
         .usingServer(serverURL)
@@ -157,20 +157,65 @@ describe('Browser Integration Tests', () => {
         .build();
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
-      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
       const result = await driver.executeScript(() => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const data = upscaler.upscale(window['flower']);
-        document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
-        return data;
+        return 'foo';
       });
 
-      printLogs(driver, capabilities);
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      expect(result).toEqual('foo');
       await driver.quit();
     });
+    
+    it('tests that browser executes correctly async', async () => {
+      console.log('test', getCapabilityName(capabilities))
+      const driver = new webdriver.Builder()
+        .usingServer(serverURL)
+        .setLoggingPrefs(prefs)
+        .withCapabilities({
+          ...DEFAULT_CAPABILITIES,
+          ...capabilities,
+        })
+        .build();
+      const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
+      await driver.get(ROOT_URL);
+      const result = await driver.executeScript(() => {
+        const wait = (dur) => new Promise(resolve => {
+          setTimeout(() => resolve(), dur);
+        });
+        return wait(1000).then(() => {
+          return 'foo';
+        })
+      });
+
+      expect(result).toEqual('foo');
+      await driver.quit();
+    });
+
+    // it("upscales an imported local image path", async () => {
+    //   console.log('test', getCapabilityName(capabilities))
+    //   const driver = new webdriver.Builder()
+    //     .usingServer(serverURL)
+    //     .setLoggingPrefs(prefs)
+    //     .withCapabilities({
+    //       ...DEFAULT_CAPABILITIES,
+    //       ...capabilities,
+    //     })
+    //     .build();
+    //   const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
+    //   await driver.get(ROOT_URL);
+    //   await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
+    //   const result = await driver.executeScript(() => {
+    //     const upscaler = new window['Upscaler']({
+    //       model: '/pixelator/pixelator.json',
+    //       scale: 4,
+    //     });
+    //     const data = upscaler.upscale(window['flower']);
+    //     document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
+    //     return data;
+    //   });
+
+    //   printLogs(driver, capabilities);
+    //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    //   await driver.quit();
+    // });
   });
 });
