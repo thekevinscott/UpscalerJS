@@ -1,4 +1,4 @@
-import { tf, fetch } from './dependencies.generated';
+import { tf } from './dependencies.generated';
 import { IUpscalerOptions, IModelDefinition } from './types';
 import MODELS, { DEFAULT_MODEL } from './models';
 import { warn } from './utils';

@@ -15,6 +15,7 @@ export default {
   external: ['@tensorflow/tfjs'],
   plugins: [
     nodeResolve({
+      preferBuiltins: true,
       resolveOnly: [
         /^(?!.*(@tensorflow\/tfjs))/,
       ],
