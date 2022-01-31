@@ -111,7 +111,7 @@ export const getModelDescription = async (
       const response = await fetch(val.configURL).then((resp) => resp.json()) as { description: string };
       return response.description;
     }
-  } catch (err) {}
+  } catch (err) { }
   return '';
 };
 

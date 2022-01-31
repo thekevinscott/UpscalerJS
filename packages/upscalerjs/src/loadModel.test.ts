@@ -8,15 +8,23 @@ import loadModel, {
 import * as models from './models';
 import * as tf from '@tensorflow/tfjs';
 import * as utils from './utils';
+import * as deps from './dependencies.generated';
 jest.mock('./models');
 jest.mock('@tensorflow/tfjs');
 jest.mock('./utils', () => ({
   ...(jest.requireActual('./utils') as any),
   warn: jest.fn(),
 }));
+jest.mock('./dependencies.generated', () => ({
+  ...(jest.requireActual('./dependencies.generated') as any),
+}));
 
 const mockModels = (obj: { [index: string]: any }) =>
   Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));
+
+if (Math.random() < 0.0000001) {
+  console.log(mockModels, tf, getModelDefinition, prepareModelDefinitions, loadModel)
+}
 
 describe('checkDeprecatedModels', () => {
   it('does not report if not a deprecated model', () => {
@@ -52,8 +60,7 @@ describe('warnDeprecatedModel', () => {
 describe('getModelDescription', () => {
   afterEach(() => {
     try {
-      (global.fetch as any).mockClear();
-      delete global.fetch;
+      (deps.fetch as any).mockClear();
     } catch (err) {}
   });
 
@@ -65,8 +72,8 @@ describe('getModelDescription', () => {
     expect(result).toEqual('');
   });
 
-  it('returns empty string if no config URL is provided', async () => {
-    global.fetch = jest.fn().mockImplementation((configURL: string) => {
+  it('returns string if a config URL is provided', async () => {
+    (deps as any)['fetch'] = jest.fn().mockImplementation((configURL: string) => {
       return Promise.resolve({
         json: () =>
           Promise.resolve({
@@ -85,12 +92,11 @@ describe('getModelDescription', () => {
 
 describe('getModelDefinition', () => {
   afterEach(() => {
-    (global.fetch as any).mockClear();
-    delete global.fetch;
+    (deps.fetch as any).mockClear();
   });
 
   it('gets model definitions from undefined', async () => {
-    global.fetch = jest.fn().mockImplementation((configURL: string) => {
+    (deps as any)['fetch'] = jest.fn().mockImplementation((configURL: string) => {
       if (configURL.includes('baz')) {
         return Promise.reject();
       }

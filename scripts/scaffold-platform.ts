@@ -28,14 +28,7 @@ const writeFile = (filename: string, content: string) => {
   fs.writeFileSync(outputPath, content);
 };
 
-const getFetch = (dependency: Dependency) => {
-  if (dependency === '@tensorflow/tfjs') {
-    return `export const fetch = window['fetch'];`;
-  }
-  return `export { default as fetch } from 'node-fetch';`;
-}
-
 writeFile('./dependencies.generated.ts', `
 export * as tf from '${dependency}';
-${getFetch(dependency)}
+export { default as fetch } from 'cross-fetch';
 `);
