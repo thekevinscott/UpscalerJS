@@ -48,7 +48,7 @@ const dependency = getDependency(platform);
 
 const writeFile = (filename: string, content: Array<string>) => {
   const outputPath = path.resolve(__dirname, `../packages/upscalerjs/src/${filename}`);
-  fs.writeFileSync(outputPath, content.map(l => l.trim()).join('\n'));
+  fs.writeFileSync(outputPath, `${content.map(l => l.trim()).join('\n')}\n`);
 };
 
 writeFile('./dependencies.generated.ts', [
