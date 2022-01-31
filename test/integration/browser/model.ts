@@ -99,9 +99,9 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("can load model definitions in the browser", async () => {
-    const result = await driver.executeScript(async () => {
+    const result = await driver.executeScript(() => {
       const upscaler = new window['Upscaler']();
-      return await upscaler.getModelDefinitions();
+      return upscaler.getModelDefinitions();
     });
     expect(result['pixelator']).not.toEqual(undefined);
     expect(result['pixelator']['scale']).toEqual(4);
