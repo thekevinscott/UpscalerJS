@@ -1,14 +1,20 @@
 import { tf } from './dependencies.generated';
-import { isHTMLImageElement, isString, isFourDimensionalTensor } from './utils';
+import { isHTMLImageElement, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor } from './utils';
 
-export const loadImage = (src: string): Promise<HTMLImageElement> =>
-  new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = src;
-    img.crossOrigin = 'anonymous';
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-  });
+export const getUnknownError = (input: any) => new Error(
+    [
+      `Unknown input provided to loadImage that cannot be processed: ${JSON.stringify(input)}`,
+      `Can only handle a string pointing to a valid image resource, an HTMLImageElement element,`,
+      `or a 3 or 4 rank tensor.`,
+    ].join(' '),
+  );
+
+  export const getInvalidTensorError = (input: tf.Tensor) => new Error(
+      [
+        `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+        'Only 3 or 4 rank tensors are supported.',
+      ].join(' '),
+    );
 
 export const getImageAsPixels = async (
   pixels: string | HTMLImageElement | tf.Tensor,
@@ -17,7 +23,13 @@ export const getImageAsPixels = async (
   type: 'string' | 'HTMLImageElement' | 'tensor';
 }> => {
   if (isString(pixels)) {
-    const img = await loadImage(pixels);
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.src = pixels;
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+    });
     return {
       tensor: tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D,
       type: 'string',
@@ -31,24 +43,23 @@ export const getImageAsPixels = async (
     };
   }
 
-  if (isFourDimensionalTensor(pixels)) {
-    return {
-      tensor: pixels,
-      type: 'tensor',
-    };
+  if (isTensor(pixels)) {
+    if (isFourDimensionalTensor(pixels)) {
+      return {
+        tensor: pixels,
+        type: 'tensor',
+      };
+    }
+
+    if (isThreeDimensionalTensor(pixels)) {
+      return {
+        tensor: pixels.expandDims(0) as tf.Tensor4D,
+        type: 'tensor',
+      };
+    }
+
+    throw getInvalidTensorError(pixels);
   }
 
-  if (pixels.shape.length === 3) {
-    return {
-      tensor: pixels.expandDims(0) as tf.Tensor4D,
-      type: 'tensor',
-    };
-  }
-
-  throw new Error(
-    [
-      `Unsupported dimensions for incoming pixels: ${pixels.shape.length}.`,
-      'Only 3 or 4 dimension tensors are supported.',
-    ].join(' '),
-  );
+  throw getUnknownError(pixels);
 };
