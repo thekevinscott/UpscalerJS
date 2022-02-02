@@ -1,6 +1,6 @@
 import { tf } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
-import { getImageAsPixels } from './image';
+import { getImageAsPixels } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn } from './utils';
 
