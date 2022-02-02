@@ -14,11 +14,24 @@ export const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
   }
 };
 
-export const isFourDimensionalTensor = (
-  pixels: tf.Tensor,
-): pixels is tf.Tensor4D => {
-  return pixels.shape.length === 4;
-};
+function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
+  function fn(pixels: tf.Tensor): pixels is T {
+    try {
+      return pixels.shape.length === rank;
+    } catch (err) { }
+    return false;
+  }
+  // Object.defineProperty(fn, 'name', {value: 'isFourDimensionalTensor', writable: false});
+
+  return fn;
+}
+
+export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
+export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
+export const isTensor = (input: any): input is tf.Tensor => {
+  try { return !!input.shape; } catch(err) { }
+  return false;
+}
 
 const MODEL_DIR = 'models';
 
