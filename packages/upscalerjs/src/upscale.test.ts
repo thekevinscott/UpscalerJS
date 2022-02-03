@@ -7,7 +7,7 @@ import upscale, {
 jest.mock('./image');
 jest.mock('tensor-as-base64');
 import * as tensorAsBase from 'tensor-as-base64';
-import * as image from './image';
+import * as image from './image.generated';
 import { IModelDefinition } from './types';
 
 describe('getConsistentTensorDimensions', () => {
