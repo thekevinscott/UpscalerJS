@@ -7,3 +7,4 @@ ignore:
   - "scripts"
   - "test"
   - "packages/test-scaffolding"
+  - "*.generated.ts"

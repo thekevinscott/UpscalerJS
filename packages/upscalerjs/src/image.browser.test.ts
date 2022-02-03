@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom';
-import { getImageAsPixels, getUnknownError, getInvalidTensorError } from './image';
+import { getImageAsPixels, getUnknownError, getInvalidTensorError } from './image.browser';
 import * as tf from '@tensorflow/tfjs';
 jest.mock('@tensorflow/tfjs', () => {
   const tf = jest.requireActual('@tensorflow/tfjs');

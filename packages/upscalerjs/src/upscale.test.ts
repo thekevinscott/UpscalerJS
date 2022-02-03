@@ -4,11 +4,11 @@ import upscale, {
   getRowsAndColumns,
   getTensorDimensions,
 } from './upscale';
-jest.mock('./image');
-jest.mock('tensor-as-base64');
 import * as tensorAsBase from 'tensor-as-base64';
-import * as image from './image';
+import * as image from './image.generated';
 import { IModelDefinition } from './types';
+jest.mock('./image.generated');
+jest.mock('tensor-as-base64');
 
 describe('getConsistentTensorDimensions', () => {
   interface IOpts {

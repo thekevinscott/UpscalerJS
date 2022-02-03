@@ -43,15 +43,29 @@ const getAdditionalDependencies = (platform: Platform): Array<string> => {
   ];
 }
 
+const SRC = path.resolve(__dirname, `../packages/upscalerjs/src`);
+
 const platform = getPlatform(process.argv.pop());
 const dependency = getDependency(platform);
 
-const writeFile = (filename: string, content: Array<string>) => {
-  const outputPath = path.resolve(__dirname, `../packages/upscalerjs/src/${filename}`);
-  fs.writeFileSync(outputPath, `${content.map(l => l.trim()).join('\n')}\n`);
+const writeFile = (filename: string, content: string) => {
+  const outputPath = path.resolve(SRC, filename);
+  fs.writeFileSync(outputPath, content);
 };
 
-writeFile('./dependencies.generated.ts', [
+const writeLines = (filename: string, content: Array<string>) => writeFile(filename, `${content.map(l => l.trim()).join('\n')}\n`);
+
+writeLines('./dependencies.generated.ts', [
   `export * as tf from '${dependency}';`,
   ...getAdditionalDependencies(platform),
 ]);
+
+const getImagePath = (platform: Platform) => {
+  if (platform === 'browser') {
+    return `image.browser.ts`;
+  }
+
+  return `image.node.ts`;
+}
+
+writeFile('./image.generated.ts', fs.readFileSync(path.resolve(SRC, getImagePath(platform))));
