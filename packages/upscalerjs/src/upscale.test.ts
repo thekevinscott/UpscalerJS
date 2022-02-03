@@ -10,6 +10,8 @@ import { IModelDefinition } from './types';
 jest.mock('./image.generated');
 jest.mock('tensor-as-base64');
 
+const mockImage = image;
+
 describe('getConsistentTensorDimensions', () => {
   interface IOpts {
     width: number;
