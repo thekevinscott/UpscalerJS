@@ -49,7 +49,7 @@ const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
-  return option.browserName.toLowerCase().includes('iphone') || option.browserName.toLowerCase().includes('android');
+  return option.browserName.toLowerCase().includes('iphone');
 });
 
 const shouldPrintLogs = (entry, capabilities) => {
@@ -99,7 +99,7 @@ const getCapabilityName = (capability) => {
     return `${capability.os} | ${capability.browserName}`;
   }
   if (capability.device) {
-    return `${capability.browserName} | ${capability.device}`;
+    return `${capability.browserName} | ${capability.device} | ${capability.os_version}`;
   }
 
   return JSON.stringify(capability)
@@ -146,7 +146,7 @@ describe('Browser Integration Tests', () => {
 
   describe.each(browserOptions)("Browser %j", (capabilities) => {
     it('tests that browser executes correctly sync', async () => {
-      console.log('test', getCapabilityName(capabilities))
+      console.log('sync test started', getCapabilityName(capabilities))
       const driver = new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
@@ -163,10 +163,11 @@ describe('Browser Integration Tests', () => {
 
       expect(result).toEqual('foo');
       await driver.quit();
+      console.log('sync test successful', getCapabilityName(capabilities))
     });
     
     it('tests that browser executes correctly async', async () => {
-      console.log('test', getCapabilityName(capabilities))
+      console.log('async test started', getCapabilityName(capabilities))
       const driver = new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
@@ -188,6 +189,7 @@ describe('Browser Integration Tests', () => {
 
       expect(result).toEqual('foo');
       await driver.quit();
+      console.log('async test successful', getCapabilityName(capabilities))
     });
 
     // it("upscales an imported local image path", async () => {
