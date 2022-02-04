@@ -52,7 +52,7 @@
   },
   {
     "os_version": "10",
-    "device": "iPhone XS",
+    "device": "iPhone X",
     "real_mobile": "true",
     "browserName": "iPhone",
     "localhost": "bs-local.com"
