@@ -16,8 +16,10 @@ export const getUnknownError = (input: any) => new Error(
       ].join(' '),
     );
 
+// Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
+type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
 export const getImageAsPixels = async (
-  pixels: string | tf.FromPixelsInputs,
+  pixels: string | FromPixelsInputs,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;

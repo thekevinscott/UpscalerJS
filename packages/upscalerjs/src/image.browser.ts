@@ -1,25 +1,18 @@
 import { tf } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString } from './utils';
 
-export const getUnknownError = (input: any) => new Error(
+export const getInvalidTensorError = (input: tf.Tensor) => new Error(
     [
-      `Unknown input provided to loadImage that cannot be processed: ${JSON.stringify(input)}`,
-      `Can only handle a string pointing to a valid image resource, an HTMLImageElement element,`,
-      `or a 3 or 4 rank tensor.`,
+      `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+      'Only 3 or 4 rank tensors are supported.',
     ].join(' '),
   );
 
-  export const getInvalidTensorError = (input: tf.Tensor) => new Error(
-      [
-        `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-        'Only 3 or 4 rank tensors are supported.',
-      ].join(' '),
-    );
-
 // Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
+export type ImageInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
 export const getImageAsPixels = async (
-  pixels: string | FromPixelsInputs,
+  pixels: ImageInput,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;

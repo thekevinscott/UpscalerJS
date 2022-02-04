@@ -3,6 +3,7 @@ import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
 import { getImageAsPixels } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn } from './utils';
+import { ImageInput } from './image.browser';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -304,11 +305,11 @@ function getProcessedPixels<T extends tf.Tensor>(
 
 const upscale = async (
   model: tf.LayersModel,
-  image: string | HTMLImageElement | tf.Tensor3D,
+  image: ImageInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) => {
-  const { tensor: pixels, canDispose } = await getImageAsPixels(image);
+  const { tensor: pixels, canDispose } = await getImageAsPixels(image as any);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
