@@ -49,7 +49,7 @@ const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
-  return option.browserName.toLowerCase().includes('iphone') || option.device.includes('Samsung Galaxy S21 Ultra');
+  return option.browserName.toLowerCase().includes('iphone') || option?.device?.includes('Samsung Galaxy S21 Ultra');
 });
 
 const shouldPrintLogs = (entry, capabilities) => {
