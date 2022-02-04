@@ -56,19 +56,5 @@
     "real_mobile": "true",
     "browserName": "iPhone",
     "localhost": "bs-local.com"
-  },
-  {
-    "os_version": "14",
-    "device": "iPhone XS",
-    "real_mobile": "true",
-    "browserName": "iPhone",
-    "localhost": "bs-local.com"
-  },
-  {
-    "os_version": "15",
-    "device": "iPhone XS",
-    "real_mobile": "true",
-    "browserName": "iPhone",
-    "localhost": "bs-local.com"
   }
 ]
