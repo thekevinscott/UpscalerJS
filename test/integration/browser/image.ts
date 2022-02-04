@@ -144,6 +144,23 @@ describe('Image Format Integration Tests', () => {
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
+    it("upscales a rank 4 tensor", async () => {
+      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        const img = new Image();
+        img.src = window['flower'];
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
+          upscaler.upscale(tensor).then(resolve);
+        }
+      }));
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+    });
+
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
