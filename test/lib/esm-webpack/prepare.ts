@@ -27,13 +27,14 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 }
 
 export const prepareScriptBundleForESM = async () => {
-  rimraf.sync(`${NODE_MODULES}/upscalerjs`);
+  const localNameForPackage = 'upscaler-for-webpack'
+  rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
 
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
     cwd: UPSCALER_PATH,
   });
 
-  await moveUpscalerToLocallyNamedPackage('upscaler-for-webpack');
+  await moveUpscalerToLocallyNamedPackage(localNameForPackage);
 };
 
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
