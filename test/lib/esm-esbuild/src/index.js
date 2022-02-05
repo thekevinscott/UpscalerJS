@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import Upscaler from 'upscaler';
+import Upscaler from 'upscaler-for-esbuild';
 import flower from '../../../__fixtures__/flower-small.png';
 window.tf = tf;
 window.flower = flower;

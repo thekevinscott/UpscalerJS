@@ -54,12 +54,10 @@ describe('Build Integration Tests', () => {
       driver.quit(),
     ]);
     const end = new Date().getTime();
-    const wait = dur => new Promise(resolve => setTimeout(resolve, dur));
-    await wait(30000);
     if (TRACK_TIME) {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-  }, 20000);
+  }, 10000);
 
   afterEach(async function afterEach() {
     const stopServer = () => new Promise((resolve) => {
