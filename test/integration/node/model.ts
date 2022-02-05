@@ -4,12 +4,12 @@ import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/pre
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const execute = async (file: string) => {
+const execute = async (file: string, logExtra = true) => {
   let data = '';
   await executeNodeScript(file, chunk => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
-    } else {
+    } else if (logExtra) {
       console.log(chunk);
     }
   });
@@ -23,8 +23,9 @@ describe('Model Loading Integration Tests', () => {
 
   it("loads a locally exposed model via file:// path", async () => {
     const result = await execute("localFilePath.js");
-    const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+    expect(result).toEqual('foo');
+    // const formattedResult = `data:image/png;base64,${result}`;
+    // checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
   });
 
   // it("loads a model via tf.io.fileSystem", async () => {

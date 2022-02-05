@@ -22,11 +22,11 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
   
   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
   packageJSON.name = localNameForPackage;
-  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON));
+  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
 
 
   [
-    ['cjs', `${NODE_MODULES}/upscalerjs/dist/node/cjs/index.js`],
+    ['cjs', `${NODE_MODULES}/${localNameForPackage}/dist/node/cjs/index.js`],
   ].forEach(([key, file]) => {
     const contents = fs.readFileSync(file, 'utf-8');
     fs.writeFileSync(file, `${contents}\nconsole.log('${key}');`)
@@ -41,16 +41,6 @@ export const prepareScriptBundleForCJS = async () => {
   });
 
   moveUpscalerToLocallyNamedPackage(localNameForPackage);
-
-  // rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
-
-  // await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
-  //   cwd: UPSCALER_PATH,
-  // });
-
-  // await callExec(`mv ${NODE_MODULES}/upscalerjs ${NODE_MODULES}/${localNameForPackage}`, {
-  //   cwd: UPSCALER_PATH,
-  // });
 };
 
 type Stdout = (data: string) => void;

@@ -23,7 +23,7 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
   });
   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
   packageJSON.name = localNameForPackage;
-  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON));
+  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
 }
 
 export const prepareScriptBundleForESM = async () => {
