@@ -27,9 +27,9 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 jest.retryTimes(1);
 
+let server;
+let driver;
 describe('Build Integration Tests', () => {
-  let server;
-  let driver;
 
   const PORT = 8099;
 
@@ -54,10 +54,12 @@ describe('Build Integration Tests', () => {
       driver.quit(),
     ]);
     const end = new Date().getTime();
+    const wait = dur => new Promise(resolve => setTimeout(resolve, dur));
+    await wait(30000);
     if (TRACK_TIME) {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
-  }, 10000);
+  }, 20000);
 
   afterEach(async function afterEach() {
     const stopServer = () => new Promise((resolve) => {

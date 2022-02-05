@@ -4,7 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 export default {
   input: "dist/tmp/umd.js",
   output: {
-    file: "dist/umd/upscaler.js",
+    file: "dist/browser/umd/upscaler.js",
     format: 'umd',
     name: 'Upscaler',
     globals: {

@@ -7,16 +7,9 @@ import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
 dotenv.config();
-
-const argv = yargs(hideBin(process.argv)).argv as {
-  platform?: string;
-  skipBuild?: boolean;
-  _: Array<string>;
-}
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
@@ -48,8 +41,8 @@ const isValidPlatform = (platform?: string): platform is 'browser' | 'node' => {
   return platform !== undefined && ['browser', 'node'].includes(platform);
 }
 
-const getPlatform = () => {
-  const platform = argv.platform?.trim();
+const getPlatform = (argPlatform: string) => {
+  const platform = argPlatform?.trim();
 
   if (isValidPlatform(platform)) {
     return platform;
@@ -58,9 +51,15 @@ const getPlatform = () => {
   throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
 }
 
-const main = async () => {
+(async function main() {
+  const argv = await yargs(process.argv.slice(2)).options({
+    watch: { type: 'boolean' },
+    platform: { type: 'string', demandOption: true },
+    skipBuild: { type: 'boolean' },
+  }).argv;
+
   let bsLocal: undefined | browserstack.Local;
-  const platform = getPlatform();
+  const platform = getPlatform(argv.platform);
   if (platform === 'browser') {
     bsLocal = await startBrowserstack();
     process.on('exit', async () => {
@@ -72,19 +71,24 @@ const main = async () => {
       throw new Error('Browserstack failed to start');
     }
   }
- 
+
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
-  const code = await runProcess('yarn', ['jest', '--config', `test/jestconfig.${platform}.js`, '--detectOpenHandles', ...argv._]);
+  const yarnArgs = [
+    'yarn', 
+    'jest', 
+    '--config', 
+    `test/jestconfig.${platform}.js`, 
+    '--detectOpenHandles', 
+    argv.watch ? '--watch' : undefined, 
+    ...argv._,
+  ].filter(Boolean).map(arg => `${arg}`);
+  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
   }
   if (code !== null) {
     process.exit(code);
   }
-
-
-};
-
-main();
+})();

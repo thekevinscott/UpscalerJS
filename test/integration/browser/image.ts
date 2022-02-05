@@ -94,83 +94,83 @@ describe('Image Format Integration Tests', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("upscales an HTML Image", async () => {
-    const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-      const upscaler = new window['Upscaler']({
-        model: '/pixelator/pixelator.json',
-        scale: 4,
-      });
-      const img = new Image();
-      img.src = window['flower'];
-      img.onload = function () {
-        upscaler.upscale(img).then(resolve);
-      }
-    }));
-    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("upscales an HTML Image", async () => {
+  //   const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: '/pixelator/pixelator.json',
+  //       scale: 4,
+  //     });
+  //     const img = new Image();
+  //     img.src = window['flower'];
+  //     img.onload = function () {
+  //       upscaler.upscale(img).then(resolve);
+  //     }
+  //   }));
+  //   checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-    it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = document.createElement('img');
-        img.id = 'img';
-        img.src = window['flower'];
-        document.body.append(img);
-        img.onload = () => {
-          upscaler.upscale(document.getElementById('img')).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales an HTML Image from the page", async () => {
+  //     const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       const img = document.createElement('img');
+  //       img.id = 'img';
+  //       img.src = window['flower'];
+  //       document.body.append(img);
+  //       img.onload = () => {
+  //         upscaler.upscale(document.getElementById('img')).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
 
-    it("upscales a tensor", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img);
-          upscaler.upscale(tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a tensor", async () => {
+  //     const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       const img = new Image();
+  //       img.src = window['flower'];
+  //       img.crossOrigin = 'anonymous';
+  //       img.onload = function () {
+  //         const tensor = window['tf'].browser.fromPixels(img);
+  //         upscaler.upscale(tensor).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-    it("upscales a rank 4 tensor", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
-          upscaler.upscale(tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a rank 4 tensor", async () => {
+  //     const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       const img = new Image();
+  //       img.src = window['flower'];
+  //       img.crossOrigin = 'anonymous';
+  //       img.onload = function () {
+  //         const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
+  //         upscaler.upscale(tensor).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-    it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
-      const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await driver.executeScript(src => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        return upscaler.upscale(src);
-      }, originalImage);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a base64 png path", async () => {
+  //     const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
+  //     const originalImage = `data:image/png;base64,${data}`;
+  //     const upscaledSrc = await driver.executeScript(src => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       return upscaler.upscale(src);
+  //     }, originalImage);
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 });
