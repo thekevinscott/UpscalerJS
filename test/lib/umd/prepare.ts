@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
-import callExec from '../utils/callExec';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 

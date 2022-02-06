@@ -23,18 +23,10 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
   packageJSON.name = localNameForPackage;
   fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
-
-
-  [
-    ['cjs', `${NODE_MODULES}/${localNameForPackage}/dist/node/cjs/index.js`],
-  ].forEach(([key, file]) => {
-    const contents = fs.readFileSync(file, 'utf-8');
-    fs.writeFileSync(file, `${contents}\nconsole.log('${key}');`)
-  });
 }
 
 export const prepareScriptBundleForCJS = async () => {
-  const localNameForPackage = 'upscale-for-node';
+  const localNameForPackage = 'upscaler-for-node';
 
   await callExec('yarn', {
     cwd: ROOT,

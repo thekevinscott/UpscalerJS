@@ -1,4 +1,4 @@
-const Upscaler = require('upscaler/node');
+const Upscaler = require('upscaler-for-node/node');
 
 (async () => {
   const upscaler = new Upscaler();
