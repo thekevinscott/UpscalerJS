@@ -36,6 +36,7 @@
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "yarn pin-cdn",
     "postversion": "yarn build",
+    "postinstall": "yarn scaffold:platform 'browser'",
     "bootstrap": "yarn lerna bootstrap --hoist",
     "build": "yarn lerna run build --scope upscaler",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
