@@ -16,6 +16,10 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
   // so we can ensure the build process is accurate and working correctly
   rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
 
+  await callExec(`mkdir -p ./node_modules`, {
+    cwd: ROOT,
+  });
+
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
     cwd: UPSCALER_PATH,
   });
