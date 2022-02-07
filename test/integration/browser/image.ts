@@ -3,54 +3,28 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import * as browserstack from 'browserstack-local';
-import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-
-const DEFAULT_CAPABILITIES = {
-  'build': process.env.BROWSERSTACK_BUILD_NAME,
-  'project': process.env.BROWSERSTACK_PROJECT_NAME,
-  'browserstack.local': true,
-  // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-  os: 'windows',
-  os_version: '11',
-  browserName: 'chrome',
-  browser_version: 'latest'
-}
+import puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
-const username = process.env.BROWSERSTACK_USERNAME;
-const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
-
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
 describe('Image Format Integration Tests', () => {
   let server;
-  let driver;
+  let browser;
+  let page;
 
   const PORT = 8099;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
 
-    const startServerWrapper = async () => {
-      await bundle();
-      server = await startServer(PORT, DIST);
-    };
-
-    await Promise.all([
-      startServerWrapper(),
-    ]);
-
-      driver = new webdriver.Builder()
-        .usingServer(serverURL)
-        .withCapabilities(DEFAULT_CAPABILITIES)
-        .build();
+    await bundle();
+    server = await startServer(PORT, DIST);
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -71,7 +45,6 @@ describe('Image Format Integration Tests', () => {
     });
     await Promise.all([
       stopServer(),
-      driver.quit(),
     ]);
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -80,11 +53,20 @@ describe('Image Format Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    await driver.get(`http://localhost:${PORT}`);
+    browser = await puppeteer.launch();
+    page = await browser.newPage();
+    await page.goto(`http://localhost:${PORT}`);
+    await page.waitForFunction('document.title.endsWith("| Loaded")');
+  });
+
+  afterEach(async function afterEach() {
+    await browser.close();
+    browser = undefined;
+    page = undefined;
   });
 
   it("upscales an imported local image path", async () => {
-    const result = await driver.executeScript(() => {
+    const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: '/pixelator/pixelator.json',
         scale: 4,
@@ -95,7 +77,7 @@ describe('Image Format Integration Tests', () => {
   });
 
   it("upscales an HTML Image", async () => {
-    const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
+    const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
       const upscaler = new window['Upscaler']({
         model: '/pixelator/pixelator.json',
         scale: 4,
@@ -109,68 +91,68 @@ describe('Image Format Integration Tests', () => {
     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-    it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = document.createElement('img');
-        img.id = 'img';
-        img.src = window['flower'];
-        document.body.append(img);
-        img.onload = () => {
-          upscaler.upscale(document.getElementById('img')).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  it("upscales an HTML Image from the page", async () => {
+    const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
+      const img = document.createElement('img');
+      img.id = 'img';
+      img.src = window['flower'];
+      document.body.append(img);
+      img.onload = () => {
+        upscaler.upscale(document.getElementById('img')).then(resolve);
+      }
+    }));
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
 
-    it("upscales a tensor", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img);
-          upscaler.upscale(tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  it("upscales a tensor", async () => {
+    const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
+      const img = new Image();
+      img.src = window['flower'];
+      img.crossOrigin = 'anonymous';
+      img.onload = function () {
+        const tensor = window['tf'].browser.fromPixels(img);
+        upscaler.upscale(tensor).then(resolve);
+      }
+    }));
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
-    it("upscales a rank 4 tensor", async () => {
-      const upscaledSrc = await driver.executeScript(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
-          upscaler.upscale(tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  it("upscales a rank 4 tensor", async () => {
+    const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
+      const img = new Image();
+      img.src = window['flower'];
+      img.crossOrigin = 'anonymous';
+      img.onload = function () {
+        const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
+        upscaler.upscale(tensor).then(resolve);
+      }
+    }));
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
-    it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
-      const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await driver.executeScript(src => {
-        const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        return upscaler.upscale(src);
-      }, originalImage);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  it("upscales a base64 png path", async () => {
+    const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
+    const originalImage = `data:image/png;base64,${data}`;
+    const upscaledSrc = await page.evaluate(src => {
+      const upscaler = new window['Upscaler']({
+        model: '/pixelator/pixelator.json',
+        scale: 4,
+      });
+      return upscaler.upscale(src);
+    }, originalImage);
+    checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 });
