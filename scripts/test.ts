@@ -55,7 +55,7 @@ const isValidRunner = (runner?: string): runner is undefined | 'local' | 'browse
   return runner === undefined ? true : ['local', 'browserstack'].includes(runner);
 }
 
-const getRunner = (runner: string): 'local' | 'browserstack' => {
+const getRunner = (runner?: string): 'local' | 'browserstack' => {
   if (isValidRunner(runner)) {
     return runner === undefined ? 'local' : runner;
 
