@@ -7,8 +7,8 @@ import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import puppeteer from 'puppeteer';
 
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+const JEST_TIMEOUT_IN_SECONDS = 5;
+jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
 describe('Build Integration Tests', () => {
@@ -28,21 +28,17 @@ describe('Build Integration Tests', () => {
     });
     await Promise.all([
       stopServer(),
+      browser.close(),
     ]);
+    browser = undefined;
+    page = undefined;
   });
 
   const startBrowser = async () => {
     browser = await puppeteer.launch();
     page = await browser.newPage();
     await page.goto(`http://localhost:${PORT}`);
-    await page.waitForFunction('document.title.endsWith("| Loaded")');
   }
-
-  const closeBrowser = async () => {
-    await browser.close();
-    browser = undefined;
-    page = undefined;
-  };
 
   it("upscales using a UMD build via a script tag", async () => {
     await prepareScriptBundleForUMD();
@@ -57,7 +53,6 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-    await closeBrowser();
   });
 
   it("upscales using an ESM build using Webpack", async () => {
@@ -65,6 +60,7 @@ describe('Build Integration Tests', () => {
     await bundleWebpack();
     server = await startServer(PORT, WEBPACK_DIST);
     await startBrowser();
+    await page.waitForFunction('document.title.endsWith("| Loaded")');
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
@@ -74,6 +70,5 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-    await closeBrowser();
   });
 });
