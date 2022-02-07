@@ -42,8 +42,8 @@
     "build:umd:tsc": "tsc --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "yarn rollup -c rollup.config.js --failAfterWarnings",
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
-    "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
-    "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
+    "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
+    "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/tmp",
 
     "scaffold:platform": "ts-node ../../scripts/scaffold-platform.ts",
 

@@ -1,5 +1,5 @@
 const tf = require('@tensorflow/tfjs-node');
-const Upscaler = require('upscaler/node');
+const Upscaler = require('upscaler-for-node/node');
 const path = require('path');
 const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')

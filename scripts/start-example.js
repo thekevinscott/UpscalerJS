@@ -59,7 +59,7 @@ const platform = getPlatform();
 
 const main = () => {
   let process;
-  const onChange = () => {
+  const onChange = src => (...e) => {
     if (process) {
       kill(process.pid);
     }
@@ -69,11 +69,11 @@ const main = () => {
   chokidar.watch(path.resolve(__dirname, '../packages/upscalerjs/src'), {
     ignored: /((^|[\/\\])\..|test.ts|generated.ts)/, // ignore dotfiles
     persistent: true
-  }).on('all', onChange);
+  }).on('all', onChange('upscalerjs'));
   chokidar.watch(examplePath, {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
+    ignored: /((^|[\/\\])\..|node_modules|dist)/, // ignore dotfiles and other folders
     persistent: true
-  }).on('all', onChange);
+  }).on('all', onChange('example'));
 };
 
 main();

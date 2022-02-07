@@ -27,9 +27,9 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 jest.retryTimes(1);
 
+let server;
+let driver;
 describe('Build Integration Tests', () => {
-  let server;
-  let driver;
 
   const PORT = 8099;
 

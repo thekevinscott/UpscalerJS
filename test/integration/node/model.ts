@@ -4,12 +4,12 @@ import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/pre
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const execute = async (file: string) => {
+const execute = async (file: string, logExtra = true) => {
   let data = '';
   await executeNodeScript(file, chunk => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
-    } else {
+    } else if (logExtra) {
       console.log(chunk);
     }
   });
