@@ -18,7 +18,7 @@ let compiler = undefined;
 const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
   // so we can ensure the build process is accurate and working correctly
-  await callExec(`mv ${NODE_MODULES}/upscalerjs ${NODE_MODULES}/${localNameForPackage}`, {
+  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
     cwd: UPSCALER_PATH,
   });
   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
@@ -29,9 +29,8 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 export const prepareScriptBundleForESM = async () => {
   const localNameForPackage = 'upscaler-for-webpack'
   rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
-
-  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
-    cwd: UPSCALER_PATH,
+  await callExec(`mkdir -p ./node_modules`, {
+    cwd: ROOT,
   });
 
   await moveUpscalerToLocallyNamedPackage(localNameForPackage);

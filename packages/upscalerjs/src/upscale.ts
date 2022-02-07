@@ -3,6 +3,7 @@ import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
 import { getImageAsPixels } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn } from './utils';
+import { ImageInput } from './image.browser';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -304,11 +305,11 @@ function getProcessedPixels<T extends tf.Tensor>(
 
 const upscale = async (
   model: tf.LayersModel,
-  image: string | HTMLImageElement | tf.Tensor3D,
+  image: ImageInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) => {
-  const { tensor: pixels, type } = await getImageAsPixels(image);
+  const { tensor: pixels, canDispose } = await getImageAsPixels(image as any);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
@@ -327,9 +328,10 @@ const upscale = async (
     upscaledTensor,
   );
 
-  if (type !== 'tensor') {
-    // if not a tensor, release the memory, since we retrieved it from a string or HTMLImageElement
-    // if it is a tensor, it is user provided and thus should not be disposed of.
+  if (canDispose) {
+    // canDispose indicates we can safely dispose of the tensor.
+    // the only case where we _can't_ safely dispose is when we are using
+    // the original tensor, when it is already in the expected format we need (a rank 4 tensor).
     pixels.dispose();
   }
 
