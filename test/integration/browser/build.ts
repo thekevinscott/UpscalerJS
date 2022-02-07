@@ -7,7 +7,7 @@ import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import puppeteer from 'puppeteer';
 
-const JEST_TIMEOUT_IN_SECONDS = 30;
+const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
