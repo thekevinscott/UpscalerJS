@@ -42,6 +42,7 @@
     "scaffold:platform": "yarn lerna run scaffold:platform -- --",
     "test": "yarn test:unit",
     "test:unit": "yarn scaffold:platform 'browser' && jest --config packages/upscalerjs/jestconfig.json",
+    "test:integration:browserstack": "ts-node scripts/test.ts --platform browser --kind browserstack",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
     "test:startTestServer": "ts-node test/lib/startServer.ts"

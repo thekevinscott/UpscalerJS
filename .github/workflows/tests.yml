@@ -26,8 +26,36 @@ jobs:
           directory: ./packages/upscalerjs/coverage
           verbose: true
 
-  integration-browser:
-    name: 'Tests: Integration / Browser'
+  integration-browser-browserstack:
+    name: 'Tests: Integration / Browser / Browserstack'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: yarn
+
+      - name: 'Integration Tests'
+        run: yarn test:integration:browser --ci
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+
+  integration-browser-local:
+    name: 'Tests: Integration / Browser / Local'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -55,8 +83,8 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
 
 
-  integration-node:
-    name: 'Tests: Integration / Node'
+  integration-node-local:
+    name: 'Tests: Integration / Node / Local'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
