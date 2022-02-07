@@ -42,6 +42,7 @@
     "scaffold:platform": "yarn lerna run scaffold:platform -- --",
     "test": "yarn test:unit",
     "test:unit": "yarn scaffold:platform 'browser' && jest --config packages/upscalerjs/jestconfig.json",
+    "test:integration:browserstack": "ts-node scripts/test.ts --platform browser --kind browserstack",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
     "test:startTestServer": "ts-node test/lib/startServer.ts"
@@ -67,6 +68,7 @@
     "@types/jest": "^26.0.7",
     "@types/jsdom": "^16.2.14",
     "@types/pngjs": "^6.0.1",
+    "@types/puppeteer": "^5.4.4",
     "@types/rimraf": "^3.0.2",
     "@types/serve-handler": "^6.1.1",
     "@types/yargs": "^17.0.5",
@@ -85,6 +87,7 @@
     "pixelmatch": "^5.2.1",
     "pngjs": "^6.0.0",
     "prettier": "^2.0.5",
+    "puppeteer": "^13.1.3",
     "rimraf": "^3.0.2",
     "rollup": "^2.66.1",
     "rollup-plugin-commonjs": "^10.1.0",

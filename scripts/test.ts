@@ -51,16 +51,30 @@ const getPlatform = (argPlatform: string) => {
   throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
 }
 
+const isValidRunner = (runner?: string): runner is undefined | 'local' | 'browserstack' => {
+  return runner === undefined ? true : ['local', 'browserstack'].includes(runner);
+}
+
+const getRunner = (runner?: string): 'local' | 'browserstack' => {
+  if (isValidRunner(runner)) {
+    return runner === undefined ? 'local' : runner;
+
+  }
+  throw new Error(`Unsupported runner provided: ${runner}. You must pass either 'local' or 'browserstack'.`)
+}
+
 (async function main() {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
+    runner: { type: 'string' }
   }).argv;
 
   let bsLocal: undefined | browserstack.Local;
   const platform = getPlatform(argv.platform);
-  if (platform === 'browser') {
+  const runner = getRunner(argv.runner);
+  if (runner === 'browserstack') {
     bsLocal = await startBrowserstack();
     process.on('exit', async () => {
       if (bsLocal !== undefined && bsLocal.isRunning()) {
@@ -79,7 +93,7 @@ const getPlatform = (argPlatform: string) => {
     'yarn', 
     'jest', 
     '--config', 
-    `test/jestconfig.${platform}.js`, 
+    `test/jestconfig.${platform}.${runner}.js`, 
     '--detectOpenHandles', 
     argv.watch ? '--watch' : undefined, 
     ...argv._,
