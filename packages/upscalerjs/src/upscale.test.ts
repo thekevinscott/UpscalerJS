@@ -7,8 +7,12 @@ import upscale, {
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
 import { IModelDefinition } from './types';
-jest.mock('./image.generated');
+jest.mock('./image.generated', () => ({
+  ...jest.requireActual('./image.generated'),
+}));
 jest.mock('tensor-as-base64');
+
+const mockedImage = image as jest.Mocked<typeof image>;
 
 describe('getConsistentTensorDimensions', () => {
   interface IOpts {
@@ -1102,9 +1106,9 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => ({
+    (mockedImage as any).getImageAsPixels = () => ({
       tensor: img,
-      type: 'tensor',
+      canDispose: true,
     });
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3])),
@@ -1125,9 +1129,9 @@ describe('upscale', () => {
         [4, 4, 4],
       ],
     ]);
-    (image as any).getImageAsPixels = () => ({
+    (mockedImage as any).getImageAsPixels = () => ({
       tensor: img,
-      type: 'tensor',
+      canDispose: true,
     });
     const upscaledTensor = tf.ones([1, 2, 2, 3]);
     const model = {
