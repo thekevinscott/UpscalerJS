@@ -7,7 +7,7 @@ import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import puppeteer from 'puppeteer';
 
-const JEST_TIMEOUT_IN_SECONDS = 5;
+const JEST_TIMEOUT_IN_SECONDS = 30;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
@@ -28,7 +28,7 @@ describe('Build Integration Tests', () => {
     });
     await Promise.all([
       stopServer(),
-      browser.close(),
+      browser ? browser.close() : undefined,
     ]);
     browser = undefined;
     page = undefined;
