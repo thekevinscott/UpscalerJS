@@ -15,6 +15,8 @@ jest.retryTimes(1);
 
 describe('Image Format Integration Tests', () => {
   let server;
+  let browser;
+  let page;
 
   const PORT = 8099;
 
@@ -49,9 +51,6 @@ describe('Image Format Integration Tests', () => {
       console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
     }
   }, 10000);
-
-  let browser;
-  let page;
 
   beforeEach(async function beforeEach() {
     browser = await puppeteer.launch();

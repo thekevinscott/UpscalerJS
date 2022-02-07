@@ -1,25 +1,12 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import * as webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-
-const DEFAULT_CAPABILITIES = {
-  'build': process.env.BROWSERSTACK_BUILD_NAME,
-  'project': process.env.BROWSERSTACK_PROJECT_NAME,
-  'browserstack.local': true,
-  os: 'windows',
-  os_version: '11',
-  browserName: 'chrome',
-  browser_version: 'latest'
-}
+import puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
-const username = process.env.BROWSERSTACK_USERNAME;
-const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
@@ -27,24 +14,16 @@ jest.retryTimes(1);
 
 describe('Model Loading Integration Tests', () => {
   let server;
-  let driver;
+  let browser;
+  let page;
 
   const PORT = 8099;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
 
-    const startServerWrapper = async () => {
-      await bundle();
-      server = await startServer(PORT, DIST);
-    };
-
-    await startServerWrapper();
-
-    driver = new webdriver.Builder()
-      .usingServer(serverURL)
-      .withCapabilities(DEFAULT_CAPABILITIES)
-      .build();
+    await bundle();
+    server = await startServer(PORT, DIST);
 
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -64,7 +43,6 @@ describe('Model Loading Integration Tests', () => {
     });
     await Promise.all([
       stopServer(),
-      driver.quit(),
     ]);
     const end = new Date().getTime();
     if (TRACK_TIME) {
@@ -73,11 +51,20 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    await driver.get(`http://localhost:${PORT}`);
-  }, 10000);
+    browser = await puppeteer.launch();
+    page = await browser.newPage();
+    await page.goto(`http://localhost:${PORT}`);
+    await page.waitForFunction('document.title.endsWith("| Loaded")');
+  });
+
+  afterEach(async function afterEach() {
+    await browser.close();
+    browser = undefined;
+    page = undefined;
+  });
 
   it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await driver.executeScript(() => {
+    const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: '/pixelator/pixelator.json',
         scale: 4,
@@ -88,7 +75,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await driver.executeScript(() => {
+    const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: `${window.location.origin}/pixelator/pixelator.json`,
         scale: 4,
@@ -99,7 +86,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("can load model definitions in the browser", async () => {
-    const result = await driver.executeScript(() => {
+    const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']();
       return upscaler.getModelDefinitions();
     });
