@@ -1,5 +1,5 @@
-import { tf } from './dependencies.generated';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString } from './utils';
+import { tf, } from './dependencies.generated';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
     [
@@ -9,7 +9,7 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
   );
 
 if(foo)
-    console.log('ok');
+    {console.log('ok');}
 
 // Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;

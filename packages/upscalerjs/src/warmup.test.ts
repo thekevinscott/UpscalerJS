@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import warmup from './warmup';
-import { IModelDefinition } from './types';
+import { IModelDefinition, } from './types';
 
 const getFakeModel = () => {
   const predict = jest.fn(async () => {
@@ -22,12 +22,12 @@ describe('Warmup', () => {
       model: tf.LayersModel;
       modelDefinition: IModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2 } }),
+      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
     );
-    await expect(warmup(model, [['foo', 1]] as any)).rejects.toThrow(
+    await expect(warmup(model, [['foo', 1,],] as any)).rejects.toThrow(
       'Invalid value passed to warmup in warmupSizes. Expected two numbers, got foo,1',
     );
-    await expect(warmup(model, [[1, 'foo']] as any)).rejects.toThrow(
+    await expect(warmup(model, [[1, 'foo',],] as any)).rejects.toThrow(
       'Invalid value passed to warmup in warmupSizes. Expected two numbers, got 1,foo',
     );
   });
@@ -38,9 +38,9 @@ describe('Warmup', () => {
       model: tf.LayersModel;
       modelDefinition: IModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2 } }),
+      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
     );
-    expect(warmup(model, [20, 20] as any)).rejects.toEqual(expect.anything());
+    expect(warmup(model, [20, 20,] as any)).rejects.toEqual(expect.anything());
   });
 
   it('does nothing if provided an empty array', async () => {
@@ -49,7 +49,7 @@ describe('Warmup', () => {
       model: tf.LayersModel;
       modelDefinition: IModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2 } }),
+      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
     );
     await warmup(model, []);
     expect((await model).model.predict).not.toHaveBeenCalled();
@@ -64,13 +64,13 @@ describe('Warmup', () => {
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2 },
+          modelDefinition: { url: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [[20, 10]]);
+      await warmup(model, [[20, 10,],]);
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 20, 3],
+          shape: [1, 10, 20, 3,],
         }),
       );
     });
@@ -83,21 +83,21 @@ describe('Warmup', () => {
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2 },
+          modelDefinition: { url: 'foo', scale: 2, },
         }),
       );
       await warmup(model, [
-        [20, 10],
-        [200, 100],
+        [20, 10,],
+        [200, 100,],
       ]);
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 20, 3],
+          shape: [1, 10, 20, 3,],
         }),
       );
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 100, 200, 3],
+          shape: [1, 100, 200, 3,],
         }),
       );
     });
@@ -112,13 +112,13 @@ describe('Warmup', () => {
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2 },
+          modelDefinition: { url: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [{ patchSize: 10 }]);
+      await warmup(model, [{ patchSize: 10, },]);
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 10, 3],
+          shape: [1, 10, 10, 3,],
         }),
       );
     });
@@ -131,18 +131,18 @@ describe('Warmup', () => {
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2 },
+          modelDefinition: { url: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [{ patchSize: 10 }, { patchSize: 20 }]);
+      await warmup(model, [{ patchSize: 10, }, { patchSize: 20, },]);
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 10, 3],
+          shape: [1, 10, 10, 3,],
         }),
       );
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 20, 20, 3],
+          shape: [1, 20, 20, 3,],
         }),
       );
     });

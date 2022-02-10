@@ -1,5 +1,5 @@
-import { JSDOM } from 'jsdom';
-import { getImageAsPixels, getInvalidTensorError } from './image.browser';
+import { JSDOM, } from 'jsdom';
+import { getImageAsPixels, getInvalidTensorError, } from './image.browser';
 import * as tf from '@tensorflow/tfjs';
 jest.mock('@tensorflow/tfjs', () => {
   const tf = jest.requireActual('@tensorflow/tfjs');
@@ -10,12 +10,12 @@ jest.mock('@tensorflow/tfjs', () => {
       fromPixels: () => {
         return {
           expandDims: () => {
-            return tf.tensor([1]);
-          }
+            return tf.tensor([1,]);
+          },
         };
-      }
-    }
-  }
+      },
+    },
+  };
 });
 import * as utils from './utils';
 jest.mock('./utils', () => {
@@ -23,11 +23,11 @@ jest.mock('./utils', () => {
   return {
     ...utils,
     isFourDimensionalTensor: jest.fn((pixels) => utils.isFourDimensionalTensor(pixels)),
-  }
+  };
 });
 const mockedUtils = utils as jest.Mocked<typeof utils>;
 
-const { window } = new JSDOM('', { resources: 'usable' });
+const { window, } = new JSDOM('', { resources: 'usable', });
 global.Image = window.Image;
 global.HTMLImageElement = window.HTMLImageElement;
 const origSrc = Object.getOwnPropertyDescriptor(Image.prototype, 'src');
@@ -42,10 +42,10 @@ describe('Image', () => {
   describe('getImageAsPixels', () => {
     afterEach(() => {
       Object.defineProperty(global.Image.prototype, 'src', origSrc);
-    })
+    });
 
     it('loads an Image() if given a string as input', async () => {
-      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()))
+      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()));
       Object.defineProperty(global.Image.prototype, 'src', {
         set() {
           return mockSet(this);
@@ -59,7 +59,7 @@ describe('Image', () => {
 
     it('handles a rejected Image() if given a string as input', async () => {
       const error = 'some error';
-      const mockSet = jest.fn((_this) => setTimeout(() => _this.onerror(new Error(error))))
+      const mockSet = jest.fn((_this) => setTimeout(() => _this.onerror(new Error(error))));
       Object.defineProperty(global.Image.prototype, 'src', {
         set() {
           return mockSet(this);
@@ -75,7 +75,7 @@ describe('Image', () => {
       const img = new Image();
       img.src = 'foobar';
       img.crossOrigin = 'anonymous';
-      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()))
+      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()));
       Object.defineProperty(global.Image.prototype, 'src', {
         set() {
           return mockSet(this);
@@ -87,8 +87,8 @@ describe('Image', () => {
     });
 
     it('reads a rank 4 tensor directly without manipulation', async () => {
-      const input: tf.Tensor4D = tf.tensor([[[[1]]]]);
-      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()))
+      const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
+      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()));
       Object.defineProperty(global.Image.prototype, 'src', {
         set() {
           return mockSet(this);
@@ -98,12 +98,12 @@ describe('Image', () => {
       expect(mockSet).toHaveBeenCalledTimes(0);
       expect(result.canDispose).toEqual(false);
       expect(result.tensor).toBe(input);
-      expect(result.tensor.shape).toEqual([1,1,1,1]);
+      expect(result.tensor.shape).toEqual([1,1,1,1,]);
     });
 
     it('reads a rank 3 tensor and expands to rank 4', async () => {
-      const input: tf.Tensor3D = tf.tensor([[[1]]]);
-      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()))
+      const input: tf.Tensor3D = tf.tensor([[[1,],],]);
+      const mockSet = jest.fn((_this) => setTimeout(() => _this.onload()));
       Object.defineProperty(global.Image.prototype, 'src', {
         set() {
           return mockSet(this);
@@ -112,21 +112,21 @@ describe('Image', () => {
       const result = await getImageAsPixels(input);
       expect(mockSet).toHaveBeenCalledTimes(0);
       expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,1,1,1]);
+      expect(result.tensor.shape).toEqual([1,1,1,1,]);
     });
 
     it('handles an invalid (too small) tensor input', async () => {
-      const input = tf.tensor([[1]]);
+      const input = tf.tensor([[1,],]);
       await expect(() => getImageAsPixels(input as any))
         .rejects
-        .toThrow(getInvalidTensorError(input))
+        .toThrow(getInvalidTensorError(input));
     });
 
     it('handles an invalid (too large) tensor input', async () => {
-      const input = tf.tensor([[[[[1]]]]]);
+      const input = tf.tensor([[[[[1,],],],],]);
       await expect(() => getImageAsPixels(input as any))
         .rejects
-        .toThrow(getInvalidTensorError(input))
+        .toThrow(getInvalidTensorError(input));
     });
   });
 });

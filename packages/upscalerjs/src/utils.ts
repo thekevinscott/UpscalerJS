@@ -1,11 +1,12 @@
-import { tf } from './dependencies.generated';
-import { ROOT } from './constants';
+import { tf, } from './dependencies.generated';
+import { ROOT, } from './constants';
+import type { ImageInput, } from './image.browser';
 
-export const isString = (pixels: any): pixels is string => {
+export const isString = (pixels: ImageInput): pixels is string => {
   return typeof pixels === 'string';
 };
 
-export const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
+export const isHTMLImageElement = (pixels: ImageInput): pixels is HTMLImageElement => {
   try {
     return pixels instanceof HTMLImageElement;
   } catch (err) {
@@ -28,10 +29,10 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
 
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
-export const isTensor = (input: any): input is tf.Tensor => {
+export const isTensor = (input: ImageInput): input is tf.Tensor => {
   try { return !!input.shape; } catch(err) { }
   return false;
-}
+};
 
 const MODEL_DIR = 'models';
 

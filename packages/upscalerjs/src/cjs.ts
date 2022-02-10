@@ -1,2 +1,1 @@
-// tslint:disable-next-line:no-var-requires
-module.exports = require('./index').default;
+module.exports = require('./index').default; // eslint-disable-line

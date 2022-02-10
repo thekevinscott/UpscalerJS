@@ -48,7 +48,7 @@
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "eslint -c .eslintrc.js src/*.ts --ext .ts",
+    "lint": "eslint -c .eslintrc.js src --ext .ts",
     "test": "jest --config jestconfig.json",
     "watch": "chokidar \"src\" -c \"yarn build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"yarn build:esm\" -i \"test.ts\" -i \"generated.ts\"",

@@ -1,5 +1,5 @@
-import { tf } from './dependencies.generated';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString } from './utils';
+import { tf, } from './dependencies.generated';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
     [

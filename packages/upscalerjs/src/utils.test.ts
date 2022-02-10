@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { isString, isHTMLImageElement, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor } from './utils';
+import { isString, isHTMLImageElement, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
 
 describe('isString', () => {
   it('returns true for a string', () => {
@@ -19,11 +19,11 @@ describe('isHTMLImageElement', () => {
 
 describe('isFourDimensionalTensor', () => {
   it('returns true if a 4d tensor', () => {
-    expect(isFourDimensionalTensor(tf.tensor([[[[1]]]]))).toEqual(true);
+    expect(isFourDimensionalTensor(tf.tensor([[[[1,],],],]))).toEqual(true);
   });
 
   it('returns false for a 3d tensor', () => {
-    expect(isFourDimensionalTensor(tf.tensor([[[1]]]))).toEqual(false);
+    expect(isFourDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(false);
   });
 
     expect(isFourDimensionalTensor({} as any)).toEqual(false);
@@ -31,23 +31,23 @@ describe('isFourDimensionalTensor', () => {
 
 describe('isThreeDimensionalTensor', () => {
   it('returns true if a 3d tensor', () => {
-    expect(isThreeDimensionalTensor(tf.tensor([[[1]]]))).toEqual(true);
+    expect(isThreeDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(true);
   });
 
   it('returns false for a 4d tensor', () => {
-    expect(isThreeDimensionalTensor(tf.tensor([[[[1]]]]))).toEqual(false);
+    expect(isThreeDimensionalTensor(tf.tensor([[[[1,],],],]))).toEqual(false);
   });
 
   it('defensively handles invalid input', () => {
     expect(isThreeDimensionalTensor({} as any)).toEqual(false);
-  })
+  });
 });
 
 describe('isTensor', () => {
   it('returns true if a tensor', () => {
-    expect(isTensor(tf.tensor([[1]]))).toEqual(true);
+    expect(isTensor(tf.tensor([[1,],]))).toEqual(true);
   });
   it('returns false if not a tensor', () => {
     expect(isTensor([])).toEqual(false);
-  })
-})
+  });
+});
