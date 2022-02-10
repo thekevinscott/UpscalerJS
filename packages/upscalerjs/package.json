@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.10.0-canary.2",
+  "version": "0.10.0-canary.4",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
@@ -8,7 +8,7 @@
     ".": "./dist/browser/esm/index.js"
   },
   "engines": {
-    "node": ">=0.13"
+    "node": ">=14.0"
   },
   "module": "dist/browser/index.js",
   "types": "dist/browser/index.d.ts",
@@ -26,9 +26,10 @@
     "tfjs"
   ],
   "files": [
+    ".npmrc",
     "LICENSE",
-    "dist/**/*",
-    "models/**/*"
+    "CHANGELOG.md",
+    "dist/**/*"
   ],
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
