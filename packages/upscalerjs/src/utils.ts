@@ -29,9 +29,8 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
 
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
-export const isTensor = (input: ImageInput): input is tf.Tensor => {
-  try { return !!input.shape; } catch(err) { }
-  return false;
+export const isTensor = (input: ImageInput | tf.Tensor): input is tf.Tensor => {
+  return input instanceof tf.Tensor;
 };
 
 const MODEL_DIR = 'models';

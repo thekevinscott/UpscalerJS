@@ -7,7 +7,7 @@ describe('isString', () => {
   });
 
   it('returns false for a non-string', () => {
-    expect(isString({})).toEqual(false);
+    expect(isString({} as any)).toEqual(false);
   });
 });
 
@@ -48,6 +48,6 @@ describe('isTensor', () => {
     expect(isTensor(tf.tensor([[1,],]))).toEqual(true);
   });
   it('returns false if not a tensor', () => {
-    expect(isTensor([])).toEqual(false);
+    expect(isTensor([] as any)).toEqual(false);
   });
 });

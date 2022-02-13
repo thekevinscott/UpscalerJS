@@ -3,7 +3,7 @@ import warmup from './warmup';
 import { IModelDefinition, } from './types';
 
 const getFakeModel = () => {
-  const predict = jest.fn(async () => {
+  const predict = jest.fn(() => {
     return {
       dataSync: () => {},
       dispose: () => {},

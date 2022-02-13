@@ -279,7 +279,7 @@ export const predict = async (
       colTensor.dispose();
       await tf.nextFrame();
     }
-    return upscaledTensor.squeeze() ;
+    return upscaledTensor.squeeze() as tf.Tensor3D;
   }
 
   return tf.tidy(() => {
@@ -287,7 +287,7 @@ export const predict = async (
     if (progress) {
       progress(1);
     }
-    return pred.squeeze() ;
+    return pred.squeeze() as tf.Tensor3D;
   });
 };
 
