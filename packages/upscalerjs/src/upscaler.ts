@@ -1,11 +1,11 @@
-import { tf } from './dependencies.generated';
+import { tf, } from './dependencies.generated';
 import {
   IUpscalerOptions,
   IUpscaleOptions,
   WarmupSizes,
   IModelDefinition,
 } from './types';
-import loadModel, { getModelDefinitions } from './loadModel';
+import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
 
@@ -33,7 +33,7 @@ class Upscaler {
     image: string | HTMLImageElement | tf.Tensor3D,
     options: IUpscaleOptions = {},
   ) => {
-    const { model, modelDefinition } = await this._model;
+    const { model, modelDefinition, } = await this._model;
     return upscale(model, image, modelDefinition, options);
   };
 

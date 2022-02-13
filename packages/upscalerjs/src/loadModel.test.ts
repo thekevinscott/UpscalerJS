@@ -11,12 +11,12 @@ import * as utils from './utils';
 jest.mock('./models');
 jest.mock('@tensorflow/tfjs');
 jest.mock('./utils', () => ({
-  ...(jest.requireActual('./utils') as any),
+  ...(jest.requireActual('./utils') ),
   warn: jest.fn(),
 }));
 
 const mockModels = (obj: { [index: string]: any }) =>
-  Object.entries(obj).forEach(([key, val]) => ((models as any)[key] = val));
+  Object.entries(obj).forEach(([key, val,]) => ((models as any)[key] = val));
 
 describe('checkDeprecatedModels', () => {
   it('does not report if not a deprecated model', () => {
@@ -27,7 +27,7 @@ describe('checkDeprecatedModels', () => {
   it('does report if a deprecated model', () => {
     checkDeprecatedModels(
       {
-        foo: ['foo', 'bar', 'baz'],
+        foo: ['foo', 'bar', 'baz',],
       },
       'foo',
     );
@@ -44,7 +44,7 @@ describe('warnDeprecatedModel', () => {
     ];
     warnDeprecatedModel(...args);
     expect(utils.warn).toBeCalledWith(
-      expect.arrayContaining([expect.stringContaining('psnr')]),
+      expect.arrayContaining([expect.stringContaining('psnr'),]),
     );
   });
 });
