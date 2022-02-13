@@ -13,10 +13,10 @@ jobs:
         with:
           node-version: '14'
 
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         run: yarn
@@ -43,10 +43,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
@@ -71,10 +71,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
@@ -98,10 +98,10 @@ jobs:
         with:
           node-version: '14'
 
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
@@ -127,10 +127,10 @@ jobs:
         with:
           node-version: '16'
 
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
