@@ -8,9 +8,6 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
     ].join(' '),
   );
 
-if(foo)
-    {console.log('ok');}
-
 // Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
 export type ImageInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
