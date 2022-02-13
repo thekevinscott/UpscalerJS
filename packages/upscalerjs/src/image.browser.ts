@@ -36,7 +36,7 @@ export const getImageAsPixels = async (
   }
 
   if (isString(pixels)) {
-    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const imgHTMLElement = await new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
       img.src = pixels;
       img.crossOrigin = 'anonymous';
@@ -44,23 +44,23 @@ export const getImageAsPixels = async (
       img.onerror = reject;
     });
 
-    const tensor = tf.browser.fromPixels(img);
+    const tensorFromHTMLElemenet = tf.browser.fromPixels(imgHTMLElement);
 
-    if (isFourDimensionalTensor(tensor)) {
+    if (isFourDimensionalTensor(tensorFromHTMLElemenet)) {
       return {
-        tensor,
+        tensor: tensorFromHTMLElemenet,
         canDispose: true,
       };
     }
 
-    if (isThreeDimensionalTensor(tensor)) {
+    if (isThreeDimensionalTensor(tensorFromHTMLElemenet)) {
       return {
-        tensor: tensor.expandDims(0),
+        tensor: tensorFromHTMLElemenet.expandDims(0),
         canDispose: true,
       };
     }
 
-    throw getInvalidTensorError(tensor);
+    throw getInvalidTensorError(tensorFromHTMLElemenet);
   }
 
   const tensor = tf.browser.fromPixels(pixels);
