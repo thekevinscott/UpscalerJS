@@ -2,8 +2,8 @@ name: 'Tests'
 on: [push]
 
 jobs:
-  unit:
-    name: 'Tests: Unit'
+  unit-browser:
+    name: 'Tests: Unit / Browser'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -11,7 +11,7 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
       # - uses: actions/cache@v2
       #   with:
@@ -22,7 +22,35 @@ jobs:
         run: yarn
 
       - name: 'Unit Tests'
-        run: yarn test:unit
+        run: yarn test:unit:browser
+
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/upscalerjs/coverage
+          verbose: true
+
+  unit-node:
+    name: 'Tests: Unit / Node'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: '**/node_modules'
+      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        run: yarn
+
+      - name: 'Unit Tests'
+        run: yarn test:unit:node
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
@@ -85,36 +113,6 @@ jobs:
         run: yarn test:integration:browser --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-
-
-  integration-node-local-14:
-    name: 'Tests: Integration / Node / Local / v14'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-
-      - name: 'Installing'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn
-
-      - name: 'Installing Node-specific deps'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: cd test/lib/node && yarn
-
-      - name: 'Integration Tests'
-        run: yarn test:integration:node --ci
 
   integration-node-local-16:
     name: 'Tests: Integration / Node / Local / v16'

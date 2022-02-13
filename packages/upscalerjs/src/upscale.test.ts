@@ -1019,6 +1019,7 @@ describe('predict', () => {
         padding: 0,
       },
     );
+    console.log('back');
     expect(result.dataSync()).toEqual(
       tf
         .tensor([
@@ -1106,7 +1107,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).getImageAsPixels = () => ({
+    (mockedImage as any).default.getImageAsPixels = () => ({
       tensor: img,
       canDispose: true,
     });
@@ -1129,7 +1130,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).getImageAsPixels = () => ({
+    (mockedImage as any).default.getImageAsPixels = () => ({
       tensor: img,
       canDispose: true,
     });
