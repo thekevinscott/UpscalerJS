@@ -8,7 +8,7 @@
     ".": "./dist/browser/esm/index.js"
   },
   "engines": {
-    "node": ">=14.0"
+    "node": ">=16.0"
   },
   "module": "dist/browser/esm/index.js",
   "types": "dist/browser/esm/index.d.ts",
