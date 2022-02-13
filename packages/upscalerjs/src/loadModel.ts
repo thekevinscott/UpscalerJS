@@ -1,7 +1,7 @@
-import * as tf from './tfjs.generated';
-import { IUpscalerOptions, IModelDefinition } from './types';
-import MODELS, { DEFAULT_MODEL } from './models';
-import { warn } from './utils';
+import { tf, } from './dependencies.generated';
+import { IUpscalerOptions, IModelDefinition, } from './types';
+import MODELS, { DEFAULT_MODEL, } from './models';
+import { warn, } from './utils';
 
 const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -23,10 +23,10 @@ export interface DeprecationWarnings {
 }
 
 const DEPRECATION_WARNINGS: DeprecationWarnings = {
-  'div2k-2x': ['div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.8.0'],
-  'div2k-3x': ['div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.8.0'],
-  'div2k-4x': ['div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.8.0'],
-  psnr: ['psnr', 'idealo/psnr-small', '0.8.0'],
+  'div2k-2x': ['div2k-2x', 'div2k/rdn-C3-D10-G64-G064-x2', '0.8.0',],
+  'div2k-3x': ['div2k-3x', 'div2k/rdn-C3-D10-G64-G064-x3', '0.8.0',],
+  'div2k-4x': ['div2k-4x', 'div2k/rdn-C3-D10-G64-G064-x4', '0.8.0',],
+  psnr: ['psnr', 'idealo/psnr-small', '0.8.0',],
 };
 
 export const checkDeprecatedModels = (
@@ -113,10 +113,10 @@ export const getModelDescription = async (
 ): Promise<string> => {
   try {
     if (val.configURL) {
-      const response = await fetch(val.configURL).then((resp) => resp.json());
+      const response = await fetch(val.configURL).then((resp) => resp.json()) as { description: string };
       return response.description;
     }
-  } catch (err) {}
+  } catch (err) { }
   return '';
 };
 
@@ -125,7 +125,7 @@ export const prepareModelDefinitions = async (
 ) => {
   const entries = Object.entries(MODELS);
   await Promise.all(
-    entries.map(async ([key, val]) => {
+    entries.map(async ([key, val,]) => {
       const config = await getModelDescription(val);
       preparedModelDefinitions[key] = {
         ...val,

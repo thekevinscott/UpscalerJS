@@ -1,4 +1,5 @@
 import callExec from "../utils/callExec";
+import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 
@@ -6,25 +7,37 @@ const ROOT = path.join(__dirname);
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
+const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
+  // Make sure we load the version local to node_modules, _not_ the local version on disk,
+  // so we can ensure the build process is accurate and working correctly
+  rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
+
+  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
+    cwd: UPSCALER_PATH,
+  });
+
+  await callExec(`mv ${NODE_MODULES}/upscalerjs ${NODE_MODULES}/${localNameForPackage}`, {
+    cwd: UPSCALER_PATH,
+  });
+  
+  const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
+  packageJSON.name = localNameForPackage;
+  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
+}
+
 export const prepareScriptBundleForCJS = async () => {
+  const localNameForPackage = 'upscaler-for-node';
+
   await callExec('yarn', {
     cwd: ROOT,
   });
 
-  rimraf.sync(`${NODE_MODULES}/upscaler`);
-
-  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/upscaler`, {
-    cwd: UPSCALER_PATH,
-  });
+  moveUpscalerToLocallyNamedPackage(localNameForPackage);
 };
 
-export const executeNodeScript = async (args: string = '') => {
-  let data = '';
-  await callExec(`node "./src/upscale_image.js" ${args}`, {
+type Stdout = (data: string) => void;
+export const executeNodeScript = async (file: string, stdout?: Stdout) => {
+  await callExec(`node "./src/${file}"`, {
     cwd: ROOT
-  }, chunk => {
-    data += chunk;
-  });
-
-  return data.trim();
+  }, stdout);
 };

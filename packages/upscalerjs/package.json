@@ -1,17 +1,18 @@
 {
   "name": "upscaler",
-  "version": "0.10.0-canary.1",
+  "version": "0.10.0-canary.4",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
     "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
-    ".": "./dist/browser/index.js"
+    ".": "./dist/browser/esm/index.js"
   },
   "engines": {
-    "node": ">=0.13"
+    "node": ">=16.0"
   },
-  "module": "dist/browser/index.js",
-  "types": "dist/browser/index.d.ts",
+  "module": "dist/browser/esm/index.js",
+  "types": "dist/browser/esm/index.d.ts",
+  "umd:main": "dist/browser/umd/upscaler.min.js",
   "keywords": [
     "super resolution",
     "image",
@@ -26,35 +27,31 @@
     "tfjs"
   ],
   "files": [
+    ".npmrc",
     "LICENSE",
-    "dist/**/*",
-    "models/**/*"
+    "CHANGELOG.md",
+    "dist/**/*"
   ],
   "scripts": {
     "build": "rimraf dist && yarn build:node && yarn build:browser",
-
-    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn set:tfjs '@tensorflow/tfjs' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
-    "build:node": "rimraf dist/node && mkdir -p dist/node && yarn set:tfjs '@tensorflow/tfjs-node' && yarn lerna run build:cjs && mv dist/cjs dist/node/cjs",
-    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn set:tfjs '@tensorflow/tfjs-node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
-
-    "build:cjs": "tsc --module commonjs --target es5 --outDir dist/cjs",
-    "build:esm": "tsc --module esnext --moduleResolution node --target esnext --outDir dist/esm",
-    "build:umd:tsc": "tsc --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
+    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn scaffold:platform 'browser' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
+    "build:node": "rimraf dist/node && mkdir -p dist/node && yarn scaffold:platform 'node' && yarn build:cjs && mv dist/cjs dist/node/cjs",
+    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn scaffold:platform 'node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
+    "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5 --outDir dist/cjs",
+    "build:esm": "tsc -p tsconfig.browser.json --module esnext --moduleResolution node --target esnext --outDir dist/esm",
+    "build:umd:tsc": "tsc -p tsconfig.browser.json --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "yarn rollup -c rollup.config.js --failAfterWarnings",
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
-    "build:umd:compress": "uglifyjs --source-map --comments --output dist/umd/upscaler.min.js -- dist/umd/upscaler.js",
-    "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/umd/tmp",
-
-    "set:tfjs": "node ../../scripts/set-tfjs.ts",
-
+    "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
+    "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/tmp",
+    "scaffold:platform": "ts-node ../../scripts/scaffold-platform.ts",
     "docs:serve": "docsify serve docs --port 3030",
-    "prepare": "yarn set:tfjs '@tensorflow/tfjs' && yarn build",
+    "prepare": "yarn build",
     "preversion": "yarn lint",
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "echo 'Linting code' && tslint -p tsconfig.json",
+    "lint": "eslint -c .eslintrc.js src --ext .ts",
     "test": "jest --config jestconfig.json",
-
     "watch": "chokidar \"src\" -c \"yarn build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"yarn build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"yarn build:umd\" -i \"test.ts\" -i \"generated.ts\"",
@@ -77,7 +74,16 @@
     "@tensorflow/tfjs": "^3.13.0"
   },
   "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
     "tensor-as-base64": "^0.1.1"
   },
-  "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f"
+  "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.11.0",
+    "@typescript-eslint/parser": "^5.11.0",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jsdoc": "^37.8.2",
+    "eslint-plugin-prefer-arrow": "^1.2.3"
+  }
 }

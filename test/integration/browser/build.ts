@@ -1,88 +1,24 @@
-import * as browserstack from 'browserstack-local';
-import * as webdriver from 'selenium-webdriver';
+/****
+ * Tests that different build outputs all function correctly
+ */
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
+import puppeteer from 'puppeteer';
 
-const DEFAULT_CAPABILITIES = {
-  'build': process.env.BROWSERSTACK_BUILD_NAME,
-  'project': process.env.BROWSERSTACK_PROJECT_NAME,
-  'browserstack.local': true,
-  os: 'windows',
-  os_version: '11',
-  browserName: 'chrome',
-  browser_version: 'latest'
-}
-
-const TRACK_TIME = false;
-const username = process.env.BROWSERSTACK_USERNAME;
-const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
-
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+const JEST_TIMEOUT_IN_SECONDS = 60;
+jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
-const startBsLocal = (bsLocal) => new Promise(resolve => {
-  bsLocal.start({
-    'key': process.env.BROWSERSTACK_ACCESS_KEY,
-    'force': true,
-    'onlyAutomate': 'true',
-    'forceLocal': 'true',
-  }, resolve);
-});
-
-describe('Builds', () => {
+describe('Build Integration Tests', () => {
   let server;
-  let bsLocal;
-  let driver;
+  let browser;
+  let page;
 
   const PORT = 8099;
 
-  beforeAll(async function beforeAll(done) {
-    const start = new Date().getTime();
-    const startBrowserStack = async () => {
-      bsLocal = new browserstack.Local();
-      await startBsLocal(bsLocal);
-    };
-
-    await Promise.all([
-      startBrowserStack(),
-    ]);
-
-      driver = new webdriver.Builder()
-        .usingServer(serverURL)
-        .withCapabilities(DEFAULT_CAPABILITIES)
-        .build();
-
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
-    }
-    done();
-  });
-
-  afterAll(async function afterAll(done) {
-    const start = new Date().getTime();
-    const stopBrowserstack = () => new Promise(resolve => {
-      if (bsLocal && bsLocal.isRunning()) {
-        bsLocal.stop(resolve);
-      }
-    });
-
-    await Promise.all([
-      stopBrowserstack(),
-      driver.quit(),
-    ]);
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
-    }
-    done();
-  });
-
-  afterEach(async function afterEach(done) {
+  afterEach(async function afterEach() {
     const stopServer = () => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
@@ -92,15 +28,23 @@ describe('Builds', () => {
     });
     await Promise.all([
       stopServer(),
+      browser ? browser.close() : undefined,
     ]);
-    done();
+    browser = undefined;
+    page = undefined;
   });
+
+  const startBrowser = async () => {
+    browser = await puppeteer.launch();
+    page = await browser.newPage();
+    await page.goto(`http://localhost:${PORT}`);
+  }
 
   it("upscales using a UMD build via a script tag", async () => {
     await prepareScriptBundleForUMD();
     server = await startServer(PORT, SCRIPT_DIST);
-    await driver.get(`http://localhost:${PORT}`);
-    const result = await driver.executeScript(() => {
+    await startBrowser();
+    const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: '/pixelator/pixelator.json',
@@ -115,9 +59,9 @@ describe('Builds', () => {
     await prepareScriptBundleForESM();
     await bundleWebpack();
     server = await startServer(PORT, WEBPACK_DIST);
-    await driver.get(`http://localhost:${PORT}`);
-    await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
-    const result = await driver.executeScript(() => {
+    await startBrowser();
+    await page.waitForFunction('document.title.endsWith("| Loaded")');
+    const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: '/pixelator/pixelator.json',

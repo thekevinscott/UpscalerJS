@@ -1,6 +1,6 @@
-import { IModelDefinition, IIntermediaryModelDefinition } from './types';
+import { IModelDefinition, IIntermediaryModelDefinition, } from './types';
 import idealoGans from './models/idealo-gans';
-import { buildURL, buildConfigURL } from './utils';
+import { buildURL, buildConfigURL, } from './utils';
 
 const buildModelsConfig = (config: {
   [index: string]: IIntermediaryModelDefinition;
@@ -8,7 +8,7 @@ const buildModelsConfig = (config: {
   [index: string]: IModelDefinition;
 } =>
   Object.entries(config).reduce(
-    (obj, [key, val]) => ({
+    (obj, [key, val,]) => ({
       ...obj,
       [key]: {
         ...val,
@@ -39,6 +39,10 @@ const MODELS: {
     scale: 2,
   },
   'idealo/gans': idealoGans,
+  'pixelator': {
+    urlPath: 'pixelator',
+    scale: 4,
+  },
 });
 
 export default MODELS;

@@ -1,23 +1,26 @@
-import * as tf from './tfjs.generated';
-import { ROOT } from './constants';
+import { tf, } from './dependencies.generated';
+import { ROOT, } from './constants';
+import type { GetImageAsPixelsInput, } from './image.generated';
 
-export const isString = (pixels: any): pixels is string => {
+export const isString = (pixels: GetImageAsPixelsInput): pixels is string => {
   return typeof pixels === 'string';
 };
 
-export const isHTMLImageElement = (pixels: any): pixels is HTMLImageElement => {
-  try {
-    return pixels instanceof HTMLImageElement;
-  } catch (err) {
-    // may be in a webworker, or in Node
+function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
+  function fn(pixels: tf.Tensor): pixels is T {
+    try {
+      return pixels.shape.length === rank;
+    } catch (err) { }
     return false;
   }
-};
 
-export const isFourDimensionalTensor = (
-  pixels: tf.Tensor,
-): pixels is tf.Tensor4D => {
-  return pixels.shape.length === 4;
+  return fn;
+}
+
+export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
+export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
+export const isTensor = (input: any): input is tf.Tensor => {
+  return input instanceof tf.Tensor;
 };
 
 const MODEL_DIR = 'models';

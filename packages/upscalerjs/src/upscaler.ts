@@ -1,14 +1,14 @@
-import * as tf from './tfjs.generated';
+import { tf, } from './dependencies.generated';
 import {
   IUpscalerOptions,
   IUpscaleOptions,
   WarmupSizes,
   IModelDefinition,
 } from './types';
-import { getModelDefinitions } from './loadModel';
-// import loadModel, { getModelDefinitions } from './loadModel';
+import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
+import type { GetImageAsPixelsInput } from './image.generated';
 
 class Upscaler {
   _opts: IUpscalerOptions;
@@ -22,8 +22,8 @@ class Upscaler {
       ...opts,
     };
     this._model = new Promise(() => {})
-    // this._model = loadModel(this._opts);
-    // void warmup(this._model, this._opts.warmupSizes || []);
+    this._model = loadModel(this._opts);
+    void warmup(this._model, this._opts.warmupSizes || []);
   }
 
   getModel = () => this._model;
@@ -32,15 +32,15 @@ class Upscaler {
   };
 
   upscale = async (
-    image: string | HTMLImageElement | tf.Tensor3D,
+    image: GetImageAsPixelsInput,
     options: IUpscaleOptions = {},
   ) => {
-    const { model, modelDefinition } = await this._model;
+    const { model, modelDefinition, } = await this._model;
     return upscale(model, image, modelDefinition, options);
   };
 
-  getModelDefinitions = () => {
-    return getModelDefinitions();
+  getModelDefinitions = async () => {
+    return await getModelDefinitions();
   };
 }
 
