@@ -1,18 +1,9 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
-import type { ImageInput, } from './image.browser';
+import type { GetImageAsPixelsInput, } from './image.generated';
 
-export const isString = (pixels: ImageInput): pixels is string => {
+export const isString = (pixels: GetImageAsPixelsInput): pixels is string => {
   return typeof pixels === 'string';
-};
-
-export const isHTMLImageElement = (pixels: ImageInput): pixels is HTMLImageElement => {
-  try {
-    return pixels instanceof HTMLImageElement;
-  } catch (err) {
-    // may be in a webworker, or in Node
-    return false;
-  }
 };
 
 function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
@@ -22,14 +13,13 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
     } catch (err) { }
     return false;
   }
-  // Object.defineProperty(fn, 'name', {value: 'isFourDimensionalTensor', writable: false});
 
   return fn;
 }
 
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
-export const isTensor = (input: ImageInput | tf.Tensor): input is tf.Tensor => {
+export const isTensor = (input: any): input is tf.Tensor => {
   return input instanceof tf.Tensor;
 };
 

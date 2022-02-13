@@ -6,10 +6,10 @@ import loadModel, {
   checkDeprecatedModels,
 } from './loadModel';
 import * as models from './models';
-import * as tf from '@tensorflow/tfjs';
+import { tf } from './dependencies.generated';
 import * as utils from './utils';
 jest.mock('./models');
-jest.mock('@tensorflow/tfjs');
+jest.mock('./dependencies.generated');
 jest.mock('./utils', () => ({
   ...(jest.requireActual('./utils') ),
   warn: jest.fn(),

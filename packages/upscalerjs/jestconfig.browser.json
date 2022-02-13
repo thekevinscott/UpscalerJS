@@ -9,6 +9,7 @@
     "node_modules",
     ".generated.ts"
   ],
-  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "modulePathIgnorePatterns": ["node.test.ts"],
+  "testRegex": "test\\.ts$",
+  "moduleFileExtensions": ["js", "ts"]
 }

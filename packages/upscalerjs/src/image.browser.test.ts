@@ -1,5 +1,5 @@
 import { JSDOM, } from 'jsdom';
-import { getImageAsPixels, getInvalidTensorError, } from './image.browser';
+import { isHTMLImageElement, getImageAsPixels, getInvalidTensorError, } from './image.browser';
 import * as tf from '@tensorflow/tfjs';
 jest.mock('@tensorflow/tfjs', () => {
   const tf = jest.requireActual('@tensorflow/tfjs');
@@ -128,5 +128,11 @@ describe('Image', () => {
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
+  });
+});
+
+describe('isHTMLImageElement', () => {
+  it('returns false for a non HTMLImageElement', () => {
+    expect(isHTMLImageElement('foo')).toEqual(false);
   });
 });

@@ -8,6 +8,7 @@ import {
 import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
+import type { GetImageAsPixelsInput } from './image.generated';
 
 class Upscaler {
   _opts: IUpscalerOptions;
@@ -30,7 +31,7 @@ class Upscaler {
   };
 
   upscale = async (
-    image: string | HTMLImageElement | tf.Tensor3D,
+    image: GetImageAsPixelsInput,
     options: IUpscaleOptions = {},
   ) => {
     const { model, modelDefinition, } = await this._model;

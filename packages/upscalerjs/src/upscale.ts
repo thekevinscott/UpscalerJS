@@ -3,7 +3,7 @@ import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
 import { getImageAsPixels, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, } from './utils';
-import { ImageInput, } from './image.browser';
+import type { GetImageAsPixelsInput, } from './image.generated';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -227,7 +227,7 @@ export const predict = async (
     let upscaledTensor: tf.Tensor4D = tf.zeros([
       1,
       0,
-      originalSize[1] * scale,
+      originalSize[1] * scale * columns,
       channels,
     ]);
     const total = rows * columns;
@@ -268,12 +268,14 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
+      // TODO: Memory leak?
         colTensor = colTensor.concat(slicedPrediction, 2);
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
       }
 
+      // TODO: Memory leak?
       upscaledTensor = upscaledTensor.concat(colTensor, 1);
       await tf.nextFrame();
       colTensor.dispose();
@@ -303,12 +305,12 @@ function getProcessedPixels<T extends tf.Tensor>(
   return upscaledTensor;
 }
 
-const upscale = async (
+async function upscale<T extends GetImageAsPixelsInput>(
   model: tf.LayersModel,
-  image: ImageInput,
+  image: T,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
-) => {
+) {
   const { tensor: pixels, canDispose, } = await getImageAsPixels(image);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(

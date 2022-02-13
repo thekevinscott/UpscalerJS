@@ -1,69 +1,64 @@
-import { tf, } from './dependencies.generated';
+import * as fs from 'fs';
+import * as tf from '@tensorflow/tfjs-node';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
-    [
-      `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-      'Only 3 or 4 rank tensors are supported.',
-    ].join(' '),
-  );
+  [
+    `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+    'Only 3 or 4 rank tensors are supported.',
+  ].join(' '),
+);
 
-// Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
-type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
-export type ImageInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
+export const getInvalidInput = (input: any) => new Error([
+  `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
+  `a string representing a local path or http-accessible path to an image,`,
+  `a Uint8Array, or a Buffer.`
+].join(' '))
+
+const isUint8Array = (input: GetImageAsPixelsInput): input is Uint8Array => {
+  return input.constructor === Uint8Array;
+}
+
+const isBuffer = (input: GetImageAsPixelsInput): input is Buffer => {
+  return input.constructor === Buffer;
+}
+
+const getTensorFromInput = async (input: GetImageAsPixelsInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
+  if (isUint8Array(input)) {
+    return tf.node.decodeImage(input);
+  }
+
+  if (isBuffer(input)) {
+    return tf.node.decodeImage(input);
+  }
+
+  if (isTensor(input)) {
+    return input;
+  }
+
+  if (isString(input)) {
+    if (input.startsWith('http')) {
+      const arrayBuffer = await fetch(input).then(r => r.blob()).then(blob => blob.arrayBuffer());
+      const image = new Uint8Array(arrayBuffer);
+      return tf.node.decodeImage(image);
+    } else {
+      const image = new Uint8Array(fs.readFileSync(input));
+      return tf.node.decodeImage(image);
+    }
+  }
+
+  throw getInvalidInput(input);
+}
+
+export type GetImageAsPixelsInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 export const getImageAsPixels = async (
-  pixels: ImageInput,
+  input: GetImageAsPixelsInput,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;
 }> => {
-  if (isTensor(pixels)) {
-    if (isFourDimensionalTensor(pixels)) {
-      return {
-        tensor: pixels,
-        canDispose: false,
-      };
-    }
+  const tensor = await getTensorFromInput(input);
 
-    if (isThreeDimensionalTensor(pixels)) {
-      return {
-        tensor: pixels.expandDims(0),
-        canDispose: true,
-      };
-    }
-
-    throw getInvalidTensorError(pixels);
-  }
-
-  if (isString(pixels)) {
-    const imgHTMLElement = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.src = pixels;
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-    });
-
-    const tensorFromHTMLElemenet = tf.browser.fromPixels(imgHTMLElement);
-
-    if (isFourDimensionalTensor(tensorFromHTMLElemenet)) {
-      return {
-        tensor: tensorFromHTMLElemenet,
-        canDispose: true,
-      };
-    }
-
-    if (isThreeDimensionalTensor(tensorFromHTMLElemenet)) {
-      return {
-        tensor: tensorFromHTMLElemenet.expandDims(0),
-        canDispose: true,
-      };
-    }
-
-    throw getInvalidTensorError(tensorFromHTMLElemenet);
-  }
-
-  const tensor = tf.browser.fromPixels(pixels);
   if (isThreeDimensionalTensor(tensor)) {
     return {
       tensor: tensor.expandDims(0),
@@ -71,8 +66,12 @@ export const getImageAsPixels = async (
     };
   }
 
-  return {
-    tensor,
-    canDispose: true,
-  };
+  if (isFourDimensionalTensor(tensor)) {
+    return {
+      tensor,
+      canDispose: !isTensor(input),
+    };
+  }
+
+  throw getInvalidTensorError(tensor);
 };
