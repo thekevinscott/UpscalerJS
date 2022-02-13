@@ -10,7 +10,7 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
 );
 
 export const getInvalidInput = (input: any) => new Error([
-  `Unknown input ${input} provided. Input must be either a rank 3 or 4 tensor,`,
+  `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
   `a string representing a local path or http-accessible path to an image,`,
   `a Uint8Array, or a Buffer.`
 ].join(' '))
