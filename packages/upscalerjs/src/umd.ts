@@ -1,5 +1,5 @@
 import Upscaler from './upscaler';
-import { getRowsAndColumns, getTensorDimensions } from './upscale';
+import { getRowsAndColumns, getTensorDimensions, } from './upscale';
 
 (
   Upscaler as typeof Upscaler & {

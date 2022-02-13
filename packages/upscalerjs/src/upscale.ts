@@ -1,9 +1,9 @@
-import { tf } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn } from './types';
-import { getImageAsPixels } from './image.generated';
+import { tf, } from './dependencies.generated';
+import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
+import { getImageAsPixels, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn } from './utils';
-import { ImageInput } from './image.browser';
+import { warn, } from './utils';
+import { ImageInput, } from './image.browser';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -31,7 +31,7 @@ export const getRowsAndColumns = (
   rows: number;
   columns: number;
 } => {
-  const [height, width] = getWidthAndHeight(pixels);
+  const [height, width,] = getWidthAndHeight(pixels);
 
   return {
     rows: Math.ceil(height / patchSize),
@@ -145,7 +145,7 @@ export const getTensorDimensions = ({
     row * patchSize - padding,
     col * patchSize - padding,
   ];
-  const sliceOrigin: [number, number] = [padding, padding];
+  const sliceOrigin: [number, number] = [padding, padding,];
 
   checkAndAdjustStartingPosition(0, origin, sliceOrigin);
   checkAndAdjustStartingPosition(1, origin, sliceOrigin);
@@ -200,7 +200,7 @@ export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { progress, patchSize, padding }: IUpscaleOptions = {},
+  { progress, patchSize, padding, }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   const scale = modelDefinition.scale;
 
@@ -214,9 +214,9 @@ export const predict = async (
       ]);
     }
     const channels = 3;
-    const [height, width] = pixels.shape.slice(1);
-    const { rows, columns } = getRowsAndColumns(pixels, patchSize);
-    const { size: originalSize } = getTensorDimensions({
+    const [height, width,] = pixels.shape.slice(1);
+    const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+    const { size: originalSize, } = getTensorDimensions({
       row: 0,
       col: 0,
       patchSize,
@@ -239,7 +239,7 @@ export const predict = async (
         channels,
       ]);
       for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions({
+        const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
           col,
           patchSize,
@@ -248,8 +248,8 @@ export const predict = async (
           width,
         });
         const slicedPixels = pixels.slice(
-          [0, origin[0], origin[1]],
-          [-1, size[0], size[1]],
+          [0, origin[0], origin[1],],
+          [-1, size[0], size[1],],
         );
         await tf.nextFrame();
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
@@ -261,8 +261,8 @@ export const predict = async (
           progress(index / total);
         }
         const slicedPrediction = prediction.slice(
-          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale],
-          [-1, sliceSize[0] * scale, sliceSize[1] * scale],
+          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
+          [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
         await tf.nextFrame();
         prediction.dispose();
@@ -309,7 +309,7 @@ const upscale = async (
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) => {
-  const { tensor: pixels, canDispose } = await getImageAsPixels(image as any);
+  const { tensor: pixels, canDispose, } = await getImageAsPixels(image);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
