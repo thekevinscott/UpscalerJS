@@ -12,33 +12,33 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
 export type ImageInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
 export const getImageAsPixels = async (
-  pixels: ImageInput,
+  input: ImageInput,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;
 }> => {
-  if (isTensor(pixels)) {
-    if (isFourDimensionalTensor(pixels)) {
+  if (isTensor(input)) {
+    if (isFourDimensionalTensor(input)) {
       return {
-        tensor: pixels,
+        tensor: input,
         canDispose: false,
       };
     }
 
-    if (isThreeDimensionalTensor(pixels)) {
+    if (isThreeDimensionalTensor(input)) {
       return {
-        tensor: pixels.expandDims(0),
+        tensor: input.expandDims(0),
         canDispose: true,
       };
     }
 
-    throw getInvalidTensorError(pixels);
+    throw getInvalidTensorError(input);
   }
 
-  if (isString(pixels)) {
+  if (isString(input)) {
     const imgHTMLElement = await new Promise<HTMLImageElement>((resolve, reject) => {
       const img = new Image();
-      img.src = pixels;
+      img.src = input;
       img.crossOrigin = 'anonymous';
       img.onload = () => resolve(img);
       img.onerror = reject;
@@ -63,7 +63,7 @@ export const getImageAsPixels = async (
     throw getInvalidTensorError(tensorFromHTMLElemenet);
   }
 
-  const tensor = tf.browser.fromPixels(pixels);
+  const tensor = tf.browser.fromPixels(input);
   if (isThreeDimensionalTensor(tensor)) {
     return {
       tensor: tensor.expandDims(0),
