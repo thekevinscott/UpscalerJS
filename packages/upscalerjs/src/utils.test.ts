@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { isString, isHTMLImageElement, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
 
 describe('isString', () => {
   it('returns true for a string', () => {
@@ -8,12 +8,6 @@ describe('isString', () => {
 
   it('returns false for a non-string', () => {
     expect(isString({} as any)).toEqual(false);
-  });
-});
-
-describe('isHTMLImageElement', () => {
-  it('returns false for a non HTMLImageElement', () => {
-    expect(isHTMLImageElement('foo')).toEqual(false);
   });
 });
 

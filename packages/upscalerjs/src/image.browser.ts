@@ -74,3 +74,12 @@ export const getImageAsPixels = async (
   };
 
 };
+
+export const isHTMLImageElement = (pixels: GetImageAsPixelsInput): pixels is HTMLImageElement => {
+  try {
+    return pixels instanceof HTMLImageElement;
+  } catch (err) {
+    // may be in a webworker, or in Node
+    return false;
+  }
+};

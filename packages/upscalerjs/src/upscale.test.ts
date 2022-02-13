@@ -1019,7 +1019,6 @@ describe('predict', () => {
         padding: 0,
       },
     );
-    console.log('back');
     expect(result.dataSync()).toEqual(
       tf
         .tensor([

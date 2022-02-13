@@ -6,15 +6,6 @@ export const isString = (pixels: GetImageAsPixelsInput): pixels is string => {
   return typeof pixels === 'string';
 };
 
-export const isHTMLImageElement = (pixels: GetImageAsPixelsInput): pixels is HTMLImageElement => {
-  try {
-    return pixels instanceof HTMLImageElement;
-  } catch (err) {
-    // may be in a webworker, or in Node
-    return false;
-  }
-};
-
 function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   function fn(pixels: tf.Tensor): pixels is T {
     try {
