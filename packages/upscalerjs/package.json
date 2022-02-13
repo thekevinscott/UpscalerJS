@@ -10,8 +10,9 @@
   "engines": {
     "node": ">=14.0"
   },
-  "module": "dist/browser/index.js",
-  "types": "dist/browser/index.d.ts",
+  "module": "dist/browser/esm/index.js",
+  "types": "dist/browser/esm/index.d.ts",
+  "umd:main": "dist/browser/umd/upscaler.min.js",
   "keywords": [
     "super resolution",
     "image",
