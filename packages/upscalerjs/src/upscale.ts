@@ -1,9 +1,9 @@
 import { tf, } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
-import { getImageAsPixels, } from './image.generated';
+import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, } from './utils';
-import type { GetImageAsPixelsInput, } from './image.generated';
+import type { GetImageAsTensorInput, } from './image.generated';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -268,7 +268,7 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-      // TODO: Memory leak?
+      // TODO: Memory leak? Must I retain a reference to the old colTensor and release it?
         colTensor = colTensor.concat(slicedPrediction, 2);
         await tf.nextFrame();
         slicedPrediction.dispose();
@@ -305,13 +305,14 @@ function getProcessedPixels<T extends tf.Tensor>(
   return upscaledTensor;
 }
 
-async function upscale<T extends GetImageAsPixelsInput>(
+async function upscale<T extends GetImageAsTensorInput>(
   model: tf.LayersModel,
   image: T,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) {
-  const { tensor: pixels, canDispose, } = await getImageAsPixels(image);
+  const { tensor: pixels, canDispose, } = await getImageAsTensor(image);
+
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
@@ -324,11 +325,14 @@ async function upscale<T extends GetImageAsPixelsInput>(
     modelDefinition,
     options,
   );
+  preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
     modelDefinition.postprocess,
     upscaledTensor,
   );
+  // upscaledTensor.dispose();
+  // return 'foo';
 
   if (canDispose) {
     // canDispose indicates we can safely dispose of the tensor.

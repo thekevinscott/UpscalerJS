@@ -47,8 +47,8 @@
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
     "test:startTestServer": "ts-node test/lib/startServer.ts",
-    "test:memoryLeaks": "yarn lerna run build:node && node test/misc/memory/test.js",
-    "test:memoryLeaks:backup": "yarn lerna run build:node && node test/misc/memory/test.js"
+    "test:memoryLeaks": "yarn lerna run build:browser --scope upscaler && yarn test:memoryLeaks:cmd",
+    "test:memoryLeaks:cmd": "jest test/misc/memory/test.browser.ts --config test/misc/memory/jestconfig.js --detectOpenHandles"
   },
   "repository": {
     "type": "git",

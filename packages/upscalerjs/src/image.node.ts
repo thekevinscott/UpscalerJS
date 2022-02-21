@@ -15,15 +15,15 @@ export const getInvalidInput = (input: any) => new Error([
   `a Uint8Array, or a Buffer.`
 ].join(' '))
 
-const isUint8Array = (input: GetImageAsPixelsInput): input is Uint8Array => {
+const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => {
   return input.constructor === Uint8Array;
 }
 
-const isBuffer = (input: GetImageAsPixelsInput): input is Buffer => {
+const isBuffer = (input: GetImageAsTensorInput): input is Buffer => {
   return input.constructor === Buffer;
 }
 
-const getTensorFromInput = async (input: GetImageAsPixelsInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isUint8Array(input)) {
     return tf.node.decodeImage(input);
   }
@@ -50,9 +50,9 @@ const getTensorFromInput = async (input: GetImageAsPixelsInput): Promise<tf.Tens
   throw getInvalidInput(input);
 }
 
-export type GetImageAsPixelsInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
-export const getImageAsPixels = async (
-  input: GetImageAsPixelsInput,
+export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
+export const getImageAsTensor = async (
+  input: GetImageAsTensorInput,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;

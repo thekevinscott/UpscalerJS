@@ -8,7 +8,7 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
     ].join(' '),
   );
 
-const getTensorFromInput = async (input: GetImageAsPixelsInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isTensor(input)) {
     return input;
   }
@@ -30,9 +30,9 @@ const getTensorFromInput = async (input: GetImageAsPixelsInput): Promise<tf.Tens
 
 // Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
-export type GetImageAsPixelsInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
-export const getImageAsPixels = async (
-  input: GetImageAsPixelsInput,
+export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
+export const getImageAsTensor = async (
+  input: GetImageAsTensorInput,
 ): Promise<{
   tensor: tf.Tensor4D;
   canDispose: boolean;
@@ -44,8 +44,10 @@ export const getImageAsPixels = async (
     const tensor = await getTensorFromInput(input);
 
     if (isThreeDimensionalTensor(tensor)) {
+      const expandedTensor: tf.Tensor4D = tensor.expandDims(0);
+      tensor.dispose();
       return {
-        tensor: tensor.expandDims(0),
+        tensor: expandedTensor,
         canDispose: true,
       };
     }
@@ -75,7 +77,7 @@ export const getImageAsPixels = async (
 
 };
 
-export const isHTMLImageElement = (pixels: GetImageAsPixelsInput): pixels is HTMLImageElement => {
+export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTMLImageElement => {
   try {
     return pixels instanceof HTMLImageElement;
   } catch (err) {
