@@ -31,8 +31,7 @@ describe('Image', async () => {
   });
   describe('getImageAsTensor', () => {
     it('loads an Image() if given a string as input', async () => {
-      const { canDispose, tensor } = await getImageAsTensor(FLOWER_SMALL);
-      expect(canDispose).to.equal(true);
+      const tensor = await getImageAsTensor(FLOWER_SMALL);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
       expect(JSON.stringify(result)).to.equal(JSON.stringify(expectedArray));
     });
@@ -45,24 +44,21 @@ describe('Image', async () => {
 
     it('reads a given Image() directly', async () => {
       const img = await loadImage(FLOWER_SMALL);
-      const { tensor, canDispose } = await getImageAsTensor(img);
-      expect(canDispose).to.equal(true);
+      const tensor = await getImageAsTensor(img);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
       expect(JSON.stringify(result)).to.equal(JSON.stringify(expectedArray));
     });
 
     it('reads a rank 4 tensor directly without manipulation', async () => {
       const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
-      const { canDispose, tensor } = await getImageAsTensor(input);
-      expect(canDispose).to.equal(false);
+      const tensor = await getImageAsTensor(input);
       expect(input.dataSync()).to.deep.equal(tensor.dataSync());
       input.dispose();
     });
 
     it('reads a rank 3 tensor and expands to rank 4', async () => {
       const input: tf.Tensor3D = tf.tensor([[[1,],],]);
-      const { canDispose, tensor } = await getImageAsTensor(input);
-      expect(canDispose).to.equal(true);
+      const tensor = await getImageAsTensor(input);
       expect(tensor.shape).to.deep.equal([1,1,1,1,]);
       input.dispose();
     });

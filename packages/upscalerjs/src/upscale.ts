@@ -2,7 +2,7 @@ import { tf, } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
 import { getImageAsTensor } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn } from './utils';
+import { warn, isTensor } from './utils';
 import type { GetImageAsTensorInput } from './image.generated';
 
 const ERROR_UNDEFINED_PADDING =
@@ -305,47 +305,54 @@ function getProcessedPixels<T extends tf.Tensor>(
   return upscaledTensor;
 }
 
-async function upscale<T extends GetImageAsTensorInput>(
+// if given a tensor, we copy it; otherwise, we pass input through unadulterated
+// this allows us to safely dispose of memory ourselves without having to manage
+// what input is in which format
+export function getCopyOfInput(
+  input: GetImageAsTensorInput,
+) {
+  if (isTensor(input)) {
+    return input.clone();
+  }
+  return input;
+}
+
+async function upscale(
   model: tf.LayersModel,
-  image: T,
+  input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) {
-  const { tensor: pixels, canDispose, } = await getImageAsTensor(image);
-<<<<<<< HEAD
-
-=======
->>>>>>> ks/node
+  const parsedInput = getCopyOfInput(input);
+  const startingPixels = await getImageAsTensor(parsedInput);
+  if (Math.random() > 0.00001) {
+    return startingPixels;
+  }
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
-    pixels,
+    startingPixels,
   );
+  startingPixels.dispose();
 
-  const upscaledTensor = await predict(
+  const upscaledPixels = await predict(
     model,
     preprocessedPixels,
     modelDefinition,
     options,
   );
+  console.log(tensorAsBase64, preprocessedPixels, upscaledPixels)
+  // return 'foo';
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
     modelDefinition.postprocess,
-    upscaledTensor,
+    upscaledPixels,
   );
-  // upscaledTensor.dispose();
-  // return 'foo';
-
-  if (canDispose) {
-    // canDispose indicates we can safely dispose of the tensor.
-    // the only case where we _can't_ safely dispose is when we are using
-    // the original tensor, when it is already in the expected format we need (a rank 4 tensor).
-    pixels.dispose();
-  }
+  upscaledPixels.dispose();
 
   if (options.output === 'tensor') {
-    return postprocessedPixels as tf.Tensor;
+    return postprocessedPixels;
   }
 
   const base64Src = tensorAsBase64(postprocessedPixels);

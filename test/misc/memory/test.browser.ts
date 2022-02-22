@@ -113,6 +113,7 @@ describe('Memory Leaks', () => {
   });
 
   const checkMemory = (names: Array<string>, starting: Record<string, number>, ending: Record<string, number>) => {
+    expect(JSON.stringify(starting.memory)).toEqual(JSON.stringify(ending.memory));
     // console.log(names, starting, ending);
     for (let i = 0; i < names.length; i++) {
       const name = names[i];
@@ -126,7 +127,6 @@ describe('Memory Leaks', () => {
       }
     }
 
-    expect(JSON.stringify(starting.memory)).toEqual(JSON.stringify(ending.memory));
   }
 
   // describe('examples of tests that explicitly throw memory leaks', () => {
@@ -202,63 +202,63 @@ describe('Memory Leaks', () => {
   //   // });
   // })
 
-  it('should create upscalers', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+  // it('should create upscalers', async () => {
+  //   const startingMemory = await getStartingMemory(page, prototypes);
 
-    await page.evaluate(async (times) => {
-      const Upscaler = window['Upscaler'];
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler();
-        await upscaler.dispose();
-      }
-    }, TIMES_TO_CHECK);
+  //   await page.evaluate(async (times) => {
+  //     const Upscaler = window['Upscaler'];
+  //     for (let i = 0; i < times; i++) {
+  //       const upscaler = new Upscaler();
+  //       await upscaler.dispose();
+  //     }
+  //   }, TIMES_TO_CHECK);
 
-    const endingMemory = await getMemory(page, prototypes);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
+  //   const endingMemory = await getMemory(page, prototypes);
+  //   const names = prototypes.map(p => p.name);
+  //   checkMemory(names, startingMemory, endingMemory);
+  // });
 
-  it('should create an Upscaler instance and warm up', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+  // it('should create an Upscaler instance and warm up', async () => {
+  //   const startingMemory = await getStartingMemory(page, prototypes);
 
-    await page.evaluate(async (times) => {
-      const Upscaler = window['Upscaler'];
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
-          warmupSizes: [50, 50],
-        });
-        await upscaler.dispose();
-      }
-    }, TIMES_TO_CHECK);
+  //   await page.evaluate(async (times) => {
+  //     const Upscaler = window['Upscaler'];
+  //     for (let i = 0; i < times; i++) {
+  //       const upscaler = new Upscaler({
+  //         warmupSizes: [50, 50],
+  //       });
+  //       await upscaler.dispose();
+  //     }
+  //   }, TIMES_TO_CHECK);
 
-    const endingMemory = await getMemory(page, prototypes);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
+  //   const endingMemory = await getMemory(page, prototypes);
+  //   const names = prototypes.map(p => p.name);
+  //   checkMemory(names, startingMemory, endingMemory);
+  // });
 
-  it('should create an Upscaler instance with a custom model', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+  // it('should create an Upscaler instance with a custom model', async () => {
+  //   const startingMemory = await getStartingMemory(page, prototypes);
 
-    await page.evaluate(async (times) => {
-      const Upscaler = window['Upscaler'];
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
-        });
-        await upscaler.dispose();
-      }
-    }, TIMES_TO_CHECK);
+  //   await page.evaluate(async (times) => {
+  //     const Upscaler = window['Upscaler'];
+  //     for (let i = 0; i < times; i++) {
+  //       const upscaler = new Upscaler({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       await upscaler.dispose();
+  //     }
+  //   }, TIMES_TO_CHECK);
 
-    // give a tick to clean up
-    await page.evaluate(async (duration) => {
-      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-      await wait();
-    }, 10);
-    const endingMemory = await getMemory(page, prototypes);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
+  //   // give a tick to clean up
+  //   await page.evaluate(async (duration) => {
+  //     const wait = () => new Promise(resolve => setTimeout(resolve, duration));
+  //     await wait();
+  //   }, 10);
+  //   const endingMemory = await getMemory(page, prototypes);
+  //   const names = prototypes.map(p => p.name);
+  //   checkMemory(names, startingMemory, endingMemory);
+  // });
 
   it('should upscale', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);

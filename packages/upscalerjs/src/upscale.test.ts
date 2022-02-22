@@ -3,6 +3,7 @@ import upscale, {
   predict,
   getRowsAndColumns,
   getTensorDimensions,
+  getCopyOfInput,
 } from './upscale';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
@@ -13,6 +14,30 @@ jest.mock('./image.generated', () => ({
 jest.mock('tensor-as-base64');
 
 const mockedImage = image as jest.Mocked<typeof image>;
+
+describe('getCopyOfInput', () => {
+  it('returns non-tensor input unadulterated', () => {
+    const input = { foo: 'foo' } as any;
+    expect(getCopyOfInput(input)).toEqual(input);
+  });
+
+  it('returns a copy of a given 4d tensor', () => {
+    const input: tf.Tensor4D = tf.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [1, 2, 2, 3,],
+    );
+    expect(getCopyOfInput(input)).not.toEqual(input);
+  });
+
+  it('returns a copy of a given 3d tensor', () => {
+    const input: tf.Tensor3D = tf.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [2, 2, 3,],
+    );
+    expect(getCopyOfInput(input)).not.toEqual(input);
+  });
+
+})
 
 describe('getConsistentTensorDimensions', () => {
   interface IOpts {
@@ -1106,10 +1131,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsTensor = () => ({
-      tensor: img,
-      canDispose: true,
-    });
+    (mockedImage as any).default.getImageAsTensor = () => img;
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
@@ -1129,10 +1151,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsTensor = () => ({
-      tensor: img,
-      canDispose: true,
-    });
+    (mockedImage as any).default.getImageAsTensor = () => img;
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
       predict: jest.fn(() => upscaledTensor),

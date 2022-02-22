@@ -41,6 +41,7 @@
     "build": "yarn lerna run build --scope upscaler",
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "scaffold:platform": "yarn lerna run scaffold:platform -- --",
+    "test:unit": "yarn run test:unit:node && yarn run test:unit:browser_jest && yarn run test:unit:browser_playwright",
     "test:unit:browser_playwright": "yarn scaffold:platform 'browser' && playwright-test packages/upscalerjs/src/*.browser.test.ts -r mocha -b firefox",
     "test:unit:browser_jest": "yarn scaffold:platform 'browser' && jest --config packages/upscalerjs/jestconfig.browser.json",
     "test:unit:node": "yarn scaffold:platform 'node' && jest --config packages/upscalerjs/jestconfig.node.json",
@@ -48,8 +49,7 @@
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
     "test:startTestServer": "ts-node test/lib/startServer.ts",
-    "test:memoryLeaks": "yarn lerna run build:browser --scope upscaler && yarn test:memoryLeaks:cmd",
-    "test:memoryLeaks:cmd": "jest test/misc/memory/test.browser.ts --config test/misc/memory/jestconfig.js --detectOpenHandles"
+    "test:memoryLeaks": "ts-node scripts/check-memory-leaks.ts"
   },
   "repository": {
     "type": "git",
