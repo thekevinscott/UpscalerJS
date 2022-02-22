@@ -1,10 +1,7 @@
-import { tf, } from './dependencies.generated';
-import { ROOT, } from './constants';
-import type { getImageAsTensorInput, } from './image.generated';
+import { tf } from './dependencies.generated';
+import { ROOT } from './constants';
 
-export const isString = (pixels: getImageAsTensorInput): pixels is string => {
-  return typeof pixels === 'string';
-};
+export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
 
 function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   function fn(pixels: tf.Tensor): pixels is T {
