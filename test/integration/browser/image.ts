@@ -65,6 +65,8 @@ describe('Image Format Integration Tests', () => {
     page = undefined;
   });
 
+  describe('Image formats', () => {
+
   it("upscales an imported local image path", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
@@ -154,5 +156,24 @@ describe('Image Format Integration Tests', () => {
       return upscaler.upscale(src);
     }, originalImage);
     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  });
+
+  });
+
+  describe('Patch sizes', () => {
+    it("upscales an imported local image path with patch sizes", async () => {
+      const result = await page.evaluate(() => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        return upscaler.upscale(window['flower'], {
+          patchSize: 4,
+          padding: 2,
+        });
+      });
+      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    });
+
   });
 });

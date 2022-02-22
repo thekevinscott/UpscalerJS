@@ -1,5 +1,5 @@
-import { tf, } from './dependencies.generated';
-import { ROOT, } from './constants';
+import { tf } from './dependencies.generated';
+import { ROOT } from './constants';
 
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
 
