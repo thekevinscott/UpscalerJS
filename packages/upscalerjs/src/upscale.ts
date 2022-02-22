@@ -305,7 +305,7 @@ function getProcessedPixels<T extends tf.Tensor>(
   return upscaledTensor;
 }
 
-async function upscale<T extends getImageAsTensorInput>(
+async function upscale<T extends GetImageAsTensorInput>(
   model: tf.LayersModel,
   image: T,
   modelDefinition: IModelDefinition,
