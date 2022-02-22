@@ -1106,7 +1106,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsPixels = () => ({
+    (mockedImage as any).default.getImageAsTensor = () => ({
       tensor: img,
       canDispose: true,
     });
@@ -1129,7 +1129,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsPixels = () => ({
+    (mockedImage as any).default.getImageAsTensor = () => ({
       tensor: img,
       canDispose: true,
     });

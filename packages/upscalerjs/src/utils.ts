@@ -1,8 +1,8 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
-import type { GetImageAsPixelsInput, } from './image.generated';
+import type { getImageAsTensorInput, } from './image.generated';
 
-export const isString = (pixels: GetImageAsPixelsInput): pixels is string => {
+export const isString = (pixels: getImageAsTensorInput): pixels is string => {
   return typeof pixels === 'string';
 };
 
