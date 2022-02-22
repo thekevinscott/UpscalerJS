@@ -6,7 +6,10 @@ const tf = require('@tensorflow/tfjs-node');
 
 const app = express();
 
-const upscaler = new Upscaler();
+const upscaler = new Upscaler({
+  model: tf.io.fileSystem(path.resolve(__dirname, '../node_modules/@upscalerjs/models/models/div2k/005-2x/model.json')),
+  scale: 2,
+});
 
 app.get("/", async (req, res) => {
   const upscaledImage = await getUpscaledImage();
