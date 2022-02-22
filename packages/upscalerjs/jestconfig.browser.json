@@ -9,7 +9,7 @@
     "node_modules",
     ".generated.ts"
   ],
-  "modulePathIgnorePatterns": ["node.test.ts"],
+  "modulePathIgnorePatterns": ["browser.test.ts", "node.test.ts"],
   "testRegex": "test\\.ts$",
   "moduleFileExtensions": ["js", "ts"]
 }

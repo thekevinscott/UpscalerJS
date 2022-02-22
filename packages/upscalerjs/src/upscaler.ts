@@ -8,7 +8,7 @@ import {
 import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
-import type { GetImageAsPixelsInput } from './image.generated';
+import type { GetImageAsTensorInput } from './image.generated';
 
 class Upscaler {
   _opts: IUpscalerOptions;
@@ -31,7 +31,7 @@ class Upscaler {
   };
 
   upscale = async (
-    image: GetImageAsPixelsInput,
+    image: GetImageAsTensorInput,
     options: IUpscaleOptions = {},
   ) => {
     const { model, modelDefinition, } = await this._model;
