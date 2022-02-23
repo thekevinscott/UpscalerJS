@@ -19,12 +19,18 @@ const mockedImage = image as jest.Mocked<typeof image>;
 
 describe('concatTensors', () => {
   it('concats two tensors together', () => {
-    const a = tf.tensor2d([[1, 2], [10, 20]]);
-    const b = tf.tensor2d([[3, 4], [30, 40]]);
+    const a: tf.Tensor3D = tf.tensor(
+      [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
+      [2, 2, 3,],
+    );
+    const b: tf.Tensor3D = tf.tensor(
+      [10, 10, 10, 20, 20, 20, 30, 30, 30, 40, 40, 40],
+      [2, 2, 3,],
+    );
     const axis = 1;
     const expected = tf.concat([a, b], axis);
     const result = concatTensors([a, b], axis);
-    expect(result.shape).toEqual([2, 4])
+    expect(result.shape).toEqual([2, 4, 3])
     expect(result.dataSync()).toEqual(expected.dataSync());
     expect(a.isDisposed).toBe(true);
     expect(b.isDisposed).toBe(true);
