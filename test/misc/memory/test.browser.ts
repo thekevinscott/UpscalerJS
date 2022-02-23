@@ -118,8 +118,26 @@ describe('Memory Leaks', () => {
     }, dur);
   }
 
-  const checkMemory = (names: Array<string>, starting: Record<string, number>, ending: Record<string, number>) => {
-    expect(JSON.stringify(starting.memory)).toEqual(JSON.stringify(ending.memory));
+  interface TFJSMemory {
+    unreliable: boolean;
+    numBytesInGPU?: number;
+    numBytesInGPUAllocated?: number;
+    numBytesInGPUFree?: number;
+
+    numBytes: number;
+    numTensors: number;
+    numDataBuffers: number;
+    reasons?: string[];
+  }
+  interface MemoryRecord {
+    LayersModel: number;
+    Upscaler: number;
+    memory: TFJSMemory;
+  }
+
+  const checkMemory = (names: Array<string>, starting: MemoryRecord, ending: MemoryRecord) => {
+    expect(starting.memory.numTensors).toEqual(ending.memory.numTensors);
+    expect(starting.memory.numDataBuffers).toEqual(ending.memory.numDataBuffers);
     for (let i = 0; i < names.length; i++) {
       const name = names[i];
       const startingObjects = starting[name];
