@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   memory-leaks:
-    name: 'Tests: Memory Leaks'
+    name: 'Memory Leaks'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -25,7 +25,7 @@ jobs:
         run: yarn test:memory-leaks
 
   unit-browser:
-    name: 'Tests: Unit / Browser'
+    name: 'Unit / Browser'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -56,7 +56,7 @@ jobs:
           verbose: true
 
   unit-node:
-    name: 'Tests: Unit / Node'
+    name: 'Unit / Node'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -84,7 +84,7 @@ jobs:
           verbose: true
 
   integration-browser-browserstack:
-    name: 'Tests: Integration / Browser / Browserstack'
+    name: 'Integration / Browser / Browserstack'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -112,7 +112,7 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
 
   integration-browser-local:
-    name: 'Tests: Integration / Browser / Local'
+    name: 'Integration / Browser / Local'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -140,7 +140,7 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=8192
 
   integration-node-local-16:
-    name: 'Tests: Integration / Node / Local / v16'
+    name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
