@@ -10,6 +10,7 @@ export interface IUpscalerOptions {
   model?: string;
   scale?: number;
   warmupSizes?: WarmupSizes[];
+  modelDefinition?: IModelDefinition;
 }
 
 export type Progress = (amount: number) => void;

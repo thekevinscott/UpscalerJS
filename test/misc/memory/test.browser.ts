@@ -4,7 +4,6 @@ import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
-const EXPECTED_TENSORS = 1; // I don't know why, but we start with tensor references in memory.
 const EXPECTED_UPSCALERS = 0;
 
 const stopServer = (server?: http.Server) => new Promise((resolve) => {
@@ -29,6 +28,8 @@ const countObjects = async (page: Page, prototype: puppeteer.JSHandle) => {
 
 const PORT = 8099;
 
+// This is the number of times to run every chunk of code to check for memory leaks.
+// 7 is a nice awkward number that should be a red flag if we see it in the memory reports.
 const TIMES_TO_CHECK = 7;
 
 interface PrototypeDefinition {
@@ -100,8 +101,6 @@ describe('Memory Leaks', () => {
   })
 
   afterEach(async () => {
-    // const wait = (d) => new Promise(resolve => setTimeout(resolve, d))
-    // await wait(4000);
     await context.close();
   })
 
@@ -112,9 +111,15 @@ describe('Memory Leaks', () => {
     ]);
   });
 
+  const tick = async (dur = 10) => {
+    await page.evaluate(async (duration) => {
+      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
+      await wait();
+    }, dur);
+  }
+
   const checkMemory = (names: Array<string>, starting: Record<string, number>, ending: Record<string, number>) => {
     expect(JSON.stringify(starting.memory)).toEqual(JSON.stringify(ending.memory));
-    // console.log(names, starting, ending);
     for (let i = 0; i < names.length; i++) {
       const name = names[i];
       const startingObjects = starting[name];
@@ -202,80 +207,52 @@ describe('Memory Leaks', () => {
   //   // });
   // })
 
-  // it('should create upscalers', async () => {
-  //   const startingMemory = await getStartingMemory(page, prototypes);
-
-  //   await page.evaluate(async (times) => {
-  //     const Upscaler = window['Upscaler'];
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler();
-  //       await upscaler.dispose();
-  //     }
-  //   }, TIMES_TO_CHECK);
-
-  //   const endingMemory = await getMemory(page, prototypes);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  // });
-
-  // it('should create an Upscaler instance and warm up', async () => {
-  //   const startingMemory = await getStartingMemory(page, prototypes);
-
-  //   await page.evaluate(async (times) => {
-  //     const Upscaler = window['Upscaler'];
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler({
-  //         warmupSizes: [50, 50],
-  //       });
-  //       await upscaler.dispose();
-  //     }
-  //   }, TIMES_TO_CHECK);
-
-  //   const endingMemory = await getMemory(page, prototypes);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  // });
-
-  // it('should create an Upscaler instance with a custom model', async () => {
-  //   const startingMemory = await getStartingMemory(page, prototypes);
-
-  //   await page.evaluate(async (times) => {
-  //     const Upscaler = window['Upscaler'];
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler({
-  //         model: '/pixelator/pixelator.json',
-  //         scale: 4,
-  //       });
-  //       await upscaler.dispose();
-  //     }
-  //   }, TIMES_TO_CHECK);
-
-  //   // give a tick to clean up
-  //   await page.evaluate(async (duration) => {
-  //     const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-  //     await wait();
-  //   }, 10);
-  //   const endingMemory = await getMemory(page, prototypes);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  // });
-
-  it('should upscale', async () => {
+  it('should create upscalers', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
 
-    const image = await page.evaluate(async (times) => {
+    await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
-      let image;
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler();
+        await upscaler.dispose();
+      }
+    }, TIMES_TO_CHECK);
+
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+  });
+
+  it('should create an Upscaler instance and warm up', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+
+    await page.evaluate(async (times) => {
+      const Upscaler = window['Upscaler'];
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          warmupSizes: [50, 50],
+        });
+        await upscaler.dispose();
+      }
+    }, TIMES_TO_CHECK);
+
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+  });
+
+  it('should create an Upscaler instance with a custom model', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+
+    await page.evaluate(async (times) => {
+      const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: '/pixelator/pixelator.json',
           scale: 4,
         });
-        image = await upscaler.upscale(window['flower']);
-
         await upscaler.dispose();
       }
-      return image;
     }, TIMES_TO_CHECK);
 
     // give a tick to clean up
@@ -286,72 +263,246 @@ describe('Memory Leaks', () => {
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
+  });
+
+  describe('Upscale with base64 output', () => {
+    it('should upscale with no pre / post processing functions', async () => {
+      const startingMemory = await getStartingMemory(page, prototypes);
+
+      const image = await page.evaluate(async (times) => {
+        const Upscaler = window['Upscaler'];
+        let image;
+        for (let i = 0; i < times; i++) {
+          const upscaler = new Upscaler({
+            model: '/pixelator/pixelator.json',
+            scale: 4,
+          });
+          image = await upscaler.upscale(window['flower']);
+
+          await upscaler.dispose();
+        }
+        return image;
+      }, TIMES_TO_CHECK);
+
+      await tick();
+      const endingMemory = await getMemory(page, prototypes);
+      const names = prototypes.map(p => p.name);
+      checkMemory(names, startingMemory, endingMemory);
+      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    });
+
+    it('should upscale with a pre and no post processing functions', async () => {
+      const startingMemory = await getStartingMemory(page, prototypes);
+
+      const image = await page.evaluate(async (times) => {
+        const tf = window['tf'];
+        const Upscaler = window['Upscaler'];
+        let image;
+        for (let i = 0; i < times; i++) {
+          const upscaler = new Upscaler({
+            modelDefinition: {
+              scale: 4,
+              url: '/pixelator/pixelator.json',
+              preprocess: (image) => tf.mul(image, 1),
+            }
+          });
+          image = await upscaler.upscale(window['flower']);
+
+          await upscaler.dispose();
+        }
+        return image;
+      }, TIMES_TO_CHECK);
+
+      await tick();
+      const endingMemory = await getMemory(page, prototypes);
+      const names = prototypes.map(p => p.name);
+      checkMemory(names, startingMemory, endingMemory);
+      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    });
+    
+    it('should upscale with no pre and a post processing functions', async () => {
+      const startingMemory = await getStartingMemory(page, prototypes);
+
+      const image = await page.evaluate(async (times) => {
+        const tf = window['tf'];
+        const Upscaler = window['Upscaler'];
+        let image;
+        for (let i = 0; i < times; i++) {
+          const upscaler = new Upscaler({
+            modelDefinition: {
+              scale: 4,
+              url: '/pixelator/pixelator.json',
+              postprocess: (image) => tf.mul(image, 1),
+            }
+          });
+          image = await upscaler.upscale(window['flower']);
+
+          await upscaler.dispose();
+        }
+        return image;
+      }, TIMES_TO_CHECK);
+
+      await tick();
+      const endingMemory = await getMemory(page, prototypes);
+      const names = prototypes.map(p => p.name);
+      checkMemory(names, startingMemory, endingMemory);
+      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    });
+
+    it('should upscale with a pre and a post processing functions', async () => {
+      const startingMemory = await getStartingMemory(page, prototypes);
+
+      const image = await page.evaluate(async (times) => {
+        const tf = window['tf'];
+        const Upscaler = window['Upscaler'];
+        let image;
+        for (let i = 0; i < times; i++) {
+          const upscaler = new Upscaler({
+            modelDefinition: {
+              scale: 4,
+              url: '/pixelator/pixelator.json',
+              preprocess: (image) => tf.mul(image, 1),
+              postprocess: (image) => tf.mul(image, 1),
+            }
+          });
+          image = await upscaler.upscale(window['flower']);
+
+          await upscaler.dispose();
+        }
+        return image;
+      }, TIMES_TO_CHECK);
+
+      await tick();
+      const endingMemory = await getMemory(page, prototypes);
+      const names = prototypes.map(p => p.name);
+      checkMemory(names, startingMemory, endingMemory);
+      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    });
+  });
+
+  it('should upscale with a pre and a post processing functions into a tensor', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+
+    await page.evaluate(async (times) => {
+      const tf = window['tf'];
+      const Upscaler = window['Upscaler'];
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          modelDefinition: {
+            scale: 4,
+            url: '/pixelator/pixelator.json',
+            preprocess: (image) => tf.mul(image, 1),
+            postprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        const tensor = await upscaler.upscale(window['flower'], {
+          output: 'tensor',
+        });
+
+        tensor.dispose();
+
+        await upscaler.dispose();
+      }
+    }, TIMES_TO_CHECK);
+
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+  });
+
+  it('should upscale with a pre and a post processing functions from a tensor', async () => {
+    await page.evaluate(async () => {
+      const getImage = () => new Promise(resolve => {
+        const img = new Image();
+        img.src = window['flower'];
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+      })
+      const img = await getImage();
+      window['src'] = await window['tf'].browser.fromPixels(img);
+    });
+    const startingMemory = await getStartingMemory(page, prototypes);
+
+    const image = await page.evaluate(async (times) => {
+      const tf = window['tf'];
+      const Upscaler = window['Upscaler'];
+      let output;
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          modelDefinition: {
+            scale: 4,
+            url: '/pixelator/pixelator.json',
+            preprocess: (image) => tf.mul(image, 1),
+            postprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        output = await upscaler.upscale(window['src']);
+
+        await upscaler.dispose();
+      }
+      return output;
+    }, TIMES_TO_CHECK);
+
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
-  // it('should upscale from a tensor', async () => {
-  //   const startingMemory = await getStartingMemory(page, prototypes);
+  it('should upscale with a pre and a post processing functions with patch sizes', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+    const image = await page.evaluate(async (times) => {
+      const tf = window['tf'];
+      const Upscaler = window['Upscaler'];
+      let output;
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          modelDefinition: {
+            scale: 4,
+            url: '/pixelator/pixelator.json',
+            preprocess: (image) => tf.mul(image, 1),
+            postprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        output = await upscaler.upscale(window['flower'], {
+          patchSize: 5,
+        });
 
-  //   const image = await page.evaluate(async (times) => {
-  //     const Upscaler = window['Upscaler'];
-  //     const getImage = () => new Promise(resolve => {
-  //       const img = new Image();
-  //       img.src = window['flower'];
-  //       img.crossOrigin = 'anonymous';
-  //       img.onload = () => resolve(img);
-  //     })
-  //     const img = await getImage();
-  //     const src = await window['tf'].browser.fromPixels(img);
-  //     let image;
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler({
-  //         model: '/pixelator/pixelator.json',
-  //         scale: 4,
-  //       });
-  //       image = await upscaler.upscale(src);
-  //       await upscaler.dispose();
-  //     }
-  //     return image;
-  //   }, TIMES_TO_CHECK);
-  //   expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+      }
+      return output;
+    }, TIMES_TO_CHECK);
 
-  //   // give a tick to clean up
-  //   await page.evaluate(async (duration) => {
-  //     const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-  //     await wait();
-  //   }, 10);
-  //   const endingMemory = await getMemory(page, prototypes);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  // });
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+  }, 30000);
 
-  // it('should upscale with patch sizes', async () => {
-  //   const startingMemory = await getStartingMemory(page, prototypes);
+  it('should upscale with the idealo model', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+    const image = await page.evaluate(async (times) => {
+      const tf = window['tf'];
+      const Upscaler = window['Upscaler'];
+      let output;
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          model: 'idealo/gans',
+        });
+        output = await upscaler.upscale(window['flower']);
 
-  //   const image = await page.evaluate(async (times) => {
-  //     const Upscaler = window['Upscaler'];
-  //     let image;
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler({
-  //         model: '/pixelator/pixelator.json',
-  //         scale: 4,
-  //       });
-  //       image = await upscaler.upscale(window['flower'], {
-  //         patchSize: 4,
-  //       });
-  //       await upscaler.dispose();
-  //     }
-  //     return image;
-  //   }, TIMES_TO_CHECK);
-  //   expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+      }
+      return output;
+    }, TIMES_TO_CHECK);
 
-  //   // give a tick to clean up
-  //   await page.evaluate(async (duration) => {
-  //     const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-  //     await wait();
-  //   }, 10);
-  //   const endingMemory = await getMemory(page, prototypes);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  // }, 30000);
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+  }, 30000);
 });

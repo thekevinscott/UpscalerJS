@@ -42,14 +42,14 @@
     "server": "yarn serve -p 8000 packages/upscalerjs/test/lib/webpack-bundler/dist/",
     "scaffold:platform": "yarn lerna run scaffold:platform -- --",
     "test:unit": "yarn run test:unit:node && yarn run test:unit:browser_jest && yarn run test:unit:browser_playwright",
-    "test:unit:browser_playwright": "yarn scaffold:platform 'browser' && playwright-test packages/upscalerjs/src/*.browser.test.ts -r mocha -b firefox",
-    "test:unit:browser_jest": "yarn scaffold:platform 'browser' && jest --config packages/upscalerjs/jestconfig.browser.json",
+    "test:unit:browser:playwright": "yarn scaffold:platform 'browser' && playwright-test packages/upscalerjs/src/*.browser.test.ts -r mocha -b firefox",
+    "test:unit:browser:jest": "yarn scaffold:platform 'browser' && jest --config packages/upscalerjs/jestconfig.browser.json",
     "test:unit:node": "yarn scaffold:platform 'node' && jest --config packages/upscalerjs/jestconfig.node.json",
     "test:integration:browserstack": "ts-node scripts/test.ts --platform browser --kind browserstack",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
-    "test:startTestServer": "ts-node test/lib/startServer.ts",
-    "test:memoryLeaks": "ts-node scripts/check-memory-leaks.ts"
+    "test:start-test-server": "ts-node test/lib/startServer.ts",
+    "test:memory-leaks": "ts-node scripts/check-memory-leaks.ts"
   },
   "repository": {
     "type": "git",

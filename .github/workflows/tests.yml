@@ -2,6 +2,28 @@ name: 'Tests'
 on: [push]
 
 jobs:
+  memory-leaks:
+    name: 'Tests: Memory Leaks'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        run: yarn
+
+      - name: 'Unit Tests / Jest'
+        run: yarn test:memory-leaks
+
   unit-browser:
     name: 'Tests: Unit / Browser'
     runs-on: ubuntu-latest
@@ -13,19 +35,19 @@ jobs:
         with:
           node-version: '16'
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         run: yarn
 
       - name: 'Unit Tests / Jest'
-        run: yarn test:unit:browser_jest
+        run: yarn test:unit:browser:jest
 
       - name: 'Unit Tests / Playwright'
-        run: yarn test:unit:browser_playwright
+        run: yarn test:unit:browser:playwright
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
@@ -44,10 +66,10 @@ jobs:
         with:
           node-version: '16'
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         run: yarn
@@ -74,10 +96,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
@@ -102,10 +124,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:
@@ -128,10 +150,10 @@ jobs:
         with:
           node-version: '16'
 
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: 'Installing'
         env:

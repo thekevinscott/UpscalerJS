@@ -196,6 +196,10 @@ export const getTensorDimensions = ({
   };
 };
 
+// const concatTensors = (a: tf.Tensor, b: tf.Tensor) => {
+
+// }
+
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
@@ -268,20 +272,24 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-      // TODO: Memory leak? Must I retain a reference to the old colTensor and release it?
+        const oldColTensor = colTensor;
         colTensor = colTensor.concat(slicedPrediction, 2);
+        oldColTensor.dispose();
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
       }
 
-      // TODO: Memory leak?
+      const oldUpscaledTensor = upscaledTensor;
       upscaledTensor = upscaledTensor.concat(colTensor, 1);
+      oldUpscaledTensor.dispose();
       await tf.nextFrame();
       colTensor.dispose();
       await tf.nextFrame();
     }
-    return upscaledTensor.squeeze() as tf.Tensor3D;
+    const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
+    upscaledTensor.dispose();
+    return squeezedTensor;
   }
 
   return tf.tidy(() => {
@@ -293,29 +301,30 @@ export const predict = async (
   });
 };
 
-function getProcessedPixels<T extends tf.Tensor>(
+function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
   processFn: undefined | ProcessFn<T>,
   upscaledTensor: T,
 ): T {
   if (processFn) {
-    const postprocessedPixels = processFn(upscaledTensor);
-    upscaledTensor.dispose();
-    return postprocessedPixels;
+    return processFn(upscaledTensor);
   }
-  return upscaledTensor;
+  return upscaledTensor.clone();
 }
+
+// function getProcessedPixels2<T extends tf.Tensor3D | tf.Tensor4D>(
+//   processFn: undefined | ProcessFn<T>,
+//   upscaledTensor: T,
+// ): T {
+//   return upscaledTensor.clone();
+//   if (processFn) {
+//     return processFn(upscaledTensor);
+//   }
+// }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
-export function getCopyOfInput(
-  input: GetImageAsTensorInput,
-) {
-  if (isTensor(input)) {
-    return input.clone();
-  }
-  return input;
-}
+export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
 async function upscale(
   model: tf.LayersModel,
@@ -325,9 +334,6 @@ async function upscale(
 ) {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
-  if (Math.random() > 0.00001) {
-    return startingPixels;
-  }
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     modelDefinition.preprocess,
@@ -341,8 +347,6 @@ async function upscale(
     modelDefinition,
     options,
   );
-  console.log(tensorAsBase64, preprocessedPixels, upscaledPixels)
-  // return 'foo';
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
