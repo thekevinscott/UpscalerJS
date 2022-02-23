@@ -449,6 +449,8 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    const isDisposed = await page.evaluate(async () => window['src'].isDisposed);
+    expect(isDisposed).toEqual(false);
   });
 
   it('should upscale with a pre and a post processing functions with patch sizes', async () => {
