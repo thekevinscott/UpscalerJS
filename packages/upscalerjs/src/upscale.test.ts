@@ -4,6 +4,8 @@ import upscale, {
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
+  getProcessedPixels,
+  concatTensors,
 } from './upscale';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
@@ -14,6 +16,42 @@ jest.mock('./image.generated', () => ({
 jest.mock('tensor-as-base64');
 
 const mockedImage = image as jest.Mocked<typeof image>;
+
+describe('concatTensors', () => {
+  it('concats two tensors together', () => {
+    const a = tf.tensor2d([[1, 2], [10, 20]]);
+    const b = tf.tensor2d([[3, 4], [30, 40]]);
+    const axis = 1;
+    const expected = tf.concat([a, b], axis);
+    const result = concatTensors([a, b], axis);
+    expect(result.shape).toEqual([2, 4])
+    expect(result.dataSync()).toEqual(expected.dataSync());
+    expect(a.isDisposed).toBe(true);
+    expect(b.isDisposed).toBe(true);
+  });
+});
+
+describe('getProcessedPixels', () => {
+  it('clones tensor if not given a process function', () => {
+    const mockClone = jest.fn();
+    const mockTensor = jest.fn().mockImplementation(() => {
+      return { clone: mockClone } as any as tf.Tensor3D;
+    });
+    getProcessedPixels(mockTensor());
+    expect(mockClone).toBeCalledTimes(1);
+  });
+
+  it('calls process function if given one', () => {
+    const mockClone = jest.fn();
+    const mockTensor = jest.fn().mockImplementation(() => {
+      return { clone: mockClone } as any as tf.Tensor3D;
+    });
+    const processFn = jest.fn();
+    getProcessedPixels(mockTensor(), processFn);
+    expect(mockClone).toBeCalledTimes(0);
+    expect(processFn).toBeCalledTimes(1);
+  });
+});
 
 describe('getCopyOfInput', () => {
   it('returns non-tensor input unadulterated', () => {

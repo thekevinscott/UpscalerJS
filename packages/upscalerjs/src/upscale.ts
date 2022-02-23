@@ -196,9 +196,11 @@ export const getTensorDimensions = ({
   };
 };
 
-// const concatTensors = (a: tf.Tensor, b: tf.Tensor) => {
-
-// }
+export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T>, axis = 0): T {
+  const concatenatedTensor = tf.concat(tensors, axis);
+  tensors.forEach(tensor => tensor.dispose());
+  return concatenatedTensor;
+}
 
 export const predict = async (
   model: tf.LayersModel,
@@ -272,17 +274,13 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-        const oldColTensor = colTensor;
-        colTensor = colTensor.concat(slicedPrediction, 2);
-        oldColTensor.dispose();
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction], 2)
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
       }
 
-      const oldUpscaledTensor = upscaledTensor;
-      upscaledTensor = upscaledTensor.concat(colTensor, 1);
-      oldUpscaledTensor.dispose();
+      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor], 1);
       await tf.nextFrame();
       colTensor.dispose();
       await tf.nextFrame();
@@ -301,25 +299,15 @@ export const predict = async (
   });
 };
 
-function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
-  processFn: undefined | ProcessFn<T>,
+export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
   upscaledTensor: T,
+  processFn?: ProcessFn<T>,
 ): T {
   if (processFn) {
     return processFn(upscaledTensor);
   }
   return upscaledTensor.clone();
 }
-
-// function getProcessedPixels2<T extends tf.Tensor3D | tf.Tensor4D>(
-//   processFn: undefined | ProcessFn<T>,
-//   upscaledTensor: T,
-// ): T {
-//   return upscaledTensor.clone();
-//   if (processFn) {
-//     return processFn(upscaledTensor);
-//   }
-// }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
@@ -336,8 +324,8 @@ async function upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
-    modelDefinition.preprocess,
     startingPixels,
+    modelDefinition.preprocess,
   );
   startingPixels.dispose();
 
@@ -350,8 +338,8 @@ async function upscale(
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
-    modelDefinition.postprocess,
     upscaledPixels,
+    modelDefinition.postprocess,
   );
   upscaledPixels.dispose();
 

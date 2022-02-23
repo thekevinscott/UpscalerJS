@@ -62,6 +62,5 @@ const config: IIntermediaryModelDefinition = {
   }),
   customLayers: [MultiplyBeta, PixelShuffle,],
 };
-console.log(MultiplyBeta, PixelShuffle)
 
 export default config;
