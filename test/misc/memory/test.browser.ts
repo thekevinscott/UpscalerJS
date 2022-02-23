@@ -36,8 +36,24 @@ interface PrototypeDefinition {
   name: string;
   prototype: (page: Page) => Promise<puppeteer.JSHandle>
 }
+interface TFJSMemory {
+  unreliable: boolean;
+  numBytesInGPU?: number;
+  numBytesInGPUAllocated?: number;
+  numBytesInGPUFree?: number;
 
-const getMemory = async (page: Page, prototypes: Array<PrototypeDefinition>): Promise<Record<string, number>> => {
+  numBytes: number;
+  numTensors: number;
+  numDataBuffers: number;
+  reasons?: string[];
+}
+interface MemoryRecord {
+  LayersModel: number;
+  Upscaler: number;
+  memory: TFJSMemory;
+}
+
+const getMemory = async (page: Page, prototypes: Array<PrototypeDefinition>): Promise<MemoryRecord> => {
   const allObjects = await Promise.all(prototypes.map(async ({ prototype }) => {
     return countObjects(page, await prototype(page));
   }));
@@ -116,23 +132,6 @@ describe('Memory Leaks', () => {
       const wait = () => new Promise(resolve => setTimeout(resolve, duration));
       await wait();
     }, dur);
-  }
-
-  interface TFJSMemory {
-    unreliable: boolean;
-    numBytesInGPU?: number;
-    numBytesInGPUAllocated?: number;
-    numBytesInGPUFree?: number;
-
-    numBytes: number;
-    numTensors: number;
-    numDataBuffers: number;
-    reasons?: string[];
-  }
-  interface MemoryRecord {
-    LayersModel: number;
-    Upscaler: number;
-    memory: TFJSMemory;
   }
 
   const checkMemory = (names: Array<string>, starting: MemoryRecord, ending: MemoryRecord) => {
