@@ -55,7 +55,11 @@ const config: IIntermediaryModelDefinition = {
   urlPath: 'idealo/gans',
   scale: 4,
   preprocess: (image) => tf.mul(image, 1 / 255),
-  postprocess: (output: tf.Tensor3D) => tf.mul(output.clipByValue(0, 1), 255),
+  postprocess: (output: tf.Tensor3D) => tf.tidy(() => {
+    const clippedValue = output.clipByValue(0, 1);
+    output.dispose();
+    return tf.mul(clippedValue, 255);
+  }),
   customLayers: [MultiplyBeta, PixelShuffle,],
 };
 

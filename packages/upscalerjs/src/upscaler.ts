@@ -5,7 +5,7 @@ import {
   WarmupSizes,
   IModelDefinition,
 } from './types';
-import loadModel, { getModelDefinitions, } from './loadModel';
+import loadModel, { getModelDefinitions } from './loadModel';
 import warmup from './warmup';
 import upscale from './upscale';
 import type { GetImageAsTensorInput } from './image.generated';
@@ -23,6 +23,11 @@ class Upscaler {
     };
     this._model = loadModel(this._opts);
     void warmup(this._model, this._opts.warmupSizes || []);
+  }
+
+  dispose = async () => {
+    const { model } = await this._model;
+    model.dispose();
   }
 
   getModel = () => this._model;
@@ -44,3 +49,5 @@ class Upscaler {
 }
 
 export default Upscaler;
+
+console.log('upscaler1')

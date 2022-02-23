@@ -38,26 +38,17 @@ type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
 export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
-): Promise<{
-  tensor: tf.Tensor4D;
-  canDispose: boolean;
-}> => {
+): Promise<tf.Tensor4D> => {
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
     const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
     tensor.dispose();
-    return {
-      tensor: expandedTensor,
-      canDispose: true,
-    };
+    return expandedTensor;
   }
 
   if (isFourDimensionalTensor(tensor)) {
-    return {
-      tensor,
-      canDispose: !isTensor(input),
-    };
+    return tensor;
   }
 
   throw getInvalidTensorError(tensor);
@@ -67,7 +58,6 @@ export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTM
   try {
     return pixels instanceof HTMLImageElement;
   } catch (err) {
-    // may be in a webworker, or in Node
     return false;
   }
 };

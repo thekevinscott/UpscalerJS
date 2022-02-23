@@ -2,7 +2,7 @@ import { tf, } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
 import { getImageAsTensor } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, } from './utils';
+import { warn, isTensor } from './utils';
 import type { GetImageAsTensorInput } from './image.generated';
 
 const ERROR_UNDEFINED_PADDING =
@@ -196,6 +196,12 @@ export const getTensorDimensions = ({
   };
 };
 
+export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T>, axis = 0): T {
+  const concatenatedTensor = tf.concat(tensors, axis);
+  tensors.forEach(tensor => tensor.dispose());
+  return concatenatedTensor;
+}
+
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
@@ -268,20 +274,20 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-      // TODO: Memory leak?
-        colTensor = colTensor.concat(slicedPrediction, 2);
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction], 2)
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
       }
 
-      // TODO: Memory leak?
-      upscaledTensor = upscaledTensor.concat(colTensor, 1);
+      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor], 1);
       await tf.nextFrame();
       colTensor.dispose();
       await tf.nextFrame();
     }
-    return upscaledTensor.squeeze() as tf.Tensor3D;
+    const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
+    upscaledTensor.dispose();
+    return squeezedTensor;
   }
 
   return tf.tidy(() => {
@@ -293,52 +299,52 @@ export const predict = async (
   });
 };
 
-function getProcessedPixels<T extends tf.Tensor>(
-  processFn: undefined | ProcessFn<T>,
+export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
   upscaledTensor: T,
+  processFn?: ProcessFn<T>,
 ): T {
   if (processFn) {
-    const postprocessedPixels = processFn(upscaledTensor);
-    upscaledTensor.dispose();
-    return postprocessedPixels;
+    return processFn(upscaledTensor);
   }
-  return upscaledTensor;
+  return upscaledTensor.clone();
 }
 
-async function upscale<T extends GetImageAsTensorInput>(
+// if given a tensor, we copy it; otherwise, we pass input through unadulterated
+// this allows us to safely dispose of memory ourselves without having to manage
+// what input is in which format
+export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
+
+async function upscale(
   model: tf.LayersModel,
-  image: T,
+  input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions = {},
 ) {
-  const { tensor: pixels, canDispose, } = await getImageAsTensor(image);
+  const parsedInput = getCopyOfInput(input);
+  const startingPixels = await getImageAsTensor(parsedInput);
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
+    startingPixels,
     modelDefinition.preprocess,
-    pixels,
   );
+  startingPixels.dispose();
 
-  const upscaledTensor = await predict(
+  const upscaledPixels = await predict(
     model,
     preprocessedPixels,
     modelDefinition,
     options,
   );
+  preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
+    upscaledPixels,
     modelDefinition.postprocess,
-    upscaledTensor,
   );
-
-  if (canDispose) {
-    // canDispose indicates we can safely dispose of the tensor.
-    // the only case where we _can't_ safely dispose is when we are using
-    // the original tensor, when it is already in the expected format we need (a rank 4 tensor).
-    pixels.dispose();
-  }
+  upscaledPixels.dispose();
 
   if (options.output === 'tensor') {
-    return postprocessedPixels as tf.Tensor;
+    return postprocessedPixels;
   }
 
   const base64Src = tensorAsBase64(postprocessedPixels);

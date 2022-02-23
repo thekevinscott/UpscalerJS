@@ -42,7 +42,11 @@ export const checkDeprecatedModels = (
 export const getModelDefinition = ({
   model = DEFAULT_MODEL,
   scale,
+  modelDefinition,
 }: IUpscalerOptions = {}): IModelDefinition => {
+  if (modelDefinition) {
+    return modelDefinition;
+  }
   if (model in MODELS) {
     const modelDefinition = MODELS[model];
     if (modelDefinition.deprecated) {
@@ -87,6 +91,7 @@ const loadModel = async (
       tf.serialization.registerClass(layer);
     });
   }
+
   const model = await tf.loadLayersModel(modelDefinition.url);
 
   return {

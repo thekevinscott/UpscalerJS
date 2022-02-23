@@ -15,13 +15,8 @@ export const getInvalidInput = (input: any) => new Error([
   `a Uint8Array, or a Buffer.`
 ].join(' '))
 
-const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => {
-  return input.constructor === Uint8Array;
-}
-
-const isBuffer = (input: GetImageAsTensorInput): input is Buffer => {
-  return input.constructor === Buffer;
-}
+const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
+const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
 
 const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isUint8Array(input)) {
@@ -53,24 +48,17 @@ const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tens
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
-): Promise<{
-  tensor: tf.Tensor4D;
-  canDispose: boolean;
-}> => {
+): Promise<tf.Tensor4D> => {
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
-    return {
-      tensor: tensor.expandDims(0),
-      canDispose: true,
-    };
+    const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
+    tensor.dispose();
+    return expandedTensor;
   }
 
   if (isFourDimensionalTensor(tensor)) {
-    return {
-      tensor,
-      canDispose: !isTensor(input),
-    };
+    return tensor;
   }
 
   throw getInvalidTensorError(tensor);

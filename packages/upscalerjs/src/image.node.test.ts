@@ -36,45 +36,38 @@ describe('Image', () => {
       const FLOWER = path.resolve(FIXTURES, 'flower-small.png');
       const image = new Uint8Array(fs.readFileSync(FLOWER));
       const result = await getImageAsTensor(image);
-      expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,16,16,4,]);
+      expect(result.shape).toEqual([1,16,16,4,]);
     });
 
     it('handles a buffer', async () => {
       const FLOWER = path.resolve(FIXTURES, 'flower-small.png');
       const image = fs.readFileSync(FLOWER);
       const result = await getImageAsTensor(image);
-      expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,16,16,4,]);
+      expect(result.shape).toEqual([1,16,16,4,]);
     });
 
     it('handles a local string path to a file', async () => {
       const FLOWER = path.resolve(FIXTURES, 'flower-small.png');
       const result = await getImageAsTensor(FLOWER);
-      expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,16,16,4,]);
+      expect(result.shape).toEqual([1,16,16,4,]);
     });
 
     it('handles a string path to an http-hosted file', async () => {
       const imagePath = `http://localhost:${PORT}/flower-small.png`;
       const result = await getImageAsTensor(imagePath);
-      expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,16,16,4,]);
+      expect(result.shape).toEqual([1,16,16,4,]);
     });
 
     it('reads a rank 4 tensor directly without manipulation', async () => {
       const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
       const result = await getImageAsTensor(input);
-      expect(result.canDispose).toEqual(false);
-      expect(result.tensor).toBe(input);
-      expect(result.tensor.shape).toEqual([1,1,1,1,]);
+      expect(result.shape).toEqual([1,1,1,1,]);
     });
 
     it('reads a rank 3 tensor and expands to rank 4', async () => {
       const input: tf.Tensor3D = tf.tensor([[[1,],],]);
       const result = await getImageAsTensor(input);
-      expect(result.canDispose).toEqual(true);
-      expect(result.tensor.shape).toEqual([1,1,1,1,]);
+      expect(result.shape).toEqual([1,1,1,1,]);
     });
 
     it('handles an invalid (too small) tensor input', async () => {
