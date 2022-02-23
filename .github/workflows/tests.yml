@@ -21,8 +21,11 @@ jobs:
       - name: 'Installing'
         run: yarn
 
-      - name: 'Unit Tests'
-        run: yarn test:unit:browser
+      - name: 'Unit Tests / Jest'
+        run: yarn test:unit:browser_jest
+
+      - name: 'Unit Tests / Playwright'
+        run: yarn test:unit:browser_playwright
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
