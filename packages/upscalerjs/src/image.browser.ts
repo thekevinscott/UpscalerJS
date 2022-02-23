@@ -42,7 +42,7 @@ export const getImageAsTensor = async (
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
-    const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
+    const expandedTensor = tensor.expandDims(0) ;
     tensor.dispose();
     return expandedTensor;
   }

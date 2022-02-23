@@ -1,9 +1,9 @@
 import { tf, } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
-import { getImageAsTensor } from './image.generated';
+import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor } from './utils';
-import type { GetImageAsTensorInput } from './image.generated';
+import { warn, isTensor, } from './utils';
+import type { GetImageAsTensorInput, } from './image.generated';
 
 const ERROR_UNDEFINED_PADDING =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -274,17 +274,18 @@ export const predict = async (
         prediction.dispose();
         await tf.nextFrame();
 
-        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction], 2)
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
       }
 
-      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor], 1);
+      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
       await tf.nextFrame();
       colTensor.dispose();
       await tf.nextFrame();
     }
+    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
     upscaledTensor.dispose();
     return squeezedTensor;
@@ -295,6 +296,7 @@ export const predict = async (
     if (progress) {
       progress(1);
     }
+    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     return pred.squeeze() as tf.Tensor3D;
   });
 };

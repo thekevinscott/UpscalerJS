@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
   [
     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
@@ -12,8 +13,8 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
 export const getInvalidInput = (input: any) => new Error([
   `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
   `a string representing a local path or http-accessible path to an image,`,
-  `a Uint8Array, or a Buffer.`
-].join(' '))
+  `a Uint8Array, or a Buffer.`,
+].join(' '));
 
 const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
@@ -43,7 +44,7 @@ const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tens
   }
 
   throw getInvalidInput(input);
-}
+};
 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 export const getImageAsTensor = async (
@@ -52,9 +53,9 @@ export const getImageAsTensor = async (
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
-    const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
+    const expandedTensor = tensor.expandDims(0) ;
     tensor.dispose();
-    return expandedTensor;
+    return expandedTensor as tf.Tensor4D;
   }
 
   if (isFourDimensionalTensor(tensor)) {
