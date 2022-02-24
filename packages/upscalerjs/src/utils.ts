@@ -1,6 +1,7 @@
-import { tf } from './dependencies.generated';
-import { ROOT } from './constants';
+import { tf, } from './dependencies.generated';
+import { ROOT, } from './constants';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
 
 function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
@@ -16,6 +17,7 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
 
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const isTensor = (input: any): input is tf.Tensor => {
   return input instanceof tf.Tensor;
 };

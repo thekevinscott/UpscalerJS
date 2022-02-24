@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.10.0-canary.4",
+  "version": "0.10.0-canary.5",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
@@ -51,7 +51,11 @@
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
-    "test": "jest --config jestconfig.json",
+    "test": "yarn run test:unit",
+    "test:unit": "yarn run test:unit:node && yarn run test:unit:browser:jest && yarn run test:unit:browser:playwright",
+    "test:unit:browser:playwright": "yarn scaffold:platform 'browser' && playwright-test src/*.browser.test.ts -r mocha -b firefox",
+    "test:unit:browser:jest": "yarn scaffold:platform 'browser' && jest --config jestconfig.browser.json",
+    "test:unit:node": "yarn scaffold:platform 'node' && jest --config jestconfig.node.json",
     "watch": "chokidar \"src\" -c \"yarn build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"yarn build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"yarn build:umd\" -i \"test.ts\" -i \"generated.ts\"",
