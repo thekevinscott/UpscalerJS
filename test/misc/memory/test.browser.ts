@@ -3,6 +3,10 @@ import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
 
+const JEST_TIMEOUT_IN_SECONDS = 30;
+jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
+jest.retryTimes(1);
+
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
 
@@ -499,7 +503,7 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
-  }, 30000);
+  });
 
   it('should upscale with the idealo model', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
@@ -523,5 +527,5 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
-  }, 30000);
+  });
 });
