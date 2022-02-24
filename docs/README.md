@@ -14,10 +14,10 @@ UpscalerJS is a tool for increasing image resolution in Javascript via a Neural 
 
 **Features**
 
-* 🚀 Browser Support
+* 📷 Scale images at 2x, 3x, and 4x resolutions.
+* 🚀 Browser & Node Support
 * 📦 ️Simple modern ES6 interface
 * 🤖 Choose from a variety of pre-trained models, or provide your own
-* 📷 Scale images at 2x, 3x, and 4x resolutions.
 * ⚛️ Integration with React
 * 🛡️ Rigorously tested with close to 100% code coverage
 
@@ -55,7 +55,27 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 });
 ```
 
+In Node, make sure you've installed the appropriate Tensorflow.js package, and import the Node-specific Upscaler package.
 
+If using `@tensorflow/tfjs-node`:
+
+```javascript
+import Upscaler from 'upscaler/node';
+const upscaler = new Upscaler();
+upscaler.upscale('/path/to/image').then(upscaledImage => {
+  console.log(upscaledImage); // base64 representation of image src
+});
+```
+
+If using `@tensorflow/tfjs-node-gpu`:
+
+```javascript
+import Upscaler from 'upscaler/node-gpu';
+const upscaler = new Upscaler();
+upscaler.upscale('/path/to/image').then(upscaledImage => {
+  console.log(upscaledImage); // base64 representation of image src
+});
+```
 ### Install
 
 Yarn:
@@ -69,6 +89,12 @@ NPM:
 ```
 npm install upscaler
 ```
+
+### Dependencies
+
+If running in the browser, UpscalerJS expects `@tensorflow/tfjs` to be available as a peer dependency.
+
+If running in Node, UpscalerJS expects either `@tensorflow/tfjs-node` or `@tensorflow/tfjs-node-gpu` to be available as a peer dependency, depending on whether you import `upscaler/node` or `upscaler/node-gpu`.
 
 ### Examples 
 
@@ -111,11 +137,18 @@ upscaler.upscale('/path/to/image').then(img => {
 });
 ```
 
-You can provide the image in any of the following formats:
+In the browser, you can provide the image in any of the following formats:
 
 * `string` - A URL to an image. Ensure the image can be loaded (for example, make sure the site's CORS policy allows for loading).
-* `Image` - an HTML Image element.
-* `tf.Tensor3D` - You can also pass a tensor directly.
+* `tf.Tensor3D` or `tf.Tensor4D` - A tensor representing an image.
+* [Any valid input to `tf.browser.fromPixels`](https://js.tensorflow.org/api/latest/#browser.fromPixels)
+
+In Node, you can provide the image in any of the following formats:
+
+* `string` - A path to a local image, _or_ if provided a string that begins with `http`, a URL to a remote image.
+* `tf.Tensor3D` or `tf.Tensor4D` - A tensor representing an image.
+* `Uint8Array` - a `Uint8Array` representing an image.
+* `Buffer` - a `Buffer` representing an image.
 
 By default, a base64-encoded `src` attribute is returned. You can change the output type like so:
 
@@ -252,6 +285,16 @@ Gets the underlying model.
 ```javascript
 upscaler.getModel().then(model => {
 })
+```
+
+### `dispose`
+
+Disposes the current model. Must be called to free up memory when the Upscaler is no longer needed.
+
+#### Example
+
+```javascript
+await upscaler.dispose();
 ```
 
 ## Troubleshooting
