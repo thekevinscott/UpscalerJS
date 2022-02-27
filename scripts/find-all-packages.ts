@@ -33,7 +33,7 @@ const findAllPackages = (dir: string, depth = 0): Array<string> => {
   return packages;
 };
 
-module.exports = findAllPackages;
+export default findAllPackages;
 
 if (require.main === module) {
   const packages = findAllPackages(ROOT);

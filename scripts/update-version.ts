@@ -20,8 +20,7 @@ const updateMultiplePackages = (dir: string, version: string) => {
   const packages = findAllPackages(dir);
   for (let i = 0; i < packages.length; i++) {
     const pkg = packages[i];
-    console.log(pkg);
-    // updateSinglePackage();
+    updateSinglePackage(pkg, version);
   }
 };
 
@@ -36,8 +35,11 @@ const writePackageJSON = (dir: string, contents: Record<string, string | number 
   fs.writeFileSync(path.resolve(dir, 'package.json'), JSON.stringify(contents, null, 2));
 };
 
-const getPackageJSON = (dir: string) => {
-  return JSON.parse(fs.readFileSync(path.resolve(dir, 'package.json'), 'utf-8'));
+const getPackageJSON = (file: string) => {
+  if (file.endsWith('package.json')) {
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+  }
+  return JSON.parse(fs.readFileSync(path.resolve(file, 'package.json'), 'utf-8'));
 }
 
 const getVersion = (dir: string) => {
