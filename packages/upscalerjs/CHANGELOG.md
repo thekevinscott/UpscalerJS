@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/thekevinscott/UpscalerJS/compare/v0.10.0...v0.9.0) (2021-02-25)
+
+feat: Add Node support
+feat: Add `upscaler.dispose()` property
+fix: memory leaks
+docs: update for Node
+
+## [0.9.0](https://github.com/thekevinscott/UpscalerJS/compare/v0.9.0...v0.8.23) (2021-01-23)
+
+Upgrades TFJS dependencies
+
 ## [0.8.23](https://github.com/thekevinscott/UpscalerJS/compare/v0.8.22...v0.8.23) (2021-08-06)
 
 **Note:** Version bump only for package upscaler

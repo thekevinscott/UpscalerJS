@@ -1,5 +1,5 @@
-import * as tf from './tfjs';
-import { WarmupSizes, IModelDefinition, WarmupSizesByPatchSize } from './types';
+import { tf, } from './dependencies.generated';
+import { WarmupSizes, IModelDefinition, WarmupSizesByPatchSize, } from './types';
 
 const isWarmupSizeByPatchSize = (
   size: WarmupSizes,
@@ -15,15 +15,13 @@ const warmup = async (
   sizes: WarmupSizes[],
 ) => {
   await tf.nextFrame();
-  const { model } = await modelPackage;
+  const { model, } = await modelPackage;
   for (const size of sizes) {
     if (isWarmupSizeByPatchSize(size)) {
-      const { patchSize, padding = 0 } = size;
+      const { patchSize, padding = 0, } = size;
 
       const amount = patchSize + padding * 2;
-      const pred = (await model.predict(
-        tf.zeros([1, amount, amount, 3]),
-      )) as tf.Tensor;
+      const pred = model.predict(tf.zeros([1, amount, amount, 3,])) as tf.Tensor4D;
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();
@@ -35,10 +33,8 @@ const warmup = async (
           )}`,
         );
       }
-      const [width, height] = size;
-      const pred = (await model.predict(
-        tf.zeros([1, height, width, 3]),
-      )) as tf.Tensor;
+      const [width, height,] = size;
+      const pred = model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D;
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();

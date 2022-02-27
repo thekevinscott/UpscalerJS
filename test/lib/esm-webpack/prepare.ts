@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as rimraf from 'rimraf';
 import * as fs from 'fs';
 import callExec from '../utils/callExec';
-import { getTFJSVersion } from '../utils/getTFJSVersion';
+// import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 import webpack from 'webpack';
@@ -15,17 +15,30 @@ const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 let compiler = undefined;
 
-export const prepareScriptBundleForESM = async () => {
-  rimraf.sync(DIST);
-  fs.mkdirSync(DIST, { recursive: true });
-
-  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
+const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
+  // Make sure we load the version local to node_modules, _not_ the local version on disk,
+  // so we can ensure the build process is accurate and working correctly
+  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
     cwd: UPSCALER_PATH,
   });
+  const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
+  packageJSON.name = localNameForPackage;
+  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
+}
+
+export const prepareScriptBundleForESM = async () => {
+  const localNameForPackage = 'upscaler-for-webpack'
+  rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
+  await callExec(`mkdir -p ./node_modules`, {
+    cwd: ROOT,
+  });
+
+  await moveUpscalerToLocallyNamedPackage(localNameForPackage);
 };
 
 export const bundleWebpack = () => new Promise(async (resolve, reject) => {
   await updateTFJSVersion(ROOT);
+  rimraf.sync(DIST);
   copyFixtures(DIST);
 
   const entryFiles = path.join(ROOT, 'src/index.js');
@@ -36,7 +49,8 @@ export const bundleWebpack = () => new Promise(async (resolve, reject) => {
     entry: entryFiles,
     stats: 'errors-only',
     plugins: [new HtmlWebpackPlugin({
-      title: 'UpscalerJS Integration Test Webpack Bundler Server',
+      title: 'UpscalerJS Integration Test: ESM via Webpack',
+      template: path.resolve(__dirname, './src/index.html'),
     })],
     output: {
       path: DIST,

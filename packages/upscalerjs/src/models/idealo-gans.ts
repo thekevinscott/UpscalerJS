@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { IIntermediaryModelDefinition } from '../types';
+import { IIntermediaryModelDefinition, } from '../types';
 
 const SCALE = 4;
 const BETA = 0.2;
@@ -41,7 +41,7 @@ class PixelShuffle extends tf.layers.Layer {
   }
 
   computeOutputShape(inputShape: number[]) {
-    return [inputShape[0], inputShape[1], inputShape[2], 3];
+    return [inputShape[0], inputShape[1], inputShape[2], 3,];
   }
 
   call(inputs: Inputs) {
@@ -55,8 +55,12 @@ const config: IIntermediaryModelDefinition = {
   urlPath: 'idealo/gans',
   scale: 4,
   preprocess: (image) => tf.mul(image, 1 / 255),
-  postprocess: (output: tf.Tensor3D) => tf.mul(output.clipByValue(0, 1), 255),
-  customLayers: [MultiplyBeta, PixelShuffle],
+  postprocess: (output: tf.Tensor3D) => tf.tidy(() => {
+    const clippedValue = output.clipByValue(0, 1);
+    output.dispose();
+    return tf.mul(clippedValue, 255);
+  }),
+  customLayers: [MultiplyBeta, PixelShuffle,],
 };
 
 export default config;

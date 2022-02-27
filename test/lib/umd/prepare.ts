@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
-import callExec from '../utils/callExec';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 
@@ -13,7 +12,7 @@ export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   fs.mkdirSync(DIST, { recursive: true });
 
-  fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
+  fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   copyFixtures(DIST);
   fs.writeFileSync(path.join(DIST, 'index.html'), `
     <html>

@@ -18,3 +18,5 @@ credentials.yml
 diff.png
 upscaled.png
 scratch
+packages/upscalerjs/src/tfjs.ts
+*.generated.ts

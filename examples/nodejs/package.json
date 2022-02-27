@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "version": "0.10.0",
+  "description": "Demonstration of Node.js usage of UpscalerJS",
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js localhost 8080"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^3.13.0",
+    "upscaler": "0.10.0-canary.1",
+    "express": "4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4"
+  }
+}
