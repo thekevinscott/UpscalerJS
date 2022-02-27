@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
+import findAllPackages from './find-all-packages';
 
 type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string}
@@ -16,16 +17,31 @@ const getFormattedName = (file: string) => {
 };
 
 const updateMultiplePackages = (dir: string, version: string) => {
-  console.log(`Updated all versions in directory ${getFormattedName(dir)}`);
+  const packages = findAllPackages(dir);
+  for (let i = 0; i < packages.length; i++) {
+    const pkg = packages[i];
+    console.log(pkg);
+    // updateSinglePackage();
+  }
 };
 
 const updateSinglePackage = (dir: string, version: string) => {
-  console.log(`Updated single version in directory ${getFormattedName(dir)}`);
+  const packageJSON = getPackageJSON(dir);
+  packageJSON.version = version;
+  writePackageJSON(dir, packageJSON);
+  console.log(`- Updated ${getFormattedName(dir)}`);
 };
 
+const writePackageJSON = (dir: string, contents: Record<string, string | number | Object | Array<any>>) => {
+  fs.writeFileSync(path.resolve(dir, 'package.json'), JSON.stringify(contents, null, 2));
+};
+
+const getPackageJSON = (dir: string) => {
+  return JSON.parse(fs.readFileSync(path.resolve(dir, 'package.json'), 'utf-8'));
+}
+
 const getVersion = (dir: string) => {
-  const packageJSON = JSON.parse(fs.readFileSync(path.resolve(dir, 'package.json'), 'utf-8'));
-  return packageJSON.version;
+  return getPackageJSON(dir).version;
 };
 
 const getCurrentVersions = () => {
@@ -37,6 +53,21 @@ const getCurrentVersions = () => {
     `upscaler: ${upscalerJSVersion}`,
     `models: ${modelsVersion}`,
   ].join(' | ');
+};
+
+const isValidVersion = (version: string) => {
+  const parts = version.split(".");
+  if (parts.length !== 3) {
+    return false;
+  }
+  for (let i = 0; i < 3; i++) {
+    try {
+      const n = parseInt(parts[i], 10);
+    } catch(err) {
+      return false;
+    }
+  }
+  return true;
 }
 
 const updateVersion = () => new Promise(resolve => {
@@ -54,6 +85,9 @@ const updateVersion = () => new Promise(resolve => {
       ],
     },
   ]).then(({ version, packages }) => {
+    if (!isValidVersion(version)) {
+      throw new Error(`Version is not in the format x.x.x. You specified: ${version}`);
+    }
     if (packages.length === 0) {
       console.log('No packages selected, nothing to do.')
       return;
