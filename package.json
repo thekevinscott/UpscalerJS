@@ -27,14 +27,11 @@
   },
   "scripts": {
     "postinstall": "yarn scaffold:platform 'browser'",
-
     "update:version": "ts-node scripts/update-version.ts",
-
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "yarn pin-cdn",
     "update:version:old": "node ./scripts/version.js",
     "pin-cdn": "node scripts/pin-cdn.js && yarn commit-latest-version-changes",
-
     "find-all-packages": "ts-node scripts/find-all-packages.ts",
     "example": "node ./scripts/start-example.js",
     "format": "yarn lerna run format",
