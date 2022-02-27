@@ -31,8 +31,13 @@ const updateSinglePackage = (dir: string, version: string) => {
   console.log(`- Updated ${getFormattedName(dir)}`);
 };
 
-const writePackageJSON = (dir: string, contents: Record<string, string | number | Object | Array<any>>) => {
-  fs.writeFileSync(path.resolve(dir, 'package.json'), JSON.stringify(contents, null, 2));
+const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
+  const stringifiedContents = JSON.stringify(contents, null, 2);
+  if (file.endsWith('package.json')) {
+    fs.writeFileSync(file, stringifiedContents);
+  } else {
+    fs.writeFileSync(path.resolve(file, 'package.json'), stringifiedContents);
+  }
 };
 
 const getPackageJSON = (file: string) => {
@@ -64,7 +69,7 @@ const isValidVersion = (version: string) => {
   }
   for (let i = 0; i < 3; i++) {
     try {
-      const n = parseInt(parts[i], 10);
+      parseInt(parts[i], 10);
     } catch(err) {
       return false;
     }
@@ -76,7 +81,8 @@ const updateVersion = () => new Promise(resolve => {
   inquirer.prompt<Answers>([
     {
       name: 'version',
-      message: `Specify the version you wish to change to:\n(${getCurrentVersions()})\n`
+      message: `Specify the version you wish to change to:\n(${getCurrentVersions()})\n`,
+      default: getVersion(ROOT_DIR),
     },
     {
       type: 'checkbox',
