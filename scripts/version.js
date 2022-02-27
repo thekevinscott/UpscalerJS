@@ -3,6 +3,7 @@
  * Updates the packages/upscalerjs version
  * Updates the upscaler dependencies in each examples folder to the current version
  */
+console.warn('*** DEPRECATED: USE update-version.ts INSTEAD ***');
 const fs = require('fs');
 const path = require('path');
 
