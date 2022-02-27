@@ -32,7 +32,7 @@ const updateSinglePackage = (dir: string, version: string) => {
 };
 
 const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
-  const stringifiedContents = JSON.stringify(contents, null, 2);
+  const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
   if (file.endsWith('package.json')) {
     fs.writeFileSync(file, stringifiedContents);
   } else {
