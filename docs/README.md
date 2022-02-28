@@ -350,6 +350,18 @@ upscaler.upscale('/path/to/img', {
 })
 ```
 
+### Progress Specified Without Patch Size
+
+If you've specified a `progress` callback but are not specifying `patchSize` in the call to `upscale`, the `progress` callback will never be called. `progress` callbacks only occur when `patchSize` is provided.
+
+In order to have your `progress` callback be called, provide explicit patch sizes:
+
+```
+upscaler.upscale('/path/to/img', {
+  patchSize: 64,
+  progress: ...
+})
+```
 ## Contributions 
 
 Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.
