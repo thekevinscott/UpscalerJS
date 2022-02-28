@@ -10,7 +10,7 @@ type Answers = { packages: Array<Package>, version: string}
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
-const TEST_DIR = path.resolve(PACKAGES_DIR, 'test/lib');
+const TEST_DIR = path.resolve(ROOT_DIR, 'test/lib');
 const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 
 const getFormattedName = (file: string) => {
