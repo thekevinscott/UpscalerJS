@@ -35,12 +35,16 @@ const updateSinglePackage = (dir: string, version: string) => {
       const gen = getMatchingTFJS(deps);
       let value = gen.next().value;
       while (value) {
-        deps[value[0]] = value[1];
+        const [key, val] = value;
+        deps[key] = val;
+        console.log('Updated key', key, 'to', 'val')
         value = gen.next().value;
       }
+      console.log('deps', deps, 'for', depKey);
       packageJSON[depKey] = deps;
     }
   }
+  // console.log(packageJSON);
   // writePackageJSON(dir, packageJSON);
   console.log(`- Updated ${getFormattedName(dir)}`);
 };
