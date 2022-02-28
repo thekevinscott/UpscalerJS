@@ -27,18 +27,22 @@ const updateMultiplePackages = (dir: string, version: string) => {
 
 const updateSinglePackage = (dir: string, version: string) => {
   const packageJSON = getPackageJSON(dir);
-  ['dependencies', 'peerDependencies', 'devDependencies'].forEach(depsKey => {
-    const deps = packageJSON[depsKey];
-    console.log('deps', deps);
-    // const gen = getMatchingTFJS(deps);
-    // const val = gen.next().value;
-    // console.log('val', val);
-
-  })
-  // const 
-  // packageJSON.version = version;
+  const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
+  for (let i = 0; i < dependencyKeys.length; i++) {
+    const depKey = dependencyKeys[i];
+    const deps = packageJSON[depKey];
+    if (deps) {
+      const gen = getMatchingTFJS(deps);
+      let value = gen.next().value;
+      while (value) {
+        deps[value[0]] = value[1];
+        value = gen.next().value;
+      }
+      packageJSON[depKey] = deps;
+    }
+  }
   // writePackageJSON(dir, packageJSON);
-  // console.log(`- Updated ${getFormattedName(dir)}`);
+  console.log(`- Updated ${getFormattedName(dir)}`);
 };
 
 const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
@@ -114,8 +118,8 @@ const updateTFJS = async () => {
   packages.forEach(packageKey => {
     if (packageKey === 'Examples') {
       updateMultiplePackages(EXAMPLES_DIR, version)
-    } else if (packageKey === 'Test') {
-      updateMultiplePackages(TEST_DIR, version)
+    // } else if (packageKey === 'Test') {
+    //   updateMultiplePackages(TEST_DIR, version)
     } else if (packageKey === 'UpscalerJS') {
       updateSinglePackage(UPSCALERJS_DIR, version)
     } else if (packageKey === 'Root') {
