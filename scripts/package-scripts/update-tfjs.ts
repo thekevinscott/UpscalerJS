@@ -119,8 +119,8 @@ const updateTFJS = async () => {
   packages.forEach(packageKey => {
     if (packageKey === 'Examples') {
       updateMultiplePackages(EXAMPLES_DIR, version)
-    // } else if (packageKey === 'Test') {
-    //   updateMultiplePackages(TEST_DIR, version)
+    } else if (packageKey === 'Test') {
+      updateMultiplePackages(TEST_DIR, version)
     } else if (packageKey === 'UpscalerJS') {
       updateSinglePackage(UPSCALERJS_DIR, version)
     } else if (packageKey === 'Root') {
