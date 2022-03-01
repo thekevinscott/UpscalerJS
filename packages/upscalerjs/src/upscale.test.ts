@@ -6,6 +6,8 @@ import upscale, {
   getCopyOfInput,
   getProcessedPixels,
   concatTensors,
+  WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
+  WARNING_UNDEFINED_PADDING,
 } from './upscale';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
@@ -1122,6 +1124,7 @@ describe('predict', () => {
   });
 
   it('should callback with progress on patchSize', async () => {
+    console.warn = jest.fn();
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
@@ -1142,6 +1145,7 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
     expect(progress).toHaveBeenCalledWith(1);
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
   it('should warn if provided a patch size without a padding', async () => {
@@ -1159,7 +1163,7 @@ describe('predict', () => {
     await predict(model, img, { scale, } as IModelDefinition, {
       patchSize,
     });
-    expect(console.warn).toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 });
 
@@ -1208,5 +1212,23 @@ describe('upscale', () => {
       throw new Error('Unexpected string type');
     }
     expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
+  });
+
+  it('should warn if provided a progress callback without patchSize', async () => {
+    console.warn = jest.fn();
+    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
+    const scale = 2;
+    const patchSize = 2;
+    const model = {
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown as tf.LayersModel;
+    await predict(model, img, { scale, } as IModelDefinition, {
+      progress: () => {},
+    });
+    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
 });
