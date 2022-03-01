@@ -242,6 +242,12 @@ export const predict = async (
   const patchSize = originalPatchSize;
 
   if (patchSize) {
+<<<<<<< HEAD
+=======
+    if (padding === undefined) {
+      warn(WARNING_UNDEFINED_PADDING);
+    }
+>>>>>>> main
     const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);

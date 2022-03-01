@@ -1155,9 +1155,7 @@ describe('predict', () => {
     );
   });
 
-  it('should invoke progress callback with percent done', async () => {
-    const mockResponse = 'foobarbaz';
-    (mockedTensorAsBase as any).default = async() => mockResponse;
+  it('should callback with progress on patchSize', async () => {
     console.warn = jest.fn();
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     const scale = 2;
@@ -1424,7 +1422,7 @@ describe('upscale', () => {
     expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
   });
 
-  it('should warn if provided a patch size without a padding', async () => {
+  it('should warn if provided a progress callback without patchSize', async () => {
     console.warn = jest.fn();
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     const scale = 2;
@@ -1437,8 +1435,8 @@ describe('upscale', () => {
       }),
     } as unknown as tf.LayersModel;
     await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
+      progress: () => {},
     });
-    expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
 });
