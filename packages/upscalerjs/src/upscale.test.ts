@@ -1356,7 +1356,7 @@ describe('predict', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 
-  it('should warn if provided a progress callback without patchSize', async () => {
+  it('should warn if provided a patchSize without padding', async () => {
     console.warn = jest.fn();
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     const scale = 2;
@@ -1369,9 +1369,9 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     await predict(model, img, { scale, } as IModelDefinition, {
-      progress: () => {},
+      patchSize,
     });
-    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
+    expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 });
 
