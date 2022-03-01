@@ -1,5 +1,5 @@
 {
-  "description": "This is a model used for testing. It simply doubles the size of an image."
+  "description": "This is a model used for testing. It simply reproduces the pixels of an image (with a scale of 4x)."
 }
 
 
