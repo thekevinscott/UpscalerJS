@@ -3,7 +3,6 @@
  */
 
 import dotenv from 'dotenv';
-import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs/yargs';

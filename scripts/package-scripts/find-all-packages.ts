@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '../..');
 const EXCLUDED = ['node_modules', 'scratch'];
 const MAX_DEPTH = 100;
 
