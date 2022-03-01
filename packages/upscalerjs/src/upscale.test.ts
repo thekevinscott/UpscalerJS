@@ -1235,7 +1235,7 @@ describe('predict', () => {
       inputShape: [null, null, 3],
     }))
     model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
-    const progress = jest.fn((rate: number, tensor: tf.Tensor3D) => {
+    const progress: any = jest.fn((rate: number, tensor: tf.Tensor3D) => {
       const data = Array.from(tensor.dataSync());
       if (rate === .5) {
         expect(data).toEqual([
@@ -1310,7 +1310,7 @@ describe('predict', () => {
       inputShape: [null, null, 3],
     }))
     model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
-    const progress = jest.fn((rate: number, tensor: tf.Tensor3D) => {
+    const progress: any = jest.fn((rate: number, tensor: tf.Tensor3D) => {
       const data = Array.from(tensor.dataSync());
       if (rate === .5) {
         expect(data).toEqual([
