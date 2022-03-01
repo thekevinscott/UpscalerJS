@@ -14,7 +14,7 @@ export interface IUpscalerOptions {
 }
 
 export type ProgressSingleArg = (amount: number) => void;
-export type ProgressMultipleArg = (amount: number, slice: string | tf.Tensor3D) => void;
+export type ProgressMultipleArg = (amount: number, slice?: string | tf.Tensor3D) => void;
 
 export interface IUpscaleOptions{
   output?: 'src' | 'tensor';
