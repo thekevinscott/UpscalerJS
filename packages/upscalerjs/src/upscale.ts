@@ -5,8 +5,24 @@ import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
-const ERROR_UNDEFINED_PADDING =
+const WARNING_UNDEFINED_PADDING_URL =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
+
+export const WARNING_UNDEFINED_PADDING = [
+  '"padding" is undefined, but "patchSize" is explicitly defined.',
+  'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
+  `For more information, see ${WARNING_UNDEFINED_PADDING_URL}.`,
+  'To hide this warning, pass an explicit padding of "0".',
+].join('\n');
+
+const WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL =
+  'https://thekevinscott.github.io/UpscalerJS/#/?id=progress-specified-without-patch-size';
+
+export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
+  'The "progress" callback was provided but "patchSize" was not defined.',
+  'Without a "patchSize", the "progress" callback will never be called.',
+  `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
+].join('\n');
 
 const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
   if (tensor.shape.length === 4) {
@@ -212,12 +228,7 @@ export const predict = async (
 
   if (patchSize) {
     if (padding === undefined) {
-      warn([
-        '"padding" is undefined, but "patchSize" is explicitly defined.',
-        'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
-        `For more information, see ${ERROR_UNDEFINED_PADDING}.`,
-        'To hide this warning, pass an explicit padding of "0".',
-      ]);
+      warn(WARNING_UNDEFINED_PADDING);
     }
     const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
@@ -291,11 +302,12 @@ export const predict = async (
     return squeezedTensor;
   }
 
+  if (progress) {
+    warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
+  }
+
   return tf.tidy(() => {
     const pred = model.predict(pixels) as tf.Tensor4D;
-    if (progress) {
-      progress(1);
-    }
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     return pred.squeeze() as tf.Tensor3D;
   });
