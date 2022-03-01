@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const ROOT = path.resolve(__dirname, `../..`);
+const SRC = path.resolve(ROOT, `packages/upscalerjs/src`);
+
 const AVAILABLE_DEPENDENCIES = [
   '@tensorflow/tfjs',
   '@tensorflow/tfjs-node',
@@ -43,7 +46,6 @@ const getAdditionalDependencies = (platform: Platform): Array<string> => {
   ];
 }
 
-const SRC = path.resolve(__dirname, `../packages/upscalerjs/src`);
 
 const platform = getPlatform(process.argv.pop());
 const dependency = getDependency(platform);

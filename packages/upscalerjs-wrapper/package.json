@@ -1,0 +1,11 @@
+{
+  "name": "upscalerjs",
+  "version": "0.1.0",
+  "description": "Wrapper for UpscalerJS",
+  "main": "index.js",
+  "dependencies": {
+    "upscaler": "0.10.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
