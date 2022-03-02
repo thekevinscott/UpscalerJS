@@ -1,6 +1,7 @@
 import { tf } from './dependencies.generated';
 import upscale, {
   predict,
+  predictGenerator,
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
@@ -1044,6 +1045,44 @@ describe('getRowsAndColumns', () => {
       rows: 2,
       columns: 2,
     });
+  });
+});
+
+describe('predict', () => {
+  const origWarn = console.warn;
+  afterEach(() => {
+    console.warn = origWarn;
+  });
+
+  it('should make a prediction', async () => {
+    const img: tf.Tensor3D = tf.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [2, 2, 3,],
+    );
+    const upscaledTensor = tf.ones([1, 2, 2, 3,]);
+    const pred = {
+      squeeze: jest.fn(() => upscaledTensor),
+      dispose: jest.fn(),
+    };
+    const model = {
+      predict: jest.fn(() => pred),
+    } as unknown as tf.LayersModel;
+    const gen = predictGenerator(model, img.expandDims(0), {
+      scale: 2,
+    } as IModelDefinition);
+    let { value: result, done } = await gen.next();
+    while (done === false) {
+      const genResult = await gen.next();
+      console.log('result', genResult);
+      result = genResult.value;
+      done = genResult.value;
+    }
+    expect(model.predict).toHaveBeenCalledWith(
+      expect.objectContaining({
+        shape: [1, 2, 2, 3,],
+      }),
+    );
+    expect(result).toEqual(upscaledTensor);
   });
 });
 

@@ -218,6 +218,120 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
+export async function* predictGenerator<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  model: tf.LayersModel,
+  pixels: tf.Tensor4D,
+  modelDefinition: IModelDefinition,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<P, O, PO> = {},
+): AsyncGenerator<undefined | tf.Tensor3D> {
+  const scale = modelDefinition.scale;
+
+  if (originalPatchSize && padding === undefined) {
+    warn(WARNING_UNDEFINED_PADDING);
+  }
+
+  const patchSize = originalPatchSize;
+
+  if (patchSize) {
+    const channels = 3;
+    const [height, width,] = pixels.shape.slice(1);
+    const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+    const { size: originalSize, } = getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize,
+      height,
+      width,
+      padding,
+    });
+    let upscaledTensor: tf.Tensor4D = tf.zeros([
+      1,
+      0,
+      originalSize[1] * scale * columns,
+      channels,
+    ]);
+    const total = rows * columns;
+    for (let row = 0; row < rows; row++) {
+      let colTensor: tf.Tensor4D = tf.zeros([
+        1,
+        originalSize[0] * scale,
+        0,
+        channels,
+      ]);
+      for (let col = 0; col < columns; col++) {
+        const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
+          row,
+          col,
+          patchSize,
+          padding,
+          height,
+          width,
+        });
+        const slicedPixels = pixels.slice(
+          [0, origin[0], origin[1],],
+          [-1, size[0], size[1],],
+        );
+        await tf.nextFrame();
+        const prediction = model.predict(slicedPixels) as tf.Tensor4D;
+        await tf.nextFrame();
+        slicedPixels.dispose();
+        await tf.nextFrame();
+        const slicedPrediction = prediction.slice(
+          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
+          [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
+        );
+        await tf.nextFrame();
+        prediction.dispose();
+        await tf.nextFrame();
+
+        if (progress !== undefined && isProgress(progress)) {
+          const index = row * columns + col + 1;
+          const percent = index / total;
+          if (progress.length <= 1) {
+            progress(percent);
+          } else {
+            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+            if (isMultiArgTensorProgress(progress, output, progressOutput)) {
+              // if we are returning a tensor, we can not safely dispose of the tensor
+              (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
+            } else {
+              const sliceSrc = await tensorAsBase64(squeezedTensor);
+              // if we are returning a string, we can safely dispose of the tensor
+              squeezedTensor.dispose();
+              (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
+            }
+          }
+        }
+
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
+        await tf.nextFrame();
+        slicedPrediction.dispose();
+        await tf.nextFrame();
+        yield;
+      }
+
+      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
+      await tf.nextFrame();
+      colTensor.dispose();
+      await tf.nextFrame();
+    }
+    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+    const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
+    upscaledTensor.dispose();
+    return squeezedTensor;
+  }
+
+  if (progress) {
+    warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
+  }
+
+  return tf.tidy(() => {
+    const pred = model.predict(pixels) as tf.Tensor4D;
+    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+    return pred.squeeze() as tf.Tensor3D;
+  });
+};
+
 export async function predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
