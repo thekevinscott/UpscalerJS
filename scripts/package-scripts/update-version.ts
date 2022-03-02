@@ -115,7 +115,6 @@ const updateVersion = () => new Promise(resolve => {
     }));
     if (commit) {
       const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
-      console.log(cmd);
       await execute(cmd);
     }
     resolve();
