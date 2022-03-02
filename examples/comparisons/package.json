@@ -1,6 +1,6 @@
 {
   "name": "comparisons",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
