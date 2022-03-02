@@ -4,6 +4,7 @@ import {
   IUpscaleOptions,
   WarmupSizes,
   IModelDefinition,
+  ReturnType,
 } from './types';
 import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
@@ -35,9 +36,9 @@ class Upscaler {
     await warmup(this._model, warmupSizes);
   };
 
-  upscale = async (
+  upscale = async<Output extends ReturnType, ProgressOutput extends ReturnType>(
     image: GetImageAsTensorInput,
-    options: IUpscaleOptions = {},
+    options: IUpscaleOptions<Output, ProgressOutput> = {},
   ) => {
     const { model, modelDefinition, } = await this._model;
     return upscale(model, image, modelDefinition, options);
@@ -49,5 +50,3 @@ class Upscaler {
 }
 
 export default Upscaler;
-
-console.log('upscaler1');
