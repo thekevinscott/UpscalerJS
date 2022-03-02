@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
+import { Progress, MultiArgProgress, SingleArgProgress } from './types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
@@ -39,3 +40,7 @@ export const warn = (msg: string | string[]) => {
     console.warn(msg);
   }
 };
+
+export const isProgress = (p: undefined | Progress): p is SingleArgProgress | MultiArgProgress => p !== undefined && typeof p === 'function';
+export const isSingleArgProgress = (progress: Progress): progress is SingleArgProgress => isProgress(progress) && progress.length <= 1;
+export const isMultiArgProgress = (progress: Progress): progress is MultiArgProgress => isProgress(progress) && progress.length > 1;

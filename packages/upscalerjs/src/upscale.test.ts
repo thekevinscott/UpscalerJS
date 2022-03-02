@@ -1141,6 +1141,7 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn();
+    
     await predict(model, img, { scale, } as IModelDefinition, {
       patchSize,
       padding: 0,
