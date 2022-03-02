@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "0.11.0",
+  "version": "0.10.0",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
