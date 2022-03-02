@@ -1,10 +1,9 @@
 import * as tf from '@tensorflow/tfjs';
 import './App.css';
-import Upscaler, { getTensorDimensions, getRowsAndColumns } from 'upscaler';
+import Upscaler, { getRowsAndColumns } from 'upscaler';
 import React, { useState, useEffect, useCallback } from 'react';
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
-import tensorAsBase64 from 'tensor-as-base64';
 
 const size = 100;
 const src = `https://picsum.photos/id/220/${size}/${size}`;
@@ -12,7 +11,6 @@ const src = `https://picsum.photos/id/220/${size}/${size}`;
 const upscaler = new Upscaler({
   model: "div2k/rdn-C3-D10-G64-G064-x2"
 });
-const scale = 2;
 function App() {
   const [img, setImg] = useState();
   const [upscaling, setUpscaling] = useState(false);
@@ -33,53 +31,29 @@ function App() {
   const upscale = useCallback(async (e) => {
     e.preventDefault();
     setUpscaling(true);
+    setUpscaledImageSources({});
+    let row = 0;
+    let col = 0;
     const pixels = tf.browser.fromPixels(img);
-    const { rows, columns } = getRowsAndColumns(pixels, state.patchSize);
-    const [height, width] = pixels.shape;
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize } = getTensorDimensions({
-          row,
-          col,
-          height,
-          width,
-          patchSize: Number(state.patchSize),
-          padding: Number(state.padding),
-        });
-        const slicedPixels = pixels.slice(
-          [origin[0], origin[1]],
-          [size[0], size[1]],
-        );
-        await tf.nextFrame();
-        console.time('upscale');
-        const prediction = await upscaler.upscale(slicedPixels, {
-          output: 'tensor',
-          useConsistentDimensions: true,
-        });
-        console.timeEnd('upscale');
-        await tf.nextFrame();
-        
-        slicedPixels.dispose();
-        const slicedPrediction = prediction.slice(
-          [sliceOrigin[0] * scale, sliceOrigin[1] * scale],
-          [sliceSize[0] * scale, sliceSize[1] * scale],
-        );
-        await tf.nextFrame();
-        prediction.dispose();
-        await tf.nextFrame();
-
-        const src = await tensorAsBase64(slicedPrediction);
-        slicedPrediction.dispose();
-
+    const { columns } = getRowsAndColumns(pixels, state.patchSize);
+    await upscaler.upscale(pixels, {
+      patchSize: state.patchSize,
+      padding: state.padding,
+      progress: (_, slice) => {
         setUpscaledImageSources(prev => ({
           ...prev,
           [row]: {
             ...prev[row],
-            [col]: src,
+            [col]: slice,
           }
         }));
+        col++;
+        if (col >= columns) {
+          row++;
+          col = 0;
+        }
       }
-    }
+    });
     setUpscaling(false);
   }, [img, state.padding, state.patchSize]);
 
