@@ -247,8 +247,21 @@ upscaler.upscale('/path/to/image', {
   * `output` (`src|tensor`) - The desired output of the function. Defaults to a base 64 `src` representation.
   * `patchSize` (`number`) - The desired patch size to use for inference.
   * `padding` (`number`) - Extra padding to be applied to the patch size during inference.
-  * `progress` (`(amount: number) => void`) - A progress callback denoting the number of patches processed.
+  * `progress` (`(amount: number, slice?: src|tensor) => void`) - A progress callback denoting the percentage complete.
+  * `progressOutput` (`src|tensor`) - An optional value that sets the return type of the second argument of progress
 
+The `progress` callback optionally returns a second argument with the processed slice of the image:
+
+```javascript
+upscaler.upscale('/path/to/image', {
+  output: 'tensor',
+  progress: (amount, slice) => {
+    // do something with the sliced image
+  }
+});
+```
+
+The `slice` format will be a base64 string or a tensor corresponding to the value of `output`. This can be overridden by providing an additional property, `progressOutput`, of the form `src | tensor` that will override the value set in `output`.
 ### `warmup`
 
 If desired, the model can be "warmed up" after instantiation by calling `warmup` directly.
