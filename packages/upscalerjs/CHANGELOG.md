@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/thekevinscott/UpscalerJS/compare/v0.11.0...v0.10.0) (2021-03-2)
+
+feat: Add support for `progress` callback to receive a second argument, the current slice of procesed image
+
 ## [0.10.0](https://github.com/thekevinscott/UpscalerJS/compare/v0.10.0...v0.9.0) (2021-02-25)
 
 feat: Add Node support
