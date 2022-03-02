@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { isSingleArgProgress, isMultiArgProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+import { isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
 
 describe('isSingleArgProgress', () => {
   it('returns true for function', () => {
@@ -7,25 +7,37 @@ describe('isSingleArgProgress', () => {
   });
 
   it('returns true for a single arg function', () => {
-    expect(isSingleArgProgress((_1: any) => {})).toEqual(false);
+    expect(isSingleArgProgress((_1: any) => {})).toEqual(true);
   });
 
   it('returns false for a double arg function', () => {
-    expect(isSingleArgProgress((_1: any, _2: any) => {})).toEqual(true);
+    expect(isSingleArgProgress((_1: any, _2: any) => {})).toEqual(false);
   });
 });
 
 describe('isMultiArgProgress', () => {
-  it('returns true for a multi arg function', () => {
-    expect(isMultiArgProgress((_1: any, _2: any) => {})).toEqual(true);
-  });
-
   it('returns false for a single arg function', () => {
-    expect(isMultiArgProgress((_1: any) => {})).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any) => {}, undefined, undefined)).toEqual(false);
   });
 
   it('returns false for a zero arg function', () => {
-    expect(isMultiArgProgress(() => {})).toEqual(false);
+    expect(isMultiArgTensorProgress(() => {}, undefined, undefined,  )).toEqual(false);
+  });
+
+  it('returns false for a multi arg tensor string function', () => {
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'src', 'src')).toEqual(false);
+  });
+
+  it('returns false for a multi arg tensor string function with overloaded outputs', () => {
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'src')).toEqual(false);
+  });
+
+  it('returns true for a multi arg tensor function', () => {
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'tensor')).toEqual(true);
+  });
+
+  it('returns true for a multi arg tensor function with conflicting outputs', () => {
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'src', 'tensor')).toEqual(true);
   });
 });
 

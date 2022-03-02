@@ -17,14 +17,17 @@ export type ReturnType = 'src' | 'tensor' | undefined;
 export type UpscaleResponse<O extends ReturnType> = O extends 'src' ? string : tf.Tensor3D;
 export type ProgressResponse<O extends ReturnType = 'src', PO extends ReturnType = undefined> = 
   PO extends 'src' ? 
-    string : 
+    'src' : 
     PO extends 'tensor' ? 
-      tf.Tensor3D : 
-      UpscaleResponse<O>
+      'tensor' :
+      O extends 'tensor' ?
+        'tensor' :
+        'src';
 
-export type MultiArgProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = (amount: number, slice: ProgressResponse<O, PO>) => void;
+export type MultiArgProgress<O extends ReturnType = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
+// export type MultiArgProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = (amount: number, slice: ProgressResponse<O, PO>) => void;
 export type SingleArgProgress = (amount: number) => void;
-export type Progress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = undefined | SingleArgProgress | MultiArgProgress<O, PO>;
+export type Progress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
 export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>{
   output?: O;
   patchSize?: number;

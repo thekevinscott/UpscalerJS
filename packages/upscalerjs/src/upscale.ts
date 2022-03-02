@@ -1,8 +1,8 @@
 import { tf, } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, SingleArgProgress, } from './types';
+import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor, isMultiArgProgress, isProgress, isSingleArgProgress, } from './utils';
+import { warn, isTensor, isProgress, isMultiArgTensorProgress, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 const WARNING_UNDEFINED_PADDING_URL =
@@ -284,19 +284,17 @@ export async function predict<P extends Progress<O, PO>, O extends ReturnType = 
         prediction.dispose();
         await tf.nextFrame();
 
-        if (isProgress(progress)) {
+        if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
           const percent = index / total;
-          if (isSingleArgProgress(progress)) {
+          if (progress.length <= 1) {
             progress(percent);
-          } else if (isMultiArgProgress(progress)) {
-            if (progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor') {
-              const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
-              progress(percent, squeezedTensor);
-            } else {
-              const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
-              progress(percent, sliceSrc);
-            }
+          } else if (isMultiArgTensorProgress(progress, output, progressOutput)) {
+            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+            (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
+          } else {
+            const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
+            (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
           }
         }
 
@@ -343,7 +341,7 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-async function upscale<P extends Progress, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+async function upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
