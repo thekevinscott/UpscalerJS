@@ -1,4 +1,14 @@
 import { exec } from 'child_process';
-const execute = (cmd: string) => new Promise((resolve, reject) => exec(cmd, resolve));
+const execute = (cmd: string) => new Promise((resolve, reject) => {
+  const spawnedProcess = exec(cmd, {}, (error: Error | null) => {
+    if (error) {
+      reject(error.message);
+    } else {
+      resolve();
+    }
+  });
+  spawnedProcess.stderr?.pipe(process.stderr);
+  spawnedProcess.stdout?.pipe(process.stdout);
+})
 export default execute;
 

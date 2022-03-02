@@ -114,11 +114,9 @@ const updateVersion = () => new Promise(resolve => {
       }
     }));
     if (commit) {
-      console.log('now commit');
-      await execute(`git commit -m "Updated version to ${version} for: ${packages.join('|')}`);
-    } else {
-
-      console.log('do not commit');
+      const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
+      console.log(cmd);
+      await execute(cmd);
     }
     resolve();
   });
@@ -128,4 +126,17 @@ export default updateVersion;
 
 if (require.main === module) {
   updateVersion();
+}
+
+const formatArray = (packages: Array<string>) => {
+  if (packages.length === 1) {
+    return packages[0];
+  }
+  if (packages.length === 2) {
+    return packages.join(' and ');
+  }
+  return [
+    packages.slice(0, -1).join(', '),
+    packages.pop(),
+  ].join(' and ');
 }
