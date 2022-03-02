@@ -216,20 +216,32 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   const concatenatedTensor = tf.concat(tensors, axis);
   tensors.forEach(tensor => tensor.dispose());
   return concatenatedTensor;
-}
+};
+
+// NOT USED
+export const getLargerSize = (pixels: tf.Tensor4D) => {
+  const shape = pixels.shape;
+  if (shape[1] > shape[2]) {
+    return shape[1];
+  }
+  return shape[2];
+};
 
 export const predict = async (
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { progress, patchSize, padding, }: IUpscaleOptions = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions = {},
 ): Promise<tf.Tensor3D> => {
   const scale = modelDefinition.scale;
 
+  if (originalPatchSize && padding === undefined) {
+    warn(WARNING_UNDEFINED_PADDING);
+  }
+
+  const patchSize = originalPatchSize;
+
   if (patchSize) {
-    if (padding === undefined) {
-      warn(WARNING_UNDEFINED_PADDING);
-    }
     const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
@@ -273,10 +285,6 @@ export const predict = async (
         await tf.nextFrame();
         slicedPixels.dispose();
         await tf.nextFrame();
-        if (progress) {
-          const index = row * columns + col + 1;
-          progress(index / total);
-        }
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
@@ -284,6 +292,22 @@ export const predict = async (
         await tf.nextFrame();
         prediction.dispose();
         await tf.nextFrame();
+
+        if (progress) {
+          const index = row * columns + col + 1;
+          const percent = index / total;
+          if (progress.length > 1) {
+            if (progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor') {
+              const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+              progress(percent, squeezedTensor);
+            } else {
+              const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
+              progress(percent, sliceSrc);
+            }
+          } else {
+            progress(percent);
+          }
+        }
 
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         await tf.nextFrame();
