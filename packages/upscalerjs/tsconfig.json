@@ -9,7 +9,6 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noUnusedLocals": true,
-    "strictNullChecks": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
     
