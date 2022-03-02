@@ -1,7 +1,6 @@
 import { tf } from './dependencies.generated';
 import upscale, {
   predict,
-  predictGenerator,
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
@@ -1048,6 +1047,16 @@ describe('getRowsAndColumns', () => {
   });
 });
 
+async function wrapGen<T>(gen: AsyncGenerator<T>) {
+  let { value: result, done } = await gen.next();
+  while (done === false) {
+    const genResult = await gen.next();
+    result = genResult.value;
+    done = genResult.done;
+  }
+  return result;
+}
+
 describe('predict', () => {
   const origWarn = console.warn;
   afterEach(() => {
@@ -1067,46 +1076,11 @@ describe('predict', () => {
     const model = {
       predict: jest.fn(() => pred),
     } as unknown as tf.LayersModel;
-    const gen = predictGenerator(model, img.expandDims(0), {
-      scale: 2,
-    } as IModelDefinition);
-    let { value: result, done } = await gen.next();
-    while (done === false) {
-      const genResult = await gen.next();
-      console.log('result', genResult);
-      result = genResult.value;
-      done = genResult.value;
-    }
-    expect(model.predict).toHaveBeenCalledWith(
-      expect.objectContaining({
-        shape: [1, 2, 2, 3,],
-      }),
+    const result = await wrapGen(
+      predict(model, img.expandDims(0), {
+        scale: 2,
+      } as IModelDefinition)
     );
-    expect(result).toEqual(upscaledTensor);
-  });
-});
-
-describe('predict', () => {
-  const origWarn = console.warn;
-  afterEach(() => {
-    console.warn = origWarn;
-  });
-
-  it('should make a prediction', async () => {
-    const img: tf.Tensor3D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [2, 2, 3,],
-    );
-    const upscaledTensor = tf.ones([1, 2, 2, 3,]);
-    const pred = {
-      squeeze: jest.fn(() => upscaledTensor),
-    };
-    const model = {
-      predict: jest.fn(() => pred),
-    } as unknown as tf.LayersModel;
-    const result = await predict(model, img.expandDims(0), {
-      scale: 2,
-    } as IModelDefinition);
     expect(model.predict).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3,],
@@ -1125,7 +1099,7 @@ describe('predict', () => {
         return tf.fill([2, 2, 3,], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    const result = await predict(
+    const result = await wrapGen(predict(
       model,
       img.expandDims(0),
       { scale: 2, } as IModelDefinition,
@@ -1133,7 +1107,7 @@ describe('predict', () => {
         patchSize: 1,
         padding: 0,
       },
-    );
+    ));
     expect(result.dataSync()).toEqual(
       tf
         .tensor([
@@ -1180,11 +1154,13 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn();
-    await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
-      padding: 0,
-      progress,
-    });
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        patchSize,
+        padding: 0,
+        progress,
+      })
+    );
     expect(progress).toHaveBeenCalledWith(0.25);
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
@@ -1207,11 +1183,13 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn((_1: any, _2: any) => {});
-    await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
-      padding: 0,
-      progress,
-    });
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        patchSize,
+        padding: 0,
+        progress,
+      })
+    );
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse);
     expect(progress).toHaveBeenCalledWith(1, mockResponse);
     expect(console.warn).not.toHaveBeenCalled();
@@ -1273,12 +1251,14 @@ describe('predict', () => {
         ]);
       }
     });
-    await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
-      padding: 0,
-      progress,
-      output: 'tensor',
-    });
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        patchSize,
+        padding: 0,
+        progress,
+        output: 'tensor',
+      })
+    );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
         shape: [4, 4, 3,],
@@ -1348,13 +1328,15 @@ describe('predict', () => {
         ]);
       }
     });
-    await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
-      padding: 0,
-      progress,
-      output: 'src',
-      progressOutput: 'tensor',
-    });
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        patchSize,
+        padding: 0,
+        progress,
+        output: 'src',
+        progressOutput: 'tensor',
+      })
+    );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
         shape: [4, 4, 3,],
@@ -1380,10 +1362,32 @@ describe('predict', () => {
           .expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    await predict(model, img, { scale, } as IModelDefinition, {
-      patchSize,
-    });
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        patchSize,
+      })
+    );
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+  });
+
+  it('should warn if provided a progress callback without patchSize', async () => {
+    console.warn = jest.fn();
+    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
+    const scale = 2;
+    const patchSize = 2;
+    const model = {
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown as tf.LayersModel;
+    await wrapGen(
+      predict(model, img, { scale, } as IModelDefinition, {
+        progress: () => { },
+      })
+    );
+    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
 });
 
@@ -1432,23 +1436,5 @@ describe('upscale', () => {
       throw new Error('Unexpected string type');
     }
     expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
-  });
-
-  it('should warn if provided a progress callback without patchSize', async () => {
-    console.warn = jest.fn();
-    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    const scale = 2;
-    const patchSize = 2;
-    const model = {
-      predict: jest.fn((pixel) => {
-        return tf
-          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
-          .expandDims(0);
-      }),
-    } as unknown as tf.LayersModel;
-    await predict(model, img, { scale, } as IModelDefinition, {
-      progress: () => {},
-    });
-    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
 });
