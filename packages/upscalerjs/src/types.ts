@@ -14,14 +14,14 @@ export interface IUpscalerOptions {
 }
 
 export type ProgressSingleArg = (amount: number) => void;
-export type ProgressMultipleArg = (amount: number, slice?: string | tf.Tensor3D) => void;
+export type ProgressMultiArg = (amount: number, slice?: string | tf.Tensor3D) => void;
 
 export type ReturnType = 'src' | 'tensor';
 export interface IUpscaleOptions<Output extends ReturnType, ProgressOutput extends ReturnType>{
   output?: Output;
   patchSize?: number;
   padding?: number;
-  progress?: ProgressSingleArg | ProgressMultipleArg;
+  progress?: ProgressSingleArg | ProgressMultiArg;
   progressOutput?: ProgressOutput;
 }
 
