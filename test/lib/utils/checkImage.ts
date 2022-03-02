@@ -17,6 +17,10 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   }
   const upscaledImageBuffer = Buffer.from(src.split('base64,').pop(), 'base64');
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);
+  if (upscaledSrc) {
+    console.log(`Writing upscaled image to ${upscaledSrc}`)
+    fs.writeFileSync(upscaledSrc, PNG.sync.write(upscaledImage));
+  }
 
   expect(fixture.width).toEqual(upscaledImage.width);
   expect(fixture.height).toEqual(upscaledImage.height);
@@ -26,10 +30,6 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   if (mismatched > 0) {
     console.log(`Mismatch, writing diff image to ${diffSrc}`)
     fs.writeFileSync(diffSrc, PNG.sync.write(diff));
-    if (upscaledSrc) {
-      console.log(`Writing upscaled image to ${upscaledSrc}`)
-      fs.writeFileSync(upscaledSrc, PNG.sync.write(upscaledImage));
-    }
   }
   expect(mismatched).toEqual(0);
 }
