@@ -2,11 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import findAllPackages from './find-all-packages';
+import isValidVersion from './utils/isValidVersion';
 
 type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string}
 
-const ROOT_DIR = path.resolve(__dirname, '..');
+const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
 const MODELS_DIR = path.resolve(PACKAGES_DIR, 'models');
@@ -62,20 +63,6 @@ const getCurrentVersions = () => {
   ].join(' | ');
 };
 
-const isValidVersion = (version: string) => {
-  const parts = version.split(".");
-  if (parts.length !== 3) {
-    return false;
-  }
-  for (let i = 0; i < 3; i++) {
-    try {
-      parseInt(parts[i], 10);
-    } catch(err) {
-      return false;
-    }
-  }
-  return true;
-}
 
 const updateVersion = () => new Promise(resolve => {
   inquirer.prompt<Answers>([
@@ -112,12 +99,11 @@ const updateVersion = () => new Promise(resolve => {
         updateSinglePackage(ROOT_DIR, version)
       }
     });
-  }).then(() => {
     resolve();
   });
 });
 
-module.exports = updateVersion;
+export default updateVersion;
 
 if (require.main === module) {
   updateVersion();

@@ -44,7 +44,7 @@
     "build:umd:generate": "yarn build:umd:tsc && yarn build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
     "build:umd": "yarn build:umd:generate && yarn build:umd:compress && rimraf dist/tmp",
-    "scaffold:platform": "ts-node ../../scripts/scaffold-platform.ts",
+    "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "prepare": "yarn build",
     "preversion": "yarn lint",

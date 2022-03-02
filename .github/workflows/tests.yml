@@ -21,7 +21,7 @@ jobs:
       - name: 'Installing'
         run: yarn
 
-      - name: 'Unit Tests / Jest'
+      - name: 'Memory Leak Tests'
         run: yarn test:memory-leaks
 
   unit-browser:
