@@ -218,7 +218,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-export async function predict<Output extends ReturnType, ProgressOutput extends ReturnType>(
+export async function predict<Output extends ReturnType = 'src', ProgressOutput extends ReturnType = 'src'>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
@@ -345,7 +345,7 @@ export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) 
 
 type UpscaleResponse<Output extends ReturnType> = Output extends 'src' ? string : tf.Tensor3D;
 
-async function upscale<Output extends ReturnType, ProgressOutput extends ReturnType>(
+async function upscale<Output extends ReturnType = 'src', ProgressOutput extends ReturnType = 'src'>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
