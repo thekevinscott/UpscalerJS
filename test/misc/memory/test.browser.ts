@@ -532,16 +532,18 @@ describe('Memory Leaks', () => {
   it('should callback to progress with a src', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
-      const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: 'idealo/gans',
+          model: '/pixelator/pixelator.json',
+          scale: 4,
         });
         await upscaler.upscale(window['flower'], {
           output: 'src',
-          progress: (rate, slice) => {
+          patchSize: 14,
+          padding: 2,
+          progress: (_, slice) => {
             output = slice;
           }
         });
@@ -561,16 +563,18 @@ describe('Memory Leaks', () => {
   it('should callback to progress with a tensor', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
-      const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: 'idealo/gans',
+          model: '/pixelator/pixelator.json',
+          scale: 4,
         });
         await upscaler.upscale(window['flower'], {
           output: 'src',
           progressOutput: 'tensor',
+          patchSize: 14,
+          padding: 2,
           progress: (rate, slice) => {
             if (output) {
               output.dispose();
@@ -581,13 +585,17 @@ describe('Memory Leaks', () => {
 
         await upscaler.dispose();
       }
+      window['output'] = output;
       return output;
     }, TIMES_TO_CHECK);
 
     await tick();
+    expect(image.shape).toEqual([8, 8, 3]);
+    await page.evaluate(() => {
+      window['output'].dispose();
+    })
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
   });
 });

@@ -289,12 +289,17 @@ export async function predict<P extends Progress<O, PO>, O extends ReturnType = 
           const percent = index / total;
           if (progress.length <= 1) {
             progress(percent);
-          } else if (isMultiArgTensorProgress(progress, output, progressOutput)) {
-            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
-            (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
           } else {
-            const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
-            (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
+            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+            if (isMultiArgTensorProgress(progress, output, progressOutput)) {
+              // if we are returning a tensor, we can not safely dispose of the tensor
+              (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
+            } else {
+              const sliceSrc = await tensorAsBase64(squeezedTensor);
+              // if we are returning a string, we can safely dispose of the tensor
+              squeezedTensor.dispose();
+              (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
+            }
           }
         }
 
