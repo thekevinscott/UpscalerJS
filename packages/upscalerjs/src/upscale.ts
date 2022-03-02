@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn, } from './types';
+import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, } from './utils';
@@ -218,21 +218,12 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-// NOT USED
-export const getLargerSize = (pixels: tf.Tensor4D) => {
-  const shape = pixels.shape;
-  if (shape[1] > shape[2]) {
-    return shape[1];
-  }
-  return shape[2];
-};
-
-export const predict = async (
+export async function predict<Output extends ReturnType, ProgressOutput extends ReturnType>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions = {},
-): Promise<tf.Tensor3D> => {
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<Output, ProgressOutput> = {},
+): Promise<tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -352,12 +343,14 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-async function upscale(
+type UpscaleResponse<Output extends ReturnType> = Output extends 'src' ? string : tf.Tensor3D;
+
+async function upscale<Output extends ReturnType, ProgressOutput extends ReturnType>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  options: IUpscaleOptions = {},
-) {
+  options: IUpscaleOptions<Output, ProgressOutput> = {},
+): Promise<UpscaleResponse<Output>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
 
@@ -382,12 +375,12 @@ async function upscale(
   upscaledPixels.dispose();
 
   if (options.output === 'tensor') {
-    return postprocessedPixels;
+    return <UpscaleResponse<Output>>postprocessedPixels;
   }
 
-  const base64Src = tensorAsBase64(postprocessedPixels);
+  const base64Src = await tensorAsBase64(postprocessedPixels);
   postprocessedPixels.dispose();
-  return base64Src;
+  return <UpscaleResponse<Output>>base64Src;
 };
 
 export default upscale;

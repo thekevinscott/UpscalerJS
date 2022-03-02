@@ -6,7 +6,6 @@ import upscale, {
   getCopyOfInput,
   getProcessedPixels,
   concatTensors,
-  getLargerSize,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
@@ -20,32 +19,6 @@ jest.mock('tensor-as-base64');
 
 const mockedImage = image as jest.Mocked<typeof image>;
 const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
-
-describe('getLargerSize', () => {
-  it('gets either side of an equal tensor', () => {
-    const input: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-    expect(getLargerSize(input)).toEqual(2);
-  });
-
-  it('gets height when height is larger', () => {
-    const input: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4],
-      [1, 4, 1, 1,],
-    );
-    expect(getLargerSize(input)).toEqual(4);
-  });
-
-  it('gets width when width is larger', () => {
-    const input: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4],
-      [1, 1, 4, 1,],
-    );
-    expect(getLargerSize(input)).toEqual(4);
-  });
-});
 
 describe('concatTensors', () => {
   beforeEach(() => {

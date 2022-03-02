@@ -16,12 +16,13 @@ export interface IUpscalerOptions {
 export type ProgressSingleArg = (amount: number) => void;
 export type ProgressMultipleArg = (amount: number, slice?: string | tf.Tensor3D) => void;
 
-export interface IUpscaleOptions{
-  output?: 'src' | 'tensor';
+export type ReturnType = 'src' | 'tensor';
+export interface IUpscaleOptions<Output extends ReturnType, ProgressOutput extends ReturnType>{
+  output?: Output;
   patchSize?: number;
   padding?: number;
   progress?: ProgressSingleArg | ProgressMultipleArg;
-  progressOutput?: 'src' | 'tensor';
+  progressOutput?: ProgressOutput;
 }
 
 export type ProcessFn<T extends tf.Tensor> = (t: T) => T;
