@@ -1,8 +1,8 @@
 import { tf, } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, } from './types';
+import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor, } from './utils';
+import { warn, isTensor, isProgress, isMultiArgTensorProgress, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 const WARNING_UNDEFINED_PADDING_URL =
@@ -218,11 +218,11 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-export async function predict<Output extends ReturnType = 'src', ProgressOutput extends ReturnType = 'src'>(
+export async function predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<Output, ProgressOutput> = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<P, O, PO> = {},
 ): Promise<tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
@@ -284,19 +284,17 @@ export async function predict<Output extends ReturnType = 'src', ProgressOutput 
         prediction.dispose();
         await tf.nextFrame();
 
-        if (progress) {
+        if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
           const percent = index / total;
-          if (progress.length > 1) {
-            if (progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor') {
-              const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
-              progress(percent, squeezedTensor);
-            } else {
-              const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
-              progress(percent, sliceSrc);
-            }
-          } else {
+          if (progress.length <= 1) {
             progress(percent);
+          } else if (isMultiArgTensorProgress(progress, output, progressOutput)) {
+            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+            (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
+          } else {
+            const sliceSrc = await tensorAsBase64(slicedPrediction.squeeze());
+            (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
           }
         }
 
@@ -343,14 +341,12 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-type UpscaleResponse<Output extends ReturnType> = Output extends 'src' ? string : tf.Tensor3D;
-
-async function upscale<Output extends ReturnType = 'src', ProgressOutput extends ReturnType = 'src'>(
+async function upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  options: IUpscaleOptions<Output, ProgressOutput> = {},
-): Promise<UpscaleResponse<Output>> {
+  options: IUpscaleOptions<P, O, PO> = {},
+): Promise<UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
 
@@ -375,12 +371,12 @@ async function upscale<Output extends ReturnType = 'src', ProgressOutput extends
   upscaledPixels.dispose();
 
   if (options.output === 'tensor') {
-    return <UpscaleResponse<Output>>postprocessedPixels;
+    return <UpscaleResponse<O>>postprocessedPixels;
   }
 
   const base64Src = await tensorAsBase64(postprocessedPixels);
   postprocessedPixels.dispose();
-  return <UpscaleResponse<Output>>base64Src;
+  return <UpscaleResponse<O>>base64Src;
 };
 
 export default upscale;

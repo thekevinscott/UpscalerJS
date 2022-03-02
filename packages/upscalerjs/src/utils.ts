@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
+import { Progress, MultiArgProgress, SingleArgProgress, ReturnType } from './types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
@@ -39,3 +40,15 @@ export const warn = (msg: string | string[]) => {
     console.warn(msg);
   }
 };
+
+export function isProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: undefined | Progress<any, any>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
+export function isSingleArgProgress(p: Progress<any, any>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
+export const isMultiArgTensorProgress = (p: Progress<any, any>, output: ReturnType, progressOutput: ReturnType): p is MultiArgProgress<'tensor'> => {
+  if (!isProgress(p) || p.length <= 1) {
+    return false;
+  }
+  return progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor';
+}
+// export function isProgress         <P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: P): p is P { return p !== undefined && typeof p === 'function'; }
+// export function isSingleArgProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: Progress<O, PO>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
+// export function isMultiArgProgress <O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: Progress<O, PO>): p is MultiArgProgress<O, PO> { return isProgress(p) && p.length > 1; }
