@@ -236,6 +236,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ReturnType =
     const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+    yield;
     const { size: originalSize, } = getTensorDimensions({
       row: 0,
       col: 0,
@@ -244,6 +245,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ReturnType =
       width,
       padding,
     });
+    yield;
     let upscaledTensor: tf.Tensor4D = tf.zeros([
       1,
       0,
@@ -267,22 +269,19 @@ export async function* predict<P extends Progress<O, PO>, O extends ReturnType =
           height,
           width,
         });
+        yield;
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1],],
           [-1, size[0], size[1],],
         );
-        await tf.nextFrame();
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
-        await tf.nextFrame();
+        yield;
         slicedPixels.dispose();
-        await tf.nextFrame();
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
-        await tf.nextFrame();
         prediction.dispose();
-        await tf.nextFrame();
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -296,24 +295,22 @@ export async function* predict<P extends Progress<O, PO>, O extends ReturnType =
               (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
             } else {
               const sliceSrc = await tensorAsBase64(squeezedTensor);
+              yield;
               // if we are returning a string, we can safely dispose of the tensor
               squeezedTensor.dispose();
               (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
             }
           }
+          yield;
         }
 
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
-        await tf.nextFrame();
         slicedPrediction.dispose();
-        await tf.nextFrame();
         yield;
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
-      await tf.nextFrame();
       colTensor.dispose();
-      await tf.nextFrame();
     }
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
@@ -352,15 +349,17 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions<P, O, PO> = {},
-): AsyncGenerator<UpscaleResponse<O>> {
+): AsyncGenerator<undefined | UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
+  yield;
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     startingPixels,
     modelDefinition.preprocess,
   );
   startingPixels.dispose();
+  yield;
 
   const gen = predict(
     model,
@@ -369,8 +368,10 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     options,
   );
   let { value: upscaledPixels, done } = await gen.next();
+  yield;
   while (done === false) {
     const genResult = await gen.next();
+    yield;
     upscaledPixels = genResult.value;
     done = genResult.done;
   }
@@ -380,6 +381,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     upscaledPixels,
     modelDefinition.postprocess,
   );
+  yield;
   upscaledPixels.dispose();
 
   if (options.output === 'tensor') {
@@ -387,6 +389,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   }
 
   const base64Src = await tensorAsBase64(postprocessedPixels);
+  yield;
   postprocessedPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 };
@@ -405,6 +408,7 @@ async function wrappedUpscale<P extends Progress<O, PO>, O extends ReturnType = 
   );
   let { value: upscaledPixels, done } = await gen.next();
   while (done === false) {
+    await tf.nextFrame();
     const genResult = await gen.next();
     upscaledPixels = genResult.value;
     done = genResult.done;
