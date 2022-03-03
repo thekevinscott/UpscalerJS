@@ -49,6 +49,5 @@ export const isMultiArgTensorProgress = (p: Progress<any, any>, output: ReturnTy
   }
   return progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor';
 }
-// export function isProgress         <P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: P): p is P { return p !== undefined && typeof p === 'function'; }
-// export function isSingleArgProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: Progress<O, PO>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
-// export function isMultiArgProgress <O extends ReturnType = 'src', PO extends ReturnType = undefined>(p: Progress<O, PO>): p is MultiArgProgress<O, PO> { return isProgress(p) && p.length > 1; }
+
+export const isAborted = (abortSignal?: AbortSignal) => !!abortSignal && abortSignal?.aborted;

@@ -9,7 +9,7 @@ import {
 } from './types';
 import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
-import upscaleImage from './upscale';
+import { cancellableUpscale } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 class Upscaler {
@@ -42,7 +42,7 @@ class Upscaler {
     options: IUpscaleOptions<P, O, PO> = {},
   ) => {
     const { model, modelDefinition, } = await this._model;
-    return upscaleImage(model, image, modelDefinition, options);
+    return cancellableUpscale(model, image, modelDefinition, options);
   };
 
   getModelDefinitions = async () => {

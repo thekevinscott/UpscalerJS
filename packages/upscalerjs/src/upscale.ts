@@ -2,8 +2,10 @@ import { tf, } from './dependencies.generated';
 import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor, isProgress, isMultiArgTensorProgress, } from './utils';
+import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
+
+export class AbortError extends Error { }
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -352,14 +354,14 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
 ): AsyncGenerator<undefined | UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
-  yield;
+  yield; // yield startingPixels
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     startingPixels,
     modelDefinition.preprocess,
   );
   startingPixels.dispose();
-  yield;
+  yield; // yield preprocessedPixels
 
   const gen = predict(
     model,
@@ -368,12 +370,12 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     options,
   );
   let { value: upscaledPixels, done } = await gen.next();
-  yield;
+  yield; // yield upscaledPixels
   while (done === false) {
     const genResult = await gen.next();
-    yield;
     upscaledPixels = genResult.value;
     done = genResult.done;
+    yield; // yield upscalePixels
   }
   preprocessedPixels.dispose();
 
@@ -381,24 +383,23 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     upscaledPixels,
     modelDefinition.postprocess,
   );
-  yield;
   upscaledPixels.dispose();
+  yield; // yield postProcessedPixels
 
   if (options.output === 'tensor') {
     return <UpscaleResponse<O>>postprocessedPixels;
   }
 
   const base64Src = await tensorAsBase64(postprocessedPixels);
-  yield;
   postprocessedPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 };
 
-async function wrappedUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  options: IUpscaleOptions<P, O, PO> = {},
+  { signal, ...options }: IUpscaleOptions<P, O, PO> = {},
 ): Promise<UpscaleResponse<O>> {
   const gen = upscale(
     model,
@@ -407,13 +408,20 @@ async function wrappedUpscale<P extends Progress<O, PO>, O extends ReturnType = 
     options,
   );
   let { value: upscaledPixels, done } = await gen.next();
+  if (isAborted(signal)) {
+    throw new AbortError();
+  }
   while (done === false) {
     await tf.nextFrame();
+    if (isAborted(signal)) {
+      throw new AbortError();
+    }
     const genResult = await gen.next();
     upscaledPixels = genResult.value;
     done = genResult.done;
   }
+  if (isAborted(signal)) {
+    throw new AbortError();
+  }
   return upscaledPixels;
 }
-
-export default wrappedUpscale;
