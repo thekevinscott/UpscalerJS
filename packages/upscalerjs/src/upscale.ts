@@ -218,12 +218,12 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-export async function predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<P, O, PO> = {},
-): Promise<tf.Tensor3D> {
+): AsyncGenerator<undefined | tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -307,6 +307,7 @@ export async function predict<P extends Progress<O, PO>, O extends ReturnType = 
         await tf.nextFrame();
         slicedPrediction.dispose();
         await tf.nextFrame();
+        yield;
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
@@ -361,12 +362,18 @@ async function upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', 
   );
   startingPixels.dispose();
 
-  const upscaledPixels = await predict(
+  const gen = predict(
     model,
     preprocessedPixels,
     modelDefinition,
     options,
   );
+  let { value: upscaledPixels, done } = await gen.next();
+  while (done === false) {
+    const genResult = await gen.next();
+    upscaledPixels = genResult.value;
+    done = genResult.done;
+  }
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
