@@ -25,7 +25,6 @@ export type ProgressResponse<O extends ReturnType = 'src', PO extends ReturnType
         'src';
 
 export type MultiArgProgress<O extends ReturnType = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
-// export type MultiArgProgress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = (amount: number, slice: ProgressResponse<O, PO>) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
 export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>{
@@ -34,6 +33,7 @@ export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ReturnType
   padding?: number;
   progress?: P;
   progressOutput?: PO;
+  signal?: AbortSignal;
 }
 
 export type ProcessFn<T extends tf.Tensor> = (t: T) => T;

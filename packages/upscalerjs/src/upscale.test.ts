@@ -1,5 +1,6 @@
 import { tf } from './dependencies.generated';
 import {
+  AbortError,
   predict,
   getRowsAndColumns,
   getTensorDimensions,
@@ -7,6 +8,7 @@ import {
   getProcessedPixels,
   concatTensors,
   upscale,
+  cancellableUpscale,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
@@ -1437,5 +1439,42 @@ describe('upscale', () => {
       throw new Error('Unexpected string type');
     }
     expect(result.dataSync()).toEqual(upscaledTensor.dataSync());
+  });
+});
+
+describe('cancellableUpscale', () => {
+  it('is able to cancel an in-flight request', async () => {
+    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
+    (mockedImage as any).default.getImageAsTensor = () => img;
+    const scale = 2;
+    const patchSize = 2;
+    const model = {
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown as tf.LayersModel;
+    const controller = new AbortController();
+    const progress = jest.fn((rate) => {
+      if (rate === .5) {
+        controller.abort();
+      }
+      if (rate > .5) {
+        throw new Error(`Rate is too high: ${rate}`);
+      }
+    });
+    await expect(() => cancellableUpscale(model, img, { scale, } as IModelDefinition, {
+      patchSize,
+      padding: 0,
+      progress,
+      signal: controller.signal,
+    }))
+      .rejects
+      .toThrow(AbortError);
+    expect(progress).toHaveBeenCalledWith(0.25);
+    expect(progress).toHaveBeenCalledWith(0.5);
+    expect(progress).not.toHaveBeenCalledWith(0.75);
+    expect(progress).not.toHaveBeenCalledWith(1);
   });
 });
