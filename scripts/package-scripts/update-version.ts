@@ -8,7 +8,7 @@ import execute from './utils/execute';
 type PackageJson = Record<string, any>;
 type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string, commit: boolean, updateDependencies?: boolean, }
-type GetMessage = (dir: string) => string;
+type GetMessage = (file: string) => string;
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
@@ -34,7 +34,12 @@ const defaultTransform: TransformFn = (packageJSON, version) => {
   return packageJSON;
 }
 
-const defaultGetMessage: GetMessage = (dir: string) => `- Updated ${getFormattedName(dir)}`;
+const defaultGetMessage: GetMessage = (file: string) => {
+  if (file.endsWith('package.json')) {
+    return `- Updated ${getFormattedName(file)}`;
+  }
+  return `- Updated ${getFormattedName(`${file}/package.json`)}`;
+}
 
 const updateSinglePackage = async (dir: string, version: string, commit: boolean, transform: TransformFn = defaultTransform, getMessage: GetMessage = defaultGetMessage) => {
   const packageJSON = getPackageJSON(dir);
