@@ -105,17 +105,17 @@ const updateVersion = () => new Promise(resolve => {
       choices: AVAILABLE_PACKAGES,
     },
     {
-      name: 'commit',
-      message: `Do you wish to commit changes`,
-      type: 'confirm',
-      default: true,
-    },
-    {
       name: 'updateDependencies',
       message: `Since UpscalerJS's version will be updated, do you also want to update packages (like examples) that reference it?`,
       type: 'confirm',
       default: true,
       when: ({ packages }: Omit<Answers, 'updateDependencies'>) => packages.includes('UpscalerJS'),
+    },
+    {
+      name: 'commit',
+      message: `Do you wish to commit changes`,
+      type: 'confirm',
+      default: true,
     },
   ]).then(async ({ version, packages, commit, updateDependencies }) => {
     if (!isValidVersion(version)) {
