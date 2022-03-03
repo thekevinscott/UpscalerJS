@@ -1,11 +1,12 @@
 import { tf } from './dependencies.generated';
-import upscale, {
+import {
   predict,
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
   getProcessedPixels,
   concatTensors,
+  upscale,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
@@ -1408,7 +1409,7 @@ describe('upscale', () => {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await upscale(model, img, { scale: 2, } as IModelDefinition);
+    const result = await wrapGen(upscale(model, img, { scale: 2, } as IModelDefinition));
     expect(result).toEqual('foobarbaz');
   });
 
@@ -1429,9 +1430,9 @@ describe('upscale', () => {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await upscale(model, img, { scale: 2, } as IModelDefinition, {
+    const result = await wrapGen(upscale(model, img, { scale: 2, } as IModelDefinition, {
       output: 'tensor',
-    });
+    }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
     }

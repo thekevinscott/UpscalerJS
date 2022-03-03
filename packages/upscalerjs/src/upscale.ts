@@ -347,12 +347,12 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-async function upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions<P, O, PO> = {},
-): Promise<UpscaleResponse<O>> {
+): AsyncGenerator<UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
 
@@ -391,4 +391,25 @@ async function upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', 
   return <UpscaleResponse<O>>base64Src;
 };
 
-export default upscale;
+async function wrappedUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  model: tf.LayersModel,
+  input: GetImageAsTensorInput,
+  modelDefinition: IModelDefinition,
+  options: IUpscaleOptions<P, O, PO> = {},
+): Promise<UpscaleResponse<O>> {
+  const gen = upscale(
+    model,
+    input,
+    modelDefinition,
+    options,
+  );
+  let { value: upscaledPixels, done } = await gen.next();
+  while (done === false) {
+    const genResult = await gen.next();
+    upscaledPixels = genResult.value;
+    done = genResult.done;
+  }
+  return upscaledPixels;
+}
+
+export default wrappedUpscale;
