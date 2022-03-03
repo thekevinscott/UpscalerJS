@@ -5,9 +5,10 @@ import findAllPackages from './find-all-packages';
 import isValidVersion from './utils/isValidVersion';
 import execute from './utils/execute';
 
-type PackageJson = Record<string, string | number | Object | Array<any>>;
+type PackageJson = Record<string, any>;
 type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string, commit: boolean, updateDependencies?: boolean, }
+type GetMessage = (dir: string) => string;
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
@@ -20,11 +21,11 @@ const getFormattedName = (file: string) => {
 };
 
 type TransformFn = (packageJSON: PackageJson, version: string) => PackageJson;
-const updateMultiplePackages = async (dir: string, version: string, commit: boolean, transform?: TransformFn) => {
+const updateMultiplePackages = async (dir: string, version: string, commit: boolean, transform?: TransformFn, getMessage: GetMessage = defaultGetMessage) => {
   const packages = findAllPackages(dir);
   for (let i = 0; i < packages.length; i++) {
     const pkg = packages[i];
-    await updateSinglePackage(pkg, version, commit, transform);
+    await updateSinglePackage(pkg, version, commit, transform, getMessage);
   }
 };
 
@@ -33,13 +34,15 @@ const defaultTransform: TransformFn = (packageJSON, version) => {
   return packageJSON;
 }
 
-const updateSinglePackage = async (dir: string, version: string, commit: boolean, transform: TransformFn = defaultTransform) => {
+const defaultGetMessage: GetMessage = (dir: string) => `- Updated ${getFormattedName(dir)}`;
+
+const updateSinglePackage = async (dir: string, version: string, commit: boolean, transform: TransformFn = defaultTransform, getMessage: GetMessage = defaultGetMessage) => {
   const packageJSON = getPackageJSON(dir);
   writePackageJSON(dir, transform(packageJSON, version));
   if (commit) {
     await commitPackageJSON(dir);
   }
-  console.log(`- Updated ${getFormattedName(dir)}`);
+  console.log(getMessage(dir));
 };
 
 const getPackageJSONPath = (file: string) => {
@@ -134,6 +137,8 @@ const updateVersion = () => new Promise(resolve => {
         const deps = packageJSON.dependencies;
         deps['upscaler'] = version;
         return packageJSON;
+      }, dir => {
+        return `- Updated "upscaler" dependency in ${getFormattedName(dir)}`;
       });
     }
     if (commit) {
