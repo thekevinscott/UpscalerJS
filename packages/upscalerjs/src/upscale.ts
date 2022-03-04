@@ -2,7 +2,7 @@ import { tf, } from './dependencies.generated';
 import { UpscaleArgs, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
+import { wrapGenerator, warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class AbortError extends Error {
@@ -354,7 +354,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition }: UpscaleInternalArgs,
-): AsyncGenerator<undefined | UpscaleResponse<O>> {
+): AsyncGenerator<undefined, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield; // yield startingPixels
@@ -382,6 +382,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     done = genResult.done;
     yield; // yield upscalePixels
   }
+
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
@@ -410,26 +411,17 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
   { signal, ...args }: UpscaleArgs<P, O, PO>,
   internalArgs: UpscaleInternalArgs,
 ): Promise<UpscaleResponse<O>> {
-  const gen = upscale(
-    input,
-    args,
-    internalArgs,
-  );
-  let { value: upscaledPixels, done } = await gen.next();
-  if (isAborted(signal)) {
-    throw new AbortError();
-  }
-  while (done === false) {
+  const tick = async () => {
     await tf.nextFrame();
     if (isAborted(signal)) {
       throw new AbortError();
     }
-    const genResult = await gen.next();
-    upscaledPixels = genResult.value;
-    done = genResult.done;
   }
-  if (isAborted(signal)) {
-    throw new AbortError();
-  }
+  const upscaledPixels = await wrapGenerator<undefined, UpscaleResponse<O>>(upscale(
+    input,
+    args,
+    internalArgs,
+  ), tick);
+  await tick();
   return upscaledPixels;
 }
