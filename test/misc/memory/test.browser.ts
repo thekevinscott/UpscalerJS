@@ -598,4 +598,38 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
+
+  // it('should cancel without leaking memory', async () => {
+  //   const startingMemory = await getStartingMemory(page, prototypes);
+  //   await page.evaluate(async (times) => {
+  //     const Upscaler = window['Upscaler'];
+  //     const abortController = new AbortController();
+  //     for (let i = 0; i < times; i++) {
+  //       const upscaler = new Upscaler({
+  //         model: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       });
+  //       try {
+  //         await upscaler.upscale(window['flower'], {
+  //           output: 'src',
+  //           signal: abortController.signal,
+  //           patchSize: 14,
+  //           padding: 2,
+  //           progress: (rate) => {
+  //             if (rate >= .5) {
+  //               abortController.abort();
+  //             }
+  //           }
+  //         });
+  //       } catch (err) { }
+
+  //       await upscaler.dispose();
+  //     }
+  //   }, TIMES_TO_CHECK);
+
+  //   await tick();
+  //   const endingMemory = await getMemory(page, prototypes);
+  //   const names = prototypes.map(p => p.name);
+  //   checkMemory(names, startingMemory, endingMemory);
+  // });
 });

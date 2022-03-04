@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { UpscaleArgs, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
+import type { UpscaleArgs, IModelDefinition, ProcessFn, ResultFormat, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { wrapGenerator, warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
@@ -222,7 +222,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO>,
   {
@@ -350,21 +350,23 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D;
+
+export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition }: UpscaleInternalArgs,
-): AsyncGenerator<undefined, UpscaleResponse<O>> {
+): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
-  yield; // yield startingPixels
+  yield startingPixels;
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     startingPixels,
     modelDefinition.preprocess,
   );
   startingPixels.dispose();
-  yield; // yield preprocessedPixels
+  yield preprocessedPixels;
 
   const gen = predict(
     preprocessedPixels,
@@ -375,14 +377,13 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     }
   );
   let { value: upscaledPixels, done } = await gen.next();
-  yield; // yield upscaledPixels
+  yield upscaledPixels;
   while (done === false) {
     const genResult = await gen.next();
     upscaledPixels = genResult.value;
     done = genResult.done;
-    yield; // yield upscalePixels
+    yield upscaledPixels;
   }
-
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
@@ -390,7 +391,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     modelDefinition.postprocess,
   );
   upscaledPixels.dispose();
-  yield; // yield postProcessedPixels
+  yield postprocessedPixels;
 
   if (args.output === 'tensor') {
     return <UpscaleResponse<O>>postprocessedPixels;
@@ -405,20 +406,22 @@ interface UpscaleInternalArgs {
   model: tf.LayersModel,
   modelDefinition: IModelDefinition,
 }
-
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   { signal, ...args }: UpscaleArgs<P, O, PO>,
   internalArgs: UpscaleInternalArgs,
 ): Promise<UpscaleResponse<O>> {
-  const tick = async () => {
+  const tick = async (result?: YieldedIntermediaryValue) => {
     await tf.nextFrame();
     if (isAborted(signal)) {
+      if (isTensor(result)) {
+        result.dispose();
+      }
       throw new AbortError();
     }
   }
   await tick();
-  const upscaledPixels = await wrapGenerator<undefined, UpscaleResponse<O>>(upscale(
+  const upscaledPixels = await wrapGenerator(upscale(
     input,
     args,
     internalArgs,
