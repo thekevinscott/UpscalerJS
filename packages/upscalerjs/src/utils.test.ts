@@ -1,5 +1,22 @@
 import * as tf from '@tensorflow/tfjs';
-import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, warn, } from './utils';
+import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, warn, isAborted, } from './utils';
+
+describe('isAborted', () => {
+  it('handles an undefined signal', () => {
+    expect(isAborted()).toEqual(false);
+  });
+
+  it('handles a non-aborted signal', () => {
+    const controller = new AbortController();
+    expect(isAborted(controller.signal)).toEqual(false);
+  });
+
+  it('handles an aborted signal', () => {
+    const controller = new AbortController();
+    controller.abort();
+    expect(isAborted(controller.signal)).toEqual(true);
+  });
+});
 
 describe('warn', () => {
   const origWarn = console.warn;
