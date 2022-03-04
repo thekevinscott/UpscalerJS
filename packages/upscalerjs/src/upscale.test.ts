@@ -1464,11 +1464,14 @@ describe('cancellableUpscale', () => {
         throw new Error(`Rate is too high: ${rate}`);
       }
     });
-    await expect(() => cancellableUpscale(model, img, { scale, } as IModelDefinition, {
+    await expect(() => cancellableUpscale(img, {
       patchSize,
       padding: 0,
       progress,
       signal: controller.signal,
+    }, {
+      model, 
+      modelDefinition: { scale, } as IModelDefinition, 
     }))
       .rejects
       .toThrow(AbortError);
