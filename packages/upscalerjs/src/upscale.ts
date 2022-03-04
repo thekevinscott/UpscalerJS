@@ -224,7 +224,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 
 export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO> = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO>,
   {
     model,
     modelDefinition,
@@ -352,7 +352,7 @@ export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) 
 
 export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   input: GetImageAsTensorInput,
-  args: UpscaleArgs<P, O, PO> = {},
+  args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition }: UpscaleInternalArgs,
 ): AsyncGenerator<undefined | UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
