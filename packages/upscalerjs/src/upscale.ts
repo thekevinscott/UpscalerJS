@@ -1,8 +1,23 @@
 import { tf, } from './dependencies.generated';
-import type { UpscaleArgs, IModelDefinition, ProcessFn, ResultFormat, UpscaleResponse, Progress, MultiArgProgress, } from './types';
+import type { 
+  UpscaleArgs, 
+  IModelDefinition, 
+  ProcessFn, 
+  ResultFormat, 
+  UpscaleResponse, 
+  Progress, 
+  MultiArgProgress,
+ } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { wrapGenerator, warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
+import { 
+  wrapGenerator, 
+  warn, 
+  isTensor, 
+  isProgress, 
+  isMultiArgTensorProgress, 
+  isAborted,
+ } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class AbortError extends Error {
@@ -229,7 +244,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     model,
     modelDefinition,
   }: UpscaleInternalArgs
-): AsyncGenerator<undefined | tf.Tensor3D> {
+): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -251,13 +266,13 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       width,
       padding,
     });
-    yield;
     let upscaledTensor: tf.Tensor4D = tf.zeros([
       1,
       0,
       originalSize[1] * scale * columns,
       channels,
     ]);
+    yield upscaledTensor;
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
       let colTensor: tf.Tensor4D = tf.zeros([
@@ -266,6 +281,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         0,
         channels,
       ]);
+      yield [colTensor, upscaledTensor];
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
@@ -275,19 +291,21 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           height,
           width,
         });
-        yield;
+        yield [upscaledTensor, colTensor];
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1],],
           [-1, size[0], size[1],],
         );
+        yield [upscaledTensor, colTensor, slicedPixels];
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
-        yield;
         slicedPixels.dispose();
+        yield [upscaledTensor, colTensor, prediction];
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
         prediction.dispose();
+        yield [upscaledTensor, colTensor, slicedPrediction];
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -297,26 +315,26 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           } else {
             const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
-              // if we are returning a tensor, we can not safely dispose of the tensor
+              // because we are returning a tensor, we cannot safely dispose of it
               (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
             } else {
-              const sliceSrc = await tensorAsBase64(squeezedTensor);
-              yield;
-              // if we are returning a string, we can safely dispose of the tensor
+              // because we are returning a string, we can safely dispose of our tensor
+              const src = await tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              (<MultiArgProgress<'src'>>progress)(percent, sliceSrc);
+              (<MultiArgProgress<'src'>>progress)(percent, src);
             }
           }
-          yield;
         }
+        yield [upscaledTensor, colTensor, slicedPrediction];
 
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         slicedPrediction.dispose();
-        yield;
+        yield [upscaledTensor, colTensor];
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
       colTensor.dispose();
+      yield [upscaledTensor];
     }
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
@@ -350,7 +368,7 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D;
+type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D>;
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
@@ -376,15 +394,20 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
       modelDefinition,
     }
   );
-  let { value: upscaledPixels, done } = await gen.next();
-  yield upscaledPixels;
-  while (done === false) {
-    const genResult = await gen.next();
-    upscaledPixels = genResult.value;
-    done = genResult.done;
-    yield upscaledPixels;
+  let result = await gen.next();
+  yield result.value;
+  while (!result.done) {
+    result = await gen.next();
+    if (Array.isArray(result.value)) {
+      yield [...result.value, preprocessedPixels];
+    } else if (isTensor(result.value)) {
+      yield [result.value, preprocessedPixels];
+    } else {
+      yield preprocessedPixels;
+    }
   }
   preprocessedPixels.dispose();
+  const upscaledPixels: tf.Tensor3D = result.value;
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
     upscaledPixels,
@@ -414,7 +437,11 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
   const tick = async (result?: YieldedIntermediaryValue) => {
     await tf.nextFrame();
     if (isAborted(signal)) {
-      if (isTensor(result)) {
+      // only dispose tensor if we are aborting; if aborted, the called function will have
+      // no opportunity to dispose of its memory
+      if (Array.isArray(result)) {
+        result.forEach(r => r.dispose());
+      } else if (isTensor(result)) {
         result.dispose();
       }
       throw new AbortError();

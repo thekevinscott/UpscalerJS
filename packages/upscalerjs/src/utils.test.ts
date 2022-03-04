@@ -1,5 +1,15 @@
 import * as tf from '@tensorflow/tfjs';
-import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, warn, isAborted, } from './utils';
+import { 
+  wrapGenerator, 
+  isSingleArgProgress, 
+  isMultiArgTensorProgress, 
+  isString, 
+  isFourDimensionalTensor, 
+  isThreeDimensionalTensor, 
+  isTensor, 
+  warn, 
+  isAborted,
+} from './utils';
 
 describe('isAborted', () => {
   it('handles an undefined signal', () => {

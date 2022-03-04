@@ -90,12 +90,14 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     await buildUpscaler(platform);
   }
   const yarnArgs = [
-    'yarn', 
-    'jest', 
-    '--config', 
-    `test/jestconfig.${platform}.${runner}.js`, 
-    '--detectOpenHandles', 
-    argv.watch ? '--watch' : undefined, 
+    'jest',
+    // 'node',
+    // '--expose-gc',
+    // './node_modules/.bin/jest',
+    '--config',
+    `test/jestconfig.${platform}.${runner}.js`,
+    '--detectOpenHandles',
+    argv.watch ? '--watch' : undefined,
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
   const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
