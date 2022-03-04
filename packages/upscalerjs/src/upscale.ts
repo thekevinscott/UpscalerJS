@@ -222,12 +222,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-<<<<<<< HEAD
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
-  model: tf.LayersModel,
-=======
-export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
->>>>>>> ks/v0.12.0
   pixels: tf.Tensor4D,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO>,
   {
