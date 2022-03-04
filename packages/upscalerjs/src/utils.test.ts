@@ -66,7 +66,6 @@ describe('wrapGenerator', () => {
     let called = 0;
     const callback = jest.fn(async () => {
       called++;
-      console.log('called', called);
       await wait();
       if (called < 2) {
         expect(callback).toHaveBeenCalledTimes(called);
