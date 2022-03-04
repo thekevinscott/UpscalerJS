@@ -1,8 +1,8 @@
 import { tf, } from './dependencies.generated';
+import type { UpscaleArgs, IModelDefinition, ProcessFn, ResultFormat, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
-import type { IUpscaleOptions, IModelDefinition, ProcessFn, UpscaleResponse, Progress, MultiArgProgress, ResultFormat } from './types';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class AbortError extends Error {
@@ -226,7 +226,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<P, O, PO> = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO> = {},
 ): AsyncGenerator<undefined | tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
@@ -354,7 +354,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  options: IUpscaleOptions<P, O, PO> = {},
+  options: UpscaleArgs<P, O, PO> = {},
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
@@ -400,12 +400,18 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   return <UpscaleResponse<O>>base64Src;
 };
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+interface UpscaleInternalArgs {
   model: tf.LayersModel,
-  input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  { signal, ...options }: IUpscaleOptions<P, O, PO> = {},
-): Promise<IteratorReturnResult<UpscaleResponse<O>>> {
+}
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+  input: GetImageAsTensorInput,
+  { signal, ...options }: UpscaleArgs<P, O, PO> = {},
+  {
+    model,
+    modelDefinition,
+  }: UpscaleInternalArgs,
+){
   const gen = upscale(
     model,
     input,

@@ -27,7 +27,7 @@ export type ProgressResponse<O extends ResultFormat = 'src', PO extends ResultFo
 export type MultiArgProgress<O extends ResultFormat = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
-export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>{
+export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>{
   output?: O;
   patchSize?: number;
   padding?: number;
