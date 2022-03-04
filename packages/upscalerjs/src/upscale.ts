@@ -350,22 +350,13 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-<<<<<<< HEAD
 type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D;
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
-  model: tf.LayersModel,
-  input: GetImageAsTensorInput,
-  modelDefinition: IModelDefinition,
-  options: UpscaleArgs<P, O, PO> = {},
-): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
-=======
-export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition }: UpscaleInternalArgs,
-): AsyncGenerator<undefined | UpscaleResponse<O>> {
->>>>>>> ks/v0.12.0
+): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
