@@ -117,12 +117,9 @@ describe('Memory Leaks', () => {
   beforeEach(async () => {
     context = await browser.createIncognitoBrowserContext();
     page = await context.newPage();
-    page.on('console', message => {
-      // const type = message.type();
-      console.log('[PAGE]', message.text());
-      // console.log('type', type);
-      // console.log(`${type.substr(0, 3).toUpperCase()} ${message.text()}`);
-    });
+    // page.on('console', message => {
+    //   console.log('[PAGE]', message.text());
+    // });
     await page.goto(`http://localhost:${PORT}`)
   })
 

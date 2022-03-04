@@ -245,7 +245,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     modelDefinition,
   }: UpscaleInternalArgs
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  // console.log('predict 1', JSON.stringify(tf.memory()));
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -259,7 +258,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
-    // console.log('predict 2', JSON.stringify(tf.memory()));
     const { size: originalSize, } = getTensorDimensions({
       row: 0,
       col: 0,
@@ -275,7 +273,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       channels,
     ]);
     yield upscaledTensor;
-    // console.log('predict 3', JSON.stringify(tf.memory()));
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
       let colTensor: tf.Tensor4D = tf.zeros([
@@ -285,7 +282,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         channels,
       ]);
       yield [colTensor, upscaledTensor];
-      console.log(`predict.rows 1 | ${row}`, JSON.stringify(tf.memory()));
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
@@ -296,24 +292,20 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           width,
         });
         yield [upscaledTensor, colTensor];
-        // console.log(`predict.cols 1 | ${row} | ${col}`, JSON.stringify(tf.memory()));
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1],],
           [-1, size[0], size[1],],
         );
         yield [upscaledTensor, colTensor, slicedPixels];
-        // console.log(`predict.cols 2 | ${row} | ${col}`, JSON.stringify(tf.memory()));
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction];
-        // console.log(`predict.cols 3 | ${row} | ${col}`, JSON.stringify(tf.memory()));
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
         prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction];
-        // console.log(`predict.cols 4 | ${row} | ${col}`, JSON.stringify(tf.memory()));
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -333,20 +325,16 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             }
           }
         }
-        console.log(`predict.cols 4.9 | ${row} | ${col}`, JSON.stringify(tf.memory()));
         yield [upscaledTensor, colTensor, slicedPrediction];
-        console.log(`predict.cols 5 | ${row} | ${col}`, JSON.stringify(tf.memory()));
 
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         slicedPrediction.dispose();
         yield [upscaledTensor, colTensor];
-        // console.log(`predict.cols 6 | ${row} | ${col}`, JSON.stringify(tf.memory()));
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
       colTensor.dispose();
       yield [upscaledTensor];
-      console.log(`predict.rows 2 | ${row}`, JSON.stringify(tf.memory()));
     }
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
