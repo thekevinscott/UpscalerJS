@@ -1,8 +1,8 @@
 import { tf, } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
+import type { IUpscaleOptions, IModelDefinition, ProcessFn, UpscaleResponse, Progress, MultiArgProgress, ResultFormat } from './types';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class AbortError extends Error {
@@ -222,7 +222,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
-export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
@@ -348,22 +348,24 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
-export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+type YieldedValue = tf.Tensor4D | tf.Tensor3D;
+
+export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   options: IUpscaleOptions<P, O, PO> = {},
-): AsyncGenerator<undefined | UpscaleResponse<O>> {
+): AsyncGenerator<YieldedValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
-  yield; // yield startingPixels
+  yield startingPixels;
 
   const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
     startingPixels,
     modelDefinition.preprocess,
   );
   startingPixels.dispose();
-  yield; // yield preprocessedPixels
+  yield preprocessedPixels;
 
   const gen = predict(
     model,
@@ -372,13 +374,14 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     options,
   );
   let { value: upscaledPixels, done } = await gen.next();
-  yield; // yield upscaledPixels
+  yield upscaledPixels;
   while (done === false) {
     const genResult = await gen.next();
     upscaledPixels = genResult.value;
     done = genResult.done;
-    yield; // yield upscalePixels
+    yield upscaledPixels;
   }
+  
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
@@ -386,7 +389,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
     modelDefinition.postprocess,
   );
   upscaledPixels.dispose();
-  yield; // yield postProcessedPixels
+  yield postprocessedPixels;
 
   if (options.output === 'tensor') {
     return <UpscaleResponse<O>>postprocessedPixels;
@@ -397,33 +400,29 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   return <UpscaleResponse<O>>base64Src;
 };
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
   { signal, ...options }: IUpscaleOptions<P, O, PO> = {},
-): Promise<UpscaleResponse<O>> {
+): Promise<IteratorReturnResult<UpscaleResponse<O>>> {
   const gen = upscale(
     model,
     input,
     modelDefinition,
     options,
   );
-  let { value: upscaledPixels, done } = await gen.next();
   if (isAborted(signal)) {
     throw new AbortError();
   }
-  while (done === false) {
+  let upscaledPixels: IteratorResult<YieldedValue, UpscaleResponse<O>>;
+  for (upscaledPixels = await gen.next(); !upscaledPixels.done; upscaledPixels = await gen.next()) {
     await tf.nextFrame();
     if (isAborted(signal)) {
+      // upscaledPixels.dispose();
       throw new AbortError();
     }
-    const genResult = await gen.next();
-    upscaledPixels = genResult.value;
-    done = genResult.done;
   }
-  if (isAborted(signal)) {
-    throw new AbortError();
-  }
+
   return upscaledPixels;
 }

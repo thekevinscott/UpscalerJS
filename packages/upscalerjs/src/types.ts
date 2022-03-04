@@ -13,9 +13,9 @@ export interface IUpscalerOptions {
   modelDefinition?: IModelDefinition;
 }
 
-export type ReturnType = 'src' | 'tensor' | undefined;
-export type UpscaleResponse<O extends ReturnType> = O extends 'src' ? string : tf.Tensor3D;
-export type ProgressResponse<O extends ReturnType = 'src', PO extends ReturnType = undefined> = 
+export type ResultFormat = 'src' | 'tensor' | undefined;
+export type UpscaleResponse<O extends ResultFormat> = O extends 'src' ? string : tf.Tensor3D;
+export type ProgressResponse<O extends ResultFormat = 'src', PO extends ResultFormat = undefined> = 
   PO extends 'src' ? 
     'src' : 
     PO extends 'tensor' ? 
@@ -24,10 +24,10 @@ export type ProgressResponse<O extends ReturnType = 'src', PO extends ReturnType
         'tensor' :
         'src';
 
-export type MultiArgProgress<O extends ReturnType = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
+export type MultiArgProgress<O extends ResultFormat = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
 export type SingleArgProgress = (amount: number) => void;
-export type Progress<O extends ReturnType = 'src', PO extends ReturnType = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
-export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>{
+export type Progress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
+export interface IUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>{
   output?: O;
   patchSize?: number;
   padding?: number;
