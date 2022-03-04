@@ -5,7 +5,9 @@ import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
-export class AbortError extends Error { }
+export class AbortError extends Error {
+  message = 'The upscale request received an abort signal';
+}
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
