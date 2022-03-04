@@ -117,6 +117,12 @@ describe('Memory Leaks', () => {
   beforeEach(async () => {
     context = await browser.createIncognitoBrowserContext();
     page = await context.newPage();
+    page.on('console', message => {
+      // const type = message.type();
+      console.log('[PAGE]', message.text());
+      // console.log('type', type);
+      // console.log(`${type.substr(0, 3).toUpperCase()} ${message.text()}`);
+    });
     await page.goto(`http://localhost:${PORT}`)
   })
 
@@ -228,7 +234,6 @@ describe('Memory Leaks', () => {
   //   // });
   // })
 
-  /*
   it('should create upscalers', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
 
@@ -599,11 +604,34 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
-  */
-
-  // ALSO: can it cancel without patch size?
 
   it('should cancel without leaking memory', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+    await page.evaluate((times) => new Promise(resolve => {
+      const Upscaler = window['Upscaler'];
+      const abortController = new AbortController();
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        upscaler.upscale(window['flower'], {
+          output: 'src',
+          signal: abortController.signal,
+        }).catch(() => {
+          upscaler.dispose().then(resolve);
+        });
+        abortController.abort();
+      }
+    }), TIMES_TO_CHECK);
+
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+  });
+
+  it('should cancel without leaking memory with patch sizes', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
@@ -620,6 +648,41 @@ describe('Memory Leaks', () => {
             patchSize: 14,
             padding: 2,
             progress: (rate) => {
+              if (rate >= .5) {
+                abortController.abort();
+              }
+            }
+          });
+        } catch (err) { }
+
+        await upscaler.dispose();
+      }
+    }, TIMES_TO_CHECK);
+
+    await tick();
+    const endingMemory = await getMemory(page, prototypes);
+    const names = prototypes.map(p => p.name);
+    checkMemory(names, startingMemory, endingMemory);
+  });
+
+  it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
+    const startingMemory = await getStartingMemory(page, prototypes);
+    await page.evaluate(async (times) => {
+      const Upscaler = window['Upscaler'];
+      const abortController = new AbortController();
+      for (let i = 0; i < times; i++) {
+        const upscaler = new Upscaler({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+        });
+        try {
+          await upscaler.upscale(window['flower'], {
+            output: 'tensor',
+            signal: abortController.signal,
+            patchSize: 14,
+            padding: 2,
+            progress: (rate, slice) => {
+              slice.dispose();
               if (rate >= .5) {
                 abortController.abort();
               }
