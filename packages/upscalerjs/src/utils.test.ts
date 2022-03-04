@@ -1,5 +1,32 @@
 import * as tf from '@tensorflow/tfjs';
-import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, warn, } from './utils';
+
+describe('warn', () => {
+  const origWarn = console.warn;
+  afterEach(() => {
+    console.warn = origWarn;
+  });
+
+  it('logs a string to console', () => {
+    const fn = jest.fn();
+    console.warn = fn;
+    warn('foo');
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('foo');
+  });
+
+  it('logs an array of strings to console', () => {
+    const fn = jest.fn();
+    console.warn = fn;
+    warn([
+      'foo',
+      'bar',
+      'baz'
+    ]);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('foo\nbar\nbaz');
+  });
+});
 
 describe('wrapGenerator', () => {
   it('wraps a sync generator', async () => {
