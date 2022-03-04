@@ -4,7 +4,7 @@ import {
   UpscaleArgs,
   WarmupSizes,
   IModelDefinition,
-  ReturnType,
+  ResultFormat,
   Progress,
 } from './types';
 import loadModel, { getModelDefinitions, } from './loadModel';
@@ -37,7 +37,7 @@ class Upscaler {
     await warmup(this._model, warmupSizes);
   };
 
-  upscale = async<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
     options: UpscaleArgs<P, O, PO> = {},
   ) => {
