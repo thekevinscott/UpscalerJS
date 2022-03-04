@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { IUpscaleOptions, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
+import { UpscaleArgs, IModelDefinition, ProcessFn, ReturnType, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
 import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
@@ -226,7 +226,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ReturnType =
   model: tf.LayersModel,
   pixels: tf.Tensor4D,
   modelDefinition: IModelDefinition,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: IUpscaleOptions<P, O, PO> = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO> = {},
 ): AsyncGenerator<undefined | tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
@@ -352,7 +352,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   model: tf.LayersModel,
   input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  options: IUpscaleOptions<P, O, PO> = {},
+  options: UpscaleArgs<P, O, PO> = {},
 ): AsyncGenerator<undefined | UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
@@ -397,11 +397,18 @@ export async function* upscale<P extends Progress<O, PO>, O extends ReturnType =
   return <UpscaleResponse<O>>base64Src;
 };
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+interface UpscaleInternalArgs {
   model: tf.LayersModel,
-  input: GetImageAsTensorInput,
   modelDefinition: IModelDefinition,
-  { signal, ...options }: IUpscaleOptions<P, O, PO> = {},
+}
+
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  input: GetImageAsTensorInput,
+  { signal, ...options }: UpscaleArgs<P, O, PO> = {},
+  {
+    model,
+    modelDefinition,
+  }: UpscaleInternalArgs,
 ): Promise<UpscaleResponse<O>> {
   const gen = upscale(
     model,
