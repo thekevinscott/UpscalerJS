@@ -1,5 +1,60 @@
 import * as tf from '@tensorflow/tfjs';
-import { isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+import { wrapGenerator, isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+
+describe('wrapGenerator', () => {
+  it('wraps a sync generator', async () => {
+    function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const result = await wrapGenerator(foo())
+    expect(result).toEqual('baz');
+  });
+
+  it('wraps an async generator', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const result = await wrapGenerator(foo())
+    expect(result).toEqual('baz');
+  });
+
+  it('calls a callback function in the generator', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const callback = jest.fn();
+
+    await wrapGenerator(foo(), callback);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(callback).toHaveBeenCalledWith('foo');
+    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).not.toHaveBeenCalledWith('baz');
+  });
+
+  it('accepts an async callback function', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const callback = jest.fn(async () => {});
+    await wrapGenerator(foo(), callback);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(callback).toHaveBeenCalledWith('foo');
+    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).not.toHaveBeenCalledWith('baz');
+  });
+});
 
 describe('isSingleArgProgress', () => {
   it('returns true for function', () => {
