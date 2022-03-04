@@ -12,6 +12,7 @@ import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
+import { wrapGenerator } from './utils';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
 import { IModelDefinition, } from './types';
@@ -90,8 +91,7 @@ describe('getCopyOfInput', () => {
     );
     expect(getCopyOfInput(input)).not.toEqual(input);
   });
-
-})
+});
 
 describe('getConsistentTensorDimensions', () => {
   interface IOpts {
@@ -1050,16 +1050,6 @@ describe('getRowsAndColumns', () => {
   });
 });
 
-async function wrapGen<T>(gen: AsyncGenerator<T>) {
-  let { value: result, done } = await gen.next();
-  while (done === false) {
-    const genResult = await gen.next();
-    result = genResult.value;
-    done = genResult.done;
-  }
-  return result;
-}
-
 describe('predict', () => {
   const origWarn = console.warn;
   afterEach(() => {
@@ -1079,7 +1069,7 @@ describe('predict', () => {
     const model = {
       predict: jest.fn(() => pred),
     } as unknown as tf.LayersModel;
-    const result = await wrapGen(
+    const result = await wrapGenerator(
       predict(img.expandDims(0), {
       }, { model, modelDefinition: { scale: 2, } as IModelDefinition })
     );
@@ -1101,7 +1091,7 @@ describe('predict', () => {
         return tf.fill([2, 2, 3,], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    const result = await wrapGen(predict(
+    const result = await wrapGenerator(predict(
       img.expandDims(0),
       {
         patchSize: 1,
@@ -1158,7 +1148,7 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn();
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1187,7 +1177,7 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn((_1: any, _2: any) => {});
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1255,7 +1245,7 @@ describe('predict', () => {
         ]);
       }
     });
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1332,7 +1322,7 @@ describe('predict', () => {
         ]);
       }
     });
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1366,7 +1356,7 @@ describe('predict', () => {
           .expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         patchSize,
       }, { model, modelDefinition: { scale, } as IModelDefinition })
@@ -1386,7 +1376,7 @@ describe('predict', () => {
           .expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    await wrapGen(
+    await wrapGenerator(
       predict(img, {
         progress: () => { },
       }, { model, modelDefinition: { scale, } as IModelDefinition })
@@ -1412,7 +1402,7 @@ describe('upscale', () => {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await wrapGen(upscale(img, {}, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
+    const result = await wrapGenerator(upscale(img, {}, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
     expect(result).toEqual('foobarbaz');
   });
 
@@ -1433,7 +1423,7 @@ describe('upscale', () => {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await wrapGen(upscale(img, { output: 'tensor', }, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
+    const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
     }

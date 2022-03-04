@@ -60,7 +60,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   let result: IteratorResult<T, TReturn>;
   for (result = await gen.next(); !result.done; result = await gen.next()) {
     if (postNext) {
-      postNext(result.value);
+      await postNext(result.value);
     }
   }
   return <TReturn>result.value;

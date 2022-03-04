@@ -54,6 +54,28 @@ describe('wrapGenerator', () => {
     expect(callback).toHaveBeenCalledWith('bar');
     expect(callback).not.toHaveBeenCalledWith('baz');
   });
+
+  it('should await the async callback function', (done) => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const wait = () => new Promise(resolve => setTimeout(resolve));
+    let called = 0;
+    const callback = jest.fn(async () => {
+      called++;
+      console.log('called', called);
+      await wait();
+      if (called < 2) {
+        expect(callback).toHaveBeenCalledTimes(called);
+      } else if (called === 2) {
+        done();
+      }
+    });
+    wrapGenerator(foo(), callback);
+  }, 100);
 });
 
 describe('isSingleArgProgress', () => {

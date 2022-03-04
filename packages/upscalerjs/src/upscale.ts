@@ -417,6 +417,7 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
       throw new AbortError();
     }
   }
+  await tick();
   const upscaledPixels = await wrapGenerator<undefined, UpscaleResponse<O>>(upscale(
     input,
     args,
