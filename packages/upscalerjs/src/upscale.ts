@@ -411,7 +411,7 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
     model,
     modelDefinition,
   }: UpscaleInternalArgs,
-){
+): Promise<UpscaleResponse<O>>{
   const gen = upscale(
     model,
     input,
@@ -432,5 +432,5 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
     }
   }
 
-  return result;
+  return result.value;
 }
