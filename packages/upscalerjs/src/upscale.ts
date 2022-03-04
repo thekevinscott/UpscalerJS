@@ -222,11 +222,18 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor;
 };
 
+<<<<<<< HEAD
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   model: tf.LayersModel,
+=======
+export async function* predict<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+>>>>>>> ks/v0.12.0
   pixels: tf.Tensor4D,
-  modelDefinition: IModelDefinition,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO> = {},
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO>,
+  {
+    model,
+    modelDefinition,
+  }: UpscaleInternalArgs
 ): AsyncGenerator<undefined | tf.Tensor3D> {
   const scale = modelDefinition.scale;
 
@@ -348,6 +355,7 @@ export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
 
+<<<<<<< HEAD
 type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D;
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
@@ -356,6 +364,13 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   modelDefinition: IModelDefinition,
   options: UpscaleArgs<P, O, PO> = {},
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
+=======
+export async function* upscale<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  input: GetImageAsTensorInput,
+  args: UpscaleArgs<P, O, PO>,
+  { model, modelDefinition }: UpscaleInternalArgs,
+): AsyncGenerator<undefined | UpscaleResponse<O>> {
+>>>>>>> ks/v0.12.0
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
@@ -368,10 +383,12 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   yield preprocessedPixels;
 
   const gen = predict(
-    model,
     preprocessedPixels,
-    modelDefinition,
-    options,
+    args,
+    {
+      model,
+      modelDefinition,
+    }
   );
   let { value: upscaledPixels, done } = await gen.next();
   yield upscaledPixels;
@@ -391,7 +408,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   upscaledPixels.dispose();
   yield postprocessedPixels;
 
-  if (options.output === 'tensor') {
+  if (args.output === 'tensor') {
     return <UpscaleResponse<O>>postprocessedPixels;
   }
 
@@ -406,17 +423,13 @@ interface UpscaleInternalArgs {
 }
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
-  { signal, ...options }: UpscaleArgs<P, O, PO> = {},
-  {
-    model,
-    modelDefinition,
-  }: UpscaleInternalArgs,
-): Promise<UpscaleResponse<O>>{
+  { signal, ...args }: UpscaleArgs<P, O, PO>,
+  internalArgs: UpscaleInternalArgs,
+): Promise<UpscaleResponse<O>> {
   const gen = upscale(
-    model,
     input,
-    modelDefinition,
-    options,
+    args,
+    internalArgs,
   );
   if (isAborted(signal)) {
     throw new AbortError();
