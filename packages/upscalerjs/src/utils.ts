@@ -50,4 +50,23 @@ export const isMultiArgTensorProgress = (p: Progress<any, any>, output: ResultFo
   return progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor';
 }
 
-export const isAborted = (abortSignal?: AbortSignal) => !!abortSignal && abortSignal?.aborted;
+export const isAborted = (abortSignal?: AbortSignal) => {
+  if (abortSignal) {
+    return abortSignal.aborted;
+  }
+  return false;
+};
+
+type PostNext<T = unknown> = ((value: T) => (void | Promise<void>));
+export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>(
+  gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
+  postNext?: PostNext<T>
+): Promise<TReturn> {
+  let result: IteratorResult<T, TReturn>;
+  for (result = await gen.next(); !result.done; result = await gen.next()) {
+    if (postNext) {
+      await postNext(result.value);
+    }
+  }
+  return <TReturn>result.value;
+}

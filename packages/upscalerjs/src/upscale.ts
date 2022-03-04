@@ -2,7 +2,7 @@ import { tf, } from './dependencies.generated';
 import type { UpscaleArgs, IModelDefinition, ProcessFn, ResultFormat, UpscaleResponse, Progress, MultiArgProgress, } from './types';
 import { getImageAsTensor, } from './image.generated';
 import tensorAsBase64 from 'tensor-as-base64';
-import { warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
+import { wrapGenerator, warn, isTensor, isProgress, isMultiArgTensorProgress, isAborted, } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class AbortError extends Error {
@@ -384,7 +384,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
     done = genResult.done;
     yield upscaledPixels;
   }
-  
   preprocessedPixels.dispose();
 
   const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
@@ -412,16 +411,7 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
   { signal, ...args }: UpscaleArgs<P, O, PO>,
   internalArgs: UpscaleInternalArgs,
 ): Promise<UpscaleResponse<O>> {
-  const gen = upscale(
-    input,
-    args,
-    internalArgs,
-  );
-  if (isAborted(signal)) {
-    throw new AbortError();
-  }
-  let result: IteratorResult<YieldedIntermediaryValue, UpscaleResponse<O>>;
-  for (result = await gen.next(); !result.done; result = await gen.next()) {
+  const tick = async (result?: YieldedIntermediaryValue) => {
     await tf.nextFrame();
     if (isAborted(signal)) {
       if (isTensor(result)) {
@@ -430,6 +420,12 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
       throw new AbortError();
     }
   }
-
-  return result.value;
+  await tick();
+  const upscaledPixels = await wrapGenerator(upscale(
+    input,
+    args,
+    internalArgs,
+  ), tick);
+  await tick();
+  return upscaledPixels;
 }
