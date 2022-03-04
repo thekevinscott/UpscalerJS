@@ -11,7 +11,7 @@ import upscale, {
 } from './upscale';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
-import { IModelDefinition, MultiArgProgress, IUpscaleOptions, Progress, } from './types';
+import { IModelDefinition, Progress, } from './types';
 jest.mock('./image.generated', () => ({
   ...jest.requireActual('./image.generated'),
 }));
