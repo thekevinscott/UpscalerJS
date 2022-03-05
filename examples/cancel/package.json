@@ -4,14 +4,11 @@
   "description": "Demonstrates how to cancel an inflight upscale request.",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open"
+    "copy": "rm -rf dist && mkdir dist && cp index.html dist && cp flower.png dist",
+    "start": "yarn copy && esbuild index.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
   },
   "author": "Kevin Scott",
   "license": "MIT",
-  "devDependencies": {
-    "cross-env": "^7.0.2",
-    "parcel": "1.12.3"
-  },
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
     "upscaler": "0.11.0"

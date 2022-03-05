@@ -10,9 +10,9 @@ const upscaler = new Upscaler();
 upscale.onclick = () => {
   info.innerText = 'Upscaling...';
   const start = new Date().getTime();
-  let rate;
+  let rate = 0;
   upscaler.upscale(img, {
-    patchSize: 4,
+    patchSize: 16,
     padding: 4,
     signal: abortController.signal,
     progress: (inProgressRate) => {
@@ -27,13 +27,13 @@ upscale.onclick = () => {
     const ms = new Date().getTime() - start;
     info.innerText = `Upscaled in ${ms} ms`;
   }).catch(err => {
-    console.log(err);
+    console.log('The AbortError:', err);
     info.innerText = `Canceled at ${rate}%`;
-
   });
 };
 
 cancel.onclick = () => {
   console.log('canceled');
   abortController.abort();
+  abortController = new AbortController();
 }
