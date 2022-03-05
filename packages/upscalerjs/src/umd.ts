@@ -1,4 +1,4 @@
-import Upscaler from './upscaler';
+import { Upscaler } from './upscaler';
 import { AbortError, getRowsAndColumns, getTensorDimensions, } from './upscale';
 
 (

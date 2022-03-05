@@ -128,6 +128,98 @@ describe('Upscale Integration Tests', () => {
       expect(progressRates).toEqual(expectedRates);
       expect(called).toEqual(false);
     });
+    
+    it("cancels all inflight upscale requests", async () => {
+      const errMessage = await page.evaluate(() => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+          warmupSizes: [{
+            patchSize: 4,
+            padding: 2,
+          }]
+        });
+        window['progressRates'] = [];
+        window['called'] = false;
+
+        let startTime = new Date().getTime();
+        window['durations'] = [];
+        const options = {
+          patchSize: 4,
+          padding: 2,
+          output: 'src',
+          progress: (rate) => {
+            const curTime = new Date().getTime();
+            window['durations'].push(curTime - startTime);
+            startTime = curTime;
+            window['progressRates'].push(rate);
+            if (rate >= .5) {
+              upscaler.abort();
+            }
+          },
+        };
+        Array(3).fill('').forEach(() => {
+          upscaler.upscale(window['flower'], options).then(() => {
+            window['called'] = true;
+            resolve('this should not be called');
+          }).catch(err => {
+            return resolve(err.message);
+          });
+        })
+      }));
+      expect(errMessage).toEqual('The upscale request received an abort signal');
+      const [progressRates, called] = await page.evaluate(() => new Promise(resolve => {
+        const durations = window['durations'].slice(1); // skip the first entry, it's usually slower than the others
+        const avg = durations.reduce((sum, d) => sum + d, 0) / durations.length;
+        setTimeout(() => {
+          resolve([
+            window['progressRates'],
+            window['called'],
+        ]);
+        }, avg * 2); // wait the average time for a progress event, PLUS another, to make sure we catch any stray calls
+      }));
+      const expectedRates = Array(7).fill('').map((_, i) => (i + 1) / 16).reduce((arr, el) => {
+        return arr.concat([el, el, el]);
+      }, []).concat([.5]);
+      expect(progressRates).toEqual(expectedRates);
+      expect(called).toEqual(false);
+    });
+
+    it("can cancel all inflight upscale requests and then make a new request successfully", async () => {
+      const errMessage = await page.evaluate(() => new Promise(resolve => {
+        window['upscaler'] = new window['Upscaler']({
+          model: '/pixelator/pixelator.json',
+          scale: 4,
+          warmupSizes: [{
+            patchSize: 4,
+            padding: 2,
+          }]
+        });
+
+        const options = {
+          patchSize: 4,
+          padding: 2,
+          output: 'src',
+          progress: (rate) => {
+            if (rate >= .5) {
+              window['upscaler'].abort();
+            }
+          },
+        };
+        window['upscaler'].upscale(window['flower'], options).then(() => {
+          window['called'] = true;
+          resolve('this should not be called');
+        }).catch(err => {
+          return resolve(err.message);
+        });
+      }));
+      expect(errMessage).toEqual('The upscale request received an abort signal');
+
+      const result = await page.evaluate(() => {
+        return window['upscaler'].upscale(window['flower']);
+      });
+      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    });
   });
 
   describe('Progress Method', () => {

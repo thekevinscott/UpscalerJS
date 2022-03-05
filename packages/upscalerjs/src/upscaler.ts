@@ -59,3 +59,5 @@ export class Upscaler {
     this.abortController = new AbortController();
   }
 }
+
+export default Upscaler;
