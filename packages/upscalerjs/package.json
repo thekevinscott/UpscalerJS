@@ -51,6 +51,7 @@
     "prepublishOnly": "yarn test && yarn lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
+    "lint:fix": "eslint -c .eslintrc.js src --ext .ts --fix",
     "test": "yarn run test:unit",
     "test:unit": "yarn run test:unit:node && yarn run test:unit:browser:jest && yarn run test:unit:browser:playwright",
     "test:unit:browser:playwright": "yarn scaffold:platform 'browser' && playwright-test src/*.browser.test.ts -r mocha -b firefox",

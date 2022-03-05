@@ -37,6 +37,7 @@
     "example": "ts-node ./scripts/start-example.ts",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
+    "lint:fix": "yarn lerna run lint:fix",
     "push": "yarn lerna publish from-package",
     "push_old": "yarn lerna publish --conventional-commits --create-release=github",
     "bootstrap": "yarn lerna bootstrap --hoist",
