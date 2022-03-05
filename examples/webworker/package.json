@@ -1,6 +1,6 @@
 {
   "name": "webworker",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,6 @@
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
     "tensor-as-base64": "^0.1.1",
-    "upscaler": "0.11.0"
+    "upscaler": "0.12.0"
   }
 }
