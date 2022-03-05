@@ -2357,6 +2357,34 @@
   resolved "https://registry.npmjs.org/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@chialab/esbuild-plugin-html@^0.15.5":
+  version "0.15.5"
+  resolved "https://registry.yarnpkg.com/@chialab/esbuild-plugin-html/-/esbuild-plugin-html-0.15.5.tgz#fb19ba4c508f4e63e9755929a2beddf79390cd9c"
+  integrity sha512-G7f8XJgTaWSxsPR7fw0rAGZc7qSGLuXq9569l13gS/aS0CbrNHhI0hPx2jq51xap3P5edfqCnMa7IKpMEAodtg==
+  dependencies:
+    "@chialab/esbuild-rna" "^0.15.4"
+    "@chialab/node-resolve" "^0.15.3"
+
+"@chialab/esbuild-rna@^0.15.4":
+  version "0.15.4"
+  resolved "https://registry.yarnpkg.com/@chialab/esbuild-rna/-/esbuild-rna-0.15.4.tgz#5f7acdef4a6dfeb471c8437843798e0976475cf6"
+  integrity sha512-r6hpNu6ceipOFmdynDeYgYRHLCaW5Vmnufu5nTqz3VPt0mebWLCTJoXuFBTe91a5wir5dHiKVK6YarrR9uwDWA==
+  dependencies:
+    "@chialab/estransform" "^0.15.3"
+    "@chialab/node-resolve" "^0.15.3"
+
+"@chialab/estransform@^0.15.3":
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/@chialab/estransform/-/estransform-0.15.3.tgz#62f29ae99b26181c7fd097f1d33bb677f5b8ba30"
+  integrity sha512-5CxuC4+mgHGNedbxmJ0avDsyHngDRCt5ytlASJNtCGvaeEkcEFhXSKT8SvVBkOJcMOepBBP3Pq0BdBnw50WwLg==
+  dependencies:
+    "@parcel/source-map" "^2.0.0"
+
+"@chialab/node-resolve@^0.15.3":
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/@chialab/node-resolve/-/node-resolve-0.15.3.tgz#1da1b9ad6674d7fbcf7523ecbda5672188cb1b44"
+  integrity sha512-KARULjnc5dyLSVyDXSrUbA0ZkMR76hi5oROMwmXsCFz8phutpVtPwkQgTKzHCsYctRKCNWMjq7BR9H1D1BaRwg==
+
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.npmjs.org/@cnakazawa/watch/-/watch-1.0.4.tgz"
@@ -3843,6 +3871,13 @@
     grapheme-breaker "^0.3.2"
     ora "^2.1.0"
     strip-ansi "^4.0.0"
+
+"@parcel/source-map@^2.0.0":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@parcel/source-map/-/source-map-2.0.2.tgz#9aa0b00518cee31d5634de6e9c924a5539b142c1"
+  integrity sha512-NnUrPYLpYB6qyx2v6bcRPn/gVigmGG6M6xL8wIg/i0dP1GLkuY1nf+Hqdf63FzPTqqT7K3k6eE5yHPQVMO5jcA==
+  dependencies:
+    detect-libc "^1.0.3"
 
 "@parcel/utils@^1.11.0":
   version "1.11.0"

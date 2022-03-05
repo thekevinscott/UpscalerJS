@@ -4,8 +4,8 @@
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
-    "build": "cross-env NODE_ENV=production parcel build index.html --no-minify --public-url ./"
+    "copy": "rm -rf dist && cp -r src dist",
+    "start": "yarn copy && esbuild src/*.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
   },
   "browserslist": {
     "production": [
@@ -21,10 +21,6 @@
   },
   "author": "Kevin Scott",
   "license": "MIT",
-  "devDependencies": {
-    "cross-env": "^7.0.2",
-    "parcel": "1.12.3"
-  },
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
     "tensor-as-base64": "^0.1.1",

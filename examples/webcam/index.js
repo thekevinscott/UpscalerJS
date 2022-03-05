@@ -27,7 +27,7 @@ navigator.mediaDevices
       info.innerText = "Upscaling...";
       const start = new Date().getTime();
       upscaler.upscale(data, {
-        patchSize: 64,
+        patchSize: 16,
         padding: 4,
       }).then(upscaledImgSrc => {
         const img = document.createElement("img");
