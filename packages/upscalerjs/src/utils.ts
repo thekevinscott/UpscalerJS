@@ -62,7 +62,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
   postNext?: PostNext<T>
 ): Promise<TReturn> {
-  let result: IteratorResult<T, TReturn>;
+  let result: undefined | IteratorResult<T, TReturn> = undefined;
   for (result = await gen.next(); !result.done; result = await gen.next()) {
     if (postNext) {
       await postNext(result.value);
