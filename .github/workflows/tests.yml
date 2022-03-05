@@ -2,6 +2,24 @@ name: 'Tests'
 on: [push]
 
 jobs:
+  lint:
+    name: 'Lint'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 'Installing'
+        run: yarn
+
+      - name: 'Lint'
+        run: yarn lint
+
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
