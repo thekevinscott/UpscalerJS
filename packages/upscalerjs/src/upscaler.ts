@@ -12,12 +12,13 @@ import warmup from './warmup';
 import { cancellableUpscale } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 
-class Upscaler {
+export class Upscaler {
   _opts: IUpscalerOptions;
   _model: Promise<{
     model: tf.LayersModel;
     modelDefinition: IModelDefinition;
   }>;
+  abortController = new AbortController();
 
   constructor(opts: IUpscalerOptions = {}) {
     this._opts = {
@@ -45,12 +46,16 @@ class Upscaler {
     return cancellableUpscale(image, options, {
       model,
       modelDefinition,
+      signal: this.abortController.signal,
     });
   };
 
   getModelDefinitions = async () => {
     return await getModelDefinitions();
   };
-}
 
-export default Upscaler;
+  abort = () => {
+    this.abortController.abort();
+    this.abortController = new AbortController();
+  }
+}

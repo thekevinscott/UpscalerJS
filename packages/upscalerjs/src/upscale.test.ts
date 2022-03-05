@@ -1490,7 +1490,10 @@ describe('upscale', () => {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await wrapGenerator(upscale(img, {}, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
+    const result = await wrapGenerator(upscale(img, {}, {
+      model,
+      modelDefinition: { scale: 2, } as IModelDefinition,
+    }));
     expect(result).toEqual('foobarbaz');
   });
 
@@ -1511,7 +1514,10 @@ describe('upscale', () => {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
-    const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { model, modelDefinition: { scale: 2, } as IModelDefinition, }));
+    const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
+      model, 
+      modelDefinition: { scale: 2, } as IModelDefinition, 
+    }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
     }
@@ -1549,6 +1555,45 @@ describe('cancellableUpscale', () => {
     }, {
       model, 
       modelDefinition: { scale, } as IModelDefinition, 
+      signal: new AbortController().signal,
+    }))
+      .rejects
+      .toThrow(AbortError);
+    expect(progress).toHaveBeenCalledWith(0.25);
+    expect(progress).toHaveBeenCalledWith(0.5);
+    expect(progress).not.toHaveBeenCalledWith(0.75);
+    expect(progress).not.toHaveBeenCalledWith(1);
+  });
+
+  it('is able to cancel an in-flight request with an internal signal', async () => {
+    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
+    (mockedImage as any).default.getImageAsTensor = () => img;
+    const scale = 2;
+    const patchSize = 2;
+    const model = {
+      predict: jest.fn((pixel) => {
+        return tf
+          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
+          .expandDims(0);
+      }),
+    } as unknown as tf.LayersModel;
+    const controller = new AbortController();
+    const progress = jest.fn((rate) => {
+      if (rate === .5) {
+        controller.abort();
+      }
+      if (rate > .5) {
+        throw new Error(`Rate is too high: ${rate}`);
+      }
+    });
+    await expect(() => cancellableUpscale(img, {
+      patchSize,
+      padding: 0,
+      progress,
+    }, {
+      model, 
+      modelDefinition: { scale, } as IModelDefinition, 
+      signal: controller.signal,
     }))
       .rejects
       .toThrow(AbortError);
