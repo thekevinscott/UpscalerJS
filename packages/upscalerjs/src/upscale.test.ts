@@ -15,7 +15,7 @@ import {
 import { wrapGenerator, isTensor } from './utils';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
-import { IModelDefinition, } from './types';
+import { IModelDefinition, Progress, } from './types';
 jest.mock('./image.generated', () => ({
   ...jest.requireActual('./image.generated'),
 }));
@@ -1219,7 +1219,7 @@ describe('predict', () => {
       inputShape: [null, null, 3],
     }))
     model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
-    const progress: any = jest.fn((rate: number, tensor: tf.Tensor3D) => {
+    const progress = jest.fn((rate: number, tensor: tf.Tensor3D) => {
       const data = Array.from(tensor.dataSync());
       if (rate === .5) {
         expect(data).toEqual([
@@ -1244,7 +1244,7 @@ describe('predict', () => {
           ...Array(6).fill(8),
         ]);
       }
-    });
+    }) as unknown as Progress<'tensor', undefined>
     await wrapGenerator(
       predict(img, {
         patchSize,
@@ -1296,7 +1296,7 @@ describe('predict', () => {
       inputShape: [null, null, 3],
     }))
     model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
-    const progress: any = jest.fn((rate: number, tensor: tf.Tensor3D) => {
+    const progress = jest.fn((rate: number, tensor: tf.Tensor3D) => {
       const data = Array.from(tensor.dataSync());
       if (rate === .5) {
         expect(data).toEqual([
@@ -1321,7 +1321,7 @@ describe('predict', () => {
           ...Array(6).fill(8),
         ]);
       }
-    });
+    }) as Progress<'src', 'tensor'>
     await wrapGenerator(
       predict(img, {
         patchSize,
