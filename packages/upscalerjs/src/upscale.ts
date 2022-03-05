@@ -432,11 +432,13 @@ interface UpscaleInternalArgs {
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   { signal, ...args }: UpscaleArgs<P, O, PO>,
-  internalArgs: UpscaleInternalArgs,
+  internalArgs: UpscaleInternalArgs & {
+    signal: AbortSignal;
+  },
 ): Promise<UpscaleResponse<O>> {
   const tick = async (result?: YieldedIntermediaryValue) => {
     await tf.nextFrame();
-    if (isAborted(signal)) {
+    if (isAborted(signal) || isAborted(internalArgs.signal)) {
       // only dispose tensor if we are aborting; if aborted, the called function will have
       // no opportunity to dispose of its memory
       if (Array.isArray(result)) {

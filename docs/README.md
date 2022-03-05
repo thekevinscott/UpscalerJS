@@ -327,6 +327,16 @@ Disposes the current model. Must be called to free up memory when the Upscaler i
 await upscaler.dispose();
 ```
 
+### `abort`
+
+Aborts all inflight `upscale` calls.
+
+#### Example
+
+```javascript
+await upscaler.abort();
+```
+
 ## Troubleshooting
 
 ### You must provide an explicit scale
