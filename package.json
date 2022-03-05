@@ -34,7 +34,7 @@
     "update:version:old": "node ./scripts/version.js",
     "pin-cdn": "node scripts/pin-cdn.js",
     "find-all-packages": "ts-node scripts/package-scripts/find-all-packages.ts",
-    "example": "node ./scripts/start-example.js",
+    "example": "ts-node ./scripts/start-example.ts",
     "format": "yarn lerna run format",
     "lint": "yarn lerna run lint",
     "push": "yarn lerna publish from-package",

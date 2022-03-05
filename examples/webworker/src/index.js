@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import img from './flower-256.png';
+import img from './flower.png';
 import { writeOutput, disable } from './ui';
 import tensorAsBase64 from 'tensor-as-base64';
 
