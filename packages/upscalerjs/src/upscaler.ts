@@ -1,10 +1,10 @@
 import { tf, } from './dependencies.generated';
 import {
   IUpscalerOptions,
-  IUpscaleOptions,
+  UpscaleArgs,
   WarmupSizes,
   IModelDefinition,
-  ReturnType,
+  ResultFormat,
   Progress,
 } from './types';
 import loadModel, { getModelDefinitions, } from './loadModel';
@@ -37,12 +37,15 @@ class Upscaler {
     await warmup(this._model, warmupSizes);
   };
 
-  upscale = async<P extends Progress<O, PO>, O extends ReturnType = 'src', PO extends ReturnType = undefined>(
+  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
-    options: IUpscaleOptions<P, O, PO> = {},
+    options: UpscaleArgs<P, O, PO> = {},
   ) => {
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(model, image, modelDefinition, options);
+    return cancellableUpscale(image, options, {
+      model,
+      modelDefinition,
+    });
   };
 
   getModelDefinitions = async () => {
