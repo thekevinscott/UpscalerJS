@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
-import { Progress, MultiArgProgress, SingleArgProgress, ResultFormat } from './types';
+import { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
@@ -48,7 +48,7 @@ export const isMultiArgTensorProgress = (p: Progress<any, any>, output: ResultFo
     return false;
   }
   return progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor';
-}
+};
 
 export const isAborted = (abortSignal?: AbortSignal) => {
   if (abortSignal) {
@@ -68,5 +68,5 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
       await postNext(result.value);
     }
   }
-  return <TReturn>result.value;
+  return result.value;
 }

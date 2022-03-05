@@ -239,7 +239,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput }: UpscaleArgs<P, O, PO>,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
   {
     model,
     modelDefinition,
@@ -281,7 +281,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         0,
         channels,
       ]);
-      yield [colTensor, upscaledTensor];
+      yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
@@ -291,21 +291,21 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           height,
           width,
         });
-        yield [upscaledTensor, colTensor];
+        yield [upscaledTensor, colTensor,];
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1],],
           [-1, size[0], size[1],],
         );
-        yield [upscaledTensor, colTensor, slicedPixels];
+        yield [upscaledTensor, colTensor, slicedPixels,];
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
-        yield [upscaledTensor, colTensor, prediction];
+        yield [upscaledTensor, colTensor, prediction,];
         const slicedPrediction = prediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
         prediction.dispose();
-        yield [upscaledTensor, colTensor, slicedPrediction];
+        yield [upscaledTensor, colTensor, slicedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -325,16 +325,16 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             }
           }
         }
-        yield [upscaledTensor, colTensor, slicedPrediction];
+        yield [upscaledTensor, colTensor, slicedPrediction,];
 
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         slicedPrediction.dispose();
-        yield [upscaledTensor, colTensor];
+        yield [upscaledTensor, colTensor,];
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
       colTensor.dispose();
-      yield [upscaledTensor];
+      yield [upscaledTensor,];
     }
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
@@ -373,7 +373,7 @@ type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
-  { model, modelDefinition }: UpscaleInternalArgs,
+  { model, modelDefinition, }: UpscaleInternalArgs,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
@@ -399,9 +399,9 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   while (!result.done) {
     result = await gen.next();
     if (Array.isArray(result.value)) {
-      yield [...result.value, preprocessedPixels];
+      yield [...result.value, preprocessedPixels,];
     } else if (isTensor(result.value)) {
-      yield [result.value, preprocessedPixels];
+      yield [result.value, preprocessedPixels,];
     } else {
       yield preprocessedPixels;
     }
@@ -448,7 +448,7 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
       }
       throw new AbortError();
     }
-  }
+  };
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(
     input,
