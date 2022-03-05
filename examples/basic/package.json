@@ -9,12 +9,14 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.17.5",
+    "@parcel/babel-preset-env": "^2.3.2",
     "cross-env": "^7.0.2",
     "parcel": "1.12.3"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
-    "upscaler": "0.9.0"
+    "upscaler": "0.11.0"
   },
   "browserslist": {
     "production": [
