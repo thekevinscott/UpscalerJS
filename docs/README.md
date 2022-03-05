@@ -249,6 +249,7 @@ upscaler.upscale('/path/to/image', {
   * `padding` (`number`) - Extra padding to be applied to the patch size during inference.
   * `progress` (`(amount: number, slice?: src|tensor) => void`) - A progress callback denoting the percentage complete.
   * `progressOutput` (`src|tensor`) - An optional value that sets the return type of the second argument of progress
+  * `signal` (`AbortSignal`) - An optional signal that allows cancellation of an in-flight upscale request
 
 The `progress` callback optionally returns a second argument with the processed slice of the image:
 
@@ -262,6 +263,22 @@ upscaler.upscale('/path/to/image', {
 ```
 
 The `slice` format will be a base64 string or a tensor corresponding to the value of `output`. This can be overridden by providing an additional property, `progressOutput`, of the form `src | tensor` that will override the value set in `output`.
+
+You can cancel an `upscale` request by providing an `AbortSignal`:
+
+javascript```
+const abortController = new AbortController();
+upscaler.upscale('/path/to/image', {
+  signal: abortController.signal,
+}).catch(err => {
+  // I have been cancelled.
+});
+... some time later
+abortController.abort();
+```
+
+It's worth noting that calls to `model.predict()` in Tensorflow.js cannot be aborted; if you wish to enable the ability to cancel an inflight request, specifying patch sizes will periodically allow the `upscale` request to release and potentially abort.
+
 ### `warmup`
 
 If desired, the model can be "warmed up" after instantiation by calling `warmup` directly.
