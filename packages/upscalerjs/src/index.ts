@@ -1,2 +1,2 @@
-export { default, } from './upscaler';
-export { getRowsAndColumns, getTensorDimensions, } from './upscale';
+export { default } from './upscaler';
+export { AbortError, getRowsAndColumns, getTensorDimensions, } from './upscale';

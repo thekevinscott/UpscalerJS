@@ -1,5 +1,135 @@
 import * as tf from '@tensorflow/tfjs';
-import { isSingleArgProgress, isMultiArgTensorProgress, isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from './utils';
+import { 
+  wrapGenerator, 
+  isSingleArgProgress, 
+  isMultiArgTensorProgress, 
+  isString, 
+  isFourDimensionalTensor, 
+  isThreeDimensionalTensor, 
+  isTensor, 
+  warn, 
+  isAborted,
+} from './utils';
+
+describe('isAborted', () => {
+  it('handles an undefined signal', () => {
+    expect(isAborted()).toEqual(false);
+  });
+
+  it('handles a non-aborted signal', () => {
+    const controller = new AbortController();
+    expect(isAborted(controller.signal)).toEqual(false);
+  });
+
+  it('handles an aborted signal', () => {
+    const controller = new AbortController();
+    controller.abort();
+    expect(isAborted(controller.signal)).toEqual(true);
+  });
+});
+
+describe('warn', () => {
+  const origWarn = console.warn;
+  afterEach(() => {
+    console.warn = origWarn;
+  });
+
+  it('logs a string to console', () => {
+    const fn = jest.fn();
+    console.warn = fn;
+    warn('foo');
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('foo');
+  });
+
+  it('logs an array of strings to console', () => {
+    const fn = jest.fn();
+    console.warn = fn;
+    warn([
+      'foo',
+      'bar',
+      'baz'
+    ]);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith('foo\nbar\nbaz');
+  });
+});
+
+describe('wrapGenerator', () => {
+  it('wraps a sync generator', async () => {
+    function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const result = await wrapGenerator(foo())
+    expect(result).toEqual('baz');
+  });
+
+  it('wraps an async generator', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const result = await wrapGenerator(foo())
+    expect(result).toEqual('baz');
+  });
+
+  it('calls a callback function in the generator', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const callback = jest.fn();
+
+    await wrapGenerator(foo(), callback);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(callback).toHaveBeenCalledWith('foo');
+    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).not.toHaveBeenCalledWith('baz');
+  });
+
+  it('accepts an async callback function', async () => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const callback = jest.fn(async () => {});
+    await wrapGenerator(foo(), callback);
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(callback).toHaveBeenCalledWith('foo');
+    expect(callback).toHaveBeenCalledWith('bar');
+    expect(callback).not.toHaveBeenCalledWith('baz');
+  });
+
+  it('should await the async callback function', (done) => {
+    async function* foo() {
+      yield 'foo';
+      yield 'bar';
+      return 'baz';
+    }
+
+    const wait = () => new Promise(resolve => setTimeout(resolve));
+    let called = 0;
+    const callback = jest.fn(async () => {
+      called++;
+      await wait();
+      if (called < 2) {
+        expect(callback).toHaveBeenCalledTimes(called);
+      } else if (called === 2) {
+        done();
+      }
+    });
+    wrapGenerator(foo(), callback);
+  }, 100);
+});
 
 describe('isSingleArgProgress', () => {
   it('returns true for function', () => {

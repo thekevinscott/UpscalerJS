@@ -1,5 +1,5 @@
-import Upscaler from './upscaler';
-import { getRowsAndColumns, getTensorDimensions, } from './upscale';
+import { Upscaler } from './upscaler';
+import { AbortError, getRowsAndColumns, getTensorDimensions, } from './upscale';
 
 (
   Upscaler as typeof Upscaler & {
@@ -11,5 +11,10 @@ import { getRowsAndColumns, getTensorDimensions, } from './upscale';
     getTensorDimensions: typeof getTensorDimensions;
   }
 ).getTensorDimensions = getTensorDimensions;
+(
+  Upscaler as typeof Upscaler & {
+    AbortError: typeof AbortError;
+  }
+).AbortError = AbortError;
 
 export default Upscaler;

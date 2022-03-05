@@ -1,7 +1,7 @@
 {
-  "name": "basic",
+  "name": "cancel",
   "version": "0.11.0",
-  "description": "Demonstration of basic usage of UpscalerJS",
+  "description": "Demonstrates how to cancel an inflight upscale request.",
   "main": "index.js",
   "scripts": {
     "copy": "rm -rf dist && mkdir dist && cp index.html dist && cp flower.png dist",
