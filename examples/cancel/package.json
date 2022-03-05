@@ -1,0 +1,28 @@
+{
+  "name": "cancel",
+  "version": "0.11.0",
+  "description": "Demonstrates how to cancel an inflight upscale request.",
+  "main": "index.js",
+  "scripts": {
+    "copy": "rm -rf dist && mkdir dist && cp index.html dist && cp flower.png dist",
+    "start": "yarn copy && esbuild index.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.13.0",
+    "upscaler": "0.11.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
