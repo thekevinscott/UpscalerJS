@@ -9,7 +9,7 @@ import {
 } from './types';
 import loadModel, { getModelDefinitions, } from './loadModel';
 import warmup from './warmup';
-import { cancellableUpscale } from './upscale';
+import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class Upscaler {
@@ -57,7 +57,7 @@ export class Upscaler {
   abort = () => {
     this.abortController.abort();
     this.abortController = new AbortController();
-  }
+  };
 }
 
 export default Upscaler;

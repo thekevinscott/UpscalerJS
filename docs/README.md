@@ -266,14 +266,13 @@ The `slice` format will be a base64 string or a tensor corresponding to the valu
 
 You can cancel an `upscale` request by providing an `AbortSignal`:
 
-javascript```
+```javascript
 const abortController = new AbortController();
 upscaler.upscale('/path/to/image', {
   signal: abortController.signal,
 }).catch(err => {
   // I have been cancelled.
 });
-... some time later
 abortController.abort();
 ```
 
