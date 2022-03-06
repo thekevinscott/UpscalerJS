@@ -7379,7 +7379,7 @@ dns-txt@^2.0.2:
   dependencies:
     buffer-indexof "^1.0.0"
 
-docsify-cli@^4.12.2:
+docsify-cli@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/docsify-cli/-/docsify-cli-4.4.3.tgz#5f75d9478d7da27ac1c129d446bf0d4fe70c93d9"
   integrity sha512-oI/cD04b+hklNd9yKiN9p9EqGx9UKL6p4D0J3fS9L5fpwOti1F8p2rshGJTyArxUlw6EeEBtaJd4rzPzBkK+Lw==
