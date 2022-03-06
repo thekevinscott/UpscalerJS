@@ -86,7 +86,7 @@
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.7.2",
-    "docsify-cli": "^4.4.2",
+    "docsify-cli": "^4.12.2",
     "dotenv": "^8.2.0",
     "esbuild": "^0.9.6",
     "heapdump": "^0.3.15",
