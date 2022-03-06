@@ -82,7 +82,6 @@
     "@types/serve-handler": "^6.1.1",
     "@types/yargs": "^17.0.5",
     "browserstack-local": "^1.4.8",
-    "canvas": "^2.9.0",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "codecov": "^3.7.2",
