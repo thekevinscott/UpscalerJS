@@ -9,7 +9,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
-    "tensor-as-base64": "^0.1.1",
     "upscaler": "0.12.0"
   },
   "scripts": {
