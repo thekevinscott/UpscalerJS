@@ -9,7 +9,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
-    "upscaler": "0.12.0"
+    "upscaler": "0.12.1"
   },
   "scripts": {
     "start": "PORT=1234 react-scripts start"
@@ -29,5 +29,5 @@
       "last 1 safari version"
     ]
   },
-  "version": "0.12.0"
+  "version": "0.12.1"
 }
