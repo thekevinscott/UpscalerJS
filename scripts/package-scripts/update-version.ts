@@ -138,7 +138,7 @@ const updateVersion = () => new Promise(resolve => {
       }
     }));
     if (updateDependencies) {
-      return updateMultiplePackages(EXAMPLES_DIR, version, commit, packageJSON => {
+      updateMultiplePackages(EXAMPLES_DIR, version, commit, packageJSON => {
         const deps = packageJSON.dependencies;
         deps['upscaler'] = version;
         return packageJSON;
@@ -148,7 +148,13 @@ const updateVersion = () => new Promise(resolve => {
     }
     if (commit) {
       const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
-      await execute(cmd);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      try {
+        await execute(cmd);
+      } catch(err) {
+        console.error('*******', err)
+        throw err;
+      }
     }
     resolve();
   });
