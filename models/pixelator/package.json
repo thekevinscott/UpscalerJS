@@ -1,0 +1,22 @@
+{
+  "name": "@upscalerjs/pixelator",
+  "version": "0.12.0",
+  "description": "Pixelator network for Upscaler.js",
+  "exports": {
+    "./2x-3": "./dist/2x-3"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models"
+  ],
+  "files": [
+    "license",
+    "models/**/*"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT"
+}
+
