@@ -1,4 +1,5 @@
 {
+  "name": "upscalerjs-root",
   "version": "0.12.1",
   "private": true,
   "workspaces": [
