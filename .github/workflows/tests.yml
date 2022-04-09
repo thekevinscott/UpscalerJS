@@ -26,7 +26,7 @@ jobs:
         run: pnpm install
 
       - name: 'Lint'
-        run: yarn lint
+        run: pnpm lint
 
   memory-leaks:
     name: 'Memory Leaks'
@@ -52,7 +52,7 @@ jobs:
         run: pnpm install
 
       - name: 'Memory Leak Tests'
-        run: yarn test:memory-leaks
+        run: pnpm test:memory-leaks
 
   unit-browser:
     name: 'Unit / Browser'
@@ -78,10 +78,10 @@ jobs:
         run: pnpm install
 
       - name: 'Unit Tests / Jest'
-        run: yarn test:unit:browser:jest
+        run: pnpm test:unit:browser:jest
 
       - name: 'Unit Tests / Playwright'
-        run: yarn test:unit:browser:playwright
+        run: pnpm test:unit:browser:playwright
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
@@ -113,7 +113,7 @@ jobs:
         run: pnpm install
 
       - name: 'Unit Tests'
-        run: yarn test:unit:node
+        run: pnpm test:unit:node
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
@@ -151,7 +151,7 @@ jobs:
         run: pnpm install
 
       - name: 'Integration Tests'
-        run: yarn test:integration:browserstack --ci
+        run: pnpm test:integration:browserstack --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -185,7 +185,7 @@ jobs:
         run: pnpm install
 
       - name: 'Integration Tests'
-        run: yarn test:integration:browser --ci
+        run: pnpm test:integration:browser --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -215,7 +215,7 @@ jobs:
       - name: 'Installing Node-specific deps'
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-        run: cd test/lib/node && yarn
+        run: cd test/lib/node && pnpm
 
       - name: 'Integration Tests'
-        run: yarn test:integration:node --ci
+        run: pnpm test:integration:node --ci
