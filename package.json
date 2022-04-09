@@ -27,7 +27,6 @@
     ]
   },
   "scripts": {
-    "foo": "echo 'foo'",
     "update:tfjs": "ts-node scripts/package-scripts/update-tfjs.ts",
     "update:version": "ts-node scripts/package-scripts/update-version.ts",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
@@ -36,14 +35,6 @@
     "pin-cdn": "node scripts/pin-cdn.js",
     "find-all-packages": "ts-node scripts/package-scripts/find-all-packages.ts",
     "example": "ts-node ./scripts/start-example.ts",
-    "format": "pnpm run format --filter upscaler",
-    "lint": "pnpm run lint --filter upscaler",
-    "lint:fix": "pnpm run lint:fix --filter upscaler",
-    "build": "pnpm run build --filter upscaler",
-    "test:unit": "pnpm run test:unit",
-    "test:unit:browser:playwright": "pnpm run test:unit:browser:playwright",
-    "test:unit:browser:jest": "pnpm run test:unit:browser:jest",
-    "test:unit:node": "pnpm run test:unit:node",
     "test:integration:browserstack": "ts-node scripts/test.ts --platform browser --kind browserstack",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
