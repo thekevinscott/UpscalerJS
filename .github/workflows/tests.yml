@@ -26,196 +26,196 @@ jobs:
         run: pnpm install
 
       - name: 'Lint'
-        run: pnpm lint --filter upscaler
+        run: pnpm run lint --filter upscaler
 
-  # memory-leaks:
-  #   name: 'Memory Leaks'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  memory-leaks:
+    name: 'Memory Leaks'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Memory Leak Tests'
-  #       run: pnpm test:memory-leaks
+      - name: 'Memory Leak Tests'
+        run: pnpm test:memory-leaks
 
-  # unit-browser:
-  #   name: 'Unit / Browser'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  unit-browser:
+    name: 'Unit / Browser'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Unit Tests / Jest'
-  #       run: pnpm test:unit:browser:jest
+      - name: 'Unit Tests / Jest'
+        run: pnpm test:unit:browser:jest --filter upscaler
 
-  #     - name: 'Unit Tests / Playwright'
-  #       run: pnpm test:unit:browser:playwright
+      - name: 'Unit Tests / Playwright'
+        run: pnpm test:unit:browser:playwright --filter upscaler
 
-  #     - name: 'Codecov'
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/upscalerjs/coverage
-  #         verbose: true
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/upscalerjs/coverage
+          verbose: true
 
-  # unit-node:
-  #   name: 'Unit / Node'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  unit-node:
+    name: 'Unit / Node'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Unit Tests'
-  #       run: pnpm test:unit:node
+      - name: 'Unit Tests'
+        run: pnpm test:unit:node --filter upscaler
 
-  #     - name: 'Codecov'
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/upscalerjs/coverage
-  #         verbose: true
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/upscalerjs/coverage
+          verbose: true
 
-  # integration-browser-browserstack:
-  #   name: 'Integration / Browser / Browserstack'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-  #       uses: browserstack/github-actions/setup-env@master
-  #       with:
-  #         username: ${{ secrets.BROWSERSTACK_USERNAME }}
-  #         access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+  integration-browser-browserstack:
+    name: 'Integration / Browser / Browserstack'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Integration Tests'
-  #       run: pnpm test:integration:browserstack --ci
-  #       env:
-  #         NODE_OPTIONS: --max_old_space_size=8192
+      - name: 'Integration Tests'
+        run: pnpm test:integration:browserstack --ci
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
 
-  # integration-browser-local:
-  #   name: 'Integration / Browser / Local'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-  #       uses: browserstack/github-actions/setup-env@master
-  #       with:
-  #         username: ${{ secrets.BROWSERSTACK_USERNAME }}
-  #         access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+  integration-browser-local:
+    name: 'Integration / Browser / Local'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Integration Tests'
-  #       run: pnpm test:integration:browser --ci
-  #       env:
-  #         NODE_OPTIONS: --max_old_space_size=8192
+      - name: 'Integration Tests'
+        run: pnpm test:integration:browser --ci
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
 
-  # integration-node-local-16:
-  #   name: 'Integration / Node / Local / v16'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  integration-node-local-16:
+    name: 'Integration / Node / Local / v16'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Installing Node-specific deps'
-  #       env:
-  #         NODE_OPTIONS: --max_old_space_size=8192
-  #       run: cd test/lib/node && pnpm
+      - name: 'Installing Node-specific deps'
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+        run: cd test/lib/node && pnpm
 
-  #     - name: 'Integration Tests'
-  #       run: pnpm test:integration:node --ci
+      - name: 'Integration Tests'
+        run: pnpm test:integration:node --ci
