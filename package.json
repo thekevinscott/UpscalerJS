@@ -37,7 +37,7 @@
     "find-all-packages": "ts-node scripts/package-scripts/find-all-packages.ts",
     "example": "ts-node ./scripts/start-example.ts",
     "format": "pnpm format --filter upscaler",
-    "lint": "pnpm lint --filter upscaler",
+    "lint": "pnpm lint --prefix packages/upscalerjs",
     "lint:fix": "pnpm run lint:fix --filter upscaler",
     "build": "pnpm run build --filter upscaler",
     "scaffold:platform": "pnpm run --filter upscaler scaffold:platform -- --",
