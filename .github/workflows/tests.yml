@@ -5,17 +5,25 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          version: 7.0.0-rc.3
 
-      - name: 'Installing'
-        run: yarn
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Lint'
         run: yarn lint
@@ -23,21 +31,25 @@ jobs:
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          node-version: '16'
+          version: 7.0.0-rc.3
 
-      - uses: actions/cache@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: 'Installing'
-        run: yarn
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Memory Leak Tests'
         run: yarn test:memory-leaks
@@ -45,21 +57,25 @@ jobs:
   unit-browser:
     name: 'Unit / Browser'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          node-version: '16'
+          version: 7.0.0-rc.3
 
-      - uses: actions/cache@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: 'Installing'
-        run: yarn
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Unit Tests / Jest'
         run: yarn test:unit:browser:jest
@@ -76,21 +92,25 @@ jobs:
   unit-node:
     name: 'Unit / Node'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          node-version: '16'
+          version: 7.0.0-rc.3
 
-      - uses: actions/cache@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: 'Installing'
-        run: yarn
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Unit Tests'
         run: yarn test:unit:node
@@ -104,6 +124,9 @@ jobs:
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -114,15 +137,18 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          version: 7.0.0-rc.3
 
-      - name: 'Installing'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Integration Tests'
         run: yarn test:integration:browserstack --ci
@@ -132,6 +158,9 @@ jobs:
   integration-browser-local:
     name: 'Integration / Browser / Local'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -142,15 +171,18 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          version: 7.0.0-rc.3
 
-      - name: 'Installing'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Integration Tests'
         run: yarn test:integration:browser --ci
@@ -160,23 +192,25 @@ jobs:
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2.0.1
         with:
-          node-version: '16'
+          version: 7.0.0-rc.3
 
-      - uses: actions/cache@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
         with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-      - name: 'Installing'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: yarn
+      - name: 'Install dependencies'
+        run: pnpm install
 
       - name: 'Installing Node-specific deps'
         env:

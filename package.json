@@ -90,7 +90,6 @@
     "jest": "^27.5.1",
     "jest-canvas-mock": "^2.2.0",
     "jsdom": "^19.0.0",
-    "lerna": "^3.14.0",
     "loader-utils": "^2.0.0",
     "mocha": "^9.2.1",
     "pixelmatch": "^5.2.1",
