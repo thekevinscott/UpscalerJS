@@ -52,11 +52,16 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm install
 
+      - name: 'Tests'
+        run: 'ls'
+
       - name: 'Unit Tests / Jest'
-        run: pnpm test:unit:browser:jest --filter upscaler
+        working-directory: ./packages/upscaler
+        run: pnpm test:unit:browser:jest
 
       - name: 'Unit Tests / Playwright'
-        run: pnpm test:unit:browser:playwright --filter upscaler
+        working-directory: ./packages/upscaler
+        run: pnpm test:unit:browser:playwright
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v1
