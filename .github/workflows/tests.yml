@@ -22,20 +22,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
-      - name: 'Test 1'
-        run: 'ls'
-
-      - name: 'Test 2'
-        run: 'ls packages'
-
-      - name: 'Test 3'
-        run: 'ls packages/upscalerjs'
-
       - name: 'Install dependencies'
         run: pnpm install
 
       - name: 'Lint'
-        working-directory: packages/upscalerjs
+        working-directory: ./packages/upscalerjs
         run: 'pnpm run lint'
 
   unit-browser:
@@ -62,11 +53,11 @@ jobs:
         run: pnpm install
 
       - name: 'Unit Tests / Jest'
-        working-directory: ./packages/upscaler
+        working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:jest
 
       - name: 'Unit Tests / Playwright'
-        working-directory: ./packages/upscaler
+        working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:playwright
 
       - name: 'Codecov'
@@ -75,37 +66,38 @@ jobs:
           directory: ./packages/upscalerjs/coverage
           verbose: true
 
-  # unit-node:
-  #   name: 'Unit / Node'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  unit-node:
+    name: 'Unit / Node'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Unit Tests'
-  #       run: pnpm test:unit:node --filter upscaler
+      - name: 'Unit Tests'
+        working-directory: ./packages/upscalerjs
+        run: pnpm test:unit:node
 
-  #     - name: 'Codecov'
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/upscalerjs/coverage
-  #         verbose: true
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/upscalerjs/coverage
+          verbose: true
 
   # integration-browser-browserstack:
   #   name: 'Integration / Browser / Browserstack'
