@@ -25,9 +25,6 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm install
 
-      - name: 'Tests'
-        run: pnpm run foo
-
       - name: 'Lint'
         run: 'pnpm run lint --filter upscaler'
 
