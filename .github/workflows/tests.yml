@@ -26,68 +26,43 @@ jobs:
         run: pnpm install
 
       - name: 'Lint'
-        run: 'cd packages/upscaler && pnpm run lint'
+        working-directory: ./packages/upscaler
+        run: 'pnpm run lint'
 
-  # memory-leaks:
-  #   name: 'Memory Leaks'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+  unit-browser:
+    name: 'Unit / Browser'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.0.0-rc.3
 
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
+      - name: 'Install dependencies'
+        run: pnpm install
 
-  #     - name: 'Memory Leak Tests'
-  #       run: pnpm test:memory-leaks
+      - name: 'Unit Tests / Jest'
+        run: pnpm test:unit:browser:jest --filter upscaler
 
-  # unit-browser:
-  #   name: 'Unit / Browser'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [16]
-  #   steps:
-  #     - name: 'Checkout repository'
-  #       uses: actions/checkout@v2
+      - name: 'Unit Tests / Playwright'
+        run: pnpm test:unit:browser:playwright --filter upscaler
 
-  #     - uses: pnpm/action-setup@v2.0.1
-  #       with:
-  #         version: 7.0.0-rc.3
-
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #         cache: 'pnpm'
-
-  #     - name: 'Install dependencies'
-  #       run: pnpm install
-
-  #     - name: 'Unit Tests / Jest'
-  #       run: pnpm test:unit:browser:jest --filter upscaler
-
-  #     - name: 'Unit Tests / Playwright'
-  #       run: pnpm test:unit:browser:playwright --filter upscaler
-
-  #     - name: 'Codecov'
-  #       uses: codecov/codecov-action@v1
-  #       with:
-  #         directory: ./packages/upscalerjs/coverage
-  #         verbose: true
+      - name: 'Codecov'
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./packages/upscalerjs/coverage
+          verbose: true
 
   # unit-node:
   #   name: 'Unit / Node'
@@ -219,3 +194,29 @@ jobs:
 
   #     - name: 'Integration Tests'
   #       run: pnpm test:integration:node --ci
+
+  # memory-leaks:
+  #   name: 'Memory Leaks'
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16]
+  #   steps:
+  #     - name: 'Checkout repository'
+  #       uses: actions/checkout@v2
+
+  #     - uses: pnpm/action-setup@v2.0.1
+  #       with:
+  #         version: 7.0.0-rc.3
+
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #         cache: 'pnpm'
+
+  #     - name: 'Install dependencies'
+  #       run: pnpm install
+
+  #     - name: 'Memory Leak Tests'
+  #       run: pnpm test:memory-leaks
