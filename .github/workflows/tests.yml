@@ -29,13 +29,13 @@ jobs:
         run: 'ls packages'
 
       - name: 'Test 3'
-        run: 'ls packages/upscaler'
+        run: 'ls packages/upscalerjs'
 
       - name: 'Install dependencies'
         run: pnpm install
 
       - name: 'Lint'
-        working-directory: packages/upscaler
+        working-directory: packages/upscalerjs
         run: 'pnpm run lint'
 
   unit-browser:
