@@ -46,7 +46,6 @@
     "build:umd": "pnpm build:umd:generate && pnpm build:umd:compress && rimraf dist/tmp",
     "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts",
     "docs:serve": "docsify serve docs --port 3030",
-    "prepare": "pnpm build",
     "preversion": "pnpm lint",
     "prepublishOnly": "pnpm test && pnpm lint",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
