@@ -25,9 +25,6 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm install
 
-      - name: 'Rebuild tfjs/node'
-        run: pnpm rebuild @tensorflow/tfjs-node --build-from-source
-
       - name: 'Lint'
         run: pnpm lint
 
