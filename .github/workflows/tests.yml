@@ -22,11 +22,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'pnpm'
 
+      - name: 'Test 1'
+        run: 'ls'
+
+      - name: 'Test 2'
+        run: 'ls packages'
+
+      - name: 'Test 3'
+        run: 'ls packages/upscaler'
+
       - name: 'Install dependencies'
         run: pnpm install
 
       - name: 'Lint'
-        working-directory: ./packages/upscaler
+        working-directory: packages/upscaler
         run: 'pnpm run lint'
 
   unit-browser:
@@ -51,9 +60,6 @@ jobs:
 
       - name: 'Install dependencies'
         run: pnpm install
-
-      - name: 'Tests'
-        run: 'ls'
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscaler
