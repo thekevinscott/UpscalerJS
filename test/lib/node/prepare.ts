@@ -28,7 +28,7 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 export const prepareScriptBundleForCJS = async () => {
   const localNameForPackage = 'upscaler-for-node';
 
-  await callExec('yarn', {
+  await callExec('pnpm', {
     cwd: ROOT,
   });
 

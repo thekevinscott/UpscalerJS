@@ -89,7 +89,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
-  const yarnArgs = [
+  const args = [
     'jest',
     // 'node',
     // '--expose-gc',
@@ -100,7 +100,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     argv.watch ? '--watch' : undefined,
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  const code = await runProcess(args[0], args.slice(1));
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
   }
