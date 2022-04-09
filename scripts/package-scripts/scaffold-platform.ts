@@ -3,9 +3,9 @@ import yargs from 'yargs';
 import * as fs from 'fs';
 import * as path from 'path';
 
-type Platform = 'browser' | 'node' | 'node-gpu';
+export type Platform = 'browser' | 'node' | 'node-gpu';
 
-type Dependency = '@tensorflow/tfjs' | '@tensorflow/tfjs-node' | '@tensorflow/tfjs-node-gpu';
+export type Dependency = '@tensorflow/tfjs' | '@tensorflow/tfjs-node' | '@tensorflow/tfjs-node-gpu';
 
 const AVAILABLE_DEPENDENCIES = [
   '@tensorflow/tfjs',
@@ -80,35 +80,40 @@ const scaffoldImageFile = (SRC: string, platform: Platform) => {
   writeFile('./image.generated.ts', imageContents);
 };
 
-(async function main() {
-  const argv = await getArgs();
-
-  const SRC = path.resolve(ROOT, argv.src);
-
-  const getAdditionalDependencies = (platform: Platform, src: string): Array<string> => {
-    if (src !== 'packages/upscalerjs/src') {
-      return [];
-    }
-    if (platform === 'browser') {
-      return [];
-    }
-
-    return [
-      `import 'isomorphic-fetch';`,
-    ];
+const getAdditionalDependencies = (platform: Platform, isUpscaler: boolean): Array<string> => {
+  if (!isUpscaler) {
+    return [];
+  }
+  if (platform === 'browser') {
+    return [];
   }
 
+  return [
+    `import 'isomorphic-fetch';`,
+  ];
+}
 
-  const platform = getPlatform(process.argv.pop());
+const scaffoldPlatform = async (platform: Platform, srcFolder: string, isUpscaler: boolean = false) => {
   const dependency = getDependency(platform);
 
-
-  writeLines(path.resolve(SRC, './dependencies.generated.ts'), [
+  writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
     `export * as tf from '${dependency}';`,
-    ...getAdditionalDependencies(platform, argv.src),
+    ...getAdditionalDependencies(platform, isUpscaler),
   ]);
 
-  if (argv.src === 'packages/upscalerjs/src') {
-    scaffoldImageFile(SRC, platform);
+  if (isUpscaler) {
+    scaffoldImageFile(srcFolder, platform);
   }
-})();
+}
+
+export default scaffoldPlatform;
+
+if (require.main === module) {
+  (async () => {
+    const argv = await getArgs();
+    const platform = getPlatform(process.argv.pop());
+    const SRC = path.resolve(ROOT, argv.src);
+    const isUpscaler = argv.src === 'packages/upscalerjs/src';
+    await scaffoldPlatform(platform, SRC, isUpscaler);
+  })();
+}

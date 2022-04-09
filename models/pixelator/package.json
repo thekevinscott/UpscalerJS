@@ -3,7 +3,10 @@
   "version": "0.12.0",
   "description": "Pixelator network for Upscaler.js",
   "exports": {
-    "./2x-3": "./dist/2x-3"
+    "./2x-3": {
+      "require": "./dist/node/2x-3",
+      "import": "./dist/browser/esm/2x-3"
+    }
   },
   "keywords": [
     "image super resolution",

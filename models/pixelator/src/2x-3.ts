@@ -1,4 +1,5 @@
-import { ModelDefinition } from "../../types";
+import { tf, } from './dependencies.generated';
+import { ModelDefinition } from "./types";
 
 const modelDefinition: ModelDefinition = {
   scale: 2,
