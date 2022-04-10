@@ -1,6 +1,6 @@
 {
   "name": "basic",
-  "version": "0.12.1",
+  "version": "1.0.0",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
-    "upscaler": "0.12.1"
+    "upscaler": "1.0.0"
   },
   "browserslist": {
     "production": [
