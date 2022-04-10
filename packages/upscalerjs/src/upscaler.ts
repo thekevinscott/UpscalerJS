@@ -1,30 +1,30 @@
 import { tf, } from './dependencies.generated';
 import {
-  IUpscalerOptions,
+  UpscalerOptions,
   UpscaleArgs,
   WarmupSizes,
-  IModelDefinition,
+  ModelDefinition,
   ResultFormat,
   Progress,
 } from './types';
-import loadModel, { getModelDefinitions, } from './loadModel';
+import loadModel from './loadModel';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 
 export class Upscaler {
-  _opts: IUpscalerOptions;
+  _opts: UpscalerOptions;
   _model: Promise<{
     model: tf.LayersModel;
-    modelDefinition: IModelDefinition;
+    modelDefinition: ModelDefinition;
   }>;
   abortController = new AbortController();
 
-  constructor(opts: IUpscalerOptions = {}) {
+  constructor(opts: UpscalerOptions = {}) {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts);
+    this._model = loadModel(this._opts.model);
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 
@@ -48,10 +48,6 @@ export class Upscaler {
       modelDefinition,
       signal: this.abortController.signal,
     });
-  };
-
-  getModelDefinitions = async () => {
-    return await getModelDefinitions();
   };
 
   abort = () => {

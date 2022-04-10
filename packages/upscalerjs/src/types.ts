@@ -6,11 +6,9 @@ export type WarmupSizesByPatchSize = {
   padding?: number;
 };
 export type WarmupSizes = [number, number] | WarmupSizesByPatchSize;
-export interface IUpscalerOptions {
-  model?: string;
-  scale?: number;
+export interface UpscalerOptions {
+  model?: ModelDefinition;
   warmupSizes?: WarmupSizes[];
-  modelDefinition?: IModelDefinition;
 }
 
 export type ResultFormat = 'src' | 'tensor' | undefined;
@@ -37,22 +35,14 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
 }
 
 export type ProcessFn<T extends tf.Tensor> = (t: T) => T;
-export interface IModelDefinition {
+export interface ModelDefinition {
   url: string;
-  scale: number;
-  configURL?: string;
-  description?: string;
-  deprecated?: boolean;
+  scale: 2 | 3 | 4;
+  channels?: 3;
   preprocess?: ProcessFn<tf.Tensor4D>;
   postprocess?: ProcessFn<tf.Tensor3D>;
   customLayers?: SerializableConstructor<tf.layers.Layer>[];
+  meta?: Record<string, any>;
 }
-
-export type IIntermediaryModelDefinition = Omit<
-  IModelDefinition,
-  'configURL' | 'url'
-> & {
-  urlPath: string;
-};
 
 export type Layer = tf.layers.Layer;

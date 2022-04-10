@@ -8,6 +8,15 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
+import buildModels, { AVAILABLE_MODELS, OutputFormat } from '../scripts/package-scripts/build-model';
+
+const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
+  if (target === 'browser') {
+    return ['umd', 'esm'];
+  }
+  return ['cjs'];
+}
+
 
 dotenv.config();
 
@@ -68,6 +77,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
+    skipModelBuild: { type: 'boolean' },
     runner: { type: 'string' }
   }).argv;
 
@@ -89,22 +99,25 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   if (argv.skipBuild !== true) {
     await buildUpscaler(platform);
   }
-  const yarnArgs = [
-    'jest',
-    // 'node',
-    // '--expose-gc',
-    // './node_modules/.bin/jest',
-    '--config',
-    `test/jestconfig.${platform}.${runner}.js`,
-    '--detectOpenHandles',
-    argv.watch ? '--watch' : undefined,
-    ...argv._,
-  ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
-  if (bsLocal !== undefined) {
-    await stopBrowserstack(bsLocal);
+  if (argv.skipModelBuild !== true) {
+    await buildModels(['pixel-upsampler'], getOutputFormats(platform));
   }
-  if (code !== null) {
-    process.exit(code);
-  }
+    const yarnArgs = [
+      'jest',
+      // 'node',
+      // '--expose-gc',
+      // './node_modules/.bin/jest',
+      '--config',
+      `test/jestconfig.${platform}.${runner}.js`,
+      '--detectOpenHandles',
+      argv.watch ? '--watch' : undefined,
+      ...argv._,
+    ].filter(Boolean).map(arg => `${arg}`);
+    const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+    if (bsLocal !== undefined) {
+      await stopBrowserstack(bsLocal);
+    }
+    if (code !== null) {
+      process.exit(code);
+    }
 })();

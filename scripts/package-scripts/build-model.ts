@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import os from 'os';
 import { rollup } from 'rollup';
 import rimraf from 'rimraf';
 import ts from "typescript";
@@ -11,11 +12,11 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 
-type OutputFormat = 'cjs' | 'esm' | 'umd';
+export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-const AVAILABLE_MODELS = fs.readdirSync(MODELS_DIR).filter(file => {
-  return !['types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
+export const AVAILABLE_MODELS = fs.readdirSync(MODELS_DIR).filter(file => {
+  return !['dist', 'types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
 });
 
 const rm = (folder: string) => new Promise((resolve, reject) => {
@@ -138,18 +139,18 @@ const buildCJS = async (modelFolder: string) => {
     await compile(files, {
       "target": ts.ScriptTarget.ES2020,
       "module": ts.ModuleKind.CommonJS,
-      "declaration": true,
+      // "baseUrl": path.resolve(modelFolder, '..'),
+      // "declaration": true,
       "skipLibCheck": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      "noUnusedLocals": true,
+      // "strict": true,
+      // "forceConsistentCasingInFileNames": true,
+      // "noUnusedLocals": true,
       "esModuleInterop": true,
-      "strictNullChecks": true,
-      "noUnusedParameters": true,
-      "noImplicitReturns": true,
-      "noFallthroughCasesInSwitch": true,
-      // "types": [SRC, path.resolve(SRC, '../types')],
-      rootDir: SRC,
+      // "strictNullChecks": true,
+      // "noUnusedParameters": true,
+      // "noImplicitReturns": true,
+      // "noFallthroughCasesInSwitch": true,
+      // rootDir: SRC,
       outDir: dist,
     });
   }
@@ -166,26 +167,26 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
-  if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
-    const SRC = path.resolve(MODEL_ROOT, 'src');
-    fs.mkdirSync(path.resolve(DIST, 'browser'));
-    await scaffoldPlatform('browser', SRC);
+  // if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
+  //   const SRC = path.resolve(MODEL_ROOT, 'src');
+  //   fs.mkdirSync(path.resolve(DIST, 'browser'));
+  //   await scaffoldPlatform('browser', SRC);
 
-    if (outputFormats.includes('esm')) {
-      await buildESM(MODEL_ROOT);
-    }
+  //   if (outputFormats.includes('esm')) {
+  //     await buildESM(MODEL_ROOT);
+  //   }
 
-    if (outputFormats.includes('umd')) {
-      await buildUMD(MODEL_ROOT);
-    }
-  }
-  fs.copySync(path.resolve(MODEL_ROOT, 'models'), path.resolve(DIST, 'models'));
+  //   if (outputFormats.includes('umd')) {
+  //     await buildUMD(MODEL_ROOT);
+  //   }
+  // }
+  // fs.copySync(path.resolve(MODEL_ROOT, 'models'), path.resolve(DIST, 'models'));
 
   const duration = new Date().getTime() - start;
   console.log(`Built model ${model} in ${duration} ms`)
 }
 
-const buildModels = async (models: Array<string>, outputFormats: Array<OutputFormat>) => {
+const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = ['cjs', 'esm', 'umd']) => {
   await Promise.all(models.map(model => buildModel(model, outputFormats)))
 }
 

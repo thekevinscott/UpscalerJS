@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { WarmupSizes, IModelDefinition, WarmupSizesByPatchSize, } from './types';
+import { WarmupSizes, ModelDefinition, WarmupSizesByPatchSize, } from './types';
 
 const isWarmupSizeByPatchSize = (
   size: WarmupSizes,
@@ -10,7 +10,7 @@ const isWarmupSizeByPatchSize = (
 const warmup = async (
   modelPackage: Promise<{
     model: tf.LayersModel;
-    modelDefinition: IModelDefinition;
+    modelDefinition: ModelDefinition;
   }>,
   sizes: WarmupSizes[],
 ) => {
