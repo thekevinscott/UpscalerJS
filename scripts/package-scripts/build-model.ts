@@ -11,13 +11,15 @@ import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
-
+import yargs from 'yargs';
+import { MapLike } from 'typescript';
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const AVAILABLE_MODELS = fs.readdirSync(MODELS_DIR).filter(file => {
   return !['dist', 'types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
 });
+const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 const rm = (folder: string) => new Promise((resolve, reject) => {
   rimraf(folder, err => {
@@ -31,11 +33,9 @@ const rm = (folder: string) => new Promise((resolve, reject) => {
 
 const getExportFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
-  const packageJSON = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
-  const exports = packageJSON.exports;
-  const files = Object.keys(exports).map(file => path.resolve(SRC, file));
-  return files;
-}
+  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
+  return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
+};
 
 const buildESM = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
@@ -136,21 +136,27 @@ const buildCJS = async (modelFolder: string) => {
 
     await scaffoldPlatform(platform, SRC);
 
+    // const foo: MapLike<string[]> = [['foo', 'bar']];
+    // const bar: MapLike<string[]> = { test: ['foo'] };
+
     await compile(files, {
+      "skipLibCheck": true,
+      "esModuleInterop": true,
       "target": ts.ScriptTarget.ES2020,
       "module": ts.ModuleKind.CommonJS,
-      // "baseUrl": path.resolve(modelFolder, '..'),
-      // "declaration": true,
-      "skipLibCheck": true,
-      // "strict": true,
-      // "forceConsistentCasingInFileNames": true,
-      // "noUnusedLocals": true,
-      "esModuleInterop": true,
-      // "strictNullChecks": true,
-      // "noUnusedParameters": true,
-      // "noImplicitReturns": true,
-      // "noFallthroughCasesInSwitch": true,
-      // rootDir: SRC,
+      "declaration": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "noUnusedLocals": true,
+      "strictNullChecks": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      baseUrl: ROOT_DIR,
+      "paths": {
+        "upscaler": [path.resolve(ROOT_DIR, 'packages/upscalerjs/src/types')],
+      },
+      rootDir: SRC,
       outDir: dist,
     });
   }
@@ -167,54 +173,95 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
-  // if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
-  //   const SRC = path.resolve(MODEL_ROOT, 'src');
-  //   fs.mkdirSync(path.resolve(DIST, 'browser'));
-  //   await scaffoldPlatform('browser', SRC);
+  if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
+    const SRC = path.resolve(MODEL_ROOT, 'src');
+    fs.mkdirSync(path.resolve(DIST, 'browser'));
+    await scaffoldPlatform('browser', SRC);
 
-  //   if (outputFormats.includes('esm')) {
-  //     await buildESM(MODEL_ROOT);
-  //   }
+    if (outputFormats.includes('esm')) {
+      await buildESM(MODEL_ROOT);
+    }
 
-  //   if (outputFormats.includes('umd')) {
-  //     await buildUMD(MODEL_ROOT);
-  //   }
-  // }
+    if (outputFormats.includes('umd')) {
+      await buildUMD(MODEL_ROOT);
+    }
+  }
   // fs.copySync(path.resolve(MODEL_ROOT, 'models'), path.resolve(DIST, 'models'));
 
   const duration = new Date().getTime() - start;
   console.log(`Built model ${model} in ${duration} ms`)
 }
 
-const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = ['cjs', 'esm', 'umd']) => {
+const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS) => {
   await Promise.all(models.map(model => buildModel(model, outputFormats)))
 }
 
 export default buildModels;
 
+const getModel = async (model?: string | number) => {
+  if (typeof model == 'string') {
+    return [model];
+  }
+
+  const { models } = await inquirer.prompt<Answers>([
+    {
+      type: 'checkbox',
+      name: 'models',
+      message: 'Which models do you want to build?',
+      choices: AVAILABLE_MODELS,
+    },
+  ]);
+  return models;
+}
+
+const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat => {
+  for (let i = 0; i < DEFAULT_OUTPUT_FORMATS.length; i++) {
+    const f = DEFAULT_OUTPUT_FORMATS[i];
+    if (f === outputFormat) {
+      return true;
+    }
+  }
+  return false;
+}
+const getOutputFormats = async (outputFormat?: unknown) => {
+  if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
+    return [outputFormat]
+  }
+  const { outputFormats } = await inquirer.prompt<Answers>([
+    {
+      type: 'checkbox',
+      name: 'outputFormats',
+      message: 'Which output formats do you want to build?',
+      choices: ['cjs', 'esm', 'umd'],
+    },
+  ]);
+  return outputFormats;
+}
+
 type Answers = { models: Array<string>, outputFormats: Array<OutputFormat> }
 
 if (require.main === module) {
   (async () => {
+    const argv = await yargs.command('build models', 'build models', yargs => {
+      yargs.positional('model', {
+        describe: 'The model to build',
+      }).options({
+        outputFormat: { type: 'string' },
+      });
+    })
+    .help()
+    .argv;
+    console.log(argv);
 
-    const { models, outputFormats } = await inquirer.prompt<Answers>([
-      {
-        type: 'checkbox',
-        name: 'models',
-        message: 'Which models do you want to build?',
-        choices: AVAILABLE_MODELS,
-      },
-      {
-        type: 'checkbox',
-        name: 'outputFormats',
-        message: 'Which output formats do you want to build?',
-        choices: ['cjs', 'esm', 'umd'],
-      },
-    ]);
+    const models = await getModel(argv._[0]);
+    const outputFormats = await getOutputFormats(argv.outputFormat);
+    let outputFormat = argv.outputFormat;
+
     if (models?.length === 0) {
       console.log('No models selected, nothing to do.')
       return;
     }
+
     if (outputFormats?.length === 0) {
       console.log('No output formats selected, nothing to do.')
       return;

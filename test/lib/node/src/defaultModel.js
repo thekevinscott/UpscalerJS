@@ -1,5 +1,6 @@
 const tf = require('@tensorflow/tfjs-node');
 const Upscaler = require('upscaler-for-node/node');
+const pixelUpsampler = require('@upscalerjs/pixel-upsampler/4x-3').default;
 const path = require('path');
 const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
@@ -10,10 +11,7 @@ const IMG = path.join(FIXTURES, 'flower-small.png');
 
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
-  const upscaler = new Upscaler({
-    model,
-    scale: 4,
-  });
+  const upscaler = new Upscaler();
   const file = fs.readFileSync(filename)
   const image = tf.node.decodeImage(file, 3)
   return await upscaler.upscale(image, {
@@ -30,7 +28,7 @@ const main = async (model) => {
 }
 
 const getModelPath = () => {
-  return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
+  return `file://${path.resolve(MODEL_PATH)}`;
 }
 
 (async () => {

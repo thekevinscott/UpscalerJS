@@ -23,16 +23,27 @@ const loadModel = async (
   if (!modelDefinition) {
     throw new Error('No model definition provided');
   }
-  if (modelDefinition.customLayers) {
-    modelDefinition.customLayers.forEach((layer) => {
+  const {
+    customLayers,
+    packageInformation,
+  } = modelDefinition;
+  if (customLayers) {
+    customLayers.forEach((layer) => {
       tf.serialization.registerClass(layer);
     });
   }
+  if (!packageInformation) {
+    throw new Error('No package information')
+  }
 
-  // let packagePath = path.dirname(require.resolve("moduleName/package.json"));
-  // console.log('ppackagePath', packagePath)
-  const url = `file://${path.resolve('node_modules', modelDefinition.url)}`;
-  const model = await tf.loadLayersModel(url);
+  const moduleEntryPoint = require.resolve(packageInformation.name);
+  const moduleFolder = moduleEntryPoint.match(`(.*)/${packageInformation.name}`)?.[0];
+  if (moduleFolder === undefined) {
+    throw new Error(`Cannot find module ${name}`);
+  }
+  const modelPath = `file://${path.resolve(moduleFolder, modelDefinition.path)}`;
+  console.log('modelPath', modelPath)
+  const model = await tf.loadLayersModel(modelPath);
 
   return {
     model,

@@ -35,10 +35,15 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
 }
 
 export type ProcessFn<T extends tf.Tensor> = (t: T) => T;
+export interface PackageInformation {
+  name: string;
+  version: string;
+}
 export interface ModelDefinition {
-  url: string;
+  path: string;
   scale: 2 | 3 | 4;
   channels?: 3;
+  packageInformation?: PackageInformation;
   preprocess?: ProcessFn<tf.Tensor4D>;
   postprocess?: ProcessFn<tf.Tensor3D>;
   customLayers?: SerializableConstructor<tf.layers.Layer>[];

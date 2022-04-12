@@ -1,13 +1,17 @@
 // import { tf, } from './dependencies.generated';
-import path from 'path';
-import { ModelDefinition } from "./types";
-
-const url = path.join(__dirname, '../../models/2x-3/model.json');
+import type { ModelDefinition } from "upscaler";
+import { NAME, VERSION } from './constants.generated';
+// import { name, version } from '../package.json';
+// import { getPath } from './path.generated';
 
 const modelDefinition: ModelDefinition = {
   scale: 2,
   channels: 3,
-  url,
+  path: 'models/model.json',
+  packageInformation: {
+    name: NAME,
+    version: VERSION,
+  },
   meta: {
     dataset: null,
     name: 'normal',

@@ -1,5 +1,4 @@
 import yargs from 'yargs';
-// import yargs from 'yargs/yargs';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -66,31 +65,25 @@ const getDependency = (platform: Platform): Dependency => {
 
 const writeLines = (filename: string, content: Array<string>) => writeFile(filename, `${content.map(l => l.trim()).join('\n')}\n`);
 
-const scaffoldImageFile = (SRC: string, platform: Platform) => {
-  const getImagePath = (platform: Platform) => {
-    if (platform === 'browser') {
-      return `image.browser.ts`;
-    }
+const findPlatformSpecificFiles = (folder: string) => new Set(fs.readdirSync(folder).filter(file => {
+  return /(.*).(browser|node).ts$/.test(file)
+}).map(file => file.split('.').slice(0, -2).join('.')));
 
-    return `image.node.ts`;
+const getFilePath = (file: string, platform: Platform) => `${file}.${platform === 'browser' ? 'browser' : 'node'}.ts`;
+
+const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platform) => {
+  const srcFile = path.resolve(src, getFilePath(file, platform));
+  if (!fs.existsSync(srcFile)) {
+    throw new Error(`File ${srcFile} does not exist`)
   }
-
-  const imageContents = fs.readFileSync(path.resolve(SRC, getImagePath(platform)), 'utf-8');
-
-  writeFile('./image.generated.ts', imageContents);
+  const targetFile = path.resolve(src, `${file}.generated.ts`);
+  try { fs.unlinkSync(targetFile); } catch(err) {}
+  fs.symlinkSync(srcFile, targetFile, 'file');
 };
 
-const getAdditionalDependencies = (platform: Platform, isUpscaler: boolean): Array<string> => {
-  if (!isUpscaler) {
-    return [];
-  }
-  if (platform === 'browser') {
-    return [];
-  }
-
-  return [
-    `import 'isomorphic-fetch';`,
-  ];
+const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
+  const files = findPlatformSpecificFiles(folder);
+  files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
 }
 
 const scaffoldPlatform = async (platform: Platform, srcFolder: string, isUpscaler: boolean = false) => {
@@ -98,12 +91,17 @@ const scaffoldPlatform = async (platform: Platform, srcFolder: string, isUpscale
 
   writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
     `export * as tf from '${dependency}';`,
-    ...getAdditionalDependencies(platform, isUpscaler),
   ]);
 
-  if (isUpscaler) {
-    scaffoldImageFile(srcFolder, platform);
+  if (!isUpscaler) {
+    const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
+    writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
+      `export const NAME = "${name}";`,
+      `export const VERSION = "${version}";`,
+    ]);
   }
+
+  scaffoldPlatformSpecificFiles(srcFolder, platform);
 }
 
 export default scaffoldPlatform;

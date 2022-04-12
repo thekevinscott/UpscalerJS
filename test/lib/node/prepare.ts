@@ -8,7 +8,7 @@ const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const UPSCALERJS_ALT_NAME = 'upscaler-for-node';
 const MODELS_PATH = path.join(ROOT, '../../../models');
-const MODELS_ALT_NAME = '@upscalerjs-for-node';
+const MODELS_ALT_NAME = '@upscalerjs';
 
 const copySrcToDest = async (src: string, dest: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
@@ -52,6 +52,9 @@ export const prepareScriptBundleForCJS = async (models: Array<string>) => {
 
 type Stdout = (data: string) => void;
 export const executeNodeScript = async (file: string, stdout?: Stdout) => {
+  // await callExec(`node "./${file}"`, {
+  //   cwd: path.resolve(ROOT, 'src'),
+  // }, stdout);
   await callExec(`node "./src/${file}"`, {
     cwd: ROOT
   }, stdout);

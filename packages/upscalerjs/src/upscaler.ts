@@ -7,7 +7,7 @@ import {
   ResultFormat,
   Progress,
 } from './types';
-import loadModel from './loadModel';
+import loadModel from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
