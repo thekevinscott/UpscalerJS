@@ -13,16 +13,10 @@
     "noFallthroughCasesInSwitch": true,
     "composite": true,
     "baseUrl": "./src",
-    "rootDir": "./",
+    "rootDir": "./src",
     "paths": {
       "~upscaler": ["../../../packages/upscalerjs/src/types"],
     },
-    // "baseUrl": "../../",
-    // "paths": {
-    //   "upscaler": [
-    //     "./packages/upscalerjs/src/types"
-    //   ],
-    // }
     "outDir": "./dist"
   },
   "include": ["src/**/*.ts"],
