@@ -1,52 +1,41 @@
-import * as fs from 'fs';
-import * as tf from '@tensorflow/tfjs-node';
+import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
-  [
-    `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-    'Only 3 or 4 rank tensors are supported.',
-  ].join(' '),
-);
+    [
+      `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+      'Only 3 or 4 rank tensors are supported.',
+    ].join(' '),
+  );
 
-export const getInvalidInput = (input: any) => new Error([
-  `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
-  `a string representing a local path or http-accessible path to an image,`,
-  `a Uint8Array, or a Buffer.`,
+export const getInvalidImageError = () => new Error([
+  'Failed to load image',
 ].join(' '));
 
-const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
-const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
+export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.src = src;
+  img.crossOrigin = 'anonymous';
+  img.onload = () => resolve(img);
+  img.onerror = () => reject(getInvalidImageError());
+});
 
 const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
-  if (isUint8Array(input)) {
-    return tf.node.decodeImage(input);
-  }
-
-  if (isBuffer(input)) {
-    return tf.node.decodeImage(input);
-  }
-
   if (isTensor(input)) {
     return input;
   }
 
   if (isString(input)) {
-    if (input.startsWith('http')) {
-      const arrayBuffer = await fetch(input).then(r => r.blob()).then(blob => blob.arrayBuffer());
-      const image = new Uint8Array(arrayBuffer);
-      return tf.node.decodeImage(image);
-    } else {
-      const image = new Uint8Array(fs.readFileSync(input));
-      return tf.node.decodeImage(image);
-    }
+    const imgHTMLElement = await loadImage(input);
+    return tf.browser.fromPixels(imgHTMLElement);
   }
 
-  throw getInvalidInput(input);
+  return tf.browser.fromPixels(input);
 };
 
-export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
+// Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
+type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
+export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
 export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
 ): Promise<tf.Tensor4D> => {
@@ -64,4 +53,12 @@ export const getImageAsTensor = async (
   }
 
   throw getInvalidTensorError(tensor);
+};
+
+export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTMLImageElement => {
+  try {
+    return pixels instanceof HTMLImageElement;
+  } catch (err) {
+    return false;
+  }
 };
