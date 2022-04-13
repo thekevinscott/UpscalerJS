@@ -50,10 +50,9 @@ const getAdditionalDependencies = (platform: Platform): Array<string> => {
 const platform = getPlatform(process.argv.pop());
 const dependency = getDependency(platform);
 
-const writeFile = (filename: string, src: string) => {
+const writeFile = (filename: string, content: string) => {
   const outputPath = path.resolve(SRC, filename);
-  fs.symlinkSync(src, outputPath);
-  // fs.writeFileSync(outputPath, content);
+  fs.writeFileSync(outputPath, content);
 };
 
 const writeLines = (filename: string, content: Array<string>) => writeFile(filename, `${content.map(l => l.trim()).join('\n')}\n`);
@@ -71,4 +70,7 @@ const getImagePath = (platform: Platform) => {
   return `image.node.ts`;
 }
 
-writeFile('./image.generated.ts', path.resolve(SRC, getImagePath(platform)));
+// writeFile('./image.generated.ts', path.resolve(SRC, getImagePath(platform)));
+// const outputPath = path.resolve(SRC, filename);
+fs.unlinkSync(path.resolve(SRC, './image.generated.ts'))
+fs.symlinkSync(path.resolve(SRC, getImagePath(platform)), path.resolve(SRC, './image.generated.ts'));
