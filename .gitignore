@@ -17,3 +17,5 @@ scratch
 packages/upscalerjs/src/tfjs.ts
 *.generated.ts
 .vscode
+yarn-error.log
+tsconfig.tsbuildinfo
