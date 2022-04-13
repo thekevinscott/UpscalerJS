@@ -72,5 +72,7 @@ const getImagePath = (platform: Platform) => {
 
 // writeFile('./image.generated.ts', path.resolve(SRC, getImagePath(platform)));
 // const outputPath = path.resolve(SRC, filename);
+try {
 fs.unlinkSync(path.resolve(SRC, './image.generated.ts'))
+} catch(err) {}
 fs.symlinkSync(path.resolve(SRC, getImagePath(platform)), path.resolve(SRC, './image.generated.ts'));
