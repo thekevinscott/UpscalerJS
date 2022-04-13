@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as path from 'path';
-import { getImageAsTensor, getInvalidTensorError, getInvalidInput, } from './image.node';
+import { getImageAsTensor, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
 
