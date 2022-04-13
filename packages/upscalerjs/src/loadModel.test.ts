@@ -1,7 +1,5 @@
 import loadModel, {
-  prepareModelDefinitions,
   getModelDefinition,
-  getModelDescription,
   warnDeprecatedModel,
   checkDeprecatedModels,
 } from './loadModel';
@@ -46,102 +44,6 @@ describe('warnDeprecatedModel', () => {
     expect(utils.warn).toBeCalledWith(
       expect.arrayContaining([expect.stringContaining('psnr'),]),
     );
-  });
-});
-
-describe('getModelDescription', () => {
-  afterEach(() => {
-    try {
-      (global.fetch as any).mockClear();
-      delete global.fetch;
-    } catch (err) {}
-  });
-
-  it('returns empty string if no config URL is provided', async () => {
-    const result = await getModelDescription({
-      url: 'foo',
-      scale: 2,
-    });
-    expect(result).toEqual('');
-  });
-
-  it('returns empty string if no config URL is provided', async () => {
-    global.fetch = jest.fn().mockImplementation((configURL: string) => {
-      return Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            description: configURL,
-          }),
-      });
-    });
-    const result = await getModelDescription({
-      url: 'foo',
-      scale: 2,
-      configURL: 'foo',
-    });
-    expect(result).toEqual('foo');
-  });
-});
-
-describe('getModelDefinition', () => {
-  afterEach(() => {
-    (global.fetch as any).mockClear();
-    delete global.fetch;
-  });
-
-  it('gets model definitions from undefined', async () => {
-    global.fetch = jest.fn().mockImplementation((configURL: string) => {
-      if (configURL.includes('baz')) {
-        return Promise.reject();
-      }
-      return Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            description: configURL,
-          }),
-      });
-    });
-
-    (models as any).buildConfigURL = (key: string) => key;
-    (models as any).default = {
-      foo: {
-        url: 'foo',
-        scale: 2,
-        configURL: 'foo',
-      },
-      bar: {
-        url: 'bar',
-        scale: 3,
-        configURL: 'bar',
-      },
-      baz: {
-        url: 'baz',
-        scale: 3,
-        configURL: 'baz',
-      },
-    };
-
-    const result = await prepareModelDefinitions();
-    expect(result).toEqual({
-      foo: {
-        url: 'foo',
-        scale: 2,
-        description: 'foo',
-        configURL: 'foo',
-      },
-      bar: {
-        url: 'bar',
-        scale: 3,
-        description: 'bar',
-        configURL: 'bar',
-      },
-      baz: {
-        url: 'baz',
-        scale: 3,
-        description: '',
-        configURL: 'baz',
-      },
-    });
   });
 });
 
