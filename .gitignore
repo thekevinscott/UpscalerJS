@@ -22,3 +22,5 @@ packages/upscalerjs/src/tfjs.ts
 *.generated.ts
 .vscode
 .yarnrc
+.parcel-cache
+tsconfig.tsbuildinfo
