@@ -52,7 +52,8 @@ const dependency = getDependency(platform);
 
 const writeFile = (filename: string, content: string) => {
   const outputPath = path.resolve(SRC, filename);
-  fs.writeFileSync(outputPath, content);
+  console.log('write to', outputPath, content);
+  // fs.writeFileSync(outputPath, content);
 };
 
 const writeLines = (filename: string, content: Array<string>) => writeFile(filename, `${content.map(l => l.trim()).join('\n')}\n`);
