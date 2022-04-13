@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "composite": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
@@ -16,5 +17,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.generated.ts"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

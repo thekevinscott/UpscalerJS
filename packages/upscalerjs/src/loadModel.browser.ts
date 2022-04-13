@@ -19,10 +19,10 @@ const CDNS = [
 //   scale: 2,
 // };
 
-const getURL = async (modelPath: string, checksum?: string) => {
-  // https://cdn.jsdelivr.net/npm/@upscalerjs/pixel-upsampler@latest/models/model.json
-  // https://unpkg.com/@upscalerjs/pixel-upsampler@latest/models/model.json
-};
+// const getURL = async (modelPath: string, checksum?: string) => {
+//   // https://cdn.jsdelivr.net/npm/@upscalerjs/pixel-upsampler@latest/models/model.json
+//   // https://unpkg.com/@upscalerjs/pixel-upsampler@latest/models/model.json
+// };
 
 const fetchModel = async ({ name, version }: PackageInformation, modelPath: string) => {
   for (let i = 0; i < CDNS.length; i++) {

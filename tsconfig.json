@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "composite": true,
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/upscalerjs"
+    },
+    {
+      "path": "./models/pixel-upsampler"
+    }
+  ]
+}
