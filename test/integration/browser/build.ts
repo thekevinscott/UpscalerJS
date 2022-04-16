@@ -19,7 +19,7 @@ describe('Build Integration Tests', () => {
   const PORT = 8099;
 
   afterEach(async function afterEach() {
-    const stopServer = () => new Promise((resolve) => {
+    const stopServer = (): Promise<void> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {

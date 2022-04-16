@@ -127,7 +127,7 @@ describe('Browser Integration Tests', () => {
   afterAll(async function browserAfterAll() {
     const start = new Date().getTime();
 
-    const stopServer = () => new Promise((resolve) => {
+    const stopServer = (): Promise<void> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
