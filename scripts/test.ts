@@ -35,7 +35,7 @@ const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((
   });
 });
 
-const stopBrowserstack = (bsLocal: browserstack.Local) => new Promise(resolve => bsLocal.stop(resolve));
+const stopBrowserstack = (bsLocal: browserstack.Local): Promise<void> => new Promise(resolve => bsLocal.stop(() => resolve()));
 
 const isValidPlatform = (platform?: string): platform is 'browser' | 'node' => {
   return platform !== undefined && ['browser', 'node'].includes(platform);

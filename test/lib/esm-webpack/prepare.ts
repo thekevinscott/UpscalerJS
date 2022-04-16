@@ -36,7 +36,7 @@ export const prepareScriptBundleForESM = async () => {
   await moveUpscalerToLocallyNamedPackage(localNameForPackage);
 };
 
-export const bundleWebpack = () => new Promise(async (resolve, reject) => {
+export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
   await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
   copyFixtures(DIST);

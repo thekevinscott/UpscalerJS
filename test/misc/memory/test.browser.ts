@@ -10,7 +10,7 @@ jest.retryTimes(1);
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
 
-const stopServer = (server?: http.Server) => new Promise((resolve) => {
+const stopServer = (server?: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
   if (server) {
     server.close(resolve);
   } else {

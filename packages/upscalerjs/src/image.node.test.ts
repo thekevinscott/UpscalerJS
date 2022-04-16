@@ -1,10 +1,7 @@
 import * as fs from 'fs';
 import * as http from 'http';
 import * as path from 'path';
-import { getImageAsTensor
-  , getInvalidTensorError,
-  getInvalidInput,
- } from './image.node';
+import { getImageAsTensor, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
 
@@ -14,7 +11,7 @@ const SRC = path.resolve(__dirname);
 const FIXTURES = path.resolve(SRC, '../../../test/__fixtures__');
 const PORT = 8099;
 
-const stopServer = (server: http.Server) => new Promise((resolve) => {
+const stopServer = (server: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
   if (server) {
     server.close(resolve);
   } else {
@@ -82,12 +79,6 @@ describe('Image', () => {
       await expect(() => getImageAsTensor(input as any))
         .rejects
         .toThrow(getInvalidTensorError(input));
-    });
-
-    it('handles an invalid input', async () => {
-      await expect(() => getImageAsTensor(123 as any))
-        .rejects
-        .toThrow(getInvalidInput(123));
     });
   });
 });

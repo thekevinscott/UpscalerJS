@@ -20,6 +20,11 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
     cwd: ROOT,
   });
 
+  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint'));
+  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-config-prettier'));
+  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-plugin-prefer-arrow'));
+  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-plugin-jsdoc'));
+
   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
     cwd: UPSCALER_PATH,
   });
