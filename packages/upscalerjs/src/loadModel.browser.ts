@@ -35,7 +35,7 @@ const fetchModel = async (modelPath: string, packageInformation?: PackageInforma
         // there was an issue with the CDN, try another
       }
     }
-    throw new Error(`Could not resolve URL ${modelPath}`)
+    throw new Error(`Could not resolve URL ${modelPath}`);
   }
   return await tf.loadLayersModel(modelPath);
 };
@@ -47,7 +47,7 @@ const loadModel = async (
   modelDefinition: ModelDefinition;
 }> => {
   if (!modelDefinition) {
-    throw new Error('Model definition')
+    throw new Error('Model definition');
   }
   if (!modelDefinition.path) {
     throw new Error('No model path provided');

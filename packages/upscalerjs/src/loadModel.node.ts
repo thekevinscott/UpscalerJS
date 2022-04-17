@@ -23,13 +23,13 @@ const getModuleFolder = (name: string) => {
   return moduleFolder;
 };
 
-const getModelPath = ({ packageInformation, path: modelPath }: ModelDefinition): string => {
+const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
   if (packageInformation) {
     const moduleFolder = getModuleFolder(packageInformation.name);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
   }
   return modelPath;
-}
+};
 
 // const DEFAULT_MODEL_DEFINITION = {
 //   path: 'fooey',
@@ -44,7 +44,7 @@ const loadModel = async (
   modelDefinition: ModelDefinition;
 }> => {
   if (!modelDefinition) {
-    throw new Error('Model definition')
+    throw new Error('Model definition');
   }
   if (!modelDefinition.path) {
     throw new Error('No model path provided');
