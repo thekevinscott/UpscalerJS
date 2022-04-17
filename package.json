@@ -78,6 +78,7 @@
     "@types/jest": "^27.4.1",
     "@types/jsdom": "^16.2.14",
     "@types/mocha": "^9.1.0",
+    "@types/pixelmatch": "^5.2.4",
     "@types/pngjs": "^6.0.1",
     "@types/puppeteer": "^5.4.4",
     "@types/rimraf": "^3.0.2",

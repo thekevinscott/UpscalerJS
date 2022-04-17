@@ -1,11 +1,13 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import * as tf from '@tensorflow/tfjs';
+import * as http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import puppeteer, { WaitTask } from 'puppeteer';
+import * as tf from '@tensorflow/tfjs';
+import puppeteer from 'puppeteer';
+import Upscaler from 'upscaler';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -13,9 +15,9 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
 describe('Upscale Integration Tests', () => {
-  let server;
-  let browser;
-  let page;
+  let server: http.Server;
+  let browser: puppeteer.Browser;
+  let page: puppeteer.Page;
 
   const PORT = 8099;
 
@@ -34,7 +36,7 @@ describe('Upscale Integration Tests', () => {
   afterAll(async function imageAfterAll() {
     const start = new Date().getTime();
 
-    const stopServer = (): Promise<void> => new Promise((resolve) => {
+    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
@@ -67,8 +69,10 @@ describe('Upscale Integration Tests', () => {
   it("upscales an imported local image path", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: '/pixelator/pixelator.json',
-        scale: 4,
+        model: {
+          path: '/pixelator/pixelator.json',
+          scale: 4,
+        },
       });
       return upscaler.upscale(window['flower']);
     });
@@ -80,8 +84,10 @@ describe('Upscale Integration Tests', () => {
       const errMessage = await page.evaluate(() => new Promise(resolve => {
         const abortController = new AbortController();
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
           warmupSizes: [{
             patchSize: 4,
             padding: 2,
@@ -97,7 +103,7 @@ describe('Upscale Integration Tests', () => {
           padding: 2,
           output: 'src',
           signal: abortController.signal,
-          progress: (rate) => {
+          progress: (rate: number) => {
             const curTime = new Date().getTime();
             window['durations'].push(curTime - startTime);
             startTime = curTime;
@@ -114,26 +120,28 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(errMessage).toEqual('The upscale request received an abort signal');
-      const [progressRates, called] = await page.evaluate(() => new Promise(resolve => {
+      const [progressRates, called] = await page.evaluate<any>(() => new Promise(resolve => {
         const durations = window['durations'].slice(1); // skip the first entry, it's usually slower than the others
         const avg = durations.reduce((sum, d) => sum + d, 0) / durations.length;
         setTimeout(() => {
           resolve([
             window['progressRates'],
             window['called'],
-        ]);
+          ]);
         }, avg * 2); // wait the average time for a progress event, PLUS another, to make sure we catch any stray calls
       }));
       const expectedRates = Array(8).fill('').map((_, i) => (i + 1) / 16);
       expect(progressRates).toEqual(expectedRates);
       expect(called).toEqual(false);
     });
-    
+
     it("cancels all inflight upscale requests", async () => {
       const errMessage = await page.evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
           warmupSizes: [{
             patchSize: 4,
             padding: 2,
@@ -144,11 +152,11 @@ describe('Upscale Integration Tests', () => {
 
         let startTime = new Date().getTime();
         window['durations'] = [];
-        const options = {
+        const options: any = {
           patchSize: 4,
           padding: 2,
           output: 'src',
-          progress: (rate) => {
+          progress: (rate: number) => {
             const curTime = new Date().getTime();
             window['durations'].push(curTime - startTime);
             startTime = curTime;
@@ -168,14 +176,14 @@ describe('Upscale Integration Tests', () => {
         })
       }));
       expect(errMessage).toEqual('The upscale request received an abort signal');
-      const [progressRates, called] = await page.evaluate(() => new Promise(resolve => {
+      const [progressRates, called] = await page.evaluate<any>(() => new Promise(resolve => {
         const durations = window['durations'].slice(1); // skip the first entry, it's usually slower than the others
         const avg = durations.reduce((sum, d) => sum + d, 0) / durations.length;
         setTimeout(() => {
           resolve([
             window['progressRates'],
             window['called'],
-        ]);
+          ]);
         }, avg * 2); // wait the average time for a progress event, PLUS another, to make sure we catch any stray calls
       }));
       const expectedRates = Array(7).fill('').map((_, i) => (i + 1) / 16).reduce((arr, el) => {
@@ -188,19 +196,21 @@ describe('Upscale Integration Tests', () => {
     it("can cancel all inflight upscale requests and then make a new request successfully", async () => {
       const errMessage = await page.evaluate(() => new Promise(resolve => {
         window['upscaler'] = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
           warmupSizes: [{
             patchSize: 4,
             padding: 2,
           }]
         });
 
-        const options = {
+        const options: any = {
           patchSize: 4,
           padding: 2,
           output: 'src',
-          progress: (rate) => {
+          progress: (rate: number) => {
             if (rate >= .5) {
               window['upscaler'].abort();
             }
@@ -209,7 +219,7 @@ describe('Upscale Integration Tests', () => {
         window['upscaler'].upscale(window['flower'], options).then(() => {
           window['called'] = true;
           resolve('this should not be called');
-        }).catch(err => {
+        }).catch((err: Error) => {
           return resolve(err.message);
         });
       }));
@@ -226,15 +236,17 @@ describe('Upscale Integration Tests', () => {
     it("calls back to progress the correct number of times", async () => {
       const progressRates = await page.evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
-        let progressRates = [];
+        const progressRates: Array<number> = [];
         upscaler.upscale(window['flower'], {
           patchSize: 8,
           padding: 2,
           output: 'src',
-          progress: (rate) => {
+          progress: (rate: number) => {
             progressRates.push(rate);
           },
         }).then(() => {
@@ -245,10 +257,12 @@ describe('Upscale Integration Tests', () => {
     });
 
     it("calls back to progress with a src", async () => {
-      const [rate, slice] = await page.evaluate(() => new Promise(resolve => {
+      const [rate, slice] = await page.evaluate<any>(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         upscaler.upscale(window['flower'], {
           patchSize: 12,
@@ -265,10 +279,12 @@ describe('Upscale Integration Tests', () => {
     });
 
     it("calls back to progress with a tensor", async () => {
-      const [rate, slice] = await page.evaluate(() => new Promise(resolve => {
+      const [rate, slice] = await page.evaluate<any>(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         upscaler.upscale(window['flower'], {
           patchSize: 12,
@@ -284,3 +300,15 @@ describe('Upscale Integration Tests', () => {
     });
   });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    upscaler: Upscaler;
+    flower: string;
+    tf: typeof tf;
+    called: boolean;
+    durations: Array<any>;
+    progressRates: Array<number>;
+  }
+}

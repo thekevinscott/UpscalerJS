@@ -24,17 +24,20 @@ const CDNS = [
 //   // https://unpkg.com/@upscalerjs/pixel-upsampler@latest/models/model.json
 // };
 
-const fetchModel = async ({ name, version }: PackageInformation, modelPath: string) => {
-  for (let i = 0; i < CDNS.length; i++) {
-    const getCDN = CDNS[i];
-    try {
-      const url = getCDN(name, version, modelPath);
-      return await tf.loadLayersModel(url);
-    } catch(err) {
-      // there was an issue with the CDN, try another
+const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
+  if (packageInformation) {
+    for (let i = 0; i < CDNS.length; i++) {
+      const getCDNFn = CDNS[i];
+      try {
+        const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
+        return await tf.loadLayersModel(url);
+      } catch (err) {
+        // there was an issue with the CDN, try another
+      }
     }
+    throw new Error(`Could not resolve URL ${modelPath}`)
   }
-  throw new Error(`Could not resolve URL ${modelPath}`)
+  return await tf.loadLayersModel(modelPath);
 };
 
 const loadModel = async (
@@ -44,7 +47,13 @@ const loadModel = async (
   modelDefinition: ModelDefinition;
 }> => {
   if (!modelDefinition) {
-    throw new Error('No model definition provided');
+    throw new Error('Model definition')
+  }
+  if (!modelDefinition.path) {
+    throw new Error('No model path provided');
+  }
+  if (!modelDefinition.scale) {
+    throw new Error('No model scale provided');
   }
   if (modelDefinition.customLayers) {
     modelDefinition.customLayers.forEach((layer) => {
@@ -52,15 +61,7 @@ const loadModel = async (
     });
   }
 
-  if (!modelDefinition.packageInformation) {
-    throw new Error('No package information')
-  }
-
-  const model = await fetchModel(modelDefinition.packageInformation, modelDefinition.path);
-  // let packagePath = path.dirname(require.resolve("moduleName/package.json"));
-  // console.log('ppackagePath', packagePath)
-  // const modelPath = await getURL(modelDefinition.path, modelDefinition.pathChecksum);
-  // const model = await tf.loadLayersModel(modelPath);
+  const model = await fetchModel(modelDefinition.path, modelDefinition.packageInformation);
 
   return {
     model,

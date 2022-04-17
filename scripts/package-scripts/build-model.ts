@@ -19,38 +19,30 @@ export const AVAILABLE_MODELS = fs.readdirSync(MODELS_DIR).filter(file => {
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 const references: ProjectReference[] = [{
-  path: path.resolve(ROOT_DIR, 'packages/upscalerjs/src'),
+  path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
 }];
 const TSCONFIG: ts.CompilerOptions = {
   "skipLibCheck": true,
   "esModuleInterop": true,
   "target": ts.ScriptTarget.ES2020,
   "module": ts.ModuleKind.CommonJS,
-  "declaration": true,
   "strict": true,
   "forceConsistentCasingInFileNames": true,
+  "declaration": true,
+  "declarationMap": true,
+  // "incremental": true,
   "noUnusedLocals": true,
   "strictNullChecks": true,
   "noUnusedParameters": true,
-  "composite": true,
   "noImplicitReturns": true,
   "noFallthroughCasesInSwitch": true,
+  "composite": true,
   "paths": {
-    "~upscaler": [path.resolve(ROOT_DIR, 'packages/upscalerjs/src/types')],
+    "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
   },
-  // "composite": true,
-  // baseUrl: ROOT_DIR,
-  // "paths": {
-  //   "upscaler": [path.resolve(ROOT_DIR, 'packages/upscalerjs/src/types')],
-  // },
-  // "references": [      // this is how we declare a dependency from
-  //   { "upscaler": path.resolve(ROOT_DIR, 'packages/upscalerjs/src/types'), }
-  // ],
-  // rootDir: SRC,
-  references,
 };
 
-const rm = (folder: string) => new Promise((resolve, reject) => {
+const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
   rimraf(folder, err => {
     if (err) {
       reject(err);
@@ -60,6 +52,10 @@ const rm = (folder: string) => new Promise((resolve, reject) => {
   })
 });
 
+const getSrcFiles = (modelFolder: string): Array<string> => {
+  const SRC = path.resolve(modelFolder, 'src');
+  return fs.readdirSync(SRC).filter(file => file.endsWith('.ts')).map(file => path.resolve(SRC, file));
+};
 const getExportFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
@@ -69,27 +65,14 @@ const getExportFiles = (modelFolder: string): Array<string> => {
 const buildESM = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const DIST = path.resolve(modelFolder, 'dist/browser/esm');
-  const files = getExportFiles(modelFolder);
+  const files = getSrcFiles(modelFolder);
 
   await compile(files, {
     ...TSCONFIG,
-    // "target": ts.ScriptTarget.ESNext,
-    // "module": ts.ModuleKind.ESNext,
-    // moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    // "declaration": true,
-    // "skipLibCheck": true,
-    // "strict": true,
-    // "forceConsistentCasingInFileNames": true,
-    // "noUnusedLocals": true,
-    // "esModuleInterop": true,
-    // "strictNullChecks": true,
-    // "noUnusedParameters": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true,
-    // baseUrl: ROOT_DIR,
-    // rootDir: SRC,
+    baseUrl: SRC,
+    rootDir: SRC,
     outDir: DIST,
-  });
+  }, references);
 }
 
 const buildUMD = async (modelFolder: string) => {
@@ -98,31 +81,19 @@ const buildUMD = async (modelFolder: string) => {
   const DIST = path.resolve(modelFolder, 'dist/browser/umd');
   // await rm(DIST);
   fs.mkdirSync(DIST);
-  const files = getExportFiles(modelFolder);
 
-  await compile(files, {
-    ...TSCONFIG,
-    // "target": ts.ScriptTarget.ES5,
-    // "module": ts.ModuleKind.ES2015,
-    // "moduleResolution": ts.ModuleResolutionKind.NodeJs,
-    // "declaration": true,
-    // "skipLibCheck": true,
-    // "strict": true,
-    // "forceConsistentCasingInFileNames": true,
-    // "noUnusedLocals": true,
-    // "esModuleInterop": true,
-    // "strictNullChecks": true,
-    // "noUnusedParameters": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true,
-    // rootDir: SRC,
+  await compile(getSrcFiles(modelFolder), {
+  ...TSCONFIG,
+    baseUrl: SRC,
+    rootDir: SRC,
     outDir: TMP,
-  });
+  }, references);
 
+  const files = getExportFiles(modelFolder);
   for (let i = 0; i < files.length; i++) {
-    const file = `${path.basename(files[i])}.js`;
-      const input = path.resolve(TMP, file);
-    console.log('file', input);
+    const basename = path.basename(files[i]);
+    const file = `${basename}.js`;
+    const input = path.resolve(TMP, file);
     await rollupBuild({
       input,
       context: 'window',
@@ -152,7 +123,7 @@ const buildUMD = async (modelFolder: string) => {
 
 const buildCJS = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
-  const files = getExportFiles(modelFolder);
+  const files = getSrcFiles(modelFolder);
 
   const platforms: Array<{
     platform: Platform;
@@ -170,31 +141,12 @@ const buildCJS = async (modelFolder: string) => {
 
     await scaffoldPlatform(platform, SRC);
 
-    // const foo: MapLike<string[]> = [['foo', 'bar']];
-    // const bar: MapLike<string[]> = { test: ['foo'] };
-
     await compile(files, {
     ...TSCONFIG,
-      // "skipLibCheck": true,
-      // "esModuleInterop": true,
-      // "target": ts.ScriptTarget.ES2020,
-      // "module": ts.ModuleKind.CommonJS,
-      // "declaration": true,
-      // "strict": true,
-      // "forceConsistentCasingInFileNames": true,
-      // "noUnusedLocals": true,
-      // "strictNullChecks": true,
-      // "noUnusedParameters": true,
-      // "noImplicitReturns": true,
-      // "noFallthroughCasesInSwitch": true,
-      // baseUrl: ROOT_DIR,
-      // "paths": {
-      //   "upscaler": [path.resolve(ROOT_DIR, 'packages/upscalerjs/src/types')],
-      // },
       baseUrl: SRC,
       rootDir: SRC,
       outDir: dist,
-    });
+    }, references);
   }
 };
 

@@ -1,21 +1,25 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
+import * as http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
+import Upscaler from 'upscaler';
+import * as tf from '@tensorflow/tfjs';
+import { ModelDefinition } from 'upscaler/dist/browser/esm/types';
 
 const TRACK_TIME = false;
-
+const LOG = true;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
 describe('Model Loading Integration Tests', () => {
-  let server;
-  let browser;
-  let page;
+  let server: http.Server;
+  let browser: puppeteer.Browser;
+  let page: puppeteer.Page;
 
   const PORT = 8099;
 
@@ -33,7 +37,7 @@ describe('Model Loading Integration Tests', () => {
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
-    const stopServer = (): Promise<void> => new Promise((resolve) => {
+    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
@@ -53,6 +57,11 @@ describe('Model Loading Integration Tests', () => {
   beforeEach(async function beforeEach() {
     browser = await puppeteer.launch();
     page = await browser.newPage();
+    if (LOG) {
+      page.on('console', message => {
+        console.log('[PAGE]', message.text());
+      });
+    }
     await page.goto(`http://localhost:${PORT}`);
     await page.waitForFunction('document.title.endsWith("| Loaded")');
   });
@@ -63,11 +72,29 @@ describe('Model Loading Integration Tests', () => {
     page = undefined;
   });
 
+  // it("loads the default model", async () => {
+  //   const result = await execute("defaultModel.js");
+  //   const formattedResult = `data:image/png;base64,${result}`;
+  //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
+
+  it("can import a model", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixelUpsampler'],
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
+
   it("loads a locally exposed model via implied HTTP", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: '/pixelator/pixelator.json',
-        scale: 4,
+        model: {
+          path: '/pixelator/pixelator.json',
+          scale: 4,
+        },
       });
       return upscaler.upscale(window['flower']);
     });
@@ -77,21 +104,22 @@ describe('Model Loading Integration Tests', () => {
   it("loads a locally exposed model via absolute HTTP", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: `${window.location.origin}/pixelator/pixelator.json`,
-        scale: 4,
+        model: {
+          path: `${window.location.origin}/pixelator/pixelator.json`,
+          scale: 4,
+        },
       });
       return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
-
-  it("can load model definitions in the browser", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']();
-      return upscaler.getModelDefinitions();
-    });
-    expect(result['pixelator']).not.toEqual(undefined);
-    expect(result['pixelator']['scale']).toEqual(4);
-    expect(result['pixelator']['urlPath']).toEqual('pixelator');
-  });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    flower: string;
+    tf: typeof tf;
+    pixelUpsampler: ModelDefinition;
+  }
+}

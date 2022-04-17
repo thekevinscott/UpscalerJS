@@ -102,22 +102,22 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   if (argv.skipModelBuild !== true) {
     await buildModels(['pixel-upsampler'], getOutputFormats(platform));
   }
-    const yarnArgs = [
-      'jest',
-      // 'node',
-      // '--expose-gc',
-      // './node_modules/.bin/jest',
-      '--config',
-      `test/jestconfig.${platform}.${runner}.js`,
-      '--detectOpenHandles',
-      argv.watch ? '--watch' : undefined,
-      ...argv._,
-    ].filter(Boolean).map(arg => `${arg}`);
-    const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
-    if (bsLocal !== undefined) {
-      await stopBrowserstack(bsLocal);
-    }
-    if (code !== null) {
-      process.exit(code);
-    }
+  const yarnArgs = [
+    'jest',
+    // 'node',
+    // '--expose-gc',
+    // './node_modules/.bin/jest',
+    '--config',
+    `test/jestconfig.${platform}.${runner}.js`,
+    '--detectOpenHandles',
+    // argv.watch ? '--watch' : undefined,
+    ...argv._,
+  ].filter(Boolean).map(arg => `${arg}`);
+  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  if (bsLocal !== undefined) {
+    await stopBrowserstack(bsLocal);
+  }
+  if (code !== null) {
+    process.exit(code);
+  }
 })();

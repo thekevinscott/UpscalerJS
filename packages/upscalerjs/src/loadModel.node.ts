@@ -14,35 +14,54 @@ import { ModelDefinition, } from './types';
 //   scale: 2,
 // };
 
+const getModuleFolder = (name: string) => {
+  const moduleEntryPoint = require.resolve(name);
+  const moduleFolder = moduleEntryPoint.match(`(.*)/${name}`)?.[0];
+  if (moduleFolder === undefined) {
+    throw new Error(`Cannot find module ${name}`);
+  }
+  return moduleFolder;
+};
+
+const getModelPath = ({ packageInformation, path: modelPath }: ModelDefinition): string => {
+  if (packageInformation) {
+    const moduleFolder = getModuleFolder(packageInformation.name);
+    return `file://${path.resolve(moduleFolder, modelPath)}`;
+  }
+  return modelPath;
+}
+
+// const DEFAULT_MODEL_DEFINITION = {
+//   path: 'fooey',
+//   scale: 4,
+// }
+
 const loadModel = async (
   modelDefinition?: ModelDefinition,
+  // modelDefinition: ModelDefinition = DEFAULT_MODEL_DEFINITION,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
 }> => {
   if (!modelDefinition) {
-    throw new Error('No model definition provided');
+    throw new Error('Model definition')
+  }
+  if (!modelDefinition.path) {
+    throw new Error('No model path provided');
+  }
+  if (!modelDefinition.scale) {
+    throw new Error('No model scale provided');
   }
   const {
     customLayers,
-    packageInformation,
   } = modelDefinition;
   if (customLayers) {
     customLayers.forEach((layer) => {
       tf.serialization.registerClass(layer);
     });
   }
-  if (!packageInformation) {
-    throw new Error('No package information')
-  }
 
-  const moduleEntryPoint = require.resolve(packageInformation.name);
-  const moduleFolder = moduleEntryPoint.match(`(.*)/${packageInformation.name}`)?.[0];
-  if (moduleFolder === undefined) {
-    throw new Error(`Cannot find module ${name}`);
-  }
-  const modelPath = `file://${path.resolve(moduleFolder, modelDefinition.path)}`;
-  console.log('modelPath', modelPath)
+  const modelPath = getModelPath(modelDefinition);
   const model = await tf.loadLayersModel(modelPath);
 
   return {

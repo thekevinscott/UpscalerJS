@@ -1,5 +1,5 @@
 // import { tf, } from './dependencies.generated';
-import {ModelDefinition} from '~upscaler';
+import {ModelDefinition} from 'upscaler/types';
 // import type { ModelDefinition } from "upscaler";
 import { NAME, VERSION } from './constants.generated';
 // import { name, version } from '../package.json';

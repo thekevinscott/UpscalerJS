@@ -14,7 +14,7 @@ const upscaleImageToUInt8Array = async (model, filename) => {
     model: {
       path: model,
       scale: 4,
-    },
+    }
   });
   const file = fs.readFileSync(filename)
   const image = tf.node.decodeImage(file, 3)

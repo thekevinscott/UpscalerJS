@@ -1,7 +1,11 @@
-import ts from 'typescript';
+import ts, { ProjectReference } from 'typescript';
 
-export function compile(fileNames: string[], options: ts.CompilerOptions) {
-  let program = ts.createProgram(fileNames, options);
+export function compile(rootNames: string[], options: ts.CompilerOptions, projectReferences?: Array<ProjectReference>) {
+  let program = ts.createProgram({
+    rootNames, 
+    options,
+    projectReferences,
+  });
   let emitResult = program.emit();
 
   let allDiagnostics = ts

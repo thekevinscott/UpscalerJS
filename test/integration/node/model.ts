@@ -22,11 +22,11 @@ describe('Model Loading Integration Tests', () => {
     await prepareScriptBundleForCJS(AVAILABLE_MODELS);
   });
 
-  // it("loads the default model", async () => {
-  //   const result = await execute("defaultModel.js");
-  //   const formattedResult = `data:image/png;base64,${result}`;
-  //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads the default model", async () => {
+    const result = await execute("defaultModel.js");
+    const formattedResult = `data:image/png;base64,${result}`;
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
   it("loads a model via a require", async () => {
     const result = await execute("specifiedModel.js");
@@ -34,9 +34,9 @@ describe('Model Loading Integration Tests', () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  // it("loads a locally exposed model via file:// path", async () => {
-  //   const result = await execute("localFilePath.js");
-  //   const formattedResult = `data:image/png;base64,${result}`;
-  //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads a locally exposed model via file:// path", async () => {
+    const result = await execute("localFilePath.js");
+    const formattedResult = `data:image/png;base64,${result}`;
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 });
