@@ -6,9 +6,8 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
-import Upscaler from 'upscaler';
+import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { ModelDefinition } from 'upscaler/dist/browser/esm/types';
 
 const TRACK_TIME = false;
 const LOG = true;

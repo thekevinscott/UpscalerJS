@@ -2,6 +2,8 @@ import puppeteer, { Browser, BrowserContext, Page, WaitTask } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
+import Upscaler, { ModelDefinition } from 'upscaler';
+import * as tf from '@tensorflow/tfjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 30;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -697,3 +699,12 @@ describe('Memory Leaks', () => {
     checkMemory(names, startingMemory, endingMemory);
   });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    flower: string;
+    tf: typeof tf;
+    pixelUpsampler: ModelDefinition;
+  }
+}
