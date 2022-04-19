@@ -8,7 +8,7 @@ import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import puppeteer from 'puppeteer';
 import * as tf from '@tensorflow/tfjs';
-import Upscaler from 'upscaler';
+import Upscaler, { ModelDefinition } from 'upscaler';
 
 const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -60,6 +60,21 @@ describe('Build Integration Tests', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
+  it("upscales using a UMD build with a specified model", async () => {
+    await prepareScriptBundleForUMD();
+    server = await startServer(PORT, SCRIPT_DIST);
+    await startBrowser();
+    const result = await page.evaluate(() => {
+      const Upscaler = window['Upscaler'];
+      const pixelUpsampler = window['PixelUpsampler2x3'];
+      const upscaler = new Upscaler({
+        model: pixelUpsampler,
+      });
+      return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
+
   it("upscales using an ESM build using Webpack", async () => {
     await prepareScriptBundleForESM();
     await bundleWebpack();
@@ -85,5 +100,6 @@ declare global {
     Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
+    PixelUpsampler2x3: ModelDefinition; 
   }
 }

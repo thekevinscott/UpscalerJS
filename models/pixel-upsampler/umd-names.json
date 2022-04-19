@@ -1,0 +1,4 @@
+{
+  "2x-3": "PixelUpsampler2x3",
+  "4x-3": "PixelUpsampler4x3"
+}

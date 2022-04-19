@@ -1,7 +1,7 @@
 const tf = require('@tensorflow/tfjs-node');
 const Upscaler = require('upscaler-for-node/node');
-throw new Error('FIX THIS DEFAULT');
-const pixelUpsampler = require('@upscalerjs/pixel-upsampler/4x-3').default;
+const pixelUpsampler = require('@upscalerjs/pixel-upsampler/4x-3');
+console.log(pixelUpsampler);
 const path = require('path');
 const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')

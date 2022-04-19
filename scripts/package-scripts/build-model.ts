@@ -61,6 +61,9 @@ const getExportFiles = (modelFolder: string): Array<string> => {
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
   return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
 };
+const getUMDNames = (modelFolder: string): Record<string, string> => {
+  return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
+}
 
 const buildESM = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
@@ -90,8 +93,13 @@ const buildUMD = async (modelFolder: string) => {
   }, references);
 
   const files = getExportFiles(modelFolder);
+  const umdNames = getUMDNames(modelFolder);
   for (let i = 0; i < files.length; i++) {
     const basename = path.basename(files[i]);
+    const umdName = umdNames[basename];
+    if (!umdName) {
+      throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${basename}`)
+    }
     const file = `${basename}.js`;
     const input = path.resolve(TMP, file);
     await rollupBuild({
@@ -110,7 +118,7 @@ const buildUMD = async (modelFolder: string) => {
     }, [{
       file,
       format: 'umd',
-      name: 'Model',
+      name: 'PixelUpsampler2x3',
       globals: {
         '@tensorflow/tfjs': 'tf',
       }
@@ -143,6 +151,9 @@ const buildCJS = async (modelFolder: string) => {
 
     await compile(files, {
     ...TSCONFIG,
+    "target": ts.ScriptTarget.ES5,
+    "module": ts.ModuleKind.CommonJS,
+    // --module commonjs --target es5 
       baseUrl: SRC,
       rootDir: SRC,
       outDir: dist,

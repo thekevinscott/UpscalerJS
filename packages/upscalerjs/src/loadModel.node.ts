@@ -1,8 +1,6 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
 import { ModelDefinition, } from './types';
-// import MODELS, { DEFAULT_MODEL, } from './models';
-// import { warn, } from './utils';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
