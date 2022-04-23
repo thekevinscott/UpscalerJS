@@ -10,7 +10,7 @@ const execute = async (file: string, logExtra = true) => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
     } else if (logExtra) {
-      console.log(chunk);
+      console.log('[PAGE]', chunk);
     }
   });
   return data.trim();
@@ -21,11 +21,14 @@ describe('Platform Integration Tests', () => {
     await prepareScriptBundleForCJS();
   });
 
-  ['node', 'node-gpu'].forEach(platform => {
+  [
+    'node', 
+    'node-gpu',
+  ].forEach(platform => {
     it("loads a model with node", async () => {
       const result = await execute(`platforms/${platform}.js`);
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+      checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
     });
   });
 });
