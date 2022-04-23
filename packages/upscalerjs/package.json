@@ -33,7 +33,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "rimraf dist && yarn build:node && yarn build:browser",
+    "build": "rimraf dist && yarn build:node-gpu && yarn build:node && yarn build:browser",
     "build:browser": "rimraf dist/browser && mkdir -p dist/browser && yarn scaffold:platform 'browser' && yarn lerna run build:umd && yarn lerna run build:esm && mv dist/esm dist/browser/esm",
     "build:node": "rimraf dist/node && mkdir -p dist/node && yarn scaffold:platform 'node' && yarn build:cjs && mv dist/cjs dist/node/cjs",
     "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && yarn scaffold:platform 'node-gpu' && yarn lerna run build:cjs && mv dist/cjs dist/node-gpu/cjs",
