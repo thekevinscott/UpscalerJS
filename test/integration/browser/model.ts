@@ -1,6 +1,8 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
+import fs from 'fs';
+import path from 'path';
 import * as http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
@@ -13,7 +15,15 @@ const TRACK_TIME = false;
 const LOG = true;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(1);
+jest.retryTimes(0);
+
+const ROOT = path.resolve(__dirname, '../../../');
+const MODELS = path.resolve(ROOT, 'models');
+const getAllAvailableModels = (model: string) => {
+  const modelDir = path.resolve(MODELS, model);
+  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelDir, 'package.json'), 'utf-8'))
+  return Object.keys(exports).filter(key => key !== '.').map(key => path.basename(key));
+};
 
 describe('Model Loading Integration Tests', () => {
   let server: http.Server;
@@ -77,40 +87,59 @@ describe('Model Loading Integration Tests', () => {
   //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   // });
 
-  it("can import a model", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: window['pixelUpsampler'],
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("can import a model", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: window['pixelUpsampler4x3'],
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: '/pixelator/pixelator.json',
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("loads a locally exposed model via implied HTTP", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: `${window.location.origin}/pixelator/pixelator.json`,
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // it("loads a locally exposed model via absolute HTTP", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: `${window.location.origin}/pixelator/pixelator.json`,
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
+
+  ['pixel-upsampler'].map(packageName => {
+    describe(packageName, () => {
+      const models = getAllAvailableModels(packageName);
+      models.forEach(modelName => {
+        // console.log(packageName, modelName);
+        it(`upscales with ${packageName}/${modelName}`, async () => {
+          const result = await page.evaluate(([packageName, modelName]) => {
+            const modelDefinition: any = window[packageName][modelName];
+            const upscaler = new window['Upscaler']({
+              model: modelDefinition,
+            });
+            return upscaler.upscale(window['flower']);
+          }, [packageName, modelName]);
+          checkImage(result, `${packageName}/${modelName}/result.png`, 'diff.png');
+        });
+      })
+    })
   });
 });
 
@@ -119,6 +148,8 @@ declare global {
     Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
-    pixelUpsampler: ModelDefinition;
+    pixelUpsampler4x3: ModelDefinition;
+    'pixel-upsampler': Record<string, ModelDefinition>;
+    'esrgan': Record<string, ModelDefinition>;
   }
 }

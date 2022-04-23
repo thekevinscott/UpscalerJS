@@ -21,7 +21,7 @@
       "upscaler/*": ["../../../packages/upscalerjs/src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/4x-3.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"],
   
   "references": [

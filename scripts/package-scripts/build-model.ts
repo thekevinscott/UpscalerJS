@@ -9,6 +9,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
+import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
@@ -52,14 +53,37 @@ const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
   })
 });
 
+type IncludeFn = (file: string) => boolean;
+const readDirRecursive = (folder: string, include?: IncludeFn): Array<string> => {
+  const includedFiles: Array<string> = [];
+  const files = fs.readdirSync(folder);
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const filepath = path.resolve(folder, file);
+    if (fs.lstatSync(filepath).isDirectory()) {
+      includedFiles.push(...readDirRecursive(filepath, include));
+    } else {
+      if (include) {
+        if (include(filepath)) {
+          includedFiles.push(filepath);
+        }
+      } else {
+        includedFiles.push(path.resolve(folder, file));
+      }
+    }
+  }
+  return includedFiles;
+}
+
 const getSrcFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
-  return fs.readdirSync(SRC).filter(file => file.endsWith('.ts')).map(file => path.resolve(SRC, file));
+  return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 const getExportFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
-  return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
+  // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
+  return Object.keys(exports).filter(file => file !== '.');
 };
 const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
@@ -85,8 +109,12 @@ const buildUMD = async (modelFolder: string) => {
   // await rm(DIST);
   fs.mkdirSync(DIST);
 
-  await compile(getSrcFiles(modelFolder), {
-  ...TSCONFIG,
+  const srcFiles = getSrcFiles(modelFolder);
+  if (srcFiles.length === 0) {
+    throw new Error(`No files found in ${SRC}`);
+  }
+  await compile(srcFiles, {
+    ...TSCONFIG,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: TMP,
@@ -95,13 +123,18 @@ const buildUMD = async (modelFolder: string) => {
   const files = getExportFiles(modelFolder);
   const umdNames = getUMDNames(modelFolder);
   for (let i = 0; i < files.length; i++) {
-    const basename = path.basename(files[i]);
-    const umdName = umdNames[basename];
+    const exportName = files[i];
+    // const basename = path.basename(path.resolve(SRC, exportName));
+    const umdName = umdNames[exportName];
     if (!umdName) {
-      throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${basename}`)
+      throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)
     }
-    const file = `${basename}.js`;
-    const input = path.resolve(TMP, file);
+    const filename = `${exportName}.js`;
+    const FILE_DIST = path.resolve(DIST, path.dirname(filename));
+    const input = path.resolve(TMP, filename);
+    const file = path.basename(filename);
+
+    mkdirpSync(FILE_DIST);
     await rollupBuild({
       input,
       context: 'window',
@@ -122,9 +155,9 @@ const buildUMD = async (modelFolder: string) => {
       globals: {
         '@tensorflow/tfjs': 'tf',
       }
-    }], DIST)
+    }], FILE_DIST);
 
-    uglify(DIST, file);
+    uglify(FILE_DIST, file);
   }
   await rm(TMP);
 }

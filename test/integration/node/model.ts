@@ -39,4 +39,5 @@ describe('Model Loading Integration Tests', () => {
     const formattedResult = `data:image/png;base64,${result}`;
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
+
 });
