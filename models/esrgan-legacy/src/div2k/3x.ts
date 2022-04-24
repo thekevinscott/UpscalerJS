@@ -1,10 +1,10 @@
 import { ModelDefinition } from 'upscaler/types';
-import { NAME, VERSION } from '../../constants.generated';
+import { NAME, VERSION } from '../constants.generated';
 
 const modelDefinition: ModelDefinition = {
-  scale: 2,
+  scale: 3,
   channels: 3,
-  path: 'models/idealo/psnr-small-quant-uint8/model.json',
+  path: 'models/div2k/005-2x/model.json',
   packageInformation: {
     name: NAME,
     version: VERSION,

@@ -1,8 +1,8 @@
 import { ModelDefinition } from 'upscaler/types';
-import { NAME, VERSION } from '../../constants.generated';
+import { NAME, VERSION } from '../constants.generated';
 
 const modelDefinition: ModelDefinition = {
-  scale: 3,
+  scale: 4,
   channels: 3,
   path: 'models/div2k/005-2x/model.json',
   packageInformation: {

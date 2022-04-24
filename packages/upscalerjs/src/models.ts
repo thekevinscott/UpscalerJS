@@ -22,8 +22,8 @@
 // const MODELS: {
 //   [index: string]: ModelDefinition;
 // } = buildModelsConfig({
-//   'div2k/rdn-C3-D10-G64-G064-x2': {
-//     urlPath: 'div2k/005-2x',
+//   'div2k-2x': {
+//     urlPath: 'div2k/2x',
 //     scale: 2,
 //   },
 //   'div2k/rdn-C3-D10-G64-G064-x3': {

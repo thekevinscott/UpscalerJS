@@ -1,10 +1,10 @@
 import { ModelDefinition } from 'upscaler/types';
-import { NAME, VERSION } from '../../constants.generated';
+import { NAME, VERSION } from './constants.generated';
 
 const modelDefinition: ModelDefinition = {
   scale: 2,
   channels: 3,
-  path: 'models/div2k/005-2x/model.json',
+  path: 'models/idealo/gans/model.json',
   packageInformation: {
     name: NAME,
     version: VERSION,
@@ -15,3 +15,4 @@ const modelDefinition: ModelDefinition = {
 };
 
 export = modelDefinition;
+
