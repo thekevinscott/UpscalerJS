@@ -1,6 +1,6 @@
 {
   "name": "nodejs",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "Demonstration of Node.js usage of UpscalerJS",
   "author": "Kevin Scott",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^3.13.0",
-    "upscaler": "0.12.2",
+    "upscaler": "0.12.3",
     "express": "4.16.4"
   },
   "devDependencies": {
