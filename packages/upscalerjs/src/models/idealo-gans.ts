@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import { tf, } from '../dependencies.generated';
 import { IIntermediaryModelDefinition, } from '../types';
 
 const SCALE = 4;
