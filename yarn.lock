@@ -16055,11 +16055,7 @@ typescript@^4.6.3:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.3.tgz#eefeafa6afdd31d725584c67a0eaba80f6fc6c6c"
   integrity sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==
 
-<<<<<<< HEAD
-uglify-js@^3.1.4, uglify-js@^3.15.3:
-=======
-uglify-js@3.15.4, uglify-js@^3.1.4:
->>>>>>> v1.0.0
+uglify-js@^3.1.4, uglify-js@^3.15.4:
   version "3.15.4"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.15.4.tgz#fa95c257e88f85614915b906204b9623d4fa340d"
   integrity sha512-vMOPGDuvXecPs34V74qDKk4iJ/SN4vL3Ow/23ixafENYvtrNvtbcgUeugTcUGRGsOF/5fU8/NYSL5Hyb3l1OJA==
@@ -16262,6 +16258,14 @@ upscaler@0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.10.0.tgz#5f72bf4f7892fc988320b2b18acce79ead16abf5"
   integrity sha512-hvSdaxG/Of1aZB820NjaGs0l+2GBVZccuUCmh53MEvVIiC/BkHvSEAP4/CeXZo4N+RCfqLzluBQ3azE3SjUrjg==
+  dependencies:
+    isomorphic-fetch "^3.0.0"
+    tensor-as-base64 "^0.1.1"
+
+upscaler@0.12.1:
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/upscaler/-/upscaler-0.12.1.tgz#19eee6bb941345764b3ebbe595c6f54660f2e26e"
+  integrity sha512-KTmyFtKrdKqXGJPtCkndOn8Gt5O+qC70bbtU9mgiZNcqsnh/thONXsaU6RUVm6jVFGS4biVVO4TLJjkcfAGfBQ==
   dependencies:
     isomorphic-fetch "^3.0.0"
     tensor-as-base64 "^0.1.1"

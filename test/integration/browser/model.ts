@@ -110,18 +110,18 @@ describe('Model Loading Integration Tests', () => {
   //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   // });
 
-  // it("loads a locally exposed model via absolute HTTP", async () => {
-  //   const result = await page.evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: {
-  //         path: `${window.location.origin}/pixelator/pixelator.json`,
-  //         scale: 4,
-  //       },
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads a locally exposed model via absolute HTTP", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: {
+          path: `${window.location.origin}/pixelator/pixelator.json`,
+          scale: 4,
+        },
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
   ['pixel-upsampler'].map(packageName => {
     describe(packageName, () => {
