@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
-    "upscaler": "0.12.1"
+    "upscaler": "0.12.2"
   },
   "browserslist": {
     "production": [
