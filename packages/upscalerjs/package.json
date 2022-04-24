@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "1.0.0",
+  "version": "1.0.0-canary-model-loading",
   "description": "Increase Image resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
