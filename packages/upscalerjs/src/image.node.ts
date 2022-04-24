@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import * as tf from '@tensorflow/tfjs-node';
+import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
