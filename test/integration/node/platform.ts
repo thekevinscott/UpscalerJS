@@ -4,9 +4,50 @@ import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/pre
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const execute = async (file: string, logExtra = true) => {
+const writeScript = (deps: string) => `
+${deps}
+const path = require('path');
+const fs = require('fs');
+const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
+
+const FIXTURES = path.join(__dirname, '../../../__fixtures__');
+const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
+const IMG = path.join(FIXTURES, 'flower-small.png');
+
+// Returns a PNG-encoded UInt8Array
+const upscaleImageToUInt8Array = async (model, filename) => {
+  const upscaler = new Upscaler({
+    model,
+    scale: 4,
+  });
+  const file = fs.readFileSync(filename)
+  const image = tf.node.decodeImage(file, 3)
+  return await upscaler.upscale(image, {
+    output: 'tensor',
+    patchSize: 64,
+    padding: 6
+  });
+}
+
+const main = async (model) => {
+  const tensor = await upscaleImageToUInt8Array(model, IMG);
+  const upscaledImage = await tf.node.encodePng(tensor)
+  return base64ArrayBuffer(upscaledImage);
+}
+
+const getModelPath = () => {
+  return 'file://' + path.resolve(MODEL_PATH);
+}
+
+(async () => {
+  const data = await main(getModelPath());
+  console.log('OUTPUT: ' + data);
+})();
+`;
+
+const execute = async (contents: string, logExtra = true) => {
   let data = '';
-  await executeNodeScript(file, chunk => {
+  await executeNodeScript(contents.trim(), chunk => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
     } else if (logExtra) {
@@ -22,11 +63,17 @@ describe('Platform Integration Tests', () => {
   });
 
   [
-    'node', 
-    'node-gpu',
-  ].forEach(platform => {
-    it("loads a model with node", async () => {
-      const result = await execute(`platforms/${platform}.js`);
+    { platform: 'node', deps: `
+const tf = require('@tensorflow/tfjs-node');
+const Upscaler = require('upscaler-for-node/node');
+    `},
+    { platform: 'node-gpu', deps: `
+const tf = require('@tensorflow/tfjs-node-gpu');
+const Upscaler = require('upscaler-for-node/node-gpu');
+    `},
+  ].forEach(({ platform, deps }) => {
+    it(`loads a model with ${platform}`, async () => {
+      const result = await execute(writeScript(deps));
       const formattedResult = `data:image/png;base64,${result}`;
       checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
     });
