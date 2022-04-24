@@ -30,9 +30,6 @@
     "update:tfjs": "ts-node scripts/package-scripts/update-tfjs.ts",
     "update:version": "ts-node scripts/package-scripts/update-version.ts",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
-    "version": "yarn pin-cdn",
-    "update:version:old": "node ./scripts/version.js",
-    "pin-cdn": "node scripts/pin-cdn.js",
     "find-all-packages": "ts-node scripts/package-scripts/find-all-packages.ts",
     "example": "ts-node ./scripts/start-example.ts",
     "format": "yarn lerna run format",
@@ -116,7 +113,7 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-to-eslint-config": "1.0.0",
     "typescript": "^4.6.3",
-    "uglify": "^0.1.5",
+    "uglify-js": "3.15.4",
     "webpack": "^5.24.3",
     "chokidar": "^3.5.3",
     "yargs": "^16.2.0"
