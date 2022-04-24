@@ -91,7 +91,7 @@ const EXAMPLES = 'Examples';
 const MODELS = 'Models';
 const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT];
 
-const updateVersion = () => new Promise(resolve => {
+const updateVersion = (): Promise<void> => new Promise(resolve => {
   inquirer.prompt<Answers>([
     {
       name: 'version',
