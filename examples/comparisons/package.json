@@ -1,6 +1,6 @@
 {
   "name": "comparisons",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^3.13.0",
-    "upscaler": "0.12.2"
+    "upscaler": "0.12.3"
   },
   "browserslist": {
     "production": [
