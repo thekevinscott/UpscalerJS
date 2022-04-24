@@ -10,7 +10,7 @@ const execute = async (file: string, logExtra = true) => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
     } else if (logExtra) {
-      console.log(chunk);
+      console.log('[PAGE]', chunk);
     }
   });
   return data.trim();
@@ -24,19 +24,19 @@ describe('Model Loading Integration Tests', () => {
   it("loads a locally exposed model via file:// path", async () => {
     const result = await execute("localFilePath.js");
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("loads a model via tf.io.fileSystem", async () => {
     const result = await execute("localFilePath.js");
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("loads a model via HTTP", async () => {
     const result = await execute("httpPath.js");
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("can load model definitions in Node", async () => {
