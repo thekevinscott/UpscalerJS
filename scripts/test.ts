@@ -97,7 +97,12 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   }
 
   if (argv.skipBuild !== true) {
-    await buildUpscaler(platform);
+    if (platform === 'browser') {
+      await buildUpscaler(platform);
+    } else if (platform === 'node') {
+      await buildUpscaler('node');
+      await buildUpscaler('node-gpu');
+    }
   }
   if (argv.skipModelBuild !== true) {
     await buildModels(['pixel-upsampler'], getOutputFormats(platform));

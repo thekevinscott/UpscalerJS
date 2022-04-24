@@ -1,5 +1,5 @@
-// import * as tf from '@tensorflow/tfjs';
-// import { IIntermediaryModelDefinition, } from '../types';
+import { tf, } from '../dependencies.generated';
+import { IIntermediaryModelDefinition, } from '../types';
 
 // const SCALE = 4;
 // const BETA = 0.2;

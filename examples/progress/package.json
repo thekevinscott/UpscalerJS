@@ -1,6 +1,6 @@
 {
   "name": "progress",
-  "version": "0.12.1",
+  "version": "1.0.0",
   "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",
   "scripts": {

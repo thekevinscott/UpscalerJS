@@ -11,7 +11,7 @@ const execute = async (file: string, logExtra = true) => {
     if (chunk.startsWith('OUTPUT: ')) {
       data += chunk.split('OUTPUT: ').pop();
     } else if (logExtra) {
-      console.log('[SCRIPT]', chunk);
+      console.log('[PAGE]', chunk);
     }
   });
   return data.trim();

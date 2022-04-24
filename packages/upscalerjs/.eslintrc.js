@@ -3,6 +3,7 @@ module.exports = {
     "browser": true,
     "es6": true
   },
+  "ignorePatterns": ["**/*.node.ts"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
