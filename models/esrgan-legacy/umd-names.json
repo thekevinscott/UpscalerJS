@@ -1,7 +1,7 @@
 {
-  "./legacy/div2k/rdn-C3-D10-G64-G064-x2": "legacyESRGANDiv2kRDNC3D10G64G064x2",
-  "./legacy/div2k/rdn-C3-D10-G64-G064-x3": "legacyESRGANDiv2kRDNC3D10G64G064x3",
-  "./legacy/div2k/rdn-C3-D10-G64-G064-x4": "legacyESRGANDiv2kRDNC3D10G64G064x4",
-  "./legacy/idealo/psnr-small": "legacyESRGANIdealoPSNRSmall",
-  "./legacy/idealo/gans": "legacyESRGANIdealoGANS"
+  "./div2k/2x": "ESRGANLegacyDiv2K2x",
+  "./div2k/3x": "ESRGANLegacyDiv2K3x",
+  "./div2k/4x": "ESRGANLegacyDiv2K4x",
+  "./psnr-small": "ESRGANLegacyPSNRSmall",
+  "./gans": "ESRGANLegacyGANS"
 }

@@ -3,15 +3,15 @@
   "version": "0.1.0",
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
-    "./div2k-2x": {
+    "./div2k/2x": {
       "require": "./dist/node/div2k/2x.js",
       "import": "./dist/browser/esm/div2k/2x.js"
     },
-    "./div2k-3x": {
+    "./div2k/3x": {
       "require": "./dist/node/div2k/3x.js",
       "import": "./dist/browser/esm/div2k/3x.js"
     },
-    "./div2k-4x": {
+    "./div2k/4x": {
       "require": "./dist/node/div2k/4x.js",
       "import": "./dist/browser/esm/div2k/4x.js"
     },

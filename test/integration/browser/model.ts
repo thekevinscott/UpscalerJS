@@ -87,28 +87,28 @@ describe('Model Loading Integration Tests', () => {
   //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   // });
 
-  // it("can import a model", async () => {
-  //   const result = await page.evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: window['pixelUpsampler4x3'],
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("can import a model", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixelUpsampler4x3'],
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
-  // it("loads a locally exposed model via implied HTTP", async () => {
-  //   const result = await page.evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: {
-  //         path: '/pixelator/pixelator.json',
-  //         scale: 4,
-  //       },
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads a locally exposed model via implied HTTP", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: {
+          path: '/pixelator/pixelator.json',
+          scale: 4,
+        },
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
     const result = await page.evaluate(() => {
@@ -123,7 +123,10 @@ describe('Model Loading Integration Tests', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  ['pixel-upsampler'].map(packageName => {
+  [
+    'pixel-upsampler',
+    'esrgan-legacy',
+  ].map(packageName => {
     describe(packageName, () => {
       const models = getAllAvailableModels(packageName);
       models.forEach(modelName => {
@@ -150,6 +153,6 @@ declare global {
     tf: typeof tf;
     pixelUpsampler4x3: ModelDefinition;
     'pixel-upsampler': Record<string, ModelDefinition>;
-    'esrgan': Record<string, ModelDefinition>;
+    'esrgan-legacy': Record<string, ModelDefinition>;
   }
 }
