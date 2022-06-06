@@ -2,9 +2,9 @@ import { ModelDefinition } from 'upscaler/types';
 import { NAME, VERSION } from './constants.generated';
 
 const modelDefinition: ModelDefinition = {
-  scale: 2,
+  scale: 3,
   channels: 3,
-  path: 'models/2x3/2x3.json',
+  path: 'models/3x/3x.json',
   packageInformation: {
     name: NAME,
     version: VERSION,
@@ -15,4 +15,4 @@ const modelDefinition: ModelDefinition = {
   },
 };
 
-export = modelDefinition;
+export default modelDefinition;

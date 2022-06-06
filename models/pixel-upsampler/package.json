@@ -1,23 +1,23 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "0.3.0",
+  "version": "0.4.4",
   "description": "Pixel Upsampler Model for Upscaler.js",
   "exports": {
     ".": {
-      "require": "./dist/node/2x-3.js",
-      "import": "./dist/browser/esm/2x-3.js"
+      "require": "./dist/node/2x.js",
+      "import": "./dist/browser/esm/2x.js"
     },
-    "./2x-3": {
-      "require": "./dist/node/2x-3.js",
-      "import": "./dist/browser/esm/2x-3.js"
+    "./2x": {
+      "require": "./dist/node/2x.js",
+      "import": "./dist/browser/esm/2x.js"
     },
-    "./3x-3": {
-      "require": "./dist/node/3x-3.js",
-      "import": "./dist/browser/esm/3x-3.js"
+    "./3x": {
+      "require": "./dist/node/3x.js",
+      "import": "./dist/browser/esm/3x.js"
     },
-    "./4x-3": {
-      "require": "./dist/node/4x-3.js",
-      "import": "./dist/browser/esm/4x-3.js"
+    "./4x": {
+      "require": "./dist/node/4x.js",
+      "import": "./dist/browser/esm/4x.js"
     }
   },
   "keywords": [

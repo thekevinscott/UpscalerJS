@@ -10,34 +10,48 @@ const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+const PIXEL_UPSAMPLER = path.join(ROOT, '../../../models/pixel-upsampler')
+const ESRGAN_LEGACY = path.join(ROOT, '../../../models/esrgan-legacy');
 
-const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
+const movePackageToLocalPackage = async (originalPackageName: string, localPackageName: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
   // so we can ensure the build process is accurate and working correctly
-  rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
+  rimraf.sync(`${NODE_MODULES}/${localPackageName}`);
 
   await callExec(`mkdir -p ./node_modules`, {
     cwd: ROOT,
   });
 
-  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint'));
-  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-config-prettier'));
-  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-plugin-prefer-arrow'));
-  rimraf.sync(path.resolve(UPSCALER_PATH, 'node_modules/.ignored_eslint-plugin-jsdoc'));
+  [
+    '.ignored_eslint',
+    '.ignored_eslint-config-prettier',
+    '.ignored_eslint-plugin-prefer-arrow',
+    '.ignored_eslint-plugin-jsdoc',
+  ].forEach(name => {
+    rimraf.sync(path.resolve(originalPackageName, `node_modules/${name}`));
+  });
 
-  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
-    cwd: UPSCALER_PATH,
+  await callExec(`cp -r ${originalPackageName} ${NODE_MODULES}/${localPackageName}`, {
+    cwd: originalPackageName,
   });
   
-  const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
-  packageJSON.name = localNameForPackage;
-  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
+  const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localPackageName}/package.json`, 'utf-8'));
+  packageJSON.name = localPackageName;
+  fs.writeFileSync(`${NODE_MODULES}/${localPackageName}/package.json`, JSON.stringify(packageJSON, null, 2));
 }
 
 export const bundle = async () => {
   const localNameForPackage = 'upscaler-for-esbuild'
   await updateTFJSVersion(ROOT);
-  await moveUpscalerToLocallyNamedPackage(localNameForPackage);
+  await movePackageToLocalPackage(UPSCALER_PATH, localNameForPackage);
+
+  rimraf.sync(`${NODE_MODULES}/@upscalerjs-for-esbuild`);
+  await callExec(`mkdir -p ./node_modules/@upscalerjs-for-esbuild`, {
+    cwd: ROOT,
+  });
+  await movePackageToLocalPackage(PIXEL_UPSAMPLER, '@upscalerjs-for-esbuild/pixel-upsampler');
+  await movePackageToLocalPackage(ESRGAN_LEGACY, '@upscalerjs-for-esbuild/esrgan-legacy');
+
   rimraf.sync(DIST);
   copyFixtures(DIST, false);
   const entryFiles = path.join(ROOT, 'src/index.js');

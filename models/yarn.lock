@@ -53,6 +53,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.23.tgz#3b41a6e643589ac6442bdbd7a4a3ded62f33f7da"
   integrity sha512-UxDxWn7dl97rKVeVS61vErvw086aCYhDLyvRQZ5Rk65rZKepaFdm53GeqXaKBuOhED4e9uWq34IC3TdSdJJ2Gw==
 
+"@types/node@^17.0.39":
+  version "17.0.39"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.39.tgz#3652d82e2a16b4ea679d5ea3143b816c91b7e113"
+  integrity sha512-JDU3YLlnPK3WDao6/DlXLOgSNpG13ct+CwIO17V8q0/9fWJyeMJJ/VyZ1lv8kDprihvZMydzVwf0tQOqGiY2Nw==
+
 "@types/uglify-js@^3.13.1":
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.13.1.tgz#5e889e9e81e94245c75b6450600e1c5ea2878aea"
@@ -141,6 +146,11 @@ ts-node@^10.7.0:
     make-error "^1.1.1"
     v8-compile-cache-lib "^3.0.0"
     yn "3.1.1"
+
+typescript@^4.8.0-dev.20220604:
+  version "4.8.0-dev.20220604"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.0-dev.20220604.tgz#d82c1d3e784c163892f81131d8cf3924005a768c"
+  integrity sha512-TrscG7cu4ZS+KWNYpV1i/W6p6IE6a3jxdw/b9sW54HbB8Ij2nOXHcQWnpbfediTBWS0gzFB+BICbTukigRJoyw==
 
 uglify-js@^3.15.3:
   version "3.15.3"

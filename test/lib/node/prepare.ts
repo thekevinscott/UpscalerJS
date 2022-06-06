@@ -36,7 +36,7 @@ const copySrcToDest = async (src: string, dest: string) => {
   fs.writeFileSync(path.resolve(destFolder, 'package.json'), JSON.stringify(packageJSON, null, 2));
 }
 
-export const prepareScriptBundleForCJS = async (models: Array<string>) => {
+export const prepareScriptBundleForCJS = async (models: Array<string> = []) => {
   await callExec('yarn', {
     cwd: ROOT,
   });

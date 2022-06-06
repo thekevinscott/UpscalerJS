@@ -4,7 +4,7 @@ import { NAME, VERSION } from './constants.generated';
 const modelDefinition: ModelDefinition = {
   scale: 4,
   channels: 3,
-  path: 'models/4x3/4x3.json',
+  path: 'models/4x/4x.json',
   packageInformation: {
     name: NAME,
     version: VERSION,
@@ -15,4 +15,4 @@ const modelDefinition: ModelDefinition = {
   },
 };
 
-export = modelDefinition;
+export default modelDefinition;

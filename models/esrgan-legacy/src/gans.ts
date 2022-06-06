@@ -72,4 +72,4 @@ const modelDefinition: ModelDefinition = {
   customLayers: [MultiplyBeta, PixelShuffle,],
 };
 
-export = modelDefinition;
+export default modelDefinition;

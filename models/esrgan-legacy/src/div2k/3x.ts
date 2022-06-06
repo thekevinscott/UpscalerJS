@@ -14,4 +14,4 @@ const modelDefinition: ModelDefinition = {
   },
 };
 
-export = modelDefinition;
+export default modelDefinition;

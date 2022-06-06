@@ -4,6 +4,8 @@ import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/pre
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
+const OUTPUT_FLAG = '_____OUTPUT_____';
+
 const writeScript = (deps: string) => `
 ${deps}
 const path = require('path');
@@ -41,15 +43,15 @@ const getModelPath = () => {
 
 (async () => {
   const data = await main(getModelPath());
-  console.log('OUTPUT: ' + data);
+  console.log('${OUTPUT_FLAG}' + data);
 })();
 `;
 
 const execute = async (contents: string, logExtra = true) => {
   let data = '';
   await executeNodeScript(contents.trim(), chunk => {
-    if (chunk.startsWith('OUTPUT: ')) {
-      data += chunk.split('OUTPUT: ').pop();
+    if (chunk.startsWith(OUTPUT_FLAG)) {
+      data += chunk.split(OUTPUT_FLAG).pop();
     } else if (logExtra) {
       console.log('[PAGE]', chunk);
     }

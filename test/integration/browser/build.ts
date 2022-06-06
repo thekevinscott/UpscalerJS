@@ -66,7 +66,7 @@ describe('Build Integration Tests', () => {
     await startBrowser();
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
-      const pixelUpsampler = window['PixelUpsampler2x3'];
+      const pixelUpsampler = window['PixelUpsampler2x'];
       const upscaler = new Upscaler({
         model: pixelUpsampler,
       });
@@ -100,6 +100,6 @@ declare global {
     Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
-    PixelUpsampler2x3: ModelDefinition; 
+    PixelUpsampler2x: ModelDefinition; 
   }
 }

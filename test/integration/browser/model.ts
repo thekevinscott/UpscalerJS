@@ -1,29 +1,21 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import fs from 'fs';
-import path from 'path';
 import * as http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../lib/utils/getAllAvailableModels';
 
 const TRACK_TIME = false;
 const LOG = true;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
-
-const ROOT = path.resolve(__dirname, '../../../');
-const MODELS = path.resolve(ROOT, 'models');
-const getAllAvailableModels = (model: string) => {
-  const modelDir = path.resolve(MODELS, model);
-  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelDir, 'package.json'), 'utf-8'))
-  return Object.keys(exports).filter(key => key !== '.').map(key => path.basename(key));
-};
 
 describe('Model Loading Integration Tests', () => {
   let server: http.Server;
@@ -54,6 +46,7 @@ describe('Model Loading Integration Tests', () => {
         resolve();
       }
     });
+
     await Promise.all([
       stopServer(),
     ]);
@@ -90,7 +83,7 @@ describe('Model Loading Integration Tests', () => {
   it("can import a model", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: window['pixelUpsampler4x3'],
+        model: window['pixel-upsampler']['4x'],
       });
       return upscaler.upscale(window['flower']);
     });
@@ -123,26 +116,58 @@ describe('Model Loading Integration Tests', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  [
-    'pixel-upsampler',
-    'esrgan-legacy',
-  ].map(packageName => {
-    describe(packageName, () => {
-      const models = getAllAvailableModels(packageName);
-      models.forEach(modelName => {
-        // console.log(packageName, modelName);
-        it(`upscales with ${packageName}/${modelName}`, async () => {
-          const result = await page.evaluate(([packageName, modelName]) => {
-            const modelDefinition: any = window[packageName][modelName];
-            const upscaler = new window['Upscaler']({
-              model: modelDefinition,
-            });
-            return upscaler.upscale(window['flower']);
-          }, [packageName, modelName]);
-          checkImage(result, `${packageName}/${modelName}/result.png`, 'diff.png');
+  describe('Test specific model implementations', () => {
+    let serverUMD: http.Server;
+
+    const PORT_UMD = 8098;
+
+    beforeAll(async function beforeAll() {
+      await prepareScriptBundleForUMD();
+      serverUMD = await startServer(PORT_UMD, UMD_DIST);
+    }, 20000);
+
+    afterAll(async function modelAfterAll() {
+      const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
+        if (serverUMD) {
+          serverUMD.close(resolve);
+        } else {
+          console.warn('No server found')
+          resolve();
+        }
+      });
+
+      await stopServer();
+    }, 10000);
+
+    getAllAvailableModelPackages().map(packageName => {
+      describe(packageName, () => {
+        const models = getAllAvailableModels(packageName);
+        models.forEach(({ esm: esmName, umd: umdName }) => {
+          it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+            const result = await page.evaluate(([packageName, modelName]) => {
+              const modelDefinition: any = window[packageName][modelName];
+              const upscaler = new window['Upscaler']({
+                model: modelDefinition,
+              });
+              return upscaler.upscale(window['flower']);
+            }, [packageName, esmName]);
+            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          });
+
+          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+            await page.goto(`http://localhost:${PORT_UMD}`);
+            const result = await page.evaluate(([umdName]) => {
+              const model: ModelDefinition = (<any>window)[umdName];
+              const upscaler = new window['Upscaler']({
+                model,
+              });
+              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+            }, [umdName]);
+            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          });
         });
       })
-    })
+    });
   });
 });
 
@@ -151,8 +176,8 @@ declare global {
     Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
-    pixelUpsampler4x3: ModelDefinition;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;
+    PixelUpsampler2x: ModelDefinition;
   }
 }

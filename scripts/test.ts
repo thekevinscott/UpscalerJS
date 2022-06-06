@@ -9,6 +9,7 @@ import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import buildModels, { AVAILABLE_MODELS, OutputFormat } from '../scripts/package-scripts/build-model';
+import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
@@ -105,7 +106,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     }
   }
   if (argv.skipModelBuild !== true) {
-    await buildModels(['pixel-upsampler'], getOutputFormats(platform));
+    await buildModels(getAllAvailableModelPackages(), getOutputFormats(platform));
   }
   const yarnArgs = [
     'jest',

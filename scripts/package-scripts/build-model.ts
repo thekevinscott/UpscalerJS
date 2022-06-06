@@ -11,12 +11,11 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
+import { getAllAvailableModelPackages } from '../../test/lib/utils/getAllAvailableModels';
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-export const AVAILABLE_MODELS = fs.readdirSync(MODELS_DIR).filter(file => {
-  return !['dist', 'types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
-});
+export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 const references: ProjectReference[] = [{
@@ -94,8 +93,12 @@ const buildESM = async (modelFolder: string) => {
   const DIST = path.resolve(modelFolder, 'dist/browser/esm');
   const files = getSrcFiles(modelFolder);
 
+
   await compile(files, {
     ...TSCONFIG,
+    "target": ts.ScriptTarget.ESNext,
+    "module": ts.ModuleKind.ESNext,
+    'moduleResolution': ts.ModuleResolutionKind.NodeJs,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: DIST,
@@ -151,7 +154,7 @@ const buildUMD = async (modelFolder: string) => {
     }, [{
       file,
       format: 'umd',
-      name: 'PixelUpsampler2x3',
+      name: umdName,
       globals: {
         '@tensorflow/tfjs': 'tf',
       }
@@ -286,7 +289,6 @@ if (require.main === module) {
 
     const models = await getModel(argv._[0]);
     const outputFormats = await getOutputFormats(argv.outputFormat);
-    let outputFormat = argv.outputFormat;
 
     if (models?.length === 0) {
       console.log('No models selected, nothing to do.')
