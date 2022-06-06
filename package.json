@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-canary-model-loading",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
     "packages/*",
