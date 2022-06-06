@@ -47,6 +47,7 @@ export interface ModelDefinition {
   preprocess?: ProcessFn<tf.Tensor4D>;
   postprocess?: ProcessFn<tf.Tensor3D>;
   customLayers?: SerializableConstructor<tf.layers.Layer>[];
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   meta?: Record<string, any>;
 }
 
