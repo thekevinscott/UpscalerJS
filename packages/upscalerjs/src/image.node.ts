@@ -33,14 +33,14 @@ const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tens
   }
 
   if (isString(input)) {
-    if (input.startsWith('http')) {
-      const arrayBuffer = await fetch(input).then(r => r.blob()).then(blob => blob.arrayBuffer());
-      const image = new Uint8Array(arrayBuffer);
-      return tf.node.decodeImage(image);
-    } else {
+    // if (input.startsWith('http')) {
+    //   const arrayBuffer = await fetch(input).then(r => r.blob()).then(blob => blob.arrayBuffer());
+    //   const image = new Uint8Array(arrayBuffer);
+    //   return tf.node.decodeImage(image);
+    // } else {
       const image = new Uint8Array(fs.readFileSync(input));
       return tf.node.decodeImage(image);
-    }
+    // }
   }
 
   throw getInvalidInput(input);

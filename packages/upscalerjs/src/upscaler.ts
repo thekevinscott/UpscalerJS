@@ -7,7 +7,7 @@ import {
   ResultFormat,
   Progress,
 } from './types';
-import loadModel from './loadModel.generated';
+import { loadModel } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
@@ -24,7 +24,9 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts.model);
+    // TODO: If we can figure out how to mock require.resolve, we can
+    // remove the passing of resolver here.
+    this._model = loadModel(this._opts.model, { resolver: require.resolve });
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 

@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ModelDefinition, PackageInformation, } from './types';
+import { isValidModelDefinition, registerCustomLayers, validateModelDefinition as getModelDefinitionError } from './utils';
 
 const CDNS = [
   (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
@@ -8,11 +9,6 @@ const CDNS = [
 ];
 // import MODELS, { DEFAULT_MODEL, } from './models';
 // import { warn, } from './utils';
-
-// const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
-// const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
 // const DEFAULT_MODEL_DEFINITION: ModelDefinition = {
 //   url: 'foo',
@@ -24,7 +20,7 @@ const CDNS = [
 //   // https://unpkg.com/@upscalerjs/pixel-upsampler@latest/models/model.json
 // };
 
-const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
+export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
   if (packageInformation) {
     for (let i = 0; i < CDNS.length; i++) {
       const getCDNFn = CDNS[i];
@@ -40,33 +36,22 @@ const fetchModel = async (modelPath: string, packageInformation?: PackageInforma
   return await tf.loadLayersModel(modelPath);
 };
 
-const loadModel = async (
+export const loadModel = async (
   modelDefinition?: ModelDefinition,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
 }> => {
-  if (!modelDefinition) {
-    throw new Error('Model definition');
-  }
-  if (!modelDefinition.path) {
-    throw new Error('No model path provided');
-  }
-  if (!modelDefinition.scale) {
-    throw new Error('No model scale provided');
-  }
-  if (modelDefinition.customLayers) {
-    modelDefinition.customLayers.forEach((layer) => {
-      tf.serialization.registerClass(layer);
-    });
-  }
+  if (isValidModelDefinition(modelDefinition)) {
+    registerCustomLayers(modelDefinition);
 
-  const model = await fetchModel(modelDefinition.path, modelDefinition.packageInformation);
+    const model = await fetchModel(modelDefinition.path, modelDefinition.packageInformation);
 
-  return {
-    model,
-    modelDefinition,
-  };
+    return {
+      model,
+      modelDefinition,
+    };
+  } else {
+    throw getModelDefinitionError(modelDefinition);
+  }
 };
-
-export default loadModel;

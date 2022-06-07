@@ -1,123 +1,112 @@
-import loadModel, {
-} from './loadModel.node';
-import * as models from './models';
-import { tf } from './dependencies.generated';
+import {
+  loadModel,
+  getModelPath,
+  getModuleFolder,
+} from "./loadModel.node";
+import * as tf from '@tensorflow/tfjs-node';
+import path from 'path';
+// import loadModel, {
+// } from './loadModel.node';
+// import * as models from './models';
+// import { tf } from './dependencies.generated';
+jest.mock('@tensorflow/tfjs-node');
 import * as utils from './utils';
-jest.mock('./models');
-jest.mock('./dependencies.generated');
+import { ModelDefinition } from "./types";
+// jest.mock('./models');
+// jest.mock('./dependencies.generated');
 jest.mock('./utils', () => ({
-  ...(jest.requireActual('./utils') ),
-  warn: jest.fn(),
+  ...<typeof utils>(jest.requireActual('./utils')),
+  getModuleFolder: jest.fn(),
+  getModelDefinitionError: jest.fn(),
+  isValidModelDefinition: jest.fn(),
+  registerCustomLayers: jest.fn(),
 }));
+// jest.mock('./utils', () => {
+//   const actualUtils = jest.requireActual('./utils');
+//   return {
+//     ...actualUtils,
+//   };
+// });
 
-const mockModels = (obj: { [index: string]: any }) =>
-  Object.entries(obj).forEach(([key, val,]) => ((models as any)[key] = val));
+
+const mockedUtils = utils as jest.Mocked<typeof utils>;
+const mockedTf = tf as jest.Mocked<typeof tf>;
+    // (tf as any).loadLayersModel = jest.fn();
+
+const getResolver = (fn: () => string) => (fn) as unknown as typeof require.resolve;
+
+describe('getModuleFolder', () => {
+  it('returns undefined if a module cannot be found', () => {
+    const resolver = getResolver(() => '');
+    expect(() => getModuleFolder('foo', resolver)).toThrow();
+  });
+
+  it('returns the path to the module if it is found', () => {
+    const resolver = getResolver(() => './node_modules/baz');
+    expect(getModuleFolder('baz', resolver)).toEqual('./node_modules/baz');
+  });
+});
 
 describe('getModelPath', () => {
-  it('gets a model if it exists', () => {
-    const key = 'foo';
-    const val = 'some-model-value';
-    mockModels({
-      default: {
-        [key]: {
-          url: val,
-          scale: 2,
-        },
-      },
-    });
-    expect(
-      getModelDefinition({
-        model: key,
-      }),
-    ).toEqual({
-      url: val,
-      scale: 2,
-    });
+  it('returns model path if given no package information', () => {
+    const resolver = getResolver(() => 'foo');
+    expect(getModelPath({ path: 'foo', scale: 2 }, resolver)).toEqual('foo');
   });
 
-  it('returns the model string if no model could be found', () => {
-    mockModels({
-      default: {
-        bar: {
-          url: 'bar',
-        },
-      },
-    });
-    expect(
-      getModelDefinition({
-        model: 'foo',
-        scale: 2,
-      }),
-    ).toEqual({
-      url: 'foo',
-      scale: 2,
-    });
-  });
-
-  it('gets a default model if no model is provided', () => {
-    const key = 'foo';
-    const val = 'some-model-value';
-    mockModels({
-      default: {
-        [key]: {
-          url: val,
-          scale: 3,
-        },
-      },
-      DEFAULT_MODEL: key,
-    });
-    expect(getModelDefinition()).toEqual({
-      url: val,
-      scale: 3,
-    });
-  });
-
-  it('throws if a model is provided without a scale', () => {
-    mockModels({
-      default: {
-        bar: {
-          url: 'bar',
-        },
-      },
-    });
-    expect(() =>
-      getModelDefinition({
-        model: 'foo',
-      }),
-    ).toThrow();
-  });
-
-  it('throws if a model key is provided, but a scale is also provided', () => {
-    mockModels({
-      default: {
-        bar: {
-          url: 'bar',
-        },
-      },
-    });
-    expect(() =>
-      getModelDefinition({
-        model: 'bar',
-        scale: 2,
-      }),
-    ).toThrow();
+  it('returns model path if given no package information', () => {
+    const resolver = getResolver(() => './node_modules/baz');
+    expect(getModelPath({ packageInformation: {
+      name: 'baz',
+      version: '1.0.0',
+    }, path: 'some-model', scale: 2 }, resolver)).toEqual(`file://${path.resolve('./node_modules/baz', 'some-model')}`);
   });
 });
 
 describe('loadModel', () => {
-  it('loads a model', () => {
-    (tf as any).loadLayersModel = jest.fn();
-    mockModels({
-      default: {
-        foo: {
-          url: 'foo',
-        },
-      },
-      DEFAULT_MODEL: 'foo',
-    });
-    loadModel({
-      model: 'foo',
-    });
-    expect(tf.loadLayersModel).toHaveBeenCalledWith('foo');
+  it('throws if given an undefined model definition', async () => {
+    const resolver = getResolver(() => './node_modules/baz');
+    const error = 'some error';
+    mockedUtils.getModelDefinitionError.mockImplementation(() => new Error(error))
+    mockedUtils.isValidModelDefinition.mockImplementation(() => false);
+
+    await expect(loadModel(undefined, { resolver }))
+    .rejects
+    .toThrow(error);
   });
+
+  it('loads a valid model', async () => {
+    const resolver = getResolver(() => './node_modules/baz');
+    mockedUtils.isValidModelDefinition.mockImplementation(() => true);
+    mockedUtils.registerCustomLayers.mockImplementation(() => {});
+    mockedTf.loadLayersModel.mockImplementation(async () => 'layers model' as any);
+
+    const path = 'foo';
+    const modelDefinition: ModelDefinition = { path, scale: 2};
+
+    const response = await loadModel(modelDefinition, { resolver });
+    expect(mockedUtils.registerCustomLayers).toHaveBeenCalledTimes(1);
+    expect(mockedTf.loadLayersModel).toHaveBeenCalledWith(path);
+    expect(response).toEqual({
+      model: 'layers model',
+      modelDefinition,
+    })
+  });
+
+  // it('loads a model', () => {
+  //   // (tf as any).loadLayersModel = jest.fn();
+  //   // mockModels({
+  //   //   default: {
+  //   //     foo: {
+  //   //       url: 'foo',
+  //   //     },
+  //   //   },
+  //   //   DEFAULT_MODEL: 'foo',
+  //   // });
+  //   // loadModel({
+  //   //   model: 'foo',
+  //   // });
+  //   // expect(tf.loadLayersModel).toHaveBeenCalledWith('foo');
+  // });
+
+
 });

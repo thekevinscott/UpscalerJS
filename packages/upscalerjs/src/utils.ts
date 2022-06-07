@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
-import { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
+import { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, ModelDefinition, } from './types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const isString = (pixels: any): pixels is string => typeof pixels === 'string';
@@ -15,6 +15,34 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
 
   return fn;
 }
+
+// const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
+//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
+// const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
+//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
+
+export function getModelDefinitionError(modelDefinition?: ModelDefinition) {
+  if (!modelDefinition) {
+    return new Error('You must provide a model definition');
+  }
+  if (!modelDefinition.path) {
+    return new Error('No model path provided');
+  }
+  if (!modelDefinition.scale) {
+    return new Error('No model scale provided');
+  }
+  return new Error('Bug with code');
+}
+export const isValidModelDefinition = (modelDefinition?: any): modelDefinition is ModelDefinition => {
+  return !!modelDefinition && modelDefinition.path && modelDefinition.scale;
+}
+export const registerCustomLayers = (modelDefinition: ModelDefinition) => {
+  if (modelDefinition.customLayers) {
+    modelDefinition.customLayers.forEach((layer) => {
+      tf.serialization.registerClass(layer);
+    });
+  }
+};
 
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);

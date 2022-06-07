@@ -49,12 +49,6 @@ describe('Image', () => {
       expect(result.shape).toEqual([1,16,16,4,]);
     });
 
-    it('handles a string path to an http-hosted file', async () => {
-      const imagePath = `http://localhost:${PORT}/flower-small.png`;
-      const result = await getImageAsTensor(imagePath);
-      expect(result.shape).toEqual([1,16,16,4,]);
-    });
-
     it('reads a rank 4 tensor directly without manipulation', async () => {
       const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
       const result = await getImageAsTensor(input);

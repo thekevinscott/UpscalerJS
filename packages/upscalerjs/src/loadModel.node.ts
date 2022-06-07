@@ -1,6 +1,7 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
 import { ModelDefinition, } from './types';
+import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -12,8 +13,10 @@ import { ModelDefinition, } from './types';
 //   scale: 2,
 // };
 
-const getModuleFolder = (name: string) => {
-  const moduleEntryPoint = require.resolve(name);
+export type Resolver = typeof require.resolve;
+
+export const getModuleFolder = (name: string, resolver: Resolver) => {
+  const moduleEntryPoint = resolver(name);
   const moduleFolder = moduleEntryPoint.match(`(.*)/${name}`)?.[0];
   if (moduleFolder === undefined) {
     throw new Error(`Cannot find module ${name}`);
@@ -21,9 +24,9 @@ const getModuleFolder = (name: string) => {
   return moduleFolder;
 };
 
-const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
+export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition, resolver: Resolver): string => {
   if (packageInformation) {
-    const moduleFolder = getModuleFolder(packageInformation.name);
+    const moduleFolder = getModuleFolder(packageInformation.name, resolver);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
   }
   return modelPath;
@@ -34,38 +37,29 @@ const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition)
 //   scale: 4,
 // }
 
-const loadModel = async (
-  modelDefinition?: ModelDefinition,
+interface InternalOpts {
+  resolver: Resolver;
+}
+
+export const loadModel = async (
+  modelDefinition: ModelDefinition | undefined,
   // modelDefinition: ModelDefinition = DEFAULT_MODEL_DEFINITION,
+  { resolver }: InternalOpts
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
 }> => {
-  if (!modelDefinition) {
-    throw new Error('Model definition');
-  }
-  if (!modelDefinition.path) {
-    throw new Error('No model path provided');
-  }
-  if (!modelDefinition.scale) {
-    throw new Error('No model scale provided');
-  }
-  const {
-    customLayers,
-  } = modelDefinition;
-  if (customLayers) {
-    customLayers.forEach((layer) => {
-      tf.serialization.registerClass(layer);
-    });
-  }
+  if (isValidModelDefinition(modelDefinition)) {
+    registerCustomLayers(modelDefinition);
 
-  const modelPath = getModelPath(modelDefinition);
-  const model = await tf.loadLayersModel(modelPath);
+    const modelPath = getModelPath(modelDefinition, resolver);
+    const model = await tf.loadLayersModel(modelPath);
 
-  return {
-    model,
-    modelDefinition,
-  };
+    return {
+      model,
+      modelDefinition,
+    };
+  } else {
+    throw getModelDefinitionError(modelDefinition);
+  }
 };
-
-export default loadModel;
