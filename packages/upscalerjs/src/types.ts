@@ -52,9 +52,3 @@ export interface ModelDefinition {
 }
 
 export type Layer = tf.layers.Layer;
-
-export type Resolver = typeof require.resolve;
-
-export interface InternalOpts {
-  resolver: Resolver;
-}

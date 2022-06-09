@@ -24,9 +24,7 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    // TODO: If we can figure out how to mock require.resolve, we can
-    // remove the passing of resolver here.
-    this._model = loadModel(this._opts.model, { resolver: require.resolve, }, );
+    this._model = loadModel(this._opts.model);
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 

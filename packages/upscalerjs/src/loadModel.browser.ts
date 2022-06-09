@@ -38,8 +38,6 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
 
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  _internalOpts: InternalOpts,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;

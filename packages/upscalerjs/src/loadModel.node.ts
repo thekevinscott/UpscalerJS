@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
-import { InternalOpts, ModelDefinition, Resolver, } from './types';
+import { ModelDefinition, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
@@ -14,8 +14,8 @@ import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers }
 // };
 
 
-export const getModuleFolder = (name: string, resolver: Resolver) => {
-  const moduleEntryPoint = resolver(name);
+export const getModuleFolder = (name: string) => {
+  const moduleEntryPoint = require.resolve(name);
   const moduleFolder = moduleEntryPoint.match(`(.*)/${name}`)?.[0];
   if (moduleFolder === undefined) {
     throw new Error(`Cannot find module ${name}`);
@@ -23,9 +23,9 @@ export const getModuleFolder = (name: string, resolver: Resolver) => {
   return moduleFolder;
 };
 
-export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition, resolver: Resolver): string => {
+export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
   if (packageInformation) {
-    const moduleFolder = getModuleFolder(packageInformation.name, resolver);
+    const moduleFolder = getModuleFolder(packageInformation.name);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
   }
   return modelPath;
@@ -39,7 +39,6 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
   // modelDefinition: ModelDefinition = DEFAULT_MODEL_DEFINITION,
-  { resolver }: InternalOpts
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
@@ -47,7 +46,7 @@ export const loadModel = async (
   if (isValidModelDefinition(modelDefinition)) {
     registerCustomLayers(modelDefinition);
 
-    const modelPath = getModelPath(modelDefinition, resolver);
+    const modelPath = getModelPath(modelDefinition);
     const model = await tf.loadLayersModel(modelPath);
 
     return {
