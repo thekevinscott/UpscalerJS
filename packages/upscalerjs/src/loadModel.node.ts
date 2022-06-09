@@ -13,6 +13,8 @@ import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers }
 //   scale: 2,
 // };
 
+// Shim to allow for unit testing
+export const resolver = (name: string) => require.resolve(name);
 
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = require.resolve(name);
