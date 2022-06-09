@@ -19,7 +19,7 @@ export const getInvalidInput = (input: any) => new Error([
 const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
 
-const getTensorFromInput = (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tensor4D => {
   if (isUint8Array(input)) {
     return tf.node.decodeImage(input);
   }
@@ -47,10 +47,10 @@ const getTensorFromInput = (input: GetImageAsTensorInput): Promise<tf.Tensor3D |
 };
 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
-export const getImageAsTensor = async (
+export const getImageAsTensor = (
   input: GetImageAsTensorInput,
-): Promise<tf.Tensor4D> => {
-  const tensor = await getTensorFromInput(input);
+): tf.Tensor4D => {
+  const tensor = getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
