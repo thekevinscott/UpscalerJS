@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, PackageInformation, } from './types';
+import { InternalOpts, ModelDefinition, PackageInformation, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
 
 const CDNS = [
@@ -37,7 +37,8 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
 };
 
 export const loadModel = async (
-  modelDefinition?: ModelDefinition,
+  modelDefinition: ModelDefinition | undefined,
+  _internalOpts: InternalOpts,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;

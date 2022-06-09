@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
-import { ModelDefinition, } from './types';
+import { InternalOpts, ModelDefinition, Resolver, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
@@ -13,7 +13,6 @@ import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers }
 //   scale: 2,
 // };
 
-export type Resolver = typeof require.resolve;
 
 export const getModuleFolder = (name: string, resolver: Resolver) => {
   const moduleEntryPoint = resolver(name);
@@ -36,10 +35,6 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
 //   path: 'fooey',
 //   scale: 4,
 // }
-
-interface InternalOpts {
-  resolver: Resolver;
-}
 
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
