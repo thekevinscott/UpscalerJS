@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { InternalOpts, ModelDefinition, PackageInformation, } from './types';
-import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
+import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
 
 const CDNS = [
   (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
@@ -38,6 +38,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
 
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   _internalOpts: InternalOpts,
 ): Promise<{
   model: tf.LayersModel;

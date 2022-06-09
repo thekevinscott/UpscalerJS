@@ -33,9 +33,14 @@ export function getModelDefinitionError(modelDefinition?: ModelDefinition) {
   }
   return new Error('Bug with code');
 }
-export const isValidModelDefinition = (modelDefinition?: any): modelDefinition is ModelDefinition => {
-  return !!modelDefinition && modelDefinition.path && modelDefinition.scale;
-}
+
+export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
+  if (modelDefinition === undefined) {
+    return false;
+  }
+  return !!(modelDefinition.path && modelDefinition.scale);
+};
+
 export const registerCustomLayers = (modelDefinition: ModelDefinition) => {
   if (modelDefinition.customLayers) {
     modelDefinition.customLayers.forEach((layer) => {
