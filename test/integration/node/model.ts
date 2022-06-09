@@ -30,8 +30,10 @@ const IMG = path.join(FIXTURES, 'flower-small.png');
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
   const upscaler = new Upscaler({
-    model,
-    scale: 4,
+    model: {
+      path: model,
+      scale: 4,
+    }
   });
   const file = fs.readFileSync(filename)
   const image = tf.node.decodeImage(file, 3)
