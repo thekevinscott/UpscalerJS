@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import { ModelDefinition, PackageInformation, } from './types';
-import { isValidModelDefinition, registerCustomLayers } from './utils';
+import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers } from './utils';
 
 const CDNS = [
   (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
