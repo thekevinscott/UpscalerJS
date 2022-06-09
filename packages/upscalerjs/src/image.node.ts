@@ -19,7 +19,7 @@ export const getInvalidInput = (input: any) => new Error([
 const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
 
-const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isUint8Array(input)) {
     return tf.node.decodeImage(input);
   }
