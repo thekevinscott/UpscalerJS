@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { InternalOpts, ModelDefinition, PackageInformation, } from './types';
+import { ModelDefinition, PackageInformation, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
 
 const CDNS = [

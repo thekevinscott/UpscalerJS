@@ -96,22 +96,4 @@ describe('loadModel', () => {
       modelDefinition,
     })
   });
-
-  // it('loads a model', () => {
-  //   // (tf as any).loadLayersModel = jest.fn();
-  //   // mockModels({
-  //   //   default: {
-  //   //     foo: {
-  //   //       url: 'foo',
-  //   //     },
-  //   //   },
-  //   //   DEFAULT_MODEL: 'foo',
-  //   // });
-  //   // loadModel({
-  //   //   model: 'foo',
-  //   // });
-  //   // expect(tf.loadLayersModel).toHaveBeenCalledWith('foo');
-  // });
-
-
 });
