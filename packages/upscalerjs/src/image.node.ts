@@ -47,14 +47,15 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
 };
 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
-export const getImageAsTensor = (
+
+/* eslint-disable @typescript-eslint/require-await */
+export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
-): tf.Tensor4D => {
+): Promise<tf.Tensor4D> => {
   const tensor = getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
-    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-    const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
+    const expandedTensor: tf.Tensor4D = tensor.expandDims(0);
     tensor.dispose();
     return expandedTensor;
   }
