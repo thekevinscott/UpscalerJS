@@ -17,7 +17,7 @@ import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, 
 export const resolver = (name: string) => require.resolve(name);
 
 export const getModuleFolder = (name: string) => {
-  const moduleEntryPoint = require.resolve(name);
+  const moduleEntryPoint = resolver(name);
   const moduleFolder = moduleEntryPoint.match(`(.*)/${name}`)?.[0];
   if (moduleFolder === undefined) {
     throw new Error(`Cannot find module ${name}`);
