@@ -256,7 +256,7 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          warmupSizes: [50, 50],
+          warmupSizes: [[50, 50]],
         });
         await upscaler.dispose();
       }
@@ -443,7 +443,7 @@ describe('Memory Leaks', () => {
 
   it('should upscale with a pre and a post processing functions from a tensor', async () => {
     await page.evaluate(async () => {
-      const getImage = () => new Promise(resolve => {
+      const getImage = (): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = window['flower'];
         img.crossOrigin = 'anonymous';
@@ -457,7 +457,7 @@ describe('Memory Leaks', () => {
     const image = await page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
-      let output;
+      let output: string;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
@@ -571,7 +571,7 @@ describe('Memory Leaks', () => {
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    expect((image as string).substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a tensor', async () => {
@@ -723,5 +723,7 @@ declare global {
     flower: string;
     tf: typeof tf;
     pixelUpsampler: ModelDefinition;
+    src?: tf.Tensor4D | tf.Tensor3D;
+    output?: tf.Tensor;
   }
 }
