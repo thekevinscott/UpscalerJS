@@ -5,13 +5,12 @@ import * as rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 import callExec from '../utils/callExec';
+import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
-const PIXEL_UPSAMPLER = path.join(ROOT, '../../../models/pixel-upsampler')
-const ESRGAN_LEGACY = path.join(ROOT, '../../../models/esrgan-legacy');
 
 const movePackageToLocalPackage = async (originalPackageName: string, localPackageName: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
@@ -49,8 +48,13 @@ export const bundle = async () => {
   await callExec(`mkdir -p ./node_modules/@upscalerjs-for-esbuild`, {
     cwd: ROOT,
   });
-  await movePackageToLocalPackage(PIXEL_UPSAMPLER, '@upscalerjs-for-esbuild/pixel-upsampler');
-  await movePackageToLocalPackage(ESRGAN_LEGACY, '@upscalerjs-for-esbuild/esrgan-legacy');
+
+  const models = getAllAvailableModelPackages();
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    const MODEL_PATH = path.join(ROOT, '../../../models', model)
+    await movePackageToLocalPackage(MODEL_PATH, `@upscalerjs-for-esbuild/${model}`);
+  }
 
   rimraf.sync(DIST);
   copyFixtures(DIST, false);

@@ -523,7 +523,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: 'idealo/gans',
+            path: '@upscalerjs/esrgan-legacy/gans',
             scale: 4,
           },
         });

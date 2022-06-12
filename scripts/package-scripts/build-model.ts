@@ -82,6 +82,10 @@ const getExportFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
   // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
+  const keys = Object.keys(exports);
+  if (keys.length === 1) {
+    return keys;
+  }
   return Object.keys(exports).filter(file => file !== '.');
 };
 const getUMDNames = (modelFolder: string): Record<string, string> => {
@@ -132,7 +136,7 @@ const buildUMD = async (modelFolder: string) => {
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)
     }
-    const filename = `${exportName}.js`;
+    const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
     const input = path.resolve(TMP, filename);
     const file = path.basename(filename);
