@@ -66,7 +66,7 @@ describe('Build Integration Tests', () => {
     await startBrowser();
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
-      const pixelUpsampler = window['PixelUpsampler2x'];
+      const pixelUpsampler = window['PixelUpsampler4x'];
       const upscaler = new Upscaler({
         model: pixelUpsampler,
       });
