@@ -578,7 +578,7 @@ describe('Memory Leaks', () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
-      let output;
+      let output: tf.Tensor;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
@@ -661,7 +661,7 @@ describe('Memory Leaks', () => {
             signal: abortController.signal,
             patchSize: 14,
             padding: 2,
-            progress: (rate) => {
+            progress: (rate: number) => {
               if (rate >= .5) {
                 abortController.abort();
               }

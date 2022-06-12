@@ -100,6 +100,6 @@ declare global {
     Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
-    PixelUpsampler2x: ModelDefinition; 
+    PixelUpsampler4x: ModelDefinition; 
   }
 }
