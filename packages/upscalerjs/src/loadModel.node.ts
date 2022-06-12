@@ -2,6 +2,7 @@ import { tf, } from './dependencies.generated';
 import path from 'path';
 import { ModelDefinition, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
+import { resolver, } from './resolver';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
@@ -12,9 +13,6 @@ import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, 
 //   url: 'foo',
 //   scale: 2,
 // };
-
-// Shim to allow for unit testing
-export const resolver = (name: string) => require.resolve(name);
 
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = resolver(name);
