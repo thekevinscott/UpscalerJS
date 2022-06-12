@@ -80,7 +80,7 @@
     "@tensorflow/tfjs": "^3.13.0"
   },
   "dependencies": {
-    "isomorphic-fetch": "^3.0.0",
+    "@upscalerjs/esrgan-slim": "0.1.0",
     "tensor-as-base64": "^0.1.1"
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
