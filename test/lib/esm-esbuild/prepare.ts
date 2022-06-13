@@ -12,6 +12,13 @@ export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
+const recreateNodeModuleFolder = async (localPackageName: string) => {
+  rimraf.sync(`${NODE_MODULES}/${localPackageName}`);
+  await callExec(`mkdir -p ./node_modules/${localPackageName}`, {
+    cwd: ROOT,
+  });
+};
+
 const movePackageToLocalPackage = async (originalPackageName: string, localPackageName: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
   // so we can ensure the build process is accurate and working correctly
@@ -44,10 +51,7 @@ export const bundle = async () => {
   await updateTFJSVersion(ROOT);
   await movePackageToLocalPackage(UPSCALER_PATH, localNameForPackage);
 
-  rimraf.sync(`${NODE_MODULES}/@upscalerjs-for-esbuild`);
-  await callExec(`mkdir -p ./node_modules/@upscalerjs-for-esbuild`, {
-    cwd: ROOT,
-  });
+  recreateNodeModuleFolder('@upscalerjs-for-esbuild');
 
   const models = getAllAvailableModelPackages();
   for (let i = 0; i < models.length; i++) {
