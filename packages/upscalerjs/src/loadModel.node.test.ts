@@ -63,7 +63,7 @@ describe('loadModel', () => {
     mockedUtils.getModelDefinitionError.mockImplementation(() => new Error(error))
     mockedUtils.isValidModelDefinition.mockImplementation(() => false);
 
-    await expect(loadModel(undefined))
+    await expect(loadModel({} as ModelDefinition))
     .rejects
     .toThrow(error);
   });
