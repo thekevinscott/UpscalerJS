@@ -5,7 +5,7 @@
 import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 
-import yargs from 'yargs/yargs';
+import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
 dotenv.config();

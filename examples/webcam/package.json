@@ -1,6 +1,6 @@
 {
   "name": "webcam",
-  "version": "0.12.1",
+  "version": "1.0.0",
   "description": "Demonstration of webcam usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
-    "parcel": "1.12.3"
+    "parcel": "2.4.1"
   },
   "author": "Kevin Scott",
   "license": "MIT",

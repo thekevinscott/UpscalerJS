@@ -138,8 +138,7 @@ describe('getConsistentTensorDimensions', () => {
           sliceSize,
         });
       } catch (err) {
-        err.message = `*******\n${row} | ${col}\n*******\n${err.message}`;
-        throw err;
+        throw new Error(`*******\n${row} | ${col}\n*******\n${err}`);
       }
     }
   };

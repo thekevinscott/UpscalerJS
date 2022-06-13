@@ -13,7 +13,7 @@ const mockedLoadModel = loadModel as jest.Mocked<typeof loadModel>;
 (mockedLoadModel as any).default = async() => () => ({});
 
 describe('Upscaler', () => {
-  it('is able to abort multiple times', () => new Promise(async (resolve, reject) => {
+  it('is able to abort multiple times', (): Promise<void> => new Promise(async (resolve, reject) => {
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
     const cancellableUpscale = jest.fn(async function (_1, _2, { signal }: {

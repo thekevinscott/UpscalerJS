@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
-import yargs from 'yargs/yargs';
+import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 
 dotenv.config();
@@ -35,7 +35,7 @@ const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((
   });
 });
 
-const stopBrowserstack = (bsLocal: browserstack.Local) => new Promise(resolve => bsLocal.stop(resolve));
+const stopBrowserstack = (bsLocal: browserstack.Local): Promise<void> => new Promise(resolve => bsLocal.stop(() => resolve()));
 
 const isValidPlatform = (platform?: string): platform is 'browser' | 'node' => {
   return platform !== undefined && ['browser', 'node'].includes(platform);
@@ -87,7 +87,12 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   }
 
   if (argv.skipBuild !== true) {
-    await buildUpscaler(platform);
+    if (platform === 'browser') {
+      await buildUpscaler(platform);
+    } else if (platform === 'node') {
+      await buildUpscaler('node');
+      await buildUpscaler('node-gpu');
+    }
   }
   const args = [
     'jest',

@@ -353,7 +353,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   });
 };
 
-export function getProcessedPixels<T extends tf.Tensor3D | tf.Tensor4D>(
+export function getProcessedPixels<T extends tf.Tensor>(
   upscaledTensor: T,
   processFn?: ProcessFn<T>,
 ): T {

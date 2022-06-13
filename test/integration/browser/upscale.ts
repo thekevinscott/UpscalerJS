@@ -1,7 +1,6 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import * as tf from '@tensorflow/tfjs';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
@@ -34,7 +33,7 @@ describe('Upscale Integration Tests', () => {
   afterAll(async function imageAfterAll() {
     const start = new Date().getTime();
 
-    const stopServer = () => new Promise((resolve) => {
+    const stopServer = (): Promise<void> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
