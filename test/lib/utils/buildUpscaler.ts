@@ -6,7 +6,7 @@ const ROOT = path.join(__dirname);
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
 export const buildUpscaler = async (target: 'browser' | 'node') => {
-  await callExec(`pnp build:${target}`, {
+  await callExec(`pnpm build:${target}`, {
     cwd: UPSCALER_PATH,
   });
 }

@@ -27,23 +27,23 @@ describe('Model Loading Integration Tests', () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
   });
 
-  it("loads a model via tf.io.fileSystem", async () => {
-    const result = await execute("localFilePath.js");
-    const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
-  });
+  // it("loads a model via tf.io.fileSystem", async () => {
+  //   const result = await execute("localFilePath.js");
+  //   const formattedResult = `data:image/png;base64,${result}`;
+  //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+  // });
 
-  it("loads a model via HTTP", async () => {
-    const result = await execute("httpPath.js");
-    const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
-  });
+  // it("loads a model via HTTP", async () => {
+  //   const result = await execute("httpPath.js");
+  //   const formattedResult = `data:image/png;base64,${result}`;
+  //   checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png', 'upscaled.png');
+  // });
 
-  it("can load model definitions in Node", async () => {
-    const result = await execute("modelDefinitions.js");
-    const parsedResult = JSON.parse(result);
-    expect(parsedResult['pixelator']).not.toEqual(undefined);
-    expect(parsedResult['pixelator']['scale']).toEqual(4);
-    expect(parsedResult['pixelator']['urlPath']).toEqual('pixelator');
-  });
+  // it("can load model definitions in Node", async () => {
+  //   const result = await execute("modelDefinitions.js");
+  //   const parsedResult = JSON.parse(result);
+  //   expect(parsedResult['pixelator']).not.toEqual(undefined);
+  //   expect(parsedResult['pixelator']['scale']).toEqual(4);
+  //   expect(parsedResult['pixelator']['urlPath']).toEqual('pixelator');
+  // });
 });

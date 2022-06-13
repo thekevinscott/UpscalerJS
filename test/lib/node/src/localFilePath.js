@@ -1,5 +1,5 @@
 const tf = require('@tensorflow/tfjs-node');
-const Upscaler = require('upscaler-for-node/node');
+const Upscaler = require('upscaler/node');
 const path = require('path');
 const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
@@ -24,8 +24,11 @@ const upscaleImageToUInt8Array = async (model, filename) => {
 }
 
 const main = async (model) => {
+  console.log('** 1')
   const tensor = await upscaleImageToUInt8Array(model, IMG);
+  console.log('** 2')
   const upscaledImage = await tf.node.encodePng(tensor)
+  console.log('** 3')
   return base64ArrayBuffer(upscaledImage);
 }
 
