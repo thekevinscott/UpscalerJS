@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
   [
     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
@@ -10,6 +9,7 @@ export const getInvalidTensorError = (input: tf.Tensor) => new Error(
   ].join(' '),
 );
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const getInvalidInput = (input: any) => new Error([
   `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
   `a string representing a local path or http-accessible path to an image,`,
