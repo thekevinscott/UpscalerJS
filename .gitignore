@@ -22,3 +22,4 @@ yarn-error.log
 .parcel-cache
 tsconfig.tsbuildinfo
 .yarn
+.pnpm-debug.log
