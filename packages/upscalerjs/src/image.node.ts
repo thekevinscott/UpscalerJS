@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { tf, } from './dependencies.generated';
+import { tf } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -43,8 +43,7 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
     // }
   }
 
-  throw getInvalidInput(input);
-};
+  throw getInvalidInput(input); };
 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 
