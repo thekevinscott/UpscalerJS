@@ -2,10 +2,6 @@
   "name": "upscalerjs-root",
   "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
   "babel": {
     "env": {
       "test": {
@@ -96,6 +92,7 @@
     "rollup": "^2.66.1",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "seedrandom": "^3.0.5",
     "selenium-webdriver": "^4.0.0-beta.1",
     "serve": "^11.3.2",
     "tape": "^5.5.0",

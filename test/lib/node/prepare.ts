@@ -28,10 +28,8 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 }
 
 export const prepareScriptBundleForCJS = async () => {
-  const localNameForPackage = 'upscaler-for-node';
-
-  await callExec('pnpm install', {
-    cwd: ROOT,
+  await callExec(`pnpm install --dir ${ROOT} --reporter default`, {
+    // cwd: ROOT,
   });
 
   // moveUpscalerToLocallyNamedPackage(localNameForPackage);

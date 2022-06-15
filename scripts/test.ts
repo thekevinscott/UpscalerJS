@@ -94,6 +94,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node-gpu');
     }
   }
+
   const args = [
     'jest',
     // 'node',
