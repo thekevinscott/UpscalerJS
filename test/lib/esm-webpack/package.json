@@ -8,6 +8,9 @@
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0"
   },
+  "devDependencies": {
+    "seedrandom": "~2.4.3"
+  },
   "babel": {
     "env": {
       "test": {
