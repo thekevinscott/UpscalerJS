@@ -340,6 +340,38 @@ importers:
     dependencies:
       upscaler: link:../upscalerjs
 
+  test/lib/esm-esbuild:
+    specifiers:
+      '@babel/plugin-transform-modules-commonjs': ^7.16.0
+      '@babel/preset-typescript': ^7.16.0
+      '@tensorflow/tfjs': ^3.18.0
+    dependencies:
+      '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.17.5
+      '@babel/preset-typescript': 7.16.0_@babel+core@7.17.5
+      '@tensorflow/tfjs': 3.18.0
+
+  test/lib/esm-webpack:
+    specifiers:
+      '@babel/plugin-transform-modules-commonjs': ^7.16.0
+      '@babel/preset-typescript': ^7.16.0
+      '@tensorflow/tfjs': ^3.18.0
+    dependencies:
+      '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.17.5
+      '@babel/preset-typescript': 7.16.0_@babel+core@7.17.5
+      '@tensorflow/tfjs': 3.18.0
+
+  test/lib/node:
+    specifiers:
+      '@tensorflow/tfjs-node': ^3.18.0
+      '@tensorflow/tfjs-node-gpu': ^3.18.0
+      upscaler-for-node: workspace:upscaler@*
+      yargs: ^17.3.1
+    dependencies:
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
+      upscaler-for-node: link:../../../packages/upscalerjs
+      yargs: 17.5.1
+
 packages:
 
   /@ampproject/remapping/2.1.2:
@@ -3533,6 +3565,25 @@ packages:
       '@tensorflow/tfjs-core': 3.18.0
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
+
+  /@tensorflow/tfjs-node-gpu/3.18.0:
+    resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
+    engines: {node: '>=8.11.0'}
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.4
+      '@tensorflow/tfjs': 3.18.0
+      adm-zip: 0.5.9
+      google-protobuf: 3.19.3
+      https-proxy-agent: 2.2.4
+      progress: 2.0.3
+      rimraf: 2.7.1
+      tar: 4.4.19
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+      - supports-color
+    dev: false
 
   /@tensorflow/tfjs-node-gpu/3.18.0_seedrandom@3.0.5:
     resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
@@ -16092,7 +16143,6 @@ packages:
   /yargs-parser/21.0.1:
     resolution: {integrity: sha512-9BK1jFpLzJROCI5TzwZL/TU4gqjK5xiHV/RfWLOahrjAko/e4DJkRDZQXfvqAsiZzzYhgAzbgz6lg48jcm4GLg==}
     engines: {node: '>=12'}
-    dev: true
 
   /yargs-unparser/2.0.0:
     resolution: {integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA==}
@@ -16143,7 +16193,6 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.5
       yargs-parser: 21.0.1
-    dev: true
 
   /yauzl/2.10.0:
     resolution: {integrity: sha1-x+sXyT4RLLEIb6bY5R+wZnt5pfk=}
