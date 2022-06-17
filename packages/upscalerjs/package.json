@@ -79,7 +79,7 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.13.0"
+    "@tensorflow/tfjs": "^3.18.0"
   },
   "dependencies": {
     "@tensorflow/tfjs-core": "^3.18.0",
