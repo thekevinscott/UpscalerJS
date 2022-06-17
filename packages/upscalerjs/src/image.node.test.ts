@@ -69,12 +69,11 @@ describe('Image', () => {
     });
 
     it('handles an invalid (too large) tensor input', async () => {
-      // const input = tf.tensor([[[[[1,],],],],]);
-      // console.log(input);
-      const input = 'yay';
-      await expect(() => getImageAsTensor(input as any as tf.Tensor3D))
+      const input = tf.tensor([[[[[1,],],],],]);
+      console.log(input);
+      await expect(() => getImageAsTensor(input as tf.Tensor3D))
         .rejects
-        .toThrow('fats');
+        .toThrow(getInvalidTensorError(input));
     });
   });
 });

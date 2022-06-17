@@ -2,16 +2,12 @@ import * as fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
-export const getInvalidTensorError = (input: tf.Tensor) => {
-  console.log(input);
-  return new Error('huzzah!');
-//   return new Error(
-//   [
-//     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-//     'Only 3 or 4 rank tensors are supported.',
-//   ].join(' '),
-// );
-};
+export const getInvalidTensorError = (input: tf.Tensor) => new Error(
+  [
+    `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+    'Only 3 or 4 rank tensors are supported.',
+  ].join(' '),
+);
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const getInvalidInput = (input: any) => new Error([
@@ -55,26 +51,17 @@ export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Ar
 export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
 ): Promise<tf.Tensor4D> => {
-  const foo = true;
-  if (foo) {
-  throw new Error('poo');
-  }
-  console.log('1');
   const tensor = getTensorFromInput(input);
 
-  console.log('2');
   if (isThreeDimensionalTensor(tensor)) {
-  console.log('3');
     const expandedTensor: tf.Tensor4D = tensor.expandDims(0);
     tensor.dispose();
     return expandedTensor;
   }
 
-  console.log('4');
   if (isFourDimensionalTensor(tensor)) {
     return tensor;
   }
 
-  console.log('5');
   throw getInvalidTensorError(tensor);
 };
