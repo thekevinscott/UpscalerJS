@@ -33,9 +33,9 @@ export const buildConfigURL = (modelFolder: string) =>
 
 export const warn = (msg: string | string[]) => {
   if (Array.isArray(msg)) {
-    console.warn(msg.join('\n'));
+    console.warn(msg.join('\n'));// skipcq: JS-0002
   } else {
-    console.warn(msg);
+    console.warn(msg);// skipcq: JS-0002
   }
 };
 
