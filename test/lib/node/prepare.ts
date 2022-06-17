@@ -46,7 +46,7 @@ export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdou
 
 export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
   const TMP = path.resolve(ROOT, './tmp');
-  mkdirp(TMP);
+  await mkdirp(TMP);
   const hash = crypto.createHash('md5').update(contents).digest('hex');
   const FILENAME = path.resolve(TMP, `${hash}.js`);
   console.log(fs.readdirSync(TMP));
