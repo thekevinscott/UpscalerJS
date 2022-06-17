@@ -29,12 +29,12 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 }
 
 export const prepareScriptBundleForCJS = async () => {
-  await callExec(`pnpm install --filter test-node --dir ${ROOT} --reporter silent`, {
-    // cwd: ROOT,
-  });
+  // await callExec(`pnpm install --filter test-node --dir ${ROOT} --reporter silent`, {
+  //   // cwd: ROOT,
+  // });
 
   // we need to copy the upscaler into the local folder so that it references the correct tfjs installation
-  moveUpscalerToLocallyNamedPackage(LOCAL_UPSCALER_NAME);
+  // moveUpscalerToLocallyNamedPackage(LOCAL_UPSCALER_NAME);
 };
 
 type Stdout = (data: string) => void;
