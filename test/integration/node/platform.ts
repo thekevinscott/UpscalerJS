@@ -65,13 +65,16 @@ describe('Platform Integration Tests', () => {
 
   [
     { platform: 'node', deps: `
+console.log('1');
 const tf = require('@tensorflow/tfjs-node');
+console.log('2');
 const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
+console.log('3');
     `},
-    { platform: 'node-gpu', deps: `
-const tf = require('@tensorflow/tfjs-node-gpu');
-const Upscaler = require('${LOCAL_UPSCALER_NAME}/node-gpu');
-    `},
+//     { platform: 'node-gpu', deps: `
+// const tf = require('@tensorflow/tfjs-node-gpu');
+// const Upscaler = require('${LOCAL_UPSCALER_NAME}/node-gpu');
+//     `},
   ].forEach(({ platform, deps }) => {
     it(`loads a model with ${platform}`, async () => {
       const result = await execute(writeScript(deps));
