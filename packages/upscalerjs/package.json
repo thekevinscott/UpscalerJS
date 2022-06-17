@@ -84,7 +84,7 @@
   "dependencies": {
     "@tensorflow/tfjs-core": "^3.18.0",
     "isomorphic-fetch": "^3.0.0",
-    "tensor-as-base64": "^0.1.1"
+    "tensor-as-base64": "^0.2.0"
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
   "devDependencies": {
@@ -93,6 +93,7 @@
     "eslint": "^8.8.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jsdoc": "^37.8.2",
-    "eslint-plugin-prefer-arrow": "^1.2.3"
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "seedrandom": "^3.0.5"
   }
 }
