@@ -190,11 +190,6 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm install
 
-      - name: 'Installing Node-specific deps'
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: cd test/lib/node && pnpm
-
       - name: 'Integration Tests'
         run: pnpm test:integration:node --ci
 

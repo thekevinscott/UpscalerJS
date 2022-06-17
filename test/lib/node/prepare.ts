@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 import crypto from 'crypto';
+import { LOCAL_UPSCALER_NAME } from "./constants";
 
 const ROOT = path.join(__dirname);
 const NODE_MODULES = path.join(ROOT, '/node_modules');
@@ -28,14 +29,12 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 }
 
 export const prepareScriptBundleForCJS = async () => {
-  // we need to copy the upscaler into the local folder so that it references the correct tfjs installation
-  const localNameForPackage = 'upscaler-for-node';
-
   await callExec(`pnpm install --filter test-node --dir ${ROOT} --reporter silent`, {
     // cwd: ROOT,
   });
 
-  moveUpscalerToLocallyNamedPackage(localNameForPackage);
+  // we need to copy the upscaler into the local folder so that it references the correct tfjs installation
+  moveUpscalerToLocallyNamedPackage(LOCAL_UPSCALER_NAME);
 };
 
 type Stdout = (data: string) => void;
