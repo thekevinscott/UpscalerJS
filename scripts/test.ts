@@ -68,12 +68,12 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
-    runner: { type: 'string' }
+    kind: { type: 'string' }
   }).argv;
 
   let bsLocal: undefined | browserstack.Local;
   const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.runner);
+  const runner = getRunner(argv.kind);
   if (runner === 'browserstack') {
     bsLocal = await startBrowserstack();
     process.on('exit', async () => {
@@ -97,9 +97,6 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
 
   const args = [
     'jest',
-    // 'node',
-    // '--expose-gc',
-    // './node_modules/.bin/jest',
     '--config',
     `test/jestconfig.${platform}.${runner}.js`,
     '--detectOpenHandles',
