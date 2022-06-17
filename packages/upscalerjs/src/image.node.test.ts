@@ -63,18 +63,18 @@ describe('Image', () => {
 
     it('handles an invalid (too small) tensor input', async () => {
       const input = tf.tensor([[1,],]);
-      /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
-      await expect(() => getImageAsTensor(input as any))
+      await expect(() => getImageAsTensor(input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
 
     it('handles an invalid (too large) tensor input', async () => {
-      const input = tf.tensor([[[[[1,],],],],]);
-      /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any */
-      await expect(() => getImageAsTensor(input as any))
+      // const input = tf.tensor([[[[[1,],],],],]);
+      // console.log(input);
+      const input = 'yay';
+      await expect(() => getImageAsTensor(input as any as tf.Tensor3D))
         .rejects
-        .toThrow(getInvalidTensorError(input));
+        .toThrow('fats');
     });
   });
 });
