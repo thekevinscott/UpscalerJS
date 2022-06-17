@@ -20,13 +20,13 @@ You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJ
 To run an example locally, navigate to the relevant folder and run:
 
 ```
-yarn start
+pnpm start
 ```
 
 If you are developing UpscalerJS locally and wish to run an example during development, use the following command:
 
 ```
-yarn example {folder-name-of-example}
+pnpm example {folder-name-of-example}
 ```
 
 This will automatically start a watcher in the example folder, as well as set the local UpscalerJS package to build in the background.

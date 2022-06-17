@@ -68,12 +68,12 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
-    runner: { type: 'string' }
+    kind: { type: 'string' }
   }).argv;
 
   let bsLocal: undefined | browserstack.Local;
   const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.runner);
+  const runner = getRunner(argv.kind);
   if (runner === 'browserstack') {
     bsLocal = await startBrowserstack();
     process.on('exit', async () => {
@@ -94,18 +94,16 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node-gpu');
     }
   }
-  const yarnArgs = [
+
+  const args = [
     'jest',
-    // 'node',
-    // '--expose-gc',
-    // './node_modules/.bin/jest',
     '--config',
     `test/jestconfig.${platform}.${runner}.js`,
     '--detectOpenHandles',
     argv.watch ? '--watch' : undefined,
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  const code = await runProcess(args[0], args.slice(1));
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
   }

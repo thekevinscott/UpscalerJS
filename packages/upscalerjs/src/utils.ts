@@ -33,10 +33,8 @@ export const buildConfigURL = (modelFolder: string) =>
 
 export const warn = (msg: string | string[]) => {
   if (Array.isArray(msg)) {
-    // tslint:disable-next-line:no-console
     console.warn(msg.join('\n'));// skipcq: JS-0002
   } else {
-    // tslint:disable-next-line:no-console
     console.warn(msg);// skipcq: JS-0002
   }
 };

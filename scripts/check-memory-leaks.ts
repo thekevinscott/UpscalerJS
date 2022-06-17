@@ -26,8 +26,8 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   if (argv.skipBuild !== true) {
     await buildUpscaler('browser');
   }
-  const yarnArgs = [
-    'yarn',
+  const args = [
+    'pnpm',
     'jest',
     'test/misc/memory/test.browser.ts',
     '--config',
@@ -35,7 +35,7 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
     '--detectOpenHandles',
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  const code = await runProcess(args[0], args.slice(1));
   if (code !== null) {
     process.exit(code);
   }

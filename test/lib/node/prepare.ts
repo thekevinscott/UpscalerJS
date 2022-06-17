@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
 import crypto from 'crypto';
+import { LOCAL_UPSCALER_NAME } from "./constants";
 
 const ROOT = path.join(__dirname);
 const NODE_MODULES = path.join(ROOT, '/node_modules');
@@ -28,13 +29,12 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 }
 
 export const prepareScriptBundleForCJS = async () => {
-  const localNameForPackage = 'upscaler-for-node';
+  // await callExec(`yarn`, {
+  //   cwd: ROOT,
+  // });
 
-  await callExec('yarn', {
-    cwd: ROOT,
-  });
-
-  moveUpscalerToLocallyNamedPackage(localNameForPackage);
+  // we need to copy the upscaler into the local folder so that it references the correct tfjs installation
+  // moveUpscalerToLocallyNamedPackage(LOCAL_UPSCALER_NAME);
 };
 
 type Stdout = (data: string) => void;
@@ -46,7 +46,7 @@ export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdou
 
 export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
   const TMP = path.resolve(ROOT, './tmp');
-  mkdirp(TMP);
+  await mkdirp(TMP);
   const hash = crypto.createHash('md5').update(contents).digest('hex');
   const FILENAME = path.resolve(TMP, `${hash}.js`);
   fs.writeFileSync(FILENAME, contents, 'utf-8');

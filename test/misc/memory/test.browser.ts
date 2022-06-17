@@ -128,6 +128,7 @@ describe('Memory Leaks', () => {
   })
 
   afterAll(async () => {
+    await new Promise(resolve => setTimeout(resolve, 10000))
     await Promise.all([
       stopServer(server),
       browser.close(),
