@@ -4,7 +4,6 @@
   "dependencies": {
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0",
-    "upscaler-for-node": "workspace:upscaler@*",
     "yargs": "^17.3.1"
   },
   "license": "MIT"
