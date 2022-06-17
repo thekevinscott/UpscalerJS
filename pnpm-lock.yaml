@@ -346,10 +346,12 @@ importers:
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
       seedrandom: ~2.4.3
+      upscaler-for-esbuild: workspace:upscaler@*
     dependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.5
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      upscaler-for-esbuild: link:../../../packages/upscalerjs
     devDependencies:
       seedrandom: 2.4.4
 
@@ -359,10 +361,12 @@ importers:
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
       seedrandom: ~2.4.3
+      upscaler-for-webpack: workspace:upscaler@*
     dependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.5
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      upscaler-for-webpack: link:../../../packages/upscalerjs
     devDependencies:
       seedrandom: 2.4.4
 

@@ -43,7 +43,8 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
     // }
   }
 
-  throw getInvalidInput(input); };
+  throw getInvalidInput(input); 
+};
 
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 

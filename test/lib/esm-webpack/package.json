@@ -6,6 +6,7 @@
   "dependencies": {
     "@tensorflow/tfjs": "^3.12.0",
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "upscaler-for-webpack": "workspace:upscaler@*",
     "@babel/preset-typescript": "^7.16.0"
   },
   "devDependencies": {
