@@ -361,6 +361,7 @@ importers:
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
       seedrandom: ~2.4.3
+      tensor-as-base64: ^0.2.0
       upscaler-for-webpack: workspace:upscaler@*
     dependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.5
@@ -369,6 +370,7 @@ importers:
       upscaler-for-webpack: link:../../../packages/upscalerjs
     devDependencies:
       seedrandom: 2.4.4
+      tensor-as-base64: 0.2.0_@tensorflow+tfjs@3.18.0
 
   test/lib/node:
     specifiers:
@@ -14947,8 +14949,7 @@ packages:
     peerDependencies:
       '@tensorflow/tfjs': ^3.13.0
     dependencies:
-      '@tensorflow/tfjs': 3.18.0
-    dev: false
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
 
   /term-size/1.2.0:
     resolution: {integrity: sha512-7dPUZQGy/+m3/wjVz3ZW5dobSoD/02NxJpoXUX0WIyjfVS3l0c+b/+9phIDFA7FHzkYtwtMFgeGZ/Y8jVTeqQQ==}
