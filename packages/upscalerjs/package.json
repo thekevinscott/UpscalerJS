@@ -33,37 +33,21 @@
     "dist/**/*"
   ],
   "scripts": {
-<<<<<<< HEAD
-    "build": "rimraf dist && yarn build:node && yarn build:node-gpu && yarn build:browser",
-    "build:browser": "yarn scaffold:platform 'browser' && yarn run build:umd && yarn build:esm",
-    "build:node": "yarn scaffold:platform 'node' && tsc -p tsconfig.node.json --module commonjs --target es5 --outDir ./dist/node/cjs",
-    "build:node-gpu": "yarn scaffold:platform 'node-gpu' && tsc -p tsconfig.node.json --module commonjs --target es5 --outDir ./dist/node-gpu/cjs",
-    "build:esm": "tsc -p tsconfig.browser.json --module esnext --moduleResolution node --target esnext --outDir dist/browser/esm",
-=======
     "build": "rimraf dist && pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
     "build:browser": "rimraf dist/browser && mkdir -p dist/browser && pnpm scaffold:platform 'browser' && pnpm build:umd && pnpm build:esm && mv dist/esm dist/browser/esm",
     "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:platform 'node' && pnpm build:cjs && mv dist/cjs dist/node/cjs",
     "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:platform 'node-gpu' && pnpm build:cjs && mv dist/cjs dist/node-gpu/cjs",
     "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5 --outDir dist/cjs",
-    "build:esm": "tsc -p tsconfig.browser.json --module esnext --moduleResolution node --target esnext --outDir dist/esm",
->>>>>>> v1.0.0
+    "build:esm": "tsc -p tsconfig.browser.json --module esnext --moduleResolution node --target esnext --outDir dist/browser/esm",
     "build:umd:tsc": "tsc -p tsconfig.browser.json --moduleResolution node --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "pnpm rollup -c rollup.config.js --failAfterWarnings",
     "build:umd:generate": "pnpm build:umd:tsc && pnpm build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
-<<<<<<< HEAD
-    "build:umd": "yarn build:umd:generate && yarn build:umd:compress",
+    "build:umd": "pnpm build:umd:generate && yarn build:umd:compress && rimraf dist/tmp",
     "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts --src packages/upscalerjs/src",
-    "docs:serve": "docsify serve docs --port 3030",
-    "preversion": "yarn lint",
-    "prepublishOnly": "yarn test && yarn lint",
-=======
-    "build:umd": "pnpm build:umd:generate && pnpm build:umd:compress && rimraf dist/tmp",
-    "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
     "prepublishOnly": "pnpm test && pnpm lint",
->>>>>>> v1.0.0
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "pnpm lint:browser && pnpm lint:node",
     "lint:fix": "pnpm lint:browser:fix && pnpm lint:node:fix",
