@@ -2,13 +2,7 @@
   "name": "@upscalerjs/esrgan-slim",
   "version": "0.1.0",
   "description": "ESRGAN Default Model for Upscaler.js",
-  "main": "./dist/node/index.js",
-  "exports": {
-    ".": {
-      "require": "./dist/node/index.js",
-      "import": "./dist/browser/esm/index.js"
-    }
-  },
+  "main": "./src/index.ts",
   "keywords": [
     "image super resolution",
     "image upscaling",
@@ -19,6 +13,7 @@
   ],
   "files": [
     "license",
+    "src/**/*",
     "models/**/*",
     "dist/**/*"
   ],

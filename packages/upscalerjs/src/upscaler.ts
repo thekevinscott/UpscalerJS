@@ -13,7 +13,9 @@ import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import ESRGANSlim from '@upscalerjs/esrgan-slim';
 
-const DEFAULT_MODEL = ESRGANSlim;
+// TODO: Why does eslint fail to type this correctly?
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+const DEFAULT_MODEL: ModelDefinition = ESRGANSlim;
 
 export class Upscaler {
   _opts: UpscalerOptions;
