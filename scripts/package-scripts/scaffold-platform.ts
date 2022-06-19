@@ -17,7 +17,7 @@ const ROOT = path.resolve(__dirname, `../..`);
 const writeFile = (filename: string, content: string) => fs.writeFileSync(filename, content);
 
 interface Args {
-  src: string;
+  src: Array<string>;
   platform: Platform;
 }
 
@@ -42,10 +42,17 @@ const getArgs = async (): Promise<Args> => {
   .help()
   .argv;
 
-  const src = argv.src;
-  if (typeof src !== 'string') {
-    throw new Error('Invalid src provided');
+  let src: Array<string> = [];
+  if (typeof argv.src === 'string') {
+    src.push(argv.src);
+  } else {
+    src = src.concat(argv.src as Array<string>);
   }
+  // const src: Array<string> = [].concat(argv.src as string | Array<string>);
+  // console.log(src);
+  // if (typeof src !== 'string') {
+  //   throw new Error('Invalid src provided');
+  // }
 
   return {
     src,
@@ -86,22 +93,28 @@ const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
   files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
 }
 
-const scaffoldPlatform = async (platform: Platform, srcFolder: string, isUpscaler: boolean = false) => {
-  const dependency = getDependency(platform);
+const scaffoldPlatform = async (platform: Platform, srcs: Array<string>) => {
+// const scaffoldPlatform = async (platform: Platform, srcFolder: string, isUpscaler: boolean = false) => {
+  for (let i = 0; i < srcs.length; i++) {
+    const src = srcs[i];
+    const srcFolder = path.resolve(ROOT, srcs[i]);
+    const isUpscaler = src === 'packages/upscalerjs/src';
+    const dependency = getDependency(platform);
 
-  writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
-    `export * as tf from '${dependency}';`,
-  ]);
-
-  if (!isUpscaler) {
-    const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
-    writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
-      `export const NAME = "${name}";`,
-      `export const VERSION = "${version}";`,
+    writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+      `export * as tf from '${dependency}';`,
     ]);
-  }
 
-  scaffoldPlatformSpecificFiles(srcFolder, platform);
+    if (!isUpscaler) {
+      const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
+      writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
+        `export const NAME = "${name}";`,
+        `export const VERSION = "${version}";`,
+      ]);
+    }
+
+    scaffoldPlatformSpecificFiles(srcFolder, platform);
+  }
 }
 
 export default scaffoldPlatform;
@@ -110,8 +123,6 @@ if (require.main === module) {
   (async () => {
     const argv = await getArgs();
     const platform = getPlatform(process.argv.pop());
-    const SRC = path.resolve(ROOT, argv.src);
-    const isUpscaler = argv.src === 'packages/upscalerjs/src';
-    await scaffoldPlatform(platform, SRC, isUpscaler);
+    await scaffoldPlatform(platform, argv.src);
   })();
 }
