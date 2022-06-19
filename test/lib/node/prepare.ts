@@ -6,9 +6,6 @@ import crypto from 'crypto';
 
 const ROOT = path.join(__dirname);
 
-export const prepareScriptBundleForCJS = async () => {
-};
-
 type Stdout = (data: string) => void;
 export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdout) => {
   await callExec(`node "./src/${file}"`, {
