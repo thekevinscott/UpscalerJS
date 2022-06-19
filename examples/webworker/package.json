@@ -22,8 +22,8 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.13.0",
-    "tensor-as-base64": "^0.1.1",
-    "upscaler": "0.12.1"
+    "@tensorflow/tfjs": "^3.12.0",
+    "tensor-as-base64": "^0.2.0",
+    "upscaler": "1.0.0"
   }
 }

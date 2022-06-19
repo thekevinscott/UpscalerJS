@@ -13,8 +13,8 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.13.0",
-    "upscaler": "0.12.1"
+    "@tensorflow/tfjs": "^3.12.0",
+    "upscaler": "1.0.0"
   },
   "browserslist": {
     "production": [

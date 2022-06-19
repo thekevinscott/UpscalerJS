@@ -1,4 +1,0 @@
-{
-  "description": "This model is an RDN model trained from the repo https://github.com/idealo/image-super-resolution.\nThis is a pretrained model provided by the repo's author.\nThe model is quantized to 8 bits."
-}
-

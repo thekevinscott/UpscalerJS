@@ -1,6 +1,7 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/prepare';
 import { AVAILABLE_MODELS } from '../../../scripts/package-scripts/build-model';
+import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -19,7 +20,7 @@ const execute = async (contents: string, logExtra = true) => {
 
 const writeScript = (getModelPath: string) => `
 const tf = require('@tensorflow/tfjs-node');
-const Upscaler = require('upscaler-for-node/node');
+const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
 const path = require('path');
 const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')

@@ -47,9 +47,9 @@ const getPlatform = (packageJSON: Record<string, any>): Platform => {
 
 const getArgs = (platform: Platform, exampleName: string, skipBuild?: boolean) => {
   if (skipBuild) {
-    return ['yarn', 'workspace', exampleName, 'start'];
+    return ['pnpm', '--filter', exampleName, 'start'];
   }
-  return ['yarn', 'workspace', 'upscaler', `build:${platform}`, '&&', 'yarn', 'workspace', exampleName, 'start'];
+  return ['pnpm', '--filter', 'upscaler', `build:${platform}`, '&&', 'pnpm', '--filter', exampleName, 'start'];
 };
 
 const main = async () => {

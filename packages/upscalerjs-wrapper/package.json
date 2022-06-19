@@ -4,7 +4,7 @@
   "description": "Wrapper for UpscalerJS",
   "main": "index.js",
   "dependencies": {
-    "upscaler": "0.10.0"
+    "upscaler": "1.0.0"
   },
   "author": "",
   "license": "MIT"
