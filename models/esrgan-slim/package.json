@@ -21,6 +21,9 @@
     "models/**/*",
     "dist/**/*"
   ],
+  "dependencies": {
+    "upscaler": "workspace:*"
+  },
   "author": "Kevin Scott",
   "license": "MIT"
 }
