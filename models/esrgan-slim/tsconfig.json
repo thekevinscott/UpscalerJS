@@ -3,7 +3,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "target": "ES2020",
-    "module": "commonjs",
+    "module": "NodeNext",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
@@ -17,9 +17,6 @@
     "baseUrl": "./src",
     "rootDir": "./src",
     "outDir": "./dist",
-    "paths": {
-      "upscaler/*": ["../../../packages/upscalerjs/src/*"]
-    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"],
