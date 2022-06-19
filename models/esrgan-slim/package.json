@@ -2,7 +2,8 @@
   "name": "@upscalerjs/esrgan-slim",
   "version": "0.1.0",
   "description": "ESRGAN Default Model for Upscaler.js",
-  "main": "./src/index.ts",
+  "types": "./dist/node/index.d.ts",
+  "main": "./dist/node/index.js",
   "keywords": [
     "image super resolution",
     "image upscaling",
