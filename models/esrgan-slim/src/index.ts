@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition } from 'upscaler/types';
+import { ModelDefinition } from 'upscaler';
 import { NAME, VERSION } from './constants.generated';
 
 const SCALE = 4;
