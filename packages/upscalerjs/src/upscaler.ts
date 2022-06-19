@@ -11,9 +11,9 @@ import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import ESRGANSlim from '@upscalerjs/esrgan-slim';
+// import ESRGANSlim from '@upscalerjs/esrgan-legacy';
 
-const DEFAULT_MODEL = ESRGANSlim;
+// const DEFAULT_MODEL = ESRGANSlim;
 
 export class Upscaler {
   _opts: UpscalerOptions;
@@ -27,7 +27,8 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts.model || DEFAULT_MODEL);
+    // this._model = loadModel(this._opts.model || DEFAULT_MODEL);
+    this._model = loadModel(this._opts.model as ModelDefinition);
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 

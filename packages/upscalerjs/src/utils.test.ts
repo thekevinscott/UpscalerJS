@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ModelDefinition } from '../dist/browser/esm';
+import { ModelDefinition } from './types';
 import { 
   wrapGenerator, 
   isSingleArgProgress, 
