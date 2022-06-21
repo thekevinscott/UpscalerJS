@@ -24,6 +24,7 @@ export const prepareScriptBundleForUMD = async () => {
     const models = getAllAvailableModels(packageName);
     models.forEach(({ export: fileName }) => {
       const MODEL_PATH = path.join(MODELS_PATH, packageName);
+      console.log('MODEL_PATH', MODEL_PATH);
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(MODEL_PATH, 'dist/browser/umd', minifiedFileName);
       const dest = path.join(DIST, minifiedFileName);
