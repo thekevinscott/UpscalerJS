@@ -5,6 +5,7 @@ import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
 import { mkdirp } from 'fs-extra';
+import buildModels from '../../../scripts/package-scripts/build-model';
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
@@ -21,6 +22,7 @@ export const prepareScriptBundleForUMD = async () => {
   const availableModelPackages = getAllAvailableModelPackages();
   for (let i = 0; i < availableModelPackages.length; i++) {
     const packageName = availableModelPackages[i];
+    buildModels([packageName], ['umd']);
     const models = getAllAvailableModels(packageName);
     models.forEach(({ export: fileName }) => {
       const MODEL_PATH = path.join(MODELS_PATH, packageName);
