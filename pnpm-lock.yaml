@@ -381,12 +381,18 @@ importers:
       '@babel/plugin-transform-modules-commonjs': ^7.16.0
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
+      '@upscalerjs/esrgan-legacy': workspace:*
+      '@upscalerjs/esrgan-slim': workspace:*
+      '@upscalerjs/pixel-upsampler': workspace:*
       seedrandom: ~2.4.3
       upscaler-for-esbuild: workspace:upscaler@*
     dependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.5
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@upscalerjs/esrgan-legacy': link:../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-slim': link:../../../models/esrgan-slim
+      '@upscalerjs/pixel-upsampler': link:../../../models/pixel-upsampler
       upscaler-for-esbuild: link:../../../packages/upscalerjs
     devDependencies:
       seedrandom: 2.4.4
