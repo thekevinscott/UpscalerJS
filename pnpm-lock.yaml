@@ -332,7 +332,10 @@ importers:
       uglify-js: 3.15.4
 
   models/esrgan-legacy:
-    specifiers: {}
+    specifiers:
+      upscalerjs-types: workspace:*
+    dependencies:
+      upscalerjs-types: link:../../packages/upscalerjs-types
 
   models/esrgan-slim:
     specifiers:
@@ -341,7 +344,10 @@ importers:
       upscaler: link:../../packages/upscalerjs
 
   models/pixel-upsampler:
-    specifiers: {}
+    specifiers:
+      upscalerjs-types: workspace:*
+    dependencies:
+      upscalerjs-types: link:../../packages/upscalerjs-types
 
   packages/upscalerjs:
     specifiers:
@@ -357,8 +363,10 @@ importers:
       eslint-plugin-prefer-arrow: ^1.2.3
       seedrandom: ~2.4.3
       tensor-as-base64: ^0.2.0
+      upscalerjs-types: workspace:*
     dependencies:
       tensor-as-base64: 0.2.0_@tensorflow+tfjs@3.18.0
+      upscalerjs-types: link:../upscalerjs-types
     devDependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
@@ -371,6 +379,12 @@ importers:
       eslint-plugin-jsdoc: 37.9.7_eslint@8.17.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.17.0
       seedrandom: 2.4.4
+
+  packages/upscalerjs-types:
+    specifiers:
+      '@tensorflow/tfjs': ^3.12.0
+    dependencies:
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
 
   packages/upscalerjs-wrapper:
     specifiers:

@@ -18,9 +18,10 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
-const references: ProjectReference[] = [{
-  path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
-}];
+// const references: ProjectReference[] = [{
+//   path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
+// }];
+const references: ProjectReference[] = [];
 const TSCONFIG: ts.CompilerOptions = {
   "skipLibCheck": true,
   "esModuleInterop": true,

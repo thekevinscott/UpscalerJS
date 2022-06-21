@@ -1,0 +1,8 @@
+{
+  "name": "upscalerjs-types",
+  "private": "true",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.12.0"
+  }
+}
