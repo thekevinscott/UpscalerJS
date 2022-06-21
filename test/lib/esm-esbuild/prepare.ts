@@ -4,6 +4,8 @@ import * as esbuild from 'esbuild';
 import * as rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
+import buildModels from '../../../scripts/package-scripts/build-model';
+import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -12,6 +14,7 @@ export const bundle = async () => {
   await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
   copyFixtures(DIST, false);
+  await buildModels(getAllAvailableModelPackages(), ['esm']);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
     console.log('Going to build esbuild');
