@@ -95,7 +95,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "seedrandom": "~2.4.3",
-    "selenium-webdriver": "^4.0.0-beta.1",
+    "selenium-webdriver": "^4.2.0",
     "serve": "^11.3.2",
     "tape": "^5.5.0",
     "tree-kill": "^1.2.2",

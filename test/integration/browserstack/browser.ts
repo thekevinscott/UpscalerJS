@@ -3,12 +3,11 @@
  */
 import fs from 'fs';
 import path from 'path';
-import webdriver, { logging, Capabilities } from 'selenium-webdriver';
-import browserstack from 'browserstack-local';
+import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-const { By } = require('selenium-webdriver');
+import { IWebDriver } from 'selenium-webdriver/lib/webdriver';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -147,7 +146,7 @@ describe('Browser Integration Tests', () => {
   describe.each(browserOptions)("Browser %j", (capabilities) => {
     it("upscales an imported local image path", async () => {
       console.log('test', getCapabilityName(capabilities))
-      const driver = new webdriver.Builder()
+      const driver = await new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
         .withCapabilities({
