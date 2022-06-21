@@ -81,7 +81,11 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
 
 const getExportFiles = (modelFolder: string): Array<string> => {
   // const SRC = path.resolve(modelFolder, 'src');
-  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
+  const packageJSONPath = path.resolve(modelFolder, 'package.json');
+  console.log(packageJSONPath);
+  const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
+  console.log(packageJSON);
+  const { exports } = JSON.parse(packageJSON);
   // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
   const keys = Object.keys(exports);
   if (keys.length === 1) {

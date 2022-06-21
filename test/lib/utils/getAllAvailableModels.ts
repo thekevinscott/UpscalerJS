@@ -7,7 +7,7 @@ const MODELS_DIR = path.resolve(ROOT, 'models');
 const jsonParse = (fileName: string) => JSON.parse(fs.readFileSync(fileName, 'utf-8'))
 
 export const getAllAvailableModelPackages = () => fs.readdirSync(MODELS_DIR).filter(file => {
-  return !['dist', 'types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
+  return !['dist', 'types', 'node_modules', 'esrgan-slim'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
 });
 
 export const getAllAvailableModels = (model: string) => {
