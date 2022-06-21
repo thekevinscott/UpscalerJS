@@ -3,11 +3,13 @@
  */
 import fs from 'fs';
 import path from 'path';
+import * as http from 'http';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import { IWebDriver } from 'selenium-webdriver/lib/webdriver';
+import Upscaler from '../../../packages/upscalerjs';
+import * as tf from '@tensorflow/tfjs';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -45,13 +47,13 @@ interface BrowserOption {
 
 const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
 
-const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter(option => {
+const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter((option: BrowserOption) => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
   return !option.browserName.toLowerCase().includes('iphone');
 });
 
-const shouldPrintLogs = (entry, capabilities) => {
+const shouldPrintLogs = (entry: webdriver.logging.Entry, capabilities: BrowserOption) => {
   if (entry.message.includes('favicon')) {
     return false;
   }
@@ -65,7 +67,7 @@ const shouldPrintLogs = (entry, capabilities) => {
   return true;
 }
 
-const printLogs = (driver, capabilities) => {
+const printLogs = (driver: webdriver.WebDriver, capabilities: BrowserOption) => {
   if (capabilities?.browserName === 'firefox') {
     if (capabilities?.os === 'windows') {
       // There is a bug with Firefox not supporting the get logs method on Windows
@@ -93,7 +95,7 @@ const printLogs = (driver, capabilities) => {
   });
 }
 
-const getCapabilityName = (capability) => {
+const getCapabilityName = (capability: BrowserOption) => {
   if (capability.os) {
     return `${capability.os} | ${capability.browserName}`;
   }
@@ -105,7 +107,7 @@ const getCapabilityName = (capability) => {
 }
 
 describe('Browser Integration Tests', () => {
-  let server;
+  let server: http.Server;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
@@ -126,7 +128,7 @@ describe('Browser Integration Tests', () => {
   afterAll(async function browserAfterAll() {
     const start = new Date().getTime();
 
-    const stopServer = (): Promise<void> => new Promise((resolve) => {
+    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
@@ -143,7 +145,7 @@ describe('Browser Integration Tests', () => {
     }
   }, 10000);
 
-  describe.each(browserOptions)("Browser %j", (capabilities) => {
+  describe.each(browserOptions)("Browser %j", (capabilities: BrowserOption) => {
     it("upscales an imported local image path", async () => {
       console.log('test', getCapabilityName(capabilities))
       const driver = await new webdriver.Builder()
@@ -156,7 +158,10 @@ describe('Browser Integration Tests', () => {
         .build();
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
-      await driver.wait(() => driver.getTitle().then(title => title.endsWith('| Loaded'), 3000));
+      await driver.wait(async () => {
+        const title = await driver.getTitle();
+        return title.endsWith('| Loaded');
+      }, 3000);
       const result = await driver.executeScript(() => {
         const upscaler = new window['Upscaler']({
           model: '/pixelator/pixelator.json',
@@ -173,3 +178,11 @@ describe('Browser Integration Tests', () => {
     });
   });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    flower: string;
+    tf: typeof tf;
+  }
+}

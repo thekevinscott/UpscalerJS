@@ -106,5 +106,8 @@
     "webpack": "^5.24.3",
     "yargs": "^17.3.1"
   },
-  "packageManager": "pnpm@3.1.0"
+  "packageManager": "pnpm@3.1.0",
+  "dependencies": {
+    "@types/selenium-webdriver": "^4.1.1"
+  }
 }
