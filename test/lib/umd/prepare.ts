@@ -29,6 +29,7 @@ export const prepareScriptBundleForUMD = async () => {
       const dest = path.join(DIST, minifiedFileName);
       const destDir = path.dirname(dest);
       mkdirp(destDir);
+      console.log('made directory', destDir);
       const contents = fs.readFileSync(source, 'utf-8');
       fs.writeFileSync(dest, contents);
       scriptsToInclude.push(minifiedFileName);
