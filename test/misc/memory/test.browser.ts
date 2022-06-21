@@ -1,4 +1,4 @@
-import puppeteer, { Browser, BrowserContext, Page, WaitTask } from 'puppeteer';
+import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
@@ -240,7 +240,14 @@ describe('Memory Leaks', () => {
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler();
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler();
+        const upscaler = new Upscaler({
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          }
+        });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
@@ -256,8 +263,16 @@ describe('Memory Leaks', () => {
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler({
+        //   warmupSizes: [[50, 50]],
+        // });
         const upscaler = new Upscaler({
           warmupSizes: [[50, 50]],
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          }
         });
         await upscaler.dispose();
       }
@@ -520,13 +535,11 @@ describe('Memory Leaks', () => {
     const image = await page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['ESRGANGANS'];
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            path: '@upscalerjs/esrgan-legacy/gans',
-            scale: 4,
-          },
+          model: ESRGANGANS,
         });
         output = await upscaler.upscale(window['flower']);
 
@@ -726,5 +739,6 @@ declare global {
     pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
+    ESRGANGANS: ModelDefinition;
   }
 }
