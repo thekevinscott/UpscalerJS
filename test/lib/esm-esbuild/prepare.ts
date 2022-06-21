@@ -17,18 +17,6 @@ export const bundle = async () => {
   await buildModels(getAllAvailableModelPackages(), ['esm']);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
-    console.log('Going to build esbuild');
-    [
-      ROOT,
-      path.resolve(ROOT, 'node_modules'),
-      path.resolve(ROOT, 'node_modules/@upscalerjs-for-esbuild'),
-      path.resolve(ROOT, 'node_modules/@upscalerjs-for-esbuild/pixel-upsampler'),
-      path.resolve(ROOT, 'node_modules/@upscalerjs-for-esbuild/pixel-upsampler/dist'),
-      path.resolve(ROOT, 'node_modules/@upscalerjs-for-esbuild/pixel-upsampler/dist/browser'),
-      path.resolve(ROOT, 'node_modules/@upscalerjs-for-esbuild/pixel-upsampler/dist/browser/esm'),
-    ].forEach(dir => {
-    console.log(dir, fs.readdirSync(dir));
-    })
     esbuild.buildSync({
       entryPoints: [entryFiles],
       bundle: true,
