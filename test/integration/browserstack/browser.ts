@@ -164,8 +164,10 @@ describe('Browser Integration Tests', () => {
       }, 3000);
       const result = await driver.executeScript(() => {
         const upscaler = new window['Upscaler']({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         const data = upscaler.upscale(window['flower']);
         document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
