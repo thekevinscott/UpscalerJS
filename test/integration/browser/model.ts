@@ -47,8 +47,6 @@ describe('Model Loading Integration Tests', () => {
       }
     });
 
-    await new Promise(resolve => setTimeout(resolve, 10000));
-
     await Promise.all([
       stopServer(),
     ]);
@@ -63,7 +61,11 @@ describe('Model Loading Integration Tests', () => {
     page = await browser.newPage();
     if (LOG) {
       page.on('console', message => {
-        console.log('[PAGE]', message.text());
+        const text = message.text().trim();
+        console.log('[PAGE]', text);
+        if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+          console.log(message);
+        }
       });
     }
     await page.goto(`http://localhost:${PORT}`);
@@ -84,7 +86,7 @@ describe('Model Loading Integration Tests', () => {
   //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
   // });
 
-  it("can import a model", async () => {
+  it("can import a specific model", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['4x'],
@@ -94,85 +96,85 @@ describe('Model Loading Integration Tests', () => {
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: '/pixelator/pixelator.json',
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("loads a locally exposed model via implied HTTP", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: `${window.location.origin}/pixelator/pixelator.json`,
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("loads a locally exposed model via absolute HTTP", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: `${window.location.origin}/pixelator/pixelator.json`,
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  describe('Test specific model implementations', () => {
-    let serverUMD: http.Server;
+  // describe('Test specific model implementations', () => {
+  //   let serverUMD: http.Server;
 
-    const PORT_UMD = 8098;
+  //   const PORT_UMD = 8098;
 
-    beforeAll(async function beforeAll() {
-      await prepareScriptBundleForUMD();
-      serverUMD = await startServer(PORT_UMD, UMD_DIST);
-    }, 20000);
+  //   beforeAll(async function beforeAll() {
+  //     await prepareScriptBundleForUMD();
+  //     serverUMD = await startServer(PORT_UMD, UMD_DIST);
+  //   }, 20000);
 
-    afterAll(async function modelAfterAll() {
-      const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-        if (serverUMD) {
-          serverUMD.close(resolve);
-        } else {
-          console.warn('No server found')
-          resolve();
-        }
-      });
+  //   afterAll(async function modelAfterAll() {
+  //     const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
+  //       if (serverUMD) {
+  //         serverUMD.close(resolve);
+  //       } else {
+  //         console.warn('No server found')
+  //         resolve();
+  //       }
+  //     });
 
-      await stopServer();
-    }, 10000);
+  //     await stopServer();
+  //   }, 10000);
 
-    getAllAvailableModelPackages().map(packageName => {
-      describe(packageName, () => {
-        const models = getAllAvailableModels(packageName);
-        models.forEach(({ esm: esmName, umd: umdName }) => {
-          it(`upscales with ${packageName}/${esmName} as esm`, async () => {
-            const result = await page.evaluate(([packageName, modelName]) => {
-              const modelDefinition: any = window[packageName][modelName];
-              const upscaler = new window['Upscaler']({
-                model: modelDefinition,
-              });
-              return upscaler.upscale(window['flower']);
-            }, [packageName, esmName]);
-            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-          });
+  //   getAllAvailableModelPackages().map(packageName => {
+  //     describe(packageName, () => {
+  //       const models = getAllAvailableModels(packageName);
+  //       models.forEach(({ esm: esmName, umd: umdName }) => {
+  //         it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+  //           const result = await page.evaluate(([packageName, modelName]) => {
+  //             const modelDefinition: any = window[packageName][modelName];
+  //             const upscaler = new window['Upscaler']({
+  //               model: modelDefinition,
+  //             });
+  //             return upscaler.upscale(window['flower']);
+  //           }, [packageName, esmName]);
+  //           checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+  //         });
 
-          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await page.goto(`http://localhost:${PORT_UMD}`);
-            const result = await page.evaluate(([umdName]) => {
-              const model: ModelDefinition = (<any>window)[umdName];
-              const upscaler = new window['Upscaler']({
-                model,
-              });
-              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
-            }, [umdName]);
-            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-          });
-        });
-      })
-    });
-  });
+  //         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+  //           await page.goto(`http://localhost:${PORT_UMD}`);
+  //           const result = await page.evaluate(([umdName]) => {
+  //             const model: ModelDefinition = (<any>window)[umdName];
+  //             const upscaler = new window['Upscaler']({
+  //               model,
+  //             });
+  //             return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+  //           }, [umdName]);
+  //           checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+  //         });
+  //       });
+  //     })
+  //   });
+  // });
 });
 
 declare global {
