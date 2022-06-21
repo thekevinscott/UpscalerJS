@@ -78,8 +78,9 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
+
 const getExportFiles = (modelFolder: string): Array<string> => {
-  const SRC = path.resolve(modelFolder, 'src');
+  // const SRC = path.resolve(modelFolder, 'src');
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
   // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
   const keys = Object.keys(exports);
@@ -187,7 +188,7 @@ const buildCJS = async (modelFolder: string) => {
     const { platform, dist } = platforms[i];
     fs.mkdirSync(dist);
 
-    await scaffoldPlatform(platform, SRC);
+    await scaffoldPlatform(platform, [SRC]);
 
     await compile(files, {
     ...TSCONFIG,
@@ -215,7 +216,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     const SRC = path.resolve(MODEL_ROOT, 'src');
     fs.mkdirSync(path.resolve(DIST, 'browser'));
-    await scaffoldPlatform('browser', SRC);
+    await scaffoldPlatform('browser', [SRC]);
 
     if (outputFormats.includes('esm')) {
       await buildESM(MODEL_ROOT);
