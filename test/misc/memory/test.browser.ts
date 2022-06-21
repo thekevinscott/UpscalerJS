@@ -155,7 +155,7 @@ describe('Memory Leaks', () => {
         expect(endingObjects).toEqual(startingObjects);
       } catch(err) {
         const diff = endingObjects - startingObjects;
-        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name}.`)).toBeUndefined();
+        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name} and there should be 0. Ending objects: ${endingObjects}, starting objects: ${startingObjects}`)).toBeUndefined();
       }
     }
 
@@ -252,6 +252,12 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
+    // give a tick to clean up
+    await page.evaluate(async (duration) => {
+      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
+      await wait();
+    }, 10);
+
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -277,6 +283,12 @@ describe('Memory Leaks', () => {
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
+
+    // give a tick to clean up
+    await page.evaluate(async (duration) => {
+      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
+      await wait();
+    }, 10);
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
