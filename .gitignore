@@ -23,3 +23,4 @@ yarn-error.log
 *.tsbuildinfo
 .yarn
 .pnpm-debug.log
+umd-tmp
