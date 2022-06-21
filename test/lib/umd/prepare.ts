@@ -28,9 +28,11 @@ export const prepareScriptBundleForUMD = async () => {
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(MODEL_PATH, 'dist/browser/umd', minifiedFileName);
       const dest = path.join(DIST, minifiedFileName);
+      console.log('dest', dest);
       const destDir = path.dirname(dest);
       mkdirp(destDir);
       console.log('made directory', destDir);
+      console.log(fs.readdirSync(path.dirname(source)))
       const contents = fs.readFileSync(source, 'utf-8');
       fs.writeFileSync(dest, contents);
       scriptsToInclude.push(minifiedFileName);
