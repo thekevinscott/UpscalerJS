@@ -263,6 +263,7 @@ describe('Memory Leaks', () => {
 
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
       for (let i = 0; i < times; i++) {
         // TODO: Revert this to use the default
         // const upscaler = new Upscaler({
@@ -270,10 +271,7 @@ describe('Memory Leaks', () => {
         // });
         const upscaler = new Upscaler({
           warmupSizes: [[50, 50]],
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          }
+          model: ESRGANGANS,
         });
         await upscaler.dispose();
       }
@@ -534,7 +532,6 @@ describe('Memory Leaks', () => {
     const image = await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const ESRGANGANS = window['esrgan-legacy']['gans'];
-      console.log(ESRGANGANS);
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
