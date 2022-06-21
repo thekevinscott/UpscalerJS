@@ -38,7 +38,7 @@ export const prepareScriptBundleForUMD = async () => {
         path.join(MODEL_PATH, 'dist/browser'),
         path.join(MODEL_PATH, 'dist/browser/umd'),
     ].forEach(dir => {
-        console.log(dir, fs.readdirSync(path.dirname(source)))
+        console.log(dir, fs.readdirSync(dir))
       })
       const contents = fs.readFileSync(source, 'utf-8');
       fs.writeFileSync(dest, contents);
