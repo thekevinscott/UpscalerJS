@@ -281,6 +281,7 @@ describe('Memory Leaks', () => {
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
+    console.log(startingMemory, endingMemory);
     checkMemory(names, startingMemory, endingMemory);
   });
 
@@ -735,8 +736,6 @@ declare global {
     pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
-    'esrgan-legacy': {
-      'gans': ModelDefinition;
-    }
+    'esrgan-legacy': Record<string, ModelDefinition>;
   }
 }
