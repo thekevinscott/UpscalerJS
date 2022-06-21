@@ -281,7 +281,6 @@ describe('Memory Leaks', () => {
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
-    console.log(startingMemory, endingMemory);
     checkMemory(names, startingMemory, endingMemory);
   });
 
