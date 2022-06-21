@@ -3,11 +3,12 @@
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
   "testEnvironment": "node",
-  "setupFiles": ["./jest.setup.ts", "jest-canvas-mock"],
+  "setupFiles": ["jest-canvas-mock"],
   "collectCoverage": true,
   "coveragePathIgnorePatterns": [
     "node_modules",
-    ".generated.ts"
+    ".generated.ts",
+    ".node.ts"
   ],
   "modulePathIgnorePatterns": ["browser.test.ts", "node.test.ts"],
   "testRegex": "test\\.ts$",
