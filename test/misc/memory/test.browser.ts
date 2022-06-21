@@ -2,7 +2,7 @@ import puppeteer, { Browser, BrowserContext, Page, WaitTask } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
-import Upscaler, { ModelDefinition } from 'upscaler';
+import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 30;
