@@ -37,7 +37,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
 };
 
 export const loadModel = async (
-  modelDefinition: ModelDefinition,
+  modelDefinition: ModelDefinition | undefined,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;

@@ -44,7 +44,7 @@
     "build:umd:generate": "pnpm build:umd:tsc && pnpm build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
     "build:umd": "pnpm build:umd:generate && yarn build:umd:compress && rimraf dist/tmp",
-    "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts --src packages/upscalerjs/src --src models/esrgan-slim/src",
+    "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts --src packages/upscalerjs/src",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
     "prepublishOnly": "pnpm test && pnpm lint",
@@ -82,7 +82,6 @@
     "@tensorflow/tfjs": "^3.12.0"
   },
   "dependencies": {
-    "@upscalerjs/esrgan-slim": "workspace:*",
     "tensor-as-base64": "^0.2.0"
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
