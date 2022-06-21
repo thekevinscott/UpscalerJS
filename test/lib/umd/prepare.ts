@@ -6,7 +6,6 @@ import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
 import { mkdirp } from 'fs-extra';
 import buildModels from '../../../scripts/package-scripts/build-model';
-import { buildUpscaler } from '../utils/buildUpscaler';
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
@@ -18,14 +17,11 @@ export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   mkdirp(DIST);
 
-  buildUpscaler('browser');
-
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   const scriptsToInclude: Array<string> = [];
   const availableModelPackages = getAllAvailableModelPackages();
   for (let i = 0; i < availableModelPackages.length; i++) {
     const packageName = availableModelPackages[i];
-    buildModels([packageName], ['umd']);
     const models = getAllAvailableModels(packageName);
     models.forEach(({ export: fileName }) => {
       const MODEL_PATH = path.join(MODELS_PATH, packageName);

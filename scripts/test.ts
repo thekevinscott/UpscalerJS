@@ -104,9 +104,11 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node');
       await buildUpscaler('node-gpu');
     }
+    console.log(`** built upscaler: ${platform}`)
   }
   if (argv.skipModelBuild !== true) {
     await buildModels(getAllAvailableModelPackages(), getOutputFormats(platform));
+    console.log(`** built models: ${getOutputFormats(platform)}`)
   }
   const args = [
     'jest',
