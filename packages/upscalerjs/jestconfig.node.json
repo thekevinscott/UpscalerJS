@@ -9,7 +9,6 @@
     ".generated.ts",
     ".browser.ts"
   ],
-  "globalSetup": "jest.setup.ts",
   "modulePathIgnorePatterns": ["browser.test.ts"],
   "testRegex": "test\\.ts$",
   "moduleFileExtensions": ["js", "ts"]
