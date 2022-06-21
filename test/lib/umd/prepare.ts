@@ -15,7 +15,7 @@ const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
-  fs.mkdirSync(DIST, { recursive: true });
+  mkdirp(DIST);
 
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   const scriptsToInclude: Array<string> = [];
@@ -26,22 +26,11 @@ export const prepareScriptBundleForUMD = async () => {
     const models = getAllAvailableModels(packageName);
     models.forEach(({ export: fileName }) => {
       const MODEL_PATH = path.join(MODELS_PATH, packageName);
-      console.log('MODEL_PATH', MODEL_PATH);
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(MODEL_PATH, 'dist/browser/umd', minifiedFileName);
       const dest = path.join(DIST, minifiedFileName);
-      console.log('dest', dest);
       const destDir = path.dirname(dest);
       mkdirp(destDir);
-      console.log('made directory', destDir);
-      [
-        MODEL_PATH, 
-        path.join(MODEL_PATH, 'dist'),
-        path.join(MODEL_PATH, 'dist/browser'),
-        path.join(MODEL_PATH, 'dist/browser/umd'),
-    ].forEach(dir => {
-        console.log(dir, fs.readdirSync(dir))
-      })
       const contents = fs.readFileSync(source, 'utf-8');
       fs.writeFileSync(dest, contents);
       scriptsToInclude.push(minifiedFileName);

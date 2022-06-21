@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
 import ts, { ProjectReference } from "typescript";
 import path from 'path';
@@ -118,7 +118,7 @@ const buildUMD = async (modelFolder: string) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/browser/umd');
   // await rm(DIST);
-  fs.mkdirSync(DIST);
+  mkdirp(DIST);
 
   const srcFiles = getSrcFiles(modelFolder);
   if (srcFiles.length === 0) {
@@ -189,7 +189,7 @@ const buildCJS = async (modelFolder: string) => {
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
-    fs.mkdirSync(dist);
+    mkdirp(dist);
 
     await scaffoldPlatform(platform, [SRC]);
 
@@ -212,13 +212,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   const DIST = path.resolve(MODEL_ROOT, 'dist')
 
   await rm(DIST);
-  fs.mkdirSync(DIST);
+  mkdirp(DIST);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     const SRC = path.resolve(MODEL_ROOT, 'src');
-    fs.mkdirSync(path.resolve(DIST, 'browser'));
+    mkdirp(path.resolve(DIST, 'browser'));
     await scaffoldPlatform('browser', [SRC]);
 
     if (outputFormats.includes('esm')) {
