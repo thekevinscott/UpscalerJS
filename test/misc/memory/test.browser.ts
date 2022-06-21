@@ -533,9 +533,9 @@ describe('Memory Leaks', () => {
   it('should upscale with the idealo model', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
-      const tf = window['tf'];
       const Upscaler = window['Upscaler'];
-      const ESRGANGANS = window['ESRGANGANS'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
+      console.log(ESRGANGANS);
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
@@ -739,6 +739,8 @@ declare global {
     pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
-    ESRGANGANS: ModelDefinition;
+    'esrgan-legacy': {
+      'gans': ModelDefinition;
+    }
   }
 }
