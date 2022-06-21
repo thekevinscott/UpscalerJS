@@ -7,7 +7,7 @@ import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as tf from '@tensorflow/tfjs';
 import puppeteer from 'puppeteer';
-import Upscaler from '../../../packages/upscalerjs';
+import Upscaler from 'upscaler';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
