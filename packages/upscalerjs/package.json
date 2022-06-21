@@ -34,7 +34,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
-    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && pnpm scaffold:platform 'browser' && pnpm build:umd && pnpm build:esm",
+    "build:browser": "rimraf dist && mkdir -p dist/browser && pnpm scaffold:platform 'browser' && pnpm build:umd && pnpm build:esm",
     "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:platform 'node' && pnpm build:cjs && mv dist/cjs dist/node/cjs",
     "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:platform 'node-gpu' && pnpm build:cjs && mv dist/cjs dist/node-gpu/cjs",
     "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5 --outDir dist/cjs",
