@@ -14,7 +14,6 @@ window.tf = tf;
 window.flower = flower;
 window.Upscaler = Upscaler;
 // window['esrgan-slim'] = ESRGANSlim;
-console.log(JSON.stringify(pixelUpsampler4x));
 window['pixel-upsampler'] = {
   '2x': pixelUpsampler2x,
   '3x': pixelUpsampler3x,
