@@ -17,11 +17,17 @@ console.log('UPSCALER_PATH', UPSCALER_PATH, fs.readdirSync(UPSCALER_PATH));
 console.log('UPSCALER_PATH/dist', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist')));
 console.log('UPSCALER_PATH/dist/browser', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist/browser')));
 console.log('UPSCALER_PATH/dist/browser/umd', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist/browser/umd')));
+[
+  DIST,
+].forEach(dir => {
+  console.log(dir, fs.readdirSync(dir));
+})
 
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   mkdirp(DIST);
 
+  console.log('does file exist', fs.existsSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js')));
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   const scriptsToInclude: Array<string> = [];
   const availableModelPackages = getAllAvailableModelPackages();
