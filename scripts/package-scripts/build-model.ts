@@ -118,7 +118,7 @@ const buildUMD = async (modelFolder: string) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/browser/umd');
   // await rm(DIST);
-  mkdirp(DIST);
+  await mkdirp(DIST);
 
   const srcFiles = getSrcFiles(modelFolder);
   if (srcFiles.length === 0) {
@@ -189,7 +189,7 @@ const buildCJS = async (modelFolder: string) => {
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
-    mkdirp(dist);
+    await mkdirp(dist);
 
     await scaffoldPlatform(platform, [SRC]);
 
@@ -212,13 +212,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   const DIST = path.resolve(MODEL_ROOT, 'dist')
 
   await rm(DIST);
-  mkdirp(DIST);
+  await mkdirp(DIST);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     const SRC = path.resolve(MODEL_ROOT, 'src');
-    mkdirp(path.resolve(DIST, 'browser'));
+    await mkdirp(path.resolve(DIST, 'browser'));
     await scaffoldPlatform('browser', [SRC]);
 
     if (outputFormats.includes('esm')) {
