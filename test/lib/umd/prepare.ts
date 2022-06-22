@@ -11,9 +11,12 @@ console.log('UMD_ROOT', UMD_ROOT, fs.readdirSync(UMD_ROOT));
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
 export const DIST = path.join(UMD_ROOT, '/dist');
 const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
-console.log('UPSCALER_PATH', UPSCALER_PATH, fs.readdirSync(UPSCALER_PATH));
 const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 console.log('MODELS_PATH', MODELS_PATH, fs.readdirSync(MODELS_PATH));
+console.log('UPSCALER_PATH', UPSCALER_PATH, fs.readdirSync(UPSCALER_PATH));
+console.log('UPSCALER_PATH/dist', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist')));
+console.log('UPSCALER_PATH/dist/browser', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist/browser')));
+console.log('UPSCALER_PATH/dist/browser/umd', UPSCALER_PATH, fs.readdirSync(path.join(UPSCALER_PATH, 'dist/browser/umd')));
 
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
