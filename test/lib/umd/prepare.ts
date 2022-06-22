@@ -10,13 +10,13 @@ const UMD_ROOT = path.join(__dirname);
 console.log('UMD_ROOT', UMD_ROOT, fs.readdirSync(UMD_ROOT));
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
 export const DIST = path.join(UMD_ROOT, 'dist');
-console.log('DIST', DIST, fs.readdirSync(DIST));
 const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   await mkdirp(DIST);
+  console.log('DIST', DIST, fs.readdirSync(DIST));
 
   console.log('does file exist', fs.existsSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js')));
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
