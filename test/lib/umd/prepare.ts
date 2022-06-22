@@ -7,7 +7,6 @@ import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/ge
 import { mkdirp } from 'fs-extra';
 
 const UMD_ROOT = path.join(__dirname);
-console.log('UMD_ROOT', UMD_ROOT, fs.readdirSync(UMD_ROOT));
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
 export const DIST = path.join(UMD_ROOT, 'dist');
 const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
@@ -16,9 +15,6 @@ const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   await mkdirp(DIST);
-  console.log('DIST', DIST, fs.readdirSync(DIST));
-
-  console.log('does file exist', fs.existsSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js')));
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
   const scriptsToInclude: Array<string> = [];
   const availableModelPackages = getAllAvailableModelPackages();
@@ -30,6 +26,14 @@ export const prepareScriptBundleForUMD = async () => {
       const MODEL_PATH = path.join(MODELS_PATH, packageName);
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(MODEL_PATH, 'dist/browser/umd', minifiedFileName);
+      [
+        path.join(MODEL_PATH, ''),
+        path.join(MODEL_PATH, 'dist'),
+        path.join(MODEL_PATH, 'dist/browser/'),
+        path.join(MODEL_PATH, 'dist/browser/umd'),
+      ].forEach(dir => {
+        console.log(dir, fs.readdirSync(dir));
+      })
       const dest = path.join(DIST, minifiedFileName);
       const destDir = path.dirname(dest);
       await mkdirp(destDir);
