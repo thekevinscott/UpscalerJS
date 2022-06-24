@@ -13,6 +13,8 @@ const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 
 export const prepareScriptBundleForUMD = async () => {
+  const dirrrr = '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy/dist/browser/umd';
+  console.log(dirrrr, fs.readdirSync(dirrrr));
   rimraf.sync(DIST);
   await mkdirp(DIST);
   fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
