@@ -113,11 +113,13 @@ const buildESM = async (modelFolder: string) => {
 }
 
 const buildUMD = async (modelFolder: string) => {
+  console.log('going to do UMD now');
   const SRC = path.resolve(modelFolder, 'src');
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/browser/umd');
   // await rm(DIST);
   await mkdirp(DIST);
+  console.log('SRC', fs.readdirSync(SRC));
 
   const srcFiles = getSrcFiles(modelFolder);
   if (srcFiles.length === 0) {
@@ -129,6 +131,7 @@ const buildUMD = async (modelFolder: string) => {
     rootDir: SRC,
     outDir: TMP,
   }, references);
+  console.log('TMP', fs.readdirSync(TMP));
 
   const files = getExportFiles(modelFolder);
   const umdNames = getUMDNames(modelFolder);
@@ -143,6 +146,7 @@ const buildUMD = async (modelFolder: string) => {
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
     const input = path.resolve(TMP, filename);
     const file = path.basename(filename);
+    console.log(FILE_DIST, input, file)
 
     mkdirpSync(FILE_DIST);
     await rollupBuild({
@@ -168,6 +172,7 @@ const buildUMD = async (modelFolder: string) => {
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
+    console.log('FILE_DIST', fs.readdirSync(FILE_DIST));
   }
   await rm(TMP);
 }

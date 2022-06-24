@@ -27,8 +27,6 @@ export const prepareScriptBundleForUMD = async () => {
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(MODEL_PATH, 'dist/browser/umd', minifiedFileName);
       [
-        path.join(MODEL_PATH, ''),
-        path.join(MODEL_PATH, 'dist'),
         path.join(MODEL_PATH, 'dist/browser/'),
         path.join(MODEL_PATH, 'dist/browser/umd'),
       ].forEach(dir => {
