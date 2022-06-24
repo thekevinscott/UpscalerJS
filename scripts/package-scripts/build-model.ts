@@ -37,10 +37,9 @@ const TSCONFIG: ts.CompilerOptions = {
   "noUnusedParameters": true,
   "noImplicitReturns": true,
   "noFallthroughCasesInSwitch": true,
-  "composite": true,
-  "paths": {
-    "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
-  },
+  // "paths": {
+  //   "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
+  // },
 };
 
 const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
