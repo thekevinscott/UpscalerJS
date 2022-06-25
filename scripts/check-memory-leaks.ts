@@ -7,6 +7,8 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
+import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
+import buildModels from './package-scripts/build-model';
 
 dotenv.config();
 
@@ -25,6 +27,11 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 
   if (argv.skipBuild !== true) {
     await buildUpscaler('browser');
+    console.log(`** built upscaler: browser`)
+  }
+  if (argv.skipModelBuild !== true) {
+    await buildModels(getAllAvailableModelPackages(), ['esm']);
+    console.log(`** built models: ${['esm']}`)
   }
   const args = [
     'pnpm',

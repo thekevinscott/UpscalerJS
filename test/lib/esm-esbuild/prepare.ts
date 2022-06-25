@@ -12,16 +12,6 @@ export const bundle = async () => {
   await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
   copyFixtures(DIST, false);
-  [
-    ROOT,
-    path.join(ROOT, 'node_modules'),
-    '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy',
-    '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy/dist',
-    '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy/dist/browser',
-    '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy/dist/browser/esm',
-  ].forEach(dir => {
-    console.log(dir, fs.readdirSync(dir));
-  })
 
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
