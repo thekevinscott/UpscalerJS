@@ -33,6 +33,7 @@
     "find-all-packages": "ts-node scripts/package-scripts/find-all-packages.ts",
     "example": "ts-node ./scripts/start-example.ts",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
+
     "test:integration:browserstack": "ts-node scripts/test.ts --platform browser --kind browserstack",
     "test:integration:browser": "ts-node scripts/test.ts --platform browser",
     "test:integration:node": "ts-node scripts/test.ts --platform node",
