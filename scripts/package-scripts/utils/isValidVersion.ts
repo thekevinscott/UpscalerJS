@@ -1,6 +1,7 @@
 const splitParts = (version: string) => {
   try {
-    return version.split(".");
+    const firstPart = version.split('-')[0];
+    return firstPart.split(".");
   } catch(err) {
     console.error(`Could not split version ${version}`);
     throw err;
