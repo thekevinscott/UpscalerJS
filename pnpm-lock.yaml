@@ -337,6 +337,12 @@ importers:
     dependencies:
       '@upscalerjs/core': link:../../packages/core
 
+  models/esrgan-slim:
+    specifiers:
+      '@upscalerjs/core': workspace:*
+    dependencies:
+      '@upscalerjs/core': link:../../packages/core
+
   models/pixel-upsampler:
     specifiers:
       '@upscalerjs/core': workspace:*
@@ -345,21 +351,9 @@ importers:
 
   packages/core:
     specifiers:
-<<<<<<< HEAD
-      '@upscalerjs/core': workspace:*
-    dependencies:
-      '@upscalerjs/core': link:../../packages/core
-
-  packages/core:
-    specifiers:
-      '@tensorflow/tfjs': ^3.18.0
-    devDependencies:
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
-=======
       '@tensorflow/tfjs-core': ^3.18.0
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
->>>>>>> v1.0.0
 
   packages/upscalerjs:
     specifiers:
@@ -369,6 +363,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.11.0
       '@typescript-eslint/parser': ^5.11.0
       '@upscalerjs/core': workspace:*
+      '@upscalerjs/esrgan-slim': workspace:*
       chokidar: ^3.5.3
       eslint: ^8.8.0
       eslint-config-prettier: ^8.3.0
@@ -378,6 +373,7 @@ importers:
       tensor-as-base64: ^0.2.0
     dependencies:
       '@upscalerjs/core': link:../core
+      '@upscalerjs/esrgan-slim': link:../../models/esrgan-slim
       tensor-as-base64: 0.2.0_@tensorflow+tfjs@3.18.0
     devDependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
