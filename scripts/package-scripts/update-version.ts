@@ -83,7 +83,7 @@ const getCurrentVersions = () => {
   return [
     `root: ${rootVersion}`,
     `upscaler: ${upscalerJSVersion}`,
-    `models: ${coreVersion}`,
+    `core: ${coreVersion}`,
   ].join(' | ');
 };
 

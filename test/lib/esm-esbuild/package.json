@@ -7,7 +7,6 @@
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "upscaler-for-esbuild": "workspace:upscaler@*",
-    "@upscalerjs-for-esbuild/esrgan-slim": "workspace:@upscalerjs/esrgan-slim@*",
     "@upscalerjs-for-esbuild/esrgan-legacy": "workspace:@upscalerjs/esrgan-legacy@*",
     "@upscalerjs-for-esbuild/pixel-upsampler": "workspace:@upscalerjs/pixel-upsampler@*",
     "@tensorflow/tfjs": "^3.12.0"

@@ -1,6 +1,5 @@
 import { tf, } from './dependencies.generated';
 import { ModelDefinition, } from '@upscalerjs/core';
-// import { SerializableConstructor, } from '@tensorflow/tfjs-core/dist/serialization';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
