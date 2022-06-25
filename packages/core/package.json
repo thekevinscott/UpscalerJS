@@ -1,0 +1,20 @@
+{
+  "name": "@upscalerjs/core",
+  "version": "1.0.0-beta.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    ".npmrc",
+    "LICENSE",
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
+  }
+}

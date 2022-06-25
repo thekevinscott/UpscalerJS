@@ -21,7 +21,7 @@ const warmup = async (
       const { patchSize, padding = 0, } = size;
 
       const amount = patchSize + padding * 2;
-      const pred = model.predict(tf.zeros([1, amount, amount, 3,])) as tf.Tensor4D;
+      const pred = tf.tidy(() => model.predict(tf.zeros([1, amount, amount, 3,])) as tf.Tensor4D);
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();
@@ -34,7 +34,7 @@ const warmup = async (
         );
       }
       const [width, height,] = size;
-      const pred = model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D;
+      const pred = tf.tidy(() => model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D);
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();

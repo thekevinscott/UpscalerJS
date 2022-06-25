@@ -1,4 +1,4 @@
-import { ModelDefinition } from 'upscaler/types';
+import { ModelDefinition } from '@upscalerjs/core';
 import { NAME, VERSION } from '../constants.generated';
 
 const modelDefinition: ModelDefinition = {

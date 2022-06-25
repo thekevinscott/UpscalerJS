@@ -37,7 +37,7 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
 // }
 
 export const loadModel = async (
-  modelDefinition: ModelDefinition,
+  modelDefinition: ModelDefinition | undefined,
   // modelDefinition: ModelDefinition = DEFAULT_MODEL_DEFINITION,
 ): Promise<{
   model: tf.LayersModel;

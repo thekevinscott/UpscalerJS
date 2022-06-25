@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
 import ts, { ProjectReference } from "typescript";
 import path from 'path';
@@ -18,9 +18,10 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
-const references: ProjectReference[] = [{
-  path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
-}];
+// const references: ProjectReference[] = [{
+//   path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
+// }];
+const references: ProjectReference[] = [];
 const TSCONFIG: ts.CompilerOptions = {
   "skipLibCheck": true,
   "esModuleInterop": true,
@@ -36,10 +37,9 @@ const TSCONFIG: ts.CompilerOptions = {
   "noUnusedParameters": true,
   "noImplicitReturns": true,
   "noFallthroughCasesInSwitch": true,
-  "composite": true,
-  "paths": {
-    "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
-  },
+  // "paths": {
+  //   "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
+  // },
 };
 
 const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
@@ -78,9 +78,12 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   const SRC = path.resolve(modelFolder, 'src');
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
+
 const getExportFiles = (modelFolder: string): Array<string> => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
+  // const SRC = path.resolve(modelFolder, 'src');
+  const packageJSONPath = path.resolve(modelFolder, 'package.json');
+  const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
+  const { exports } = JSON.parse(packageJSON);
   // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
   const keys = Object.keys(exports);
   if (keys.length === 1) {
@@ -114,7 +117,7 @@ const buildUMD = async (modelFolder: string) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/browser/umd');
   // await rm(DIST);
-  fs.mkdirSync(DIST);
+  await mkdirp(DIST);
 
   const srcFiles = getSrcFiles(modelFolder);
   if (srcFiles.length === 0) {
@@ -185,9 +188,9 @@ const buildCJS = async (modelFolder: string) => {
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
-    fs.mkdirSync(dist);
+    await mkdirp(dist);
 
-    await scaffoldPlatform(platform, SRC);
+    await scaffoldPlatform(platform, [SRC]);
 
     await compile(files, {
     ...TSCONFIG,
@@ -208,14 +211,14 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   const DIST = path.resolve(MODEL_ROOT, 'dist')
 
   await rm(DIST);
-  fs.mkdirSync(DIST);
+  await mkdirp(DIST);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     const SRC = path.resolve(MODEL_ROOT, 'src');
-    fs.mkdirSync(path.resolve(DIST, 'browser'));
-    await scaffoldPlatform('browser', SRC);
+    await mkdirp(path.resolve(DIST, 'browser'));
+    await scaffoldPlatform('browser', [SRC]);
 
     if (outputFormats.includes('esm')) {
       await buildESM(MODEL_ROOT);

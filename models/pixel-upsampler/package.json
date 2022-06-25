@@ -1,7 +1,10 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Pixel Upsampler Model for Upscaler.js",
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
   "exports": {
     ".": {
       "require": "./dist/node/2x.js",

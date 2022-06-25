@@ -3,7 +3,6 @@
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
   "testEnvironment": "node",
-  "setupFiles": ["./jest.setup.ts"],
   "collectCoverage": true,
   "coveragePathIgnorePatterns": [
     "node_modules",

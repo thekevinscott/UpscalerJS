@@ -47,8 +47,6 @@ describe('Model Loading Integration Tests', () => {
       }
     });
 
-    await new Promise(resolve => setTimeout(resolve, 10000));
-
     await Promise.all([
       stopServer(),
     ]);
@@ -63,7 +61,11 @@ describe('Model Loading Integration Tests', () => {
     page = await browser.newPage();
     if (LOG) {
       page.on('console', message => {
-        console.log('[PAGE]', message.text());
+        const text = message.text().trim();
+        console.log('[PAGE]', text);
+        if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+          console.log(message);
+        }
       });
     }
     await page.goto(`http://localhost:${PORT}`);
@@ -76,15 +78,15 @@ describe('Model Loading Integration Tests', () => {
     page = undefined;
   });
 
-  it("loads the default model", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']();
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
-  });
+  // it("loads the default model", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']();
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+  // });
 
-  it("can import a model", async () => {
+  it("can import a specific model", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['4x'],

@@ -1,6 +1,6 @@
 {
-  "name": "upscalerjs-root",
-  "version": "1.0.0",
+  "name": "@upscalerjs/root",
+  "version": "1.0.0-beta.0",
   "private": true,
   "babel": {
     "env": {
@@ -50,6 +50,7 @@
     "@tensorflow/tfjs": "^3.12.0"
   },
   "devDependencies": {
+    "upscaler": "workspace:*",
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@rollup/plugin-commonjs": "^21.0.1",
@@ -95,7 +96,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "seedrandom": "~2.4.3",
-    "selenium-webdriver": "^4.0.0-beta.1",
+    "selenium-webdriver": "^4.2.0",
     "serve": "^11.3.2",
     "tape": "^5.5.0",
     "tree-kill": "^1.2.2",
@@ -106,5 +107,8 @@
     "webpack": "^5.24.3",
     "yargs": "^17.3.1"
   },
-  "packageManager": "pnpm@3.1.0"
+  "packageManager": "pnpm@3.1.0",
+  "dependencies": {
+    "@types/selenium-webdriver": "^4.1.1"
+  }
 }

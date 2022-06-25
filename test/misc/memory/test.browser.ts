@@ -1,4 +1,4 @@
-import puppeteer, { Browser, BrowserContext, Page, WaitTask } from 'puppeteer';
+import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
@@ -137,11 +137,10 @@ describe('Memory Leaks', () => {
     ]);
   });
 
-  const tick = async (dur = 10) => {
+  const tick = async (page: puppeteer.Page, tickTime = 10) => {
     await page.evaluate(async (duration) => {
-      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-      await wait();
-    }, dur);
+      await new Promise(resolve => setTimeout(resolve, duration));
+    }, tickTime);
   }
 
   const checkMemory = (names: Array<'LayersModel' | 'Upscaler'>, starting: MemoryRecord, ending: MemoryRecord) => {
@@ -155,7 +154,7 @@ describe('Memory Leaks', () => {
         expect(endingObjects).toEqual(startingObjects);
       } catch(err) {
         const diff = endingObjects - startingObjects;
-        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name}.`)).toBeUndefined();
+        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name} and there should be 0. Ending objects: ${endingObjects}, starting objects: ${startingObjects}`)).toBeUndefined();
       }
     }
 
@@ -240,10 +239,19 @@ describe('Memory Leaks', () => {
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler();
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler();
+        const upscaler = new Upscaler({
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          }
+        });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
+
+    await tick(page);
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
@@ -255,13 +263,21 @@ describe('Memory Leaks', () => {
 
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
       for (let i = 0; i < times; i++) {
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler({
+        //   warmupSizes: [[50, 50]],
+        // });
         const upscaler = new Upscaler({
           warmupSizes: [[50, 50]],
+          model: ESRGANGANS,
         });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
+
+    await tick(page);
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
@@ -284,11 +300,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    // give a tick to clean up
-    await page.evaluate(async (duration) => {
-      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-      await wait();
-    }, 10);
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -315,7 +327,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -344,7 +356,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -373,7 +385,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -403,7 +415,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -436,7 +448,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -475,7 +487,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -508,7 +520,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -518,15 +530,12 @@ describe('Memory Leaks', () => {
   it('should upscale with the idealo model', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
-      const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            path: '@upscalerjs/esrgan-legacy/gans',
-            scale: 4,
-          },
+          model: ESRGANGANS,
         });
         output = await upscaler.upscale(window['flower']);
 
@@ -535,7 +544,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -568,7 +577,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -606,7 +615,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     expect(image.shape).toEqual([8, 8, 3]);
     await page.evaluate(() => {
       window['output'].dispose();
@@ -638,7 +647,7 @@ describe('Memory Leaks', () => {
       }
     }), TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -674,7 +683,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -711,7 +720,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -726,5 +735,6 @@ declare global {
     pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
+    'esrgan-legacy': Record<string, ModelDefinition>;
   }
 }
