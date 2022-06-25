@@ -154,6 +154,13 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
       }, dir => {
         return `- Updated "upscaler" dependency in ${getFormattedName(dir)}`;
       });
+      updateSinglePackage(WRAPPER_DIR, version, commit, packageJSON => {
+        const deps = packageJSON.dependencies;
+        deps['upscaler'] = version;
+        return packageJSON;
+      }, dir => {
+        return `- Updated "upscaler" dependency in ${getFormattedName(dir)}`;
+      });
     }
     if (commit) {
       const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
