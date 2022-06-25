@@ -1,8 +1,15 @@
 {
   "name": "@upscalerjs/core",
-  "private": "true",
-  "main": "./src/index.ts",
-  "dependencies": {
-    "@tensorflow/tfjs": "^3.12.0"
+  "version": "1.0.0-beta.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
   }
 }

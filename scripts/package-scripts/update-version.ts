@@ -6,14 +6,15 @@ import isValidVersion from './utils/isValidVersion';
 import execute from './utils/execute';
 
 type PackageJson = Record<string, any>;
-type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
+type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string, commit: boolean, updateDependencies?: boolean, }
 type GetMessage = (file: string) => string;
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
-const MODELS_DIR = path.resolve(PACKAGES_DIR, 'models');
+const CORE_DIR = path.resolve(PACKAGES_DIR, 'core');
+const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 
 const getFormattedName = (file: string) => {
@@ -77,19 +78,20 @@ const getVersion = (dir: string) => {
 const getCurrentVersions = () => {
   const upscalerJSVersion = getVersion(UPSCALERJS_DIR);
   const rootVersion = getVersion(ROOT_DIR);
-  const modelsVersion = getVersion(MODELS_DIR);
+  const coreVersion = getVersion(CORE_DIR);
   return [
     `root: ${rootVersion}`,
     `upscaler: ${upscalerJSVersion}`,
-    `models: ${modelsVersion}`,
+    `models: ${coreVersion}`,
   ].join(' | ');
 };
 
 const UPSCALER_JS = 'UpscalerJS';
+const CORE = 'Core';
 const ROOT = 'Root';
 const EXAMPLES = 'Examples';
 const MODELS = 'Models';
-const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT];
+const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT, CORE];
 
 const updateVersion = (): Promise<void> => new Promise(resolve => {
   inquirer.prompt<Answers>([
@@ -131,6 +133,8 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
         return updateMultiplePackages(EXAMPLES_DIR, version, commit);
       } else if (packageKey === MODELS) {
         return updateSinglePackage(MODELS_DIR, version, commit);
+      } else if (packageKey === CORE) {
+        return updateSinglePackage(CORE_DIR, version, commit);
       } else if (packageKey === UPSCALER_JS) {
         return updateSinglePackage(UPSCALERJS_DIR, version, commit);
       } else if (packageKey === ROOT) {

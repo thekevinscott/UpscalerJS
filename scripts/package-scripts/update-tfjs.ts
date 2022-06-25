@@ -4,12 +4,13 @@ import inquirer from 'inquirer';
 import findAllPackages from './find-all-packages';
 import isValidVersion from './utils/isValidVersion';
 
-type Package = 'UpscalerJS' | 'Test' | 'Examples' | 'Root';
+type Package = 'UpscalerJS' | 'Core' | 'Test' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string}
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
+const CORE_DIR = path.resolve(PACKAGES_DIR, 'core');
 const TEST_DIR = path.resolve(ROOT_DIR, 'test/lib');
 const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 
@@ -125,6 +126,8 @@ const updateTFJS = async () => {
       updateSinglePackage(UPSCALERJS_DIR, version)
     } else if (packageKey === 'Root') {
       updateSinglePackage(ROOT_DIR, version)
+    } else if (packageKey === 'Core') {
+      updateSinglePackage(CORE_DIR, version);
     }
   });
 };
