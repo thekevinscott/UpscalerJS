@@ -345,9 +345,9 @@ importers:
 
   packages/core:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
-    devDependencies:
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-core': ^3.18.0
+    dependencies:
+      '@tensorflow/tfjs-core': 3.18.0
 
   packages/upscalerjs:
     specifiers:
