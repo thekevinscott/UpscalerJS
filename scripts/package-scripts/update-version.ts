@@ -6,7 +6,7 @@ import isValidVersion from './utils/isValidVersion';
 import execute from './utils/execute';
 
 type PackageJson = Record<string, any>;
-type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Examples' | 'Root';
+type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Examples' | 'Root' | 'Wrapper';
 type Answers = { packages: Array<Package>, version: string, commit: boolean, updateDependencies?: boolean, }
 type GetMessage = (file: string) => string;
 
@@ -14,6 +14,7 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
 const CORE_DIR = path.resolve(PACKAGES_DIR, 'core');
+const WRAPPER_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs-wrapper');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 
@@ -89,9 +90,10 @@ const getCurrentVersions = () => {
 const UPSCALER_JS = 'UpscalerJS';
 const CORE = 'Core';
 const ROOT = 'Root';
+const WRAPPER = 'Wrapper';
 const EXAMPLES = 'Examples';
 const MODELS = 'Models';
-const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT, CORE];
+const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT, CORE, WRAPPER ];
 
 const updateVersion = (): Promise<void> => new Promise(resolve => {
   inquirer.prompt<Answers>([
@@ -139,7 +141,10 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
         return updateSinglePackage(UPSCALERJS_DIR, version, commit);
       } else if (packageKey === ROOT) {
         return updateSinglePackage(ROOT_DIR, version, commit);
+      } else if (packageKey === WRAPPER) {
+        return updateSinglePackage(WRAPPER_DIR, version, commit);
       }
+      
     }));
     if (updateDependencies) {
       updateMultiplePackages(EXAMPLES_DIR, version, commit, packageJSON => {
