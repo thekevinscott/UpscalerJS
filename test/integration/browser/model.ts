@@ -1,21 +1,26 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
+import * as http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
+import Upscaler, { ModelDefinition } from 'upscaler';
+import * as tf from '@tensorflow/tfjs';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../lib/utils/getAllAvailableModels';
 
 const TRACK_TIME = false;
-
+const LOG = true;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(1);
+jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  let server;
-  let browser;
-  let page;
+  let server: http.Server;
+  let browser: puppeteer.Browser;
+  let page: puppeteer.Page;
 
   const PORT = 8099;
 
@@ -33,7 +38,7 @@ describe('Model Loading Integration Tests', () => {
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
-    const stopServer = (): Promise<void> => new Promise((resolve) => {
+    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
       if (server) {
         server.close(resolve);
       } else {
@@ -41,6 +46,7 @@ describe('Model Loading Integration Tests', () => {
         resolve();
       }
     });
+
     await Promise.all([
       stopServer(),
     ]);
@@ -53,6 +59,15 @@ describe('Model Loading Integration Tests', () => {
   beforeEach(async function beforeEach() {
     browser = await puppeteer.launch();
     page = await browser.newPage();
+    if (LOG) {
+      page.on('console', message => {
+        const text = message.text().trim();
+        console.log('[PAGE]', text);
+        if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
+          console.log(message);
+        }
+      });
+    }
     await page.goto(`http://localhost:${PORT}`);
     await page.waitForFunction('document.title.endsWith("| Loaded")');
   });
@@ -63,11 +78,31 @@ describe('Model Loading Integration Tests', () => {
     page = undefined;
   });
 
+  // it("loads the default model", async () => {
+  //   const result = await page.evaluate(() => {
+  //     const upscaler = new window['Upscaler']();
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+  // });
+
+  it("can import a specific model", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixel-upsampler']['4x'],
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
+
   it("loads a locally exposed model via implied HTTP", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: '/pixelator/pixelator.json',
-        scale: 4,
+        model: {
+          path: '/pixelator/pixelator.json',
+          scale: 4,
+        },
       });
       return upscaler.upscale(window['flower']);
     });
@@ -77,21 +112,78 @@ describe('Model Loading Integration Tests', () => {
   it("loads a locally exposed model via absolute HTTP", async () => {
     const result = await page.evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: `${window.location.origin}/pixelator/pixelator.json`,
-        scale: 4,
+        model: {
+          path: `${window.location.origin}/pixelator/pixelator.json`,
+          scale: 4,
+        },
       });
       return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("can load model definitions in the browser", async () => {
-    const result = await page.evaluate(() => {
-      const upscaler = new window['Upscaler']();
-      return upscaler.getModelDefinitions();
+  describe('Test specific model implementations', () => {
+    let serverUMD: http.Server;
+
+    const PORT_UMD = 8098;
+
+    beforeAll(async function beforeAll() {
+      await prepareScriptBundleForUMD();
+      serverUMD = await startServer(PORT_UMD, UMD_DIST);
+    }, 20000);
+
+    afterAll(async function modelAfterAll() {
+      const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
+        if (serverUMD) {
+          serverUMD.close(resolve);
+        } else {
+          console.warn('No server found')
+          resolve();
+        }
+      });
+
+      await stopServer();
+    }, 10000);
+
+    getAllAvailableModelPackages().map(packageName => {
+      describe(packageName, () => {
+        const models = getAllAvailableModels(packageName);
+        models.forEach(({ esm: esmName, umd: umdName }) => {
+          it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+            const result = await page.evaluate(([packageName, modelName]) => {
+              const modelDefinition: any = window[packageName][modelName];
+              const upscaler = new window['Upscaler']({
+                model: modelDefinition,
+              });
+              return upscaler.upscale(window['flower']);
+            }, [packageName, esmName]);
+            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          });
+
+          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+            await page.goto(`http://localhost:${PORT_UMD}`);
+            const result = await page.evaluate(([umdName]) => {
+              const model: ModelDefinition = (<any>window)[umdName];
+              const upscaler = new window['Upscaler']({
+                model,
+              });
+              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+            }, [umdName]);
+            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          });
+        });
+      })
     });
-    expect(result['pixelator']).not.toEqual(undefined);
-    expect(result['pixelator']['scale']).toEqual(4);
-    expect(result['pixelator']['urlPath']).toEqual('pixelator');
   });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    flower: string;
+    tf: typeof tf;
+    'pixel-upsampler': Record<string, ModelDefinition>;
+    'esrgan-legacy': Record<string, ModelDefinition>;
+    PixelUpsampler2x: ModelDefinition;
+  }
+}

@@ -1,9 +1,11 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/prepare';
+import { executeNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+
+const OUTPUT_FLAG = '_____OUTPUT_____';
 
 const writeScript = (deps: string) => `
 ${deps}
@@ -18,8 +20,10 @@ const IMG = path.join(FIXTURES, 'flower-small.png');
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
   const upscaler = new Upscaler({
-    model,
-    scale: 4,
+    model: {
+      path: model,
+      scale: 4,
+    }
   });
   const file = fs.readFileSync(filename)
   const image = tf.node.decodeImage(file, 3)
@@ -42,15 +46,15 @@ const getModelPath = () => {
 
 (async () => {
   const data = await main(getModelPath());
-  console.log('OUTPUT: ' + data);
+  console.log('${OUTPUT_FLAG}' + data);
 })();
 `;
 
 const execute = async (contents: string, logExtra = true) => {
   let data = '';
   await executeNodeScript(contents.trim(), chunk => {
-    if (chunk.startsWith('OUTPUT: ')) {
-      data += chunk.split('OUTPUT: ').pop();
+    if (chunk.startsWith(OUTPUT_FLAG)) {
+      data += chunk.split(OUTPUT_FLAG).pop();
     } else if (logExtra) {
       console.log('[PAGE]', chunk);
     }
@@ -59,10 +63,6 @@ const execute = async (contents: string, logExtra = true) => {
 }
 
 describe('Platform Integration Tests', () => {
-  beforeAll(async () => {
-    await prepareScriptBundleForCJS();
-  });
-
   [
     { platform: 'node', deps: `
 const tf = require('@tensorflow/tfjs-node');

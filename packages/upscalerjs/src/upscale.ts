@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
 import type { 
   UpscaleArgs, 
-  IModelDefinition, 
+  ModelDefinition, 
   ProcessFn, 
   ResultFormat, 
   UpscaleResponse, 
@@ -427,7 +427,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
 
 interface UpscaleInternalArgs {
   model: tf.LayersModel,
-  modelDefinition: IModelDefinition,
+  modelDefinition: ModelDefinition,
 }
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,

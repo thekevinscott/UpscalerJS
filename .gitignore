@@ -20,6 +20,7 @@ packages/upscalerjs/src/tfjs.ts
 yarn-error.log
 .yarnrc
 .parcel-cache
-tsconfig.tsbuildinfo
+*.tsbuildinfo
 .yarn
 .pnpm-debug.log
+umd-tmp

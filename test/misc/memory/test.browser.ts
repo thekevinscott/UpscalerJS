@@ -1,7 +1,9 @@
-import puppeteer, { Browser, BrowserContext, Page, WaitTask } from 'puppeteer';
+import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as http from 'http';
+import Upscaler, { ModelDefinition } from 'upscaler';
+import * as tf from '@tensorflow/tfjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 30;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -37,7 +39,7 @@ const PORT = 8099;
 const TIMES_TO_CHECK = 7;
 
 interface PrototypeDefinition {
-  name: string;
+  name: 'LayersModel' | 'Upscaler';
   prototype: (page: Page) => Promise<puppeteer.JSHandle>
 }
 interface TFJSMemory {
@@ -135,14 +137,13 @@ describe('Memory Leaks', () => {
     ]);
   });
 
-  const tick = async (dur = 10) => {
+  const tick = async (page: puppeteer.Page, tickTime = 10) => {
     await page.evaluate(async (duration) => {
-      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-      await wait();
-    }, dur);
+      await new Promise(resolve => setTimeout(resolve, duration));
+    }, tickTime);
   }
 
-  const checkMemory = (names: Array<string>, starting: MemoryRecord, ending: MemoryRecord) => {
+  const checkMemory = (names: Array<'LayersModel' | 'Upscaler'>, starting: MemoryRecord, ending: MemoryRecord) => {
     expect(starting.memory.numTensors).toEqual(ending.memory.numTensors);
     expect(starting.memory.numDataBuffers).toEqual(ending.memory.numDataBuffers);
     for (let i = 0; i < names.length; i++) {
@@ -153,7 +154,7 @@ describe('Memory Leaks', () => {
         expect(endingObjects).toEqual(startingObjects);
       } catch(err) {
         const diff = endingObjects - startingObjects;
-        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name}.`)).toBeUndefined();
+        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name} and there should be 0. Ending objects: ${endingObjects}, starting objects: ${startingObjects}`)).toBeUndefined();
       }
     }
 
@@ -238,10 +239,19 @@ describe('Memory Leaks', () => {
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler();
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler();
+        const upscaler = new Upscaler({
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          }
+        });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
+
+    await tick(page);
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
@@ -253,13 +263,21 @@ describe('Memory Leaks', () => {
 
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
       for (let i = 0; i < times; i++) {
+        // TODO: Revert this to use the default
+        // const upscaler = new Upscaler({
+        //   warmupSizes: [[50, 50]],
+        // });
         const upscaler = new Upscaler({
-          warmupSizes: [50, 50],
+          warmupSizes: [[50, 50]],
+          model: ESRGANGANS,
         });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
+
+    await tick(page);
 
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
@@ -273,18 +291,16 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
 
-    // give a tick to clean up
-    await page.evaluate(async (duration) => {
-      const wait = () => new Promise(resolve => setTimeout(resolve, duration));
-      await wait();
-    }, 10);
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -299,8 +315,10 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-            model: '/pixelator/pixelator.json',
-            scale: 4,
+            model: {
+              path: '/pixelator/pixelator.json',
+              scale: 4,
+            },
           });
           image = await upscaler.upscale(window['flower']);
 
@@ -309,7 +327,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -325,9 +343,9 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-            modelDefinition: {
+            model: {
               scale: 4,
-              url: '/pixelator/pixelator.json',
+              path: '/pixelator/pixelator.json',
               preprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -338,7 +356,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -354,9 +372,9 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-            modelDefinition: {
+            model: {
               scale: 4,
-              url: '/pixelator/pixelator.json',
+              path: '/pixelator/pixelator.json',
               postprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -367,7 +385,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -383,9 +401,9 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-            modelDefinition: {
+            model: {
               scale: 4,
-              url: '/pixelator/pixelator.json',
+              path: '/pixelator/pixelator.json',
               preprocess: (image) => tf.mul(image, 1),
               postprocess: (image) => tf.mul(image, 1),
             }
@@ -397,7 +415,7 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick();
+      await tick(page);
       const endingMemory = await getMemory(page, prototypes);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
@@ -413,9 +431,9 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          modelDefinition: {
+          model: {
             scale: 4,
-            url: '/pixelator/pixelator.json',
+            path: '/pixelator/pixelator.json',
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -430,7 +448,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -438,7 +456,7 @@ describe('Memory Leaks', () => {
 
   it('should upscale with a pre and a post processing functions from a tensor', async () => {
     await page.evaluate(async () => {
-      const getImage = () => new Promise(resolve => {
+      const getImage = (): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = window['flower'];
         img.crossOrigin = 'anonymous';
@@ -452,12 +470,12 @@ describe('Memory Leaks', () => {
     const image = await page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
-      let output;
+      let output: string;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          modelDefinition: {
+          model: {
             scale: 4,
-            url: '/pixelator/pixelator.json',
+            path: '/pixelator/pixelator.json',
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -469,7 +487,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -486,9 +504,9 @@ describe('Memory Leaks', () => {
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          modelDefinition: {
+          model: {
             scale: 4,
-            url: '/pixelator/pixelator.json',
+            path: '/pixelator/pixelator.json',
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -502,7 +520,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -512,12 +530,12 @@ describe('Memory Leaks', () => {
   it('should upscale with the idealo model', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
-      const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const ESRGANGANS = window['esrgan-legacy']['gans'];
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: 'idealo/gans',
+          model: ESRGANGANS,
         });
         output = await upscaler.upscale(window['flower']);
 
@@ -526,7 +544,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -540,8 +558,10 @@ describe('Memory Leaks', () => {
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         await upscaler.upscale(window['flower'], {
           output: 'src',
@@ -557,22 +577,24 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    expect((image as string).substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a tensor', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     const image = await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
-      let output;
+      let output: tf.Tensor;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         await upscaler.upscale(window['flower'], {
           output: 'src',
@@ -593,7 +615,7 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     expect(image.shape).toEqual([8, 8, 3]);
     await page.evaluate(() => {
       window['output'].dispose();
@@ -610,8 +632,10 @@ describe('Memory Leaks', () => {
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         upscaler.upscale(window['flower'], {
           output: 'src',
@@ -623,7 +647,7 @@ describe('Memory Leaks', () => {
       }
     }), TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -636,8 +660,10 @@ describe('Memory Leaks', () => {
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         try {
           await upscaler.upscale(window['flower'], {
@@ -645,7 +671,7 @@ describe('Memory Leaks', () => {
             signal: abortController.signal,
             patchSize: 14,
             padding: 2,
-            progress: (rate) => {
+            progress: (rate: number) => {
               if (rate >= .5) {
                 abortController.abort();
               }
@@ -657,7 +683,7 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
@@ -670,8 +696,10 @@ describe('Memory Leaks', () => {
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: '/pixelator/pixelator.json',
-          scale: 4,
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
         });
         try {
           await upscaler.upscale(window['flower'], {
@@ -680,7 +708,7 @@ describe('Memory Leaks', () => {
             patchSize: 14,
             padding: 2,
             progress: (rate, slice) => {
-              slice.dispose();
+              (slice as unknown as tf.Tensor).dispose();
               if (rate >= .5) {
                 abortController.abort();
               }
@@ -692,9 +720,21 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick();
+    await tick(page);
     const endingMemory = await getMemory(page, prototypes);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 });
+
+declare global {
+  interface Window {
+    Upscaler: typeof Upscaler;
+    flower: string;
+    tf: typeof tf;
+    pixelUpsampler: ModelDefinition;
+    src?: tf.Tensor4D | tf.Tensor3D;
+    output?: tf.Tensor;
+    'esrgan-legacy': Record<string, ModelDefinition>;
+  }
+}

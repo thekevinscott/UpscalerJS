@@ -12,6 +12,7 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
     throw new Error(`Type of src is not string. src: ${JSON.stringify(src)}`)
   }
   const fixture = getFixtureAsBuffer(fixtureSrc);
+  // console.log('fixture', fixtureSrc, fixture.width, fixture.height);
   if (!src.includes('base64,')) {
     throw new Error(`No "base64," tag found in the incoming src, this may indicate a bad src attribute. src: ${src}`);
   }
@@ -22,8 +23,16 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
     fs.writeFileSync(upscaledSrc, PNG.sync.write(upscaledImage));
   }
 
+  try {
   expect(fixture.width).toEqual(upscaledImage.width);
   expect(fixture.height).toEqual(upscaledImage.height);
+  } catch(err) {
+    throw new Error(`Mismatch in image dimensions.
+    
+    Upscaled Image: w ${upscaledImage.width} h ${upscaledImage.height}
+    Fixture: w ${fixture.width} h ${fixture.height}
+    `)
+  }
 
   const diff = new PNG({ width: fixture.width, height: fixture.height });
   const mismatched = pixelmatch(fixture.data, upscaledImage.data, diff.data, fixture.width, fixture.height, { threshold: THRESHOLD });

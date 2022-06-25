@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import warmup from './warmup';
-import { IModelDefinition, } from './types';
+import { ModelDefinition, } from './types';
 
 const getFakeModel = () => {
   const predict = jest.fn(() => {
@@ -20,9 +20,9 @@ describe('Warmup', () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
       model: tf.LayersModel;
-      modelDefinition: IModelDefinition;
+      modelDefinition: ModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
+      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     await expect(warmup(model, [['foo', 1,],] as any)).rejects.toThrow(
       'Invalid value passed to warmup in warmupSizes. Expected two numbers, got foo,1',
@@ -36,9 +36,9 @@ describe('Warmup', () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
       model: tf.LayersModel;
-      modelDefinition: IModelDefinition;
+      modelDefinition: ModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
+      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     expect(warmup(model, [20, 20,] as any)).rejects.toEqual(expect.anything());
   });
@@ -47,9 +47,9 @@ describe('Warmup', () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
       model: tf.LayersModel;
-      modelDefinition: IModelDefinition;
+      modelDefinition: ModelDefinition;
     }>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { url: 'foo', scale: 2, }, }),
+      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     await warmup(model, []);
     expect((await model).model.predict).not.toHaveBeenCalled();
@@ -60,11 +60,11 @@ describe('Warmup', () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
         model: tf.LayersModel;
-        modelDefinition: IModelDefinition;
+        modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2, },
+          modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
       await warmup(model, [[20, 10,],]);
@@ -79,11 +79,11 @@ describe('Warmup', () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
         model: tf.LayersModel;
-        modelDefinition: IModelDefinition;
+        modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2, },
+          modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
       await warmup(model, [
@@ -108,11 +108,11 @@ describe('Warmup', () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
         model: tf.LayersModel;
-        modelDefinition: IModelDefinition;
+        modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2, },
+          modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
       await warmup(model, [{ patchSize: 10, },]);
@@ -127,11 +127,11 @@ describe('Warmup', () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
         model: tf.LayersModel;
-        modelDefinition: IModelDefinition;
+        modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { url: 'foo', scale: 2, },
+          modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
       await warmup(model, [{ patchSize: 10, }, { patchSize: 20, },]);

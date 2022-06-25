@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { ModelDefinition } from './types';
 import { 
   wrapGenerator, 
   isSingleArgProgress, 
@@ -9,7 +10,40 @@ import {
   isTensor, 
   warn, 
   isAborted,
+  registerCustomLayers,
 } from './utils';
+
+jest.mock('@tensorflow/tfjs', () => ({
+  ...(jest.requireActual('@tensorflow/tfjs') ),
+  serialization: {
+    registerClass: jest.fn(),
+  },
+}));
+
+describe('registerCustomLayers', () => {
+  it('does nothing if no custom layers are specified', () => {
+    tf.serialization.registerClass = jest.fn();
+    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      scale: 2,
+    };
+    registerCustomLayers(modelDefinition);
+    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+  });
+
+  it('registers custom layers if provided', () => {
+    tf.serialization.registerClass = jest.fn();
+    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      scale: 2,
+      customLayers: ['foo','bar','baz'] as Array<any>,
+    };
+    registerCustomLayers(modelDefinition);
+    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(3);
+  });
+});
 
 describe('isAborted', () => {
   it('handles an undefined signal', () => {

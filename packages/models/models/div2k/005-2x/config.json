@@ -1,3 +1,0 @@
-{
-  "description": "This model is an RDN model trained from the repo https://github.com/idealo/image-super-resolution.\nThe dataset used for training is DIV2K (https://data.vision.ee.ethz.ch/cvl/DIV2K/).\nThe model's scale is 2x, and the model's hyperparameters are: {C: 3, D: 10, G: 64, G0: 64 }.\nThe model is quantized to 8 bits."
-}

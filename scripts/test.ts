@@ -8,6 +8,16 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
+import buildModels, { AVAILABLE_MODELS, OutputFormat } from '../scripts/package-scripts/build-model';
+import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
+
+const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
+  if (target === 'browser') {
+    return ['umd', 'esm'];
+  }
+  return ['cjs'];
+}
+
 
 dotenv.config();
 
@@ -68,6 +78,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
+    skipModelBuild: { type: 'boolean' },
     kind: { type: 'string' }
   }).argv;
 
@@ -93,14 +104,18 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node');
       await buildUpscaler('node-gpu');
     }
+    console.log(`** built upscaler: ${platform}`)
   }
-
+  if (argv.skipModelBuild !== true) {
+    await buildModels(getAllAvailableModelPackages(), getOutputFormats(platform));
+    console.log(`** built models: ${getOutputFormats(platform)}`)
+  }
   const args = [
     'jest',
     '--config',
     `test/jestconfig.${platform}.${runner}.js`,
     '--detectOpenHandles',
-    argv.watch ? '--watch' : undefined,
+    // argv.watch ? '--watch' : undefined,
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
   const code = await runProcess(args[0], args.slice(1));

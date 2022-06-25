@@ -15,7 +15,7 @@ import {
 import { wrapGenerator, isTensor } from './utils';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
-import { IModelDefinition, Progress, } from './types';
+import { ModelDefinition, Progress, } from './types';
 jest.mock('./image.generated', () => ({
   ...jest.requireActual('./image.generated'),
 }));
@@ -1070,7 +1070,7 @@ describe('predict', () => {
     } as unknown as tf.LayersModel;
     const result = await wrapGenerator(
       predict(img.expandDims(0), {
-      }, { model, modelDefinition: { scale: 2, } as IModelDefinition })
+      }, { model, modelDefinition: { scale: 2, } as ModelDefinition })
     );
     expect(model.predict).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -1098,7 +1098,7 @@ describe('predict', () => {
       },
       {
         model,
-        modelDefinition: { scale: 2, } as IModelDefinition,
+        modelDefinition: { scale: 2, } as ModelDefinition,
       }
     ));
     expect(result.dataSync()).toEqual(
@@ -1152,7 +1152,7 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         progress,
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(progress).toHaveBeenCalledWith(0.25);
     expect(progress).toHaveBeenCalledWith(0.5);
@@ -1181,7 +1181,7 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         progress,
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse);
     expect(progress).toHaveBeenCalledWith(1, mockResponse);
@@ -1250,7 +1250,7 @@ describe('predict', () => {
         padding: 0,
         progress,
         output: 'tensor',
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
@@ -1328,7 +1328,7 @@ describe('predict', () => {
         progress,
         output: 'src',
         progressOutput: 'tensor',
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
@@ -1358,7 +1358,7 @@ describe('predict', () => {
     await wrapGenerator(
       predict(img, {
         patchSize,
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
@@ -1378,7 +1378,7 @@ describe('predict', () => {
     await wrapGenerator(
       predict(img, {
         progress: () => { },
-      }, { model, modelDefinition: { scale, } as IModelDefinition })
+      }, { model, modelDefinition: { scale, } as ModelDefinition })
     );
     expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
@@ -1394,7 +1394,7 @@ describe('predict', () => {
           .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
           .expandDims(0)),
       } as unknown as tf.LayersModel;
-      const gen = predict(img, {}, { model, modelDefinition: { scale, } as IModelDefinition });
+      const gen = predict(img, {}, { model, modelDefinition: { scale, } as ModelDefinition });
       let { value, done } = await gen.next();
       expect(done).toEqual(true);
       expect(Array.isArray(value)).toEqual(false);
@@ -1417,7 +1417,7 @@ describe('predict', () => {
       } as unknown as tf.LayersModel;
       const gen = predict(img, {
         patchSize,
-      }, { model, modelDefinition: { scale, } as IModelDefinition });
+      }, { model, modelDefinition: { scale, } as ModelDefinition });
 
       let count = 0;
       const getColExpectations = () => ([
@@ -1491,7 +1491,7 @@ describe('upscale', () => {
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, {}, {
       model,
-      modelDefinition: { scale: 2, } as IModelDefinition,
+      modelDefinition: { scale: 2, } as ModelDefinition,
     }));
     expect(result).toEqual('foobarbaz');
   });
@@ -1515,7 +1515,7 @@ describe('upscale', () => {
     (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
       model, 
-      modelDefinition: { scale: 2, } as IModelDefinition, 
+      modelDefinition: { scale: 2, } as ModelDefinition, 
     }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
@@ -1553,7 +1553,7 @@ describe('cancellableUpscale', () => {
       signal: controller.signal,
     }, {
       model, 
-      modelDefinition: { scale, } as IModelDefinition, 
+      modelDefinition: { scale, } as ModelDefinition, 
       signal: new AbortController().signal,
     }))
       .rejects
@@ -1591,7 +1591,7 @@ describe('cancellableUpscale', () => {
       progress,
     }, {
       model, 
-      modelDefinition: { scale, } as IModelDefinition, 
+      modelDefinition: { scale, } as ModelDefinition, 
       signal: controller.signal,
     }))
       .rejects

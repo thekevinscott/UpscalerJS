@@ -1,0 +1,45 @@
+{
+  "name": "@upscalerjs/esrgan-legacy",
+  "version": "0.3.1",
+  "description": "ESRGAN Legacy Models for Upscaler.js",
+  "dependencies": {
+    "upscalerjs-types": "workspace:*"
+  },
+  "exports": {
+    "./div2k/2x": {
+      "require": "./dist/node/div2k/2x.js",
+      "import": "./dist/browser/esm/div2k/2x.js"
+    },
+    "./div2k/3x": {
+      "require": "./dist/node/div2k/3x.js",
+      "import": "./dist/browser/esm/div2k/3x.js"
+    },
+    "./div2k/4x": {
+      "require": "./dist/node/div2k/4x.js",
+      "import": "./dist/browser/esm/div2k/4x.js"
+    },
+    "./psnr-small": {
+      "require": "./dist/node/psnr-small.js",
+      "import": "./dist/browser/esm/psnr-small.js"
+    },
+    "./gans": {
+      "require": "./dist/node/gans.js",
+      "import": "./dist/browser/esm/gans.js"
+    }
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT"
+}

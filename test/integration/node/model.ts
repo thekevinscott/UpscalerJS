@@ -1,5 +1,5 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForCJS, executeNodeScript } from '../../lib/node/prepare';
+import { executeNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
@@ -27,12 +27,22 @@ const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
 const FIXTURES = path.join(__dirname, '../../../__fixtures__');
 const IMG = path.join(FIXTURES, 'flower-small.png');
 
+const getUpscaler = (model) => {
+  if (model) {
+    return new Upscaler({
+      model: {
+        path: model,
+        scale: 4,
+      }
+    });
+  }
+
+  return new Upscaler();
+}
+
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
-  const upscaler = new Upscaler({
-    model,
-    scale: 4,
-  });
+  const upscaler = getUpscaler(model);
   const file = fs.readFileSync(filename)
   const image = tf.node.decodeImage(file, 3)
   return await upscaler.upscale(image, {
@@ -57,9 +67,13 @@ ${getModelPath}
 `;
 
 describe('Model Loading Integration Tests', () => {
-  beforeAll(async () => {
-    await prepareScriptBundleForCJS();
-  });
+//   it("loads the default model", async () => {
+//     const result = await execute(writeScript(`
+// const getModelPath = () => undefined 
+//     `));
+//     const formattedResult = `data:image/png;base64,${result}`;
+//     checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
+//   });
 
   it("loads a locally exposed model via file:// path", async () => {
     const result = await execute(writeScript(`

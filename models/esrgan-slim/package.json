@@ -1,0 +1,26 @@
+{
+  "name": "@upscalerjs/esrgan-slim",
+  "version": "0.1.0",
+  "description": "ESRGAN Default Model for Upscaler.js",
+  "types": "./dist/node/index.d.ts",
+  "main": "./dist/node/index.js",
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "upscaler": "workspace:*"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT"
+}
