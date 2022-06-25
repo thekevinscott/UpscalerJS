@@ -3,7 +3,7 @@
   "version": "0.4.5",
   "description": "Pixel Upsampler Model for Upscaler.js",
   "dependencies": {
-    "upscalerjs-types": "workspace:*"
+    "@upscalerjs/core": "workspace:*"
   },
   "exports": {
     ".": {

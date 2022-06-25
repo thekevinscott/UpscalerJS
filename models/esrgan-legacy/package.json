@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "dependencies": {
-    "upscalerjs-types": "workspace:*"
+    "@upscalerjs/core": "workspace:*"
   },
   "exports": {
     "./div2k/2x": {

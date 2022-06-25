@@ -19,7 +19,7 @@
     "dist/**/*"
   ],
   "dependencies": {
-    "upscaler": "workspace:*"
+    "@upscalerjs/core": "workspace:*"
   },
   "author": "Kevin Scott",
   "license": "MIT"
