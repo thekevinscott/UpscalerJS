@@ -11,10 +11,7 @@
   "scripts": {
     "build": "tsc"
   },
-  "peerDependencies": {
-    "@tensorflow/tfjs": "^3.18.0"
-  },
-  "devDependencies": {
-    "@tensorflow/tfjs": "^3.18.0"
+  "dependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0"
   }
 }
