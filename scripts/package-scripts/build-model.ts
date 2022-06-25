@@ -266,8 +266,12 @@ const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat
   return false;
 }
 const getOutputFormats = async (outputFormat?: unknown) => {
+  console.log(outputFormat);
   if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
     return [outputFormat]
+  }
+  if (Array.isArray(outputFormat)) {
+    return outputFormat;
   }
   const { outputFormats } = await inquirer.prompt<Answers>([
     {
@@ -287,15 +291,16 @@ if (require.main === module) {
     const argv = await yargs.command('build models', 'build models', yargs => {
       yargs.positional('model', {
         describe: 'The model to build',
-      }).options({
-        outputFormat: { type: 'string' },
+      }).option('o', {
+        alias: 'outputFormat',
+        type: 'string',
       });
     })
     .help()
     .argv;
 
     const models = await getModel(argv._[0]);
-    const outputFormats = await getOutputFormats(argv.outputFormat);
+    const outputFormats = await getOutputFormats(argv.o);
 
     if (models?.length === 0) {
       console.log('No models selected, nothing to do.')
