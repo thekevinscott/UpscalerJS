@@ -337,14 +337,15 @@ importers:
     dependencies:
       '@upscalerjs/core': link:../../packages/core
 
-  models/esrgan-slim:
+  models/pixel-upsampler:
     specifiers:
       '@upscalerjs/core': workspace:*
     dependencies:
       '@upscalerjs/core': link:../../packages/core
 
-  models/pixel-upsampler:
+  packages/core:
     specifiers:
+<<<<<<< HEAD
       '@upscalerjs/core': workspace:*
     dependencies:
       '@upscalerjs/core': link:../../packages/core
@@ -354,6 +355,11 @@ importers:
       '@tensorflow/tfjs': ^3.18.0
     devDependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+=======
+      '@tensorflow/tfjs-core': ^3.18.0
+    dependencies:
+      '@tensorflow/tfjs-core': 3.18.0
+>>>>>>> v1.0.0
 
   packages/upscalerjs:
     specifiers:
@@ -398,7 +404,6 @@ importers:
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
       '@upscalerjs-for-esbuild/esrgan-legacy': workspace:@upscalerjs/esrgan-legacy@*
-      '@upscalerjs-for-esbuild/esrgan-slim': workspace:@upscalerjs/esrgan-slim@*
       '@upscalerjs-for-esbuild/pixel-upsampler': workspace:@upscalerjs/pixel-upsampler@*
       seedrandom: ~2.4.3
       upscaler-for-esbuild: workspace:upscaler@*
@@ -407,7 +412,6 @@ importers:
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       '@upscalerjs-for-esbuild/esrgan-legacy': link:../../../models/esrgan-legacy
-      '@upscalerjs-for-esbuild/esrgan-slim': link:../../../models/esrgan-slim
       '@upscalerjs-for-esbuild/pixel-upsampler': link:../../../models/pixel-upsampler
       upscaler-for-esbuild: link:../../../packages/upscalerjs
     devDependencies:
