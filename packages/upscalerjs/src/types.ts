@@ -1,6 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, } from 'upscalerjs-types';
-// import { SerializableConstructor, } from '@tensorflow/tfjs-core/dist/serialization';
+import { ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -38,4 +37,4 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
 
 export type Layer = tf.layers.Layer;
 
-export { ModelDefinition, PackageInformation, ProcessFn, } from 'upscalerjs-types';
+export { ModelDefinition, PackageInformation, ProcessFn, } from '@upscalerjs/core';
