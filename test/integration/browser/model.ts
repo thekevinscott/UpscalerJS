@@ -78,13 +78,13 @@ describe('Model Loading Integration Tests', () => {
     page = undefined;
   });
 
-  // it("loads the default model", async () => {
-  //   const result = await page.evaluate(() => {
-  //     const upscaler = new window['Upscaler']();
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
-  // });
+  it("loads the default model", async () => {
+    const result = await page.evaluate(() => {
+      const upscaler = new window['Upscaler']();
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+  });
 
   it("can import a specific model", async () => {
     const result = await page.evaluate(() => {

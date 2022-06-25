@@ -67,13 +67,13 @@ ${getModelPath}
 `;
 
 describe('Model Loading Integration Tests', () => {
-//   it("loads the default model", async () => {
-//     const result = await execute(writeScript(`
-// const getModelPath = () => undefined 
-//     `));
-//     const formattedResult = `data:image/png;base64,${result}`;
-//     checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
-//   });
+  it("loads the default model", async () => {
+    const result = await execute(writeScript(`
+const getModelPath = () => undefined 
+    `));
+    const formattedResult = `data:image/png;base64,${result}`;
+    checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
+  });
 
   it("loads a locally exposed model via file:// path", async () => {
     const result = await execute(writeScript(`
