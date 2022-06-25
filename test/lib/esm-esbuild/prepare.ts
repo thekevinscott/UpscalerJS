@@ -14,7 +14,6 @@ export const bundle = async () => {
   await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
   copyFixtures(DIST, false);
-  await buildModels(getAllAvailableModelPackages(), ['esm']);
   const entryFiles = path.join(ROOT, 'src/index.js');
   try {
     esbuild.buildSync({
