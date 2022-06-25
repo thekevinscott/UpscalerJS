@@ -266,7 +266,6 @@ const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat
   return false;
 }
 const getOutputFormats = async (outputFormat?: unknown) => {
-  console.log(outputFormat);
   if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
     return [outputFormat]
   }
