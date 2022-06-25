@@ -168,11 +168,8 @@ const buildUMD = async (modelFolder: string) => {
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
-    console.log('FILE_DIST', FILE_DIST, fs.readdirSync(FILE_DIST));
   }
   await rm(TMP);
-  const dirrrr = '/home/runner/work/UpscalerJS/UpscalerJS/models/esrgan-legacy/dist/browser/umd';
-  console.log(dirrrr, fs.readdirSync(dirrrr));
 }
 
 const buildCJS = async (modelFolder: string) => {
