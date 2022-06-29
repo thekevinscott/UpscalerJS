@@ -6,7 +6,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "composite": true,
+    "composite": false,
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "strictNullChecks": true,

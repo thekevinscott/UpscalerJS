@@ -53,9 +53,9 @@ class PixelShuffle extends tf.layers.Layer {
 }
 
 const modelDefinition: ModelDefinition = {
-  scale: 2,
+  scale: 4,
   channels: 3,
-  path: 'models/idealo/gans/model.json',
+  path: 'models/model.json',
   packageInformation: {
     name: NAME,
     version: VERSION,
