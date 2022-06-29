@@ -16,6 +16,7 @@ import { ModelDefinition, } from '@upscalerjs/core';
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // For some reason, TS is picking this up as *any* even though in the editor
 // it's defined as ModelDefinition
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
 
 export class Upscaler {
