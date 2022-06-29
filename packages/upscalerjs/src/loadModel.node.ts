@@ -9,10 +9,10 @@ import { resolver, } from './resolver';
 // const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
+const DIST_REGEXP = new RegExp('(.*)dist');
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = resolver(name);
-  const r = new RegExp('(.*)dist');
-  const matches = moduleEntryPoint.match(r);
+  const matches = moduleEntryPoint.match(DIST_REGEXP);
   if (!matches) {
     throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
   }
