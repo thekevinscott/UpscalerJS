@@ -396,6 +396,7 @@ importers:
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.12.0
       '@upscalerjs-for-esbuild/esrgan-legacy': workspace:@upscalerjs/esrgan-legacy@*
+      '@upscalerjs-for-esbuild/esrgan-slim': workspace:@upscalerjs/esrgan-slim@*
       '@upscalerjs-for-esbuild/pixel-upsampler': workspace:@upscalerjs/pixel-upsampler@*
       '@upscalerjs/esrgan-slim': workspace:*
       upscaler-for-esbuild: workspace:upscaler@*
@@ -404,6 +405,7 @@ importers:
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
       '@tensorflow/tfjs': 3.18.0
       '@upscalerjs-for-esbuild/esrgan-legacy': link:../../../models/esrgan-legacy
+      '@upscalerjs-for-esbuild/esrgan-slim': link:../../../models/esrgan-slim
       '@upscalerjs-for-esbuild/pixel-upsampler': link:../../../models/pixel-upsampler
       '@upscalerjs/esrgan-slim': link:../../../models/esrgan-slim
       upscaler-for-esbuild: link:../../../packages/upscalerjs
