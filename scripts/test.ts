@@ -13,7 +13,8 @@ import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableM
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
-    return ['umd', 'esm'];
+    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
+    return ['umd', 'esm', 'cjs'];
   }
   return ['cjs'];
 }
