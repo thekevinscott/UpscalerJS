@@ -10,9 +10,9 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
-const NODE_MODULES = path.join(ROOT, '/node_modules');
+// const NODE_MODULES = path.join(ROOT, '/node_modules');
 
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+// const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 let compiler = undefined;
 
 // const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
@@ -66,8 +66,9 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
   });
 
   compiler.run((err, stats) => {
-    if (err || stats.hasErrors()) {
-      reject(err || stats.toJson('errors-only').errors.map(e => e.message));
+    console.log(err, stats);
+    if (err || stats?.hasErrors()) {
+      reject(err || stats?.toJson('errors-only').errors?.map(e => e.message));
     } else {
       resolve();
     }

@@ -16,8 +16,8 @@ jest.retryTimes(1);
 
 describe('Build Integration Tests', () => {
   let server: http.Server;
-  let browser: puppeteer.Browser;
-  let page: puppeteer.Page;
+  let browser: puppeteer.Browser | undefined;
+  let page: puppeteer.Page | undefined;
 
   const PORT = 8099;
 
@@ -47,7 +47,7 @@ describe('Build Integration Tests', () => {
     await prepareScriptBundleForUMD();
     server = await startServer(PORT, SCRIPT_DIST);
     await startBrowser();
-    const result = await page.evaluate(() => {
+    const result = await page!.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
@@ -64,7 +64,7 @@ describe('Build Integration Tests', () => {
     await prepareScriptBundleForUMD();
     server = await startServer(PORT, SCRIPT_DIST);
     await startBrowser();
-    const result = await page.evaluate(() => {
+    const result = await page!.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const pixelUpsampler = window['PixelUpsampler4x'];
       const upscaler = new Upscaler({
@@ -80,8 +80,8 @@ describe('Build Integration Tests', () => {
     await bundleWebpack();
     server = await startServer(PORT, WEBPACK_DIST);
     await startBrowser();
-    await page.waitForFunction('document.title.endsWith("| Loaded")');
-    const result = await page.evaluate(() => {
+    await page!.waitForFunction('document.title.endsWith("| Loaded")');
+    const result = await page!.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
