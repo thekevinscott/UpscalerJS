@@ -437,14 +437,12 @@ importers:
       '@tensorflow/tfjs-node': ^3.12.0
       '@tensorflow/tfjs-node-gpu': ^3.12.0
       '@upscalerjs/esrgan-slim': workspace:*
-      seedrandom: ~2.4.3
       upscaler-for-node: workspace:upscaler@*
       yargs: ^17.3.1
     dependencies:
-      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@upscalerjs/esrgan-slim': link:../../../models/esrgan-slim
-      seedrandom: 2.4.4
       upscaler-for-node: link:../../../packages/upscalerjs
       yargs: 17.5.1
 
@@ -3643,6 +3641,25 @@ packages:
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
 
+  /@tensorflow/tfjs-node-gpu/3.18.0:
+    resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
+    engines: {node: '>=8.11.0'}
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.4
+      '@tensorflow/tfjs': 3.18.0
+      adm-zip: 0.5.9
+      google-protobuf: 3.20.1
+      https-proxy-agent: 2.2.4
+      progress: 2.0.3
+      rimraf: 2.7.1
+      tar: 4.4.19
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+      - supports-color
+    dev: false
+
   /@tensorflow/tfjs-node-gpu/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
     engines: {node: '>=8.11.0'}
@@ -3660,6 +3677,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs-node/3.18.0:
     resolution: {integrity: sha512-jW6bFKO6hH4tGvlijvpcIbCRRa6vDZ2xIIbEO7qZ17s0QOMPBGjDLyQGUaSQ00uog0Rid/sdZNpiueDqB0ZGbA==}
@@ -3697,6 +3715,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs/3.18.0:
     resolution: {integrity: sha512-mOzz4jJdgIpqFS7EHndVuxrQnLUDVIKGyTqOPTYps89fZwcOFfTVxi4BHemDNQpqlVE8IaGh9UUxVXpjgPY5+Q==}
