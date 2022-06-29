@@ -3,7 +3,6 @@ import {
   UpscalerOptions,
   UpscaleArgs,
   WarmupSizes,
-  ModelDefinition,
   ResultFormat,
   Progress,
 } from './types';
@@ -12,8 +11,12 @@ import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import ESRGANSlim from '@upscalerjs/esrgan-slim';
+import { ModelDefinition, } from '@upscalerjs/core';
 
-const DEFAULT_MODEL: ModelDefinition = ESRGANSlim;
+// TODO: Why do we need to explicitly cast this to ModelDefinition?
+// For some reason, TS is picking this up as *any* even though in the editor
+// it's defined as ModelDefinition
+const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
 
 export class Upscaler {
   _opts: UpscalerOptions;
