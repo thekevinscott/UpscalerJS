@@ -50,11 +50,13 @@ const getModelPath = () => {
 
 describe('Platform Integration Tests', () => {
   [
-    { platform: 'node', deps: `
-const tf = require('@tensorflow/tfjs-node');
-const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
-    `},
+//     { platform: 'node', deps: `
+// const tf = require('@tensorflow/tfjs-node');
+// const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
+//     `},
     { platform: 'node-gpu', deps: `
+    console.log('testttt1', require.resolve('@tensorflow/tfjs-node'))
+    console.log('testttt2', require.resolve('@tensorflow/tfjs-node-gpu'))
 const tf = require('@tensorflow/tfjs-node-gpu');
 const Upscaler = require('${LOCAL_UPSCALER_NAME}/node-gpu');
     `},
