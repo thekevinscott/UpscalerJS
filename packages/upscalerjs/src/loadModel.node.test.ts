@@ -30,24 +30,39 @@ const mockedResoler = resolver as jest.Mocked<typeof resolver>;
 const getResolver = (fn: () => string) => (fn) as unknown as typeof require.resolve;
 
 describe('getModuleFolder', () => {
-  it('returns the path to the module if it is found', () => {
-    mockedResoler.resolver.mockImplementation(getResolver(() => './node_modules/baz/foo.ts'));
-    expect(getModuleFolder('baz')).toEqual('./node_modules/baz');
+  it('returns undefined if a module cannot be found', () => {
+    mockedResoler.resolver.mockImplementation(getResolver(() => 'foo'));
+    expect(() => getModuleFolder('foo')).toThrow();
+  });
+
+  it('returns the path to the module', () => {
+    mockedResoler.resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
+    expect(getModuleFolder('baz')).toEqual('./node_modules/@upscalerjs/esrgan-slim/');
+  });
+
+  it('returns the path to the module even if it is local', () => {
+    mockedResoler.resolver.mockImplementation(getResolver(() => '/Users/foo/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
+    expect(getModuleFolder('baz')).toEqual('/Users/foo/@upscalerjs/esrgan-slim/');
+  });
+
+  it('returns the path to the module even if the name is different', () => {
+    mockedResoler.resolver.mockImplementation(getResolver(() => '/dist/Users/foo/baz/dist/foo/foo.ts'));
+    expect(getModuleFolder('baz')).toEqual('/dist/Users/foo/baz/');
   });
 });
 
 describe('getModelPath', () => {
   it('returns model path if given no package information', () => {
-    mockedResoler.resolver.mockImplementation(getResolver(() => 'foo'));
+    mockedResoler.resolver.mockImplementation(getResolver(() => ''));
     expect(getModelPath({ path: 'foo', scale: 2 })).toEqual('foo');
   });
 
-  it('returns model path if given no package information', () => {
-    mockedResoler.resolver.mockImplementation(getResolver(() => './node_modules/baz/foo.ts'));
+  it('returns model path if given package information', () => {
+    mockedResoler.resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
     expect(getModelPath({ packageInformation: {
       name: 'baz',
       version: '1.0.0',
-    }, path: 'some-model', scale: 2 })).toEqual(`file://${path.resolve('./node_modules/baz', '../../', 'some-model')}`);
+    }, path: 'some-model', scale: 2 })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/esrgan-slim', 'some-model')}`);
   });
 });
 

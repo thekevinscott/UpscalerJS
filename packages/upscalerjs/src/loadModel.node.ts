@@ -11,13 +11,22 @@ import { resolver, } from './resolver';
 
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = resolver(name);
-  return path.dirname(moduleEntryPoint);
+  const r = new RegExp('(.*)dist');
+  const matches = moduleEntryPoint.match(r);
+  if (!matches) {
+    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
+  }
+  const match = matches.pop();
+  if (!match) {
+    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
+  }
+  return match;
 };
 
 export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
   if (packageInformation) {
     const moduleFolder = getModuleFolder(packageInformation.name);
-    return `file://${path.resolve(moduleFolder, '../../', modelPath)}`;
+    return `file://${path.resolve(moduleFolder, modelPath)}`;
   }
   return modelPath;
 };
