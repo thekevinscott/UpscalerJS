@@ -1,4 +1,6 @@
+console.log('u1')
 import { tf, } from './dependencies.generated';
+console.log('u2')
 import {
   UpscalerOptions,
   UpscaleArgs,

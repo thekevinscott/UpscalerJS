@@ -66,7 +66,6 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
   });
 
   compiler.run((err, stats) => {
-    console.log(err, stats);
     if (err || stats?.hasErrors()) {
       reject(err || stats?.toJson('errors-only').errors?.map(e => e.message));
     } else {

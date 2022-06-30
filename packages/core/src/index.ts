@@ -1,4 +1,6 @@
+console.log('c1')
 import { Tensor, Tensor4D, Tensor3D, serialization } from '@tensorflow/tfjs-core';
+console.log('c2')
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
 export interface PackageInformation {
