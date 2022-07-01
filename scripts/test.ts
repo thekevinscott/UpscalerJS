@@ -8,8 +8,10 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
-import buildModels, { AVAILABLE_MODELS, OutputFormat } from '../scripts/package-scripts/build-model';
+import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
+
+dotenv.config();
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
@@ -18,9 +20,6 @@ const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   }
   return ['cjs'];
 }
-
-
-dotenv.config();
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
