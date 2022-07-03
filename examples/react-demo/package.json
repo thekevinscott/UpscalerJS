@@ -1,10 +1,10 @@
 {
-  "name": "react-demo",
+  "name": "@upscalerjs/examples.react-demo",
+  "private": true,
   "description": "Demonstration of React integration with UpscalerJS",
   "main": "index.js",
-  "private": true,
   "dependencies": {
-    "@tensorflow/tfjs": "^3.12.0",
+    "@tensorflow/tfjs": "^3.18.0",
     "react-dropzone": "^11.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

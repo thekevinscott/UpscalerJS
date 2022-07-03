@@ -1,5 +1,6 @@
 {
-  "name": "cancel",
+  "name": "@upscalerjs/examples.cancel",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstrates how to cancel an inflight upscale request.",
   "main": "index.js",
@@ -13,7 +14,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.12.0",
+    "@tensorflow/tfjs": "^3.18.0",
     "upscaler": "1.0.0-beta.0"
   },
   "browserslist": {

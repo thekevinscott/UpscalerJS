@@ -1,5 +1,6 @@
 {
-  "name": "webworker",
+  "name": "@upscalerjs/examples.webworker",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
@@ -23,7 +24,11 @@
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^3.18.0",
+<<<<<<< HEAD
     "tensor-as-base64": "^0.3.0",
+=======
+    "tensor-as-base64": "^0.2.0",
+>>>>>>> v1.0.0
     "upscaler": "1.0.0-beta.0"
   }
 }

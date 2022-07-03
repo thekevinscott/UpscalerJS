@@ -79,7 +79,7 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.12.0"
+    "@tensorflow/tfjs": "^3.18.0"
   },
   "dependencies": {
     "@upscalerjs/esrgan-slim": "workspace:*",
@@ -88,9 +88,10 @@
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
   "devDependencies": {
-    "@tensorflow/tfjs": "^3.12.0",
-    "@tensorflow/tfjs-node": "^3.12.0",
-    "@tensorflow/tfjs-node-gpu": "^3.12.0",
+    "seedrandom": "2.4.4",
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "@tensorflow/tfjs-node-gpu": "^3.18.0",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "chokidar": "^3.5.3",
