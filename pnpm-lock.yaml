@@ -44,7 +44,7 @@ importers:
       playwright-test: ^8.1.1
       pngjs: ^6.0.0
       prettier: ^2.7.1
-      puppeteer: ^15.3.0
+      puppeteer: ^13.7.0
       rimraf: ^3.0.2
       rollup: ^2.75.7
       selenium-webdriver: ^4.3.0
@@ -66,9 +66,9 @@ importers:
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.7
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
       '@types/jest': 28.1.4
@@ -100,7 +100,7 @@ importers:
       playwright-test: 8.1.1
       pngjs: 6.0.0
       prettier: 2.7.1
-      puppeteer: 15.3.0
+      puppeteer: 13.7.0
       rimraf: 3.0.2
       rollup: 2.75.7
       selenium-webdriver: 4.3.0
@@ -2517,7 +2517,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       chalk: 4.1.2
       jest-message-util: 28.1.1
       jest-util: 28.1.1
@@ -2627,7 +2627,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       jest-mock: 28.1.1
     dev: true
 
@@ -2666,7 +2666,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.1
       '@sinonjs/fake-timers': 9.1.2
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       jest-message-util: 28.1.1
       jest-mock: 28.1.1
       jest-util: 28.1.1
@@ -2745,7 +2745,7 @@ packages:
       '@jest/transform': 28.1.2
       '@jest/types': 28.1.1
       '@jridgewell/trace-mapping': 0.3.14
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -4188,7 +4188,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /@tensorflow/tfjs-layers/3.18.0_br26fteayl44zj43fz4bazb7oq:
     resolution: {integrity: sha512-AV7yDnPlH+RCcq8VPqkX1iyEchObE+e66m0XmJvLj+ncfKHYLa+39ZNroUA+OgB2/cMG6jgq77R4EhZbT6hwJA==}
@@ -4196,6 +4195,25 @@ packages:
       '@tensorflow/tfjs-core': 3.18.0
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
+
+  /@tensorflow/tfjs-node-gpu/3.18.0:
+    resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
+    engines: {node: '>=8.11.0'}
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.4
+      '@tensorflow/tfjs': 3.18.0
+      adm-zip: 0.5.9
+      google-protobuf: 3.20.1
+      https-proxy-agent: 2.2.4
+      progress: 2.0.3
+      rimraf: 2.7.1
+      tar: 4.4.19
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+      - supports-color
+    dev: true
 
   /@tensorflow/tfjs-node-gpu/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
@@ -4232,7 +4250,6 @@ packages:
       - encoding
       - seedrandom
       - supports-color
-    dev: false
 
   /@tensorflow/tfjs-node/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-jW6bFKO6hH4tGvlijvpcIbCRRa6vDZ2xIIbEO7qZ17s0QOMPBGjDLyQGUaSQ00uog0Rid/sdZNpiueDqB0ZGbA==}
@@ -4270,7 +4287,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - seedrandom
-    dev: false
 
   /@tensorflow/tfjs/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-mOzz4jJdgIpqFS7EHndVuxrQnLUDVIKGyTqOPTYps89fZwcOFfTVxi4BHemDNQpqlVE8IaGh9UUxVXpjgPY5+Q==}
@@ -7217,8 +7233,8 @@ packages:
       minimist: 1.2.6
     dev: false
 
-  /devtools-protocol/0.0.1011705:
-    resolution: {integrity: sha512-OKvTvu9n3swmgYshvsyVHYX0+aPzCoYUnyXUacfQMmFtBtBKewV/gT4I9jkAbpTqtTi2E4S9MXLlvzBDUlqg0Q==}
+  /devtools-protocol/0.0.981744:
+    resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
     dev: true
 
   /didyoumean/1.2.2:
@@ -10241,7 +10257,7 @@ packages:
       '@jest/expect': 28.1.2
       '@jest/test-result': 28.1.1
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -10531,7 +10547,7 @@ packages:
       '@jest/environment': 28.1.2
       '@jest/fake-timers': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       jest-mock: 28.1.1
       jest-util: 28.1.1
     dev: true
@@ -10572,7 +10588,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.1
       '@types/graceful-fs': 4.1.5
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       anymatch: 3.1.2
       fb-watchman: 2.0.1
       graceful-fs: 4.2.10
@@ -10688,7 +10704,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
     dev: true
 
   /jest-pnp-resolver/1.2.2_jest-resolve@27.5.1:
@@ -10817,7 +10833,7 @@ packages:
       '@jest/test-result': 28.1.1
       '@jest/transform': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       chalk: 4.1.2
       emittery: 0.10.2
       graceful-fs: 4.2.10
@@ -11076,7 +11092,7 @@ packages:
     resolution: {integrity: sha512-Au7slXB08C6h+xbJPp7VIb6U0XX5Kc9uel/WFc6/rcTzGiaVCBRngBExSYuXSLFPULPSYU3cJ3ybS988lNFQhQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
-      '@types/node': 18.0.0
+      '@types/node': 18.0.1
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -13668,14 +13684,14 @@ packages:
       escape-goat: 2.1.1
     dev: true
 
-  /puppeteer/15.3.0:
-    resolution: {integrity: sha512-PYZwL0DjGeUOauSie6n9Pf+vDUod+vFnC1uHa1Uj3ex1PhRI6DOheau6oJxxj9oyEPWy8SS19KfZDwln4v4LTg==}
-    engines: {node: '>=14.1.0'}
+  /puppeteer/13.7.0:
+    resolution: {integrity: sha512-U1uufzBjz3+PkpCxFrWzh4OrMIdIb2ztzCu0YEPfRHjHswcSwHZswnK+WdsOQJsRV8WeTg3jLhJR4D867+fjsA==}
+    engines: {node: '>=10.18.1'}
     requiresBuild: true
     dependencies:
       cross-fetch: 3.1.5
       debug: 4.3.4
-      devtools-protocol: 0.0.1011705
+      devtools-protocol: 0.0.981744
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
       pkg-dir: 4.2.0
@@ -13684,7 +13700,7 @@ packages:
       rimraf: 3.0.2
       tar-fs: 2.1.1
       unbzip2-stream: 1.4.3
-      ws: 8.8.0
+      ws: 8.5.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -16806,6 +16822,19 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+
+  /ws/8.5.0:
+    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: true
 
   /ws/8.8.0:
     resolution: {integrity: sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==}
