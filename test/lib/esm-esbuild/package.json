@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/test.esm.esbuild",
   "private": true,
-  "version": "0.8.23",
+  "version": "1.0.0-beta.0",
   "main": "index.js",
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
@@ -9,10 +9,10 @@
     "upscaler-for-esbuild": "workspace:upscaler@*",
     "@upscalerjs-for-esbuild/esrgan-legacy": "workspace:@upscalerjs/esrgan-legacy@*",
     "@upscalerjs-for-esbuild/pixel-upsampler": "workspace:@upscalerjs/pixel-upsampler@*",
-    "@tensorflow/tfjs": "^3.12.0"
+    "@tensorflow/tfjs": "^3.18.0"
   },
   "devDependencies": {
-    "seedrandom": "~2.4.3"
+    "seedrandom": "2.4.4"
   },
   "babel": {
     "env": {

@@ -1,17 +1,17 @@
 {
   "name": "@upscalerjs/test.esm.webpack",
   "private": true,
-  "version": "0.8.23",
+  "version": "1.0.0-beta.0",
   "main": "index.js",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.12.0",
+    "@tensorflow/tfjs": "^3.18.0",
     "@babel/plugin-transform-modules-commonjs": "^7.16.0",
     "upscaler-for-webpack": "workspace:upscaler@*",
     "@babel/preset-typescript": "^7.16.0"
   },
   "devDependencies": {
     "tensor-as-base64": "^0.2.0",
-    "seedrandom": "~2.4.3"
+    "seedrandom": "2.4.4"
   },
   "babel": {
     "env": {
