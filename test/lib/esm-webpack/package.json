@@ -1,5 +1,5 @@
 {
-  "name": "webpack-sample-server",
+  "name": "@upscalerjs/test.esm.webpack",
   "private": true,
   "version": "0.8.23",
   "main": "index.js",

@@ -1,5 +1,6 @@
 {
-  "name": "basic",
+  "name": "@upscalerjs/examples.basic",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",

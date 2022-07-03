@@ -1,5 +1,6 @@
 {
-  "name": "test-node",
+  "name": "@upscalerjs/test.node",
+  "private": true,
   "version": "1.0.0",
   "dependencies": {
     "@tensorflow/tfjs-node": "^3.12.0",
