@@ -50,7 +50,7 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
         const [key] = value;
         deps[key] = version;
         value = gen.next().value;
-        updates.push(`  - ${depKey}: ${key}`);
+        updates = updates.concat([`  - ${depKey}: ${key}`]);
       }
       packageJSON[depKey] = deps;
     }
