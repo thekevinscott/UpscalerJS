@@ -39,7 +39,7 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 
 const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON, dir) => {
   const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
-  let updates: Array<string> = [];
+  const updates: Array<string> = [];
   for (let i = 0; i < dependencyKeys.length; i++) {
     const depKey = dependencyKeys[i];
     const deps = packageJSON[depKey];
@@ -50,14 +50,14 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
         const [key] = value;
         deps[key] = version;
         value = gen.next().value;
-        updates = updates.concat([`  - ${depKey}: ${key}`]);
+        updates.push(`  - ${depKey}: ${key}`);
       }
       packageJSON[depKey] = deps;
     }
   }
   if (updates.length) {
     console.log(`- Updated ${getPreparedFolderName(getPackageJSONPath(dir))}`);
-    updates.forEach(console.log)
+    updates.forEach(message => console.log(message))
   }
   return packageJSON;
 }
@@ -108,7 +108,7 @@ const updateTFJS = async () => {
     {
       name: 'version',
       message: `Specify the version of TFJS you wish to set:\n(${getCurrentVersions()})\n`,
-      default: getVersion(ROOT_DIR)[1],
+      default: getVersion(ROOT_DIR),
     },
     {
       type: 'checkbox',
