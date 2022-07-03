@@ -39,22 +39,25 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 
 const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON, dir) => {
   const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
-  console.log(`- Updated ${getPreparedFolderName(getPackageJSONPath(dir))}`);
+  let updates: Array<string> = [];
   for (let i = 0; i < dependencyKeys.length; i++) {
     const depKey = dependencyKeys[i];
     const deps = packageJSON[depKey];
     if (deps) {
       const gen = getMatchingTFJS(deps);
       let value = gen.next().value;
-      console.log(`  - ${depKey}`);
       while (value) {
         const [key] = value;
         deps[key] = version;
         value = gen.next().value;
-        console.log(`    - ${key}`);
+        updates.push(`  - ${depKey} ${key}`);
       }
       packageJSON[depKey] = deps;
     }
+  }
+  if (updates.length) {
+    console.log(`- Updated ${getPreparedFolderName(getPackageJSONPath(dir))}`);
+    updates.forEach(console.log)
   }
   return packageJSON;
 }
