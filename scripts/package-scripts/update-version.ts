@@ -1,5 +1,5 @@
 import path from 'path';
-import _inquirer from 'inquirer';
+import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
 
