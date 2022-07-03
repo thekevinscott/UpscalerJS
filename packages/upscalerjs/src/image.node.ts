@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
 
