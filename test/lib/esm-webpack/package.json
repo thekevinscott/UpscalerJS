@@ -1,7 +1,7 @@
 {
   "name": "webpack-sample-server",
   "private": true,
-  "version": "0.8.23",
+  "version": "1.0.0-beta.0",
   "main": "index.js",
   "dependencies": {
     "@tensorflow/tfjs": "^3.18.0",
