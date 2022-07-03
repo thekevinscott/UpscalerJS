@@ -9,7 +9,7 @@
     "upscaler-for-esbuild": "workspace:upscaler@*",
     "@upscalerjs-for-esbuild/esrgan-legacy": "workspace:@upscalerjs/esrgan-legacy@*",
     "@upscalerjs-for-esbuild/pixel-upsampler": "workspace:@upscalerjs/pixel-upsampler@*",
-    "@tensorflow/tfjs": "^3.12.0"
+    "@tensorflow/tfjs": "^3.18.0"
   },
   "devDependencies": {
     "seedrandom": "~2.4.3"

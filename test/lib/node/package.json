@@ -3,8 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "@tensorflow/tfjs-node": "^3.12.0",
-    "@tensorflow/tfjs-node-gpu": "^3.12.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "@tensorflow/tfjs-node-gpu": "^3.18.0",
     "upscaler-for-node": "workspace:upscaler@*",
     "yargs": "^17.3.1"
   },
