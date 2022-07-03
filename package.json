@@ -79,7 +79,7 @@
     "fs-extra": "^10.1.0",
     "heapdump": "^0.3.15",
     "html-webpack-plugin": "^5.5.0",
-    "inquirer": "^8.2.4",
+    "inquirer": "^9.0.0",
     "jest": "^28.1.2",
     "jest-canvas-mock": "^2.4.0",
     "jsdom": "^19.0.0",
