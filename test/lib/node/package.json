@@ -8,5 +8,8 @@
     "upscaler-for-node": "workspace:upscaler@*",
     "yargs": "^17.3.1"
   },
+  "devDependencies": {
+    "seedrandom": "2.4.4"
+  },
   "license": "MIT"
 }

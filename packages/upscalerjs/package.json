@@ -87,7 +87,7 @@
   },
   "gitHead": "cccae63a0a7aeccaa78d30e55a8e12ec72f5c19f",
   "devDependencies": {
-    "seedrandom": "~2.4.3",
+    "seedrandom": "2.4.4",
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0",
