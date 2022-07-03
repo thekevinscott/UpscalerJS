@@ -1,5 +1,5 @@
 {
-  "name": "generic-server-sample-server",
+  "name": "@upscalerjs/test.esm.esbuild",
   "private": true,
   "version": "1.0.0-beta.0",
   "main": "index.js",

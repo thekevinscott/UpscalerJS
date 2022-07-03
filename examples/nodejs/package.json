@@ -1,5 +1,6 @@
 {
-  "name": "nodejs",
+  "name": "@upscalerjs/examples.nodejs",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of Node.js usage of UpscalerJS",
   "author": "Kevin Scott",

@@ -1,5 +1,6 @@
 {
-  "name": "progress",
+  "name": "@upscalerjs/examples.progress",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",

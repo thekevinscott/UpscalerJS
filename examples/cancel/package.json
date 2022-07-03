@@ -1,5 +1,6 @@
 {
-  "name": "cancel",
+  "name": "@upscalerjs/examples.cancel",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstrates how to cancel an inflight upscale request.",
   "main": "index.js",
