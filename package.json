@@ -55,6 +55,7 @@
     "@rollup/plugin-commonjs": "^21.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@tensorflow/tfjs": "^3.18.0",
+    "@types/jsdom": "^16.2.14",
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0",
     "@types/fs-extra": "^9.0.13",
