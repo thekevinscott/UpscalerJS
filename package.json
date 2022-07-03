@@ -74,7 +74,7 @@
     "chokidar": "^3.5.3",
     "codecov": "^3.8.3",
     "docsify-cli": "^4.4.4",
-    "dotenv": "^8.6.0",
+    "dotenv": "^16.0.1",
     "esbuild": "^0.9.7",
     "fs-extra": "^10.1.0",
     "heapdump": "^0.3.15",
