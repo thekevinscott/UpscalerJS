@@ -70,6 +70,7 @@
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "browserstack-local": "^1.5.1",
+    "jsdom": "^19.0.0",
     "chokidar": "^3.5.3",
     "codecov": "^3.8.3",
     "docsify-cli": "^4.4.4",
