@@ -1,5 +1,6 @@
 {
-  "name": "comparisons",
+  "name": "@upscalerjs/examples.comparisons",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of the different models of UpscalerJS",
   "main": "index.js",

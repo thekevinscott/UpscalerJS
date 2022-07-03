@@ -1,8 +1,8 @@
 {
-  "name": "models",
+  "name": "@upscalerjs/examples.models",
+  "private": true,
   "description": "Side-by-side comparisons of pretrained models with UpscalerJS",
   "main": "index.js",
-  "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^3.12.0",
     "react": "^17.0.2",

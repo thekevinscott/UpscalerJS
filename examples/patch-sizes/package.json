@@ -1,8 +1,8 @@
 {
-  "name": "patch-sizes",
+  "name": "@upscalerjs/examples.patch-sizes",
+  "private": true,
   "description": "Demonstration of patch sizes of UpscalerJS",
   "main": "index.js",
-  "private": true,
   "dependencies": {
     "@tensorflow/tfjs": "^3.12.0",
     "react-input-range": "^1.3.0",

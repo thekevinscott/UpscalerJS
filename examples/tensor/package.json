@@ -1,5 +1,6 @@
 {
-  "name": "tensor",
+  "name": "@upscalerjs/examples.tensor",
+  "private": true,
   "version": "1.0.0-beta.0",
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
