@@ -6,7 +6,7 @@ importers:
     specifiers:
       '@babel/plugin-transform-modules-commonjs': ^7.18.6
       '@babel/preset-typescript': ^7.18.6
-      '@rollup/plugin-commonjs': ^21.1.0
+      '@rollup/plugin-commonjs': ^22.0.1
       '@rollup/plugin-node-resolve': ^13.3.0
       '@tensorflow/tfjs': ^3.18.0
       '@tensorflow/tfjs-node': ^3.18.0
@@ -64,7 +64,7 @@ importers:
     devDependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
-      '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.7
+      '@rollup/plugin-commonjs': 22.0.1_rollup@2.75.7
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
@@ -3772,11 +3772,11 @@ packages:
       rollup: 2.75.7
     dev: false
 
-  /@rollup/plugin-commonjs/21.1.0_rollup@2.75.7:
-    resolution: {integrity: sha512-6ZtHx3VHIp2ReNNDxHjuUml6ur+WcQ28N1yHgCQwsbNkQg2suhxGMDQGJOn/KuDxKtd1xuZP5xSTwBA4GQ8hbA==}
-    engines: {node: '>= 8.0.0'}
+  /@rollup/plugin-commonjs/22.0.1_rollup@2.75.7:
+    resolution: {integrity: sha512-dGfEZvdjDHObBiP5IvwTKMVeq/tBZGMBHZFMdIV1ClMM/YoWS34xrHFGfag9SN2ZtMgNZRFruqvxZQEa70O6nQ==}
+    engines: {node: '>= 12.0.0'}
     peerDependencies:
-      rollup: ^2.38.3
+      rollup: ^2.68.0
     dependencies:
       '@rollup/pluginutils': 3.1.0_rollup@2.75.7
       commondir: 1.0.1
