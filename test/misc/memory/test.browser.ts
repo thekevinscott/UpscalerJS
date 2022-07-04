@@ -22,7 +22,7 @@ const stopServer = (server?: http.Server): Promise<void | undefined | Error> => 
 });
 
 // https://puppeteer.github.io/puppeteer/docs/10.0.0/puppeteer.page.queryobjects/#example
-const countObjects = async (page: Page, prototype: puppeteer.JSHandle) => {
+const countObjects = async (page: Page, prototype: puppeteer.JSHandle): Promise<number> => {
   const instances = await page.queryObjects(prototype);
   const numberOfObjects = await page.evaluate((i) => i.length, instances);
 
@@ -59,30 +59,24 @@ interface MemoryRecord {
   memory: TFJSMemory;
 }
 
-const getMemory = async (page: Page, prototypes: Array<PrototypeDefinition>): Promise<MemoryRecord> => {
+const getMemory = async (page: Page): Promise<MemoryRecord> => {
   const allObjects = await Promise.all(prototypes.map(async ({ prototype }) => {
     return countObjects(page, await prototype(page));
   }));
 
   const names = prototypes.map(p => p.name);
 
-  const tfMemory = await page.evaluate(() => window['tf'].memory());
+  // TODO: Type mismatch between TFJS exported types
+  const tfMemory: TFJSMemory = await page.evaluate(() => window['tf'].memory() as TFJSMemory);
 
-  return allObjects.reduce((obj, objects, i) => {
-    return {
-      ...obj,
-      [names[i]]: objects,
-    };
-  }, {
+  return allObjects.reduce((obj, objects, i) => ({
+    ...obj,
+    [names[i]]: objects,
+  }), {
     memory: tfMemory,
+    LayersModel: 0,
+    Upscaler: 0,
   });
-};
-
-const getStartingMemory = async (page: Page, prototypes: Array<PrototypeDefinition>) => {
-  const memory = await getMemory(page, prototypes);
-  expect(memory.LayersModel).toEqual(EXPECTED_LAYER_MODELS);
-  expect(memory.Upscaler).toEqual(EXPECTED_UPSCALERS);
-  return memory;
 };
 
 const prototypes: Array<PrototypeDefinition> = [
@@ -95,6 +89,13 @@ const prototypes: Array<PrototypeDefinition> = [
     name: 'Upscaler',
   },
 ];
+
+const getStartingMemory = async (page: Page, prototypes: Array<PrototypeDefinition>) => {
+  const memory = await getMemory(page);
+  expect(memory.LayersModel).toEqual(EXPECTED_LAYER_MODELS);
+  expect(memory.Upscaler).toEqual(EXPECTED_UPSCALERS);
+  return memory;
+};
 
 describe('Memory Leaks', () => {
   let browser: Browser;
@@ -195,7 +196,7 @@ describe('Memory Leaks', () => {
   // //   //       console.log(foo);
   // //   //     }, 1000)
   // //   //   }, TIMES_TO_CHECK);
-  // //   //   const endingMemory = await getMemory(page, prototypes);
+  // //   //   const endingMemory = await getMemory(page);
   // //   //   const names = prototypes.map(p => p.name);
   // //   //   checkMemory(names, startingMemory, endingMemory);
   // //   // });
@@ -213,7 +214,7 @@ describe('Memory Leaks', () => {
   // //   //       console.log(foo);
   // //   //     }, 1000)
   // //   //   }, TIMES_TO_CHECK);
-  // //   //   const endingMemory = await getMemory(page, prototypes);
+  // //   //   const endingMemory = await getMemory(page);
   // //   //   const names = prototypes.map(p => p.name);
   // //   //   checkMemory(names, startingMemory, endingMemory);
   // //   // });
@@ -227,7 +228,7 @@ describe('Memory Leaks', () => {
   //   //       t.dispose();
   //   //     }
   //   //   }, TIMES_TO_CHECK);
-  //   //   const endingMemory = await getMemory(page, prototypes);
+  //   //   const endingMemory = await getMemory(page);
   //   //   const names = prototypes.map(p => p.name);
   //   //   checkMemory(names, startingMemory, endingMemory);
   //   // });
@@ -253,7 +254,7 @@ describe('Memory Leaks', () => {
 
     await tick(page);
 
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -279,7 +280,7 @@ describe('Memory Leaks', () => {
 
     await tick(page);
 
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -301,7 +302,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -328,7 +329,7 @@ describe('Memory Leaks', () => {
       }, TIMES_TO_CHECK);
 
       await tick(page);
-      const endingMemory = await getMemory(page, prototypes);
+      const endingMemory = await getMemory(page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -357,7 +358,7 @@ describe('Memory Leaks', () => {
       }, TIMES_TO_CHECK);
 
       await tick(page);
-      const endingMemory = await getMemory(page, prototypes);
+      const endingMemory = await getMemory(page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -386,7 +387,7 @@ describe('Memory Leaks', () => {
       }, TIMES_TO_CHECK);
 
       await tick(page);
-      const endingMemory = await getMemory(page, prototypes);
+      const endingMemory = await getMemory(page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -416,7 +417,7 @@ describe('Memory Leaks', () => {
       }, TIMES_TO_CHECK);
 
       await tick(page);
-      const endingMemory = await getMemory(page, prototypes);
+      const endingMemory = await getMemory(page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -449,7 +450,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -488,7 +489,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -521,7 +522,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -545,7 +546,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
@@ -578,7 +579,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect((image as string).substring(0,22)).toEqual('data:image/png;base64,');
@@ -620,7 +621,7 @@ describe('Memory Leaks', () => {
     await page.evaluate(() => {
       window['output'].dispose();
     })
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -648,7 +649,7 @@ describe('Memory Leaks', () => {
     }), TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -684,7 +685,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
@@ -721,7 +722,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(page);
-    const endingMemory = await getMemory(page, prototypes);
+    const endingMemory = await getMemory(page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
