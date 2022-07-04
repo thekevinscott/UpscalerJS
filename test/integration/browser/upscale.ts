@@ -7,7 +7,7 @@ import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import * as tf from '@tensorflow/tfjs';
 import puppeteer from 'puppeteer';
-import Upscaler from 'upscaler';
+import Upscaler, { Progress } from 'upscaler';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -257,21 +257,21 @@ describe('Upscale Integration Tests', () => {
     });
 
     it("calls back to progress with a src", async () => {
-      const [rate, slice] = await page!.evaluate((): Promise<[number, tf.Tensor]> => new Promise(resolve => {
+      const [rate, slice] = await page!.evaluate((): Promise<[number, string]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
             scale: 4,
           },
         });
+        const progress: Progress<'src'> = (rate, slice) => {
+          resolve([rate, slice]);
+        };
         upscaler.upscale(window['flower'], {
           patchSize: 12,
           padding: 2,
           output: 'src',
-          progress: (rate: number, slice: tf.Tensor) => {
-            resolve([rate, slice]);
-
-          },
+          progress,
         });
       }));
       expect(typeof rate).toEqual('number');
@@ -286,13 +286,15 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
+        const progress: Progress<'tensor'> = (rate, slice) => {
+          // TODO: Figure out why slice is not being typed as a tensor
+          resolve([rate, slice as unknown as tf.Tensor]);
+        };
         upscaler.upscale(window['flower'], {
           patchSize: 12,
           padding: 2,
           output: 'tensor',
-          progress: (rate: number, slice: tf.Tensor) => {
-            resolve([rate, slice]);
-          },
+          progress,
         });
       }));
       expect(typeof rate).toEqual('number');

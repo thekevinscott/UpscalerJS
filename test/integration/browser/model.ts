@@ -17,6 +17,10 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
+const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
+  return !!modelDefinition && typeof modelDefinition === 'object' && 'path' in modelDefinition;
+}
+
 describe('Model Loading Integration Tests', () => {
   let server: http.Server;
   let browser: puppeteer.Browser;
@@ -151,11 +155,15 @@ describe('Model Loading Integration Tests', () => {
         models.forEach(({ esm: esmName, umd: umdName }) => {
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             const result = await page.evaluate(([packageName, modelName]) => {
-              const modelDefinition = (<Record<string, ModelDefinition>>window)[packageName][modelName];
-              const upscaler = new window['Upscaler']({
-                model: modelDefinition,
-              });
-              return upscaler.upscale(window['flower']);
+              const modelDefinition = window[packageName][modelName];
+              if (isModelDefinition(modelDefinition)) {
+                const upscaler = new window['Upscaler']({
+                  model: modelDefinition,
+                });
+                return upscaler.upscale(window['flower']);
+              } else {
+                throw new Error(`Invalid model Definition for package name ${packageName} and model name ${modelName}`)
+              }
             }, [packageName, esmName]);
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
           });
