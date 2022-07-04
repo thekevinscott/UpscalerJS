@@ -10,10 +10,11 @@
     "start": "nodemon src/index.js localhost 8080"
   },
   "dependencies": {
-    "@upscalerjs/models": "0.9.0",
     "@tensorflow/tfjs-node": "^3.18.0",
-    "upscaler": "1.0.0-beta.0",
-    "express": "4.16.4"
+    "@upscalerjs/models": "0.9.0",
+    "express": "4.16.4",
+    "seedrandom": "~2.4.3",
+    "upscaler": "1.0.0-beta.0"
   },
   "devDependencies": {
     "nodemon": "1.18.4"
