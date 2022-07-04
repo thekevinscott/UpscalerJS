@@ -151,7 +151,7 @@ describe('Model Loading Integration Tests', () => {
         models.forEach(({ esm: esmName, umd: umdName }) => {
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             const result = await page.evaluate(([packageName, modelName]) => {
-              const modelDefinition: any = window[packageName][modelName];
+              const modelDefinition = (<Record<string, ModelDefinition>>window)[packageName][modelName];
               const upscaler = new window['Upscaler']({
                 model: modelDefinition,
               });
