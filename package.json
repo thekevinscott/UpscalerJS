@@ -73,7 +73,7 @@
     "chokidar": "^3.5.3",
     "docsify-cli": "^4.4.4",
     "dotenv": "^16.0.1",
-    "esbuild": "^0.9.7",
+    "esbuild": "^0.14.48",
     "fs-extra": "^10.1.0",
     "heapdump": "^0.3.15",
     "html-webpack-plugin": "^5.5.0",
