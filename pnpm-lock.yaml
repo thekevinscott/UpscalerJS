@@ -380,7 +380,7 @@ importers:
 
   test/lib/esm-esbuild:
     specifiers:
-      '@babel/plugin-transform-modules-commonjs': ^7.16.0
+      '@babel/plugin-transform-modules-commonjs': ^7.18.6
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.18.0
       '@upscalerjs-for-esbuild/esrgan-legacy': workspace:@upscalerjs/esrgan-legacy@*
@@ -388,7 +388,7 @@ importers:
       seedrandom: 2.4.4
       upscaler-for-esbuild: workspace:upscaler@*
     dependencies:
-      '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.6
+      '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.6
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       '@upscalerjs-for-esbuild/esrgan-legacy': link:../../../models/esrgan-legacy
@@ -399,14 +399,14 @@ importers:
 
   test/lib/esm-webpack:
     specifiers:
-      '@babel/plugin-transform-modules-commonjs': ^7.16.0
+      '@babel/plugin-transform-modules-commonjs': ^7.18.6
       '@babel/preset-typescript': ^7.16.0
       '@tensorflow/tfjs': ^3.18.0
       seedrandom: 2.4.4
       tensor-as-base64: ^0.2.0
       upscaler-for-webpack: workspace:upscaler@*
     dependencies:
-      '@babel/plugin-transform-modules-commonjs': 7.18.2_@babel+core@7.18.6
+      '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.6
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       upscaler-for-webpack: link:../../../packages/upscalerjs
@@ -1725,21 +1725,6 @@ packages:
       - supports-color
     dev: false
 
-  /@babel/plugin-transform-modules-commonjs/7.18.2_@babel+core@7.18.6:
-    resolution: {integrity: sha512-f5A865gFPAJAEE0K7F/+nm5CmAE3y8AWlMBG9unu5j9+tk50UQVK0QS8RNxSp7MJf0wh97uYyLWt3Zvu71zyOQ==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.18.6
-      '@babel/helper-module-transforms': 7.18.0
-      '@babel/helper-plugin-utils': 7.17.12
-      '@babel/helper-simple-access': 7.18.2
-      babel-plugin-dynamic-import-node: 2.3.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@babel/plugin-transform-modules-commonjs/7.18.6_@babel+core@7.18.6:
     resolution: {integrity: sha512-Qfv2ZOWikpvmedXQJDSbxNqy7Xr/j2Y8/KfijM0iJyKkBTmWuvCA1yeH1yDM7NJhBW/2aXxeucLj6i80/LAJ/Q==}
     engines: {node: '>=6.9.0'}
@@ -1753,7 +1738,6 @@ packages:
       babel-plugin-dynamic-import-node: 2.3.3
     transitivePeerDependencies:
       - supports-color
-    dev: true
 
   /@babel/plugin-transform-modules-systemjs/7.18.5_@babel+core@7.18.5:
     resolution: {integrity: sha512-SEewrhPpcqMF1V7DhnEbhVJLrC+nnYfe1E0piZMZXBpxi9WvZqWGwpsk7JYP7wPWeqaBh4gyKlBhHJu3uz5g4Q==}
