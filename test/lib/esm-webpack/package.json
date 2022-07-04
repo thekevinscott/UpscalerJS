@@ -10,7 +10,7 @@
     "@babel/preset-typescript": "^7.16.0"
   },
   "devDependencies": {
-    "tensor-as-base64": "^0.2.0",
+    "tensor-as-base64": "^0.3.0",
     "seedrandom": "2.4.4"
   },
   "babel": {
