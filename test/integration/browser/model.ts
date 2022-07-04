@@ -154,7 +154,10 @@ describe('Model Loading Integration Tests', () => {
               const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
                 return !!modelDefinition && typeof modelDefinition === 'object' && 'path' in modelDefinition;
               }
-              const modelDefinition = window[packageName][modelName];
+              // TODO: window fails to be typed correctly in CI
+              // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
+              // Locally it works fine
+              const modelDefinition = (window as any)[packageName][modelName];
               if (isModelDefinition(modelDefinition)) {
                 const upscaler = new window['Upscaler']({
                   model: modelDefinition,
