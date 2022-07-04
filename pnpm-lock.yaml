@@ -36,7 +36,7 @@ importers:
       inquirer: ^8.2.4
       jest: ^28.1.2
       jest-canvas-mock: ^2.4.0
-      jsdom: ^19.0.0
+      jsdom: ^20.0.0
       loader-utils: ^2.0.2
       mocha: ^10.0.0
       pixelmatch: ^5.3.0
@@ -65,9 +65,9 @@ importers:
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.7
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
-      '@tensorflow/tfjs': 3.18.0
-      '@tensorflow/tfjs-node': 3.18.0
-      '@tensorflow/tfjs-node-gpu': 3.18.0
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
       '@types/jest': 28.1.4
@@ -91,7 +91,7 @@ importers:
       inquirer: 8.2.4
       jest: 28.1.2_hxaxlvfys2pc3hefxwkmyo5cpq
       jest-canvas-mock: 2.4.0
-      jsdom: 19.0.0
+      jsdom: 20.0.0
       loader-utils: 2.0.2
       mocha: 10.0.0
       pixelmatch: 5.3.0
@@ -4186,6 +4186,7 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
+    dev: false
 
   /@tensorflow/tfjs-layers/3.18.0_br26fteayl44zj43fz4bazb7oq:
     resolution: {integrity: sha512-AV7yDnPlH+RCcq8VPqkX1iyEchObE+e66m0XmJvLj+ncfKHYLa+39ZNroUA+OgB2/cMG6jgq77R4EhZbT6hwJA==}
@@ -4193,25 +4194,6 @@ packages:
       '@tensorflow/tfjs-core': 3.18.0
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
-
-  /@tensorflow/tfjs-node-gpu/3.18.0:
-    resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
-    engines: {node: '>=8.11.0'}
-    requiresBuild: true
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.4
-      '@tensorflow/tfjs': 3.18.0
-      adm-zip: 0.5.9
-      google-protobuf: 3.20.1
-      https-proxy-agent: 2.2.4
-      progress: 2.0.3
-      rimraf: 2.7.1
-      tar: 4.4.19
-    transitivePeerDependencies:
-      - encoding
-      - seedrandom
-      - supports-color
-    dev: true
 
   /@tensorflow/tfjs-node-gpu/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
@@ -4248,6 +4230,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: false
 
   /@tensorflow/tfjs-node/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-jW6bFKO6hH4tGvlijvpcIbCRRa6vDZ2xIIbEO7qZ17s0QOMPBGjDLyQGUaSQ00uog0Rid/sdZNpiueDqB0ZGbA==}
@@ -4285,6 +4268,7 @@ packages:
     transitivePeerDependencies:
       - encoding
       - seedrandom
+    dev: false
 
   /@tensorflow/tfjs/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-mOzz4jJdgIpqFS7EHndVuxrQnLUDVIKGyTqOPTYps89fZwcOFfTVxi4BHemDNQpqlVE8IaGh9UUxVXpjgPY5+Q==}
@@ -7511,6 +7495,11 @@ packages:
 
   /entities/3.0.1:
     resolution: {integrity: sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==}
+    engines: {node: '>=0.12'}
+    dev: true
+
+  /entities/4.3.1:
+    resolution: {integrity: sha512-o4q/dYJlmyjP2zfnaWDUC6A3BQFmVTX+tZPezK7k0GLSU9QYCauscf5Y+qcEPzKL+EixVouYDgLQK5H9GrLpkg==}
     engines: {node: '>=0.12'}
     dev: true
 
@@ -11174,9 +11163,9 @@ packages:
       - utf-8-validate
     dev: false
 
-  /jsdom/19.0.0:
-    resolution: {integrity: sha512-RYAyjCbxy/vri/CfnjUWJQQtZ3LKlLnDqj+9XLNnJPgEGeirZs3hllKR20re8LUZ6o1b1X4Jat+Qd26zmP41+A==}
-    engines: {node: '>=12'}
+  /jsdom/20.0.0:
+    resolution: {integrity: sha512-x4a6CKCgx00uCmP+QakBDFXwjAJ69IkkIWHmtmjd3wvXPcdOS44hfX2vqkOQrVrq8l9DhNNADZRXaCEWvgXtVA==}
+    engines: {node: '>=14'}
     peerDependencies:
       canvas: ^2.5.0
     peerDependenciesMeta:
@@ -11198,8 +11187,8 @@ packages:
       https-proxy-agent: 5.0.1
       is-potential-custom-element-name: 1.0.1
       nwsapi: 2.2.1
-      parse5: 6.0.1
-      saxes: 5.0.1
+      parse5: 7.0.0
+      saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 4.0.0
       w3c-hr-time: 1.0.2
@@ -11207,7 +11196,7 @@ packages:
       webidl-conversions: 7.0.0
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
-      whatwg-url: 10.0.0
+      whatwg-url: 11.0.0
       ws: 8.8.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
@@ -12523,6 +12512,13 @@ packages:
 
   /parse5/6.0.1:
     resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
+    dev: false
+
+  /parse5/7.0.0:
+    resolution: {integrity: sha512-y/t8IXSPWTuRZqXc0ajH/UwDj4mnqLEbSttNbThcFhGrZuOyoyvNBO85PBp2jQa55wY9d07PBNjsK8ZP3K5U6g==}
+    dependencies:
+      entities: 4.3.1
+    dev: true
 
   /parseurl/1.3.3:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
@@ -14536,6 +14532,14 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       xmlchars: 2.2.0
+    dev: false
+
+  /saxes/6.0.0:
+    resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
+    engines: {node: '>=v12.22.7'}
+    dependencies:
+      xmlchars: 2.2.0
+    dev: true
 
   /scheduler/0.20.2:
     resolution: {integrity: sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==}
@@ -16433,14 +16437,6 @@ packages:
   /whatwg-mimetype/3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
     engines: {node: '>=12'}
-    dev: true
-
-  /whatwg-url/10.0.0:
-    resolution: {integrity: sha512-CLxxCmdUby142H5FZzn4D8ikO1cmypvXVQktsgosNy4a4BHrDHeciBBGZhb0bNoR5/MltoCatso+vFjjGx8t0w==}
-    engines: {node: '>=12'}
-    dependencies:
-      tr46: 3.0.0
-      webidl-conversions: 7.0.0
     dev: true
 
   /whatwg-url/11.0.0:
