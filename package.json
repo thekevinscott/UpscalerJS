@@ -86,7 +86,7 @@
     "playwright-test": "^8.1.1",
     "pngjs": "^6.0.0",
     "prettier": "^2.7.1",
-    "puppeteer": "^13.7.0",
+    "puppeteer": "^15.3.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.75.7",
     "selenium-webdriver": "^4.3.0",

@@ -42,7 +42,7 @@ importers:
       playwright-test: ^8.1.1
       pngjs: ^6.0.0
       prettier: ^2.7.1
-      puppeteer: ^13.7.0
+      puppeteer: ^15.3.0
       rimraf: ^3.0.2
       rollup: ^2.75.7
       seedrandom: ~2.4.3
@@ -98,7 +98,7 @@ importers:
       playwright-test: 8.1.1
       pngjs: 6.0.0
       prettier: 2.7.1
-      puppeteer: 13.7.0
+      puppeteer: 15.3.0
       rimraf: 3.0.2
       rollup: 2.75.7
       selenium-webdriver: 4.3.0
@@ -2408,7 +2408,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       chalk: 4.1.2
       jest-message-util: 28.1.1
       jest-util: 28.1.1
@@ -2518,7 +2518,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       jest-mock: 28.1.1
     dev: true
 
@@ -2557,7 +2557,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.1
       '@sinonjs/fake-timers': 9.1.2
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       jest-message-util: 28.1.1
       jest-mock: 28.1.1
       jest-util: 28.1.1
@@ -2636,7 +2636,7 @@ packages:
       '@jest/transform': 28.1.2
       '@jest/types': 28.1.1
       '@jridgewell/trace-mapping': 0.3.14
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -6960,8 +6960,8 @@ packages:
       minimist: 1.2.6
     dev: false
 
-  /devtools-protocol/0.0.981744:
-    resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
+  /devtools-protocol/0.0.1011705:
+    resolution: {integrity: sha512-OKvTvu9n3swmgYshvsyVHYX0+aPzCoYUnyXUacfQMmFtBtBKewV/gT4I9jkAbpTqtTi2E4S9MXLlvzBDUlqg0Q==}
     dev: true
 
   /didyoumean/1.2.2:
@@ -9872,7 +9872,7 @@ packages:
       '@jest/expect': 28.1.2
       '@jest/test-result': 28.1.1
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       chalk: 4.1.2
       co: 4.6.0
       dedent: 0.7.0
@@ -10162,7 +10162,7 @@ packages:
       '@jest/environment': 28.1.2
       '@jest/fake-timers': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       jest-mock: 28.1.1
       jest-util: 28.1.1
     dev: true
@@ -10203,7 +10203,7 @@ packages:
     dependencies:
       '@jest/types': 28.1.1
       '@types/graceful-fs': 4.1.5
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       anymatch: 3.1.2
       fb-watchman: 2.0.1
       graceful-fs: 4.2.10
@@ -10319,7 +10319,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
     dev: true
 
   /jest-pnp-resolver/1.2.2_jest-resolve@27.5.1:
@@ -10448,7 +10448,7 @@ packages:
       '@jest/test-result': 28.1.1
       '@jest/transform': 28.1.2
       '@jest/types': 28.1.1
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       chalk: 4.1.2
       emittery: 0.10.2
       graceful-fs: 4.2.10
@@ -10707,7 +10707,7 @@ packages:
     resolution: {integrity: sha512-Au7slXB08C6h+xbJPp7VIb6U0XX5Kc9uel/WFc6/rcTzGiaVCBRngBExSYuXSLFPULPSYU3cJ3ybS988lNFQhQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     dependencies:
-      '@types/node': 18.0.1
+      '@types/node': 18.0.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -13327,14 +13327,14 @@ packages:
       escape-goat: 2.1.1
     dev: true
 
-  /puppeteer/13.7.0:
-    resolution: {integrity: sha512-U1uufzBjz3+PkpCxFrWzh4OrMIdIb2ztzCu0YEPfRHjHswcSwHZswnK+WdsOQJsRV8WeTg3jLhJR4D867+fjsA==}
-    engines: {node: '>=10.18.1'}
+  /puppeteer/15.3.0:
+    resolution: {integrity: sha512-PYZwL0DjGeUOauSie6n9Pf+vDUod+vFnC1uHa1Uj3ex1PhRI6DOheau6oJxxj9oyEPWy8SS19KfZDwln4v4LTg==}
+    engines: {node: '>=14.1.0'}
     requiresBuild: true
     dependencies:
       cross-fetch: 3.1.5
       debug: 4.3.4
-      devtools-protocol: 0.0.981744
+      devtools-protocol: 0.0.1011705
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
       pkg-dir: 4.2.0
@@ -13343,7 +13343,7 @@ packages:
       rimraf: 3.0.2
       tar-fs: 2.1.1
       unbzip2-stream: 1.4.3
-      ws: 8.5.0
+      ws: 8.8.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -16375,19 +16375,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-
-  /ws/8.5.0:
-    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: true
 
   /ws/8.8.0:
     resolution: {integrity: sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==}
