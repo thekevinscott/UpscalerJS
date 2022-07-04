@@ -67,9 +67,9 @@ importers:
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
       '@rollup/plugin-commonjs': 21.1.0_rollup@2.75.7
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@types/fs-extra': 9.0.13
       '@types/inquirer': 8.2.1
       '@types/jest': 28.1.4
@@ -4188,7 +4188,6 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
-    dev: false
 
   /@tensorflow/tfjs-layers/3.18.0_br26fteayl44zj43fz4bazb7oq:
     resolution: {integrity: sha512-AV7yDnPlH+RCcq8VPqkX1iyEchObE+e66m0XmJvLj+ncfKHYLa+39ZNroUA+OgB2/cMG6jgq77R4EhZbT6hwJA==}
@@ -4196,6 +4195,25 @@ packages:
       '@tensorflow/tfjs-core': 3.18.0
     dependencies:
       '@tensorflow/tfjs-core': 3.18.0
+
+  /@tensorflow/tfjs-node-gpu/3.18.0:
+    resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
+    engines: {node: '>=8.11.0'}
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.4
+      '@tensorflow/tfjs': 3.18.0
+      adm-zip: 0.5.9
+      google-protobuf: 3.20.1
+      https-proxy-agent: 2.2.4
+      progress: 2.0.3
+      rimraf: 2.7.1
+      tar: 4.4.19
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+      - supports-color
+    dev: true
 
   /@tensorflow/tfjs-node-gpu/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-cjh9Nu+za1kc0xZdhrHM8WPWAOhN8novSLdCLTim4TbI+S7iRZOxN9Obpi6I+O160th+48t71pWoepP3u3SQsQ==}
@@ -4232,7 +4250,6 @@ packages:
       - encoding
       - seedrandom
       - supports-color
-    dev: false
 
   /@tensorflow/tfjs-node/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-jW6bFKO6hH4tGvlijvpcIbCRRa6vDZ2xIIbEO7qZ17s0QOMPBGjDLyQGUaSQ00uog0Rid/sdZNpiueDqB0ZGbA==}
@@ -4270,7 +4287,6 @@ packages:
     transitivePeerDependencies:
       - encoding
       - seedrandom
-    dev: false
 
   /@tensorflow/tfjs/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-mOzz4jJdgIpqFS7EHndVuxrQnLUDVIKGyTqOPTYps89fZwcOFfTVxi4BHemDNQpqlVE8IaGh9UUxVXpjgPY5+Q==}
