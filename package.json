@@ -91,7 +91,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.75.7",
     "selenium-webdriver": "^4.3.0",
-    "serve": "^11.3.2",
+    "serve": "^13.0.2",
     "tape": "^5.5.3",
     "tree-kill": "^1.2.2",
     "ts-jest": "^28.0.5",
@@ -105,6 +105,7 @@
   "packageManager": "pnpm@3.1.0",
   "dependencies": {
     "@types/mocha": "^9.1.1",
-    "@types/selenium-webdriver": "^4.1.1"
+    "@types/selenium-webdriver": "^4.1.1",
+    "serve-handler": "^6.1.3"
   }
 }
