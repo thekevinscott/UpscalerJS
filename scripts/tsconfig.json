@@ -5,7 +5,7 @@
     "moduleResolution": "Node",
     "target": "ES2022",
     "esModuleInterop": true,
-    "module": "ES2022"
+    "module": "commonjs"
   },
   "ts-node": {
     "esm": true,
