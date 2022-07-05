@@ -3,8 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "update:version": "ts-node --project ./tsconfig.json ./package-scripts/update-version.ts",
-    "update:tfjs": "ts-node --project ./tsconfig.json ./package-scripts/update-tfjs.ts"
+    "_script_": "ts-node --project ./tsconfig.json",
+    "example": "pnpm _script_ ./start-example.ts",
+    "find-all-packages": "pnpm _script_ ./package-scripts/find-all-packages.ts",
+    "update:version": "pnpm _script_ ./package-scripts/update-version.ts",
+    "update:tfjs": "pnpm _script_ ./package-scripts/update-tfjs.ts",
+    "test:integration:browserstack": "pnpm _script_ ./test.ts --platform browser --kind browserstack",
+    "test:integration:browser": "pnpm _script_ ./test.ts --platform browser",
+    "test:integration:node": "pnpm _script_ ./test.ts --platform node",
+    "test:memory-leaks": "pnpm _script_ ./check-memory-leaks.ts"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
