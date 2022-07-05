@@ -1,7 +1,10 @@
+import { Dependency } from '@schemastore/package';
+import { string } from '@tensorflow/tfjs';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import rimraf from 'rimraf';
+import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
 
@@ -47,8 +50,8 @@ export const installModels = async (rootDest: string, modelNames: string[]) => {
   }));
 };
 
-const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
-  await installLocalPackage(src, dest);
+const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, installDependencies = true) => {
+  await installLocalPackage(src, dest, installDependencies);
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)
@@ -56,13 +59,11 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
 
 const npmPack = async (cwd: string): Promise<string> => {
   let outputName = '';
-  await callExec('npm pack --silent --quiet', {
+  await callExec('npm pack --quiet', {
     cwd,
   }, chunk => {
     outputName = chunk;
   });
-
-  console.log('PACK HAS DONE');
 
   outputName = outputName.trim();
 
@@ -74,12 +75,46 @@ const npmPack = async (cwd: string): Promise<string> => {
 };
 
 const unTar = async (cwd: string, fileName: string) => {
-  await callExec(`tar zxvf ${fileName}`, {
+  await callExec(`tar zxf ${fileName}`, {
     cwd,
   });
 }
 
-export const installLocalPackage = async (src: string, dest: string) => {
+const getLocalAndRemoteDependencies = (dir: string) => {
+  const { dependencies = {} } = getPackageJSON(dir);
+
+  const localDependencies: Dependency = {};
+  const remoteDependencies: Dependency = {};
+
+  const entries = Object.entries(dependencies);
+
+  for (let i = 0; i < entries.length; i++) {
+    const [dependency, version] = entries[i];
+    if (version.startsWith('workspace:')) {
+      localDependencies[dependency] = version;
+    } else {
+      remoteDependencies[dependency] = version;
+    }
+  }
+
+  return { localDependencies, remoteDependencies };
+};
+
+const findMatchingFolder = (dependency: string): string => {
+  const packagePaths = findAllPackages(ROOT);
+
+  for (let i = 0; i < packagePaths.length; i++) {
+    const packagePath = packagePaths[i];
+    const { name } = getPackageJSON(packagePath);
+    if (name === dependency) {
+      return path.join(packagePath, '..');
+    }
+  }
+
+  throw new Error(`Could not find local dependency ${dependency}`);
+}
+
+export const installLocalPackage = async (src: string, dest: string, installDependencies = true) => {
   rimraf.sync(dest);
   const packedFile = await npmPack(src);
   const tmp = os.tmpdir();
@@ -89,4 +124,21 @@ export const installLocalPackage = async (src: string, dest: string) => {
   await callExec(`mv package ${dest}`, {
     cwd: tmp,
   });
+
+  if (installDependencies) {
+    const { localDependencies, remoteDependencies } = getLocalAndRemoteDependencies(dest);
+
+    const nodeModules = path.join(dest, '..');
+
+    await Promise.all(Object.keys(localDependencies).map(async dependency => {
+      await installLocalPackage(findMatchingFolder(dependency), path.resolve(nodeModules, dependency))
+    }));
+
+    const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
+      return `${dependency}@${version}`;
+    }).join(' ');
+    await callExec(`npm install --no-save ${dependenciesToInstall}`, {
+      cwd: path.join(nodeModules, '..'),
+    })
+  }
 }
