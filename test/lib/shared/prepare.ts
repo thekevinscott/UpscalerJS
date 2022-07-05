@@ -28,7 +28,7 @@ const MODELS_PATH = path.join(ROOT, 'models');
 // }
 
 export const installNodeModules = async (cwd: string) => {
-  await callExec('npm install', {
+  await callExec('npm install --quiet', {
     cwd,
   });
 }
@@ -56,11 +56,13 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
 
 const npmPack = async (cwd: string): Promise<string> => {
   let outputName = '';
-  await callExec('npm pack --quiet', {
+  await callExec('npm pack --silent --quiet', {
     cwd,
   }, chunk => {
     outputName = chunk;
   });
+
+  console.log('PACK HAS DONE');
 
   outputName = outputName.trim();
 
