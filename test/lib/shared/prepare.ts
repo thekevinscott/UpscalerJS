@@ -2,6 +2,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import rimraf from 'rimraf';
+import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
 
 const ROOT = path.join(__dirname, '../../..');
@@ -33,9 +34,16 @@ export const installNodeModules = async (cwd: string) => {
 
 // dest should be the full path to the upscaler package itself, e.g.:
 // /users/foo/upscalerjs/test/lib/node/node_modules/local-upscaler
-export const installUpscaler = async (dest: string) => {
-  await installLocalPackage(UPSCALER_PATH, dest);
+export const installUpscaler = async (dest: string, name: string) => {
+  await installLocalPackageWithNewName(UPSCALER_PATH, dest, name);
 };
+
+const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
+  await installLocalPackage(src, dest);
+  const packageJSON = getPackageJSON(dest)
+  packageJSON.name = localNameForPackage;
+  writePackageJSON(dest, packageJSON)
+}
 
 const npmPack = async (cwd: string): Promise<string> => {
   let outputName = '';
@@ -43,7 +51,9 @@ const npmPack = async (cwd: string): Promise<string> => {
     cwd,
   }, chunk => {
     outputName = chunk;
-  });
+  }, false);
+
+  outputName = outputName.trim();
 
   if (!outputName.endsWith('.tgz')) {
     throw new Error(`Unexpected output name: ${outputName}`)

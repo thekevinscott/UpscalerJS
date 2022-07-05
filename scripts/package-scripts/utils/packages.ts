@@ -43,7 +43,7 @@ export const getPackageJSONPath = (file: string) => {
   return path.resolve(file, 'package.json');
 }
 
-const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
+export const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
   const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
   fs.writeFileSync(getPackageJSONPath(file), stringifiedContents);
 };
