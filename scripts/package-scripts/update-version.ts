@@ -6,6 +6,7 @@ import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPac
 type Answers = { packages: Array<Package>, version: string, updateDependencies?: boolean, }
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
+console.log(ROOT_DIR);
 
 const logger: PackageUpdaterLogger = (file: string) => {
   return `- Updated ${getPreparedFolderName(getPackageJSONPath(file))}`;
@@ -76,28 +77,14 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
 
     const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
 
-    await Promise.all(packages.map(packageKey => {
+    await Promise.all(packages.map(async packageKey => {
       const pkg = DIRECTORIES[packageKey];
       if (pkg === undefined) {
         throw new Error(`Package ${packageKey} is not defined.`);
       }
       const { multiple, directory } = pkg;
       const fn = multiple ? updateMultiplePackages : updateSinglePackage;
-      return fn(directory, setVersionForPackageJSON, logger);
-      // if (DIRECTORIES[packageKey])
-      // if (packageKey === EXAMPLES) {
-      //   return updateMultiplePackages(EXAMPLES_DIR, setVersionForPackageJSON, logger);
-      // } else if (packageKey === MODELS) {
-      //   return updateSinglePackage(MODELS_DIR, version);
-      // } else if (packageKey === CORE) {
-      //   return updateSinglePackage(CORE_DIR, version);
-      // } else if (packageKey === UPSCALER_JS) {
-      //   return updateSinglePackage(UPSCALERJS_DIR, version);
-      // } else if (packageKey === ROOT) {
-      //   return updateSinglePackage(ROOT_DIR, version);
-      // } else if (packageKey === WRAPPER) {
-      //   return updateSinglePackage(WRAPPER_DIR, version);
-      // }
+      return await fn(directory, setVersionForPackageJSON, logger);
     }));
     if (updateDependencies) {
       const dependencyDirectories = [DIRECTORIES[EXAMPLES], DIRECTORIES[WRAPPER]];

@@ -7,7 +7,7 @@ import path from 'path';
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import kill from 'tree-kill';
 import chokidar from 'chokidar';
-import yargs from 'yargs/yargs';
+import yargs from 'yargs';
 
 type OnChange = (src: string) => (e: Array<any>) => void;
 

@@ -2,6 +2,7 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import path from 'path';
 import dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
@@ -11,7 +12,11 @@ import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
 
+<<<<<<< HEAD
 dotenv.config();
+=======
+const ROOT_DIR = path.resolve(__dirname, '..');
+>>>>>>> v1.0.0
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
@@ -113,7 +118,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   const args = [
     'jest',
     '--config',
-    `test/jestconfig.${platform}.${runner}.js`,
+    path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),
     '--detectOpenHandles',
     // argv.watch ? '--watch' : undefined,
     ...argv._,

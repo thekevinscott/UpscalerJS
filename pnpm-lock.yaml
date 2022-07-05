@@ -12,7 +12,6 @@ importers:
       '@tensorflow/tfjs-node': ^3.18.0
       '@tensorflow/tfjs-node-gpu': ^3.18.0
       '@types/fs-extra': ^9.0.13
-      '@types/inquirer': ^8.2.1
       '@types/jest': ^28.1.4
       '@types/jsdom': ^16.2.14
       '@types/mocha': ^9.1.1
@@ -22,18 +21,16 @@ importers:
       '@types/rimraf': ^3.0.2
       '@types/selenium-webdriver': ^4.1.1
       '@types/serve-handler': ^6.1.1
-      '@types/yargs': ^17.0.10
       browserstack-local: ^1.5.1
       chai: ^4.3.6
       chai-as-promised: ^7.1.1
       chokidar: ^3.5.3
       docsify-cli: ^4.4.4
       dotenv: ^16.0.1
-      esbuild: ^0.9.7
+      esbuild: ^0.11.0
       fs-extra: ^10.1.0
       heapdump: ^0.3.15
       html-webpack-plugin: ^5.5.0
-      inquirer: ^8.2.4
       jest: ^28.1.2
       jest-canvas-mock: ^2.4.0
       jsdom: ^20.0.0
@@ -57,7 +54,6 @@ importers:
       uglify-js: ^3.16.2
       upscaler: workspace:*
       webpack: ^5.73.0
-      yargs: ^17.5.1
     devDependencies:
       '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
       '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
@@ -67,7 +63,6 @@ importers:
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
       '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
       '@types/fs-extra': 9.0.13
-      '@types/inquirer': 8.2.1
       '@types/jest': 28.1.4
       '@types/jsdom': 16.2.14
       '@types/mocha': 9.1.1
@@ -77,18 +72,16 @@ importers:
       '@types/rimraf': 3.0.2
       '@types/selenium-webdriver': 4.1.1
       '@types/serve-handler': 6.1.1
-      '@types/yargs': 17.0.10
       browserstack-local: 1.5.1
       chai: 4.3.6
       chai-as-promised: 7.1.1_chai@4.3.6
       chokidar: 3.5.3
       docsify-cli: 4.4.4
       dotenv: 16.0.1
-      esbuild: 0.9.7
+      esbuild: 0.11.23
       fs-extra: 10.1.0
       heapdump: 0.3.15
       html-webpack-plugin: 5.5.0_webpack@5.73.0
-      inquirer: 8.2.4
       jest: 28.1.2_hxaxlvfys2pc3hefxwkmyo5cpq
       jest-canvas-mock: 2.4.0
       jsdom: 20.0.0
@@ -106,13 +99,12 @@ importers:
       serve-handler: 6.1.3
       tape: 5.5.3
       tree-kill: 1.2.2
-      ts-jest: 28.0.5_lqh5mstrghlogxbsmev74q6c24
+      ts-jest: 28.0.5_przwvez3yaagd2j4myr22mjudm
       ts-node: 10.8.2_qqrtuuv3y2pz7xoxv47yka6pmi
       typescript: 4.7.4
       uglify-js: 3.16.2
       upscaler: link:packages/upscalerjs
-      webpack: 5.73.0_noqcvr3mbi2k6ilwxbihb5l5qq
-      yargs: 17.5.1
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   examples/basic:
     specifiers:
@@ -426,6 +418,18 @@ importers:
       upscaler: 1.0.0-beta.0
     dependencies:
       upscaler: link:../upscalerjs
+
+  scripts:
+    specifiers:
+      '@types/inquirer': ^8.2.1
+      '@types/yargs': ^17.0.10
+      inquirer: ^8.2.4
+      yargs: ^17.5.1
+    devDependencies:
+      '@types/inquirer': 8.2.1
+      '@types/yargs': 17.0.10
+      inquirer: 8.2.4
+      yargs: 17.5.1
 
   test/lib/esm-esbuild:
     specifiers:
@@ -7561,6 +7565,11 @@ packages:
     dev: true
     optional: true
 
+  /esbuild/0.11.23:
+    resolution: {integrity: sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==}
+    hasBin: true
+    requiresBuild: true
+
   /esbuild/0.14.39:
     resolution: {integrity: sha512-2kKujuzvRWYtwvNjYDY444LQIA3TyJhJIX3Yo4+qkFlDDtGlSicWgeHVJqMUP/2sSfH10PGwfsj+O2ro1m10xQ==}
     engines: {node: '>=12'}
@@ -7588,11 +7597,6 @@ packages:
       esbuild-windows-64: 0.14.39
       esbuild-windows-arm64: 0.14.39
     dev: true
-
-  /esbuild/0.9.7:
-    resolution: {integrity: sha512-VtUf6aQ89VTmMLKrWHYG50uByMF4JQlVysb8dmg6cOgW8JnFCipmz7p+HNBl+RR3LLCuBxFGVauAe2wfnF9bLg==}
-    hasBin: true
-    requiresBuild: true
 
   /escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
@@ -9041,7 +9045,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.73.0_noqcvr3mbi2k6ilwxbihb5l5qq
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   /htmlnano/2.0.2_svgo@2.8.0:
     resolution: {integrity: sha512-+ZrQFS4Ub+zd+/fWwfvoYCEGNEa0/zrpys6CyXxvZDwtL7Pl+pOtRkiujyvBQ7Lmfp7/iEPxtOFgxWA16Gkj3w==}
@@ -15101,7 +15105,7 @@ packages:
       ansi-escapes: 4.3.2
       supports-hyperlinks: 2.2.0
 
-  /terser-webpack-plugin/5.3.3_r3zcbookq3oebt5ytpleu5ku3u:
+  /terser-webpack-plugin/5.3.3_hn3byo5vzrs4xt5kg7ym3uefx4:
     resolution: {integrity: sha512-Fx60G5HNYknNTNQnzQ1VePRuu89ZVYWfjRAeT5rITuCY/1b08s49e5kSQwHDirKZWuoKOBRFS98EUUoZ9kLEwQ==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
@@ -15118,13 +15122,13 @@ packages:
         optional: true
     dependencies:
       '@jridgewell/trace-mapping': 0.3.14
-      esbuild: 0.9.7
+      esbuild: 0.11.23
       jest-worker: 27.5.1
       schema-utils: 3.1.1
       serialize-javascript: 6.0.0
       terser: 5.14.1
       uglify-js: 3.16.2
-      webpack: 5.73.0_noqcvr3mbi2k6ilwxbihb5l5qq
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   /terser-webpack-plugin/5.3.3_webpack@5.73.0:
     resolution: {integrity: sha512-Fx60G5HNYknNTNQnzQ1VePRuu89ZVYWfjRAeT5rITuCY/1b08s49e5kSQwHDirKZWuoKOBRFS98EUUoZ9kLEwQ==}
@@ -15315,7 +15319,7 @@ packages:
     resolution: {integrity: sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==}
     dev: false
 
-  /ts-jest/28.0.5_lqh5mstrghlogxbsmev74q6c24:
+  /ts-jest/28.0.5_przwvez3yaagd2j4myr22mjudm:
     resolution: {integrity: sha512-Sx9FyP9pCY7pUzQpy4FgRZf2bhHY3za576HMKJFs+OnQ9jS96Du5vNsDKkyedQkik+sEabbKAnCliv9BEsHZgQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
@@ -15335,7 +15339,7 @@ packages:
     dependencies:
       '@babel/core': 7.18.6
       bs-logger: 0.2.6
-      esbuild: 0.9.7
+      esbuild: 0.11.23
       fast-json-stable-stringify: 2.1.0
       jest: 28.1.2_hxaxlvfys2pc3hefxwkmyo5cpq
       jest-util: 28.1.1
@@ -15960,7 +15964,7 @@ packages:
       - esbuild
       - uglify-js
 
-  /webpack/5.73.0_noqcvr3mbi2k6ilwxbihb5l5qq:
+  /webpack/5.73.0_vesxedskkah2qshu52mhcrxdlu:
     resolution: {integrity: sha512-svjudQRPPa0YiOYa2lM/Gacw0r6PvxptHj4FuEKQ2kX05ZLkjbVc5MnPs6its5j7IZljnIqSVo/OsY2X0IpHGA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
@@ -15991,7 +15995,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.1.1
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.3_r3zcbookq3oebt5ytpleu5ku3u
+      terser-webpack-plugin: 5.3.3_hn3byo5vzrs4xt5kg7ym3uefx4
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:
