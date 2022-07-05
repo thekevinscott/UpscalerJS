@@ -1,6 +1,5 @@
-console.log('e1')
+console.log('esrgan', require.resolve('@tensorflow/tfjs-node-gpu'));
 import { tf, } from './dependencies.generated';
-console.log('e2')
 import { ModelDefinition } from '@upscalerjs/core';
 import { NAME, VERSION } from './constants.generated';
 

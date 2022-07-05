@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-console.log('upscal', require.resolve('@tensorflow/tfjs-node-gpu'))
+console.log('upscal', require.resolve('@tensorflow/tfjs-node-gpu'));
 import {
   UpscalerOptions,
   UpscaleArgs,
