@@ -57,7 +57,7 @@ const defaultLogger: PackageUpdaterLogger = (file: string) => undefined;
 export const updateMultiplePackages = async (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
   const packages = findAllPackages(dir);
   for (let i = 0; i < packages.length; i++) {
-    const pkg = packages[i];
+    const pkg = path.resolve(dir, packages[i].split('/').slice(1).join('/'));
     await updateSinglePackage(pkg, transform, logger);
   }
 };
