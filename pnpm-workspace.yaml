@@ -1,5 +1,4 @@
 packages:
   - 'packages/**'
   - 'models/**'
-  - 'test/lib/**'
   - 'examples/**'
