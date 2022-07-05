@@ -3,22 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "_script_": "ts-node --project ./tsconfig.json",
-    "example": "pnpm _script_ ./start-example.ts",
-    "find-all-packages": "pnpm _script_ ./package-scripts/find-all-packages.ts",
-    "update:version": "pnpm _script_ ./package-scripts/update-version.ts",
-    "update:tfjs": "pnpm _script_ ./package-scripts/update-tfjs.ts",
-    "test:integration:browserstack": "pnpm _script_ ./test.ts --platform browser --kind browserstack",
-    "test:integration:browser": "pnpm _script_ ./test.ts --platform browser",
-    "test:integration:node": "pnpm _script_ ./test.ts --platform node",
-    "test:memory-leaks": "pnpm _script_ ./check-memory-leaks.ts"
+    "run_command": "ts-node --project ./tsconfig.json",
+    "example": "pnpm run_command ./start-example.ts",
+    "find-all-packages": "pnpm run_command ./package-scripts/find-all-packages.ts",
+    "update:version": "pnpm run_command ./package-scripts/update-version.ts",
+    "update:tfjs": "pnpm run_command ./package-scripts/update-tfjs.ts",
+    "test:integration:browserstack": "pnpm run_command ./test.ts --platform browser --kind browserstack",
+    "test:integration:browser": "pnpm run_command ./test.ts --platform browser",
+    "test:integration:node": "pnpm run_command ./test.ts --platform node",
+    "test:memory-leaks": "pnpm run_command ./check-memory-leaks.ts"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
     "inquirer": "^8.2.4",
     "@types/yargs": "^17.0.10",
-    "@types/fs-extra": "^9.0.13",
-    "fs-extra": "^10.1.0",
     "yargs": "^17.5.1"
   }
 }
