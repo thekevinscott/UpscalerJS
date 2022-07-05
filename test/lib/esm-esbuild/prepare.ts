@@ -5,6 +5,7 @@ import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 import callExec from '../utils/callExec';
+import { installNodeModules } from '../shared/prepare';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -36,6 +37,7 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
 
 export const bundle = async () => {
   const localNameForPackage = 'upscaler-for-esbuild'
+  await installNodeModules(ROOT);
   await updateTFJSVersion(ROOT);
   await moveUpscalerToLocallyNamedPackage(localNameForPackage);
   rimraf.sync(DIST);
