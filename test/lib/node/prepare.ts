@@ -27,10 +27,10 @@ const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) =>
   fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
 }
 
-export const prepareScriptBundleForCJS = async () => {
+export const prepareScriptBundleForNodeCJS = async () => {
   const localNameForPackage = 'upscaler-for-node';
 
-  await callExec('yarn', {
+  await callExec('npm install', {
     cwd: ROOT,
   });
 
@@ -54,4 +54,6 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
   await callExec(`node "${FILENAME}"`, {
     cwd: ROOT
   }, stdout);
+
+  rimraf.sync(TMP);
 };
