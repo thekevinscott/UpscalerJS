@@ -13,7 +13,6 @@ export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
-let compiler = undefined;
 
 const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
   // Make sure we load the version local to node_modules, _not_ the local version on disk,
@@ -43,7 +42,7 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
 
   const entryFiles = path.join(ROOT, 'src/index.js');
 
-  compiler = webpack({
+  const compiler = webpack({
     mode: 'production',
     context: ROOT,
     entry: entryFiles,
@@ -66,8 +65,8 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
   });
 
   compiler.run((err, stats) => {
-    if (err || stats.hasErrors()) {
-      reject(err || stats.toJson('errors-only').errors.map(e => e.message));
+    if (err || stats?.hasErrors()) {
+      reject(err || stats?.toJson('errors-only').errors?.map(e => e.message));
     } else {
       resolve();
     }
