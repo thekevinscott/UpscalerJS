@@ -7,6 +7,7 @@ import callExec from "../utils/callExec";
 
 const ROOT = path.join(__dirname, '../../..');
 const UPSCALER_PATH = path.join(ROOT, 'packages/upscalerjs');
+const MODELS_PATH = path.join(ROOT, 'models');
 // const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
 //   // Make sure we load the version local to node_modules, _not_ the local version on disk,
 //   // so we can ensure the build process is accurate and working correctly
@@ -36,6 +37,14 @@ export const installNodeModules = async (cwd: string) => {
 // /users/foo/upscalerjs/test/lib/node/node_modules/local-upscaler
 export const installUpscaler = async (dest: string, name: string) => {
   await installLocalPackageWithNewName(UPSCALER_PATH, dest, name);
+};
+
+export const installModels = async (rootDest: string, modelNames: string[]) => {
+  await Promise.all(modelNames.map(async modelName => {
+    const src = path.resolve(MODELS_PATH, modelName);
+    const dest = path.resolve(rootDest, modelName);
+    await installLocalPackageWithNewName(src, dest, modelName);
+  }));
 };
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {

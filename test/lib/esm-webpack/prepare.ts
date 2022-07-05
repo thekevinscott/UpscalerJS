@@ -38,7 +38,7 @@ export const prepareScriptBundleForESM = async () => {
 };
 
 export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
-  await updateTFJSVersion(ROOT);
+  // await updateTFJSVersion(ROOT);
   rimraf.sync(DIST);
   copyFixtures(DIST);
 
