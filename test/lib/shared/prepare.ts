@@ -47,11 +47,11 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
 
 const npmPack = async (cwd: string): Promise<string> => {
   let outputName = '';
-  await callExec('npm pack', {
+  await callExec('npm pack --quiet', {
     cwd,
   }, chunk => {
     outputName = chunk;
-  }, false);
+  });
 
   outputName = outputName.trim();
 

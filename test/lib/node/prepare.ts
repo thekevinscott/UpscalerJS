@@ -5,15 +5,14 @@ import path from 'path';
 import crypto from 'crypto';
 import rimraf from 'rimraf';
 import { installNodeModules, installUpscaler } from "../shared/prepare";
+import { LOCAL_UPSCALER_NAME } from "./constants";
 
 const ROOT = path.join(__dirname);
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 
 export const prepareScriptBundleForNodeCJS = async () => {
-  const localNameForPackage = 'upscaler-for-node';
-
   await installNodeModules(ROOT);
-  await installUpscaler(path.resolve(NODE_MODULES, localNameForPackage), localNameForPackage);
+  await installUpscaler(path.resolve(NODE_MODULES, LOCAL_UPSCALER_NAME), LOCAL_UPSCALER_NAME);
 };
 
 type Stdout = (data: string) => void;

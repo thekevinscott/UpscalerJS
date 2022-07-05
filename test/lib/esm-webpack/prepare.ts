@@ -1,38 +1,40 @@
-import * as path from 'path';
-import * as rimraf from 'rimraf';
-import * as fs from 'fs';
-import callExec from '../utils/callExec';
-// import { getTFJSVersion } from '../utils/getTFJSVersion';
+import path from 'path';
+import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { installNodeModules, installUpscaler } from '../shared/prepare';
+import { LOCAL_UPSCALER_NAME } from './constants';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
 
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+// const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
-const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
-  // Make sure we load the version local to node_modules, _not_ the local version on disk,
-  // so we can ensure the build process is accurate and working correctly
-  await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
-    cwd: UPSCALER_PATH,
-  });
-  const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
-  packageJSON.name = localNameForPackage;
-  fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
-}
+// const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
+//   // Make sure we load the version local to node_modules, _not_ the local version on disk,
+//   // so we can ensure the build process is accurate and working correctly
+//   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}/${localNameForPackage}`, {
+//     cwd: UPSCALER_PATH,
+//   });
+//   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
+//   packageJSON.name = localNameForPackage;
+//   fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
+// }
 
 export const prepareScriptBundleForESM = async () => {
-  const localNameForPackage = 'upscaler-for-webpack'
-  rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
-  await callExec(`mkdir -p ./node_modules`, {
-    cwd: ROOT,
-  });
+  await installNodeModules(ROOT);
+  await installUpscaler(path.resolve(NODE_MODULES, LOCAL_UPSCALER_NAME), LOCAL_UPSCALER_NAME);
 
-  await moveUpscalerToLocallyNamedPackage(localNameForPackage);
+  // const localNameForPackage = 'upscaler-for-webpack'
+  // rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
+  // await callExec(`mkdir -p ./node_modules`, {
+  //   cwd: ROOT,
+  // });
+
+  // await moveUpscalerToLocallyNamedPackage(localNameForPackage);
 };
 
 export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
