@@ -24,8 +24,8 @@
   },
   "scripts": {
     "postinstall": "pnpm --filter upscaler run scaffold:platform 'browser' && pnpm --filter @upscalerjs/core build",
-    "update:tfjs": "ts-node scripts/package-scripts/update-tfjs.ts",
-    "update:version": "ts-node scripts/package-scripts/update-version.ts",
+    "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
+    "update:version": "pnpm --filter @upscalerjs/scripts update:version",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "pnpm run pin-cdn",
     "update:version:old": "node ./scripts/version.js",
@@ -57,8 +57,6 @@
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0",
-    "@types/fs-extra": "^9.0.13",
-    "@types/inquirer": "^8.2.1",
     "@types/jest": "^28.1.4",
     "@types/jsdom": "^16.2.14",
     "@types/pixelmatch": "^5.2.4",
@@ -66,7 +64,6 @@
     "@types/puppeteer": "^5.4.6",
     "@types/rimraf": "^3.0.2",
     "@types/serve-handler": "^6.1.1",
-    "@types/yargs": "^17.0.10",
     "browserstack-local": "^1.5.1",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
@@ -74,10 +71,8 @@
     "docsify-cli": "^4.4.4",
     "dotenv": "^16.0.1",
     "esbuild": "^0.9.7",
-    "fs-extra": "^10.1.0",
     "heapdump": "^0.3.15",
     "html-webpack-plugin": "^5.5.0",
-    "inquirer": "^8.2.4",
     "jest": "^28.1.2",
     "jest-canvas-mock": "^2.4.0",
     "jsdom": "^20.0.0",
@@ -102,8 +97,7 @@
     "@types/mocha": "^9.1.1",
     "@types/selenium-webdriver": "^4.1.1",
     "webpack": "^5.73.0",
-    "seedrandom": "~2.4.3",
-    "yargs": "^17.5.1"
+    "seedrandom": "~2.4.3"
   },
   "packageManager": "pnpm@3.1.0"
 }

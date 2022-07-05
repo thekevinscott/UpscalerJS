@@ -1,0 +1,16 @@
+{
+  "name": "@upscalerjs/scripts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "update:version": "ts-node --project ./tsconfig.json ./package-scripts/update-version.ts"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^8.2.1",
+    "inquirer": "^8.2.4",
+    "@types/yargs": "^17.0.10",
+    "@types/fs-extra": "^9.0.13",
+    "fs-extra": "^10.1.0",
+    "yargs": "^17.5.1"
+  }
+}
