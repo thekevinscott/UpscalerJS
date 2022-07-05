@@ -23,6 +23,7 @@
     ]
   },
   "scripts": {
+    "liteinstall": "pnpm install --filter=!\"@upscalerjs/examples.*\"",
     "postinstall": "pnpm --filter upscaler run scaffold:platform 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
     "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
     "update:version": "pnpm --filter @upscalerjs/scripts update:version",
