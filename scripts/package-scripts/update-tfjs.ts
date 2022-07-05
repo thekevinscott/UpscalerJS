@@ -8,35 +8,6 @@ type Answers = { packages: Array<Package>, version: string}
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 
-// const updateMultiplePackages = (dir: string, version: string) => {
-//   const packages = findAllPackages(dir);
-//   for (let i = 0; i < packages.length; i++) {
-//     const pkg = packages[i];
-//     updateSinglePackage(pkg, version);
-//   }
-// };
-
-// const updateSinglePackage = (dir: string, version: string) => {
-//   const packageJSON = getPackageJSON(dir);
-//   const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
-//   for (let i = 0; i < dependencyKeys.length; i++) {
-//     const depKey = dependencyKeys[i];
-//     const deps = packageJSON[depKey];
-//     if (deps) {
-//       const gen = getMatchingTFJS(deps);
-//       let value = gen.next().value;
-//       while (value) {
-//         const [key] = value;
-//         deps[key] = version;
-//         value = gen.next().value;
-//       }
-//       packageJSON[depKey] = deps;
-//     }
-//   }
-//   writePackageJSON(dir, packageJSON);
-//   console.log(`- Updated ${getFormattedName(dir)}`);
-// };
-
 const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON, dir) => {
   const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
   const updates: Array<string> = [];

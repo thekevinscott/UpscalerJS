@@ -2,3 +2,4 @@ packages:
   - 'packages/**'
   - 'models/**'
   - 'examples/**'
+  - 'scripts/**'
