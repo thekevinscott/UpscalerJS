@@ -1,17 +1,15 @@
 import path from 'path';
 import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
-import { updateTFJSVersion } from '../utils/updateTFJSVersion';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { installNodeModules, installUpscaler } from '../shared/prepare';
+import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME } from './constants';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const NODE_MODULES = path.join(ROOT, '/node_modules');
-
-// const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 
 // const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
 //   // Make sure we load the version local to node_modules, _not_ the local version on disk,
@@ -26,7 +24,12 @@ const NODE_MODULES = path.join(ROOT, '/node_modules');
 
 export const prepareScriptBundleForESM = async () => {
   await installNodeModules(ROOT);
-  await installUpscaler(path.resolve(NODE_MODULES, LOCAL_UPSCALER_NAME), LOCAL_UPSCALER_NAME);
+  await installLocalPackages(NODE_MODULES, [
+    {
+      src: UPSCALER_PATH,
+      name: LOCAL_UPSCALER_NAME,
+    },
+  ]);
 
   // const localNameForPackage = 'upscaler-for-webpack'
   // rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);

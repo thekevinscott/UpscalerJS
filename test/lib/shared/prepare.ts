@@ -36,23 +36,74 @@ export const installNodeModules = async (cwd: string) => {
   });
 }
 
-// dest should be the full path to the upscaler package itself, e.g.:
-// /users/foo/upscalerjs/test/lib/node/node_modules/local-upscaler
-export const installUpscaler = async (dest: string, name: string) => {
-  await installLocalPackageWithNewName(UPSCALER_PATH, dest, name);
-};
+export const installLocalPackages = async (dest: string, dependencies: Array<{ src: string; name: string;}>) => {
+  let localDependencies: Dependency = {};
+  let remoteDependencies: Dependency = {};
+  for (let i = 0; i < dependencies.length; i++) {
+    const dep = dependencies[i];
+    const subDeps = collectAllDependencies(dep.src);
+    localDependencies = {
+      ...localDependencies,
+      ...subDeps.localDependencies,
+    };
+    remoteDependencies = {
+      ...remoteDependencies,
+      ...subDeps.remoteDependencies,
+    };
+  }
 
-export const installModels = async (rootDest: string, modelNames: string[]) => {
-  for (let i = 0; i < modelNames.length; i++ ) {
-    const modelName = modelNames[i];
-    const src = path.resolve(MODELS_PATH, modelName);
-    const dest = path.resolve(rootDest, modelName);
-    await installLocalPackageWithNewName(src, dest, modelName);
-  };
-};
+  const localDependenciesKeys = Object.keys(localDependencies);
+  for (let i = 0; i < localDependenciesKeys.length; i++) {
+    const localDependency = localDependenciesKeys[i];
+    const localDependencyFolder = findMatchingFolder(localDependency);
+    dependencies.push({
+      src: localDependencyFolder,
+      name: localDependency,
+    })
+  }
 
-const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, installDependencies = true) => {
-  await installLocalPackage(src, dest, installDependencies);
+  if (Object.keys(remoteDependencies).length) { 
+    const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
+      return `${dependency}@${version}`;
+    }).join(' ');
+    await callExec(`npm install --silent --no-audit --no-save ${dependenciesToInstall}`, {
+      cwd: dest,
+    })
+  }
+
+  for (let i = 0; i < dependencies.length; i++) {
+    const { src, name } = dependencies[i];
+    installLocalPackageWithNewName(src, path.resolve(dest, 'node_modules', name), name);
+// const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
+    // const subDeps = collectAllDependencies(dep.src);
+    // localDependencies = {
+    //   ...localDependencies,
+    //   ...subDeps.localDependencies,
+    // };
+    // remoteDependencies = {
+    //   ...remoteDependencies,
+    //   ...subDeps.remoteDependencies,
+    // };
+  }
+}
+
+// // dest should be the full path to the upscaler package itself, e.g.:
+// // /users/foo/upscalerjs/test/lib/node/node_modules/local-upscaler
+// export const installUpscaler = async (dest: string, name: string) => {
+//   await installLocalPackageWithNewName(UPSCALER_PATH, dest, name);
+// };
+
+// export const installModels = async (rootDest: string, modelNames: string[]) => {
+//   for (let i = 0; i < modelNames.length; i++ ) {
+//     const modelName = modelNames[i];
+//     const src = path.resolve(MODELS_PATH, modelName);
+//     const dest = path.resolve(rootDest, modelName);
+//     await installLocalPackageWithNewName(src, dest, modelName);
+//   };
+// };
+
+const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
+  await installLocalPackage(src, dest);
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)
@@ -82,12 +133,12 @@ const unTar = async (cwd: string, fileName: string) => {
 }
 
 const getLocalAndRemoteDependencies = (dir: string) => {
-  const { dependencies = {} } = getPackageJSON(dir);
+  const { dependencies = {} as Dependency } = getPackageJSON(dir);
 
   const localDependencies: Dependency = {};
   const remoteDependencies: Dependency = {};
 
-  const entries = Object.entries(dependencies);
+  const entries: Array<[string, string]> = Object.entries(dependencies);
 
   for (let i = 0; i < entries.length; i++) {
     const [dependency, version] = entries[i];
@@ -115,12 +166,12 @@ const findMatchingFolder = (dependency: string): string => {
   throw new Error(`Could not find local dependency ${dependency}`);
 };
 
-const gatherDependencies = (src: string) => {
+const collectAllDependencies = (src: string) => {
   let { localDependencies, remoteDependencies } = getLocalAndRemoteDependencies(src);
   const localDependencyNames = Object.keys(localDependencies);
   for (let i = 0; i < localDependencyNames.length; i++) {
     const localDependency = findMatchingFolder(localDependencyNames[i]);
-    const { localDependencies: subLocalDeps, remoteDependencies: subRemoteDeps } = gatherDependencies(localDependency);
+    const { localDependencies: subLocalDeps, remoteDependencies: subRemoteDeps } = collectAllDependencies(localDependency);
     localDependencies = {
       ...localDependencies,
       ...subLocalDeps,
@@ -134,51 +185,46 @@ const gatherDependencies = (src: string) => {
   return { localDependencies, remoteDependencies };
 }
 
-export const installLocalPackage = async (src: string, dest: string, installDependencies = true) => {
+export const installLocalPackage = async (src: string, dest: string) => {
   rimraf.sync(dest);
-  const localPackages = [{ src, dest }];
-  if (installDependencies) {
-    const { localDependencies, remoteDependencies } = gatherDependencies(src);
-    const nodeModules = path.join(dest, '..');
+  // if (installDependencies) {
+  //   const { localDependencies, remoteDependencies } = collectAllDependencies(src);
+  //   const nodeModules = path.join(dest, '..');
 
-    const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
-      return `${dependency}@${version}`;
-    }).join(' ');
+  //   const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
+  //     return `${dependency}@${version}`;
+  //   }).join(' ');
 
-    if (dependenciesToInstall) {
-      // console.log(dependenciesToInstall, 'for', src);
-      await callExec(`npm install --silent --no-audit --no-save ${dependenciesToInstall}`, {
-        cwd: path.join(nodeModules, '..'),
-      })
-    }
+  //   if (dependenciesToInstall) {
+  //     // console.log(dependenciesToInstall, 'for', src);
+  //     await callExec(`npm install --silent --no-audit --no-save ${dependenciesToInstall}`, {
+  //       cwd: path.join(nodeModules, '..'),
+  //     })
+  //   }
 
-    await Promise.all(Object.keys(localDependencies).map(async dependency => {
-      const localSrc = findMatchingFolder(dependency);
-      const localDest = path.resolve(nodeModules, dependency);
-      localPackages.push({ src: localSrc, dest: localDest });
-    }));
-  }
+  //   await Promise.all(Object.keys(localDependencies).map(async dependency => {
+  //     const localSrc = findMatchingFolder(dependency);
+  //     const localDest = path.resolve(nodeModules, dependency);
+  //     localPackages.push({ src: localSrc, dest: localDest });
+  //   }));
+  // }
 
   // console.log(localPackages, 'for', src)
-  for (let i = 0; i < localPackages.length; i++) {
-    const { src, dest } = localPackages[i];
     // rimraf.sync(dest);
-    const packedFile = await npmPack(src);
-    // console.log('file has been packed', packedFile);
-    // console.log(fs.readdirSync(src))
-    const tmp = await getTmpDir();
-    const tmpPackedFile = path.resolve(tmp, packedFile);
-    fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
-    // console.log('renamed packed file', packedFile)
-    await unTar(tmp, packedFile);
-    console.log(fs.readdirSync(tmp))
-    console.log(dest)
-    console.log(fs.readdirSync(path.resolve(dest, '..')))
-    await callExec(`mv package ${dest}`, {
-      cwd: tmp,
-    });
-  }
-
+  const packedFile = await npmPack(src);
+  // console.log('file has been packed', packedFile);
+  // console.log(fs.readdirSync(src))
+  const tmp = await getTmpDir();
+  const tmpPackedFile = path.resolve(tmp, packedFile);
+  fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
+  // console.log('renamed packed file', packedFile)
+  await unTar(tmp, packedFile);
+  // console.log(fs.readdirSync(tmp))
+  // console.log(dest)
+  // console.log(fs.readdirSync(path.resolve(dest, '..')))
+  await callExec(`mv package ${dest}`, {
+    cwd: tmp,
+  });
 };
 
 const getTmpDir = async (): Promise<string> => new Promise((resolve, reject) => {
