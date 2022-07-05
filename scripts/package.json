@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "update:version": "ts-node --project ./tsconfig.json ./package-scripts/update-version.ts"
+    "update:version": "ts-node --project ./tsconfig.json ./package-scripts/update-version.ts",
+    "update:tfjs": "ts-node --project ./tsconfig.json ./package-scripts/update-tfjs.ts"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.1",

@@ -6,7 +6,7 @@ const EXCLUDED = ['node_modules', 'scratch'];
 const MAX_DEPTH = 100;
 
 const findAllPackages = (dir: string, depth = 0): Array<string> => {
-  const packages: Array<string> = [];
+  let packages: Array<string> = [];
   if (depth > MAX_DEPTH) {
     throw new Error('Maximum depth reached');
   }
@@ -24,9 +24,7 @@ const findAllPackages = (dir: string, depth = 0): Array<string> => {
       const stat = fs.statSync(fullFile);
       if (stat && stat.isDirectory()) {
         const dirFiles = findAllPackages(fullFile, depth + 1);
-        for (let j = 0; j < dirFiles.length; j++) {
-          packages.push(dirFiles[j]);
-        }
+        packages = packages.concat(dirFiles);
       }
     }
   }
