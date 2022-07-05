@@ -2,6 +2,7 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import path from 'path';
 import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 
@@ -11,6 +12,8 @@ import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableM
 import buildModels from './package-scripts/build-model';
 
 dotenv.config();
+
+const ROOT_DIR = path.resolve(__dirname, '..');
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
@@ -36,9 +39,9 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   const args = [
     'pnpm',
     'jest',
-    'test/misc/memory/test.browser.ts',
+    path.resolve(ROOT_DIR, 'test/misc/memory/test.browser.ts'),
     '--config',
-    'test/misc/memory/jestconfig.js',
+    path.resolve(ROOT_DIR, 'test/misc/memory/jestconfig.js'),
     '--detectOpenHandles',
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
