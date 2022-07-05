@@ -12,11 +12,9 @@ import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
 
-<<<<<<< HEAD
 dotenv.config();
-=======
+
 const ROOT_DIR = path.resolve(__dirname, '..');
->>>>>>> v1.0.0
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
