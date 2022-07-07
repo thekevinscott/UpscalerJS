@@ -1,5 +1,5 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { executeNodeScript, GetContents, testNodeScript } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
@@ -49,6 +49,10 @@ const getModelPath = () => {
 `;
 
 describe('Platform Integration Tests', () => {
+  beforeAll(async () => {
+    await prepareScriptBundleForNodeCJS();
+  });
+
   [
 //     { platform: 'node', deps: `
 // const tf = require('@tensorflow/tfjs-node');

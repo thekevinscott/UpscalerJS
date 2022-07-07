@@ -4,14 +4,11 @@
   "version": "1.0.0-beta.0",
   "main": "index.js",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.18.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
-    "upscaler-for-webpack": "workspace:upscaler@*",
-    "@babel/preset-typescript": "^7.16.0"
+    "tensor-as-base64": "^0.3.0",
+    "@tensorflow/tfjs": "^3.18.0"
   },
   "devDependencies": {
     "webpack": "^5.24.3",
-    "tensor-as-base64": "^0.3.0",
     "seedrandom": "2.4.4"
   },
   "babel": {

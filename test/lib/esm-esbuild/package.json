@@ -4,16 +4,11 @@
   "version": "1.0.0-beta.0",
   "main": "index.js",
   "dependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
-    "@babel/preset-typescript": "^7.16.0",
-    "upscaler-for-esbuild": "workspace:upscaler@*",
-    "@upscalerjs/esrgan-slim": "workspace:*",
-    "@upscalerjs-for-esbuild/esrgan-slim": "workspace:@upscalerjs/esrgan-slim@*",
-    "@upscalerjs-for-esbuild/esrgan-legacy": "workspace:@upscalerjs/esrgan-legacy@*",
-    "@upscalerjs-for-esbuild/pixel-upsampler": "workspace:@upscalerjs/pixel-upsampler@*",
     "@tensorflow/tfjs": "^3.18.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
+    "@babel/preset-typescript": "^7.16.0",
     "seedrandom": "2.4.4"
   },
   "babel": {
