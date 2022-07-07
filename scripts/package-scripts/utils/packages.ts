@@ -70,3 +70,14 @@ export const updateSinglePackage = async (dir: string, transform: TransformPacka
     console.log(message);
   }
 };
+
+export const getPackageJSONValue = (packageJSON: JSONSchemaForNPMPackageJsonFiles, depKey: string) => {
+  return depKey.split('.').reduce((json, key) => json[key], packageJSON);
+}
+
+export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJsonFiles, key: string, val: any) => {
+  return {
+    ...packageJSON,
+    [key]: val,
+  };
+}
