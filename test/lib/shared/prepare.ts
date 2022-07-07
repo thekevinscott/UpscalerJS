@@ -44,16 +44,19 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   }))
 };
 
-const buildDependencies = (dependencies: DependencyDefinition[]) => dependencies.reduce((collectedDependencies, { src }) => {
+const buildDependencies = (dependencies: DependencyDefinition[]): {
+  localDependencies: Dependency;
+  remoteDependencies: Dependency;
+} => dependencies.reduce((collectedDependencies, { src }) => {
   const { localDependencies, remoteDependencies, } = collectAllDependencies(src);
   return {
     localDependencies: {
       ...collectedDependencies.localDependencies,
-      localDependencies,
+      ...localDependencies,
     },
     remoteDependencies: {
       ...collectedDependencies.remoteDependencies,
-      remoteDependencies,
+      ...remoteDependencies,
     }
   }
 
