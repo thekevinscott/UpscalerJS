@@ -77,9 +77,10 @@ export const getPackageJSONValue = (packageJSON: JSONSchemaForNPMPackageJsonFile
 
 type Value = JSONSchemaForNPMPackageJsonFiles[keyof JSONSchemaForNPMPackageJsonFiles];
 export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJsonFiles, key: string, val: Value) => {
-  console.log(packageJSON, key, val);
+  // console.log(packageJSON, key, val);
   // key = pnpm.overrides
   const parts = key.split('.').reverse();
+  console.log(parts, val);
   return getObj(packageJSON, parts, val)
   // return {
   //   ...packageJSON,
@@ -96,6 +97,7 @@ export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJson
 }
 
 const getObj = (obj: Record<string, any>, parts: string[], val: Value): Record<string, any> => {
+  console.log('get obj', parts);
   if (parts.length === 1) {
     return {
       ...obj,
