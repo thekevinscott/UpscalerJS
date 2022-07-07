@@ -5,6 +5,10 @@
   "dependencies": {
     "@upscalerjs/core": "workspace:*"
   },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0",
+    "@tensorflow/tfjs-layers": "^3.18.0"
+  },
   "exports": {
     "./div2k/2x": {
       "require": "./dist/node/div2k/2x.js",

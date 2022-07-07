@@ -1,9 +1,6 @@
-import { tfcore, tflayers, } from './dependencies.generated';
+import { tfcore, tflayers } from './dependencies.generated';
 import { ModelDefinition } from '@upscalerjs/core';
 import { NAME, VERSION } from './constants.generated';
-import * as tf from '@tensorflow/tfjs';
-tf.zeros([]).clipByValue(0, 1)
-
 
 const SCALE = 4;
 const BETA = 0.2;

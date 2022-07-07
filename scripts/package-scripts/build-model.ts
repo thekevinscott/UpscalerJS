@@ -185,9 +185,6 @@ const buildCJS = async (modelFolder: string) => {
   }> = [{
     platform: 'node',
     dist: path.resolve(modelFolder, 'dist/node'),
-  }, {
-    platform: 'node-gpu',
-    dist: path.resolve(modelFolder, 'dist/node-gpu'),
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
@@ -231,14 +228,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
       await buildUMD(MODEL_ROOT);
     }
   }
-  // fs.copySync(path.resolve(MODEL_ROOT, 'models'), path.resolve(DIST, 'models'));
 
   const duration = new Date().getTime() - start;
-  console.log(`Built model ${model} in ${duration} ms`)
+  return duration;
 }
 
 const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS) => {
-  await Promise.all(models.map(model => buildModel(model, outputFormats)))
+  return await Promise.all(models.map(model => buildModel(model, outputFormats)))
 }
 
 export default buildModels;

@@ -54,10 +54,10 @@ describe('Platform Integration Tests', () => {
   });
 
   [
-//     { platform: 'node', deps: `
-// const tf = require('@tensorflow/tfjs-node');
-// const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
-//     `},
+    { platform: 'node', deps: `
+const tf = require('@tensorflow/tfjs-node');
+const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
+    `},
     { platform: 'node-gpu', deps: `
 const tf = require('@tensorflow/tfjs-node-gpu');
 const Upscaler = require('${LOCAL_UPSCALER_NAME}/node-gpu');
