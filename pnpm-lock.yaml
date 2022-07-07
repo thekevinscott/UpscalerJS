@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+overrides:
+  '@tensorflow/tfjs': 3.18.0
+  '@tensorflow/tfjs-node': 3.18.0
+  '@tensorflow/tfjs-node-gpu': 3.18.0
+
 importers:
 
   .:
@@ -9,9 +14,9 @@ importers:
       '@rollup/plugin-commonjs': ^22.0.1
       '@rollup/plugin-node-resolve': ^13.3.0
       '@schemastore/package': ^0.0.6
-      '@tensorflow/tfjs': ^3.18.0
-      '@tensorflow/tfjs-node': ^3.18.0
-      '@tensorflow/tfjs-node-gpu': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@types/fs-extra': ^9.0.13
       '@types/jest': ^28.1.4
       '@types/jsdom': ^16.2.14
@@ -110,7 +115,7 @@ importers:
 
   examples/basic:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -125,7 +130,7 @@ importers:
 
   examples/cancel:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -140,7 +145,7 @@ importers:
 
   examples/comparisons:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -155,7 +160,7 @@ importers:
 
   examples/models:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-scripts: 5.0.1
@@ -171,7 +176,7 @@ importers:
 
   examples/nodejs:
     specifiers:
-      '@tensorflow/tfjs-node': ^3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
       express: 4.16.4
       nodemon: 1.18.4
       seedrandom: ~2.4.3
@@ -186,7 +191,7 @@ importers:
 
   examples/nodejs-custom-model:
     specifiers:
-      '@tensorflow/tfjs-node': ^3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
       '@upscalerjs/models': 0.9.0
       express: 4.16.4
       nodemon: 1.18.4
@@ -205,7 +210,7 @@ importers:
     specifiers:
       '@babel/plugin-syntax-flow': ^7.14.5
       '@babel/plugin-transform-react-jsx': ^7.14.9
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-input-range: ^1.3.0
@@ -227,7 +232,7 @@ importers:
 
   examples/progress:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -244,7 +249,7 @@ importers:
     specifiers:
       '@babel/plugin-syntax-flow': ^7.14.5
       '@babel/plugin-transform-react-jsx': ^7.14.9
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.0.2
@@ -266,7 +271,7 @@ importers:
 
   examples/tensor:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -281,7 +286,7 @@ importers:
 
   examples/upload:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -296,7 +301,7 @@ importers:
 
   examples/warmup:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -311,7 +316,7 @@ importers:
 
   examples/webcam:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
@@ -326,7 +331,7 @@ importers:
 
   examples/webworker:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
       seedrandom: ~2.4.3
       tensor-as-base64: ^0.3.0
       upscaler: 1.0.0-beta.0
@@ -378,9 +383,9 @@ importers:
 
   packages/upscalerjs:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
-      '@tensorflow/tfjs-node': ^3.18.0
-      '@tensorflow/tfjs-node-gpu': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@typescript-eslint/eslint-plugin': ^5.11.0
       '@typescript-eslint/parser': ^5.11.0
       '@upscalerjs/core': workspace:*
@@ -424,57 +429,6 @@ importers:
       '@types/yargs': 17.0.10
       inquirer: 8.2.4
       yargs: 17.5.1
-
-  test/lib/esm-esbuild:
-    specifiers:
-      '@babel/plugin-transform-modules-commonjs': ^7.18.6
-      '@babel/preset-typescript': ^7.16.0
-      '@tensorflow/tfjs': ^3.18.0
-      '@upscalerjs-for-esbuild/esrgan-legacy': workspace:@upscalerjs/esrgan-legacy@*
-      '@upscalerjs-for-esbuild/pixel-upsampler': workspace:@upscalerjs/pixel-upsampler@*
-      seedrandom: 2.4.4
-      upscaler-for-esbuild: workspace:upscaler@*
-    dependencies:
-      '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
-      '@babel/preset-typescript': 7.17.12_@babel+core@7.18.6
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
-      '@upscalerjs-for-esbuild/esrgan-legacy': link:../../../models/esrgan-legacy
-      '@upscalerjs-for-esbuild/pixel-upsampler': link:../../../models/pixel-upsampler
-      upscaler-for-esbuild: link:../../../packages/upscalerjs
-    devDependencies:
-      seedrandom: 2.4.4
-
-  test/lib/esm-webpack:
-    specifiers:
-      '@babel/plugin-transform-modules-commonjs': ^7.18.6
-      '@babel/preset-typescript': ^7.16.0
-      '@tensorflow/tfjs': ^3.18.0
-      seedrandom: 2.4.4
-      tensor-as-base64: ^0.3.0
-      upscaler-for-webpack: workspace:upscaler@*
-    dependencies:
-      '@babel/plugin-transform-modules-commonjs': 7.18.6_@babel+core@7.18.6
-      '@babel/preset-typescript': 7.17.12_@babel+core@7.18.6
-      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
-      upscaler-for-webpack: link:../../../packages/upscalerjs
-    devDependencies:
-      seedrandom: 2.4.4
-      tensor-as-base64: 0.3.0_@tensorflow+tfjs@3.18.0
-
-  test/lib/node:
-    specifiers:
-      '@tensorflow/tfjs-node': ^3.18.0
-      '@tensorflow/tfjs-node-gpu': ^3.18.0
-      seedrandom: 2.4.4
-      upscaler-for-node: workspace:upscaler@*
-      yargs: ^17.3.1
-    dependencies:
-      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
-      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
-      upscaler-for-node: link:../../../packages/upscalerjs
-      yargs: 17.5.1
-    devDependencies:
-      seedrandom: 2.4.4
 
 packages:
 
@@ -600,13 +554,6 @@ packages:
       '@jridgewell/gen-mapping': 0.3.2
       jsesc: 2.5.2
 
-  /@babel/helper-annotate-as-pure/7.16.7:
-    resolution: {integrity: sha512-s6t2w/IPQVTAET1HitoowRGXooX8mCgtuP5195wD/QJPV6wYjpujCGF7JuMODVX2ZAJOf1GT6DT9MHEZvLOFSw==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/types': 7.18.4
-    dev: false
-
   /@babel/helper-annotate-as-pure/7.18.6:
     resolution: {integrity: sha512-duORpUiYrEpzKIop6iNbjnwKLAKnJ47csTyRACyEmWj0QdUrm5aqNJGHSSEQSUAvNW0ojX0dOmK9dZduvkfeXA==}
     engines: {node: '>=6.9.0'}
@@ -645,24 +592,6 @@ packages:
       '@babel/helper-validator-option': 7.18.6
       browserslist: 4.21.1
       semver: 6.3.0
-
-  /@babel/helper-create-class-features-plugin/7.18.0_@babel+core@7.18.6:
-    resolution: {integrity: sha512-Kh8zTGR9de3J63e5nS0rQUdRs/kbtwoeQQ0sriS0lItjC96u8XXZN6lKpuyWd2coKSU13py/y+LTmThLuVX0Pg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
-    dependencies:
-      '@babel/core': 7.18.6
-      '@babel/helper-annotate-as-pure': 7.16.7
-      '@babel/helper-environment-visitor': 7.18.2
-      '@babel/helper-function-name': 7.17.9
-      '@babel/helper-member-expression-to-functions': 7.17.7
-      '@babel/helper-optimise-call-expression': 7.16.7
-      '@babel/helper-replace-supers': 7.18.2
-      '@babel/helper-split-export-declaration': 7.16.7
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /@babel/helper-create-class-features-plugin/7.18.6_@babel+core@7.18.6:
     resolution: {integrity: sha512-YfDzdnoxHGV8CzqHGyCbFvXg5QESPFkXlHtvdCkesLjjVMT2Adxe4FGUR5ChIb3DxSaXO12iIOCWoXdsUVwnqw==}
@@ -754,13 +683,6 @@ packages:
     dependencies:
       '@babel/types': 7.18.7
 
-  /@babel/helper-member-expression-to-functions/7.17.7:
-    resolution: {integrity: sha512-thxXgnQ8qQ11W2wVUObIqDL4p148VMxkt5T/qpN5k2fboRyzFGFmKsTGViquyM5QHKUy48OZoca8kw4ajaDPyw==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/types': 7.18.4
-    dev: false
-
   /@babel/helper-member-expression-to-functions/7.18.6:
     resolution: {integrity: sha512-CeHxqwwipekotzPDUuJOfIMtcIHBuc7WAzLmTYWctVigqS5RktNMQ5bEwQSuGewzYnCtTWa3BARXeiLxDTv+Ng==}
     engines: {node: '>=6.9.0'}
@@ -804,23 +726,11 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /@babel/helper-optimise-call-expression/7.16.7:
-    resolution: {integrity: sha512-EtgBhg7rd/JcnpZFXpBy0ze1YRfdm7BnBX4uKMBd3ixa3RGAE002JZB66FJyNH7g0F38U05pXmA5P8cBh7z+1w==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/types': 7.18.4
-    dev: false
-
   /@babel/helper-optimise-call-expression/7.18.6:
     resolution: {integrity: sha512-HP59oD9/fEHQkdcbgFCnbmgH5vIQTJbxh2yf+CdM89/glUNnuzr87Q8GIjGEnOktTROemO0Pe0iPAYbqZuOUiA==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.18.7
-
-  /@babel/helper-plugin-utils/7.17.12:
-    resolution: {integrity: sha512-JDkf04mqtN3y4iAbO1hv9U2ARpPyPL1zqyWs/2WG1pgSq9llHFjStX5jdxb84himgJm+8Ng+x0oiWF/nw/XQKA==}
-    engines: {node: '>=6.9.0'}
-    dev: false
 
   /@babel/helper-plugin-utils/7.18.6:
     resolution: {integrity: sha512-gvZnm1YAAxh13eJdkb9EWHBnF3eAub3XTLCZEehHT2kWxiKVRL64+ae5Y6Ivne0mVHmMYKT+xWgZO+gQhuLUBg==}
@@ -833,19 +743,6 @@ packages:
       '@babel/helper-annotate-as-pure': 7.18.6
       '@babel/helper-wrap-function': 7.16.8
       '@babel/types': 7.18.7
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@babel/helper-replace-supers/7.18.2:
-    resolution: {integrity: sha512-XzAIyxx+vFnrOxiQrToSUOzUOn0e1J2Li40ntddek1Y69AXUTXoDJ40/D5RdjFu7s7qHiaeoTiempZcbuVXh2Q==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-environment-visitor': 7.18.2
-      '@babel/helper-member-expression-to-functions': 7.17.7
-      '@babel/helper-optimise-call-expression': 7.16.7
-      '@babel/traverse': 7.18.5
-      '@babel/types': 7.18.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -894,11 +791,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.18.7
-
-  /@babel/helper-validator-identifier/7.16.7:
-    resolution: {integrity: sha512-hsEnFemeiW4D08A5gUAZxLBTXpZ39P+a+DGDsHw1yxqyQ/jzFEnxf5uTEGp+3bzAbNOxU1paTgYS4ECU/IgfDw==}
-    engines: {node: '>=6.9.0'}
-    dev: false
 
   /@babel/helper-validator-identifier/7.18.6:
     resolution: {integrity: sha512-MmetCkz9ej86nJQV+sFCxoGGrUbU3q02kgLciwkrt9QqEB7cP39oKEY0PakknEO0Gu20SskMRi+AYZ3b1TpN9g==}
@@ -1484,16 +1376,6 @@ packages:
       '@babel/core': 7.18.6
       '@babel/helper-plugin-utils': 7.18.6
 
-  /@babel/plugin-syntax-typescript/7.17.12_@babel+core@7.18.6:
-    resolution: {integrity: sha512-TYY0SXFiO31YXtNg3HtFwNJHjLsAyIIhAhNWkQ5whPPS7HWUFlg9z0Ta4qAQNjQbP1wsSt/oKkmZ/4/WWdMUpw==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.18.6
-      '@babel/helper-plugin-utils': 7.17.12
-    dev: false
-
   /@babel/plugin-syntax-typescript/7.18.6_@babel+core@7.18.6:
     resolution: {integrity: sha512-mAWAuq4rvOepWCBid55JuRNvpTNf2UGVgoz4JV0fXEKolsVZDzsa4NqCef758WZJj/GDu0gVGItjKFiClTAmZA==}
     engines: {node: '>=6.9.0'}
@@ -1926,20 +1808,6 @@ packages:
       '@babel/helper-plugin-utils': 7.18.6
     dev: false
 
-  /@babel/plugin-transform-typescript/7.18.4_@babel+core@7.18.6:
-    resolution: {integrity: sha512-l4vHuSLUajptpHNEOUDEGsnpl9pfRLsN1XUoDQDD/YBuXTM+v37SHGS+c6n4jdcZy96QtuUuSvZYMLSSsjH8Mw==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.18.6
-      '@babel/helper-create-class-features-plugin': 7.18.0_@babel+core@7.18.6
-      '@babel/helper-plugin-utils': 7.17.12
-      '@babel/plugin-syntax-typescript': 7.17.12_@babel+core@7.18.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@babel/plugin-transform-typescript/7.18.6_@babel+core@7.18.6:
     resolution: {integrity: sha512-ijHNhzIrLj5lQCnI6aaNVRtGVuUZhOXFLRVFs7lLrkXTHip4FKty5oAuQdk4tywG0/WjXmjTfQCWmuzrvFer1w==}
     engines: {node: '>=6.9.0'}
@@ -2088,20 +1956,6 @@ packages:
       '@babel/plugin-transform-react-pure-annotations': 7.18.0_@babel+core@7.18.6
     dev: false
 
-  /@babel/preset-typescript/7.17.12_@babel+core@7.18.6:
-    resolution: {integrity: sha512-S1ViF8W2QwAKUGJXxP9NAfNaqGDdEBJKpYkxHf5Yy2C4NPPzXGeR3Lhk7G8xJaaLcFTRfNjVbtbVtm8Gb0mqvg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.18.6
-      '@babel/helper-plugin-utils': 7.17.12
-      '@babel/helper-validator-option': 7.16.7
-      '@babel/plugin-transform-typescript': 7.18.4_@babel+core@7.18.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@babel/preset-typescript/7.18.6_@babel+core@7.18.6:
     resolution: {integrity: sha512-s9ik86kXBAnD760aybBucdpnLsAt0jK1xqJn2juOn9lkOvSHV60os5hxoVJsPzMQxvnUJFAlkont2DvvaYEBtQ==}
     engines: {node: '>=6.9.0'}
@@ -2181,14 +2035,6 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
-
-  /@babel/types/7.18.4:
-    resolution: {integrity: sha512-ThN1mBcMq5pG/Vm2IcBmPPfyPXbd8S02rS+OBIDENdufvqC7Z/jHPCv9IcP01277aKtDI8g/2XysBN4hA8niiw==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-validator-identifier': 7.16.7
-      to-fast-properties: 2.0.0
-    dev: false
 
   /@babel/types/7.18.7:
     resolution: {integrity: sha512-QG3yxTcTIBoAcQmkCs+wAPYZhu7Dk9rXKacINfNbdJDNERTbLQbHGyVG8q/YGMPeCJRIhSY0+fTc5+xuh6WPSQ==}
@@ -4093,6 +3939,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs-node/3.18.0_seedrandom@2.4.4:
     resolution: {integrity: sha512-jW6bFKO6hH4tGvlijvpcIbCRRa6vDZ2xIIbEO7qZ17s0QOMPBGjDLyQGUaSQ00uog0Rid/sdZNpiueDqB0ZGbA==}
@@ -15077,6 +14924,7 @@ packages:
       '@tensorflow/tfjs': ^3.18.0
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+    dev: false
 
   /term-size/1.2.0:
     resolution: {integrity: sha512-7dPUZQGy/+m3/wjVz3ZW5dobSoD/02NxJpoXUX0WIyjfVS3l0c+b/+9phIDFA7FHzkYtwtMFgeGZ/Y8jVTeqQQ==}
@@ -16118,7 +15966,7 @@ packages:
   /wide-align/1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 1.0.2
+      string-width: 4.2.3
 
   /widest-line/2.0.1:
     resolution: {integrity: sha512-Ba5m9/Fa4Xt9eb2ELXt77JxVDV8w7qQrH0zS/TWSJdLyAwQjWoOzpzj5lwVftDz6n/EOu3tNACS84v509qwnJA==}
@@ -16449,6 +16297,7 @@ packages:
   /yargs-parser/21.0.1:
     resolution: {integrity: sha512-9BK1jFpLzJROCI5TzwZL/TU4gqjK5xiHV/RfWLOahrjAko/e4DJkRDZQXfvqAsiZzzYhgAzbgz6lg48jcm4GLg==}
     engines: {node: '>=12'}
+    dev: true
 
   /yargs-unparser/2.0.0:
     resolution: {integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA==}
@@ -16500,6 +16349,7 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.1
+    dev: true
 
   /yauzl/2.10.0:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}

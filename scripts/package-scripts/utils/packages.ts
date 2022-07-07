@@ -70,3 +70,28 @@ export const updateSinglePackage = async (dir: string, transform: TransformPacka
     console.log(message);
   }
 };
+
+export const getPackageJSONValue = (packageJSON: JSONSchemaForNPMPackageJsonFiles, depKey: string) => {
+  return depKey.split('.').reduce((json, key) => json[key], packageJSON);
+}
+
+type Value = JSONSchemaForNPMPackageJsonFiles[keyof JSONSchemaForNPMPackageJsonFiles];
+export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJsonFiles, key: string, val: Value) => {
+  return getObj(packageJSON, key.split('.'), val)
+}
+
+const getObj = (obj: Record<string, any>, parts: string[], val: Value): Record<string, any> => {
+  if (parts.length === 1) {
+    return {
+      ...obj,
+      [parts[0]]: {
+        ...obj[parts[0]],
+        ...val,
+      }
+    };
+  }
+  return {
+    ...obj,
+    [parts[0]]: getObj(obj[parts[0]], parts.slice(1), val),
+  }
+}

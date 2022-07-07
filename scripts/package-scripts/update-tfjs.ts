@@ -2,18 +2,19 @@ import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
-import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { Dependency } from '@schemastore/package';
 
 type Answers = { packages: Array<Package>, version: string}
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
 
 const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON, dir) => {
-  const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
+  const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies', 'pnpm.overrides'];
   const updates: Array<string> = [];
   for (let i = 0; i < dependencyKeys.length; i++) {
     const depKey = dependencyKeys[i];
-    const deps = packageJSON[depKey];
+    const deps = getPackageJSONValue(packageJSON, depKey);
     if (deps) {
       const gen = getMatchingTFJS(deps);
       let value = gen.next().value;
@@ -23,7 +24,7 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
         value = gen.next().value;
         updates.push(`  - ${depKey}: ${key}`);
       }
-      packageJSON[depKey] = deps;
+      packageJSON = updatePackageJSONForKey(packageJSON, depKey, deps)
     }
   }
   if (updates.length) {
@@ -43,12 +44,14 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
 //   }
 // };
 
-function* getMatchingTFJS(deps: Record<string, string>) {
-  const entries = Object.entries(deps);
-  for (let i = 0; i < entries.length; i++) {
-    const [key, val] = entries[i];
-    if (key.startsWith('@tensorflow/tfjs')) {
-      yield [key, val];
+function* getMatchingTFJS(deps?: Dependency) {
+  if (deps) {
+    const entries = Object.entries(deps);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, val] = entries[i];
+      if (key.startsWith('@tensorflow/tfjs')) {
+        yield [key, val];
+      }
     }
   }
 }
