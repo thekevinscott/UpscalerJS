@@ -1,6 +1,7 @@
 import { Dependency } from '@schemastore/package';
 import { string } from '@tensorflow/tfjs';
 import fs from 'fs';
+import { mkdirp, mkdirpSync } from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import rimraf from 'rimraf';
@@ -9,32 +10,10 @@ import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scrip
 import callExec from "../utils/callExec";
 
 const ROOT = path.join(__dirname, '../../..');
-const UPSCALER_PATH = path.join(ROOT, 'packages/upscalerjs');
-const MODELS_PATH = path.join(ROOT, 'models');
-// const moveUpscalerToLocallyNamedPackage = async (localNameForPackage: string) => {
-//   // Make sure we load the version local to node_modules, _not_ the local version on disk,
-//   // so we can ensure the build process is accurate and working correctly
-//   rimraf.sync(`${NODE_MODULES}/${localNameForPackage}`);
 
-
-//   await callExec(`cp -r ${UPSCALER_PATH} ${NODE_MODULES}`, {
-//     cwd: UPSCALER_PATH,
-//   });
-
-//   await callExec(`mv ${NODE_MODULES}/upscalerjs ${NODE_MODULES}/${localNameForPackage}`, {
-//     cwd: UPSCALER_PATH,
-//   });
-  
-//   const packageJSON = JSON.parse(fs.readFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, 'utf-8'));
-//   packageJSON.name = localNameForPackage;
-//   fs.writeFileSync(`${NODE_MODULES}/${localNameForPackage}/package.json`, JSON.stringify(packageJSON, null, 2));
-// }
-
-export const installNodeModules = async (cwd: string) => {
-  await callExec('npm install --quiet', {
-    cwd,
-  });
-}
+export const installNodeModules = (cwd: string) => callExec('npm install --quiet', {
+  cwd,
+});
 
 const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency) => {
   if (Object.keys(remoteDependencies).length) {
@@ -93,6 +72,9 @@ type DependencyDefinition = {
   name: string;
 }
 export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[]) => {
+  if (dest.endsWith('node_modules')) {
+    throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
+  }
   const { localDependencies, remoteDependencies } = buildDependencies(dependencies);
 
   await installRemoteDependencies(dest, remoteDependencies);
@@ -190,9 +172,15 @@ export const installLocalPackage = async (src: string, dest: string) => {
   fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
   await unTar(tmp, packedFile);
   const unpackedFolder = path.resolve(tmp, 'package');
+  // ensure the unpacked folder exists
   if (!fs.existsSync(unpackedFolder)) {
     throw new Error(`Tried to unpack tar file ${packedFile} but the output is not present.`)
   }
+
+  // ensure the destination exists
+  const destParent = path.resolve(dest, '..');
+  mkdirpSync(destParent);
+
   await callExec(`mv ${unpackedFolder} ${dest}`, {
     cwd: tmp,
   });
@@ -207,14 +195,3 @@ const getTmpDir = async (): Promise<string> => new Promise((resolve, reject) => 
     }
   });
 });
-
-const l = (dest: string) => {
-  const fullPath = dest.trim().endsWith('core') ? path.resolve(dest, '../..') : path.resolve(dest, '..');
-  const files = fs.readdirSync(fullPath);
-
-  console.log(fullPath, files);
-
-  if (!files.includes('upscaler-for-esbuild')) {
-    throw new Error('STOP')
-  }
-}
