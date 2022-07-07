@@ -21,6 +21,7 @@
     "@tensorflow/tfjs": "^3.18.0"
   },
   "devDependencies": {
+    "seedrandom": "2.4.4",
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0"
