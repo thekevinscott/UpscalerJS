@@ -44,7 +44,9 @@
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.18.0"
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "@tensorflow/tfjs-node-gpu": "^3.18.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
@@ -99,5 +101,12 @@
     "upscaler": "workspace:*",
     "webpack": "^5.73.0"
   },
-  "packageManager": "pnpm@3.1.0"
+  "packageManager": "pnpm@3.1.0",
+  "pnpm": {
+    "overrides": {
+      "@tensorflow/tfjs": "3.18.0",
+      "@tensorflow/tfjs-node": "3.18.0",
+      "@tensorflow/tfjs-node-gpu": "3.18.0"
+    }
+  }
 }
