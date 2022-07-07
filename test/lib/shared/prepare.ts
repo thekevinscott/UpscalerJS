@@ -191,12 +191,11 @@ export const withTmpDir = async (callback: WithTmpDirFn) => {
 
   try {
     await callback(tmpDir)
-    rimraf.sync(tmpDir);
   }
   finally {
     try {
       if (tmpDir) {
-        fs.rmSync(tmpDir, { recursive: true });
+        rimraf.sync(tmpDir);
       }
     }
     catch (e) {

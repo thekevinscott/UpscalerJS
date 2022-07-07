@@ -12,9 +12,9 @@ import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-console.log('prepare to import')
+// console.log('prepare to import')
 import ESRGANSlim from '@upscalerjs/esrgan-slim';
-console.log('improted')
+// console.log('improted')
 import { ModelDefinition, } from '@upscalerjs/core';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
@@ -22,7 +22,7 @@ import { ModelDefinition, } from '@upscalerjs/core';
 // it's defined as ModelDefinition
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
-console.log('defined')
+// const DEFAULT_MODEL = undefined;
 
 export class Upscaler {
   _opts: UpscalerOptions;
