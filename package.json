@@ -23,6 +23,7 @@
     ]
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "postinstall": "pnpm --filter upscaler run scaffold:platform 'browser' && pnpm --filter @upscalerjs/core build",
     "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
     "update:version": "pnpm --filter @upscalerjs/scripts update:version",
