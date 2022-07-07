@@ -1,8 +1,7 @@
 import { Dependency } from '@schemastore/package';
-import { string } from '@tensorflow/tfjs';
+import crypto from 'crypto';
 import fs from 'fs';
 import { mkdirp, mkdirpSync } from 'fs-extra';
-import os from 'os';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -45,27 +44,23 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   }))
 };
 
-const buildDependencies = (dependencies: DependencyDefinition[]) => {
-  let localDependencies: Dependency = {};
-  let remoteDependencies: Dependency = {};
-  for (let i = 0; i < dependencies.length; i++) {
-    const dep = dependencies[i];
-    const subDeps = collectAllDependencies(dep.src);
-    localDependencies = {
-      ...localDependencies,
-      ...subDeps.localDependencies,
-    };
-    remoteDependencies = {
-      ...remoteDependencies,
-      ...subDeps.remoteDependencies,
-    };
+const buildDependencies = (dependencies: DependencyDefinition[]) => dependencies.reduce((collectedDependencies, { src }) => {
+  const { localDependencies, remoteDependencies, } = collectAllDependencies(src);
+  return {
+    localDependencies: {
+      ...collectedDependencies.localDependencies,
+      localDependencies,
+    },
+    remoteDependencies: {
+      ...collectedDependencies.remoteDependencies,
+      remoteDependencies,
+    }
   }
 
-  return {
-    remoteDependencies,
-    localDependencies,
-  }
-};
+}, {
+  localDependencies: {},
+  remoteDependencies: {},
+});
 
 type DependencyDefinition = {
   src: string;
@@ -167,7 +162,7 @@ const collectAllDependencies = (src: string) => {
 export const installLocalPackage = async (src: string, dest: string) => {
   rimraf.sync(dest);
   const packedFile = await npmPack(src);
-  const tmp = await getTmpDir();
+  const tmp = getTmpDir();
   const tmpPackedFile = path.resolve(tmp, packedFile);
   fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
   await unTar(tmp, packedFile);
@@ -186,12 +181,10 @@ export const installLocalPackage = async (src: string, dest: string) => {
   });
 };
 
-const getTmpDir = async (): Promise<string> => new Promise((resolve, reject) => {
-  fs.mkdtemp(os.tmpdir(), (err, folder) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(folder);
-    }
-  });
-});
+const getTmpDir = (): string => {
+  const folder = path.resolve(ROOT, 'tmp', getCryptoName(`${Math.random()}`));
+  mkdirpSync(folder);
+  return folder;
+};
+
+export const getCryptoName = (contents: string) => crypto.createHash('md5').update(contents).digest('hex');
