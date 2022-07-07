@@ -165,23 +165,31 @@ const collectAllDependencies = (src: string) => {
 export const installLocalPackage = async (src: string, dest: string) => {
   rimraf.sync(dest);
   const packedFile = await npmPack(src);
+  await withTmpDir(async tmp => {
+    const tmpPackedFile = path.resolve(tmp, packedFile);
+    fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
+    await unTar(tmp, packedFile);
+    const unpackedFolder = path.resolve(tmp, 'package');
+    // ensure the unpacked folder exists
+    if (!fs.existsSync(unpackedFolder)) {
+      throw new Error(`Tried to unpack tar file ${packedFile} but the output is not present.`)
+    }
+
+    // ensure the destination exists
+    const destParent = path.resolve(dest, '..');
+    mkdirpSync(destParent);
+
+    await callExec(`mv ${unpackedFolder} ${dest}`, {
+      cwd: tmp,
+    });
+  })
+};
+
+type WithTmpDirFn = (tmp: string) => Promise<void>;
+const withTmpDir = async (callback: WithTmpDirFn) => {
   const tmp = getTmpDir();
-  const tmpPackedFile = path.resolve(tmp, packedFile);
-  fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
-  await unTar(tmp, packedFile);
-  const unpackedFolder = path.resolve(tmp, 'package');
-  // ensure the unpacked folder exists
-  if (!fs.existsSync(unpackedFolder)) {
-    throw new Error(`Tried to unpack tar file ${packedFile} but the output is not present.`)
-  }
-
-  // ensure the destination exists
-  const destParent = path.resolve(dest, '..');
-  mkdirpSync(destParent);
-
-  await callExec(`mv ${unpackedFolder} ${dest}`, {
-    cwd: tmp,
-  });
+  await callback(tmp)
+  rimraf.sync(tmp);
 };
 
 const getTmpDir = (): string => {
