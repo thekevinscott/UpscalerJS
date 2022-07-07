@@ -102,11 +102,7 @@
   },
   "packageManager": "pnpm@3.1.0",
   "pnpm": {
-    "foo": {
-      "bar": 1
-    },
     "overrides": {
-      "bar": "bar",
       "@tensorflow/tfjs": "3.18.0",
       "@tensorflow/tfjs-node": "3.18.0",
       "@tensorflow/tfjs-node-gpu": "3.18.0"
