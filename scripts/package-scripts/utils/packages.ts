@@ -75,9 +75,38 @@ export const getPackageJSONValue = (packageJSON: JSONSchemaForNPMPackageJsonFile
   return depKey.split('.').reduce((json, key) => json[key], packageJSON);
 }
 
-export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJsonFiles, key: string, val: any) => {
-  return {
-    ...packageJSON,
-    [key]: val,
-  };
+type Value = JSONSchemaForNPMPackageJsonFiles[keyof JSONSchemaForNPMPackageJsonFiles];
+export const updatePackageJSONForKey = (packageJSON: JSONSchemaForNPMPackageJsonFiles, key: string, val: Value) => {
+  console.log(packageJSON, key, val);
+  // key = pnpm.overrides
+  const parts = key.split('.').reverse();
+  return getObj(packageJSON, parts, val)
+  // return {
+  //   ...packageJSON,
+  //   [parts[0]]: getObj(packageJSON[parts[0]], parts.slice(1), val),
+  //   // [parts[0]]: {
+  //   //   ...packageJSON[parts[0]],
+  //   //   ...getObj(packageJSON[parts[1]], parts.slice(1))
+  //   //   [parts[1]]: {
+  //   //     ...packageJSON[parts[1]],
+  //   //     val,
+  //   //   }
+  //   // },
+  // };
 }
+
+const getObj = (obj: Record<string, any>, parts: string[], val: Value): Record<string, any> => {
+  if (parts.length === 1) {
+    return {
+      ...obj,
+      ...val,
+    };
+  }
+  return {
+    ...obj,
+    [parts[0]]: getObj(obj[parts[0]], parts.slice(1), val),
+  }
+}
+// const buildRecursiveObj = (obj: ) => {
+
+// }

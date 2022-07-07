@@ -3,6 +3,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { Dependency } from '@schemastore/package';
 
 type Answers = { packages: Array<Package>, version: string}
 
@@ -43,12 +44,14 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
 //   }
 // };
 
-function* getMatchingTFJS(deps: Record<string, string>) {
-  const entries = Object.entries(deps);
-  for (let i = 0; i < entries.length; i++) {
-    const [key, val] = entries[i];
-    if (key.startsWith('@tensorflow/tfjs')) {
-      yield [key, val];
+function* getMatchingTFJS(deps?: Dependency) {
+  if (deps) {
+    const entries = Object.entries(deps);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, val] = entries[i];
+      if (key.startsWith('@tensorflow/tfjs')) {
+        yield [key, val];
+      }
     }
   }
 }
