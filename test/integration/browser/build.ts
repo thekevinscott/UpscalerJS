@@ -1,13 +1,13 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import * as http from 'http';
+import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import puppeteer from 'puppeteer';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;

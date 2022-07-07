@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as http from 'http';
-import * as path from 'path';
+import fs from 'fs';
+import http from 'http';
+import path from 'path';
 import { getImageAsTensor, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';

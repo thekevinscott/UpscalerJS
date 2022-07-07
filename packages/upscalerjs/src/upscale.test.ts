@@ -13,8 +13,8 @@ import {
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
 import { wrapGenerator, isTensor } from './utils';
-import * as tensorAsBase from 'tensor-as-base64';
-import * as image from './image.generated';
+import tensorAsBase from 'tensor-as-base64';
+import image from './image.generated';
 import { ModelDefinition, Progress, } from './types';
 jest.mock('./image.generated', () => ({
   ...jest.requireActual('./image.generated'),

@@ -1,7 +1,7 @@
 import { Upscaler } from './upscaler';
-import * as loadModel from './loadModel.generated';
+import loadModel from './loadModel.generated';
 import './warmup';
-import * as upscale from './upscale';
+import upscale from './upscale';
 jest.mock('./upscale', () => ({
   ...(jest.requireActual('./upscale') as typeof upscale),
 }));

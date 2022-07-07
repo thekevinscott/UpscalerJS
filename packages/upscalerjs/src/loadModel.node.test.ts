@@ -3,11 +3,11 @@ import {
   getModelPath,
   getModuleFolder,
 } from "./loadModel.node";
-import * as tf from '@tensorflow/tfjs-node';
+import tf from '@tensorflow/tfjs-node';
 import path from 'path';
 jest.mock('@tensorflow/tfjs-node');
-import * as utils from './utils';
-import * as resolver from './resolver';
+import utils from './utils';
+import resolver from './resolver';
 import { ModelDefinition } from "./types";
 jest.mock('./utils', () => {
   const actualUtils: typeof utils = jest.requireActual('./utils');

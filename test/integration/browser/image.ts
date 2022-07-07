@@ -1,14 +1,14 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import * as http from 'http';
-import * as fs from 'fs';
-import * as path from 'path';
+import http from 'http';
+import fs from 'fs';
+import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 
 const TRACK_TIME = false;

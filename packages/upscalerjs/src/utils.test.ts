@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import { ModelDefinition } from './types';
 import { 
   wrapGenerator, 

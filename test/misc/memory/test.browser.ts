@@ -1,9 +1,9 @@
 import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import * as http from 'http';
+import http from 'http';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 30;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);

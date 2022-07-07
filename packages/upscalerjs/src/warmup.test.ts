@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import warmup from './warmup';
 import { ModelDefinition, } from './types';
 

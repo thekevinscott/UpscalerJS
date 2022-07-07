@@ -1,14 +1,14 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import * as http from 'http';
+import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../lib/utils/getAllAvailableModels';
 
 const TRACK_TIME = false;

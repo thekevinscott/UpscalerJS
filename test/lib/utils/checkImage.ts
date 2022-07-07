@@ -1,7 +1,7 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
-import * as _PNG from 'pngjs';
+import _PNG from 'pngjs';
 const { PNG } = _PNG;
 
 // 0.10 works for browser; 0.12 for node.

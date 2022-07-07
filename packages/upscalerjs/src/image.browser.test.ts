@@ -1,7 +1,7 @@
 import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, } from './image.browser';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;

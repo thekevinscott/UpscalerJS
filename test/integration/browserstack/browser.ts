@@ -3,13 +3,13 @@
  */
 import fs from 'fs';
 import path from 'path';
-import * as http from 'http';
+import http from 'http';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import Upscaler from '../../../packages/upscalerjs';
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);

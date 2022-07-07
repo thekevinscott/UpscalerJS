@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler-for-esbuild';
 // import ESRGANSlim from '@upscalerjs-for-esbuild/esrgan-slim';
 import pixelUpsampler2x from '@upscalerjs-for-esbuild/pixel-upsampler/2x';

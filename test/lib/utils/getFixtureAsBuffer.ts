@@ -1,6 +1,6 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as _PNG from 'pngjs';
+import path from 'path';
+import fs from 'fs';
+import _PNG from 'pngjs';
 const { PNG } = _PNG;
 
 export const getFixtureAsBuffer = (pathname: string) => {
