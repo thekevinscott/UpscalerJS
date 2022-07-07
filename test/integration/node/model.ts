@@ -1,5 +1,5 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { executeNodeScript } from '../../lib/node/prepare';
+import { executeNodeScript, prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
@@ -67,6 +67,9 @@ ${getModelPath}
 `;
 
 describe('Model Loading Integration Tests', () => {
+  beforeAll(async () => {
+    await prepareScriptBundleForNodeCJS();
+  });
 //   it("loads the default model", async () => {
 //     const result = await execute(writeScript(`
 // const getModelPath = () => undefined 

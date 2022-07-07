@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
 import findAllPackages from '../find-all-packages';
+import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
 
 const DIRNAME = __dirname;
 
-export type PackageJson = Record<string, any>;
 export type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper';
-export type TransformPackageJsonFn = (packageJSON: PackageJson, dir: string) => PackageJson;
+export type TransformPackageJsonFn = (packageJSON: JSONSchemaForNPMPackageJsonFiles, dir: string) => JSONSchemaForNPMPackageJsonFiles;
 export type PackageUpdaterLogger = (file: string) => (string | undefined);
 
 export const UPSCALER_JS = 'UpscalerJS';
@@ -43,12 +43,12 @@ export const getPackageJSONPath = (file: string) => {
   return path.resolve(file, 'package.json');
 }
 
-const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
+export const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
   const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
   fs.writeFileSync(getPackageJSONPath(file), stringifiedContents);
 };
 
-export const getPackageJSON = (file: string) => JSON.parse(fs.readFileSync(getPackageJSONPath(file), 'utf-8'));
+export const getPackageJSON = (file: string): JSONSchemaForNPMPackageJsonFiles => JSON.parse(fs.readFileSync(getPackageJSONPath(file), 'utf-8'));
 
 const defaultTransform: TransformPackageJsonFn = (packageJSON) => packageJSON;
 
