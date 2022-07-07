@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+console.log(require.resolve('upscaler-for-esbuild'))
 import Upscaler from 'upscaler-for-esbuild';
 console.log(Upscaler);
 // // import ESRGANSlim from '@upscalerjs-for-esbuild/esrgan-slim';
