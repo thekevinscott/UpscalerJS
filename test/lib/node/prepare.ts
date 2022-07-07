@@ -2,7 +2,6 @@ import callExec from "../utils/callExec";
 import { mkdirp } from "fs-extra";
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 import rimraf from 'rimraf';
 import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAME } from "./constants";

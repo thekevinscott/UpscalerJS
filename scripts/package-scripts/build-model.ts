@@ -165,6 +165,8 @@ const buildUMD = async (modelFolder: string) => {
       name: umdName,
       globals: {
         '@tensorflow/tfjs': 'tf',
+        '@tensorflow/tfjs-core': 'tfCore',
+        '@tensorflow/tfjs-layers': 'tfLayers',
       }
     }], FILE_DIST);
 
