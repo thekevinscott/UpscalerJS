@@ -9,6 +9,8 @@ export default {
     name: 'Upscaler',
     globals: {
       '@tensorflow/tfjs': 'tf',
+      '@tensorflow/tfjs-core': 'tfCore',
+      '@tensorflow/tfjs-layers': 'tfLayers',
     }
   },
   context: 'window',
