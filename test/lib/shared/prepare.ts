@@ -186,10 +186,23 @@ export const installLocalPackage = async (src: string, dest: string) => {
 };
 
 type WithTmpDirFn = (tmp: string) => Promise<void>;
-const withTmpDir = async (callback: WithTmpDirFn) => {
-  const tmp = getTmpDir();
-  await callback(tmp)
-  rimraf.sync(tmp);
+export const withTmpDir = async (callback: WithTmpDirFn) => {
+  let tmpDir = getTmpDir();
+
+  try {
+    await callback(tmpDir)
+    rimraf.sync(tmpDir);
+  }
+  finally {
+    try {
+      if (tmpDir) {
+        fs.rmSync(tmpDir, { recursive: true });
+      }
+    }
+    catch (e) {
+      console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
+    }
+  }
 };
 
 const getTmpDir = (): string => {

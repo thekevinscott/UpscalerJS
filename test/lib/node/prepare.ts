@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import rimraf from 'rimraf';
-import { getCryptoName, installLocalPackages, installNodeModules } from "../shared/prepare";
+import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAME } from "./constants";
 
 const ROOT = path.join(__dirname);
@@ -43,11 +43,9 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
 
 export type GetContents = (outputFile: string) => string;
 export const testNodeScript = async (contents: GetContents, logExtra = true) => {
-  let tmpDir;
   let data;
   const appPrefix = 'upscaler-test';
-  try {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+  await withTmpDir(async tmpDir => {
     const outputFile = path.join(tmpDir, 'data');
     await executeNodeScript(contents(outputFile).trim(), chunk => {
       if (logExtra) {
@@ -55,16 +53,6 @@ export const testNodeScript = async (contents: GetContents, logExtra = true) => 
       }
     });
     data = fs.readFileSync(outputFile);
-  }
-  finally {
-    try {
-      if (tmpDir) {
-        fs.rmSync(tmpDir, { recursive: true });
-      }
-    }
-    catch (e) {
-      console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
-    }
-  }
+  })
   return data;
 }
