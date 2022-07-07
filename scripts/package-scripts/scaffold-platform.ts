@@ -96,7 +96,7 @@ const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
 const scaffoldPlatform = async (dest: string, filesToGenerate: FileForGeneration[]) => {
   const destFolder = path.resolve(ROOT, dest);
   filesToGenerate.forEach(({ name, contents }) => {
-    const filePath = path.resolve(destFolder, `${name}.generated.ts`);
+    const filePath = path.resolve(destFolder, 'src', `${name}.generated.ts`);
     const packageJSON = getPackageJSON(destFolder);
     writeLines(filePath, contents.map(line => typeof line === 'string' ? line : line(packageJSON)));
   });
@@ -108,7 +108,7 @@ if (require.main === module) {
   (async () => {
     const argv = await getArgs();
     const platform = getPlatform(process.argv.pop());
-    if (argv.targetPackage === 'packages/upscalerjs/src') {
+    if (argv.targetPackage === 'packages/upscalerjs') {
       scaffoldPlatform(argv.targetPackage, [
         {
           name: 'dependencies',

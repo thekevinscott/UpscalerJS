@@ -228,8 +228,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   await rm(DIST);
   await mkdirp(DIST);
-  const SRC = path.resolve(MODEL_ROOT, 'src');
-  scaffoldPlatform(SRC, FILES_FOR_GENERATION);
+  scaffoldPlatform(MODEL_ROOT, FILES_FOR_GENERATION);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
