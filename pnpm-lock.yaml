@@ -371,9 +371,9 @@ importers:
 
   models/esrgan-slim:
     specifiers:
-      '@tensorflow/tfjs': ^3.18.0
-      '@tensorflow/tfjs-node': ^3.18.0
-      '@tensorflow/tfjs-node-gpu': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@upscalerjs/core': workspace:*
       seedrandom: 2.4.4
     dependencies:
