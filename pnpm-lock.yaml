@@ -365,28 +365,36 @@ importers:
 
   models/esrgan-legacy:
     specifiers:
+      '@tensorflow/tfjs-core': ^3.18.0
+      '@tensorflow/tfjs-layers': ^3.18.0
       '@upscalerjs/core': workspace:*
     dependencies:
       '@upscalerjs/core': link:../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs-core': 3.18.0
+      '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
 
   models/esrgan-slim:
     specifiers:
       '@tensorflow/tfjs-core': ^3.18.0
       '@tensorflow/tfjs-layers': ^3.18.0
       '@upscalerjs/core': workspace:*
-      seedrandom: 2.4.4
     dependencies:
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs-core': 3.18.0
       '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
-      seedrandom: 2.4.4
 
   models/pixel-upsampler:
     specifiers:
+      '@tensorflow/tfjs-core': ^3.18.0
+      '@tensorflow/tfjs-layers': ^3.18.0
       '@upscalerjs/core': workspace:*
     dependencies:
       '@upscalerjs/core': link:../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs-core': 3.18.0
+      '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
 
   packages/core:
     specifiers:
