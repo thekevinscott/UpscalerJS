@@ -1,6 +1,6 @@
 console.log('upscal', require.resolve('@tensorflow/tfjs-node-gpu'));
 import { tf, } from './dependencies.generated';
-console.log('imported in upscaler', tf)
+console.log('imported tf in upscaler');
 import {
   UpscalerOptions,
   UpscaleArgs,
