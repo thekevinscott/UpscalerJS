@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import ts, { ProjectReference } from "typescript";
 import path from 'path';
 import inquirer from 'inquirer';
-import scaffoldPlatform, { Platform } from './scaffold-platform';
+import scaffoldPlatform, { FileForGeneration, Platform } from './scaffold-platform';
 import { compile } from './utils/compile';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -191,8 +191,6 @@ const buildCJS = async (modelFolder: string) => {
     const { platform, dist } = platforms[i];
     await mkdirp(dist);
 
-    await scaffoldPlatform(platform, [SRC]);
-
     await compile(files, {
     ...TSCONFIG,
     "target": ts.ScriptTarget.ES5,
@@ -205,6 +203,23 @@ const buildCJS = async (modelFolder: string) => {
   }
 };
 
+const FILES_FOR_GENERATION: FileForGeneration[] = [
+  {
+    name: 'dependencies',
+    contents: [
+      `export * as tfcore from '@tensorflow/tfjs-core';`,
+      `export * as tflayers from '@tensorflow/tfjs-layers';`,
+    ],
+  },
+  {
+    name: 'constants',
+    contents: [
+      ({ name }) => `export const NAME = "${name}";`,
+      ({ version }) => `export const VERSION = "${version}";`,
+    ],
+  }
+];
+
 const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => {
   const start = new Date().getTime();
 
@@ -213,13 +228,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   await rm(DIST);
   await mkdirp(DIST);
+  const SRC = path.resolve(MODEL_ROOT, 'src');
+  scaffoldPlatform(SRC, FILES_FOR_GENERATION);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
-    const SRC = path.resolve(MODEL_ROOT, 'src');
     await mkdirp(path.resolve(DIST, 'browser'));
-    await scaffoldPlatform('browser', [SRC]);
 
     if (outputFormats.includes('esm')) {
       await buildESM(MODEL_ROOT);
