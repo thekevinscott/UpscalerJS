@@ -44,7 +44,6 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
 export type GetContents = (outputFile: string) => string;
 export const testNodeScript = async (contents: GetContents, logExtra = true) => {
   let data;
-  const appPrefix = 'upscaler-test';
   await withTmpDir(async tmpDir => {
     const outputFile = path.join(tmpDir, 'data');
     await executeNodeScript(contents(outputFile).trim(), chunk => {
