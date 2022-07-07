@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
-import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
 
 type Answers = { packages: Array<Package>, version: string}
 
@@ -23,7 +23,7 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
         value = gen.next().value;
         updates.push(`  - ${depKey}: ${key}`);
       }
-      packageJSON[depKey] = deps;
+      packageJSON = updatePackageJSONForKey(packageJSON, depKey, deps)
     }
   }
   if (updates.length) {
