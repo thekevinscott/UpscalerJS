@@ -1,7 +1,7 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import * as http from 'http';
+import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
 import { startServer } from '../../lib/shared/server';

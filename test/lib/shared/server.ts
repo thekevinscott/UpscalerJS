@@ -1,4 +1,4 @@
-import * as http from 'http';
+import http from 'http';
 import handler from 'serve-handler';
 
 type StartServer = (PORT: number, DIST: string) => Promise<http.Server>;

@@ -1,7 +1,7 @@
 import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import * as http from 'http';
+import http from 'http';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 
