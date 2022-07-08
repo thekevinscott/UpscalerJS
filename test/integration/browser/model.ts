@@ -22,6 +22,7 @@ const MESSAGES_TO_IGNORE = [
   'Could not get context for WebGL version 1',
   'Could not get context for WebGL version 2',
   'Error: WebGL is not supported on this device',
+  'WebGL is not supported on this device',
 ]
 
 describe('Model Loading Integration Tests', () => {
@@ -82,7 +83,7 @@ describe('Model Loading Integration Tests', () => {
       _page.on('console', message => {
         const text = message.text().trim();
         if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          console.log(message);
+          console.log('404', text, message);
         } else if (!MESSAGES_TO_IGNORE.includes(text)) {
           console.log('[PAGE]', text);
         }
