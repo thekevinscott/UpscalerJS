@@ -234,6 +234,10 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     await mkdirp(path.resolve(DIST, 'browser'));
+<<<<<<< HEAD
+=======
+    await scaffoldPlatform('browser', [MODEL_ROOT]);
+>>>>>>> v1.0.0
 
     if (outputFormats.includes('esm')) {
       await buildESM(MODEL_ROOT);
