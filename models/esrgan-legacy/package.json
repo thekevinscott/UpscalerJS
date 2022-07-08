@@ -42,6 +42,9 @@
     "models/**/*",
     "dist/**/*"
   ],
+  "devDependencies": {
+    "seedrandom": "2.4.4"
+  },
   "author": "Kevin Scott",
   "license": "MIT"
 }

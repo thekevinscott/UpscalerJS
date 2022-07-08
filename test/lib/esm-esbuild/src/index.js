@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import Upscaler from 'upscaler-for-esbuild';
+// import Upscaler from 'upscaler-for-esbuild';
 // import ESRGANSlim from '@upscalerjs-for-esbuild/esrgan-slim';
 import pixelUpsampler2x from '@upscalerjs-for-esbuild/pixel-upsampler/2x';
 import pixelUpsampler3x from '@upscalerjs-for-esbuild/pixel-upsampler/3x';
@@ -12,7 +12,7 @@ import ESRGANGANS from '@upscalerjs-for-esbuild/esrgan-legacy/gans';
 import flower from '../../../__fixtures__/flower-small.png';
 window.tf = tf;
 window.flower = flower;
-window.Upscaler = Upscaler;
+// window.Upscaler = Upscaler;
 // window['esrgan-slim'] = ESRGANSlim;
 window['pixel-upsampler'] = {
   '2x': pixelUpsampler2x,

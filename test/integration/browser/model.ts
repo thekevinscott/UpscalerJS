@@ -110,23 +110,23 @@ describe('Model Loading Integration Tests', () => {
     _page = undefined;
   });
 
-  it("loads the default model", async () => {
-    const result = await page().evaluate(() => {
-      const upscaler = new window['Upscaler']();
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
-  });
-
-  // it("can import a specific model", async () => {
+  // it("loads the default model", async () => {
   //   const result = await page().evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: window['pixel-upsampler']['4x'],
-  //     });
+  //     const upscaler = new window['Upscaler']();
   //     return upscaler.upscale(window['flower']);
   //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
   // });
+
+  it("can import a specific model", async () => {
+    const result = await page().evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixel-upsampler']['4x'],
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
   // it("loads a locally exposed model via implied HTTP", async () => {
   //   const result = await page().evaluate(() => {

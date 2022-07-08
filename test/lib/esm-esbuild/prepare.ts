@@ -18,6 +18,10 @@ export const bundle = async () => {
       name: LOCAL_UPSCALER_NAME,
     },
     {
+      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
+    },
+    {
       src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
       name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
     },
