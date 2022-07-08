@@ -369,10 +369,9 @@ importers:
       '@tensorflow/tfjs-layers': ^3.18.0
       '@upscalerjs/core': workspace:*
     dependencies:
-      '@upscalerjs/core': link:../../packages/core
-    devDependencies:
       '@tensorflow/tfjs-core': 3.18.0
       '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
+      '@upscalerjs/core': link:../../packages/core
 
   models/esrgan-slim:
     specifiers:
@@ -380,10 +379,9 @@ importers:
       '@tensorflow/tfjs-layers': ^3.18.0
       '@upscalerjs/core': workspace:*
     dependencies:
-      '@upscalerjs/core': link:../../packages/core
-    devDependencies:
       '@tensorflow/tfjs-core': 3.18.0
       '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
+      '@upscalerjs/core': link:../../packages/core
 
   models/pixel-upsampler:
     specifiers:
