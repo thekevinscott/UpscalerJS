@@ -1,7 +1,7 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import * as http from 'http';
+import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';

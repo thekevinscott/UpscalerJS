@@ -3,7 +3,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import * as http from 'http';
+import http from 'http';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
