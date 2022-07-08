@@ -96,8 +96,8 @@ const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
 const scaffoldPlatform = async (platform: Platform, srcs: Array<string>) => {
   for (let i = 0; i < srcs.length; i++) {
     const src = srcs[i];
-    const srcFolder = path.resolve(ROOT, srcs[i]);
-    const isUpscaler = src === 'packages/upscalerjs/src';
+    const srcFolder = path.resolve(ROOT, srcs[i], 'src');
+    const isUpscaler = src === 'packages/upscalerjs';
     const dependency = getDependency(platform);
 
     if (isUpscaler) {
