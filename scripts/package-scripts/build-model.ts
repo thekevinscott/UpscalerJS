@@ -191,7 +191,7 @@ const buildCJS = async (modelFolder: string) => {
     const { platform, dist } = platforms[i];
     await mkdirp(dist);
 
-    await scaffoldPlatform(platform, [SRC]);
+    await scaffoldPlatform(platform, [modelFolder]);
 
     await compile(files, {
     ...TSCONFIG,
@@ -219,7 +219,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
     const SRC = path.resolve(MODEL_ROOT, 'src');
     await mkdirp(path.resolve(DIST, 'browser'));
-    await scaffoldPlatform('browser', [SRC]);
+    await scaffoldPlatform('browser', [MODEL_ROOT]);
 
     if (outputFormats.includes('esm')) {
       await buildESM(MODEL_ROOT);
