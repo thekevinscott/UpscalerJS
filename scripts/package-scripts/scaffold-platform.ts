@@ -1,6 +1,6 @@
 import yargs from 'yargs';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 
 export type Platform = 'browser' | 'node' | 'node-gpu';
 

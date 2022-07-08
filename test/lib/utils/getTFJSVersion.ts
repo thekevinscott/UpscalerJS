@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 
 const UTILS = path.join(__dirname);
 const UPSCALER_PATH = path.join(UTILS, '../../../packages/upscalerjs')
