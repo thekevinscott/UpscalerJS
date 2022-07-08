@@ -51,7 +51,7 @@ const getArgs = async (): Promise<Args> => {
   .argv;
 
   if (typeof argv.src !== 'string') {
-    throw new Error(`Invalid argument provided for "src": ${argv.src}`);
+    throw new Error(`Invalid src, should be a string: ${argv.src}`);
   }
 
   return {
