@@ -10,16 +10,24 @@ import callExec from "../utils/callExec";
 
 const ROOT = path.join(__dirname, '../../..');
 
-export const installNodeModules = (cwd: string) => callExec('npm install --quiet', {
+export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
   cwd,
 });
 
-const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency) => {
+const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, verbose = false) => {
   if (Object.keys(remoteDependencies).length) {
     const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
       return `${dependency}@${version}`;
     }).join(' ');
-    await callExec(`npm install --silent --no-audit --no-save ${dependenciesToInstall}`, {
+    const cmd = [
+      'npm install --no-save',
+      verbose === false ? '--silent --no-audit' : '',
+      dependenciesToInstall,
+    ].filter(Boolean).join(' ')
+    if (verbose) {
+      console.log(cmd);
+    }
+    await callExec(cmd, {
       cwd: dest,
     })
   }
@@ -44,7 +52,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   }))
 };
 
-const buildDependencies = (dependencies: DependencyDefinition[]): {
+const buildDependencyTree = (dependencies: DependencyDefinition[]): {
   localDependencies: Dependency;
   remoteDependencies: Dependency;
 } => dependencies.reduce((collectedDependencies, { src }) => {
@@ -73,7 +81,7 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
   if (dest.endsWith('node_modules')) {
     throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
   }
-  const { localDependencies, remoteDependencies } = buildDependencies(dependencies);
+  const { localDependencies, remoteDependencies } = buildDependencyTree(dependencies);
 
   await installRemoteDependencies(dest, remoteDependencies);
   await installLocalDependencies(dest, dependencies, localDependencies);
@@ -110,12 +118,15 @@ const unTar = async (cwd: string, fileName: string) => {
 }
 
 const getLocalAndRemoteDependencies = (dir: string) => {
-  const { dependencies = {} as Dependency } = getPackageJSON(dir);
+  const { devDependencies = {} as Dependency,  dependencies = {} as Dependency } = getPackageJSON(dir);
 
   const localDependencies: Dependency = {};
   const remoteDependencies: Dependency = {};
 
-  const entries: Array<[string, string]> = Object.entries(dependencies);
+  const entries: Array<[string, string]> = Object.entries({
+    ...devDependencies,
+    ...dependencies,
+  });
 
   for (let i = 0; i < entries.length; i++) {
     const [dependency, version] = entries[i];

@@ -104,10 +104,9 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     const modelPackages = getAllAvailableModelPackages();
     const durations = await buildModels(modelPackages, getOutputFormats(platform));
     console.log([
-      `** build models:`,
+      `** built models: ${getOutputFormats(platform)}`,
       ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations[i]} ms`),
     ].join('\n'));
-    console.log(`** built models: ${getOutputFormats(platform)}`)
   }
   if (argv.skipBuild !== true) {
     if (platform === 'browser') {

@@ -29,17 +29,13 @@ export const bundle = async () => {
   copyFixtures(DIST, false);
 
   const entryFiles = path.join(ROOT, 'src/index.js');
-  try {
-    buildSync({
-      entryPoints: [entryFiles],
-      bundle: true,
-      loader: {
-        '.png': 'file',
-      },
-      outdir: DIST,
-    });
-    fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST,'index.html'))
-  } catch (err) {
-    console.error(err);
-  }
-}
+  buildSync({
+    entryPoints: [entryFiles],
+    bundle: true,
+    loader: {
+      '.png': 'file',
+    },
+    outdir: DIST,
+  });
+  fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
+};

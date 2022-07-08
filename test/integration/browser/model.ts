@@ -19,8 +19,20 @@ jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
   let server: http.Server;
-  let browser: puppeteer.Browser;
-  let page: puppeteer.Page;
+  let _browser: puppeteer.Browser | undefined;
+  let _page: puppeteer.Page | undefined;
+  let browser = (): puppeteer.Browser => {
+    if (!_browser) {
+      throw new Error('Browser is undefined');
+    }
+    return _browser;
+  };
+  let page = (): puppeteer.Page => {
+    if (!_page) {
+      throw new Error('Page is undefined');
+    }
+    return _page;
+  };
 
   const PORT = 8099;
 
@@ -34,7 +46,7 @@ describe('Model Loading Integration Tests', () => {
     if (TRACK_TIME) {
       console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
     }
-  }, 20000);
+  }, 60000);
 
   afterAll(async function modelAfterAll() {
     const start = new Date().getTime();
@@ -57,10 +69,10 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
+    _browser = await puppeteer.launch();
+    _page = await _browser.newPage();
     if (LOG) {
-      page.on('console', message => {
+      _page.on('console', message => {
         const text = message.text().trim();
         console.log('[PAGE]', text);
         if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
@@ -68,18 +80,18 @@ describe('Model Loading Integration Tests', () => {
         }
       });
     }
-    await page.goto(`http://localhost:${PORT}`);
-    await page.waitForFunction('document.title.endsWith("| Loaded")');
+    await _page.goto(`http://localhost:${PORT}`);
+    await _page.waitForFunction('document.title.endsWith("| Loaded")');
   });
 
   afterEach(async function afterEach() {
-    await browser.close();
-    browser = undefined;
-    page = undefined;
+    await browser().close(),
+    _browser = undefined;
+    _page = undefined;
   });
 
   it("loads the default model", async () => {
-    const result = await page.evaluate(() => {
+    const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(window['flower']);
     });
@@ -87,7 +99,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("can import a specific model", async () => {
-    const result = await page.evaluate(() => {
+    const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['4x'],
       });
@@ -97,7 +109,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await page.evaluate(() => {
+    const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
           path: '/pixelator/pixelator.json',
@@ -110,7 +122,7 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await page.evaluate(() => {
+    const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
           path: `${window.location.origin}/pixelator/pixelator.json`,
@@ -150,7 +162,7 @@ describe('Model Loading Integration Tests', () => {
         const models = getAllAvailableModels(packageName);
         models.forEach(({ esm: esmName, umd: umdName }) => {
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
-            const result = await page.evaluate(([packageName, modelName]) => {
+            const result = await page().evaluate(([packageName, modelName]) => {
               const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
                 return !!modelDefinition && typeof modelDefinition === 'object' && 'path' in modelDefinition;
               }
@@ -171,8 +183,8 @@ describe('Model Loading Integration Tests', () => {
           });
 
           it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await page.goto(`http://localhost:${PORT_UMD}`);
-            const result = await page.evaluate(([umdName]) => {
+            await page().goto(`http://localhost:${PORT_UMD}`);
+            const result = await page().evaluate(([umdName]) => {
               const model: ModelDefinition = (<any>window)[umdName];
               const upscaler = new window['Upscaler']({
                 model,
