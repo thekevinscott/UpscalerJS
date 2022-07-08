@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
 import * as _PNG from 'pngjs';
