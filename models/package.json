@@ -2,8 +2,7 @@
   "name": "@upscalerjs/models",
   "private": true,
   "scripts": {
-    "build": "ts-node ../scripts/package-scripts/build-model.ts",
-    "scaffold:platform": "ts-node ../../scripts/package-scripts/scaffold-platform.ts --src models/esrgan/src"
+    "build": "ts-node ../scripts/package-scripts/build-model.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
