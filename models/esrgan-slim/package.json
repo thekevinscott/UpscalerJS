@@ -17,10 +17,6 @@
   "scripts": {
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd"
   },
-  "devDependencies": {
-    "@tensorflow/tfjs-core": "^3.18.0",
-    "@tensorflow/tfjs-layers": "^3.18.0"
-  },
   "keywords": [
     "image super resolution",
     "image upscaling",
@@ -36,6 +32,8 @@
     "dist/**/*"
   ],
   "dependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0",
+    "@tensorflow/tfjs-layers": "^3.18.0",
     "@upscalerjs/core": "workspace:*"
   },
   "author": "Kevin Scott",

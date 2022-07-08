@@ -118,15 +118,12 @@ const unTar = async (cwd: string, fileName: string) => {
 }
 
 const getLocalAndRemoteDependencies = (dir: string) => {
-  const { devDependencies = {} as Dependency,  dependencies = {} as Dependency } = getPackageJSON(dir);
+  const { dependencies = {} as Dependency } = getPackageJSON(dir);
 
   const localDependencies: Dependency = {};
   const remoteDependencies: Dependency = {};
 
-  const entries: Array<[string, string]> = Object.entries({
-    ...devDependencies,
-    ...dependencies,
-  });
+  const entries: Array<[string, string]> = Object.entries(dependencies);
 
   for (let i = 0; i < entries.length; i++) {
     const [dependency, version] = entries[i];
