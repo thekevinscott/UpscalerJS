@@ -1,5 +1,5 @@
 import fs from 'fs';
-import * as http from 'http';
+import http from 'http';
 import path from 'path';
 import { getImageAsTensor, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';

@@ -1,7 +1,7 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import * as http from 'http';
+import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
