@@ -17,6 +17,13 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
+const MESSAGES_TO_IGNORE = [
+  'Initialization of backend webgl failed',
+  'Could not get context for WebGL version 1',
+  'Could not get context for WebGL version 2',
+  'Error: WebGL is not supported on this device',
+]
+
 describe('Model Loading Integration Tests', () => {
   let server: http.Server;
   let _browser: puppeteer.Browser | undefined;
@@ -74,9 +81,10 @@ describe('Model Loading Integration Tests', () => {
     if (LOG) {
       _page.on('console', message => {
         const text = message.text().trim();
-        console.log('[PAGE]', text);
         if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
           console.log(message);
+        } else if (!MESSAGES_TO_IGNORE.includes(text)) {
+          console.log('[PAGE]', text);
         }
       });
     }
