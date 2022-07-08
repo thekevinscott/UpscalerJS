@@ -6,7 +6,7 @@ export type Platform = 'browser' | 'node' | 'node-gpu';
 
 export type Dependency = '@tensorflow/tfjs' | '@tensorflow/tfjs-node' | '@tensorflow/tfjs-node-gpu';
 
-const AVAILABLE_DEPENDENCIES = [
+const AVAILABLE_TENSORFLOW_PACKAGES = [
   '@tensorflow/tfjs',
   '@tensorflow/tfjs-node',
   '@tensorflow/tfjs-node-gpu',
@@ -17,7 +17,7 @@ const ROOT = path.resolve(__dirname, `../..`);
 const writeFile = (filename: string, content: string) => fs.writeFileSync(filename, content);
 
 interface Args {
-  src: Array<string>;
+  targetPackage: string;
   platform: Platform;
 }
 
@@ -28,7 +28,7 @@ const getPlatform = (platform?: string | number): Platform => {
     return platform;
   }
 
-  throw new Error(`No valid platform specified, please specify one of ${AVAILABLE_DEPENDENCIES.join(', ')}. You specified: ${platform}`);
+  throw new Error(`No valid platform specified, please specify one of ${AVAILABLE_TENSORFLOW_PACKAGES.join(', ')}. You specified: ${platform}`);
 }
 
 const getArgs = async (): Promise<Args> => {
@@ -42,20 +42,12 @@ const getArgs = async (): Promise<Args> => {
   .help()
   .argv;
 
-  let src: Array<string> = [];
-  if (typeof argv.src === 'string') {
-    src.push(argv.src);
-  } else {
-    src = src.concat(argv.src as Array<string>);
+  if (typeof argv.src !== 'string') {
+    throw new Error(`Invalid src, should be a string: ${argv.src}`);
   }
-  // const src: Array<string> = [].concat(argv.src as string | Array<string>);
-  // console.log(src);
-  // if (typeof src !== 'string') {
-  //   throw new Error('Invalid src provided');
-  // }
 
   return {
-    src,
+    targetPackage: argv.src,
     platform: getPlatform(argv['_'][0])
   }
 }
@@ -93,32 +85,29 @@ const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
   files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
 }
 
-const scaffoldPlatform = async (platform: Platform, srcs: Array<string>) => {
-  for (let i = 0; i < srcs.length; i++) {
-    const src = srcs[i];
-    const srcFolder = path.resolve(ROOT, srcs[i], 'src');
-    const isUpscaler = src === 'packages/upscalerjs';
-    const dependency = getDependency(platform);
+const scaffoldPlatform = async (platform: Platform, targetPackage: string) => {
+  const srcFolder = path.resolve(ROOT, targetPackage, 'src');
+  const isUpscaler = targetPackage === 'packages/upscalerjs';
+  const dependency = getDependency(platform);
 
-    if (isUpscaler) {
-      writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
-        `export * as tf from '${dependency}';`,
-      ]);
-    } else {
-      writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
-        `export * as tfcore from '@tensorflow/tfjs-core';`,
-        `export * as tflayers from '@tensorflow/tfjs-layers';`,
-      ]);
-      const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
-      writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
-        `export const NAME = "${name}";`,
-        `export const VERSION = "${version}";`,
-      ]);
-    }
-
-    scaffoldPlatformSpecificFiles(srcFolder, platform);
+  if (isUpscaler) {
+    writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+      `export * as tf from '${dependency}';`,
+    ]);
+  } else {
+    writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+      `export * as tfcore from '@tensorflow/tfjs-core';`,
+      `export * as tflayers from '@tensorflow/tfjs-layers';`,
+    ]);
+    const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
+    writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
+      `export const NAME = "${name}";`,
+      `export const VERSION = "${version}";`,
+    ]);
   }
-}
+
+  scaffoldPlatformSpecificFiles(srcFolder, platform);
+};
 
 export default scaffoldPlatform;
 
@@ -126,6 +115,6 @@ if (require.main === module) {
   (async () => {
     const argv = await getArgs();
     const platform = getPlatform(process.argv.pop());
-    await scaffoldPlatform(platform, argv.src);
+    await scaffoldPlatform(platform, argv.targetPackage);
   })();
 }
