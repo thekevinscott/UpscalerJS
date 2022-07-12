@@ -3,7 +3,7 @@ import path from 'path';
 import rimraf from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { mkdirpSync } from 'fs-extra';
 
 const UMD_ROOT = path.join(__dirname);

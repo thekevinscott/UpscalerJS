@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { getPackageJSONExports } from './getPackageJSONExports';
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');
@@ -12,9 +13,8 @@ export const getAllAvailableModelPackages = (): Array<string> => fs.readdirSync(
 
 export const getAllAvailableModels = (model: string) => {
   const modelDir = path.resolve(MODELS_DIR, model);
-  const { exports } = jsonParse(path.resolve(modelDir, 'package.json'));
   const umdNames = jsonParse(path.resolve(modelDir, 'umd-names.json'));
-  return Object.keys(exports).filter(key => key !== '.').map(key => {
+  return getPackageJSONExports(modelDir).map(key => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
       throw new Error(`No UMD name defined for ${key}`);

@@ -11,7 +11,8 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { getAllAvailableModelPackages } from '../../test/lib/utils/getAllAvailableModels';
+import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
+import { getPackageJSONExports } from './utils/getPackageJSONExports';
 
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
@@ -80,18 +81,6 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 
-const getExportFiles = (modelFolder: string): Array<string> => {
-  // const SRC = path.resolve(modelFolder, 'src');
-  const packageJSONPath = path.resolve(modelFolder, 'package.json');
-  const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
-  const { exports } = JSON.parse(packageJSON);
-  // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
-  const keys = Object.keys(exports);
-  if (keys.length === 1) {
-    return keys;
-  }
-  return Object.keys(exports).filter(file => file !== '.');
-};
 const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
@@ -131,13 +120,9 @@ const buildUMD = async (modelFolder: string) => {
     outDir: TMP,
   }, references);
 
-  const files = getExportFiles(modelFolder);
+  const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
   await Promise.all(files.map(async exportName => {
-    // TODO: Rethink if this is the right approach.
-    if (exportName.endsWith('node') || exportName.endsWith('node-gpu')) {
-      return;
-    }
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)

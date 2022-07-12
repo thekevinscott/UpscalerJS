@@ -9,7 +9,7 @@ import { startServer } from '../../lib/shared/server';
 import puppeteer from 'puppeteer';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../lib/utils/getAllAvailableModels';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 
 const TRACK_TIME = false;
 const LOG = true;
