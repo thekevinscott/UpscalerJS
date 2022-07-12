@@ -133,9 +133,11 @@ const buildUMD = async (modelFolder: string) => {
 
   const files = getExportFiles(modelFolder);
   const umdNames = getUMDNames(modelFolder);
-  for (let i = 0; i < files.length; i++) {
-    const exportName = files[i];
-    // const basename = path.basename(path.resolve(SRC, exportName));
+  await Promise.all(files.map(async exportName => {
+    // TODO: Rethink if this is the right approach.
+    if (exportName.endsWith('node') || exportName.endsWith('node-gpu')) {
+      return;
+    }
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)
@@ -171,7 +173,11 @@ const buildUMD = async (modelFolder: string) => {
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
-  }
+  }));
+  // for (let i = 0; i < files.length; i++) {
+  //   const exportName = files[i];
+  //   // const basename = path.basename(path.resolve(SRC, exportName));
+  // }
   await rm(TMP);
 }
 
