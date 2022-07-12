@@ -12,7 +12,8 @@ export type Platform = 'browser' | 'node' | 'node-gpu';
 export type TFJSDependency = '@tensorflow/tfjs' | '@tensorflow/tfjs-node' | '@tensorflow/tfjs-node-gpu';
 
 type ContentFn = (arg: {
-  tfjs?: TFJSDependency,
+  tfjs?: TFJSDependency;
+  platform?: Platform;
   packageJSON: JSONSchemaForNPMPackageJsonFiles;
 }) => string;
 type Content = string | ContentFn;
@@ -115,6 +116,7 @@ const scaffoldDependencies = async (dest: string, { files, scaffoldPlatformFiles
     const lines = contents.map(line => typeof line === 'string' ? line : line({
       tfjs,
       packageJSON,
+      platform,
     }));
     writeLines(filePath, lines);
   });
