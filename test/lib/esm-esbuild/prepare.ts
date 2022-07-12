@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { buildSync } from 'esbuild';
+import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
@@ -33,13 +33,23 @@ export const bundle = async () => {
   copyFixtures(DIST, false);
 
   const entryFiles = path.join(ROOT, 'src/index.js');
-  buildSync({
+  const buildResult = await build({
     entryPoints: [entryFiles],
     bundle: true,
     loader: {
       '.png': 'file',
     },
     outdir: DIST,
+    // watch: {
+    //   onRebuild(error, result) {
+    //     if (error) {
+    //       console.error('watch build failed:', error);
+    //     } else {
+    //       console.log('watch build succeeded:', result);
+    //     }
+    //   },
+    // },
   });
+  // buildResult.stop();
   fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
 };

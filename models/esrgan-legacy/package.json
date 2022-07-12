@@ -9,25 +9,58 @@
   },
   "exports": {
     "./div2k/2x": {
-      "require": "./dist/node/div2k/2x.js",
-      "import": "./dist/browser/esm/div2k/2x.js"
+      "require": {
+        "default": "./dist/node/div2k/2x.js",
+        "types": "./dist/node/div2k/2x.d.ts"
+      },
+      "import": {
+        "default": "./dist/browser/esm/div2k/2x.js",
+        "types": "./dist/browser/esm/div2k/2x.d.ts"
+      }
     },
     "./div2k/3x": {
-      "require": "./dist/node/div2k/3x.js",
-      "import": "./dist/browser/esm/div2k/3x.js"
+      "require": {
+        "default": "./dist/node/div2k/3x.js",
+        "types": "./dist/node/div2k/3x.d.ts"
+      },
+      "import": {
+        "default": "./dist/browser/esm/div2k/3x.js",
+        "types": "./dist/browser/esm/div2k/3x.d.ts"
+      }
     },
     "./div2k/4x": {
-      "require": "./dist/node/div2k/4x.js",
-      "import": "./dist/browser/esm/div2k/4x.js"
+      "require": {
+        "default": "./dist/node/div2k/4x.js",
+        "types": "./dist/node/div2k/4x.d.ts"
+      },
+      "import": {
+        "default": "./dist/browser/esm/div2k/4x.js",
+        "types": "./dist/browser/esm/div2k/4x.d.ts"
+      }
     },
     "./psnr-small": {
-      "require": "./dist/node/psnr-small.js",
-      "import": "./dist/browser/esm/psnr-small.js"
+      "require": {
+        "default": "./dist/node/psnr-small.js",
+        "types": "./dist/node/psnr-small.d.ts"
+      },
+      "import": {
+        "default": "./dist/browser/esm/psnr-small.js",
+        "types": "./dist/browser/esm/psnr-small.d.ts"
+      }
     },
     "./gans": {
-      "require": "./dist/node/gans.js",
-      "import": "./dist/browser/esm/gans.js"
+      "require": {
+        "types": "./dist/node/gans.d.ts",
+        "default": "./dist/node/gans.js"
+      },
+      "import": {
+        "types": "./dist/browser/esm/gans.d.ts",
+        "default": "./dist/browser/esm/gans.js"
+      }
     }
+  },
+  "scripts": {
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",

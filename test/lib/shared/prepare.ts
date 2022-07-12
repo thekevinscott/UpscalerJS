@@ -94,28 +94,26 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
   writePackageJSON(dest, packageJSON)
 }
 
-const npmPack = async (cwd: string): Promise<string> => {
-  let outputName = '';
-  await callExec('npm pack --quiet', {
-    cwd,
-  }, chunk => {
-    outputName = chunk;
-  });
+const npmPack = async (src: string): Promise<string> => {
+    let outputName = '';
+    await callExec('npm pack --quiet', {
+      cwd: src,
+    }, chunk => {
+      outputName = chunk;
+    });
 
-  outputName = outputName.trim();
+    outputName = outputName.trim();
 
-  if (!outputName.endsWith('.tgz')) {
-    throw new Error(`Unexpected output name: ${outputName}`)
-  }
+    if (!outputName.endsWith('.tgz')) {
+      throw new Error(`Unexpected output name: ${outputName}`)
+    }
 
-  return outputName;
+    return path.resolve(src, outputName);
 };
 
-const unTar = async (cwd: string, fileName: string) => {
-  await callExec(`tar zxf ${fileName}`, {
-    cwd,
-  });
-}
+const unTar = (cwd: string, fileName: string) => callExec(`tar zxf ${fileName}`, {
+  cwd,
+});
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
@@ -170,20 +168,39 @@ const collectAllDependencies = (src: string) => {
   return { localDependencies, remoteDependencies };
 }
 
-export const installLocalPackage = async (src: string, dest: string) => {
-  rimraf.sync(dest);
-  const packedFile = await npmPack(src);
-  await withTmpDir(async tmp => {
+// sometimes npm pack fails with a 'package/models/group1-shard1of1.bin: truncated gzip input' error. Try a few times before failing
+const MAX_ATTEMPTS = 3;
+const packAndTar = async (src: string, tmp: string, attempts = 0): Promise<string> => {
+  try {
+    const packedFile = await npmPack(src);
+    if (!fs.existsSync(packedFile)) {
+      throw new Error(`npm pack failed for ${src}`)
+    }
     const tmpPackedFile = path.resolve(tmp, packedFile);
-    fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
+    fs.renameSync(packedFile, tmpPackedFile);
+    await new Promise(resolve => setTimeout(resolve, 1));
     await unTar(tmp, packedFile);
     const unpackedFolder = path.resolve(tmp, 'package');
     // ensure the unpacked folder exists
     if (!fs.existsSync(unpackedFolder)) {
-      throw new Error(`Tried to unpack tar file ${packedFile} but the output is not present.`)
+      throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
+    }
+    return unpackedFolder;
+  } catch (err) {
+    if (attempts >= MAX_ATTEMPTS) {
+      console.error(err);
+      throw new Error(`Failed to pack and tar after ${attempts} attempts`);
     }
 
-    // ensure the destination exists
+    return packAndTar(src, tmp, attempts + 1);
+  }
+}
+
+export const installLocalPackage = async (src: string, dest: string) => {
+  rimraf.sync(dest);
+  await withTmpDir(async tmp => {
+    const unpackedFolder = await packAndTar(src, tmp);
+
     const destParent = path.resolve(dest, '..');
     mkdirpSync(destParent);
 
@@ -195,10 +212,13 @@ export const installLocalPackage = async (src: string, dest: string) => {
 
 type WithTmpDirFn = (tmp: string) => Promise<void>;
 export const withTmpDir = async (callback: WithTmpDirFn) => {
-  let tmpDir = getTmpDir();
+  let tmpDir = await getTmpDir();
+  if (!fs.existsSync(tmpDir)) {
+    throw new Error(`Tmp directory ${tmpDir} was not created`);
+  }
 
   try {
-    await callback(tmpDir)
+    await callback(tmpDir);
   }
   finally {
     try {
@@ -212,9 +232,9 @@ export const withTmpDir = async (callback: WithTmpDirFn) => {
   }
 };
 
-const getTmpDir = (): string => {
+const getTmpDir = async (): Promise<string> => {
   const folder = path.resolve(ROOT, 'tmp', getCryptoName(`${Math.random()}`));
-  mkdirpSync(folder);
+  await mkdirp(folder);
   return folder;
 };
 

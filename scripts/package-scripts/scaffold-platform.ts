@@ -96,8 +96,9 @@ const scaffoldPlatform = async (platform: Platform, targetPackage: string) => {
     ]);
   } else {
     writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
-      `export * as tfcore from '@tensorflow/tfjs-core';`,
-      `export * as tflayers from '@tensorflow/tfjs-layers';`,
+      `export * as tf from '${dependency}';`,
+      // `export * as tfcore from '@tensorflow/tfjs-core';`,
+      // `export * as tflayers from '@tensorflow/tfjs-layers';`,
     ]);
     const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
     writeLines(path.resolve(srcFolder, './constants.generated.ts'), [

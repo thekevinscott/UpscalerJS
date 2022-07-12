@@ -1,7 +1,6 @@
 {
   "name": "@upscalerjs/scripts",
   "private": true,
-  "type": "module",
   "scripts": {
     "run_command": "ts-node --project ./tsconfig.json",
     "example": "pnpm run_command ./start-example.ts",
