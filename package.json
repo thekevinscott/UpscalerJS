@@ -25,7 +25,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm install --filter=!\"@upscalerjs/examples.*\"",
-    "postinstall": "pnpm --filter upscaler run scaffold:platform 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
+    "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
     "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
     "update:version": "pnpm --filter @upscalerjs/scripts update:version",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",

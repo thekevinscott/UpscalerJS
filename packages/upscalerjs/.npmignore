@@ -1,2 +1,3 @@
 *.tsbuildinfo
 tmp
+scaffolder.ts
