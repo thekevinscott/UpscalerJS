@@ -185,6 +185,9 @@ const buildCJS = async (modelFolder: string) => {
   }> = [{
     platform: 'node',
     dist: path.resolve(modelFolder, 'dist/node'),
+  }, {
+    platform: 'node-gpu',
+    dist: path.resolve(modelFolder, 'dist/node-gpu'),
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];

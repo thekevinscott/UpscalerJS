@@ -93,7 +93,7 @@ const scaffoldPlatform = async (platform: Platform, targetPackage: string) => {
   if (isUpscaler) {
     writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
       `export * as tf from '${dependency}';`,
-      `export ESRGANSlim from '@upscalerjs/esrgan-slim${platform === 'node' ? '/node' : platform === 'node-gpu' ? '/node-gpu' : ''}';`,
+      `export { default as ESRGANSlim } from '@upscalerjs/esrgan-slim${platform === 'node' ? '/node' : platform === 'node-gpu' ? '/node-gpu' : ''}';`,
     ]);
   } else {
     writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
