@@ -54,7 +54,7 @@ export default {
   ...getModelDefinition(SCALE, 'idealo/gans'),
   preprocess: (image: tf.Tensor) => tf.mul(image, 1 / 255),
   postprocess: (output: tf.Tensor) => tf.tidy(() => {
-    const clippedValue = (output).clipByValue(0, 1);
+    const clippedValue = output.clipByValue(0, 1);
     output.dispose();
     return tf.mul(clippedValue, 255);
   }),

@@ -16,11 +16,9 @@ const shouldIncludeExportName = (exportName: string) => {
 }
 
 export const getPackageJSONExports = (modelFolder: string): Array<string> => {
-  // const SRC = path.resolve(modelFolder, 'src');
   const packageJSONPath = path.resolve(modelFolder, 'package.json');
   const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
   const { exports } = JSON.parse(packageJSON);
-  // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
   const keys = Object.keys(exports);
   if (keys.length === 1) {
     return keys;

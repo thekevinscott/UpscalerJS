@@ -152,17 +152,11 @@ const buildUMD = async (modelFolder: string) => {
       name: umdName,
       globals: {
         '@tensorflow/tfjs': 'tf',
-        '@tensorflow/tfjs-core': 'tf',
-        '@tensorflow/tfjs-layers': 'tf',
       }
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
   }));
-  // for (let i = 0; i < files.length; i++) {
-  //   const exportName = files[i];
-  //   // const basename = path.basename(path.resolve(SRC, exportName));
-  // }
   await rm(TMP);
 }
 
@@ -190,7 +184,6 @@ const buildCJS = async (modelFolder: string) => {
     ...TSCONFIG,
     "target": ts.ScriptTarget.ES5,
     "module": ts.ModuleKind.CommonJS,
-    // --module commonjs --target es5 
       baseUrl: SRC,
       rootDir: SRC,
       outDir: dist,
