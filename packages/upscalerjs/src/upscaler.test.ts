@@ -7,6 +7,10 @@ jest.mock('./upscale', () => ({
 }));
 jest.mock('./loadModel.generated');
 jest.mock('./warmup');
+jest.mock('./dependencies.generated', () => ({
+  tf: {},
+  ESRGANSlim: {},
+}));
 
 const mockedUpscale = upscale as jest.Mocked<typeof upscale>;
 const mockedLoadModel = loadModel as jest.Mocked<typeof loadModel>;
