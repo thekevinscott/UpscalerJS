@@ -3,6 +3,18 @@
   "version": "1.0.0-beta.1",
   "description": "ESRGAN Default Model for Upscaler.js",
   "exports": {
+    "./node": {
+      "require": {
+        "types": "./dist/node/index.d.ts",
+        "default": "./dist/node/index.js"
+      }
+    },
+    "./node-gpu": {
+      "require": {
+        "types": "./dist/node-gpu/index.d.ts",
+        "default": "./dist/node-gpu/index.js"
+      }
+    },
     ".": {
       "require": {
         "types": "./dist/node/index.d.ts",

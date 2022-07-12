@@ -1,4 +1,4 @@
-import { tf, } from './dependencies.generated';
+import { tf, ESRGANSlim, } from './dependencies.generated';
 import {
   UpscalerOptions,
   UpscaleArgs,
@@ -10,7 +10,6 @@ import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import ESRGANSlim from '@upscalerjs/esrgan-slim';
 import { ModelDefinition, } from '@upscalerjs/core';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
