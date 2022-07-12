@@ -40,7 +40,7 @@
     "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5 --outDir dist/cjs",
     "build:esm": "tsc -p tsconfig.browser.json --module esnext --target esnext --outDir dist/browser/esm",
     "build:umd:tsc": "rimraf dist/tmp && tsc -p tsconfig.browser.json --module es2015 --target es5 --outDir dist/tmp",
-    "build:umd:rollup": "pnpm rollup -c rollup.config.js --failAfterWarnings",
+    "build:umd:rollup": "pnpm rollup -c rollup.config.ts --failAfterWarnings",
     "build:umd:generate": "pnpm build:umd:tsc && pnpm build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
     "build:umd": "pnpm build:umd:generate && pnpm build:umd:compress && rimraf dist/tmp",
