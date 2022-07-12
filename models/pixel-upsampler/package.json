@@ -10,6 +10,12 @@
   "devDependencies": {
     "seedrandom": "2.4.4"
   },
+  "scripts": {
+    "lint:fix": "eslint -c ../.eslintrc.js src --ext .ts --fix",
+    "lint": "eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+  },
   "exports": {
     "./2x": {
       "require": "./dist/node/2x.js",
