@@ -120,6 +120,8 @@ const scaffoldDependencies = async (dest: string, { files, scaffoldPlatformFiles
   });
 }
 
+export default scaffoldDependencies;
+
 /****
  * Functions to expose the main function as a CLI tool
  */
@@ -161,7 +163,7 @@ const getArgs = async (): Promise<Args> => {
   return {
     targetPackage: argv.src,
     config: argv.config,
-    platform: getPlatform(argv.platform),
+    platform: getPlatform(argv['_'][0]),
   }
 }
 
@@ -173,5 +175,3 @@ if (require.main === module) {
     await scaffoldDependencies(argv.targetPackage, config, argv.platform);
   })();
 }
-
-export default scaffoldDependencies;

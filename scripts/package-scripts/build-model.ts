@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import ts, { ProjectReference } from "typescript";
 import path from 'path';
 import inquirer from 'inquirer';
-import scaffoldDependencies, { FileForGeneration, Platform } from './scaffold-dependencies';
+import scaffoldDependencies, { Platform, writeTFJSDependency } from './scaffold-dependencies';
 import { compile } from './utils/compile';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
@@ -13,16 +13,21 @@ import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 
+/****
+ * Types
+ */
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
+
+/****
+ * Constants
+ */
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
-// const references: ProjectReference[] = [{
-//   path: path.resolve(ROOT_DIR, "packages/upscalerjs/tsconfig.json"),
-// }];
 const references: ProjectReference[] = [];
+
 const TSCONFIG: ts.CompilerOptions = {
   "skipLibCheck": true,
   "esModuleInterop": true,
@@ -32,16 +37,16 @@ const TSCONFIG: ts.CompilerOptions = {
   "forceConsistentCasingInFileNames": true,
   "declaration": true,
   "declarationMap": true,
-  // "incremental": true,
   "noUnusedLocals": true,
   "strictNullChecks": true,
   "noUnusedParameters": true,
   "noImplicitReturns": true,
   "noFallthroughCasesInSwitch": true,
-  // "paths": {
-  //   "upscaler/*": [path.resolve(ROOT_DIR, "packages/upscalerjs/src/*")]
-  // },
 };
+
+/****
+ * Misc utility functions
+ */
 
 const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
   rimraf(folder, err => {
@@ -80,10 +85,29 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 
-const getUMDNames = (modelFolder: string): Record<string, string> => {
-  return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
-}
+const scaffoldModelDependencies = (modelFolder: string, platform: Platform) => {
+  scaffoldDependencies(modelFolder, {
+    files: [
+      {
+        name: 'dependencies',
+        contents: [
+          writeTFJSDependency,
+        ],
+      },
+      {
+        name: 'constants',
+        contents: [
+          ({ packageJSON: { name } }) => `export const NAME = "${name}";`,
+          ({ packageJSON: { version } }) => `export const VERSION = "${version}";`,
+        ],
+      }
+    ],
+  }, platform);
+};
 
+/****
+ * ESM build function
+ */
 const buildESM = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const DIST = path.resolve(modelFolder, 'dist/browser/esm');
@@ -99,6 +123,13 @@ const buildESM = async (modelFolder: string) => {
     rootDir: SRC,
     outDir: DIST,
   }, references);
+}
+
+/****
+ * UMD build function
+ */
+const getUMDNames = (modelFolder: string): Record<string, string> => {
+  return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
 const buildUMD = async (modelFolder: string) => {
@@ -147,8 +178,11 @@ const buildUMD = async (modelFolder: string) => {
     uglify(FILE_DIST, file);
   }));
   await rm(TMP);
-}
+};
 
+/****
+ * CJS build function
+ */
 const buildCJS = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const files = getSrcFiles(modelFolder);
@@ -165,6 +199,7 @@ const buildCJS = async (modelFolder: string) => {
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
+    scaffoldModelDependencies(modelFolder, platform);
     await mkdirp(dist);
 
     await compile(files, {
@@ -178,6 +213,10 @@ const buildCJS = async (modelFolder: string) => {
   }
 };
 
+/****
+ * Main function
+ */
+
 const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => {
   const start = new Date().getTime();
 
@@ -186,34 +225,11 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   await rm(DIST);
   await mkdirp(DIST);
-  scaffoldDependencies(MODEL_ROOT, {
-    files: [
-      {
-        name: 'dependencies',
-        contents: [
-          ({ tfjs, }) => {
-            if (tfjs === undefined) {
-              throw new Error('TFJS Platform was undefined');
-            }
-            // TODO: Why is this failing to typecheck
-            /* eslint-disable @typescript-eslint/restrict-template-expressions */
-            return `export * as tf from '${tfjs}';`;
-          },
-        ],
-      },
-      {
-        name: 'constants',
-        contents: [
-          ({ packageJSON: { name }}) => `export const NAME = "${name}";`,
-          ({ packageJSON: { version }}) => `export const VERSION = "${version}";`,
-        ],
-      }
-    ],
-  });
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
+    scaffoldModelDependencies(MODEL_ROOT, 'browser');
     await mkdirp(path.resolve(DIST, 'browser'));
 
     if (outputFormats.includes('esm')) {
@@ -235,6 +251,12 @@ const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputForma
 
 export default buildModels;
 
+/****
+ * Functions to expose the main function as a CLI tool
+ */
+
+type Answers = { models: Array<string>, outputFormats: Array<OutputFormat> }
+
 const getModel = async (model?: string | number) => {
   if (typeof model == 'string') {
     return [model];
@@ -251,6 +273,7 @@ const getModel = async (model?: string | number) => {
   return models;
 }
 
+
 const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat => {
   for (let i = 0; i < DEFAULT_OUTPUT_FORMATS.length; i++) {
     const f = DEFAULT_OUTPUT_FORMATS[i];
@@ -260,6 +283,7 @@ const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat
   }
   return false;
 }
+
 const getOutputFormats = async (outputFormat?: unknown) => {
   if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
     return [outputFormat]
@@ -278,34 +302,40 @@ const getOutputFormats = async (outputFormat?: unknown) => {
   return outputFormats;
 }
 
-type Answers = { models: Array<string>, outputFormats: Array<OutputFormat> }
-
-if (require.main === module) {
-  (async () => {
-    const argv = await yargs.command('build models', 'build models', yargs => {
-      yargs.positional('model', {
-        describe: 'The model to build',
-      }).option('o', {
-        alias: 'outputFormat',
-        type: 'string',
-      });
-    })
+const getArgs = async (): Promise<Answers> => {
+  const argv = await yargs.command('build models', 'build models', yargs => {
+    yargs.positional('model', {
+      describe: 'The model to build',
+    }).option('o', {
+      alias: 'outputFormat',
+      type: 'string',
+    });
+  })
     .help()
     .argv;
 
-    const models = await getModel(argv._[0]);
-    const outputFormats = await getOutputFormats(argv.o);
+  const models = await getModel(argv._[0]);
+  const outputFormats = await getOutputFormats(argv.o);
 
-    if (models?.length === 0) {
-      console.log('No models selected, nothing to do.')
-      return;
-    }
+  if (models?.length === 0) {
+    console.log('No models selected, nothing to do.')
+    process.exit(0);
+  }
 
-    if (outputFormats?.length === 0) {
-      console.log('No output formats selected, nothing to do.')
-      return;
-    }
+  if (outputFormats?.length === 0) {
+    console.log('No output formats selected, nothing to do.')
+    process.exit(0);
+  }
 
+  return {
+    models,
+    outputFormats,
+  }
+}
+
+if (require.main === module) {
+  (async () => {
+    const { models, outputFormats } = await getArgs();
     await buildModels(models, outputFormats);
   })();
 }
