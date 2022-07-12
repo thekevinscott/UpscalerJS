@@ -100,18 +100,19 @@ function load(filePath: string): Promise<{
  * Main function
  */
 
-const scaffoldDependencies = async (dest: string, { files, scaffoldPlatformFiles, }: ScaffoldDependenciesConfig, platform?: Platform) => {
-  const destFolder = path.resolve(ROOT, dest);
+const scaffoldDependencies = async (packageRoot: string, { files, scaffoldPlatformFiles, }: ScaffoldDependenciesConfig, platform?: Platform) => {
+  const PACKAGE_ROOT = path.resolve(ROOT, packageRoot);
+  const PACKAGE_SRC = path.resolve(PACKAGE_ROOT, 'src');
   if (scaffoldPlatformFiles) {
     if (!platform) {
       throw new Error('You must provide a platform to scaffold platform specific files');
     }
-    scaffoldPlatformSpecificFiles(destFolder, platform);
+    scaffoldPlatformSpecificFiles(PACKAGE_SRC, platform);
   }
   const tfjs = getPlatformSpecificTensorflow(platform);
-  const packageJSON = getPackageJSON(destFolder);
+  const packageJSON = getPackageJSON(PACKAGE_ROOT);
   files.forEach(({ name, contents }) => {
-    const filePath = path.resolve(destFolder, 'src', `${name}.generated.ts`);
+    const filePath = path.resolve(PACKAGE_SRC, `${name}.generated.ts`);
     const lines = contents.map(line => typeof line === 'string' ? line : line({
       tfjs,
       packageJSON,
