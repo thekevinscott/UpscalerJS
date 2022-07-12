@@ -101,6 +101,29 @@ const scaffoldPlatform = async (dest: string, filesToGenerate: FileForGeneration
     writeLines(filePath, contents.map(line => typeof line === 'string' ? line : line(packageJSON)));
   });
 }
+// const scaffoldPlatform = async (platform: Platform, targetPackage: string) => {
+//   const srcFolder = path.resolve(ROOT, targetPackage, 'src');
+//   const isUpscaler = targetPackage === 'packages/upscalerjs';
+//   const dependency = getDependency(platform);
+
+//   if (isUpscaler) {
+//     writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+//       `export * as tf from '${dependency}';`,
+//       `export { default as ESRGANSlim } from '@upscalerjs/esrgan-slim${platform === 'node' ? '/node' : platform === 'node-gpu' ? '/node-gpu' : ''}';`,
+//     ]);
+//   } else {
+//     writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+//       `export * as tf from '${dependency}';`,
+//     ]);
+//     const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
+//     writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
+//       `export const NAME = "${name}";`,
+//       `export const VERSION = "${version}";`,
+//     ]);
+//   }
+
+//   scaffoldPlatformSpecificFiles(srcFolder, platform);
+// };
 
 export default scaffoldPlatform;
 

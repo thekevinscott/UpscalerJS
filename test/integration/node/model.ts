@@ -1,23 +1,11 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { executeNodeScript, prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const execute = async (contents: string, logExtra = true) => {
-  let data = '';
-  await executeNodeScript(contents.trim(), chunk => {
-    if (chunk.startsWith('OUTPUT: ')) {
-      data += chunk.split('OUTPUT: ').pop();
-    } else if (logExtra) {
-      console.log('[PAGE]', chunk);
-    }
-  });
-  return data.trim();
-}
-
-const writeScript = (getModelPath: string) => `
+const writeScript = (getModelPath: string): GetContents => (outputFile: string) => `
 const tf = require('@tensorflow/tfjs-node');
 const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
 const path = require('path');
@@ -62,7 +50,7 @@ ${getModelPath}
 
 (async () => {
   const data = await main(getModelPath());
-  console.log('OUTPUT: ' + data);
+  fs.writeFileSync('${outputFile}', data);
 })();
 `;
 
@@ -70,31 +58,35 @@ describe('Model Loading Integration Tests', () => {
   beforeAll(async () => {
     await prepareScriptBundleForNodeCJS();
   });
-//   it("loads the default model", async () => {
-//     const result = await execute(writeScript(`
-// const getModelPath = () => undefined 
-//     `));
-//     const formattedResult = `data:image/png;base64,${result}`;
-//     checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
-//   });
+
+  it("loads the default model", async () => {
+    const result = await testNodeScript(writeScript(`
+const getModelPath = () => undefined;
+    `));
+    expect(result).not.toEqual('');
+    const formattedResult = `data:image/png;base64,${result}`;
+    checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
+  });
 
   it("loads a locally exposed model via file:// path", async () => {
-    const result = await execute(writeScript(`
+    const result = await testNodeScript(writeScript(`
 const getModelPath = () => {
   const MODEL_PATH = path.join(FIXTURES, 'pixelator/pixelator.json');
   return 'file://' + path.resolve(MODEL_PATH);
 }
     `));
+    expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   it("loads a model via HTTP", async () => {
-    const result = await execute(writeScript(`
+    const result = await testNodeScript(writeScript(`
 const getModelPath = () => {
   return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
 }
     `));
+    expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });

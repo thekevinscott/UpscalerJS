@@ -8,7 +8,7 @@ export default {
     format: 'umd',
     name: 'Upscaler',
     globals: {
-      '@tensorflow/tfjs': 'tf',
+      '@tensorflow/tfjs': 'tf'
     }
   },
   context: 'window',

@@ -11,7 +11,8 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { getAllAvailableModelPackages } from '../../test/lib/utils/getAllAvailableModels';
+import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
+import { getPackageJSONExports } from './utils/getPackageJSONExports';
 
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
@@ -80,18 +81,6 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 
-const getExportFiles = (modelFolder: string): Array<string> => {
-  // const SRC = path.resolve(modelFolder, 'src');
-  const packageJSONPath = path.resolve(modelFolder, 'package.json');
-  const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
-  const { exports } = JSON.parse(packageJSON);
-  // return Object.keys(exports).filter(file => file !== '.').map(file => path.resolve(SRC, file));
-  const keys = Object.keys(exports);
-  if (keys.length === 1) {
-    return keys;
-  }
-  return Object.keys(exports).filter(file => file !== '.');
-};
 const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
@@ -131,11 +120,9 @@ const buildUMD = async (modelFolder: string) => {
     outDir: TMP,
   }, references);
 
-  const files = getExportFiles(modelFolder);
+  const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
-  for (let i = 0; i < files.length; i++) {
-    const exportName = files[i];
-    // const basename = path.basename(path.resolve(SRC, exportName));
+  await Promise.all(files.map(async exportName => {
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)
@@ -169,7 +156,7 @@ const buildUMD = async (modelFolder: string) => {
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
-  }
+  }));
   await rm(TMP);
 }
 
@@ -195,7 +182,6 @@ const buildCJS = async (modelFolder: string) => {
     ...TSCONFIG,
     "target": ts.ScriptTarget.ES5,
     "module": ts.ModuleKind.CommonJS,
-    // --module commonjs --target es5 
       baseUrl: SRC,
       rootDir: SRC,
       outDir: dist,
@@ -243,14 +229,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
       await buildUMD(MODEL_ROOT);
     }
   }
-  // fs.copySync(path.resolve(MODEL_ROOT, 'models'), path.resolve(DIST, 'models'));
 
   const duration = new Date().getTime() - start;
-  console.log(`Built model ${model} in ${duration} ms`)
+  return duration;
 }
 
 const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS) => {
-  await Promise.all(models.map(model => buildModel(model, outputFormats)))
+  return await Promise.all(models.map(model => buildModel(model, outputFormats)))
 }
 
 export default buildModels;
@@ -284,6 +269,9 @@ const getOutputFormats = async (outputFormat?: unknown) => {
   if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
     return [outputFormat]
   }
+  if (Array.isArray(outputFormat)) {
+    return outputFormat;
+  }
   const { outputFormats } = await inquirer.prompt<Answers>([
     {
       type: 'checkbox',
@@ -302,15 +290,16 @@ if (require.main === module) {
     const argv = await yargs.command('build models', 'build models', yargs => {
       yargs.positional('model', {
         describe: 'The model to build',
-      }).options({
-        outputFormat: { type: 'string' },
+      }).option('o', {
+        alias: 'outputFormat',
+        type: 'string',
       });
     })
     .help()
     .argv;
 
     const models = await getModel(argv._[0]);
-    const outputFormats = await getOutputFormats(argv.outputFormat);
+    const outputFormats = await getOutputFormats(argv.o);
 
     if (models?.length === 0) {
       console.log('No models selected, nothing to do.')

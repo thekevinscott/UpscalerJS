@@ -1,13 +1,11 @@
 import { checkImage } from '../../lib/utils/checkImage';
-import { executeNodeScript, prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
-const OUTPUT_FLAG = '_____OUTPUT_____';
-
-const writeScript = (deps: string) => `
+const writeScript = (deps: string): GetContents => outputFile => `
 ${deps}
 const path = require('path');
 const fs = require('fs');
@@ -46,21 +44,9 @@ const getModelPath = () => {
 
 (async () => {
   const data = await main(getModelPath());
-  console.log('${OUTPUT_FLAG}' + data);
+  fs.writeFileSync('${outputFile}', data);
 })();
 `;
-
-const execute = async (contents: string, logExtra = true) => {
-  let data = '';
-  await executeNodeScript(contents.trim(), chunk => {
-    if (chunk.startsWith(OUTPUT_FLAG)) {
-      data += chunk.split(OUTPUT_FLAG).pop();
-    } else if (logExtra) {
-      console.log('[PAGE]', chunk);
-    }
-  });
-  return data.trim();
-}
 
 describe('Platform Integration Tests', () => {
   beforeAll(async () => {
@@ -78,7 +64,7 @@ const Upscaler = require('${LOCAL_UPSCALER_NAME}/node-gpu');
     `},
   ].forEach(({ platform, deps }) => {
     it(`loads a model with ${platform}`, async () => {
-      const result = await execute(writeScript(deps));
+      const result = await testNodeScript(writeScript(deps));
       const formattedResult = `data:image/png;base64,${result}`;
       checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
     });

@@ -9,20 +9,20 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
-import buildModels, { AVAILABLE_MODELS, OutputFormat } from '../scripts/package-scripts/build-model';
-import { getAllAvailableModelPackages } from '../test/lib/utils/getAllAvailableModels';
+import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
+import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
+
+dotenv.config();
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
   if (target === 'browser') {
-    return ['umd', 'esm'];
+    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
+    return ['umd', 'esm', 'cjs'];
   }
   return ['cjs'];
 }
-
-
-dotenv.config();
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
@@ -100,6 +100,14 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     }
   }
 
+  if (argv.skipModelBuild !== true) {
+    const modelPackages = getAllAvailableModelPackages();
+    const durations = await buildModels(modelPackages, getOutputFormats(platform));
+    console.log([
+      `** built models: ${getOutputFormats(platform)}`,
+      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations[i]} ms`),
+    ].join('\n'));
+  }
   if (argv.skipBuild !== true) {
     if (platform === 'browser') {
       await buildUpscaler(platform);
@@ -108,10 +116,6 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node-gpu');
     }
     console.log(`** built upscaler: ${platform}`)
-  }
-  if (argv.skipModelBuild !== true) {
-    await buildModels(getAllAvailableModelPackages(), getOutputFormats(platform));
-    console.log(`** built models: ${getOutputFormats(platform)}`)
   }
   const args = [
     'jest',

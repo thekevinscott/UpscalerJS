@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { buildSync } from 'esbuild';
+import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
@@ -18,6 +18,10 @@ export const bundle = async () => {
       name: LOCAL_UPSCALER_NAME,
     },
     {
+      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
+    },
+    {
       src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
       name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
     },
@@ -29,17 +33,23 @@ export const bundle = async () => {
   copyFixtures(DIST, false);
 
   const entryFiles = path.join(ROOT, 'src/index.js');
-  try {
-    buildSync({
-      entryPoints: [entryFiles],
-      bundle: true,
-      loader: {
-        '.png': 'file',
-      },
-      outdir: DIST,
-    });
-    fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST,'index.html'))
-  } catch (err) {
-    console.error(err);
-  }
-}
+  const buildResult = await build({
+    entryPoints: [entryFiles],
+    bundle: true,
+    loader: {
+      '.png': 'file',
+    },
+    outdir: DIST,
+    // watch: {
+    //   onRebuild(error, result) {
+    //     if (error) {
+    //       console.error('watch build failed:', error);
+    //     } else {
+    //       console.log('watch build succeeded:', result);
+    //     }
+    //   },
+    // },
+  });
+  // buildResult.stop();
+  fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
+};

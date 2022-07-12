@@ -13,7 +13,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "composite": true,
+    "composite": false,
     "baseUrl": "./src",
     "rootDir": "./src",
     "outDir": "./dist",
