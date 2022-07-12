@@ -7,18 +7,6 @@ const CDNS = [
   (packageName: string, version: string, path: string) => `https://unpkg.com/${packageName}@${version}/${path}`,
   // 'cdnjs',
 ];
-// import MODELS, { DEFAULT_MODEL, } from './models';
-// import { warn, } from './utils';
-
-// const DEFAULT_MODEL_DEFINITION: ModelDefinition = {
-//   url: 'foo',
-//   scale: 2,
-// };
-
-// const getURL = async (modelPath: string, checksum?: string) => {
-//   // https://cdn.jsdelivr.net/npm/@upscalerjs/pixel-upsampler@latest/models/model.json
-//   // https://unpkg.com/@upscalerjs/pixel-upsampler@latest/models/model.json
-// };
 
 export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
   if (packageInformation) {

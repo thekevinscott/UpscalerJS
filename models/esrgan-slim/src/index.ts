@@ -1,5 +1,6 @@
-import getModelDefinition from './getModelDefinition';
 import { tf, } from './dependencies.generated';
+import { ModelDefinition } from '@upscalerjs/core';
+import { NAME, VERSION } from './constants.generated';
 
 const SCALE = 4;
 const BETA = 0.2;
@@ -50,13 +51,24 @@ class PixelShuffle extends tf.layers.Layer {
   static className = 'PixelShuffle';
 }
 
-export default {
-  ...getModelDefinition(SCALE, 'idealo/gans'),
+const modelDefinition: ModelDefinition = {
+  scale: 4,
+  channels: 3,
+  path: 'models/model.json',
+  packageInformation: {
+    name: NAME,
+    version: VERSION,
+  },
+  meta: {
+    dataset: 'div2k',
+  },
   preprocess: (image: tf.Tensor) => tf.mul(image, 1 / 255),
   postprocess: (output: tf.Tensor) => tf.tidy(() => {
-    const clippedValue = output.clipByValue(0, 1);
+    const clippedValue = (output).clipByValue(0, 1);
     output.dispose();
     return tf.mul(clippedValue, 255);
   }),
   customLayers: [MultiplyBeta, PixelShuffle,],
 };
+
+export default modelDefinition;

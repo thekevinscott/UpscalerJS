@@ -2,9 +2,8 @@ import callExec from "../utils/callExec";
 import { mkdirp } from "fs-extra";
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 import rimraf from 'rimraf';
-import { getCryptoName, installLocalPackages, installNodeModules } from "../shared/prepare";
+import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAME } from "./constants";
 
 const ROOT = path.join(__dirname);
@@ -40,3 +39,18 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
 
   rimraf.sync(TMP);
 };
+
+export type GetContents = (outputFile: string) => string;
+export const testNodeScript = async (contents: GetContents, logExtra = true) => {
+  let data;
+  await withTmpDir(async tmpDir => {
+    const outputFile = path.join(tmpDir, 'data');
+    await executeNodeScript(contents(outputFile).trim(), chunk => {
+      if (logExtra) {
+        console.log('[PAGE]', chunk);
+      }
+    });
+    data = fs.readFileSync(outputFile);
+  })
+  return data;
+}

@@ -10,16 +10,24 @@ import callExec from "../utils/callExec";
 
 const ROOT = path.join(__dirname, '../../..');
 
-export const installNodeModules = (cwd: string) => callExec('npm install --quiet', {
+export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
   cwd,
 });
 
-const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency) => {
+const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, verbose = false) => {
   if (Object.keys(remoteDependencies).length) {
     const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
       return `${dependency}@${version}`;
     }).join(' ');
-    await callExec(`npm install --silent --no-audit --no-save ${dependenciesToInstall}`, {
+    const cmd = [
+      'npm install --no-save',
+      verbose === false ? '--silent --no-audit' : '',
+      dependenciesToInstall,
+    ].filter(Boolean).join(' ')
+    if (verbose) {
+      console.log(cmd);
+    }
+    await callExec(cmd, {
       cwd: dest,
     })
   }
@@ -44,7 +52,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   }))
 };
 
-const buildDependencies = (dependencies: DependencyDefinition[]): {
+const buildDependencyTree = (dependencies: DependencyDefinition[]): {
   localDependencies: Dependency;
   remoteDependencies: Dependency;
 } => dependencies.reduce((collectedDependencies, { src }) => {
@@ -73,7 +81,7 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
   if (dest.endsWith('node_modules')) {
     throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
   }
-  const { localDependencies, remoteDependencies } = buildDependencies(dependencies);
+  const { localDependencies, remoteDependencies } = buildDependencyTree(dependencies);
 
   await installRemoteDependencies(dest, remoteDependencies);
   await installLocalDependencies(dest, dependencies, localDependencies);
@@ -86,28 +94,26 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
   writePackageJSON(dest, packageJSON)
 }
 
-const npmPack = async (cwd: string): Promise<string> => {
-  let outputName = '';
-  await callExec('npm pack --quiet', {
-    cwd,
-  }, chunk => {
-    outputName = chunk;
-  });
+const npmPack = async (src: string): Promise<string> => {
+    let outputName = '';
+    await callExec('npm pack --quiet', {
+      cwd: src,
+    }, chunk => {
+      outputName = chunk;
+    });
 
-  outputName = outputName.trim();
+    outputName = outputName.trim();
 
-  if (!outputName.endsWith('.tgz')) {
-    throw new Error(`Unexpected output name: ${outputName}`)
-  }
+    if (!outputName.endsWith('.tgz')) {
+      throw new Error(`Unexpected output name: ${outputName}`)
+    }
 
-  return outputName;
+    return path.resolve(src, outputName);
 };
 
-const unTar = async (cwd: string, fileName: string) => {
-  await callExec(`tar zxf ${fileName}`, {
-    cwd,
-  });
-}
+const unTar = (cwd: string, fileName: string) => callExec(`tar zxf ${fileName}`, {
+  cwd,
+});
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
@@ -162,20 +168,39 @@ const collectAllDependencies = (src: string) => {
   return { localDependencies, remoteDependencies };
 }
 
-export const installLocalPackage = async (src: string, dest: string) => {
-  rimraf.sync(dest);
-  const packedFile = await npmPack(src);
-  await withTmpDir(async tmp => {
+// sometimes npm pack fails with a 'package/models/group1-shard1of1.bin: truncated gzip input' error. Try a few times before failing
+const MAX_ATTEMPTS = 3;
+const packAndTar = async (src: string, tmp: string, attempts = 0): Promise<string> => {
+  try {
+    const packedFile = await npmPack(src);
+    if (!fs.existsSync(packedFile)) {
+      throw new Error(`npm pack failed for ${src}`)
+    }
     const tmpPackedFile = path.resolve(tmp, packedFile);
-    fs.renameSync(path.resolve(src, packedFile), tmpPackedFile)
+    fs.renameSync(packedFile, tmpPackedFile);
+    await new Promise(resolve => setTimeout(resolve, 1));
     await unTar(tmp, packedFile);
     const unpackedFolder = path.resolve(tmp, 'package');
     // ensure the unpacked folder exists
     if (!fs.existsSync(unpackedFolder)) {
-      throw new Error(`Tried to unpack tar file ${packedFile} but the output is not present.`)
+      throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
+    }
+    return unpackedFolder;
+  } catch (err) {
+    if (attempts >= MAX_ATTEMPTS) {
+      console.error(err);
+      throw new Error(`Failed to pack and tar after ${attempts} attempts`);
     }
 
-    // ensure the destination exists
+    return packAndTar(src, tmp, attempts + 1);
+  }
+}
+
+export const installLocalPackage = async (src: string, dest: string) => {
+  rimraf.sync(dest);
+  await withTmpDir(async tmp => {
+    const unpackedFolder = await packAndTar(src, tmp);
+
     const destParent = path.resolve(dest, '..');
     mkdirpSync(destParent);
 
@@ -186,15 +211,30 @@ export const installLocalPackage = async (src: string, dest: string) => {
 };
 
 type WithTmpDirFn = (tmp: string) => Promise<void>;
-const withTmpDir = async (callback: WithTmpDirFn) => {
-  const tmp = getTmpDir();
-  await callback(tmp)
-  rimraf.sync(tmp);
+export const withTmpDir = async (callback: WithTmpDirFn) => {
+  let tmpDir = await getTmpDir();
+  if (!fs.existsSync(tmpDir)) {
+    throw new Error(`Tmp directory ${tmpDir} was not created`);
+  }
+
+  try {
+    await callback(tmpDir);
+  }
+  finally {
+    try {
+      if (tmpDir) {
+        rimraf.sync(tmpDir);
+      }
+    }
+    catch (e) {
+      console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
+    }
+  }
 };
 
-const getTmpDir = (): string => {
+const getTmpDir = async (): Promise<string> => {
   const folder = path.resolve(ROOT, 'tmp', getCryptoName(`${Math.random()}`));
-  mkdirpSync(folder);
+  await mkdirp(folder);
   return folder;
 };
 

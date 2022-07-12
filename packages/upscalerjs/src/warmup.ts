@@ -1,6 +1,7 @@
 import { tf, } from './dependencies.generated';
 import { WarmupSizes, ModelDefinition, WarmupSizesByPatchSize, } from './types';
 
+
 const isWarmupSizeByPatchSize = (
   size: WarmupSizes,
 ): size is WarmupSizesByPatchSize => {

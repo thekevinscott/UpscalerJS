@@ -90,11 +90,15 @@ const scaffoldPlatform = async (platform: Platform, targetPackage: string) => {
   const isUpscaler = targetPackage === 'packages/upscalerjs';
   const dependency = getDependency(platform);
 
-  writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
-    `export * as tf from '${dependency}';`,
-  ]);
-
-  if (!isUpscaler) {
+  if (isUpscaler) {
+    writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+      `export * as tf from '${dependency}';`,
+      `export { default as ESRGANSlim } from '@upscalerjs/esrgan-slim${platform === 'node' ? '/node' : platform === 'node-gpu' ? '/node-gpu' : ''}';`,
+    ]);
+  } else {
+    writeLines(path.resolve(srcFolder, './dependencies.generated.ts'), [
+      `export * as tf from '${dependency}';`,
+    ]);
     const { name, version } = JSON.parse(fs.readFileSync(path.resolve(srcFolder, '../package.json'), 'utf8'));
     writeLines(path.resolve(srcFolder, './constants.generated.ts'), [
       `export const NAME = "${name}";`,

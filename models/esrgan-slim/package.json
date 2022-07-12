@@ -1,0 +1,56 @@
+{
+  "name": "@upscalerjs/esrgan-slim",
+  "version": "1.0.0-beta.1",
+  "description": "ESRGAN Default Model for Upscaler.js",
+  "exports": {
+    "./node": {
+      "require": {
+        "types": "./dist/node/index.d.ts",
+        "default": "./dist/node/index.js"
+      }
+    },
+    "./node-gpu": {
+      "require": {
+        "types": "./dist/node-gpu/index.d.ts",
+        "default": "./dist/node-gpu/index.js"
+      }
+    },
+    ".": {
+      "require": {
+        "types": "./dist/node/index.d.ts",
+        "default": "./dist/node/index.js"
+      },
+      "import": {
+        "types": "./dist/browser/esm/index.d.ts",
+        "default": "./dist/browser/esm/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "dependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0",
+    "@tensorflow/tfjs-layers": "^3.18.0",
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "seedrandom": "2.4.4"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT"
+}

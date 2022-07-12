@@ -9,18 +9,18 @@ import { resolver, } from './resolver';
 // const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
-// const DEFAULT_MODEL_DEFINITION: ModelDefinition = {
-//   url: 'foo',
-//   scale: 2,
-// };
-
+const DIST_REGEXP = new RegExp('(.*)dist');
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = resolver(name);
-  const moduleFolder = moduleEntryPoint.match(`(.*)/${name}`)?.[0];
-  if (moduleFolder === undefined) {
-    throw new Error(`Cannot find module ${name}`);
+  const matches = moduleEntryPoint.match(DIST_REGEXP);
+  if (!matches) {
+    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
   }
-  return moduleFolder;
+  const match = matches.pop();
+  if (!match) {
+    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
+  }
+  return match;
 };
 
 export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
@@ -31,14 +31,8 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
   return modelPath;
 };
 
-// const DEFAULT_MODEL_DEFINITION = {
-//   path: 'fooey',
-//   scale: 4,
-// }
-
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
-  // modelDefinition: ModelDefinition = DEFAULT_MODEL_DEFINITION,
 ): Promise<{
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
