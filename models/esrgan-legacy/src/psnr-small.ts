@@ -1,3 +1,3 @@
 import getModelDefinition from './getModelDefinition';
 
-export default getModelDefinition(2, 'idealo/psnr-small-quant-unit8');
+export default getModelDefinition(2, 'idealo/psnr-small-quant-uint8');
