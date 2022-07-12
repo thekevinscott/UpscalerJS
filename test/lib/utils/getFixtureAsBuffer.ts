@@ -1,7 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import * as _PNG from 'pngjs';
-const { PNG } = _PNG;
+import { PNG } from 'pngjs';
 
 export const getFixtureAsBuffer = (pathname: string) => {
   const fullpath = path.resolve(__dirname, "../../__fixtures__", pathname);

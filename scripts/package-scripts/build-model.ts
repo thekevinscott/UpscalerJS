@@ -5,14 +5,13 @@ import path from 'path';
 import inquirer from 'inquirer';
 import scaffoldDependencies, { FileForGeneration, Platform } from './scaffold-dependencies';
 import { compile } from './utils/compile';
-import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
+import rollupConfig from '../../models/rollup.config';
 
 export type OutputFormat = 'cjs' | 'esm' | 'umd';
 const ROOT_DIR = path.resolve(__dirname, '../..');
@@ -134,18 +133,8 @@ const buildUMD = async (modelFolder: string) => {
 
     mkdirpSync(FILE_DIST);
     await rollupBuild({
+      ...rollupConfig,
       input,
-      context: 'window',
-      external: ['@tensorflow/tfjs'],
-      plugins: [
-        nodeResolve({
-          preferBuiltins: true,
-          resolveOnly: [
-            /^(?!.*(@tensorflow\/tfjs))/,
-          ],
-        }),
-        commonjs(),
-      ]
     }, [{
       file,
       format: 'umd',
