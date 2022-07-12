@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import ts, { ProjectReference } from "typescript";
 import path from 'path';
 import inquirer from 'inquirer';
-import scaffoldPlatform, { FileForGeneration, Platform } from './scaffold-platform';
+import scaffoldDependencies, { FileForGeneration, Platform } from './scaffold-dependencies';
 import { compile } from './utils/compile';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -189,23 +189,6 @@ const buildCJS = async (modelFolder: string) => {
   }
 };
 
-const FILES_FOR_GENERATION: FileForGeneration[] = [
-  {
-    name: 'dependencies',
-    contents: [
-      `export * as tfcore from '@tensorflow/tfjs-core';`,
-      `export * as tflayers from '@tensorflow/tfjs-layers';`,
-    ],
-  },
-  {
-    name: 'constants',
-    contents: [
-      ({ name }) => `export const NAME = "${name}";`,
-      ({ version }) => `export const VERSION = "${version}";`,
-    ],
-  }
-];
-
 const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => {
   const start = new Date().getTime();
 
@@ -214,7 +197,30 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   await rm(DIST);
   await mkdirp(DIST);
-  scaffoldPlatform(MODEL_ROOT, FILES_FOR_GENERATION);
+  scaffoldDependencies(MODEL_ROOT, {
+    files: [
+      {
+        name: 'dependencies',
+        contents: [
+          ({ tfjs, }) => {
+            if (tfjs === undefined) {
+              throw new Error('TFJS Platform was undefined');
+            }
+            // TODO: Why is this failing to typecheck
+            /* eslint-disable @typescript-eslint/restrict-template-expressions */
+            return `export * as tf from '${tfjs}';`;
+          },
+        ],
+      },
+      {
+        name: 'constants',
+        contents: [
+          ({ packageJSON: { name }}) => `export const NAME = "${name}";`,
+          ({ packageJSON: { version }}) => `export const VERSION = "${version}";`,
+        ],
+      }
+    ],
+  });
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
