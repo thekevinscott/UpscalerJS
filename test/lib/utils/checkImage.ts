@@ -1,8 +1,7 @@
 import fs from 'fs';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
-import * as _PNG from 'pngjs';
-const { PNG } = _PNG;
+import { PNG } from 'pngjs';
 
 // 0.10 works for browser; 0.12 for node.
 const THRESHOLD = 0.12;
