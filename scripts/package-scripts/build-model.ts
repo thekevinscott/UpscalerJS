@@ -12,6 +12,7 @@ import yargs from 'yargs';
 import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
+import scaffoldDependenciesConfig from '../../models/scaffolder';
 
 /****
  * Types
@@ -86,23 +87,7 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
 };
 
 const scaffoldModelDependencies = (modelFolder: string, platform: Platform) => {
-  scaffoldDependencies(modelFolder, {
-    files: [
-      {
-        name: 'dependencies',
-        contents: [
-          writeTFJSDependency,
-        ],
-      },
-      {
-        name: 'constants',
-        contents: [
-          ({ packageJSON: { name } }) => `export const NAME = "${name}";`,
-          ({ packageJSON: { version } }) => `export const VERSION = "${version}";`,
-        ],
-      }
-    ],
-  }, platform);
+  scaffoldDependencies(modelFolder, scaffoldDependenciesConfig, platform);
 };
 
 /****

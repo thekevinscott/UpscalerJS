@@ -16,7 +16,6 @@ export interface ModelDefinition {
   postprocess?: ProcessFn<Tensor3D>;
   customLayers?: CustomLayer[];
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   meta?: Record<string, any>;
 }
 
