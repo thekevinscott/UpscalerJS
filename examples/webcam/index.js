@@ -7,9 +7,7 @@ const canvas = document.createElement("canvas");
 canvas.width = video.width;
 canvas.height = video.height;
 
-const upscaler = new Upscaler({
-  model: 'div2k/rdn-C3-D10-G64-G064-x2',
-});
+const upscaler = new Upscaler();
 
 navigator.mediaDevices
   .getUserMedia({ audio: false, video: true })

@@ -15,9 +15,7 @@ const createImage = (targetDiv, src) => {
   return img;
 };
 
-const upscaler = new Upscaler({
-  model: 'div2k/rdn-C3-D10-G64-G064-x2',
-});
+const upscaler = new Upscaler();
 
 async function handleFiles() {
   info.innerText = "Loading...";

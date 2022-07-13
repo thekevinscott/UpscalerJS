@@ -4,9 +4,7 @@ import Upscaler from "upscaler";
 const button = document.getElementById("button");
 const info = document.getElementById("info");
 
-const upscaler = new Upscaler({
-  model: 'div2k/rdn-C3-D10-G64-G064-x2',
-});
+const upscaler = new Upscaler();
 button.onclick = () => {
   info.innerText = "Upscaling...";
   const img = new Image();

@@ -8,8 +8,10 @@
     "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open"
   },
   "devDependencies": {
+    "buffer": "^6.0.3",
     "cross-env": "^7.0.2",
-    "parcel": "2.4.1"
+    "parcel": "2.4.1",
+    "process": "^0.11.10"
   },
   "author": "Kevin Scott",
   "license": "MIT",

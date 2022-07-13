@@ -2,6 +2,7 @@
   "name": "@upscalerjs/esrgan-slim",
   "version": "1.0.0-beta.2",
   "description": "ESRGAN Default Model for Upscaler.js",
+  "main": "./dist/browser/esm/index.js",
   "exports": {
     "./node": {
       "require": {
