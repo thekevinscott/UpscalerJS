@@ -25,3 +25,4 @@ yarn-error.log
 .pnpm-debug.log
 umd-tmp
 *.tgz
+yarn.lock
