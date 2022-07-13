@@ -377,34 +377,41 @@ importers:
 
   models/esrgan-legacy:
     specifiers:
-      '@tensorflow/tfjs-core': ^3.18.0
-      '@tensorflow/tfjs-layers': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@upscalerjs/core': workspace:*
       seedrandom: 2.4.4
     dependencies:
-      '@tensorflow/tfjs-core': 3.18.0
-      '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
 
   models/esrgan-slim:
     specifiers:
-      '@tensorflow/tfjs-core': ^3.18.0
-      '@tensorflow/tfjs-layers': ^3.18.0
+      '@tensorflow/tfjs': 3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@upscalerjs/core': workspace:*
       seedrandom: 2.4.4
     dependencies:
-      '@tensorflow/tfjs-core': 3.18.0
-      '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
 
   models/pixel-upsampler:
     specifiers:
+      '@tensorflow/tfjs': 3.18.0
       '@tensorflow/tfjs-core': ^3.18.0
       '@tensorflow/tfjs-layers': ^3.18.0
+      '@tensorflow/tfjs-node': 3.18.0
+      '@tensorflow/tfjs-node-gpu': 3.18.0
       '@upscalerjs/core': workspace:*
       seedrandom: 2.4.4
     dependencies:
@@ -412,6 +419,9 @@ importers:
       '@tensorflow/tfjs-layers': 3.18.0_br26fteayl44zj43fz4bazb7oq
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
+      '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
+      '@tensorflow/tfjs-node-gpu': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
 
   packages/core:
