@@ -12,12 +12,6 @@ import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import { ModelDefinition, } from '@upscalerjs/core';
 
-// TODO: Why do we need to explicitly cast this to ModelDefinition?
-// For some reason, TS is picking this up as *any* even though in the editor
-// it's defined as ModelDefinition
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
-
 export class Upscaler {
   _opts: UpscalerOptions;
   _model: Promise<{
@@ -30,7 +24,7 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts.model || DEFAULT_MODEL);
+    this._model = loadModel(this._opts.model || ESRGANSlim);
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 
