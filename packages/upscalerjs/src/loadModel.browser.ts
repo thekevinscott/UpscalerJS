@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, PackageInformation, } from './types';
+import type { ModelDefinition, } from '@upscalerjs/core';
+import type { PackageInformation, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
 
 const CDNS = [

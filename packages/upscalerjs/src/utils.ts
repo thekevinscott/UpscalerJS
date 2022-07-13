@@ -67,9 +67,9 @@ export const warn = (msg: string | string[]) => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };
 
-export function isProgress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(p: undefined | Progress<any, any>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
-export function isSingleArgProgress(p: Progress<any, any>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
-export const isMultiArgTensorProgress = (p: Progress<any, any>, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgProgress<'tensor'> => {
+export function isProgress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(p: undefined | Progress<ResultFormat, ResultFormat>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
+export function isSingleArgProgress(p: Progress<ResultFormat, ResultFormat>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
+export const isMultiArgTensorProgress = (p: Progress<ResultFormat, ResultFormat>, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgProgress<'tensor'> => {
   if (!isProgress(p) || p.length <= 1) {
     return false;
   }
@@ -84,6 +84,7 @@ export const isAborted = (abortSignal?: AbortSignal) => {
 };
 
 type PostNext<T = unknown> = ((value: T) => (void | Promise<void>));
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>(
   gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
   postNext?: PostNext<T>
