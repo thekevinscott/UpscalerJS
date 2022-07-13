@@ -336,6 +336,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       colTensor.dispose();
       yield [upscaledTensor,];
     }
+    // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
     upscaledTensor.dispose();
@@ -348,6 +349,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 
   return tf.tidy(() => {
     const pred = model.predict(pixels) as tf.Tensor4D;
+    // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     return pred.squeeze() as tf.Tensor3D;
   });
