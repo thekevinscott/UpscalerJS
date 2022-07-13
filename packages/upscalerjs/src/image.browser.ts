@@ -42,6 +42,7 @@ export const getImageAsTensor = async (
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
+    // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
     tensor.dispose();
