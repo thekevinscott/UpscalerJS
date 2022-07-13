@@ -1,4 +1,4 @@
-import { tf, } from './dependencies.generated';
+import { tf, ESRGANSlim, } from './dependencies.generated';
 import type {
   UpscalerOptions,
   UpscaleArgs,
@@ -11,18 +11,17 @@ import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import { ModelDefinitionObjectOrFn, isModelDefinitionFn, } from '@upscalerjs/core';
+import type { ModelDefinitionFn, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+// import { isModelDefinitionFn, } from '@upscalerjs/core';
+export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // For some reason, TS is picking this up as *any* even though in the editor
 // it's defined as ModelDefinition
-/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-// const DEFAULT_MODEL = ESRGANSlim as ModelDefinitionFn;
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+const DEFAULT_MODEL: ModelDefinitionFn = ESRGANSlim;
 
-const getModel = (modelDefinition?: ModelDefinitionObjectOrFn) => {
-  if (!modelDefinition) {
-    throw new Error('stop');
-  }
+const getModel = (modelDefinition: ModelDefinitionObjectOrFn = DEFAULT_MODEL) => {
   /* eslint-disable @typescript-eslint/no-unsafe-call */
   /* eslint-disable @typescript-eslint/no-unsafe-return */
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
