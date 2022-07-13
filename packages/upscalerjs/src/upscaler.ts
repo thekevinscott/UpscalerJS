@@ -11,13 +11,13 @@ import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import { ModelDefinition, } from '@upscalerjs/core';
+import { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // For some reason, TS is picking this up as *any* even though in the editor
 // it's defined as ModelDefinition
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
+const DEFAULT_MODEL = ESRGANSlim as ModelDefinitionFn;
 
 const getModel = (modelDefinition: ModelDefinition | ModelDefinitionFn = DEFAULT_MODEL) => {
   if (typeof modelDefinition === 'function') {

@@ -61,7 +61,7 @@ const main = (_tf: typeof tf) => {
       name: NAME,
       version: VERSION,
     },
-    meta: {
+    ModelDefinitionObject: {
       dataset: 'div2k',
     },
     preprocess: (image: tf.Tensor) => _tf.mul(image, 1 / 255),
