@@ -11,6 +11,7 @@
     "seedrandom": "2.4.4"
   },
   "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build",
