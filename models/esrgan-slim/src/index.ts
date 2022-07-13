@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition } from '@upscalerjs/core';
-import { NAME, VERSION } from './constants.generated';
+import { ModelDefinition, } from '@upscalerjs/core';
+import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 4;
 const BETA = 0.2;
@@ -52,7 +52,7 @@ class PixelShuffle extends tf.layers.Layer {
 }
 
 const modelDefinition: ModelDefinition = {
-  scale: 4,
+  scale: SCALE,
   channels: 3,
   path: 'models/model.json',
   packageInformation: {
