@@ -27,7 +27,7 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts",
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts --platform browser",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build",
@@ -47,12 +47,16 @@
     "models/**/*",
     "dist/**/*"
   ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
+  },
   "dependencies": {
-    "@tensorflow/tfjs-core": "^3.18.0",
-    "@tensorflow/tfjs-layers": "^3.18.0",
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "@tensorflow/tfjs-node-gpu": "^3.18.0",
     "seedrandom": "2.4.4"
   },
   "author": "Kevin Scott",
