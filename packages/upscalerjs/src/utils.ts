@@ -1,6 +1,7 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
-import { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, ModelDefinition, } from './types';
+import type { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
+import type { ModelDefinition, } from '@upscalerjs/core';
 
 export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
 

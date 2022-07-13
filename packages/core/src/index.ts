@@ -13,7 +13,7 @@ export interface PackageInformation {
 
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
-export interface ModelDefinitionObject {
+export interface ModelDefinition {
   path: string;
   scale: 2 | 3 | 4;
   channels?: 3;
@@ -25,6 +25,8 @@ export interface ModelDefinitionObject {
   meta?: Record<string, any>;
 }
 
-export type ModelDefinitionFn = (tf: TF) => ModelDefinitionObject;
+export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
-export type ModelDefinition = ModelDefinitionFn | ModelDefinitionObject;
+export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
+
+export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function' };

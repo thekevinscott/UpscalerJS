@@ -1,8 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
-import { ModelDefinition, } from '@upscalerjs/core';
+import { ModelDefinitionObjectOrFn, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
-const main = (_tf: typeof tf) => {
+const main: ModelDefinitionFn = (_tf: typeof tf) => {
   const SCALE = 4;
   const BETA = 0.2;
 
@@ -53,7 +53,7 @@ const main = (_tf: typeof tf) => {
     static className = 'PixelShuffle';
   }
 
-  const modelDefinition: ModelDefinition = {
+  const modelDefinition: ModelDefinitionObjectOrFn = {
     scale: SCALE,
     channels: 3,
     path: 'models/model.json',
@@ -61,7 +61,7 @@ const main = (_tf: typeof tf) => {
       name: NAME,
       version: VERSION,
     },
-    ModelDefinitionObject: {
+    meta: {
       dataset: 'div2k',
     },
     preprocess: (image: tf.Tensor) => _tf.mul(image, 1 / 255),

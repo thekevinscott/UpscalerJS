@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
-import { WarmupSizes, ModelDefinition, WarmupSizesByPatchSize, } from './types';
+import type { ModelDefinition, } from '@upscalerjs/core';
+import type { WarmupSizes, WarmupSizesByPatchSize, } from './types';
 
 
 const isWarmupSizeByPatchSize = (

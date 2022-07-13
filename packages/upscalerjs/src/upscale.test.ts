@@ -15,7 +15,8 @@ import {
 import { wrapGenerator, isTensor } from './utils';
 import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
-import { ModelDefinition, Progress, } from './types';
+import { ModelDefinition } from "@upscalerjs/core";
+import { Progress, } from './types';
 jest.mock('./image.generated', () => ({
   ...jest.requireActual('./image.generated'),
 }));

@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
-import { ModelDefinition, } from './types';
+import type { ModelDefinition, } from "@upscalerjs/core";
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
 import { resolver, } from './resolver';
 

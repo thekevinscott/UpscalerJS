@@ -8,7 +8,7 @@ import path from 'path';
 jest.mock('@tensorflow/tfjs-node');
 import * as utils from './utils';
 import * as resolver from './resolver';
-import { ModelDefinition } from "./types";
+import type { ModelDefinition } from "@upscalerjs/core";
 jest.mock('./utils', () => {
   const actualUtils: typeof utils = jest.requireActual('./utils');
   return {

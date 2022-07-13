@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import warmup from './warmup';
-import { ModelDefinition, } from './types';
+import type { ModelDefinition, } from "@upscalerjs/core";
 
 const getFakeModel = () => {
   const predict = jest.fn(() => {
