@@ -27,8 +27,8 @@
     }
   },
   "scripts": {
-    "lint:fix": "eslint -c ../.eslintrc.js src --ext .ts --fix",
-    "lint": "eslint -c ../.eslintrc.js src --ext .ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd"
   },
