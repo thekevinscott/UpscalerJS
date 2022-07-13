@@ -6,8 +6,9 @@ export type WarmupSizesByPatchSize = {
   padding?: number;
 };
 export type WarmupSizes = [number, number] | WarmupSizesByPatchSize;
+export type ModelDefinitionFn = (_tf: typeof tf) => ModelDefinition;
 export interface UpscalerOptions {
-  model?: ModelDefinition;
+  model?: ModelDefinition | ModelDefinitionFn;
   warmupSizes?: WarmupSizes[];
 }
 

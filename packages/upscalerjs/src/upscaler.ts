@@ -5,6 +5,7 @@ import {
   WarmupSizes,
   ResultFormat,
   Progress,
+  ModelDefinitionFn,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
@@ -18,6 +19,13 @@ import { ModelDefinition, } from '@upscalerjs/core';
 /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
 const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
 
+const getModel = (modelDefinition: ModelDefinition | ModelDefinitionFn = DEFAULT_MODEL) => {
+  if (typeof modelDefinition === 'function') {
+    return modelDefinition(tf);
+  }
+  return modelDefinition;
+};
+
 export class Upscaler {
   _opts: UpscalerOptions;
   _model: Promise<{
@@ -30,7 +38,7 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts.model || DEFAULT_MODEL);
+    this._model = loadModel(getModel(this._opts.model));
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 
