@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
   "env": {
     "browser": true,
@@ -37,7 +38,7 @@ module.exports = {
       ],
 
       "parserOptions": {
-        "project": "./tsconfig.eslint.json",
+        "project": path.resolve(__dirname, "./tsconfig.eslint.json"),
         "sourceType": "module"
       },
     },

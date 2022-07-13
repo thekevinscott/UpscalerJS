@@ -23,11 +23,10 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Lint'
-        working-directory: ./packages/upscalerjs
-        run: 'pnpm run lint'
+        run: 'pnpm lint'
 
   unit-browser:
     name: 'Unit / Browser'

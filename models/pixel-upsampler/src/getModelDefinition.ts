@@ -1,5 +1,5 @@
-import { ModelDefinition } from '@upscalerjs/core';
-import { NAME, VERSION } from './constants.generated';
+import { ModelDefinition, } from '@upscalerjs/core';
+import { NAME, VERSION, } from './constants.generated';
 
 const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
   scale,
