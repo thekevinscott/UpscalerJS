@@ -12,8 +12,7 @@ import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionFn, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
-// import { isModelDefinitionFn, } from '@upscalerjs/core';
-export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
+import { isModelDefinitionFn, } from './utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // For some reason, TS is picking this up as *any* even though in the editor
