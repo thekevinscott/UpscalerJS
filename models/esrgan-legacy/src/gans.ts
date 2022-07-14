@@ -61,7 +61,7 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
   const modelDefinition: ModelDefinition = {
     scale: SCALE,
     channels: 3,
-    path: 'models/model.json',
+    path: 'models/idealo/gans/model.json',
     packageInformation: {
       name: NAME,
       version: VERSION,
