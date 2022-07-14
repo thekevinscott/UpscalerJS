@@ -3,12 +3,6 @@
   "version": "1.0.0-beta.2",
   "description": "ESRGAN Default Model for Upscaler.js",
   "exports": {
-    "./node": {
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      }
-    },
     ".": {
       "require": {
         "types": "./dist/cjs/index.d.ts",
