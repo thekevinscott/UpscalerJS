@@ -1,4 +1,4 @@
-import * as tfc from '@tensorflow/tfjs-core';
+import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 import type * as _tfng from '@tensorflow/tfjs-node-gpu';
 import type * as _tfn from '@tensorflow/tfjs-node';
 import type * as _tf from '@tensorflow/tfjs';
@@ -6,19 +6,19 @@ import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
 type TF = typeof _tf | typeof _tfn | typeof _tfng;
-// TODO: Why do I need to specify TF here?
+// TODO: Why do I need to specify TF here? Why can't it infer it from @upscaler/core's type definition?
 const modelDefinition: ModelDefinitionFn = (tf: TF) => {
   const Layer = tf.layers.Layer;
   const SCALE = 4;
   const BETA = 0.2;
 
-  type Inputs = tfc.Tensor4D | tfc.Tensor4D[];
+  type Inputs = Tensor4D | Tensor4D[];
 
-  const isTensorArray = (inputs: Inputs): inputs is tfc.Tensor4D[] => {
+  const isTensorArray = (inputs: Inputs): inputs is Tensor4D[] => {
     return Array.isArray(inputs);
   };
 
-  const getInput = (inputs: Inputs): tfc.Tensor4D => {
+  const getInput = (inputs: Inputs): Tensor4D => {
     if (isTensorArray(inputs)) {
       return inputs[0];
     }
@@ -69,8 +69,8 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     meta: {
       dataset: 'div2k',
     },
-    preprocess: (image: tfc.Tensor) => tf.mul(image, 1 / 255),
-    postprocess: (output: tfc.Tensor) => tf.tidy(() => {
+    preprocess: (image: Tensor) => tf.mul(image, 1 / 255),
+    postprocess: (output: Tensor) => tf.tidy(() => {
       const clippedValue = (output).clipByValue(0, 1);
       output.dispose();
       return tf.mul(clippedValue, 255);
