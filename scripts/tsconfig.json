@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "strict": true,
+    "moduleResolution": "Node",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "module": "commonjs"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": true,
+    "transpileOnly": true,
+    "moduleTypes": {
+      "*": "cjs",
+    }
+  },
+}

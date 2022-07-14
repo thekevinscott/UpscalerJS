@@ -16,6 +16,9 @@ const getExpectedArray = (src: string, width = 16, height = 16): Promise<Uint8Cl
 
   const image = new Image();
   image.onload = () => {
+    if (!ctx) {
+      throw new Error('ctx is null');
+    }
     ctx.drawImage(image, 0, 0);
     const { data } = ctx.getImageData(0, 0, width, height);
     resolve(data);

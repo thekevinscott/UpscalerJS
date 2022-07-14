@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
+    "module": "es2022",
+    "moduleResolution": "node16",
     "target": "es6",
-    "module": "commonjs",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
+    "composite": false,
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
@@ -16,5 +19,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.generated.ts"]
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

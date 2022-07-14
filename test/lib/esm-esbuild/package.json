@@ -1,12 +1,15 @@
 {
-  "name": "generic-server-sample-server",
+  "name": "@upscalerjs/test.esm.esbuild",
   "private": true,
-  "version": "0.8.23",
+  "version": "1.0.0-beta.3",
   "main": "index.js",
   "dependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^7.16.0",
+    "@tensorflow/tfjs": "^3.18.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@babel/preset-typescript": "^7.16.0",
-    "@tensorflow/tfjs": "^3.13.0"
+    "seedrandom": "2.4.4"
   },
   "babel": {
     "env": {

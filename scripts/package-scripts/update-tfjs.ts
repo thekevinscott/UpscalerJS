@@ -1,36 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
-import findAllPackages from './find-all-packages';
 import isValidVersion from './utils/isValidVersion';
+import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { Dependency } from '@schemastore/package';
 
-type Package = 'UpscalerJS' | 'Test' | 'Examples' | 'Root';
 type Answers = { packages: Array<Package>, version: string}
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
-const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
-const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
-const TEST_DIR = path.resolve(ROOT_DIR, 'test/lib');
-const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 
-const getFormattedName = (file: string) => {
-  return file.split(`${ROOT_DIR}/`).pop();
-};
-
-const updateMultiplePackages = (dir: string, version: string) => {
-  const packages = findAllPackages(dir);
-  for (let i = 0; i < packages.length; i++) {
-    const pkg = packages[i];
-    updateSinglePackage(pkg, version);
-  }
-};
-
-const updateSinglePackage = (dir: string, version: string) => {
-  const packageJSON = getPackageJSON(dir);
-  const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies'];
+const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON, dir) => {
+  const dependencyKeys = ['dependencies', 'peerDependencies', 'devDependencies', 'pnpm.overrides'];
+  const updates: Array<string> = [];
   for (let i = 0; i < dependencyKeys.length; i++) {
     const depKey = dependencyKeys[i];
-    const deps = packageJSON[depKey];
+    const deps = getPackageJSONValue(packageJSON, depKey);
     if (deps) {
       const gen = getMatchingTFJS(deps);
       let value = gen.next().value;
@@ -38,54 +22,55 @@ const updateSinglePackage = (dir: string, version: string) => {
         const [key] = value;
         deps[key] = version;
         value = gen.next().value;
+        updates.push(`  - ${depKey}: ${key}`);
       }
-      packageJSON[depKey] = deps;
+      packageJSON = updatePackageJSONForKey(packageJSON, depKey, deps)
     }
   }
-  writePackageJSON(dir, packageJSON);
-  console.log(`- Updated ${getFormattedName(dir)}`);
-};
-
-const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
-  const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
-  if (file.endsWith('package.json')) {
-    fs.writeFileSync(file, stringifiedContents);
-  } else {
-    fs.writeFileSync(path.resolve(file, 'package.json'), stringifiedContents);
+  if (updates.length) {
+    console.log(`- Updated ${getPreparedFolderName(getPackageJSONPath(dir))}`);
+    updates.forEach(message => console.log(message))
   }
-};
-
-const getPackageJSON = (file: string) => {
-  if (file.endsWith('package.json')) {
-    return JSON.parse(fs.readFileSync(file, 'utf-8'));
-  }
-  return JSON.parse(fs.readFileSync(path.resolve(file, 'package.json'), 'utf-8'));
+  return packageJSON;
 }
 
-function* getMatchingTFJS(deps: Record<string, string>) {
-  const entries = Object.entries(deps);
-  for (let i = 0; i < entries.length; i++) {
-    const [key, val] = entries[i];
-    if (key.startsWith('@tensorflow/tfjs')) {
-      yield [key, val];
+
+// const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
+//   const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
+//   if (file.endsWith('package.json')) {
+//     fs.writeFileSync(file, stringifiedContents);
+//   } else {
+//     fs.writeFileSync(path.resolve(file, 'package.json'), stringifiedContents);
+//   }
+// };
+
+function* getMatchingTFJS(deps?: Dependency) {
+  if (deps) {
+    const entries = Object.entries(deps);
+    for (let i = 0; i < entries.length; i++) {
+      const [key, val] = entries[i];
+      if (key.startsWith('@tensorflow/tfjs')) {
+        yield [key, val];
+      }
     }
   }
 }
 
-const getVersion = (dir: string) => {
+const getVersion = (dir: string): string => {
   const packageJSON = getPackageJSON(dir);
   const deps = packageJSON.peerDependencies;
   const gen = getMatchingTFJS(deps);
-  const val = gen.next().value;
-  if (!val) {
+  const matchingTFJS = gen.next().value;
+  if (!matchingTFJS) {
     throw new Error(`Could not find a dependency matching @tensorflow/tfjs in ${dir}`);
   }
+  const [_, val] = matchingTFJS;
   return val;
 };
 
 const getCurrentVersions = () => {
-  const [_1, upscalerJSVersion] = getVersion(UPSCALERJS_DIR);
-  const [_2, rootVersion] = getVersion(ROOT_DIR);
+  const upscalerJSVersion = getVersion(DIRECTORIES[UPSCALER_JS].directory);
+  const rootVersion = getVersion(DIRECTORIES[ROOT].directory);
   return [
     `root: ${rootVersion}`,
     `upscaler: ${upscalerJSVersion}`,
@@ -97,15 +82,13 @@ const updateTFJS = async () => {
     {
       name: 'version',
       message: `Specify the version of TFJS you wish to set:\n(${getCurrentVersions()})\n`,
-      default: getVersion(ROOT_DIR)[1],
+      default: getVersion(ROOT_DIR),
     },
     {
       type: 'checkbox',
       name: 'packages',
       message: 'Which packages do you want to update?',
-      choices: [
-        'UpscalerJS', 'Test', 'Examples', 'Root',
-      ],
+      choices: AVAILABLE_PACKAGES,
     },
   ]);
   if (!isValidVersion(version)) {
@@ -116,17 +99,33 @@ const updateTFJS = async () => {
     return;
   }
 
-  packages.forEach(packageKey => {
-    if (packageKey === 'Examples') {
-      updateMultiplePackages(EXAMPLES_DIR, version)
-    } else if (packageKey === 'Test') {
-      updateMultiplePackages(TEST_DIR, version)
-    } else if (packageKey === 'UpscalerJS') {
-      updateSinglePackage(UPSCALERJS_DIR, version)
-    } else if (packageKey === 'Root') {
-      updateSinglePackage(ROOT_DIR, version)
-    }
-  });
+    const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
+
+    await Promise.all(packages.map(packageKey => {
+      const pkg = DIRECTORIES[packageKey];
+      if (pkg === undefined) {
+        throw new Error(`Package ${packageKey} is not defined.`);
+      }
+      const { multiple, directory } = pkg;
+      const fn = multiple ? updateMultiplePackages : updateSinglePackage;
+      return fn(directory, setVersionForPackageJSON);
+    }));
+//   packages.forEach(packageKey => {
+//     if (packageKey === EXAMPLES) {
+//       updateMultiplePackages(EXAMPLES_DIR, version)
+//     } else if (packageKey === 'Test') {
+//       updateMultiplePackages(TEST_DIR, version)
+//     } else if (packageKey === UPSCALER_JS) {
+//       updateSinglePackage(UPSCALERJS_DIR, version)
+//     } else if (packageKey === ROOT) {
+//       updateSinglePackage(ROOT_DIR, version)
+//     } else if (packageKey === CORE) {
+//       updateSinglePackage(CORE_DIR, version);
+//     } else if (packageKey === WRAPPER) {
+//       updateSinglePackage(WRAPPER_DIR, version);
+//     }
+// // const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT, CORE, WRAPPER ];
+//   });
 };
 
 export default updateTFJS;

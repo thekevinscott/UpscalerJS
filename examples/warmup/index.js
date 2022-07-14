@@ -5,7 +5,6 @@ const button = document.getElementById('button');
 const info = document.getElementById('info');
 
 const upscaler = new Upscaler({
-  model: 'div2k/rdn-C3-D10-G64-G064-x2',
   warmupSizes: [[128, 128]],
 });
 button.onclick = () => {

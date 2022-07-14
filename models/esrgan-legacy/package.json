@@ -1,0 +1,93 @@
+{
+  "name": "@upscalerjs/esrgan-legacy",
+  "version": "1.0.0-beta.3",
+  "description": "ESRGAN Legacy Models for Upscaler.js",
+  "exports": {
+    "./div2k/2x": {
+      "require": {
+        "default": "./dist/cjs/div2k/2x.js",
+        "types": "./dist/cjs/div2k/2x.d.ts"
+      },
+      "import": {
+        "default": "./dist/esm/div2k/2x.js",
+        "types": "./dist/esm/div2k/2x.d.ts"
+      }
+    },
+    "./div2k/3x": {
+      "require": {
+        "default": "./dist/cjs/div2k/3x.js",
+        "types": "./dist/cjs/div2k/3x.d.ts"
+      },
+      "import": {
+        "default": "./dist/esm/div2k/3x.js",
+        "types": "./dist/esm/div2k/3x.d.ts"
+      }
+    },
+    "./div2k/4x": {
+      "require": {
+        "default": "./dist/cjs/div2k/4x.js",
+        "types": "./dist/cjs/div2k/4x.d.ts"
+      },
+      "import": {
+        "default": "./dist/esm/div2k/4x.js",
+        "types": "./dist/esm/div2k/4x.d.ts"
+      }
+    },
+    "./psnr-small": {
+      "require": {
+        "default": "./dist/cjs/psnr-small.js",
+        "types": "./dist/cjs/psnr-small.d.ts"
+      },
+      "import": {
+        "default": "./dist/esm/psnr-small.js",
+        "types": "./dist/esm/psnr-small.d.ts"
+      }
+    },
+    "./gans": {
+      "require": {
+        "types": "./dist/cjs/gans.d.ts",
+        "default": "./dist/cjs/gans.js"
+      },
+      "import": {
+        "types": "./dist/esm/gans.d.ts",
+        "default": "./dist/esm/gans.js"
+      }
+    }
+  },
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.18.0"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0",
+    "@tensorflow/tfjs-layers": "^3.18.0",
+    "@tensorflow/tfjs": "^3.18.0",
+    "@tensorflow/tfjs-node": "^3.18.0",
+    "@tensorflow/tfjs-node-gpu": "^3.18.0",
+    "seedrandom": "2.4.4"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT"
+}

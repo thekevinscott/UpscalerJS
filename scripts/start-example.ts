@@ -7,7 +7,7 @@ import path from 'path';
 import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import kill from 'tree-kill';
 import chokidar from 'chokidar';
-import yargs from 'yargs/yargs';
+import yargs from 'yargs';
 
 type OnChange = (src: string) => (e: Array<any>) => void;
 
@@ -47,9 +47,9 @@ const getPlatform = (packageJSON: Record<string, any>): Platform => {
 
 const getArgs = (platform: Platform, exampleName: string, skipBuild?: boolean) => {
   if (skipBuild) {
-    return ['yarn', 'workspace', exampleName, 'start'];
+    return ['pnpm', '--filter', exampleName, 'start'];
   }
-  return ['yarn', 'workspace', 'upscaler', `build:${platform}`, '&&', 'yarn', 'workspace', exampleName, 'start'];
+  return ['pnpm', '--filter', 'upscaler', `build:${platform}`, '&&', 'pnpm', '--filter', exampleName, 'start'];
 };
 
 const main = async () => {

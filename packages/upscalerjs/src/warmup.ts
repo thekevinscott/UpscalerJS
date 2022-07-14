@@ -1,5 +1,7 @@
 import { tf, } from './dependencies.generated';
-import { WarmupSizes, IModelDefinition, WarmupSizesByPatchSize, } from './types';
+import type { ModelDefinition, } from '@upscalerjs/core';
+import type { WarmupSizes, WarmupSizesByPatchSize, } from './types';
+
 
 const isWarmupSizeByPatchSize = (
   size: WarmupSizes,
@@ -10,7 +12,7 @@ const isWarmupSizeByPatchSize = (
 const warmup = async (
   modelPackage: Promise<{
     model: tf.LayersModel;
-    modelDefinition: IModelDefinition;
+    modelDefinition: ModelDefinition;
   }>,
   sizes: WarmupSizes[],
 ) => {
@@ -21,7 +23,7 @@ const warmup = async (
       const { patchSize, padding = 0, } = size;
 
       const amount = patchSize + padding * 2;
-      const pred = model.predict(tf.zeros([1, amount, amount, 3,])) as tf.Tensor4D;
+      const pred = tf.tidy(() => model.predict(tf.zeros([1, amount, amount, 3,])) as tf.Tensor4D);
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();
@@ -34,7 +36,7 @@ const warmup = async (
         );
       }
       const [width, height,] = size;
-      const pred = model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D;
+      const pred = tf.tidy(() => model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D);
       await tf.nextFrame();
       pred.dataSync();
       pred.dispose();

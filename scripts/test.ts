@@ -2,14 +2,27 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import path from 'path';
 import dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
+import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
+import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 
 dotenv.config();
+
+const ROOT_DIR = path.resolve(__dirname, '..');
+
+const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
+  if (target === 'browser') {
+    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
+    return ['umd', 'esm', 'cjs'];
+  }
+  return ['cjs'];
+}
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
@@ -68,12 +81,13 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
-    runner: { type: 'string' }
+    skipModelBuild: { type: 'boolean' },
+    kind: { type: 'string' }
   }).argv;
 
   let bsLocal: undefined | browserstack.Local;
   const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.runner);
+  const runner = getRunner(argv.kind);
   if (runner === 'browserstack') {
     bsLocal = await startBrowserstack();
     process.on('exit', async () => {
@@ -86,6 +100,14 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     }
   }
 
+  if (argv.skipModelBuild !== true) {
+    const modelPackages = getAllAvailableModelPackages();
+    const durations = await buildModels(modelPackages, getOutputFormats(platform));
+    console.log([
+      `** built models: ${getOutputFormats(platform)}`,
+      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations[i]} ms`),
+    ].join('\n'));
+  }
   if (argv.skipBuild !== true) {
     if (platform === 'browser') {
       await buildUpscaler(platform);
@@ -93,19 +115,17 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       await buildUpscaler('node');
       await buildUpscaler('node-gpu');
     }
+    console.log(`** built upscaler: ${platform}`)
   }
-  const yarnArgs = [
+  const args = [
     'jest',
-    // 'node',
-    // '--expose-gc',
-    // './node_modules/.bin/jest',
     '--config',
-    `test/jestconfig.${platform}.${runner}.js`,
+    path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),
     '--detectOpenHandles',
-    argv.watch ? '--watch' : undefined,
+    // argv.watch ? '--watch' : undefined,
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  const code = await runProcess(args[0], args.slice(1));
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
   }

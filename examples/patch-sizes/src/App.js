@@ -8,9 +8,7 @@ import 'react-input-range/lib/css/index.css';
 const size = 100;
 const src = `https://picsum.photos/id/220/${size}/${size}`;
 
-const upscaler = new Upscaler({
-  model: "div2k/rdn-C3-D10-G64-G064-x2"
-});
+const upscaler = new Upscaler();
 function App() {
   const [img, setImg] = useState();
   const [upscaling, setUpscaling] = useState(false);

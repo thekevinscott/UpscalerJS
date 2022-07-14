@@ -1,95 +1,42 @@
-import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
-import findAllPackages from './find-all-packages';
 import isValidVersion from './utils/isValidVersion';
-import execute from './utils/execute';
+import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
 
-type PackageJson = Record<string, any>;
-type Package = 'UpscalerJS' | 'Models' | 'Examples' | 'Root';
-type Answers = { packages: Array<Package>, version: string, commit: boolean, updateDependencies?: boolean, }
-type GetMessage = (file: string) => string;
+type Answers = { packages: Array<Package>, version: string, updateDependencies?: boolean, }
 
 const ROOT_DIR = path.resolve(__dirname, '../..');
-const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
-const UPSCALERJS_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
-const MODELS_DIR = path.resolve(PACKAGES_DIR, 'models');
-const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
+console.log(ROOT_DIR);
 
-const getFormattedName = (file: string) => {
-  return file.split(`${ROOT_DIR}/`).pop();
-};
+const logger: PackageUpdaterLogger = (file: string) => {
+  return `- Updated ${getPreparedFolderName(getPackageJSONPath(file))}`;
+}
 
-type TransformFn = (packageJSON: PackageJson, version: string) => PackageJson;
-const updateMultiplePackages = async (dir: string, version: string, commit: boolean, transform?: TransformFn, getMessage: GetMessage = defaultGetMessage) => {
-  const packages = findAllPackages(dir);
-  for (let i = 0; i < packages.length; i++) {
-    const pkg = packages[i];
-    await updateSinglePackage(pkg, version, commit, transform, getMessage);
-  }
-};
+// const commitPackageJSON = async (dir: string) => {
+//   const file = getPackageJSONPath(dir);
+//   const cmd = `git add "${file}"`
+//   await execute(cmd);
+// }
 
-const defaultTransform: TransformFn = (packageJSON, version) => {
+const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON) => {
   packageJSON.version = version;
   return packageJSON;
 }
-
-const defaultGetMessage: GetMessage = (file: string) => {
-  if (file.endsWith('package.json')) {
-    return `- Updated ${getFormattedName(file)}`;
-  }
-  return `- Updated ${getFormattedName(`${file}/package.json`)}`;
-}
-
-const updateSinglePackage = async (dir: string, version: string, commit: boolean, transform: TransformFn = defaultTransform, getMessage: GetMessage = defaultGetMessage) => {
-  const packageJSON = getPackageJSON(dir);
-  writePackageJSON(dir, transform(packageJSON, version));
-  if (commit) {
-    await commitPackageJSON(dir);
-  }
-  console.log(getMessage(dir));
-};
-
-const getPackageJSONPath = (file: string) => {
-  if (file.endsWith('package.json')) {
-    return file;
-  }
-  return path.resolve(file, 'package.json');
-}
-
-const commitPackageJSON = async (dir: string) => {
-  const file = getPackageJSONPath(dir);
-  const cmd = `git add "${file}"`
-  await execute(cmd);
-}
-
-const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
-  const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
-  fs.writeFileSync(getPackageJSONPath(file), stringifiedContents);
-};
-
-const getPackageJSON = (file: string) => JSON.parse(fs.readFileSync(getPackageJSONPath(file), 'utf-8'));
 
 const getVersion = (dir: string) => {
   return getPackageJSON(dir).version;
 };
 
 const getCurrentVersions = () => {
-  const upscalerJSVersion = getVersion(UPSCALERJS_DIR);
-  const rootVersion = getVersion(ROOT_DIR);
-  const modelsVersion = getVersion(MODELS_DIR);
+  const upscalerJSVersion = getVersion(DIRECTORIES[UPSCALER_JS].directory);
+  const rootVersion = getVersion(DIRECTORIES[ROOT].directory);
+  const coreVersion = getVersion(DIRECTORIES[CORE].directory);
   return [
     `root: ${rootVersion}`,
     `upscaler: ${upscalerJSVersion}`,
-    `models: ${modelsVersion}`,
+    `core: ${coreVersion}`,
   ].join(' | ');
 };
-
-const UPSCALER_JS = 'UpscalerJS';
-const ROOT = 'Root';
-const EXAMPLES = 'Examples';
-const MODELS = 'Models';
-const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT];
 
 const updateVersion = (): Promise<void> => new Promise(resolve => {
   inquirer.prompt<Answers>([
@@ -111,13 +58,15 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
       default: true,
       when: ({ packages }: Omit<Answers, 'updateDependencies'>) => packages.includes('UpscalerJS'),
     },
-    {
-      name: 'commit',
-      message: `Do you wish to commit changes`,
-      type: 'confirm',
-      default: true,
-    },
-  ]).then(async ({ version, packages, commit, updateDependencies }) => {
+    // {
+    //   name: 'commit',
+    //   message: `Do you wish to commit changes`,
+    //   type: 'confirm',
+    //   default: true,
+    // },
+  ]).then(async ({ version, packages, 
+    // commit, 
+    updateDependencies }) => {
     if (!isValidVersion(version)) {
       throw new Error(`Version is not in the format x.x.x. You specified: ${version}`);
     }
@@ -126,36 +75,43 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
       return;
     }
 
-    await Promise.all(packages.map(packageKey => {
-      if (packageKey === EXAMPLES) {
-        return updateMultiplePackages(EXAMPLES_DIR, version, commit);
-      } else if (packageKey === MODELS) {
-        return updateSinglePackage(MODELS_DIR, version, commit);
-      } else if (packageKey === UPSCALER_JS) {
-        return updateSinglePackage(UPSCALERJS_DIR, version, commit);
-      } else if (packageKey === ROOT) {
-        return updateSinglePackage(ROOT_DIR, version, commit);
+    const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
+
+    await Promise.all(packages.map(async packageKey => {
+      const pkg = DIRECTORIES[packageKey];
+      if (pkg === undefined) {
+        throw new Error(`Package ${packageKey} is not defined.`);
       }
+      const { multiple, directory } = pkg;
+      const fn = multiple ? updateMultiplePackages : updateSinglePackage;
+      return await fn(directory, setVersionForPackageJSON, logger);
     }));
     if (updateDependencies) {
-      updateMultiplePackages(EXAMPLES_DIR, version, commit, packageJSON => {
+      const dependencyDirectories = [DIRECTORIES[EXAMPLES], DIRECTORIES[WRAPPER]];
+      const dependencyUpdater: TransformPackageJsonFn = packageJSON => {
         const deps = packageJSON.dependencies;
         deps['upscaler'] = version;
         return packageJSON;
-      }, dir => {
-        return `- Updated "upscaler" dependency in ${getFormattedName(dir)}`;
-      });
-    }
-    if (commit) {
-      const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
-      await new Promise(resolve => setTimeout(resolve, 100));
-      try {
-        await execute(cmd);
-      } catch(err) {
-        console.error('*******', err)
-        throw err;
+      }
+      const dependencyLogger: PackageUpdaterLogger = dir => {
+        return `- Updated "upscaler" dependency in ${getPreparedFolderName(dir)}`;
+      };
+      for (let i = 0; i < dependencyDirectories.length; i++) {
+        const { directory, multiple } = dependencyDirectories[i];
+        const fn = multiple ? updateMultiplePackages : updateSinglePackage;
+        fn(directory, dependencyUpdater, dependencyLogger);
       }
     }
+    // if (commit) {
+    //   const cmd = `git commit -m "Updated version to ${version} for ${formatArray(packages)}"`;
+    //   await new Promise(resolve => setTimeout(resolve, 100));
+    //   try {
+    //     await execute(cmd);
+    //   } catch(err) {
+    //     console.error('*******', err)
+    //     throw err;
+    //   }
+    // }
     resolve();
   });
 });
@@ -166,15 +122,15 @@ if (require.main === module) {
   updateVersion();
 }
 
-const formatArray = (packages: Array<string>) => {
-  if (packages.length === 1) {
-    return packages[0];
-  }
-  if (packages.length === 2) {
-    return packages.join(' and ');
-  }
-  return [
-    packages.slice(0, -1).join(', '),
-    packages.pop(),
-  ].join(' and ');
-}
+// const formatArray = (packages: Array<string>) => {
+//   if (packages.length === 1) {
+//     return packages[0];
+//   }
+//   if (packages.length === 2) {
+//     return packages.join(' and ');
+//   }
+//   return [
+//     packages.slice(0, -1).join(', '),
+//     packages.pop(),
+//   ].join(' and ');
+// }

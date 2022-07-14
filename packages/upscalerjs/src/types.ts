@@ -1,16 +1,14 @@
 import { tf, } from './dependencies.generated';
-import { SerializableConstructor, } from '@tensorflow/tfjs-core/dist/serialization';
+import { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
   padding?: number;
 };
 export type WarmupSizes = [number, number] | WarmupSizesByPatchSize;
-export interface IUpscalerOptions {
-  model?: string;
-  scale?: number;
+export interface UpscalerOptions {
+  model?: ModelDefinitionObjectOrFn;
   warmupSizes?: WarmupSizes[];
-  modelDefinition?: IModelDefinition;
 }
 
 export type ResultFormat = 'src' | 'tensor' | undefined;
@@ -36,23 +34,7 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
   signal?: AbortSignal;
 }
 
-export type ProcessFn<T extends tf.Tensor> = (t: T) => T;
-export interface IModelDefinition {
-  url: string;
-  scale: number;
-  configURL?: string;
-  description?: string;
-  deprecated?: boolean;
-  preprocess?: ProcessFn<tf.Tensor4D>;
-  postprocess?: ProcessFn<tf.Tensor3D>;
-  customLayers?: SerializableConstructor<tf.layers.Layer>[];
-}
-
-export type IIntermediaryModelDefinition = Omit<
-  IModelDefinition,
-  'configURL' | 'url'
-> & {
-  urlPath: string;
-};
 
 export type Layer = tf.layers.Layer;
+
+export { PackageInformation, ProcessFn, } from '@upscalerjs/core';

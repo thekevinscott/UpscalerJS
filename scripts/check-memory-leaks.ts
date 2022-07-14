@@ -2,13 +2,18 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import path from 'path';
 import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
+import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
+import buildModels from './package-scripts/build-model';
 
 dotenv.config();
+
+const ROOT_DIR = path.resolve(__dirname, '..');
 
 const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
@@ -25,17 +30,22 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 
   if (argv.skipBuild !== true) {
     await buildUpscaler('browser');
+    console.log(`** built upscaler: browser`)
   }
-  const yarnArgs = [
-    'yarn',
+  if (argv.skipModelBuild !== true) {
+    await buildModels(getAllAvailableModelPackages(), ['esm']);
+    console.log(`** built models: ${['esm']}`)
+  }
+  const args = [
+    'pnpm',
     'jest',
-    'test/misc/memory/test.browser.ts',
+    path.resolve(ROOT_DIR, 'test/misc/memory/test.browser.ts'),
     '--config',
-    'test/misc/memory/jestconfig.js',
+    path.resolve(ROOT_DIR, 'test/misc/memory/jestconfig.js'),
     '--detectOpenHandles',
     ...argv._,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(yarnArgs[0], yarnArgs.slice(1));
+  const code = await runProcess(args[0], args.slice(1));
   if (code !== null) {
     process.exit(code);
   }

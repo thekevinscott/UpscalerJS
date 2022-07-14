@@ -1,6 +1,6 @@
-import * as fs from 'fs';
-import * as http from 'http';
-import * as path from 'path';
+import fs from 'fs';
+import http from 'http';
+import path from 'path';
 import { getImageAsTensor, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
@@ -49,12 +49,6 @@ describe('Image', () => {
       expect(result.shape).toEqual([1,16,16,4,]);
     });
 
-    it('handles a string path to an http-hosted file', async () => {
-      const imagePath = `http://localhost:${PORT}/flower-small.png`;
-      const result = await getImageAsTensor(imagePath);
-      expect(result.shape).toEqual([1,16,16,4,]);
-    });
-
     it('reads a rank 4 tensor directly without manipulation', async () => {
       const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
       const result = await getImageAsTensor(input);
@@ -69,14 +63,14 @@ describe('Image', () => {
 
     it('handles an invalid (too small) tensor input', async () => {
       const input = tf.tensor([[1,],]);
-      await expect(() => getImageAsTensor(input as any))
+      await expect(() => getImageAsTensor(input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
 
     it('handles an invalid (too large) tensor input', async () => {
       const input = tf.tensor([[[[[1,],],],],]);
-      await expect(() => getImageAsTensor(input as any))
+      await expect(() => getImageAsTensor(input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });

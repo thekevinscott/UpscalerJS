@@ -1,13 +1,13 @@
-import * as http from 'http';
+import http from 'http';
 import handler from 'serve-handler';
 
-type StartServer = (PORT: number, DIST: string) => Promise<http.Server>;
-export const startServer: StartServer = (PORT, DIST) => new Promise<http.Server>(async resolve => {
+type StartServer = (PORT: number, dist: string) => Promise<http.Server>;
+export const startServer: StartServer = (port, dist) => new Promise<http.Server>(async resolve => {
   try {
     const server = http.createServer((request, response) => handler(request, response, {
-      public: DIST,
+      public: dist,
     }));
-    server.listen(PORT, () => {
+    server.listen(port, () => {
       resolve(server);
     });
   } catch (err) {

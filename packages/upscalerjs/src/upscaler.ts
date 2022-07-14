@@ -1,30 +1,43 @@
-import { tf, } from './dependencies.generated';
-import {
-  IUpscalerOptions,
+import { tf, ESRGANSlim, } from './dependencies.generated';
+import type {
+  UpscalerOptions,
   UpscaleArgs,
   WarmupSizes,
-  IModelDefinition,
   ResultFormat,
   Progress,
 } from './types';
-import loadModel, { getModelDefinitions, } from './loadModel';
+import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
+import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+import { isModelDefinitionFn, } from './utils';
+
+// TODO: Why do we need to explicitly cast this to ModelDefinition?
+// For some reason, TS is picking this up as *any* even though in the editor
+// it's defined as ModelDefinition
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+const DEFAULT_MODEL: ModelDefinitionObjectOrFn = ESRGANSlim;
+
+const getModel = (modelDefinition: ModelDefinitionObjectOrFn = DEFAULT_MODEL) => {
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  /* eslint-disable @typescript-eslint/no-unsafe-return */
+  return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
+};
 
 export class Upscaler {
-  _opts: IUpscalerOptions;
+  _opts: UpscalerOptions;
   _model: Promise<{
     model: tf.LayersModel;
-    modelDefinition: IModelDefinition;
+    modelDefinition: ModelDefinition;
   }>;
   abortController = new AbortController();
 
-  constructor(opts: IUpscalerOptions = {}) {
+  constructor(opts: UpscalerOptions = {}) {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(this._opts);
+    this._model = loadModel(getModel(this._opts.model));
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 
@@ -48,10 +61,6 @@ export class Upscaler {
       modelDefinition,
       signal: this.abortController.signal,
     });
-  };
-
-  getModelDefinitions = async () => {
-    return await getModelDefinitions();
   };
 
   abort = () => {
