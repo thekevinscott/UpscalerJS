@@ -1,8 +1,10 @@
-import fs from 'fs';
+import path from 'path';
+import fs from 'fs-extra';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
 import { PNG } from 'pngjs';
 
+const ROOT = path.resolve(__dirname, '.././../../');
 // 0.10 works for browser; 0.12 for node.
 const THRESHOLD = 0.12;
 
@@ -23,7 +25,7 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);
   if (upscaledSrc) {
     console.log(`Writing upscaled image to ${upscaledSrc}`)
-    fs.writeFileSync(upscaledSrc, PNG.sync.write(upscaledImage));
+    writeImage(upscaledSrc, upscaledImage);
   }
 
   try {
@@ -41,7 +43,13 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   const mismatched = pixelmatch(fixture.data, upscaledImage.data, diff.data, fixture.width, fixture.height, { threshold: THRESHOLD });
   if (mismatched > 0) {
     console.log(`Mismatch, writing diff image to ${diffSrc}`)
-    fs.writeFileSync(diffSrc, PNG.sync.write(diff));
+    writeImage(diffSrc, diff);
   }
   expect(mismatched).toEqual(0);
+}
+
+const writeImage = (pathToImage: string, contents: PNG) => {
+  const fullPathToImage = path.resolve(ROOT, 'test-output', pathToImage);
+  fs.mkdirpSync(path.resolve(ROOT, fullPathToImage, '..'));
+  fs.writeFileSync(fullPathToImage, PNG.sync.write(contents));
 }

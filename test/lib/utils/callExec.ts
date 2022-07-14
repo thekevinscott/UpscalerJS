@@ -3,6 +3,7 @@ type StdOut = (chunk: string) => void;
 const callExec = (cmd: string, options: any, stdout?: StdOut | boolean, stdErr: boolean = true): Promise<void> => new Promise((resolve, reject) => {
   const spawnedProcess = exec(cmd, options, (error: Error) => {
     if (error) {
+      console.log('failure', cmd, options)
       reject(error.message);
     } else {
       resolve();
