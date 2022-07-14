@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ModelDefinition } from './types';
+import { ModelDefinition } from '@upscalerjs/core';
 import { 
   wrapGenerator, 
   isSingleArgProgress, 

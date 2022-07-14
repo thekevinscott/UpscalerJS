@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
+import type { ModelDefinition, } from '@upscalerjs/core';
 import type { 
   UpscaleArgs, 
-  ModelDefinition, 
   ProcessFn, 
   ResultFormat, 
   UpscaleResponse, 

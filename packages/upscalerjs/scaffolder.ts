@@ -7,7 +7,7 @@ const config: ScaffoldDependenciesConfig = {
       name: 'dependencies',
       contents: [
         writeTFJSDependency,
-        ({ platform, }) => `export { default as ESRGANSlim } from '@upscalerjs/esrgan-slim${platform === 'node' ? '/node' : platform === 'node-gpu' ? '/node-gpu' : ''}';`,
+        () => `export { default as ESRGANSlim } from '@upscalerjs/esrgan-slim';`,
       ],
     },
   ],

@@ -1,3 +1,4 @@
 export { default, } from './upscaler';
 export { AbortError, getRowsAndColumns, getTensorDimensions, } from './upscale';
-export type { ModelDefinition, SingleArgProgress, MultiArgProgress, Progress, } from './types';
+export type { ModelDefinition, } from '@upscalerjs/core';
+export type { SingleArgProgress, MultiArgProgress, Progress, } from './types';
