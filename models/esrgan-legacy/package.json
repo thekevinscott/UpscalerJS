@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/esrgan-legacy",
-  "version": "1.0.0-canary.0",
+  "version": "0.3.1",
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
     "./div2k/2x": {
