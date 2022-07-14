@@ -16,7 +16,7 @@ import type { ModelDefinition, } from '@upscalerjs/core';
 // For some reason, TS is picking this up as *any* even though in the editor
 // it's defined as ModelDefinition
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
+const DEFAULT_MODEL = ESRGANSlim;
 
 const getModel = (modelDefinition: ModelDefinition = DEFAULT_MODEL) => {
   return modelDefinition;

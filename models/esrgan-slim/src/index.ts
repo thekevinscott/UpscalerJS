@@ -28,6 +28,8 @@ class MultiplyBeta extends tfl.layers.Layer {
   }
 
   call(inputs: Inputs) {
+    const i = getInput(inputs);
+    console.log(i);
     return tf.mul(getInput(inputs), this.beta);
   }
 
