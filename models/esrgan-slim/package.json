@@ -2,28 +2,21 @@
   "name": "@upscalerjs/esrgan-slim",
   "version": "1.0.0-beta.2",
   "description": "ESRGAN Default Model for Upscaler.js",
-  "main": "./dist/browser/esm/index.js",
   "exports": {
     "./node": {
       "require": {
-        "types": "./dist/node/index.d.ts",
-        "default": "./dist/node/index.js"
-      }
-    },
-    "./node-gpu": {
-      "require": {
-        "types": "./dist/node-gpu/index.d.ts",
-        "default": "./dist/node-gpu/index.js"
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
       }
     },
     ".": {
       "require": {
-        "types": "./dist/node/index.d.ts",
-        "default": "./dist/node/index.js"
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/browser/esm/index.d.ts",
-        "default": "./dist/browser/esm/index.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       }
     }
   },

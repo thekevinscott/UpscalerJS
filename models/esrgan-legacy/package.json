@@ -81,6 +81,8 @@
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
+    "@tensorflow/tfjs-core": "^3.18.0",
+    "@tensorflow/tfjs-layers": "^3.18.0",
     "@tensorflow/tfjs": "^3.18.0",
     "@tensorflow/tfjs-node": "^3.18.0",
     "@tensorflow/tfjs-node-gpu": "^3.18.0",

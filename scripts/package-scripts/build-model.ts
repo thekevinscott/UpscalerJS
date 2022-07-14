@@ -86,10 +86,6 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 
-const scaffoldModelDependencies = (modelFolder: string, platform: Platform) => {
-  scaffoldDependencies(modelFolder, scaffoldDependenciesConfig, platform);
-};
-
 /****
  * ESM build function
  */
@@ -184,7 +180,6 @@ const buildCJS = async (modelFolder: string) => {
   }];
   for (let i = 0; i < platforms.length; i++) {
     const { platform, dist } = platforms[i];
-    scaffoldModelDependencies(modelFolder, platform);
     await mkdirp(dist);
 
     await compile(files, {
@@ -207,6 +202,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
   const DIST = path.resolve(MODEL_ROOT, 'dist')
+  scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
   await rm(DIST);
   await mkdirp(DIST);
@@ -214,7 +210,6 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
     await buildCJS(MODEL_ROOT);
   }
   if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
-    scaffoldModelDependencies(MODEL_ROOT, 'browser');
     await mkdirp(path.resolve(DIST, 'browser'));
 
     if (outputFormats.includes('esm')) {

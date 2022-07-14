@@ -1,13 +1,7 @@
-import { ScaffoldDependenciesConfig, writeTFJSDependency, } from "../scripts/package-scripts/scaffold-dependencies";
+import { ScaffoldDependenciesConfig, } from "../scripts/package-scripts/scaffold-dependencies";
 
 const config: ScaffoldDependenciesConfig = {
   files: [
-    {
-      name: 'dependencies',
-      contents: [
-        writeTFJSDependency,
-      ],
-    },
     {
       name: 'constants',
       contents: [
