@@ -13,6 +13,8 @@ export interface PackageInformation {
 
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
+type Meta = { [key: string]: string | number | Meta };
+
 export interface ModelDefinition {
   path: string;
   scale: 2 | 3 | 4;
@@ -22,7 +24,7 @@ export interface ModelDefinition {
   postprocess?: ProcessFn<Tensor3D>;
   customLayers?: CustomLayer[];
 
-  meta?: Record<string, any>;
+  meta?: Meta;
 }
 
 export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
