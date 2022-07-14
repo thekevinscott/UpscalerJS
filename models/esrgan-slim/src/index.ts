@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs-core';
 import * as tfl from '@tensorflow/tfjs-layers';
-import { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 4;
@@ -53,7 +53,7 @@ class PixelShuffle extends tfl.layers.Layer {
   static className = 'PixelShuffle';
 }
 
-const modelDefinition: ModelDefinitionObjectOrFn = {
+const modelDefinition: ModelDefinition = {
   scale: SCALE,
   channels: 3,
   path: 'models/model.json',

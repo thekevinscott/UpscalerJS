@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
 import { ROOT, } from './constants';
 import type { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
-import type { ModelDefinition, ModelDefinitionFn, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import type { ModelDefinition, } from '@upscalerjs/core';
 
 export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
 
@@ -97,5 +97,3 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   }
   return result.value;
 }
-
-export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }

@@ -6,24 +6,20 @@ import type {
   ResultFormat,
   Progress,
 } from './types';
-import type { ModelDefinition, } from "@upscalerjs/core";
 import { loadModel, } from './loadModel.generated';
 import warmup from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import type { ModelDefinitionFn, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
-import { isModelDefinitionFn, } from './utils';
+import type { ModelDefinition, } from '@upscalerjs/core';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // For some reason, TS is picking this up as *any* even though in the editor
 // it's defined as ModelDefinition
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const DEFAULT_MODEL: ModelDefinitionFn = ESRGANSlim;
+const DEFAULT_MODEL = ESRGANSlim as ModelDefinition;
 
-const getModel = (modelDefinition: ModelDefinitionObjectOrFn = DEFAULT_MODEL) => {
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
-  /* eslint-disable @typescript-eslint/no-unsafe-return */
-  return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
+const getModel = (modelDefinition: ModelDefinition = DEFAULT_MODEL) => {
+  return modelDefinition;
 };
 
 export class Upscaler {
