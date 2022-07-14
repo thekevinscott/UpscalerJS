@@ -180,7 +180,7 @@ describe('Model Loading Integration Tests', () => {
     getAllAvailableModelPackages().map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.forEach(({ esm: esmName, umd: umdName }) => {
+        models.forEach(({ esm: esmName = 'index', umd: umdName }) => {
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             const result = await page().evaluate(([packageName, modelName]) => {
               const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
@@ -197,6 +197,12 @@ describe('Model Loading Integration Tests', () => {
                 });
                 return upscaler.upscale(window['flower']);
               } else {
+                if (!modelName) {
+                  throw new Error(`No model name found for package ${packageName}`);
+                }
+                if (!modelDefinition) {
+                  throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
+                }
                 throw new Error(`Invalid model Definition for package name ${packageName} and model name ${modelName}`)
               }
             }, [packageName, esmName]);

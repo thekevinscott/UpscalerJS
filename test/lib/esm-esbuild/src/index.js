@@ -13,7 +13,9 @@ import flower from '../../../__fixtures__/flower-small.png';
 window.tf = tf;
 window.flower = flower;
 window.Upscaler = Upscaler;
-window['esrgan-slim'] = ESRGANSlim;
+window['esrgan-slim'] = {
+  'index': ESRGANSlim,
+};
 window['pixel-upsampler'] = {
   '2x': pixelUpsampler2x,
   '3x': pixelUpsampler3x,
