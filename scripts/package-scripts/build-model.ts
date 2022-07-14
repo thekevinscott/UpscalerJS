@@ -91,7 +91,7 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
  */
 const buildESM = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
-  const DIST = path.resolve(modelFolder, 'dist/browser/esm');
+  const DIST = path.resolve(modelFolder, 'dist/esm');
   const files = getSrcFiles(modelFolder);
 
 
@@ -116,7 +116,7 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 const buildUMD = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const TMP = path.resolve(modelFolder, 'dist/tmp');
-  const DIST = path.resolve(modelFolder, 'dist/browser/umd');
+  const DIST = path.resolve(modelFolder, 'dist/umd');
   // await rm(DIST);
   await mkdirp(DIST);
 
@@ -168,29 +168,17 @@ const buildCJS = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const files = getSrcFiles(modelFolder);
 
-  const platforms: Array<{
-    platform: Platform;
-    dist: string;
-  }> = [{
-    platform: 'node',
-    dist: path.resolve(modelFolder, 'dist/node'),
-  }, {
-    platform: 'node-gpu',
-    dist: path.resolve(modelFolder, 'dist/node-gpu'),
-  }];
-  for (let i = 0; i < platforms.length; i++) {
-    const { platform, dist } = platforms[i];
-    await mkdirp(dist);
+  const dist = path.resolve(modelFolder, 'dist/cjs');
+  await mkdirp(dist);
 
-    await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ES5,
-    "module": ts.ModuleKind.CommonJS,
-      baseUrl: SRC,
-      rootDir: SRC,
-      outDir: dist,
-    }, references);
-  }
+  await compile(files, {
+  ...TSCONFIG,
+  "target": ts.ScriptTarget.ES5,
+  "module": ts.ModuleKind.CommonJS,
+    baseUrl: SRC,
+    rootDir: SRC,
+    outDir: dist,
+  }, references);
 };
 
 /****
@@ -209,16 +197,13 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
-  if (outputFormats.includes('esm') || outputFormats.includes('umd')) {
-    await mkdirp(path.resolve(DIST, 'browser'));
 
-    if (outputFormats.includes('esm')) {
-      await buildESM(MODEL_ROOT);
-    }
+  if (outputFormats.includes('esm')) {
+    await buildESM(MODEL_ROOT);
+  }
 
-    if (outputFormats.includes('umd')) {
-      await buildUMD(MODEL_ROOT);
-    }
+  if (outputFormats.includes('umd')) {
+    await buildUMD(MODEL_ROOT);
   }
 
   const duration = new Date().getTime() - start;
