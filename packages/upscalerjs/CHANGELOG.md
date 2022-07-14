@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.12.2](https://github.com/thekevinscott/UpscalerJS/compare/v0.12.2...v0.12.1) (2021-04-24)
+## [0.12.3](https://github.com/thekevinscott/UpscalerJS/compare/v0.12.3...v0.12.1) (2021-04-24)
 
 bug: Export a `node-gpu` build in the published folder.
 
