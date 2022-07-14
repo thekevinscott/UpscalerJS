@@ -16,11 +16,6 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   return fn;
 }
 
-// const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
-// const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
-
 export function getModelDefinitionError(modelDefinition?: ModelDefinition) {
   if (!modelDefinition) {
     return new Error('You must provide a model definition');

@@ -26,6 +26,6 @@
     "@tensorflow/tfjs": "^3.18.0",
     "seedrandom": "~2.4.3",
     "tensor-as-base64": "^0.3.0",
-    "upscaler": "1.0.0-beta.3"
+    "upscaler": "1.0.0-beta.4"
   }
 }
