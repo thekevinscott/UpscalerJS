@@ -9,12 +9,10 @@ browserstack.err
 .env
 log
 results
-package-lock.json
 credentials.yml
 diff.png
 upscaled.png
 scratch
-packages/upscalerjs/src/tfjs.ts
 *.generated.ts
 .vscode
 yarn-error.log
@@ -26,3 +24,4 @@ yarn-error.log
 umd-tmp
 *.tgz
 yarn.lock
+test/**/package-lock.json
