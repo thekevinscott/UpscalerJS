@@ -180,31 +180,24 @@ describe('Model Loading Integration Tests', () => {
     getAllAvailableModelPackages().map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.forEach(({ esm: esmName = 'index', umd: umdName }) => {
+        models.forEach(({ esm, umd: umdName }) => {
+          const esmName = esm || 'index';
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             const result = await page().evaluate(([packageName, modelName]) => {
-              const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
-                return !!modelDefinition && 
-                ((typeof modelDefinition === 'object' && 'path' in modelDefinition) || typeof modelDefinition === 'function');
+              if (!modelName) {
+                throw new Error(`No model name found for package ${packageName}`);
               }
               // TODO: window fails to be typed correctly in CI
               // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
               // Locally it works fine
               const modelDefinition = (window as any)[packageName][modelName];
-              if (isModelDefinition(modelDefinition)) {
-                const upscaler = new window['Upscaler']({
-                  model: modelDefinition,
-                });
-                return upscaler.upscale(window['flower']);
-              } else {
-                if (!modelName) {
-                  throw new Error(`No model name found for package ${packageName}`);
-                }
-                if (!modelDefinition) {
-                  throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
-                }
-                throw new Error(`Invalid model Definition for package name ${packageName} and model name ${modelName}`)
+              if (!modelDefinition) {
+                throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
               }
+              const upscaler = new window['Upscaler']({
+                model: modelDefinition,
+              });
+              return upscaler.upscale(window['flower']);
             }, [packageName, esmName]);
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
           });
