@@ -184,7 +184,8 @@ describe('Model Loading Integration Tests', () => {
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             const result = await page().evaluate(([packageName, modelName]) => {
               const isModelDefinition = (modelDefinition: unknown): modelDefinition is ModelDefinition => {
-                return !!modelDefinition && typeof modelDefinition === 'object' && 'path' in modelDefinition;
+                return !!modelDefinition && 
+                ((typeof modelDefinition === 'object' && 'path' in modelDefinition) || typeof modelDefinition === 'function');
               }
               // TODO: window fails to be typed correctly in CI
               // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60

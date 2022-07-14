@@ -54,10 +54,6 @@ export const prepareScriptBundleForUMD = async () => {
         throw new Error(`Bad minified file name: ${JSON.stringify(model)}`);
       }
       copyFile(path.join(UMD_PATH, minifiedFileName), path.join(DIST, minifiedFileName));
-      // const source = path.join(UMD_PATH, minifiedFileName);
-      // const dest = path.join(DIST, minifiedFileName);
-      // mkdirpSync(path.dirname(dest));
-      // fs.writeFileSync(dest, fs.readFileSync(source, 'utf-8'));
       return minifiedFileName;
     }))
   }, [] as string[]);
