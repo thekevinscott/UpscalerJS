@@ -55,7 +55,7 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts browser",
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build",

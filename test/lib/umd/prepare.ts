@@ -35,7 +35,7 @@ export const prepareScriptBundleForUMD = async () => {
   const scriptsToInclude = getAllAvailableModelPackages().reduce((scripts, packageName) => {
     const models = getAllAvailableModels(packageName);
     const MODEL_PATH = path.join(MODELS_PATH, packageName);
-    const UMD_PATH = path.join(MODEL_PATH, 'dist/browser/umd');
+    const UMD_PATH = path.join(MODEL_PATH, 'dist/umd');
     return scripts.concat(models.map(({ export: fileName }) => {
       const minifiedFileName = `${fileName}.min.js`;
       const source = path.join(UMD_PATH, minifiedFileName);
