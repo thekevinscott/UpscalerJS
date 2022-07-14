@@ -1,9 +1,12 @@
 import * as tfc from '@tensorflow/tfjs-core';
-import type * as _tf from '@tensorflow/tfjs-node';
+import type * as _tfng from '@tensorflow/tfjs-node-gpu';
+import type * as _tfn from '@tensorflow/tfjs-node';
+import type * as _tf from '@tensorflow/tfjs';
 import type { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
-const modelDefinition = (tf: typeof _tf) => {
+type TF = typeof _tf | typeof _tfn | typeof _tfng;
+const modelDefinition = (tf: TF) => {
   const Layer = tf.layers.Layer;
   const SCALE = 4;
   const BETA = 0.2;
