@@ -16,16 +16,8 @@
     "@tensorflow/tfjs": "^3.18.0",
     "upscaler": "1.0.0-canary.0"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "engines": {
+    "npm": ">8.0.0"
   }
 }
+
