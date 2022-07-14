@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/examples.nodejs",
   "private": true,
-  "version": "1.0.0-canary.0",
+  "version": "1.0.0-beta.3",
   "description": "Demonstration of Node.js usage of UpscalerJS",
   "author": "Kevin Scott",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "@tensorflow/tfjs-node": "^3.18.0",
     "express": "4.16.4",
     "seedrandom": "~2.4.3",
-    "upscaler": "1.0.0-canary.0"
+    "upscaler": "1.0.0-beta.3"
   },
   "devDependencies": {
     "nodemon": "1.18.4"

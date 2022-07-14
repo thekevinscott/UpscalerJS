@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/root",
-  "version": "1.0.0-canary.0",
+  "version": "1.0.0-beta.3",
   "private": true,
   "babel": {
     "env": {
