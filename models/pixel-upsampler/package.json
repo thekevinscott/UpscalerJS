@@ -11,20 +11,20 @@
   },
   "exports": {
     "./2x": {
-      "require": "./dist/node/2x.js",
-      "import": "./dist/browser/esm/2x.js"
+      "require": "./dist/cjs/2x.js",
+      "import": "./dist/esm/2x.js"
     },
     "./3x": {
-      "require": "./dist/node/3x.js",
-      "import": "./dist/browser/esm/3x.js"
+      "require": "./dist/cjs/3x.js",
+      "import": "./dist/esm/3x.js"
     },
     "./4x": {
-      "require": "./dist/node/4x.js",
-      "import": "./dist/browser/esm/4x.js"
+      "require": "./dist/cjs/4x.js",
+      "import": "./dist/esm/4x.js"
     },
     ".": {
-      "require": "./dist/node/2x.js",
-      "import": "./dist/browser/esm/2x.js"
+      "require": "./dist/cjs/2x.js",
+      "import": "./dist/esm/2x.js"
     }
   },
   "keywords": [
