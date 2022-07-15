@@ -52,7 +52,7 @@ jobs:
         run: pnpm liteinstall
 
       - name: 'Build'
-        run: 'pnpm --filter "*" build'
+        run: 'p --filter=!"@upscalerjs/models" --filter=!"@upscalerjs/scripts" --filter=!"@upscalerjs/examples.*" build'
 
       - name: 'Validate'
         run: 'pnpm --filter "*" validate:build'
