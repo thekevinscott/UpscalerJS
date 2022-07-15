@@ -58,7 +58,9 @@
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build",
+    "test": "",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/validate-build.ts models/esrgan-legacy",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
   },
   "keywords": [

@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "Increase Image Resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",
@@ -35,9 +35,9 @@
   "scripts": {
     "build": "rimraf dist && pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
     "build:browser": "rimraf dist/browser && mkdir -p dist/browser && pnpm scaffold:dependencies 'browser' && pnpm build:umd && pnpm build:esm",
-    "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:dependencies 'node' && pnpm build:cjs && mv dist/cjs dist/node/cjs",
-    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:dependencies 'node-gpu' && pnpm build:cjs && mv dist/cjs dist/node-gpu/cjs",
-    "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5 --outDir dist/cjs",
+    "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:dependencies 'node' && pnpm build:cjs --outDir dist/node/cjs",
+    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:dependencies 'node-gpu' && pnpm build:cjs --outDir dist/node-gpu/cjs",
+    "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5",
     "build:esm": "tsc -p tsconfig.browser.json --module esnext --target esnext --outDir dist/browser/esm",
     "build:umd:tsc": "rimraf dist/tmp && tsc -p tsconfig.browser.json --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "pnpm rollup -c rollup.config.ts --failAfterWarnings",
@@ -47,7 +47,7 @@
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
-    "prepublishOnly": "pnpm test && pnpm lint",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "pnpm lint:browser && pnpm lint:node",
     "lint:fix": "pnpm lint:browser:fix && pnpm lint:node:fix",
@@ -60,6 +60,7 @@
     "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test src/*.browser.test.ts -r mocha -b firefox",
     "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
     "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
+    "validate:build": "ts-node ../../scripts/validate-build.ts packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
     "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"pnpm build:umd\" -i \"test.ts\" -i \"generated.ts\"",

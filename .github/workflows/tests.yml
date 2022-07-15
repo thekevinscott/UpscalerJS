@@ -28,6 +28,35 @@ jobs:
       - name: 'Lint'
         run: 'pnpm lint'
 
+  build:
+    name: 'Build'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: pnpm liteinstall
+
+      - name: 'Build'
+        run: 'pnpm --filter=!"@upscalerjs/models" --filter=!"@upscalerjs/scripts" --filter=!"@upscalerjs/examples.*" build'
+
+      - name: 'Validate'
+        run: 'pnpm --filter "*" validate:build'
+
   unit-browser:
     name: 'Unit / Browser'
     runs-on: ubuntu-latest
