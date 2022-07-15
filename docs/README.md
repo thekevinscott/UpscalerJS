@@ -15,11 +15,7 @@ UpscalerJS is a tool for increasing image resolution in Javascript via a Neural 
 
 ## Announcement
 
-<<<<<<< HEAD
 [A beta version of `1.0.0`](http://npmjs.com/package/upscaler) was released on 7/15/22. [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192) about what's included.
-=======
-[A beta version of `1.0.0` was released on 7/15/22](http://npmjs.com/package/upscaler). [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192).
->>>>>>> main
 
 If you are migrating from `<=0.12`, and you are using a custom model, [you will need to modify how you load models](https://upscalerjs.com/#/?id=instantiation). If you are using the default model (e.g., not providing a `model` argument) then no changes are needed.
 
