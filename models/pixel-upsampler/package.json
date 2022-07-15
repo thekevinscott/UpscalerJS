@@ -44,12 +44,12 @@
     },
     ".": {
       "require": {
-        "types": "./dist/cjs/2x.d.ts",
-        "default": "./dist/cjs/2x.js"
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/esm/2x.d.ts",
-        "default": "./dist/esm/2x.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       }
     }
   },
