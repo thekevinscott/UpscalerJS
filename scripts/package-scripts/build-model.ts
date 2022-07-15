@@ -172,9 +172,9 @@ const buildCJS = async (modelFolder: string) => {
   await mkdirp(dist);
 
   await compile(files, {
-  ...TSCONFIG,
-  "target": ts.ScriptTarget.ES5,
-  "module": ts.ModuleKind.CommonJS,
+    ...TSCONFIG,
+    "target": ts.ScriptTarget.ES5,
+    "module": ts.ModuleKind.CommonJS,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: dist,

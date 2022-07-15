@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/esrgan-legacy",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
     "./div2k/2x": {
@@ -52,14 +52,23 @@
         "types": "./dist/esm/gans.d.ts",
         "default": "./dist/esm/gans.js"
       }
+    },
+    ".": {
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      }
     }
   },
   "scripts": {
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "test": "",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/validate-build.ts models/esrgan-legacy",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
   },
