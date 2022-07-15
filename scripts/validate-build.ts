@@ -11,7 +11,18 @@ const UPSCALER_JS_DIST = path.resolve(UPSCALER_JS, 'dist');
 /****
  * Utility methods
  */
-const getObjAsArray = (obj: JSONSchema['exports']): string[] => {
+const getKeysOfObj = (json: JSONSchema, keys: string[]): Partial<JSONSchema> => {
+  return keys.reduce((obj, jsonKey) => {
+    if (json[jsonKey]) {
+      return {
+        ...obj,
+        [jsonKey]: json[jsonKey],
+      }
+    };
+    return obj;
+  }, {});
+};
+const getObjAsArray = (obj: Partial<JSONSchema>): string[] => {
   return Object.values(obj).reduce((arr, file) => {
     if (typeof file === 'string') {
       return arr.concat(file);
@@ -22,7 +33,13 @@ const getObjAsArray = (obj: JSONSchema['exports']): string[] => {
 
 const extractAllFilesFromPackageJSON = (packagePath: string): string[] => {
   const packageJSON = getPackageJSON(packagePath);
-  return getObjAsArray(packageJSON.exports);
+  return getObjAsArray(getKeysOfObj(packageJSON, [
+    'exports',
+    'main',
+    'module',
+    'types',
+    'umd:main',
+  ]));
 };
 
 /****
