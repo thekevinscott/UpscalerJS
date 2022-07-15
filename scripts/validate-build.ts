@@ -46,7 +46,7 @@ const extractAllFilesFromPackageJSON = (packagePath: string): string[] => {
  * Main function
  */
 
-const validateBuild = async (packageName: string, include: string[]): Promise<Set<string>> => {
+const validateBuild = async (packageName: string, include: string[] = []): Promise<Set<string>> => {
   const packagePath = path.resolve(ROOT, packageName);
   const files = new Set([
     ...extractAllFilesFromPackageJSON(packagePath),
@@ -68,7 +68,7 @@ export default validateBuild;
 
 interface Args {
   src: string;
-  include: string[];
+  include?: string[];
 }
 
 const isValidStringArray = (arr: unknown): arr is string[] => Array.isArray(arr) && typeof arr[0] === 'string';
@@ -90,7 +90,7 @@ const getArgs = async (): Promise<Args> => {
   }
 
   const include = argv.c;
-  if (!isValidStringArray(include)) {
+  if (include !== undefined && !isValidStringArray(include)) {
     throw new Error('Is not a valid array')
   }
 
