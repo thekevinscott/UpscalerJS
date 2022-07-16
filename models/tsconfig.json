@@ -5,6 +5,7 @@
     "target": "ES2020",
     "module": "commonjs",
     "strict": true,
+    "removeComments": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
@@ -12,6 +13,6 @@
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-  },
+    "noFallthroughCasesInSwitch": true
+  }
 }
