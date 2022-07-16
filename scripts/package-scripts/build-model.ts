@@ -13,6 +13,9 @@ import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
+import tsconfigESM from '../../models/tsconfig.esm.json';
+import tsconfigUMD from '../../models/tsconfig.umd.json';
+import tsconfigCJS from '../../models/tsconfig.cjs.json';
 
 /****
  * Types
@@ -28,22 +31,6 @@ export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 const references: ProjectReference[] = [];
-
-const TSCONFIG: ts.CompilerOptions = {
-  "skipLibCheck": true,
-  "esModuleInterop": true,
-  "target": ts.ScriptTarget.ES2020,
-  "module": ts.ModuleKind.CommonJS,
-  "strict": true,
-  "forceConsistentCasingInFileNames": true,
-  "declaration": true,
-  "declarationMap": true,
-  "noUnusedLocals": true,
-  "strictNullChecks": true,
-  "noUnusedParameters": true,
-  "noImplicitReturns": true,
-  "noFallthroughCasesInSwitch": true,
-};
 
 /****
  * Misc utility functions
@@ -86,6 +73,7 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
   return readDirRecursive(SRC, file => file.endsWith('.ts'));
 };
 
+
 /****
  * ESM build function
  */
@@ -96,10 +84,7 @@ const buildESM = async (modelFolder: string) => {
 
 
   await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ESNext,
-    "module": ts.ModuleKind.ESNext,
-    'moduleResolution': ts.ModuleResolutionKind.NodeJs,
+    ...tsconfigESM,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: DIST,
@@ -125,7 +110,7 @@ const buildUMD = async (modelFolder: string) => {
     throw new Error(`No files found in ${SRC}`);
   }
   await compile(srcFiles, {
-    ...TSCONFIG,
+    ...tsconfigUMD,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: TMP,
@@ -172,9 +157,7 @@ const buildCJS = async (modelFolder: string) => {
   await mkdirp(dist);
 
   await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ES5,
-    "module": ts.ModuleKind.CommonJS,
+    ...tsconfigCJS,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: dist,

@@ -4,6 +4,7 @@
     "moduleResolution": "node16",
     "target": "es6",
     "declaration": true,
+    "removeComments": true,
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": "./src",

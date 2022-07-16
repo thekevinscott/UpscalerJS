@@ -5,7 +5,8 @@
     "moduleResolution": "Node",
     "target": "ES2022",
     "esModuleInterop": true,
-    "module": "commonjs"
+    "module": "commonjs",
+    "resolveJsonModule": true
   },
   "ts-node": {
     "esm": true,
