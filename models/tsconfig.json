@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+  "skipLibCheck": true,
+  "esModuleInterop": true,
+  "target": "2020",
+  "module": "CommonJS",
+  "strict": true,
+  "forceConsistentCasingInFileNames": true,
+  "declaration": true,
+  "declarationMap": true,
+  "noUnusedLocals": true,
+  "strictNullChecks": true,
+  "noUnusedParameters": true,
+  "noImplicitReturns": true,
+  "noFallthroughCasesInSwitch": true,
+
+  },
+}
