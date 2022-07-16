@@ -15,7 +15,6 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
-    "removeComments": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
