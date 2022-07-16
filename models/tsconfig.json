@@ -2,7 +2,7 @@
   "compilerOptions": {
   "skipLibCheck": true,
   "esModuleInterop": true,
-  "target": "2020",
+  "target": "ES2020",
   "module": "CommonJS",
   "strict": true,
   "forceConsistentCasingInFileNames": true,
@@ -13,6 +13,5 @@
   "noUnusedParameters": true,
   "noImplicitReturns": true,
   "noFallthroughCasesInSwitch": true,
-
   },
 }
