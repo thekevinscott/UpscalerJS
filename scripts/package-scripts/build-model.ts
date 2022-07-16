@@ -25,7 +25,7 @@ export type OutputFormat = 'cjs' | 'esm' | 'umd';
  */
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-export const AVAILABLE_MODELS = getAllAvailableModelPackages();
+const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 const TSCONFIG: ts.CompilerOptions = {
