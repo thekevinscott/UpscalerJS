@@ -38,16 +38,6 @@ const TSCONFIG: ts.CompilerOptions = {
  * Misc utility functions
  */
 
-const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
-  rimraf(folder, err => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve();
-    }
-  })
-});
-
 type IncludeFn = (file: string) => boolean;
 const readDirRecursive = (folder: string, include?: IncludeFn): Array<string> => {
   const includedFiles: Array<string> = [];
@@ -106,7 +96,6 @@ const buildUMD = async (modelFolder: string) => {
   const SRC = path.resolve(modelFolder, 'src');
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
-  // await rm(DIST);
   await mkdirp(DIST);
 
   const srcFiles = getSrcFiles(modelFolder);
@@ -147,7 +136,7 @@ const buildUMD = async (modelFolder: string) => {
 
     uglify(FILE_DIST, file);
   }));
-  await rm(TMP);
+  rimraf.sync(TMP);
 };
 
 /****
@@ -181,7 +170,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   const DIST = path.resolve(MODEL_ROOT, 'dist')
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
-  await rm(DIST);
+  rimraf.sync(DIST);
   await mkdirp(DIST);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
