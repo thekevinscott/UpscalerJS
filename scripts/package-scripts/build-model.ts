@@ -13,6 +13,7 @@ import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
+import tsConfig from '../../models/tsconfig.json';
 
 /****
  * Types
@@ -27,22 +28,10 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
-const references: ProjectReference[] = [];
-
 const TSCONFIG: ts.CompilerOptions = {
-  "skipLibCheck": true,
-  "esModuleInterop": true,
-  "target": ts.ScriptTarget.ES2020,
-  "module": ts.ModuleKind.CommonJS,
-  "strict": true,
-  "forceConsistentCasingInFileNames": true,
-  "declaration": true,
-  "declarationMap": true,
-  "noUnusedLocals": true,
-  "strictNullChecks": true,
-  "noUnusedParameters": true,
-  "noImplicitReturns": true,
-  "noFallthroughCasesInSwitch": true,
+  ...tsConfig.compilerOptions,
+  module: tsConfig.compilerOptions.module as unknown as (ts.ModuleKind | undefined),
+  target: tsConfig.compilerOptions.target as unknown as (ts.ScriptTarget | undefined),
 };
 
 /****
@@ -103,7 +92,7 @@ const buildESM = async (modelFolder: string) => {
     baseUrl: SRC,
     rootDir: SRC,
     outDir: DIST,
-  }, references);
+  });
 }
 
 /****
@@ -129,7 +118,7 @@ const buildUMD = async (modelFolder: string) => {
     baseUrl: SRC,
     rootDir: SRC,
     outDir: TMP,
-  }, references);
+  });
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
@@ -178,7 +167,7 @@ const buildCJS = async (modelFolder: string) => {
     baseUrl: SRC,
     rootDir: SRC,
     outDir: dist,
-  }, references);
+  });
 };
 
 /****
