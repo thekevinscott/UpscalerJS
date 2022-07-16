@@ -84,7 +84,7 @@ const buildESM = async (modelFolder: string) => {
 
 
   await compile(files, {
-    ...tsconfigESM,
+    ...tsconfigESM.compilerOptions,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: DIST,
@@ -110,7 +110,7 @@ const buildUMD = async (modelFolder: string) => {
     throw new Error(`No files found in ${SRC}`);
   }
   await compile(srcFiles, {
-    ...tsconfigUMD,
+    ...tsconfigUMD.compilerOptions,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: TMP,
@@ -157,7 +157,7 @@ const buildCJS = async (modelFolder: string) => {
   await mkdirp(dist);
 
   await compile(files, {
-    ...tsconfigCJS,
+    ...tsconfigCJS.compilerOptions,
     baseUrl: SRC,
     rootDir: SRC,
     outDir: dist,
