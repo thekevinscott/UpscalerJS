@@ -74,13 +74,16 @@ const buildESM = async (modelFolder: string) => {
   const DIST = path.resolve(modelFolder, 'dist/esm');
   const files = getSrcFiles(modelFolder);
 
-  await callExec([
+  const msg = [
     'tsc',
     `-p ${path.resolve(MODELS_DIR, 'tsconfig.esm.json')}`,
     `--outDir ${DIST}`,
     `--rootDir ${SRC}`,
     `--baseUrl ${SRC}`,
-  ].join(' '), {
+    ...files,
+  ].join(' ');
+  console.log(msg);
+  await callExec(msg, {
     cwd: modelFolder,
   })
 
