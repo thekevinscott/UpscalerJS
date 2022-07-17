@@ -70,17 +70,14 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
  * ESM build function
  */
 const buildESM = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const DIST = path.resolve(modelFolder, 'dist/esm');
-  const files = getSrcFiles(modelFolder);
+  // const SRC = path.resolve(modelFolder, 'src');
+  // const DIST = path.resolve(modelFolder, 'dist/esm');
+  // const files = getSrcFiles(modelFolder);
 
   const msg = [
     'tsc',
-    `-p ${path.resolve(MODELS_DIR, 'tsconfig.esm.json')}`,
-    `--outDir ${DIST}`,
-    `--rootDir ${SRC}`,
-    `--baseUrl ${SRC}`,
-    ...files,
+    `-p ${path.resolve(modelFolder, 'tsconfig.esm.json')}`,
+    // ...files,
   ].join(' ');
   console.log(msg);
   await callExec(msg, {
