@@ -14,6 +14,7 @@ import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
 import tsConfig from '../../models/tsconfig.json';
+import callExec from '../../test/lib/utils/callExec';
 
 /****
  * Types
@@ -73,16 +74,25 @@ const buildESM = async (modelFolder: string) => {
   const DIST = path.resolve(modelFolder, 'dist/esm');
   const files = getSrcFiles(modelFolder);
 
+  await callExec([
+    'tsc',
+    `-p ${path.resolve(MODELS_DIR, 'tsconfig.esm.json')}`,
+    `--outDir ${DIST}`,
+    `--rootDir ${SRC}`,
+    `--baseUrl ${SRC}`,
+  ].join(' '), {
+    cwd: modelFolder,
+  })
 
-  await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ESNext,
-    "module": ts.ModuleKind.ESNext,
-    'moduleResolution': ts.ModuleResolutionKind.NodeJs,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: DIST,
-  });
+  // await compile(files, {
+  //   ...TSCONFIG,
+  //   "target": ts.ScriptTarget.ESNext,
+  //   "module": ts.ModuleKind.ESNext,
+  //   'moduleResolution': ts.ModuleResolutionKind.NodeJs,
+  //   baseUrl: SRC,
+  //   rootDir: SRC,
+  //   outDir: DIST,
+  // });
 }
 
 /****
