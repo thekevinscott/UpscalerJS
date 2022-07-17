@@ -14,6 +14,7 @@ import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
 import tsConfig from '../../models/tsconfig.json';
+import callExec from '../../test/lib/utils/callExec';
 
 /****
  * Types
@@ -28,10 +29,12 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
+const compilerOptions = tsConfig.compilerOptions as unknown as ts.CompilerOptions;
+
 const TSCONFIG: ts.CompilerOptions = {
-  ...tsConfig.compilerOptions,
-  module: tsConfig.compilerOptions.module as unknown as (ts.ModuleKind | undefined),
-  target: tsConfig.compilerOptions.target as unknown as (ts.ScriptTarget | undefined),
+  ...compilerOptions,
+  module: compilerOptions.module,
+  target: compilerOptions.target,
 };
 
 /****
@@ -69,20 +72,29 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
  * ESM build function
  */
 const buildESM = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const DIST = path.resolve(modelFolder, 'dist/esm');
-  const files = getSrcFiles(modelFolder);
+  // const SRC = path.resolve(modelFolder, 'src');
+  // const DIST = path.resolve(modelFolder, 'dist/esm');
+  // const files = getSrcFiles(modelFolder);
 
+  const msg = [
+    'tsc',
+    `-p ${path.resolve(modelFolder, 'tsconfig.esm.json')}`,
+    // ...files,
+  ].join(' ');
+  console.log(msg);
+  await callExec(msg, {
+    cwd: modelFolder,
+  })
 
-  await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ESNext,
-    "module": ts.ModuleKind.ESNext,
-    'moduleResolution': ts.ModuleResolutionKind.NodeJs,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: DIST,
-  });
+  // await compile(files, {
+  //   ...TSCONFIG,
+  //   "target": ts.ScriptTarget.ESNext,
+  //   "module": ts.ModuleKind.ESNext,
+  //   'moduleResolution': ts.ModuleResolutionKind.NodeJs,
+  //   baseUrl: SRC,
+  //   rootDir: SRC,
+  //   outDir: DIST,
+  // });
 }
 
 /****

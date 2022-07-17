@@ -187,14 +187,12 @@ importers:
   examples/nodejs:
     specifiers:
       '@tensorflow/tfjs-node': 3.18.0
-      '@upscalerjs/esrgan-legacy': '*'
       express: 4.16.4
       nodemon: 1.18.4
       seedrandom: ~2.4.3
       upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
-      '@upscalerjs/esrgan-legacy': link:../../models/esrgan-legacy
       express: 4.16.4
       seedrandom: 2.4.4
       upscaler: link:../../packages/upscalerjs

@@ -2,9 +2,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "target": "ES2020",
-    "module": "CommonJS",
     "strict": true,
+    "removeComments": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
