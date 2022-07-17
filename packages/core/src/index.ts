@@ -13,7 +13,7 @@ export interface PackageInformation {
 
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
-type Meta = { [key: string]: string | number | Meta };
+type Meta = { [key: string]: string | number | Meta | null | undefined };
 
 export interface ModelDefinition {
   path: string;

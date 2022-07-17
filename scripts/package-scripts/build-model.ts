@@ -29,10 +29,12 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
+const compilerOptions = tsConfig.compilerOptions as unknown as ts.CompilerOptions;
+
 const TSCONFIG: ts.CompilerOptions = {
-  ...tsConfig.compilerOptions,
-  module: tsConfig.compilerOptions.module as unknown as (ts.ModuleKind | undefined),
-  target: tsConfig.compilerOptions.target as unknown as (ts.ScriptTarget | undefined),
+  ...compilerOptions,
+  module: compilerOptions.module,
+  target: compilerOptions.target,
 };
 
 /****
