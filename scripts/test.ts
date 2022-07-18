@@ -9,8 +9,9 @@ import { spawn } from 'child_process';
 
 import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
-import buildModels, { OutputFormat } from '../scripts/package-scripts/build-model';
+import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
+import { OutputFormat } from './package-scripts/utils/types';
 
 dotenv.config();
 
