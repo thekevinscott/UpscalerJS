@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": "./src",
     "baseUrl": "./src",
-    "outDir": "./dist/esm",
+    "outDir": "./dist/tmp",
   },
   "include": [
     "./src/index.ts",

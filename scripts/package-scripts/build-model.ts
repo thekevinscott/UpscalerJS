@@ -72,29 +72,9 @@ const getSrcFiles = (modelFolder: string): Array<string> => {
  * ESM build function
  */
 const buildESM = async (modelFolder: string) => {
-  // const SRC = path.resolve(modelFolder, 'src');
-  // const DIST = path.resolve(modelFolder, 'dist/esm');
-  // const files = getSrcFiles(modelFolder);
-
-  const msg = [
-    'tsc',
-    `-p ${path.resolve(modelFolder, 'tsconfig.esm.json')}`,
-    // ...files,
-  ].join(' ');
-  console.log(msg);
-  await callExec(msg, {
+  await callExec(`tsc -p ${path.resolve(modelFolder, 'tsconfig.esm.json')}`, {
     cwd: modelFolder,
-  })
-
-  // await compile(files, {
-  //   ...TSCONFIG,
-  //   "target": ts.ScriptTarget.ESNext,
-  //   "module": ts.ModuleKind.ESNext,
-  //   'moduleResolution': ts.ModuleResolutionKind.NodeJs,
-  //   baseUrl: SRC,
-  //   rootDir: SRC,
-  //   outDir: DIST,
-  // });
+  });
 }
 
 /****
@@ -105,20 +85,11 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 }
 
 const buildUMD = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
   await mkdirp(DIST);
-
-  const srcFiles = getSrcFiles(modelFolder);
-  if (srcFiles.length === 0) {
-    throw new Error(`No files found in ${SRC}`);
-  }
-  await compile(srcFiles, {
-    ...TSCONFIG,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: TMP,
+  await callExec(`tsc -p ${path.resolve(modelFolder, 'tsconfig.umd.json')}`, {
+    cwd: modelFolder,
   });
 
   const files = getPackageJSONExports(modelFolder);
