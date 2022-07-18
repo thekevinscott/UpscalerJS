@@ -1,10 +1,8 @@
 import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
-import ts, { ProjectReference } from "typescript";
 import path from 'path';
 import inquirer from 'inquirer';
-import scaffoldDependencies, { Platform, writeTFJSDependency } from './scaffold-dependencies';
-import { compile } from './utils/compile';
+import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
@@ -13,13 +11,8 @@ import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
-import tsConfig from '../../models/tsconfig.json';
-import callExec from '../../test/lib/utils/callExec';
-
-/****
- * Types
- */
-export type OutputFormat = 'cjs' | 'esm' | 'umd';
+import { OutputFormat } from './utils/types';
+import { compileTypescript } from './utils/compile';
 
 /****
  * Constants
@@ -29,53 +22,10 @@ const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
-const compilerOptions = tsConfig.compilerOptions as unknown as ts.CompilerOptions;
-
-const TSCONFIG: ts.CompilerOptions = {
-  ...compilerOptions,
-  module: compilerOptions.module,
-  target: compilerOptions.target,
-};
-
-/****
- * Misc utility functions
- */
-
-type IncludeFn = (file: string) => boolean;
-const readDirRecursive = (folder: string, include?: IncludeFn): Array<string> => {
-  const includedFiles: Array<string> = [];
-  const files = fs.readdirSync(folder);
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const filepath = path.resolve(folder, file);
-    if (fs.lstatSync(filepath).isDirectory()) {
-      includedFiles.push(...readDirRecursive(filepath, include));
-    } else {
-      if (include) {
-        if (include(filepath)) {
-          includedFiles.push(filepath);
-        }
-      } else {
-        includedFiles.push(path.resolve(folder, file));
-      }
-    }
-  }
-  return includedFiles;
-}
-
-const getSrcFiles = (modelFolder: string): Array<string> => {
-  const SRC = path.resolve(modelFolder, 'src');
-  return readDirRecursive(SRC, file => file.endsWith('.ts'));
-};
-
 /****
  * ESM build function
  */
-const buildESM = async (modelFolder: string) => {
-  await callExec(`tsc -p ${path.resolve(modelFolder, 'tsconfig.esm.json')}`, {
-    cwd: modelFolder,
-  });
-}
+const buildESM = (modelFolder: string) => compileTypescript(modelFolder, 'esm');
 
 /****
  * UMD build function
@@ -88,9 +38,7 @@ const buildUMD = async (modelFolder: string) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
   await mkdirp(DIST);
-  await callExec(`tsc -p ${path.resolve(modelFolder, 'tsconfig.umd.json')}`, {
-    cwd: modelFolder,
-  });
+  await compileTypescript(modelFolder, 'umd');
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
@@ -126,20 +74,10 @@ const buildUMD = async (modelFolder: string) => {
  * CJS build function
  */
 const buildCJS = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const files = getSrcFiles(modelFolder);
-
   const dist = path.resolve(modelFolder, 'dist/cjs');
   await mkdirp(dist);
 
-  await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ES5,
-    "module": ts.ModuleKind.CommonJS,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: dist,
-  });
+  await compileTypescript(modelFolder, 'cjs');
 };
 
 /****
