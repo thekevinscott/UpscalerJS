@@ -99,7 +99,7 @@ export class TestRunner {
         }
       });
     }
-    await this._page.goto(`http://localhost:${PORT}`);
+    await this._page.goto(`http://localhost:${this.port}`);
     await this._page.waitForFunction('document.title.endsWith("| Loaded")');
   }
 
