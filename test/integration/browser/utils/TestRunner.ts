@@ -42,7 +42,7 @@ export class TestRunner {
 
   getLocal<T extends puppeteer.Browser | puppeteer.Page | http.Server>(key: '_server' | '_browser' | '_page'): T {
     if (!this[key]) {
-      throw new Error(`${key} is undefined`);
+      throw new Error(`${key.substring(1)} is undefined`);
     }
     return this[key] as T;
   }
