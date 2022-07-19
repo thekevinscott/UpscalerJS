@@ -8,7 +8,7 @@ import Upscaler from 'upscaler';
 import { TestRunner } from './utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
-import puppeteer from 'puppeteer';
+import type puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
