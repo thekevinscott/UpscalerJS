@@ -1,12 +1,9 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
-import { startServer } from '../../lib/shared/server';
 import * as tf from '@tensorflow/tfjs';
-import puppeteer from 'puppeteer';
 import Upscaler, { Progress } from 'upscaler';
 import { TestRunner } from '../utils/TestRunner';
 
