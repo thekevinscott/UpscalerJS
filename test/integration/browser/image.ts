@@ -2,13 +2,13 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '../utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
 
@@ -18,7 +18,11 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME });
+  const testRunner = new BrowserTestRunner({
+    mockCDN: esbuildMockCDN,
+    dist: DIST,
+    trackTime: TRACK_TIME,
+  });
   const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {

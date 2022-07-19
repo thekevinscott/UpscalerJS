@@ -30,17 +30,36 @@ function timeIt<T extends unknown[]>(msg: string) {
   };
 }
 
+export type MockCDN = (port: number, model: string, pathToModel: string) => string;
+export type AfterEachCallback = () => Promise<void | any>;
+
 export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
   log: boolean;
   port: number;
   dist: string;
+  private _mockCDN: MockCDN | undefined;
   private _server: http.Server | undefined;
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
 
-  constructor({ dist = '', port = DEFAULT_PORT, trackTime = false, log = true, showWarnings = false } = {}) {
+  constructor({
+    mockCDN = undefined,
+    dist = '',
+    port = DEFAULT_PORT,
+    trackTime = false,
+    log = true,
+    showWarnings = false,
+  }: {
+    mockCDN?: MockCDN;
+    dist?: string;
+    port?: number;
+    trackTime?: boolean;
+    log?: boolean;
+    showWarnings?: boolean;
+  } = {}) {
+    this.mockCDN = mockCDN;
     this.dist = dist;
     this.showWarnings = showWarnings;
     this.trackTime = trackTime;
@@ -58,6 +77,9 @@ export class BrowserTestRunner {
     }
     return this[key] as T;
   }
+
+  get mockCDN(): MockCDN | undefined { return this._mockCDN; }
+  set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
 
   get server(): http.Server { return this.getLocal('_server'); }
   set server(server: http.Server | undefined) {
@@ -152,6 +174,30 @@ export class BrowserTestRunner {
         }
       });
     }
+
+    const mockCDN = this.mockCDN;
+    if (mockCDN !== undefined) {
+      this.page.setRequestInterception(true);
+      this.page.on('request', (request) => {
+        const url = request.url();
+
+        // this is a request for a model
+        if (url.includes('@upscalerjs')) {
+          const modelPath = url.split('@upscalerjs/').pop()?.split('@');
+          if (!modelPath?.length) {
+            throw new Error(`URL ${url} is not a model`);
+          }
+          const [model, restOfModelPath] = modelPath;
+          const [_, ...pathToModel] = restOfModelPath.split('/');
+          const redirectedURL = mockCDN(this.port, model, pathToModel.join('/'));
+          request.continue({
+            url: redirectedURL,
+          });
+        } else {
+          request.continue();
+        }
+      });
+    }
   }
 
   async stopBrowser() {
@@ -197,5 +243,3 @@ export class BrowserTestRunner {
     ]);
   }
 }
-
-type AfterEachCallback = () => Promise<void | any>;

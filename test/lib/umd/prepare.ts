@@ -1,10 +1,11 @@
-import fs from 'fs';
+import fs from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { mkdirpSync } from 'fs-extra';
+import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
@@ -38,13 +39,21 @@ const getMinifiedFileName = (fileName: string) => {
     return 'index.min.js';
   }
   return `${fileName}.min.js`;
-}
+};
 
-export const prepareScriptBundleForUMD = async () => {
-  rimraf.sync(DIST);
-  mkdirpSync(DIST);
-  fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
-  const scriptsToInclude = getAllAvailableModelPackages().reduce((scripts, packageName) => {
+const copyAllModels = () => {
+  getAllAvailableModelPackages().forEach(packageName => {
+    const models = getAllAvailableModels(packageName);
+    models.forEach(({ export: fileName }) => {
+      const modelPath = path.resolve(MODELS_PATH, packageName, 'models', fileName);
+      const destPath = path.resolve(DIST, 'models', packageName, 'models', fileName);
+      fs.copySync(modelPath, destPath);
+    });
+  });
+};
+
+const getMinifiedScripts = () => {
+  return getAllAvailableModelPackages().reduce((scripts, packageName) => {
     const models = getAllAvailableModels(packageName);
     const UMD_PATH = path.join(MODELS_PATH, packageName, 'dist/umd');
     return scripts.concat(models.map((model) => {
@@ -57,6 +66,24 @@ export const prepareScriptBundleForUMD = async () => {
       return minifiedFileName;
     }))
   }, [] as string[]);
+};
+
+export const prepareScriptBundleForUMD = async () => {
+  rimraf.sync(DIST);
+  mkdirpSync(DIST);
+  fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
+
+  copyAllModels();
+
+  const scriptsToInclude = getMinifiedScripts();
+
   copyFixtures(DIST);
   fs.writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude));
 };
+
+export const mockCDN: MockCDN = (port, model, pathToModel) => [
+  `http://localhost:${port}`,
+  'models',
+  model,
+  pathToModel,
+].join('/');
