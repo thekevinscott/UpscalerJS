@@ -11,12 +11,12 @@ import path from 'path';
 import type puppeteer from 'puppeteer';
 
 const flowerBytes = fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small.bytes'));
-const bytes = new Uint8Array(flowerBytes.buffer.slice(0, 768));
+const pixels = Array.from(new Uint8Array(flowerBytes.buffer.slice(0, 768)));
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(1);
+jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
   const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
@@ -89,7 +89,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a tensor from an HTML image", async () => {
-      const upscaledSrc = await page().evaluate((bytes) => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -103,23 +103,22 @@ describe('Image Format Integration Tests', () => {
           const tensor = window['tf'].browser.fromPixels(img);
           upscaler.upscale(tensor).then(resolve);
         }
-      }), bytes);
+      }));
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
-      const upscaledSrc = await page().evaluate((bytes) => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate((pixels) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
             scale: 4,
           },
         });
-        console.log(bytes);
-        console.log(typeof bytes);
+        const bytes = new Uint8Array(pixels);
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.upscale(tensor).then(resolve);
-      }), bytes);
+      }), pixels);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 

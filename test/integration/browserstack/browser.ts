@@ -32,7 +32,7 @@ const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(10);
+jest.retryTimes(5);
 
 
 interface BrowserOption {
