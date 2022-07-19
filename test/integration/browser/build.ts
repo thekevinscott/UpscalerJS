@@ -44,7 +44,6 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-    console.log('page 2', page.isClosed());
   });
 
   it("upscales using a UMD build with a specified model", async () => {
