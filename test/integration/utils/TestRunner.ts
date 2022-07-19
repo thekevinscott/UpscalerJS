@@ -1,6 +1,6 @@
 import http from 'http';
 import puppeteer from 'puppeteer';
-import { startServer } from '../../../lib/shared/server';
+import { startServer } from '../../lib/shared/server';
 import { isIgnoredMessage } from './messages';
 
 type Bundle = () => Promise<void>;

@@ -8,7 +8,7 @@ import { startServer } from '../../lib/shared/server';
 import * as tf from '@tensorflow/tfjs';
 import puppeteer from 'puppeteer';
 import Upscaler, { Progress } from 'upscaler';
-import { TestRunner } from './utils/TestRunner';
+import { TestRunner } from '../utils/TestRunner';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
