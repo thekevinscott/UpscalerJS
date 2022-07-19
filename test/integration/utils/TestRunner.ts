@@ -46,7 +46,6 @@ export class BrowserTestRunner {
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
-    console.log('port has been set', this.port)
   }
 
   /****
