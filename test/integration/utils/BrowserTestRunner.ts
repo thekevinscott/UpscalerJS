@@ -36,10 +36,10 @@ export type AfterEachCallback = () => Promise<void | any>;
 export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
-  mockCDN?: MockCDN;
   log: boolean;
   port: number;
   dist: string;
+  private _mockCDN: MockCDN | undefined;
   private _server: http.Server | undefined;
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
@@ -77,6 +77,9 @@ export class BrowserTestRunner {
     }
     return this[key] as T;
   }
+
+  get mockCDN(): MockCDN | undefined { return this._mockCDN; }
+  set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
 
   get server(): http.Server { return this.getLocal('_server'); }
   set server(server: http.Server | undefined) {

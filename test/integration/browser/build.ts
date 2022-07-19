@@ -2,20 +2,20 @@
  * Tests that different build outputs all function correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/prepare';
-import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
+import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-webpack/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
 describe('Build Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({ 
+  const testRunner = new BrowserTestRunner({
     showWarnings: true,
-   });
+  });
 
   afterEach(async function afterEach() {
     await testRunner.afterEach(async () => {
@@ -23,10 +23,11 @@ describe('Build Integration Tests', () => {
     });
   }, 5000);
 
-  const start = async (bundle: () => Promise<void>) => {
+  const start = async (bundle: () => Promise<void>, dist: string, mockCDN: MockCDN) => {
     await bundle();
+    testRunner.mockCDN = mockCDN;
     await Promise.all([
-      testRunner.startServer(SCRIPT_DIST),
+      testRunner.startServer(dist),
       testRunner.startBrowser(),
     ]);
     await testRunner.navigateToServer(null);
@@ -34,7 +35,7 @@ describe('Build Integration Tests', () => {
   }
 
   it("upscales using a UMD build via a script tag", async () => {
-    const page = await start(prepareScriptBundleForUMD);
+    const page = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
@@ -49,7 +50,7 @@ describe('Build Integration Tests', () => {
   });
 
   it("upscales using a UMD build with a specified model", async () => {
-    const page = await start(prepareScriptBundleForUMD);
+    const page = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const pixelUpsampler = window['PixelUpsampler4x'];
@@ -65,7 +66,7 @@ describe('Build Integration Tests', () => {
     const page = await start(async () => {
       await prepareScriptBundleForESM();
       await bundleWebpack();
-    });
+    }, WEBPACK_DIST, webpackMockCDN);
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
