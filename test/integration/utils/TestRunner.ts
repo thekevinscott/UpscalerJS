@@ -171,7 +171,8 @@ export class TestRunner {
       });
     }
 
-    if (this.mockCDN) {
+    const mockCDN = this.mockCDN;
+    if (mockCDN !== undefined) {
       this.page.setRequestInterception(true);
       this.page.on('request', (request) => {
         const url = request.url();
@@ -184,8 +185,7 @@ export class TestRunner {
           }
           const [model, restOfModelPath] = modelPath;
           const [_, ...pathToModel] = restOfModelPath.split('/');
-          const redirectedURL = this.mockCDN(this.port, model, pathToModel.join('/'));
-          console.log(redirectedURL);
+          const redirectedURL = mockCDN(this.port, model, pathToModel.join('/'));
           request.continue({
             url: redirectedURL,
           });

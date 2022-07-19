@@ -5,6 +5,8 @@ import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { mkdirpSync } from 'fs-extra';
+import { MockCDN } from '../../integration/utils/TestRunner';
+import { parseHttpResponse } from 'selenium-webdriver/http';
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');
@@ -45,7 +47,7 @@ const copyAllModels = () => {
     const models = getAllAvailableModels(packageName);
     models.forEach(({ export: fileName }) => {
       const modelPath = path.resolve(MODELS_PATH, packageName, 'models', fileName);
-      const destPath = path.resolve(DIST, 'models', packageName, fileName);
+      const destPath = path.resolve(DIST, 'models', packageName, 'models', fileName);
       fs.copySync(modelPath, destPath);
     });
   });
@@ -65,8 +67,7 @@ const getMinifiedScripts = () => {
       return minifiedFileName;
     }))
   }, [] as string[]);
-
-}
+};
 
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
@@ -80,3 +81,10 @@ export const prepareScriptBundleForUMD = async () => {
   copyFixtures(DIST);
   fs.writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude));
 };
+
+export const mockCDN: MockCDN = (port, model, pathToModel) => [
+  `http://localhost:${port}`,
+  'models',
+  model,
+  pathToModel,
+].join('/');

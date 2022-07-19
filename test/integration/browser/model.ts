@@ -3,7 +3,7 @@
  */
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
+import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -40,54 +40,54 @@ describe('Model Loading Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  // it("loads the default model", async () => {
-  //   const result = await page().evaluate(() => {
-  //     const upscaler = new window['Upscaler']();
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
-  // });
+  it("loads the default model", async () => {
+    const result = await page().evaluate(() => {
+      const upscaler = new window['Upscaler']();
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+  });
 
-  // it("can import a specific model", async () => {
-  //   const result = await page().evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: window['pixel-upsampler']['4x'],
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("can import a specific model", async () => {
+    const result = await page().evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixel-upsampler']['4x'],
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
-  // it("loads a locally exposed model via implied HTTP", async () => {
-  //   const result = await page().evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: {
-  //         path: '/pixelator/pixelator.json',
-  //         scale: 4,
-  //       },
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads a locally exposed model via implied HTTP", async () => {
+    const result = await page().evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: {
+          path: '/pixelator/pixelator.json',
+          scale: 4,
+        },
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
-  // it("loads a locally exposed model via absolute HTTP", async () => {
-  //   const result = await page().evaluate(() => {
-  //     const upscaler = new window['Upscaler']({
-  //       model: {
-  //         path: `${window.location.origin}/pixelator/pixelator.json`,
-  //         scale: 4,
-  //       },
-  //     });
-  //     return upscaler.upscale(window['flower']);
-  //   });
-  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  // });
+  it("loads a locally exposed model via absolute HTTP", async () => {
+    const result = await page().evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: {
+          path: `${window.location.origin}/pixelator/pixelator.json`,
+          scale: 4,
+        },
+      });
+      return upscaler.upscale(window['flower']);
+    });
+    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  });
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
     const umdTestRunner = new TestRunner({
-      // mockCDN: ESBUILD_LOCAL_UPSCALER_NAMESPACE,
+      mockCDN: umdMockCDN,
       dist: UMD_DIST,
       port: UMD_PORT,
     });
@@ -97,8 +97,9 @@ describe('Model Loading Integration Tests', () => {
     }, 20000);
 
     afterAll(async function modelAfterAll() {
+      await new Promise(r => setTimeout(r, 20000));
       await umdTestRunner.afterAll();
-    }, 5000);
+    }, 30000);
 
     getAllAvailableModelPackages().filter(m => m === 'pixel-upsampler').map(packageName => {
       describe(packageName, () => {
@@ -126,19 +127,19 @@ describe('Model Loading Integration Tests', () => {
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
           });
 
-          // it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-          //   await umdTestRunner.startBrowser();
-          //   await umdTestRunner.navigateToServer(null);
-          //   const result = await umdTestRunner.page.evaluate(([umdName]) => {
-          //     const model: ModelDefinition = (<any>window)[umdName];
-          //     const upscaler = new window['Upscaler']({
-          //       model,
-          //     });
-          //     return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
-          //   }, [umdName]);
-          //   checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-          //   await umdTestRunner.stopBrowser();
-          // });
+          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+            await umdTestRunner.startBrowser();
+            await umdTestRunner.navigateToServer(null);
+            const result = await umdTestRunner.page.evaluate(([umdName]) => {
+              const model: ModelDefinition = (<any>window)[umdName];
+              const upscaler = new window['Upscaler']({
+                model,
+              });
+              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+            }, [umdName]);
+            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+            await umdTestRunner.stopBrowser();
+          });
         });
       })
     });
