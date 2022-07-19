@@ -5,6 +5,7 @@ import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME } from './constants';
+import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -58,3 +59,13 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
 
   return compiler;
 });
+
+export const mockCDN: MockCDN = (port, model, pathToModel) => {
+  return [
+    `http://localhost:${port}`,
+    'node_modules',
+    '@upscalerjs',
+    model,
+    pathToModel,
+  ].join('/');
+};

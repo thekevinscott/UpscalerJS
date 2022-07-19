@@ -6,6 +6,21 @@ export const startServer: StartServer = (port, dist) => new Promise<http.Server>
   try {
     const server = http.createServer((request, response) => handler(request, response, {
       public: dist,
+      headers: [
+        {
+          "source" : "**/*",
+          "headers": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*",
+            },
+            {
+              "key": "Access-Control-Allow-Headers", 
+              "value": "Origin, X-Requested-With, Content-Type, Accept, Range",
+            }
+          ]
+        }
+      ]
     }));
     server.listen(port, () => {
       resolve(server);

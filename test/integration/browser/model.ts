@@ -1,15 +1,13 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-// import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
-import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
-// import { startServer } from '../../lib/shared/server';
+import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { BrowserTestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -18,7 +16,12 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: LOG });
+  const testRunner = new BrowserTestRunner({
+    mockCDN: esbuildMockCDN,
+    dist: ESBUILD_DIST,
+    trackTime: TRACK_TIME,
+    log: LOG,
+  });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
@@ -83,20 +86,25 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
-    const umdTestRunner = new BrowserTestRunner({ dist: UMD_DIST, port: UMD_PORT });
+    const umdTestRunner = new BrowserTestRunner({
+      mockCDN: umdMockCDN,
+      dist: UMD_DIST,
+      port: UMD_PORT,
+    });
 
     beforeAll(async function modelBeforeAll() {
       await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
     }, 20000);
 
     afterAll(async function modelAfterAll() {
+      await new Promise(r => setTimeout(r, 20000));
       await umdTestRunner.afterAll();
-    }, 5000);
+    }, 30000);
 
-    getAllAvailableModelPackages().map(packageName => {
+    getAllAvailableModelPackages().filter(m => m === 'pixel-upsampler').map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.forEach(({ esm, umd: umdName }) => {
+        models.filter(n => n.esm === '2x').forEach(({ esm, umd: umdName }) => {
           const esmName = esm || 'index';
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             await testRunner.navigateToServer('| Loaded');

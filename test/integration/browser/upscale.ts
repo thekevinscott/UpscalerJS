@@ -2,18 +2,22 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { Progress } from 'upscaler';
-import { BrowserTestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(1);
+jest.retryTimes(0);
 
 describe('Upscale Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME });
+  const testRunner = new BrowserTestRunner({
+    mockCDN: esbuildMockCDN,
+    dist: DIST,
+    trackTime: TRACK_TIME,
+  });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {

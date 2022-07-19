@@ -3,6 +3,7 @@ import inquirer from 'inquirer';
 import { bundle as esbuildBundle, DIST as ESBUILD_DIST } from './esm-esbuild/prepare';
 import { startServer } from './shared/server';
 import { bundleWebpack as webpackBundle, DIST as WEBPACK_DIST } from './esm-webpack/prepare';
+import { DIST as UMD_DIST, prepareScriptBundleForUMD } from './umd/prepare';
 
 interface Args {
   type: TestServerType;
@@ -38,8 +39,8 @@ const getArgs = async (): Promise<Args> => {
   }
 }
 
-const AVAILABLE_SERVER_TYPES = ['esbuild', 'webpack'];
-type TestServerType = 'esbuild' | 'webpack';
+const AVAILABLE_SERVER_TYPES = ['esbuild', 'webpack', 'umd'];
+type TestServerType = 'esbuild' | 'webpack' | 'umd';
 type StartTestServer = (type: TestServerType, port: number) => Promise<void>;
 type Answers = { type: TestServerType, port: number };
 
@@ -59,6 +60,10 @@ const startTestServer: StartTestServer = async (type, port = 8099) => {
   } else if (type === 'webpack') {
     dist = WEBPACK_DIST;
     await webpackBundle();
+    await startServer(port, dist);
+  } else if (type === 'umd') {
+    dist = UMD_DIST;
+    await prepareScriptBundleForUMD();
     await startServer(port, dist);
   } else {
     throw new Error(`Unsupported type provided to test server: ${type}`)
