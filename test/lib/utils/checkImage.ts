@@ -14,7 +14,6 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
     throw new Error(`Type of src is not string. src: ${JSON.stringify(src)}`)
   }
   const fixture = getFixtureAsBuffer(fixtureSrc);
-  // console.log('fixture', fixtureSrc, fixture.width, fixture.height);
   if (!src.includes('base64,')) {
     throw new Error(`No "base64," tag found in the incoming src, this may indicate a bad src attribute. src: ${src}`);
   }
