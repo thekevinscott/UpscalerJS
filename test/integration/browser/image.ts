@@ -10,8 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
 
-const flowerBytes = fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small.bytes'));
-const pixels = Array.from(new Uint8Array(flowerBytes.buffer.slice(0, 768)));
+const flowerPixels = fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'));
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -118,7 +117,7 @@ describe('Image Format Integration Tests', () => {
         const bytes = new Uint8Array(pixels);
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.upscale(tensor).then(resolve);
-      }), pixels);
+      }), flowerPixels);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
