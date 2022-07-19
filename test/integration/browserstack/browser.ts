@@ -3,14 +3,12 @@
  */
 import fs from 'fs';
 import path from 'path';
-import http from 'http';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
-import { startServer } from '../../lib/shared/server';
+import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner }../utils/BrowserTestRunnertRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -108,7 +106,12 @@ const getCapabilityName = (capability: BrowserOption) => {
 }
 
 describe('Browser Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME, port: PORT });
+  const testRunner = new BrowserTestRunner({
+    mockCDN: esbuildMockCDN,
+    dist: DIST,
+    trackTime: TRACK_TIME,
+    port: PORT,
+  });
 
   beforeAll(async function browserBeforeAll() {
     testRunner.beforeAll(bundle);
