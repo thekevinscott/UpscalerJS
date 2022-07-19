@@ -10,7 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
 
-const flowerPixels = fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'));
+const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
