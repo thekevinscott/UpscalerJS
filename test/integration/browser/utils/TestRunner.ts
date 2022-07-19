@@ -23,22 +23,53 @@ const isIgnoredMessage = (msg: string) => {
   return false;
 };
 
+const DEFAULT_PORT = 8098;
+
+// TODO: How to type a variadic array?
+function timer<T extends any[]>(msg: string) {
+  return  (
+    testRunner: TestRunner,
+    key: string | symbol,
+    descriptor: PropertyDescriptor
+  ) => {
+    const origFn = descriptor.value;
+    const newFn = (...args: T) => {
+      const start = new Date().getTime();
+      const value = origFn.apply(testRunner, args);
+
+      if (testRunner.trackTime) {
+        const end = new Date().getTime();
+        const duration = Math.round((end - start) / 1000);
+        console.log(`Completed ${msg} in ${duration} seconds`);
+      }
+      return value;
+    }
+    descriptor.value = newFn.bind(testRunner);
+    return descriptor;
+  };
+}
 
 export class TestRunner {
   trackTime: boolean;
+  showWarnings: boolean;
   log: boolean;
   port: number;
   dist: string;
-  _server: http.Server | undefined;
-  _browser: puppeteer.Browser | undefined;
-  _page: puppeteer.Page | undefined;
+  private _server: http.Server | undefined;
+  private _browser: puppeteer.Browser | undefined;
+  private _page: puppeteer.Page | undefined;
 
-  constructor(dist: string, { port = 8099, trackTime = false, log = true } = {}) {
+  constructor({ dist = '', port = DEFAULT_PORT, trackTime = false, log = true, showWarnings = false } = {}) {
     this.dist = dist;
+    this.showWarnings = showWarnings;
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
   }
+
+  /****
+   * Getters and setters
+   */
 
   getLocal<T extends puppeteer.Browser | puppeteer.Page | http.Server>(key: '_server' | '_browser' | '_page'): T {
     if (!this[key]) {
@@ -47,50 +78,91 @@ export class TestRunner {
     return this[key] as T;
   }
 
-  browser = () => this.getLocal<puppeteer.Browser>('_browser');
-  page = () => this.getLocal<puppeteer.Page>('_page');
-  server = () => this.getLocal<http.Server>('_server');
-
-  async beforeAll(bundle: Bundle) {
-    const start = new Date().getTime();
-
-    await bundle();
-    this._server = await startServer(this.port, this.dist);
-
-    if (this.trackTime) {
-      const end = new Date().getTime();
-      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
+  get server(): http.Server { return this.getLocal('_server'); }
+  set server(server: http.Server | undefined) {
+    if (server && this._server) {
+      throw new Error('Server is already active');
     }
-
+    this._server = server;
   }
 
-  async afterAll() {
-    const start = new Date().getTime();
-    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-      const server = this.server();
-      if (server) {
-        server.close(resolve);
-      } else {
-        console.warn('No server found')
+  get browser(): puppeteer.Browser { return this.getLocal('_browser'); }
+  set browser(browser: puppeteer.Browser | undefined) {
+    if (browser && this._browser) {
+      throw new Error('Browser is already active');
+    }
+    this._browser = browser;
+  }
+
+  get page(): puppeteer.Page {
+    const page = this.getLocal<puppeteer.Page>('_page');
+    // if (page && page.isClosed() === true) {
+    //   throw new Error('Page is already closed; did you forget to close and restart the browser?');
+    // }
+    return page;
+  }
+  set page(page: puppeteer.Page | undefined) {
+    {
+      if (page && this._page) {
+        throw new Error('Page is already active');
+      }
+      this._page = page;
+    }
+  }
+
+  /****
+   * Utility methods
+   */
+
+  warn (msg: string) {
+    if (this.showWarnings) {
+      console.warn(msg);// skipcq: JS-0002
+    }
+  }
+
+  async waitForTitle(pageTitleToAwait: string) {
+    await this.page.waitForFunction(`document.title.endsWith("${pageTitleToAwait}")`);
+  }
+
+  async navigateToServer(pageTitleToAwait: string | null) {
+    await this.page.goto(`http://localhost:${this.port}`);
+    if (pageTitleToAwait !== null) {
+      await this.waitForTitle(pageTitleToAwait);
+    }
+  }
+
+  /****
+   * Start and stop methods
+   */
+
+  async startServer(dist?: string, port?: number) {
+    this.server = await startServer(port || this.port, dist || this.dist);
+    return this.server;
+  }
+
+  stopServer(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.server.close(err => {
+          if (err) {
+            reject(err);
+          } else {
+            this.server = undefined;
+            resolve();
+          }
+        });
+      } catch (err) {
+        this.warn('No server found');
         resolve();
       }
-    });
-
-    await Promise.all([
-      stopServer(),
-    ]);
-
-    if (this.trackTime) {
-      const end = new Date().getTime();
-      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
-    }
+    })
   }
 
-  async beforeEach() {
-    this._browser = await puppeteer.launch();
-    this._page = await this._browser.newPage();
+  async startBrowser() {
+    this.browser = await puppeteer.launch();
+    this.page = await this.browser.newPage();
     if (this.log) {
-      this._page.on('console', message => {
+      this.page.on('console', message => {
         const text = message.text().trim();
         if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
           console.log('404', text, message);
@@ -99,13 +171,50 @@ export class TestRunner {
         }
       });
     }
-    await this._page.goto(`http://localhost:${this.port}`);
-    await this._page.waitForFunction('document.title.endsWith("| Loaded")');
   }
 
-  async afterEach() {
-    await this.browser().close(),
-    this._browser = undefined;
-    this._page = undefined;
+  async stopBrowser() {
+    try {
+      await this.browser.close();
+      this.browser = undefined;
+      this.page = undefined;
+    } catch (err) {
+      this.warn('No browser found');
+    }
+  }
+
+  /****
+   * Jest lifecycle methods
+   */
+
+  // @timer('beforeAll scaffolding')
+  async beforeAll(bundle: Bundle) {
+    await bundle();
+    await this.startServer();
+  }
+
+  // @timer('afterAll clean up')
+  async afterAll() {
+    const stopBrowser = this._browser ? this.stopBrowser : () => {};
+    await Promise.all([
+      this.stopServer(),
+      stopBrowser,
+    ]);
+  }
+
+  // @timer('beforeEach scaffolding')
+  async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
+    await this.startBrowser();
+    await this.navigateToServer(pageTitleToAwait);
+  }
+
+  // @timer('afterEach clean up')
+  async afterEach(callback: AfterEachCallback = async () => {}) {
+    await Promise.all([
+      this.stopBrowser(),
+      callback(),
+    ]);
   }
 }
+
+type AfterEachCallback = () => Promise<void | any>;

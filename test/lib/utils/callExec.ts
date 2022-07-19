@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 type StdOut = (chunk: string) => void;
-const callExec = (cmd: string, options: any, stdout?: StdOut | boolean, stdErr: boolean = true): Promise<void> => new Promise((resolve, reject) => {
+type StdErr = (chunk: string) => void;
+const callExec = (cmd: string, options: any, stdout?: StdOut | boolean, stderr: StdErr | boolean = true): Promise<void> => new Promise((resolve, reject) => {
   const spawnedProcess = exec(cmd, options, (error: Error) => {
     if (error) {
       reject(error.message);
@@ -9,8 +10,10 @@ const callExec = (cmd: string, options: any, stdout?: StdOut | boolean, stdErr: 
     }
   });
 
-  if (stdErr) {
+  if (stderr === true) {
     spawnedProcess.stderr.pipe(process.stderr);
+  } else if (!!stderr && typeof stderr !== 'boolean') {
+    spawnedProcess.stderr.on('data', stderr);
   }
 
   if (stdout === false) {

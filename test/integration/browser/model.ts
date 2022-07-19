@@ -1,11 +1,11 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import http from 'http';
+// import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { bundle, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
-import { startServer } from '../../lib/shared/server';
+// import { startServer } from '../../lib/shared/server';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -18,8 +18,8 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new TestRunner(DIST, { trackTime: TRACK_TIME, log: LOG });
-  const page = testRunner.page;
+  const testRunner = new TestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: LOG });
+  const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);
@@ -30,7 +30,7 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    await testRunner.beforeEach();
+    await testRunner.beforeEach('| Loaded');
   });
 
   afterEach(async function afterEach() {
@@ -82,27 +82,16 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    let serverUMD: http.Server;
+    const UMD_PORT = 8096;
+    const umdTestRunner = new TestRunner({ dist: UMD_DIST, port: UMD_PORT });
 
-    const PORT_UMD = 8098;
-
-    beforeAll(async function beforeAll() {
-      await prepareScriptBundleForUMD();
-      serverUMD = await startServer(PORT_UMD, UMD_DIST);
+    beforeAll(async function modelBeforeAll() {
+      await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
     }, 20000);
 
     afterAll(async function modelAfterAll() {
-      const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-        if (serverUMD) {
-          serverUMD.close(resolve);
-        } else {
-          console.warn('No server found')
-          resolve();
-        }
-      });
-
-      await stopServer();
-    }, 10000);
+      await umdTestRunner.afterAll();
+    }, 5000);
 
     getAllAvailableModelPackages().map(packageName => {
       describe(packageName, () => {
@@ -110,6 +99,7 @@ describe('Model Loading Integration Tests', () => {
         models.forEach(({ esm, umd: umdName }) => {
           const esmName = esm || 'index';
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+            await testRunner.navigateToServer('| Loaded');
             const result = await page().evaluate(([packageName, modelName]) => {
               if (!modelName) {
                 throw new Error(`No model name found for package ${packageName}`);
@@ -130,8 +120,9 @@ describe('Model Loading Integration Tests', () => {
           });
 
           it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await page().goto(`http://localhost:${PORT_UMD}`);
-            const result = await page().evaluate(([umdName]) => {
+            await umdTestRunner.startBrowser();
+            await umdTestRunner.navigateToServer(null);
+            const result = await umdTestRunner.page.evaluate(([umdName]) => {
               const model: ModelDefinition = (<any>window)[umdName];
               const upscaler = new window['Upscaler']({
                 model,
@@ -139,6 +130,7 @@ describe('Model Loading Integration Tests', () => {
               return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
             }, [umdName]);
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+            await umdTestRunner.stopBrowser();
           });
         });
       })
