@@ -96,20 +96,20 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
 }
 
 const npmPack = async (src: string): Promise<string> => {
-    let outputName = '';
-    await callExec('npm pack --quiet', {
-      cwd: src,
-    }, chunk => {
-      outputName = chunk;
-    });
+  let outputName = '';
+  await callExec('npm pack --quiet', {
+    cwd: src,
+  }, chunk => {
+    outputName = chunk;
+  });
 
-    outputName = outputName.trim();
+  outputName = outputName.trim();
 
-    if (!outputName.endsWith('.tgz')) {
-      throw new Error(`Unexpected output name: ${outputName}`)
-    }
+  if (!outputName.endsWith('.tgz')) {
+    throw new Error(`Unexpected output name: ${outputName}`)
+  }
 
-    return path.resolve(src, outputName);
+  return path.resolve(src, outputName);
 };
 
 const unTar = async (cwd: string, fileName: string) => {
