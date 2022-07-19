@@ -7,6 +7,7 @@ import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
+import tar from 'tar-fs';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -100,8 +101,6 @@ const npmPack = async (src: string): Promise<string> => {
       cwd: src,
     }, chunk => {
       outputName = chunk;
-    }, chunk => {
-      console.log('STDERR from npmPack', chunk)
     });
 
     outputName = outputName.trim();
@@ -113,13 +112,16 @@ const npmPack = async (src: string): Promise<string> => {
     return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => callExec(`tar zxf ${fileName}`, {
-  cwd,
-}, chunk => {
-  console.log('STDOUT', chunk)
-}, chunk => {
-  console.log('STDERR from unTar', chunk)
-});
+const unTar = async (cwd: string, fileName: string) => {
+  // return fs.createReadStream(fileName).pipe(tar.extract(cwd));
+  return await callExec(`tar zxf ${fileName}`, {
+    cwd,
+  // }, chunk => {
+  //   console.log('STDOUT', chunk)
+  // }, chunk => {
+  //   console.log('STDERR from unTar', chunk)
+  });
+};
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
