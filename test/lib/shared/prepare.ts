@@ -100,6 +100,8 @@ const npmPack = async (src: string): Promise<string> => {
       cwd: src,
     }, chunk => {
       outputName = chunk;
+    }, chunk => {
+      console.log('STDERR from npmPack', chunk)
     });
 
     outputName = outputName.trim();
@@ -113,6 +115,10 @@ const npmPack = async (src: string): Promise<string> => {
 
 const unTar = (cwd: string, fileName: string) => callExec(`tar zxf ${fileName}`, {
   cwd,
+}, chunk => {
+  console.log('STDOUT', chunk)
+}, chunk => {
+  console.log('STDERR from unTar', chunk)
 });
 
 const getLocalAndRemoteDependencies = (dir: string) => {

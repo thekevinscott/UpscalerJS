@@ -82,27 +82,15 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    let serverUMD: http.Server;
-
-    const PORT_UMD = 8098;
-
     beforeAll(async function beforeAll() {
+      testRunner.stopServer();
       await prepareScriptBundleForUMD();
-      serverUMD = await startServer(PORT_UMD, UMD_DIST);
-    }, 20000);
+      testRunner.startServer(UMD_DIST);
+    }, 60000);
 
     afterAll(async function modelAfterAll() {
-      const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-        if (serverUMD) {
-          serverUMD.close(resolve);
-        } else {
-          console.warn('No server found')
-          resolve();
-        }
-      });
-
-      await stopServer();
-    }, 10000);
+      await testRunner.stopServer();
+    }, 5000);
 
     getAllAvailableModelPackages().map(packageName => {
       describe(packageName, () => {
@@ -110,6 +98,7 @@ describe('Model Loading Integration Tests', () => {
         models.forEach(({ esm, umd: umdName }) => {
           const esmName = esm || 'index';
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+            await testRunner.navigateToServer('| Loaded');
             const result = await page().evaluate(([packageName, modelName]) => {
               if (!modelName) {
                 throw new Error(`No model name found for package ${packageName}`);
@@ -130,7 +119,7 @@ describe('Model Loading Integration Tests', () => {
           });
 
           it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await page().goto(`http://localhost:${PORT_UMD}`);
+            await testRunner.navigateToServer(null);
             const result = await page().evaluate(([umdName]) => {
               const model: ModelDefinition = (<any>window)[umdName];
               const upscaler = new window['Upscaler']({
