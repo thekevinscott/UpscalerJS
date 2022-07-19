@@ -10,6 +10,7 @@ import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
+import { TestRunner } from '../utils/TestRunner';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -50,7 +51,7 @@ const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter((option: BrowserOption) => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
-  return !option.browserName.toLowerCase().includes('iphone');
+  return !option.browserName?.toLowerCase().includes('iphone');
 });
 
 const shouldPrintLogs = (entry: webdriver.logging.Entry, capabilities: BrowserOption) => {
@@ -107,47 +108,19 @@ const getCapabilityName = (capability: BrowserOption) => {
 }
 
 describe('Browser Integration Tests', () => {
-  let server: http.Server;
+  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME, port: PORT });
 
-  beforeAll(async function beforeAll() {
-    const start = new Date().getTime();
-
-    const startServerWrapper = async () => {
-      await bundle();
-      server = await startServer(PORT, DIST);
-    };
-
-    await startServerWrapper();
-
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
-    }
+  beforeAll(async function browserBeforeAll() {
+    testRunner.beforeAll(bundle);
   }, 20000);
 
   afterAll(async function browserAfterAll() {
-    const start = new Date().getTime();
-
-    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-      if (server) {
-        server.close(resolve);
-      } else {
-        console.warn('No server found')
-        resolve();
-      }
-    });
-    await Promise.all([
-      stopServer(),
-    ]);
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed post-post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
-    }
+    testRunner.afterAll();
   }, 10000);
 
   describe.each(browserOptions)("Browser %j", (capabilities: BrowserOption) => {
     it("upscales an imported local image path", async () => {
-      console.log('test', getCapabilityName(capabilities))
+      // console.log('test', getCapabilityName(capabilities))
       const driver = await new webdriver.Builder()
         .usingServer(serverURL)
         .setLoggingPrefs(prefs)
@@ -170,7 +143,7 @@ describe('Browser Integration Tests', () => {
           },
         });
         const data = upscaler.upscale(window['flower']);
-        document.body.querySelector('#output').innerHTML = `${document.title} | Complete`;
+        document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
       });
 
