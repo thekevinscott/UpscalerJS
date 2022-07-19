@@ -3,16 +3,24 @@ import type { ModelDefinition, } from '@upscalerjs/core';
 import type { PackageInformation, } from './types';
 import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
 
-const CDNS = [
-  (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
-  (packageName: string, version: string, path: string) => `https://unpkg.com/${packageName}@${version}/${path}`,
+export const CDNS = [
+  {
+    name: 'jsdelivr',
+    fn: (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
+  },
+  {
+    name: 'unpkg',
+    fn: (packageName: string, version: string, path: string) => `https://unpkg.com/${packageName}@${version}/${path}`,
+  },
   // 'cdnjs',
 ];
+
+export const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
 
 export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
   if (packageInformation) {
     for (let i = 0; i < CDNS.length; i++) {
-      const getCDNFn = CDNS[i];
+      const { fn: getCDNFn, } = CDNS[i];
       try {
         const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
         return await tf.loadLayersModel(url);
@@ -20,7 +28,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
         // there was an issue with the CDN, try another
       }
     }
-    throw new Error(`Could not resolve URL ${modelPath}`);
+    throw new Error(LOAD_MODEL_ERROR_MESSAGE(modelPath));
   }
   return await tf.loadLayersModel(modelPath);
 };
