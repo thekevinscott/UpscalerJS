@@ -37,49 +37,49 @@ describe('Model Loading Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  it("loads the default model", async () => {
-    const result = await page().evaluate(() => {
-      const upscaler = new window['Upscaler']();
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
-  });
+  // it("loads the default model", async () => {
+  //   const result = await page().evaluate(() => {
+  //     const upscaler = new window['Upscaler']();
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+  // });
 
-  it("can import a specific model", async () => {
-    const result = await page().evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['4x'],
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("can import a specific model", async () => {
+  //   const result = await page().evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: window['pixel-upsampler']['4x'],
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await page().evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: '/pixelator/pixelator.json',
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("loads a locally exposed model via implied HTTP", async () => {
+  //   const result = await page().evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: '/pixelator/pixelator.json',
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
-  it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await page().evaluate(() => {
-      const upscaler = new window['Upscaler']({
-        model: {
-          path: `${window.location.origin}/pixelator/pixelator.json`,
-          scale: 4,
-        },
-      });
-      return upscaler.upscale(window['flower']);
-    });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // it("loads a locally exposed model via absolute HTTP", async () => {
+  //   const result = await page().evaluate(() => {
+  //     const upscaler = new window['Upscaler']({
+  //       model: {
+  //         path: `${window.location.origin}/pixelator/pixelator.json`,
+  //         scale: 4,
+  //       },
+  //     });
+  //     return upscaler.upscale(window['flower']);
+  //   });
+  //   checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  // });
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
@@ -93,10 +93,10 @@ describe('Model Loading Integration Tests', () => {
       await umdTestRunner.afterAll();
     }, 5000);
 
-    getAllAvailableModelPackages().map(packageName => {
+    getAllAvailableModelPackages().filter(m => m === 'pixel-upsampler').map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.forEach(({ esm, umd: umdName }) => {
+        models.filter(n => n.esm === '2x').forEach(({ esm, umd: umdName }) => {
           const esmName = esm || 'index';
           it(`upscales with ${packageName}/${esmName} as esm`, async () => {
             await testRunner.navigateToServer('| Loaded');
@@ -119,19 +119,19 @@ describe('Model Loading Integration Tests', () => {
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
           });
 
-          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await umdTestRunner.startBrowser();
-            await umdTestRunner.navigateToServer(null);
-            const result = await umdTestRunner.page.evaluate(([umdName]) => {
-              const model: ModelDefinition = (<any>window)[umdName];
-              const upscaler = new window['Upscaler']({
-                model,
-              });
-              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
-            }, [umdName]);
-            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-            await umdTestRunner.stopBrowser();
-          });
+          // it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+          //   await umdTestRunner.startBrowser();
+          //   await umdTestRunner.navigateToServer(null);
+          //   const result = await umdTestRunner.page.evaluate(([umdName]) => {
+          //     const model: ModelDefinition = (<any>window)[umdName];
+          //     const upscaler = new window['Upscaler']({
+          //       model,
+          //     });
+          //     return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+          //   }, [umdName]);
+          //   checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          //   await umdTestRunner.stopBrowser();
+          // });
         });
       })
     });

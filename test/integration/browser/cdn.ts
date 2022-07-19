@@ -20,7 +20,12 @@ jest.setTimeout(5 * 1000);
 jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: false });
+  const testRunner = new TestRunner({
+    mockCDNs: false,
+    dist: ESBUILD_DIST,
+    trackTime: TRACK_TIME,
+    log: false,
+  });
   const page = () => {
     testRunner.page.setRequestInterception(true);
     return testRunner.page;

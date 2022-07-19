@@ -52,4 +52,7 @@ export const bundle = async () => {
   });
   // buildResult.stop();
   fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
+  try {
+    fs.symlinkSync(path.resolve(ROOT, 'node_modules'), path.join(DIST, 'node_modules'));
+  } catch(err) {}
 };

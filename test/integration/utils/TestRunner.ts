@@ -33,6 +33,7 @@ function timeIt<T extends unknown[]>(msg: string) {
 export class TestRunner {
   trackTime: boolean;
   showWarnings: boolean;
+  mockCDNs: boolean;
   log: boolean;
   port: number;
   dist: string;
@@ -40,7 +41,8 @@ export class TestRunner {
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
 
-  constructor({ dist = '', port = DEFAULT_PORT, trackTime = false, log = true, showWarnings = false } = {}) {
+  constructor({ mockCDNs = true, dist = '', port = DEFAULT_PORT, trackTime = false, log = true, showWarnings = false } = {}) {
+    this.mockCDNs = mockCDNs;
     this.dist = dist;
     this.showWarnings = showWarnings;
     this.trackTime = trackTime;
@@ -149,6 +151,36 @@ export class TestRunner {
           console.log('404', text, message);
         } else if (!isIgnoredMessage(text)) {
           console.log('[PAGE]', text);
+        }
+      });
+    }
+
+    if (this.mockCDNs) {
+      this.page.setRequestInterception(true);
+      this.page.on('request', (request) => {
+        const url = request.url();
+
+        // this is a request for a model
+        if (url.includes('@upscalerjs')) {
+          const modelPath = url.split('@upscalerjs/').pop()?.split('@');
+          if (!modelPath?.length) {
+            throw new Error(`URL ${url} is not a model`);
+          }
+          const [model, restOfModelPath] = modelPath;
+          const [_, ...pathToModel] = restOfModelPath.split('/');
+          const redirectedURL = `http://localhost:${this.port}/node_modules/@upscalerjs-for-esbuild/${model}/${pathToModel.join('/')}`;
+          console.log(redirectedURL);
+          // request.continue({
+          //   url: redirectedURL,
+          // });
+          request.respond({
+            status: 302,
+            headers: {
+              location:redirectedURL, 
+            },
+          });
+        } else {
+          request.continue();
         }
       });
     }
