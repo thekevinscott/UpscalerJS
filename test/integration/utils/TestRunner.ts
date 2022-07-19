@@ -7,26 +7,25 @@ type Bundle = () => Promise<void>;
 
 const DEFAULT_PORT = 8098;
 
-// TODO: How to type a variadic array?
-function timer<T extends any[]>(msg: string) {
+function timeIt<T extends unknown[]>(msg: string) {
   return  (
     testRunner: TestRunner,
-    key: string | symbol,
+    _: string | symbol,
     descriptor: PropertyDescriptor
   ) => {
+    // return 
     const origFn = descriptor.value;
-    const newFn = (...args: T) => {
+    descriptor.value = async function (...args: T) {
       const start = new Date().getTime();
-      const value = origFn.apply(testRunner, args);
+      const result = await origFn.apply(this, args);
 
       if (testRunner.trackTime) {
         const end = new Date().getTime();
         const duration = Math.round((end - start) / 1000);
         console.log(`Completed ${msg} in ${duration} seconds`);
       }
-      return value;
-    }
-    descriptor.value = newFn.bind(testRunner);
+      return result;
+    };
     return descriptor;
   };
 }
@@ -47,6 +46,7 @@ export class TestRunner {
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
+    console.log('port has been set', this.port)
   }
 
   /****
@@ -169,13 +169,13 @@ export class TestRunner {
    * Jest lifecycle methods
    */
 
-  // @timer('beforeAll scaffolding')
+  @timeIt<[Bundle]>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     await bundle();
     await this.startServer();
   }
 
-  // @timer('afterAll clean up')
+  @timeIt('afterAll clean up')
   async afterAll() {
     const stopBrowser = this._browser ? this.stopBrowser : () => {};
     await Promise.all([
@@ -184,13 +184,13 @@ export class TestRunner {
     ]);
   }
 
-  // @timer('beforeEach scaffolding')
+  @timeIt<[string]>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.startBrowser();
     await this.navigateToServer(pageTitleToAwait);
   }
 
-  // @timer('afterEach clean up')
+  @timeIt<[AfterEachCallback]>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([
       this.stopBrowser(),
