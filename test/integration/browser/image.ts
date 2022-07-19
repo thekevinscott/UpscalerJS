@@ -5,7 +5,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
@@ -18,7 +18,7 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
+  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME });
   const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {

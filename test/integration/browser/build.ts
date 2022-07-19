@@ -6,14 +6,14 @@ import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/pr
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/TestRunner';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
 describe('Build Integration Tests', () => {
-  const testRunner = new TestRunner({ showWarnings: true });
+  const testRunner = new BrowserTestRunner({ showWarnings: true });
 
   afterEach(async function afterEach() {
     await testRunner.afterEach(async () => {
@@ -44,7 +44,6 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-    console.log('page 2', page.isClosed());
   });
 
   it("upscales using a UMD build with a specified model", async () => {

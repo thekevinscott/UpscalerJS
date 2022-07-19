@@ -10,7 +10,7 @@ import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/TestRunner';
 
 const prefs = new logging.Preferences();
 prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
@@ -108,7 +108,7 @@ const getCapabilityName = (capability: BrowserOption) => {
 }
 
 describe('Browser Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME, port: PORT });
+  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME, port: PORT });
 
   beforeAll(async function browserBeforeAll() {
     testRunner.beforeAll(bundle);

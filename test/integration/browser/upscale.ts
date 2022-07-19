@@ -5,7 +5,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { Progress } from 'upscaler';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/TestRunner';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -13,7 +13,7 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
 describe('Upscale Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
+  const testRunner = new BrowserTestRunner({ dist: DIST, trackTime: TRACK_TIME });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
