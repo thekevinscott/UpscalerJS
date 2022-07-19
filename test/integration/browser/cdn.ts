@@ -21,7 +21,7 @@ jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
   const testRunner = new TestRunner({
-    mockCDNs: false,
+    mockCDN: false,
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     log: false,

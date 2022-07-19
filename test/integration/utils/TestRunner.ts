@@ -30,10 +30,12 @@ function timeIt<T extends unknown[]>(msg: string) {
   };
 }
 
+export type MockCDN = (port: number, model: string, pathToModel: string) => string;
+
 export class TestRunner {
   trackTime: boolean;
   showWarnings: boolean;
-  mockCDNs: boolean;
+  mockCDN?: MockCDN;
   log: boolean;
   port: number;
   dist: string;
@@ -41,8 +43,22 @@ export class TestRunner {
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
 
-  constructor({ mockCDNs = true, dist = '', port = DEFAULT_PORT, trackTime = false, log = true, showWarnings = false } = {}) {
-    this.mockCDNs = mockCDNs;
+  constructor({
+    mockCDN = undefined,
+    dist = '',
+    port = DEFAULT_PORT,
+    trackTime = false,
+    log = true,
+    showWarnings = false,
+  }: {
+    mockCDN?: MockCDN;
+    dist?: string;
+    port?: number;
+    trackTime?: boolean;
+    log?: boolean;
+    showWarnings?: boolean;
+  } = {}) {
+    this.mockCDN = mockCDN;
     this.dist = dist;
     this.showWarnings = showWarnings;
     this.trackTime = trackTime;
@@ -155,7 +171,7 @@ export class TestRunner {
       });
     }
 
-    if (this.mockCDNs) {
+    if (this.mockCDN) {
       this.page.setRequestInterception(true);
       this.page.on('request', (request) => {
         const url = request.url();
@@ -168,16 +184,10 @@ export class TestRunner {
           }
           const [model, restOfModelPath] = modelPath;
           const [_, ...pathToModel] = restOfModelPath.split('/');
-          const redirectedURL = `http://localhost:${this.port}/node_modules/@upscalerjs-for-esbuild/${model}/${pathToModel.join('/')}`;
+          const redirectedURL = this.mockCDN(this.port, model, pathToModel.join('/'));
           console.log(redirectedURL);
-          // request.continue({
-          //   url: redirectedURL,
-          // });
-          request.respond({
-            status: 302,
-            headers: {
-              location:redirectedURL, 
-            },
+          request.continue({
+            url: redirectedURL,
           });
         } else {
           request.continue();

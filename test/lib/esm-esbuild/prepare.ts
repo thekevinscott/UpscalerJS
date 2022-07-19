@@ -4,6 +4,7 @@ import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
+import { MockCDN } from '../../integration/utils/TestRunner';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -55,4 +56,14 @@ export const bundle = async () => {
   try {
     fs.symlinkSync(path.resolve(ROOT, 'node_modules'), path.join(DIST, 'node_modules'));
   } catch(err) {}
+};
+
+export const mockCDN: MockCDN = (port, model, pathToModel) => {
+  return [
+    `http://localhost:${port}`,
+    'node_modules',
+    LOCAL_UPSCALER_NAMESPACE,
+    model,
+    pathToModel,
+  ].join('/');
 };

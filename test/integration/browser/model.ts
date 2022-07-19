@@ -1,11 +1,9 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-// import http from 'http';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepare';
-// import { startServer } from '../../lib/shared/server';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -18,7 +16,12 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: LOG });
+  const testRunner = new TestRunner({
+    mockCDN: esbuildMockCDN,
+    dist: ESBUILD_DIST,
+    trackTime: TRACK_TIME,
+    log: LOG,
+  });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
@@ -83,7 +86,11 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
-    const umdTestRunner = new TestRunner({ dist: UMD_DIST, port: UMD_PORT });
+    const umdTestRunner = new TestRunner({
+      // mockCDN: ESBUILD_LOCAL_UPSCALER_NAMESPACE,
+      dist: UMD_DIST,
+      port: UMD_PORT,
+    });
 
     beforeAll(async function modelBeforeAll() {
       await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
