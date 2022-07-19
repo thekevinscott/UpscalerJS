@@ -9,7 +9,7 @@ const DEFAULT_PORT = 8098;
 
 function timeIt<T extends unknown[]>(msg: string) {
   return  (
-    testRunner: TestRunner,
+    testRunner: BrowserTestRunner,
     _: string | symbol,
     descriptor: PropertyDescriptor
   ) => {
@@ -30,7 +30,7 @@ function timeIt<T extends unknown[]>(msg: string) {
   };
 }
 
-export class TestRunner {
+export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
   log: boolean;

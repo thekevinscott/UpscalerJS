@@ -9,7 +9,7 @@ import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepa
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/TestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -18,7 +18,7 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new TestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: LOG });
+  const testRunner = new BrowserTestRunner({ dist: ESBUILD_DIST, trackTime: TRACK_TIME, log: LOG });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
@@ -83,7 +83,7 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
-    const umdTestRunner = new TestRunner({ dist: UMD_DIST, port: UMD_PORT });
+    const umdTestRunner = new BrowserTestRunner({ dist: UMD_DIST, port: UMD_PORT });
 
     beforeAll(async function modelBeforeAll() {
       await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
