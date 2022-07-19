@@ -18,14 +18,3 @@ export const isIgnoredMessage = (msg: string) => {
 
   return false;
 };
-
-export const attachLogger = (page: puppeteer.Page) => {
-  page.on('console', message => {
-    const text = message.text().trim();
-    if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-      console.log('404', text, message);
-    } else if (!isIgnoredMessage(text)) {
-      console.log('[PAGE]', text);
-    }
-  });
-};
