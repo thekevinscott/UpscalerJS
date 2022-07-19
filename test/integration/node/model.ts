@@ -80,14 +80,15 @@ const getModelPath = () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  it("loads a model via HTTP", async () => {
-    const result = await testNodeScript(writeScript(`
-const getModelPath = () => {
-  return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
-}
-    `));
-    expect(result).not.toEqual('');
-    const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
-  });
+  // TODO: I'm not sure Node should support loading models via HTTP
+//   it("loads a model via HTTP", async () => {
+//     const result = await testNodeScript(writeScript(`
+// const getModelPath = () => {
+//   return 'https://unpkg.com/@upscalerjs/models@0.10.0-canary.1/models/pixelator/model.json';
+// }
+//     `));
+//     expect(result).not.toEqual('');
+//     const formattedResult = `data:image/png;base64,${result}`;
+//     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+//   });
 });

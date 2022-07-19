@@ -1,15 +1,14 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import http from 'http';
-import fs from 'fs';
-import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
-import { startServer } from '../../lib/shared/server';
-import puppeteer from 'puppeteer';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
+import { TestRunner } from '../utils/TestRunner';
+import fs from 'fs';
+import path from 'path';
+import type puppeteer from 'puppeteer';
 
 const flowerBytes = fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small.bytes'));
 const bytes = new Uint8Array(flowerBytes.buffer.slice(0, 768));
@@ -20,60 +19,28 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(1);
 
 describe('Image Format Integration Tests', () => {
-  let server: http.Server;
-  let browser: puppeteer.Browser;
-  let page: puppeteer.Page;
-
-  const PORT = 8099;
+  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
+  const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    const start = new Date().getTime();
-
-    await bundle();
-    server = await startServer(PORT, DIST);
-
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed pre-test scaffolding in ${Math.round((end - start) / 1000)} seconds`);
-    }
+    await testRunner.beforeAll(bundle);
   }, 20000);
 
   afterAll(async function imageAfterAll() {
-    const start = new Date().getTime();
-
-    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-      if (server) {
-        server.close(resolve);
-      } else {
-        console.warn('No server found')
-        resolve();
-      }
-    });
-    await Promise.all([
-      stopServer(),
-    ]);
-    const end = new Date().getTime();
-    if (TRACK_TIME) {
-      console.log(`Completed post-test clean up in ${Math.round((end - start) / 1000)} seconds`);
-    }
+    await testRunner.afterAll();
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    browser = await puppeteer.launch();
-    page = await browser.newPage();
-    await page.goto(`http://localhost:${PORT}`);
-    await page.waitForFunction('document.title.endsWith("| Loaded")');
+    await testRunner.beforeEach('| Loaded');
   });
 
   afterEach(async function afterEach() {
-    await browser.close();
-    browser = undefined;
-    page = undefined;
+    await testRunner.afterEach();
   });
 
   describe('Image formats', () => {
     it("upscales an imported local image path", async () => {
-      const result = await page.evaluate(() => {
+      const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -86,7 +53,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales an HTML Image", async () => {
-      const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -103,7 +70,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -122,7 +89,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a tensor from an HTML image", async () => {
-      const upscaledSrc = await page.evaluate((bytes) => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate((bytes) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -141,7 +108,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
-      const upscaledSrc = await page.evaluate((bytes) => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate((bytes) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -157,7 +124,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a rank 4 tensor", async () => {
-      const upscaledSrc = await page.evaluate(() => new Promise(resolve => {
+      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -178,7 +145,7 @@ describe('Image Format Integration Tests', () => {
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await page.evaluate(src => {
+      const upscaledSrc = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -189,12 +156,11 @@ describe('Image Format Integration Tests', () => {
       }, originalImage);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
-
   });
 
   describe('Patch sizes', () => {
     it("upscales an imported local image path with patch sizes", async () => {
-      const result = await page.evaluate(() => {
+      const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -208,7 +174,6 @@ describe('Image Format Integration Tests', () => {
       });
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
     });
-
   });
 });
 
