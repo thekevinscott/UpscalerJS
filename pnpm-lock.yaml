@@ -30,7 +30,7 @@ importers:
       '@types/rimraf': ^3.0.2
       '@types/selenium-webdriver': ^4.1.1
       '@types/serve-handler': ^6.1.1
-      '@types/tar-fs': ^2.0.1
+      '@types/tar': ^6.1.1
       '@types/yargs': ^17.0.10
       browserstack-local: ^1.5.1
       chai: ^4.3.6
@@ -59,7 +59,7 @@ importers:
       serve: ^13.0.2
       serve-handler: ^6.1.3
       tape: ^5.5.3
-      tar-fs: ^2.1.1
+      tar: ^6.1.11
       tree-kill: ^1.2.2
       ts-jest: ^28.0.5
       ts-node: ^10.8.2
@@ -90,7 +90,7 @@ importers:
       '@types/rimraf': 3.0.2
       '@types/selenium-webdriver': 4.1.1
       '@types/serve-handler': 6.1.1
-      '@types/tar-fs': 2.0.1
+      '@types/tar': 6.1.1
       '@types/yargs': 17.0.10
       browserstack-local: 1.5.1
       chai: 4.3.6
@@ -119,7 +119,7 @@ importers:
       serve: 13.0.2
       serve-handler: 6.1.3
       tape: 5.5.3
-      tar-fs: 2.1.1
+      tar: 6.1.11
       tree-kill: 1.2.2
       ts-jest: 28.0.5_przwvez3yaagd2j4myr22mjudm
       ts-node: 10.8.2_qqrtuuv3y2pz7xoxv47yka6pmi
@@ -4295,6 +4295,12 @@ packages:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
     dev: true
 
+  /@types/minipass/3.1.2:
+    resolution: {integrity: sha512-foLGjgrJkUjLG/o2t2ymlZGEoBNBa/TfoUZ7oCTkOjP1T43UGBJspovJou/l3ZuHvye2ewR5cZNtp2zyWgILMA==}
+    dependencies:
+      '@types/node': 18.0.1
+    dev: true
+
   /@types/mkdirp/1.0.2:
     resolution: {integrity: sha512-o0K1tSO0Dx5X6xlU5F1D6625FawhC3dU3iqr25lluNv/+/QIVH8RLNEiVokgIZo+mz+87w/3Mkg/VvQS+J51fQ==}
     dependencies:
@@ -4424,16 +4430,10 @@ packages:
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
 
-  /@types/tar-fs/2.0.1:
-    resolution: {integrity: sha512-qlsQyIY9sN7p221xHuXKNoMfUenOcvEBN4zI8dGsYbYCqHtTarXOEXSIgUnK+GcR0fZDse6pAIc5pIrCh9NefQ==}
+  /@types/tar/6.1.1:
+    resolution: {integrity: sha512-8mto3YZfVpqB1CHMaYz1TUYIQfZFbh/QbEq5Hsn6D0ilCfqRVCdalmc89B7vi3jhl9UYIk+dWDABShNfOkv5HA==}
     dependencies:
-      '@types/node': 18.0.1
-      '@types/tar-stream': 2.2.2
-    dev: true
-
-  /@types/tar-stream/2.2.2:
-    resolution: {integrity: sha512-1AX+Yt3icFuU6kxwmPakaiGrJUwG44MpuiqPg4dSolRFk6jmvs4b3IbUol9wKDLIgU76gevn3EwE8y/DkSJCZQ==}
-    dependencies:
+      '@types/minipass': 3.1.2
       '@types/node': 18.0.1
     dev: true
 
