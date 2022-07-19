@@ -19,7 +19,7 @@ describe('Upscale Integration Tests', () => {
   let browser: puppeteer.Browser | undefined;
   let page: puppeteer.Page | undefined;
 
-  const PORT = 8099;
+  const PORT = 8095;
 
   beforeAll(async function beforeAll() {
     const start = new Date().getTime();
