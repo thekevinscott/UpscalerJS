@@ -2,8 +2,6 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import http from 'http';
-import fs from 'fs';
-import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';

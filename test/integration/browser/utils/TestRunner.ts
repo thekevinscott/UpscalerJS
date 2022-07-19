@@ -33,7 +33,7 @@ export class TestRunner {
   _browser: puppeteer.Browser | undefined;
   _page: puppeteer.Page | undefined;
 
-  constructor(dist: string, { port = 8099, trackTime = false, log = true } = {}) {
+  constructor({ dist = '', port = 8099, trackTime = false, log = true } = {}) {
     this.dist = dist;
     this.trackTime = trackTime;
     this.port = port;
@@ -51,11 +51,20 @@ export class TestRunner {
   page = () => this.getLocal<puppeteer.Page>('_page');
   server = () => this.getLocal<http.Server>('_server');
 
+  setServer = (server: http.Server) => {
+    this._server = server;
+  }
+
+  async startServer(dist?: string, port?: number) {
+    this._server = await startServer(port || this.port, dist || this.dist);
+    return this._server;
+  }
+
   async beforeAll(bundle: Bundle) {
     const start = new Date().getTime();
 
     await bundle();
-    this._server = await startServer(this.port, this.dist);
+    await this.startServer();
 
     if (this.trackTime) {
       const end = new Date().getTime();
@@ -64,20 +73,27 @@ export class TestRunner {
 
   }
 
+  stopServer = (): Promise<void> => new Promise((resolve, reject) => {
+    const server = this.server();
+    if (server) {
+      server.close(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    } else {
+      console.warn('No server found')
+      resolve();
+    }
+  });
+
   async afterAll() {
     const start = new Date().getTime();
-    const stopServer = (): Promise<void | Error> => new Promise((resolve) => {
-      const server = this.server();
-      if (server) {
-        server.close(resolve);
-      } else {
-        console.warn('No server found')
-        resolve();
-      }
-    });
 
     await Promise.all([
-      stopServer(),
+      this.stopServer(),
     ]);
 
     if (this.trackTime) {
@@ -86,7 +102,7 @@ export class TestRunner {
     }
   }
 
-  async beforeEach() {
+  async startBrowser(pageTitle: string | null = '| Loaded') {
     this._browser = await puppeteer.launch();
     this._page = await this._browser.newPage();
     if (this.log) {
@@ -100,12 +116,24 @@ export class TestRunner {
       });
     }
     await this._page.goto(`http://localhost:${this.port}`);
-    await this._page.waitForFunction('document.title.endsWith("| Loaded")');
+    if (pageTitle !== null) {
+      await this._page.waitForFunction(`document.title.endsWith("${pageTitle}")`);
+    }
   }
 
-  async afterEach() {
-    await this.browser().close(),
+  async beforeEach(pageTitle: string | null = '| Loaded') {
+    this.startBrowser(pageTitle);
+  }
+
+  async afterEach(callback: AfterEachCallback = () => Promise.resolve()) {
+    const browser = this.browser();
+    await Promise.all([
+      browser.close(),
+      callback({ browser }),
+    ])
     this._browser = undefined;
     this._page = undefined;
   }
 }
+
+type AfterEachCallback = (params: { browser: puppeteer.Browser }) => Promise<void>;

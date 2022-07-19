@@ -18,7 +18,7 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new TestRunner(DIST, { trackTime: TRACK_TIME, log: LOG });
+  const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME, log: LOG });
   const page = testRunner.page;
 
   beforeAll(async function beforeAll() {
@@ -30,7 +30,7 @@ describe('Model Loading Integration Tests', () => {
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    await testRunner.beforeEach();
+    await testRunner.beforeEach('| Loaded');
   });
 
   afterEach(async function afterEach() {
