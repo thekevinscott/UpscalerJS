@@ -26,14 +26,15 @@ const isIgnoredMessage = (msg: string) => {
 const DEFAULT_PORT = 8098;
 
 // TODO: How to type a variadic array?
-function timer<T extends any[]>(msg: string) {
+function timeIt<T extends unknown[]>(msg: string) {
   return  (
     testRunner: TestRunner,
     key: string | symbol,
     descriptor: PropertyDescriptor
   ) => {
     const origFn = descriptor.value;
-    const newFn = (...args: T) => {
+    function newFn(...args: T) {
+    // const newFn = (...args: T) = {
       const start = new Date().getTime();
       const value = origFn.apply(testRunner, args);
 
@@ -187,13 +188,13 @@ export class TestRunner {
    * Jest lifecycle methods
    */
 
-  // @timer('beforeAll scaffolding')
+  @timeIt<[Bundle]>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     await bundle();
     await this.startServer();
   }
 
-  // @timer('afterAll clean up')
+  @timeIt('afterAll clean up')
   async afterAll() {
     const stopBrowser = this._browser ? this.stopBrowser : () => {};
     await Promise.all([
@@ -202,13 +203,13 @@ export class TestRunner {
     ]);
   }
 
-  // @timer('beforeEach scaffolding')
+  @timeIt<[string]>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.startBrowser();
     await this.navigateToServer(pageTitleToAwait);
   }
 
-  // @timer('afterEach clean up')
+  @timeIt<[AfterEachCallback]>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([
       this.stopBrowser(),
