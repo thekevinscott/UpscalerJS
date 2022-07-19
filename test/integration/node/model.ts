@@ -13,7 +13,7 @@ const fs = require('fs');
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
 
 const FIXTURES = path.join(__dirname, '../../../__fixtures__');
-const IMG = path.join(FIXTURES, 'flower-small.png');
+const TENSOR_PATH = path.join(FIXTURES, 'flower-small-tensor.json');
 
 const getUpscaler = (model) => {
   if (model) {
@@ -31,9 +31,9 @@ const getUpscaler = (model) => {
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (model, filename) => {
   const upscaler = getUpscaler(model);
-  const file = fs.readFileSync(filename)
-  const image = tf.node.decodeImage(file, 3)
-  return await upscaler.upscale(image, {
+  const bytes = new Uint8Array(JSON.parse(fs.readFileSync(filename, 'utf-8')));
+  const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
+  return await upscaler.upscale(tensor, {
     output: 'tensor',
     patchSize: 64,
     padding: 6,
@@ -41,7 +41,7 @@ const upscaleImageToUInt8Array = async (model, filename) => {
 }
 
 const main = async (model) => {
-  const tensor = await upscaleImageToUInt8Array(model, IMG);
+  const tensor = await upscaleImageToUInt8Array(model, TENSOR_PATH);
   const upscaledImage = await tf.node.encodePng(tensor)
   return base64ArrayBuffer(upscaledImage);
 }
