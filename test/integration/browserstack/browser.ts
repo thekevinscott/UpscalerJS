@@ -107,7 +107,8 @@ const getCapabilityName = (capability: BrowserOption) => {
 
 describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
+    // TODO: Not sure how to proxy with Selenium
+    // mockCDN: esbuildMockCDN,
     dist: DIST,
     trackTime: TRACK_TIME,
     port: PORT,
