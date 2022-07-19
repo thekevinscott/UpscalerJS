@@ -7,7 +7,7 @@ import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } fr
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -16,7 +16,7 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new TestRunner({
+  const testRunner = new BrowserTestRunner({
     mockCDN: esbuildMockCDN,
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
@@ -86,7 +86,7 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     const UMD_PORT = 8096;
-    const umdTestRunner = new TestRunner({
+    const umdTestRunner = new BrowserTestRunner({
       mockCDN: umdMockCDN,
       dist: UMD_DIST,
       port: UMD_PORT,

@@ -4,7 +4,7 @@
 import { bundle, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { TestRunner } from '../utils/TestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 // TODO: Figure out how to import this from upscaler
 const CDNS = [
@@ -20,8 +20,7 @@ jest.setTimeout(5 * 1000);
 jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
-  const testRunner = new TestRunner({
-    mockCDN: false,
+  const testRunner = new BrowserTestRunner({
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     log: false,

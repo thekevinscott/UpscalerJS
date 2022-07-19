@@ -9,7 +9,7 @@ const DEFAULT_PORT = 8098;
 
 function timeIt<T extends unknown[]>(msg: string) {
   return  (
-    testRunner: TestRunner,
+    testRunner: BrowserTestRunner,
     _: string | symbol,
     descriptor: PropertyDescriptor
   ) => {
@@ -31,8 +31,9 @@ function timeIt<T extends unknown[]>(msg: string) {
 }
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
+export type AfterEachCallback = () => Promise<void | any>;
 
-export class TestRunner {
+export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
   mockCDN?: MockCDN;
@@ -239,5 +240,3 @@ export class TestRunner {
     ]);
   }
 }
-
-type AfterEachCallback = () => Promise<void | any>;

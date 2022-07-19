@@ -4,7 +4,7 @@ import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/TestRunner';
+import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
