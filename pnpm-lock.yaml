@@ -30,6 +30,7 @@ importers:
       '@types/rimraf': ^3.0.2
       '@types/selenium-webdriver': ^4.1.1
       '@types/serve-handler': ^6.1.1
+      '@types/tar': ^6.1.1
       '@types/yargs': ^17.0.10
       browserstack-local: ^1.5.1
       chai: ^4.3.6
@@ -58,6 +59,7 @@ importers:
       serve: ^13.0.2
       serve-handler: ^6.1.3
       tape: ^5.5.3
+      tar: ^6.1.11
       tree-kill: ^1.2.2
       ts-jest: ^28.0.5
       ts-node: ^10.8.2
@@ -88,6 +90,7 @@ importers:
       '@types/rimraf': 3.0.2
       '@types/selenium-webdriver': 4.1.1
       '@types/serve-handler': 6.1.1
+      '@types/tar': 6.1.1
       '@types/yargs': 17.0.10
       browserstack-local: 1.5.1
       chai: 4.3.6
@@ -116,6 +119,7 @@ importers:
       serve: 13.0.2
       serve-handler: 6.1.3
       tape: 5.5.3
+      tar: 6.1.11
       tree-kill: 1.2.2
       ts-jest: 28.0.5_przwvez3yaagd2j4myr22mjudm
       ts-node: 10.8.2_qqrtuuv3y2pz7xoxv47yka6pmi
@@ -129,7 +133,7 @@ importers:
     specifiers:
       '@tensorflow/tfjs': 3.18.0
       seedrandom: ^3.0.5
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@3.0.5
@@ -144,7 +148,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -159,7 +163,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -175,7 +179,7 @@ importers:
       react-dom: ^17.0.2
       react-scripts: 5.0.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       react: 17.0.2
@@ -190,7 +194,7 @@ importers:
       express: 4.16.4
       nodemon: 1.18.4
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
       express: 4.16.4
@@ -206,7 +210,7 @@ importers:
       express: 4.16.4
       nodemon: 1.18.4
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs-node': 3.18.0_seedrandom@2.4.4
       '@upscalerjs/models': 0.9.0
@@ -227,7 +231,7 @@ importers:
       react-scripts: 5.0.0
       seedrandom: ~2.4.3
       typescript: '>=3.2.1 <4.0.0 || >=4.0.0 <5.0.0'
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@babel/plugin-syntax-flow': 7.17.12_@babel+core@7.18.6
       '@babel/plugin-transform-react-jsx': 7.17.12_@babel+core@7.18.6
@@ -246,7 +250,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -266,7 +270,7 @@ importers:
       react-scripts: 5.0.0
       seedrandom: ~2.4.3
       typescript: '>=3.2.1 <4.0.0 || >=4.0.0 <5.0.0'
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@babel/plugin-syntax-flow': 7.17.12_@babel+core@7.18.6
       '@babel/plugin-transform-react-jsx': 7.17.12_@babel+core@7.18.6
@@ -285,7 +289,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -300,7 +304,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -315,7 +319,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -330,7 +334,7 @@ importers:
       cross-env: ^7.0.2
       parcel: 2.4.1
       seedrandom: ~2.4.3
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -344,7 +348,7 @@ importers:
       '@tensorflow/tfjs': 3.18.0
       seedrandom: ~2.4.3
       tensor-as-base64: ^0.3.0
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       '@tensorflow/tfjs': 3.18.0_seedrandom@2.4.4
       seedrandom: 2.4.4
@@ -471,7 +475,7 @@ importers:
 
   packages/upscalerjs-wrapper:
     specifiers:
-      upscaler: 1.0.0-beta.3
+      upscaler: 1.0.0-beta.5
     dependencies:
       upscaler: link:../upscalerjs
 
@@ -4291,6 +4295,12 @@ packages:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
     dev: true
 
+  /@types/minipass/3.1.2:
+    resolution: {integrity: sha512-foLGjgrJkUjLG/o2t2ymlZGEoBNBa/TfoUZ7oCTkOjP1T43UGBJspovJou/l3ZuHvye2ewR5cZNtp2zyWgILMA==}
+    dependencies:
+      '@types/node': 18.0.1
+    dev: true
+
   /@types/mkdirp/1.0.2:
     resolution: {integrity: sha512-o0K1tSO0Dx5X6xlU5F1D6625FawhC3dU3iqr25lluNv/+/QIVH8RLNEiVokgIZo+mz+87w/3Mkg/VvQS+J51fQ==}
     dependencies:
@@ -4419,6 +4429,13 @@ packages:
 
   /@types/stack-utils/2.0.1:
     resolution: {integrity: sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==}
+
+  /@types/tar/6.1.1:
+    resolution: {integrity: sha512-8mto3YZfVpqB1CHMaYz1TUYIQfZFbh/QbEq5Hsn6D0ilCfqRVCdalmc89B7vi3jhl9UYIk+dWDABShNfOkv5HA==}
+    dependencies:
+      '@types/minipass': 3.1.2
+      '@types/node': 18.0.1
+    dev: true
 
   /@types/through/0.0.30:
     resolution: {integrity: sha512-FvnCJljyxhPM3gkRgWmxmDZyAQSiBQQWLI0A0VFL0K7W1oRUrPJSqNO0NvTnLkBcotdlp3lKvaT0JrnyRDkzOg==}

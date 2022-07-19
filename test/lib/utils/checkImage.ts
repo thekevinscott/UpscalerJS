@@ -4,7 +4,8 @@ import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
 import { PNG } from 'pngjs';
 
-const ROOT = path.resolve(__dirname, '.././../../');
+const ROOT = path.resolve(__dirname, '../../../');
+
 // 0.10 works for browser; 0.12 for node.
 const THRESHOLD = 0.12;
 

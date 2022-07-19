@@ -1,12 +1,13 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "Pixel Upsampler Model for Upscaler.js",
   "scripts": {
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/validate-build.ts models/pixel-upsampler",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
   },
   "exports": {
@@ -42,12 +43,12 @@
     },
     ".": {
       "require": {
-        "types": "./dist/cjs/2x.d.ts",
-        "default": "./dist/cjs/2x.js"
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
       },
       "import": {
-        "types": "./dist/esm/2x.d.ts",
-        "default": "./dist/esm/2x.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       }
     }
   },

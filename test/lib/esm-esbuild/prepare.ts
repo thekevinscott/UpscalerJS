@@ -4,7 +4,6 @@ import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { installLocalPackages, installNodeModules } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { getAllAvailableModelPackages } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -18,10 +17,18 @@ export const bundle = async () => {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
-    ...getAllAvailableModelPackages().map(packageName => ({
-      src: path.resolve(MODELS_PATH, packageName),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
-    })),
+    {
+      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
+    },
+    {
+      src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
+    },
+    {
+      src: path.resolve(MODELS_PATH, 'pixel-upsampler'),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'pixel-upsampler'),
+    },
   ]);
   copyFixtures(DIST, false);
 

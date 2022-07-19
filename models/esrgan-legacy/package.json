@@ -1,65 +1,76 @@
 {
   "name": "@upscalerjs/esrgan-legacy",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "ESRGAN Legacy Models for Upscaler.js",
-  "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
-  },
   "exports": {
     "./div2k/2x": {
       "require": {
-        "types": "./dist/cjs/div2k/2x.d.ts",
-        "default": "./dist/cjs/div2k/2x.js"
+        "default": "./dist/cjs/div2k/2x.js",
+        "types": "./dist/cjs/div2k/2x.d.ts"
       },
       "import": {
-        "types": "./dist/esm/div2k/2x.d.ts",
-        "default": "./dist/esm/div2k/2x.js"
+        "default": "./dist/esm/div2k/2x.js",
+        "types": "./dist/esm/div2k/2x.d.ts"
       }
     },
     "./div2k/3x": {
       "require": {
-        "types": "./dist/cjs/div2k/3x.d.ts",
-        "default": "./dist/cjs/div2k/3x.js"
+        "default": "./dist/cjs/div2k/3x.js",
+        "types": "./dist/cjs/div2k/3x.d.ts"
       },
       "import": {
-        "types": "./dist/esm/div2k/3x.d.ts",
-        "default": "./dist/esm/div2k/3x.js"
+        "default": "./dist/esm/div2k/3x.js",
+        "types": "./dist/esm/div2k/3x.d.ts"
       }
     },
     "./div2k/4x": {
       "require": {
-        "types": "./dist/cjs/div2k/4x.d.ts",
-        "default": "./dist/cjs/div2k/4x.js"
+        "default": "./dist/cjs/div2k/4x.js",
+        "types": "./dist/cjs/div2k/4x.d.ts"
       },
       "import": {
-        "types": "./dist/esm/div2k/4x.d.ts",
-        "default": "./dist/esm/div2k/4x.js"
+        "default": "./dist/esm/div2k/4x.js",
+        "types": "./dist/esm/div2k/4x.d.ts"
       }
     },
     "./psnr-small": {
       "require": {
-        "types": "./dist/cjs/psnr-small.d.ts",
-        "default": "./dist/cjs/psnr-small.js"
+        "default": "./dist/cjs/psnr-small.js",
+        "types": "./dist/cjs/psnr-small.d.ts"
       },
       "import": {
-        "types": "./dist/esm/psnr-small.d.ts",
-        "default": "./dist/esm/psnr-small.js"
+        "default": "./dist/esm/psnr-small.js",
+        "types": "./dist/esm/psnr-small.d.ts"
       }
     },
     "./gans": {
       "require": {
-        "default": "./dist/cjs/gans.js",
-        "types": "./dist/cjs/gans.d.ts"
+        "types": "./dist/cjs/gans.d.ts",
+        "default": "./dist/cjs/gans.js"
       },
       "import": {
-        "default": "./dist/esm/gans.js",
-        "types": "./dist/esm/gans.d.ts"
+        "types": "./dist/esm/gans.d.ts",
+        "default": "./dist/esm/gans.js"
+      }
+    },
+    ".": {
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       }
     }
+  },
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/validate-build.ts models/esrgan-legacy",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",

@@ -1,6 +1,6 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
-import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
+import { LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 
 const JEST_TIMEOUT = 60 * 1000;
@@ -10,12 +10,12 @@ const writeScript = (getUpscalerArgs: string, imports: string = ''): GetContents
 const path = require('path');
 const fs = require('fs');
 const tf = require('@tensorflow/tfjs-node');
-const Upscaler = require('${LOCAL_UPSCALER_NAME}/node');
+const Upscaler = require('${LOCAL_UPSCALER_NAMESPACE}/node');
 ${imports}
 const base64ArrayBuffer = require('../../utils/base64ArrayBuffer')
 
 const FIXTURES = path.join(__dirname, '../../../__fixtures__');
-const IMG = path.join(FIXTURES, 'flower-small.png');
+const TENSOR_PATH = path.join(FIXTURES, 'flower-small-tensor.json');
 
 // Returns a PNG-encoded UInt8Array
 const upscaleImageToUInt8Array = async (args = {}, filename) => {
@@ -31,8 +31,8 @@ const upscaleImageToUInt8Array = async (args = {}, filename) => {
   });
 }
 
-const main = async (args) => {
-  const tensor = await upscaleImageToUInt8Array(args, IMG);
+const main = async (model) => {
+  const tensor = await upscaleImageToUInt8Array(model, TENSOR_PATH);
   const upscaledImage = await tf.node.encodePng(tensor)
   return base64ArrayBuffer(upscaledImage);
 }
@@ -74,6 +74,7 @@ describe('Model Loading Integration Tests', () => {
 //     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
 //   });
 
+// TODO: I'm not sure Node should support loading models via HTTP
 //   it("loads a model via HTTP", async () => {
 //     const result = await testNodeScript(writeScript(`
 // const getUpscalerArgs = () => {

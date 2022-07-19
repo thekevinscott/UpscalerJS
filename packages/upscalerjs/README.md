@@ -8,7 +8,7 @@
 <a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
 
 
-UpscalerJS is a tool for increasing image resolution in Javascript via a [Neural Network](https://github.com/thekevinscott/upscalerjs-models) up to 4x.
+UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
 ![Demo](assets/demo.gif)
 
@@ -28,15 +28,9 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 });
 ```
 
-## Models
-
-Pre-trained models live [here](https://github.com/thekevinscott/UpscalerJS/packages/models).
-
-All models are trained using [`image-super-resolution`](https://github.com/idealo/image-super-resolution), an implementation of [ESRGAN](https://arxiv.org/pdf/1809.00219v2.pdf) by [@idealo](https://github.com/idealo).
-
 ## Documentation
 
-[View the docs here.](https://thekevinscott.github.io/UpscalerJS/)
+[View the docs here.](https://upscalerjs.com)
 
 ## License
 

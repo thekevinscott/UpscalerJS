@@ -13,6 +13,13 @@ UpscalerJS is a tool for increasing image resolution in Javascript via a [Neural
 
 [A live demo is here](https://upscaler.ai).
 
+## Announcement
+
+
+[A beta version of `1.0.0`](http://npmjs.com/package/upscaler) was released on 7/15/22. [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192) about what's included.
+
+If you are migrating from `<=0.12`, and you are using a custom model, [you will need to modify how you load models](https://upscalerjs.com/#/?id=instantiation). If you are using the default model (e.g., not providing a `model` argument) then no changes are needed.
+
 ## Examples
 
 You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
@@ -40,12 +47,6 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
   console.log(upscaledImage); // base64 representation of image src
 });
 ```
-
-## Models
-
-Pre-trained models live [here](https://github.com/thekevinscott/UpscalerJS/packages/models).
-
-All models are trained using [`image-super-resolution`](https://github.com/idealo/image-super-resolution), an implementation of [ESRGAN](https://arxiv.org/pdf/1809.00219v2.pdf) by [@idealo](https://github.com/idealo).
 
 ## Documentation
 

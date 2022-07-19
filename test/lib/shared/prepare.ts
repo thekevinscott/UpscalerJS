@@ -1,12 +1,14 @@
 import { Dependency } from '@schemastore/package';
 import crypto from 'crypto';
 import fs from 'fs';
-import { copySync, mkdirp, mkdirpSync } from 'fs-extra';
+import { mkdirp, mkdirpSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
+// import zlib from 'zlib';
+import tar from 'tar';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -29,7 +31,7 @@ const installRemoteDependencies = async (dest: string, remoteDependencies: Depen
     }
     await callExec(cmd, {
       cwd: dest,
-    });
+    })
   }
 };
 
@@ -49,7 +51,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   await Promise.all(dependencies.map(async ({ src, name }) => {
     const moduleFolder = path.resolve(NODE_MODULES, name);
     await installLocalPackageWithNewName(src, moduleFolder, name);
-  }));
+  }))
 };
 
 const buildDependencyTree = (dependencies: DependencyDefinition[]): {
@@ -85,21 +87,13 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
 
   await installRemoteDependencies(dest, remoteDependencies);
   await installLocalDependencies(dest, dependencies, localDependencies);
-};
-
-const writePackageJSONWithLocalName = (dir: string, name: string) => {
-  const packageJSON = getPackageJSON(dir);
-  packageJSON.name = name;
-  writePackageJSON(dir, packageJSON);
-};
+}
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
-  await withTmpDir(async tmp => {
-    const tmpPackage = path.join(tmp, 'package');
-    copySync(src, tmpPackage);
-    writePackageJSONWithLocalName(tmpPackage, localNameForPackage);
-    await installLocalPackage(src, dest);
-  });
+  await installLocalPackage(src, dest);
+  const packageJSON = getPackageJSON(dest)
+  packageJSON.name = localNameForPackage;
+  writePackageJSON(dest, packageJSON)
 }
 
 const npmPack = async (src: string): Promise<string> => {
@@ -119,7 +113,8 @@ const npmPack = async (src: string): Promise<string> => {
   return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => callExec(`tar zxf ${fileName}`, {
+const unTar = (cwd: string, fileName: string) => tar.extract({
+  file: fileName,
   cwd,
 });
 
@@ -208,7 +203,6 @@ export const installLocalPackage = async (src: string, dest: string) => {
   rimraf.sync(dest);
   await withTmpDir(async tmp => {
     const unpackedFolder = await packAndTar(src, tmp);
-    console.log('successfully packed src', src);
 
     const destParent = path.resolve(dest, '..');
     mkdirpSync(destParent);

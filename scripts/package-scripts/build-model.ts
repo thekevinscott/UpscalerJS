@@ -1,10 +1,8 @@
 import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
-import ts, { ProjectReference } from "typescript";
 import path from 'path';
 import inquirer from 'inquirer';
-import scaffoldDependencies, { Platform, writeTFJSDependency } from './scaffold-dependencies';
-import { compile } from './utils/compile';
+import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
@@ -13,98 +11,21 @@ import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
-
-/****
- * Types
- */
-export type OutputFormat = 'cjs' | 'esm' | 'umd';
+import { OutputFormat } from './utils/types';
+import { compileTypescript } from './utils/compile';
 
 /****
  * Constants
  */
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-export const AVAILABLE_MODELS = getAllAvailableModelPackages();
+const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
-
-const references: ProjectReference[] = [];
-
-const TSCONFIG: ts.CompilerOptions = {
-  "skipLibCheck": true,
-  "esModuleInterop": true,
-  "target": ts.ScriptTarget.ES2020,
-  "module": ts.ModuleKind.CommonJS,
-  "strict": true,
-  "forceConsistentCasingInFileNames": true,
-  "declaration": true,
-  "declarationMap": true,
-  "noUnusedLocals": true,
-  "strictNullChecks": true,
-  "noUnusedParameters": true,
-  "noImplicitReturns": true,
-  "noFallthroughCasesInSwitch": true,
-};
-
-/****
- * Misc utility functions
- */
-
-const rm = (folder: string): Promise<void> => new Promise((resolve, reject) => {
-  rimraf(folder, err => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve();
-    }
-  })
-});
-
-type IncludeFn = (file: string) => boolean;
-const readDirRecursive = (folder: string, include?: IncludeFn): Array<string> => {
-  const includedFiles: Array<string> = [];
-  const files = fs.readdirSync(folder);
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const filepath = path.resolve(folder, file);
-    if (fs.lstatSync(filepath).isDirectory()) {
-      includedFiles.push(...readDirRecursive(filepath, include));
-    } else {
-      if (include) {
-        if (include(filepath)) {
-          includedFiles.push(filepath);
-        }
-      } else {
-        includedFiles.push(path.resolve(folder, file));
-      }
-    }
-  }
-  return includedFiles;
-}
-
-const getSrcFiles = (modelFolder: string): Array<string> => {
-  const SRC = path.resolve(modelFolder, 'src');
-  return readDirRecursive(SRC, file => file.endsWith('.ts'));
-};
 
 /****
  * ESM build function
  */
-const buildESM = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const DIST = path.resolve(modelFolder, 'dist/esm');
-  const files = getSrcFiles(modelFolder);
-
-
-  await compile(files, {
-    ...TSCONFIG,
-    "target": ts.ScriptTarget.ESNext,
-    "module": ts.ModuleKind.ESNext,
-    'moduleResolution': ts.ModuleResolutionKind.NodeJs,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: DIST,
-  }, references);
-}
+const buildESM = (modelFolder: string) => compileTypescript(modelFolder, 'esm');
 
 /****
  * UMD build function
@@ -114,22 +35,10 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 }
 
 const buildUMD = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
-  // await rm(DIST);
   await mkdirp(DIST);
-
-  const srcFiles = getSrcFiles(modelFolder);
-  if (srcFiles.length === 0) {
-    throw new Error(`No files found in ${SRC}`);
-  }
-  await compile(srcFiles, {
-    ...TSCONFIG,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: TMP,
-  }, references);
+  await compileTypescript(modelFolder, 'umd');
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
@@ -158,27 +67,17 @@ const buildUMD = async (modelFolder: string) => {
 
     uglify(FILE_DIST, file);
   }));
-  await rm(TMP);
+  rimraf.sync(TMP);
 };
 
 /****
  * CJS build function
  */
 const buildCJS = async (modelFolder: string) => {
-  const SRC = path.resolve(modelFolder, 'src');
-  const files = getSrcFiles(modelFolder);
-
   const dist = path.resolve(modelFolder, 'dist/cjs');
   await mkdirp(dist);
 
-  await compile(files, {
-  ...TSCONFIG,
-  "target": ts.ScriptTarget.ES5,
-  "module": ts.ModuleKind.CommonJS,
-    baseUrl: SRC,
-    rootDir: SRC,
-    outDir: dist,
-  }, references);
+  await compileTypescript(modelFolder, 'cjs');
 };
 
 /****
@@ -192,7 +91,7 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
   const DIST = path.resolve(MODEL_ROOT, 'dist')
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
-  await rm(DIST);
+  rimraf.sync(DIST);
   await mkdirp(DIST);
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);

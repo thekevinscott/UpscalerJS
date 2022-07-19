@@ -1,6 +1,9 @@
+import path from 'path';
 import ts, { ProjectReference } from 'typescript';
+import callExec from '../../../test/lib/utils/callExec';
+import { OutputFormat } from './types';
 
-export function compile(rootNames: string[], options: ts.CompilerOptions, projectReferences?: Array<ProjectReference>) {
+export function _old_compile(rootNames: string[], options: ts.CompilerOptions, projectReferences?: Array<ProjectReference>) {
   let program = ts.createProgram({
     rootNames, 
     options,
@@ -24,3 +27,11 @@ export function compile(rootNames: string[], options: ts.CompilerOptions, projec
 
   return emitResult;
 };
+
+export const compileTypescript = (modelFolder: string, outputFormat: OutputFormat) => callExec([
+  `tsc`,
+  `-p`,
+  path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
+].join(' '), {
+  cwd: modelFolder,
+});

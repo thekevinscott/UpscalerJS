@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.esm.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist/esm",
+  },
+  "include": [
+    "./src/index.ts",
+    "./src/psnr-small.ts",
+    "./src/gans.ts",
+    "./src/div2k/2x.ts",
+    "./src/div2k/3x.ts",
+    "./src/div2k/4x.ts",
+  ]
+}

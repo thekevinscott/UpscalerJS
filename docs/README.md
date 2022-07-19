@@ -1,16 +1,23 @@
 # UpscalerJS
 
-<a href="https://travis-ci.org/github/thekevinscott/UpscalerJS"><img alt="Travis (.org)" src="https://img.shields.io/travis/thekevinscott/upscalerjs"></a>
-<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs"></a>
-<a href="https://www.npmjs.com/package/upscaler"><img alt="npm" src="https://img.shields.io/npm/dw/upscalerjs"></a>
-<a href="https://github.com/thekevinscott/UpscalerJS/issues"><img alt="Github issues" src="https://img.shields.io/github/issues/thekevinscott/upscalerjs"></a>
-<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler"></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler" /></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="npm" src="https://img.shields.io/npm/dw/upscaler" /></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
+<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
+<a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
+
 
 UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
 ![Demo](assets/demo.gif)
 
 [A live demo is here](https://upscaler.ai).
+
+## Announcement
+
+[A beta version of `1.0.0`](http://npmjs.com/package/upscaler) was released on 7/15/22. [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192) about what's included.
+
+If you are migrating from `<=0.12`, and you are using a custom model, [you will need to modify how you load models](https://upscalerjs.com/#/?id=instantiation). If you are using the default model (e.g., not providing a `model` argument) then no changes are needed.
 
 **Features**
 
@@ -104,28 +111,43 @@ You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJ
 
 ### Instantiation
 
-When instantiating UpscalerJS, you must provide a model, which determines the image scaling factor.
+By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/esrgan-slim`](https://npmjs.com/package/@upscalerjs/esrgan-slim).
 
-UpscalerJS provides a number of pretrained models out of the box. UpscalerJS will automatically choose one, or you can pick a pretrained one:
+You can install alternative models by installing them and providing them as an argument. For instance, to use `@upscalerjs/esrgan-legacy`, you'd first install it:
+
+```sh
+npm install @upscalerjs/esrgan-legacy
+```
+
+And then import and provide it:
 
 ```javascript
+import Upscaler from 'upscaler';
+import GANS from '@upscalerjs/esrgan-legacy/gans';
 const upscaler = new Upscaler({
-  model: 'div2k-2x',
+  model: GANS,
 });
 ```
+
+Currently, the list of models includes:
+
+* `@upscalerjs/esrgan-slim`
+* `@upscalerjs/esrgan-legacy`
 
 Alternatively, you can provide a path to a pre-trained model of your own:
 
 ```javascript
 const upscaler = new Upscaler({
-  model: '/path/to/model',
-  scale: 2,
+  model: {
+    path: '/path/to/model',
+    scale: 2,
+  },
 });
 ```
 
-When providing your own model, **you must provide an explicit scale**. Conversely, if you are requesting a pretrained model, **do not** provide an explicit scale.
+When providing your own model, **you must provide an explicit scale**.
 
-[A full list of pretrained models is available in the models repo](https://github.com/thekevinscott/UpscalerJS-models).
+[The full model definition is defined here](https://github.com/thekevinscott/UpscalerJS/blob/v1.0.0/packages/core/src/index.ts#L18).
 
 ### Upscaling
 
@@ -180,18 +202,6 @@ Without padding, images will usually end up with unsightly artifacting at the se
 
 Smaller patch sizes will block the UI less, but also increase overall inference time for a given image.
 
-### Pretrained Models
-
-There are a number of pretrained models provided with the package:
-
-| Key | Dataset | Scale | Example |
-| --- | --- | --- | --- |
-| `2x` | div2k | 2 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#2x) |
-| `3x` | div2k | 3 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#3x) |
-| `4x` | div2k | 4 | [View](https://github.com/thekevinscott/UpscalerJS-models/tree/master/examples/div2k#4x) |
-
-You can read more about the pretrained models at the dedicated repo [UpscalerJS-models](https://github.com/thekevinscott/UpscalerJS-models).
-
 ## API
 
 ### `constructor`
@@ -202,7 +212,6 @@ Instantiates an instance of UpscalerJS.
 
 ```javascript
 const upscaler = new Upscaler({
-  model: 'div2k-2x',
   scale: 2,
   warmupSizes: [[256, 256]]
 });
@@ -210,16 +219,9 @@ const upscaler = new Upscaler({
 
 #### Options
 
-* `model` (`string`) - A string of a pretrained model, or a URL to load a custom pretrained model.
+* `model` (`ModelDefinition`) - A configuration of a pretrained model.
 * `scale` (`number`) - The scale of the custom pretrained model. Required if providing a custom model. If a pretrained model is specified, providing `scale` will throw an error.
 * `warmupSizes` (Optional, `Array<[number, number] | { patchSize: number, padding?: number }`>) - An array of sizes to "warm up" the model. By default, the first inference run will be slower than the rest. This passes a dummy tensor through the model to warm it up. It must match your image size exactly. Sizes are specified as `[width, height]`.
-
-Possible model values are:
-
-* `div2k-2x` - Scale of 2x
-* `div2k-3x` - Scale of 3x
-* `div2k-4x` - Scale of 4x
-* `psnr` - Scale of 2x
 
 ### `upscale`
 
@@ -337,31 +339,6 @@ await upscaler.abort();
 ```
 
 ## Troubleshooting
-
-### You must provide an explicit scale
-
-When initializing UpscalerJS with a custom model, you need to also denote the numeric scale of the model (2x, 3x, 4x). UpscalerJS needs to know the scale in order to patch correctly.
-
-Scale can be provided at initialization with:
-
-```javascript
-const upscaler = new Upscaler({
-  model: '/your/custom/model',
-  scale: 2,
-})
-```
-
-### You are requesting the pretrained model but are providing an explicit scale
-
-A pretrained model is trained to upscale to a specific scale. If you initialize UpscalerJS with a pretrained model and also provide an explicit scale, UpscalerJS will throw an error.
-
-You can fix this by not providing a `scale` property if using a pretrained model:
-
-```javascript
-const upscaler = new Upscaler({
-  model: 'div2k-2x',
-})
-```
 
 ### Padding is undefined
 

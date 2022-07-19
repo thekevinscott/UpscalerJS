@@ -5,14 +5,7 @@
     "moduleResolution": "Node",
     "target": "ES2022",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "module": "commonjs"
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": true,
-    "transpileOnly": true,
-    "moduleTypes": {
-      "*": "cjs",
-    }
-  },
+  }
 }
