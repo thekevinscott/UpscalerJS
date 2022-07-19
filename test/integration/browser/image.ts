@@ -8,7 +8,7 @@ import Upscaler from 'upscaler';
 import { TestRunner } from './utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
-import type * as puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -20,23 +20,24 @@ describe('Image Format Integration Tests', () => {
   const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundle);
   }, 20000);
 
   afterAll(async function imageAfterAll() {
-    testRunner.afterAll();
+    await testRunner.afterAll();
   }, 10000);
 
   beforeEach(async function beforeEach() {
-    testRunner.beforeEach('| Loaded');
+    await testRunner.beforeEach('| Loaded');
   });
 
   afterEach(async function afterEach() {
-    testRunner.afterEach();
+    await testRunner.afterEach();
   });
 
   describe('Image formats', () => {
     it("upscales an imported local image path", async () => {
+      console.log('page', testRunner.page);
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
@@ -49,114 +50,114 @@ describe('Image Format Integration Tests', () => {
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
-    it("upscales an HTML Image", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.onload = function () {
-          upscaler.upscale(img).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales an HTML Image", async () => {
+  //     const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       const img = new Image();
+  //       img.src = window['flower'];
+  //       img.onload = function () {
+  //         upscaler.upscale(img).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-    it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        const img = document.createElement('img');
-        img.id = 'img';
-        img.src = window['flower'];
-        document.body.append(img);
-        img.onload = () => {
-          upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales an HTML Image from the page", async () => {
+  //     const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       const img = document.createElement('img');
+  //       img.id = 'img';
+  //       img.src = window['flower'];
+  //       document.body.append(img);
+  //       img.onload = () => {
+  //         upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
 
-    it("upscales a tensor", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img);
-          upscaler.upscale(tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a tensor", async () => {
+  //     const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       const img = new Image();
+  //       img.src = window['flower'];
+  //       img.crossOrigin = 'anonymous';
+  //       img.onload = function () {
+  //         const tensor = window['tf'].browser.fromPixels(img);
+  //         upscaler.upscale(tensor).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-    it("upscales a rank 4 tensor", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        const img = new Image();
-        img.src = window['flower'];
-        img.crossOrigin = 'anonymous';
-        img.onload = function () {
-          const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
-          upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
-        }
-      }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a rank 4 tensor", async () => {
+  //     const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       const img = new Image();
+  //       img.src = window['flower'];
+  //       img.crossOrigin = 'anonymous';
+  //       img.onload = function () {
+  //         const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
+  //         upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
+  //       }
+  //     }));
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-    it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
-      const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await page().evaluate(src => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        return upscaler.upscale(src);
-      }, originalImage);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  //   it("upscales a base64 png path", async () => {
+  //     const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
+  //     const originalImage = `data:image/png;base64,${data}`;
+  //     const upscaledSrc = await page().evaluate(src => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       return upscaler.upscale(src);
+  //     }, originalImage);
+  //     checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
 
-  });
+  // });
 
-  describe('Patch sizes', () => {
-    it("upscales an imported local image path with patch sizes", async () => {
-      const result = await page().evaluate(() => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
-        });
-        return upscaler.upscale(window['flower'], {
-          patchSize: 4,
-          padding: 2,
-        });
-      });
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-    });
+  // describe('Patch sizes', () => {
+  //   it("upscales an imported local image path with patch sizes", async () => {
+  //     const result = await page().evaluate(() => {
+  //       const upscaler = new window['Upscaler']({
+  //         model: {
+  //           path: '/pixelator/pixelator.json',
+  //           scale: 4,
+  //         },
+  //       });
+  //       return upscaler.upscale(window['flower'], {
+  //         patchSize: 4,
+  //         padding: 2,
+  //       });
+  //     });
+  //     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+  //   });
   });
 });
 
