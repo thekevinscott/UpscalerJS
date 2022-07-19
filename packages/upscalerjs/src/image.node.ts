@@ -20,6 +20,7 @@ const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constr
 
 const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tensor4D => {
   if (isUint8Array(input)) {
+    // TODO: This doesn't work I don't think?
     return tf.node.decodeImage(input);
   }
 
