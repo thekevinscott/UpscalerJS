@@ -25,27 +25,25 @@ const isIgnoredMessage = (msg: string) => {
 
 const DEFAULT_PORT = 8098;
 
-// TODO: How to type a variadic array?
 function timeIt<T extends unknown[]>(msg: string) {
   return  (
     testRunner: TestRunner,
-    key: string | symbol,
+    _: string | symbol,
     descriptor: PropertyDescriptor
   ) => {
+    // return 
     const origFn = descriptor.value;
-    function newFn(...args: T) {
-    // const newFn = (...args: T) = {
+    descriptor.value = async function (...args: T) {
       const start = new Date().getTime();
-      const value = origFn.apply(testRunner, args);
+      const result = await origFn.apply(this, args);
 
       if (testRunner.trackTime) {
         const end = new Date().getTime();
         const duration = Math.round((end - start) / 1000);
         console.log(`Completed ${msg} in ${duration} seconds`);
       }
-      return value;
-    }
-    descriptor.value = newFn.bind(testRunner);
+      return result;
+    };
     return descriptor;
   };
 }
@@ -66,6 +64,7 @@ export class TestRunner {
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
+    console.log('port has been set', this.port)
   }
 
   /****
