@@ -8,6 +8,7 @@ import Upscaler from 'upscaler';
 import { TestRunner } from './utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
+import type * as puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -16,7 +17,7 @@ jest.retryTimes(1);
 
 describe('Image Format Integration Tests', () => {
   const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
-  const page = testRunner.page;
+  const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
     testRunner.beforeAll(bundle);
