@@ -17,7 +17,7 @@ jest.retryTimes(1);
 
 describe('Upscale Integration Tests', () => {
   const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
-  const page = testRunner.page;
+  const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);

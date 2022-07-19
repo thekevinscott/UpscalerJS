@@ -8,7 +8,11 @@ import Upscaler from 'upscaler';
 import { TestRunner } from './utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
+<<<<<<< HEAD
 import type * as puppeteer from 'puppeteer';
+=======
+import puppeteer from 'puppeteer';
+>>>>>>> main
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -20,6 +24,7 @@ describe('Image Format Integration Tests', () => {
   const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
+<<<<<<< HEAD
     testRunner.beforeAll(bundle);
   }, 20000);
 
@@ -33,6 +38,21 @@ describe('Image Format Integration Tests', () => {
 
   afterEach(async function afterEach() {
     testRunner.afterEach();
+=======
+    await testRunner.beforeAll(bundle);
+  }, 20000);
+
+  afterAll(async function imageAfterAll() {
+    await testRunner.afterAll();
+  }, 10000);
+
+  beforeEach(async function beforeEach() {
+    await testRunner.beforeEach('| Loaded');
+  });
+
+  afterEach(async function afterEach() {
+    await testRunner.afterEach();
+>>>>>>> main
   });
 
   describe('Image formats', () => {
