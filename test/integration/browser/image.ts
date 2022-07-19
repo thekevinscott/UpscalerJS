@@ -10,10 +10,12 @@ import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
 
+const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
+
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(1);
+jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
   const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME });
@@ -62,7 +64,7 @@ describe('Image Format Integration Tests', () => {
         img.onload = function () {
           upscaler.upscale(img).then(resolve);
         }
-      }));
+      }), []);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
@@ -85,8 +87,7 @@ describe('Image Format Integration Tests', () => {
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
-
-    it("upscales a tensor", async () => {
+    it("upscales a tensor from an HTML image", async () => {
       const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
@@ -102,6 +103,21 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(tensor).then(resolve);
         }
       }));
+      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+    });
+
+    it("upscales a tensor from a Uint8Array", async () => {
+      const upscaledSrc = await page().evaluate((pixels) => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
+        });
+        const bytes = new Uint8Array(pixels);
+        const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
+        upscaler.upscale(tensor).then(resolve);
+      }), flowerPixels);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
 
@@ -138,7 +154,6 @@ describe('Image Format Integration Tests', () => {
       }, originalImage);
       checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
     });
-
   });
 
   describe('Patch sizes', () => {
