@@ -195,8 +195,10 @@ export class TestRunner {
 
   // @timer('afterAll clean up')
   async afterAll() {
+    const stopBrowser = this._browser ? this.stopBrowser : () => {};
     await Promise.all([
       this.stopServer(),
+      stopBrowser,
     ]);
   }
 

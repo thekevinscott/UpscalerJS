@@ -130,6 +130,7 @@ describe('Model Loading Integration Tests', () => {
               return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
             }, [umdName]);
             checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+            await umdTestRunner.stopBrowser();
           });
         });
       })
