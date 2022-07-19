@@ -19,7 +19,7 @@ jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new TestRunner({ dist: DIST, trackTime: TRACK_TIME, log: LOG });
-  const page = testRunner.page;
+  const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);

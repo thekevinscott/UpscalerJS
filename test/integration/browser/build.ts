@@ -7,24 +7,34 @@ import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import { TestRunner } from './utils/TestRunner';
+import * as puppeteer from 'puppeteer';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(1);
 
 describe('Build Integration Tests', () => {
-  const testRunner = new TestRunner();
-  const page = testRunner.page;
+  const testRunner = new TestRunner({ showWarnings: true });
 
   afterEach(async function afterEach() {
-    testRunner.afterEach(() => testRunner.stopServer());
-  });
+    await testRunner.afterEach(async () => {
+      await testRunner.stopServer();
+    });
+  }, 5000);
+
+  const start = async (bundle: () => Promise<void>) => {
+    await bundle();
+    await Promise.all([
+      testRunner.startServer(SCRIPT_DIST),
+      testRunner.startBrowser(),
+    ]);
+    await testRunner.navigateToServer(null);
+    return testRunner.page;
+  }
 
   it("upscales using a UMD build via a script tag", async () => {
-    await prepareScriptBundleForUMD();
-    await testRunner.startServer(SCRIPT_DIST);
-    testRunner.startBrowser();
-    const result = await page().evaluate(() => {
+    const page = await start(prepareScriptBundleForUMD);
+    const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
@@ -35,13 +45,12 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    console.log('page 2', page.isClosed());
   });
 
   it("upscales using a UMD build with a specified model", async () => {
-    await prepareScriptBundleForUMD();
-    await testRunner.startServer(SCRIPT_DIST);
-    testRunner.startBrowser();
-    const result = await page().evaluate(() => {
+    const page = await start(prepareScriptBundleForUMD);
+    const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const pixelUpsampler = window['PixelUpsampler4x'];
       const upscaler = new Upscaler({
@@ -53,11 +62,11 @@ describe('Build Integration Tests', () => {
   });
 
   it("upscales using an ESM build using Webpack", async () => {
-    await prepareScriptBundleForESM();
-    await bundleWebpack();
-    await testRunner.startServer(WEBPACK_DIST);
-    testRunner.startBrowser('| Loaded');
-    const result = await page().evaluate(() => {
+    const page = await start(async () => {
+      await prepareScriptBundleForESM();
+      await bundleWebpack();
+    });
+    const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
