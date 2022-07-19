@@ -6,8 +6,7 @@ import { prepareScriptBundleForUMD, DIST as SCRIPT_DIST } from '../../lib/umd/pr
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST } from '../../lib/esm-webpack/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { TestRunner } from './utils/TestRunner';
-import * as puppeteer from 'puppeteer';
+import { TestRunner } from '../utils/TestRunner';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);

@@ -5,7 +5,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { TestRunner } from './utils/TestRunner';
+import { TestRunner } from '../utils/TestRunner';
 import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';

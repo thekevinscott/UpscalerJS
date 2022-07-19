@@ -9,7 +9,7 @@ import { prepareScriptBundleForUMD, DIST as UMD_DIST } from '../../lib/umd/prepa
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { TestRunner } from './utils/TestRunner';
+import { TestRunner } from '../utils/TestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;
