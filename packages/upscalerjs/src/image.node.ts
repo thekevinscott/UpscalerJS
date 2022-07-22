@@ -66,3 +66,5 @@ export const getImageAsTensor = async (
 
   throw getInvalidTensorError(tensor);
 };
+
+export { default as tensorAsBase64 } from 'tensor-as-base64';
