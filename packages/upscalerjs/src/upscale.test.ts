@@ -25,8 +25,6 @@ jest.mock('./image.generated', () => ({
 const mockedImage = image as jest.Mocked<typeof image>;
 const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
 
-console.log(mockedImage);
-
 describe('concatTensors', () => {
   beforeEach(() => {
     try {
