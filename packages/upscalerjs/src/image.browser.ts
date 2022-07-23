@@ -68,7 +68,7 @@ export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
   const arr = await tensorAsClampedArray(tensor);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
-  imageData.data.set(Buffer.from(arr));
+  imageData.data.set(arr);
   const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
