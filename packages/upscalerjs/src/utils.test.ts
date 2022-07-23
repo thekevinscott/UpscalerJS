@@ -11,6 +11,7 @@ import {
   warn, 
   isAborted,
   registerCustomLayers,
+  tensorAsClampedArray,
 } from './utils';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -247,5 +248,17 @@ describe('isTensor', () => {
   });
   it('returns false if not a tensor', () => {
     expect(isTensor([] as any)).toEqual(false);
+  });
+});
+
+describe('tensorAsClampedArray', () => {
+  it('returns an array', async () => {
+    const result = await tensorAsClampedArray(tf.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6]]]))
+    expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255]);
+  });
+
+  it('returns a clamped array', async () => {
+    const result = await tensorAsClampedArray(tf.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
+    expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
 });
