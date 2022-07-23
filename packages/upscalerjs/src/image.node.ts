@@ -86,19 +86,7 @@ export const tensorAsBuffer = async (tensor: tf.Tensor3D) => {
 };
 
 export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
-  // const [height, width, ] = tensor.shape;
   const buffer = await tensorAsBuffer(tensor);
   return buffer.toString('base64');
-  // const imageData = new ImageData(width, height);
-  // imageData.data.set(buffer);
-  // const canvas = document.createElement('canvas');
-  // canvas.width = width;
-  // canvas.height = height;
-  // const ctx = canvas.getContext('2d');
-  // if (!ctx) {
-  //   throw new Error('No context found');
-  // }
-  // ctx.putImageData(imageData, 0, 0);
-  // return canvas.toDataURL();
 };
 
