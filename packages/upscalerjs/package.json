@@ -84,8 +84,7 @@
   },
   "dependencies": {
     "@upscalerjs/esrgan-slim": "workspace:*",
-    "@upscalerjs/core": "workspace:*",
-    "tensor-as-base64": "^0.3.0"
+    "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
     "seedrandom": "2.4.4",

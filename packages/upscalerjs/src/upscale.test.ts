@@ -13,7 +13,6 @@ import {
   WARNING_UNDEFINED_PADDING,
 } from './upscale';
 import { wrapGenerator, isTensor } from './utils';
-import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
 import { ModelDefinition } from "@upscalerjs/core";
 import { Progress, } from './types';
@@ -23,7 +22,7 @@ jest.mock('./image.generated', () => ({
 }));
 
 const mockedImage = image as jest.Mocked<typeof image>;
-const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
+// const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
 
 console.log(mockedImage);
 
@@ -1197,7 +1196,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a tensor', async () => {
     console.warn = jest.fn();
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1274,7 +1273,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a string but progressOutput is tensor', async () => {
     console.warn = jest.fn();
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1520,7 +1519,7 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
       model, 
       modelDefinition: { scale: 2, } as ModelDefinition, 
