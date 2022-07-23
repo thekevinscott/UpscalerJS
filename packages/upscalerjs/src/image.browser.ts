@@ -63,3 +63,5 @@ export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTM
     return false;
   }
 };
+
+export { tensorAsBase64, } from 'tensor-as-base64';

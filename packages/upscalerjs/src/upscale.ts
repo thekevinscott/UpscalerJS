@@ -8,8 +8,7 @@ import type {
   Progress, 
   MultiArgProgress,
  } from './types';
-import { getImageAsTensor, } from './image.generated';
-import tensorAsBase64 from 'tensor-as-base64';
+import { getImageAsTensor, tensorAsBase64, } from './image.generated';
 import { 
   wrapGenerator, 
   warn, 
