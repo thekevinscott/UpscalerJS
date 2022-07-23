@@ -64,4 +64,36 @@ export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTM
   }
 };
 
-export { tensorAsBase64, } from 'tensor-as-base64';
+export const tensorAsBuffer = async (tensor: tf.Tensor3D) => {
+  const [height, width, ] = tensor.shape;
+  const buffer = new Uint8ClampedArray(width * height * 4);
+  const data = await tensor.data();
+  let i = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const pos = (y * width + x) * 4;
+      buffer[pos] = data[i]; // R
+      buffer[pos + 1] = data[i + 1]; // G
+      buffer[pos + 2] = data[i + 2]; // B
+      buffer[pos + 3] = 255; // Alpha
+      i += 3;
+    }
+  }
+  return buffer;
+};
+
+export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
+  const [height, width, ] = tensor.shape;
+  const buffer = await tensorAsBuffer(tensor);
+  const imageData = new ImageData(width, height);
+  imageData.data.set(buffer);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('No context found');
+  }
+  ctx.putImageData(imageData, 0, 0);
+  return canvas.toDataURL();
+};
