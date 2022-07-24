@@ -1,5 +1,4 @@
 import { tf, } from './dependencies.generated';
-import { ROOT, } from './constants';
 import type { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
@@ -49,14 +48,6 @@ export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3)
 export const isTensor = (input: unknown): input is tf.Tensor => {
   return input instanceof tf.Tensor;
 };
-
-const MODEL_DIR = 'models';
-
-export const buildURL = (modelFolder: string) =>
-  `${ROOT}/${MODEL_DIR}/${modelFolder}/model.json`;
-
-export const buildConfigURL = (modelFolder: string) =>
-  `${ROOT}/${MODEL_DIR}/${modelFolder}/config.json`;
 
 export const warn = (msg: string | string[]) => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
