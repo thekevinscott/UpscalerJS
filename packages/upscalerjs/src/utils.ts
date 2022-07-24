@@ -5,7 +5,7 @@ import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } f
 
 export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
 
-function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
+export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   function fn(pixels: tf.Tensor): pixels is T {
     try {
       return pixels.shape.length === rank;
