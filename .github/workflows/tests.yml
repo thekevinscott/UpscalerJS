@@ -159,8 +159,9 @@ jobs:
       - name: 'Integration Tests'
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 10
-          max_attempts: 7
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 90
           command: pnpm test:integration:browserstack --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
