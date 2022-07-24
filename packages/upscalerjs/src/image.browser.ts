@@ -64,8 +64,9 @@ export const isHTMLImageElement = (pixels: GetImageAsTensorInput): pixels is HTM
   }
 };
 
-export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
-  const arr = await tensorAsClampedArray(tensor);
+export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
+  const arr = tensorAsClampedArray(tensor);
+  tensor.dispose();
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
   imageData.data.set(arr);
