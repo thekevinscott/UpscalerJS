@@ -13,6 +13,12 @@ import {
   WARNING_UNDEFINED_PADDING,
   getWidthAndHeight,
   GET_WIDTH_AND_HEIGHT_ERROR,
+  GetTensorDimensionsOpts,
+  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
 } from './upscale';
 import { wrapGenerator, isTensor } from './utils';
 import * as image from './image.generated';
@@ -101,7 +107,7 @@ describe('getCopyOfInput', () => {
   });
 });
 
-describe('getConsistentTensorDimensions', () => {
+describe('getTensorDimensions', () => {
   interface IOpts {
     width: number;
     height: number;
@@ -1013,6 +1019,46 @@ describe('getConsistentTensorDimensions', () => {
         },
       ],
     );
+  });
+
+  it('throws an error if row is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED);
+  });
+
+  it('throws an error if col is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED);
+  });
+
+  it('throws an error if patch size is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED);
+  });
+
+  it('throws an error if height is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: 0,
+      height: undefined
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED);
+  });
+
+  it('throws an error if width is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: 0,
+      height: 0,
+      width: undefined
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED);
   });
 });
 
