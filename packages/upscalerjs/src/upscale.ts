@@ -42,7 +42,13 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
 ].join('\n');
 
-const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
+export const GET_WIDTH_AND_HEIGHT_ERROR = (tensor: tf.Tensor) => new Error(
+  `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
+    tensor.shape,
+  )}`,
+);
+
+export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
   if (tensor.shape.length === 4) {
     return tensor.shape.slice(1, 3);
   }
@@ -51,11 +57,7 @@ const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
     return tensor.shape.slice(0, 2);
   }
 
-  throw new Error(
-    `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
-      tensor.shape,
-    )}`,
-  );
+  throw GET_WIDTH_AND_HEIGHT_ERROR(tensor);
 };
 
 export const getRowsAndColumns = (

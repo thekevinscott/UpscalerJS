@@ -8,6 +8,7 @@ import {
   isFourDimensionalTensor, 
   isThreeDimensionalTensor, 
   isTensor, 
+  isValidModelDefinition,
   warn, 
   isAborted,
   registerCustomLayers,
@@ -20,6 +21,24 @@ jest.mock('@tensorflow/tfjs', () => ({
     registerClass: jest.fn(),
   },
 }));
+
+describe('isValidModelDefinition', () => {
+  it('returns false if given an undefined', () => {
+    expect(isValidModelDefinition(undefined)).toEqual(false);
+  });
+
+  it('returns false if given path but no scale', () => {
+    expect(isValidModelDefinition({ path: 'foo', scale: undefined } as unknown as ModelDefinition )).toEqual(false);
+  });
+
+  it('returns false if given scale but no path', () => {
+    expect(isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toEqual(false);
+  });
+
+  it('returns true if given scale and path', () => {
+    expect(isValidModelDefinition({ path: 'foo', scale: 2 })).toEqual(true);
+  });
+});
 
 describe('registerCustomLayers', () => {
   it('does nothing if no custom layers are specified', () => {
