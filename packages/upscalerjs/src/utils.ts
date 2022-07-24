@@ -16,17 +16,21 @@ function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   return fn;
 }
 
+export const MISSING_MODEL_DEFINITION_ERROR = new Error('You must provide a model definition');
+export const MISSING_MODEL_DEFINITION_PATH_ERROR = new Error('You must provide a path for a model definition');
+export const MISSING_MODEL_DEFINITION_SCALE_ERROR = new Error('You must provide a scale for a model definition');
+export const LOGICAL_ERROR = new Error('There is a bug with the upscaler code. Please report this.');
 export function getModelDefinitionError(modelDefinition?: ModelDefinition) {
   if (!modelDefinition) {
-    return new Error('You must provide a model definition');
+    return MISSING_MODEL_DEFINITION_ERROR;
   }
   if (!modelDefinition.path) {
-    return new Error('No model path provided');
+    return MISSING_MODEL_DEFINITION_PATH_ERROR;
   }
   if (!modelDefinition.scale) {
-    return new Error('No model scale provided');
+    return MISSING_MODEL_DEFINITION_SCALE_ERROR;
   }
-  return new Error('Bug with code');
+  return LOGICAL_ERROR;
 }
 
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
