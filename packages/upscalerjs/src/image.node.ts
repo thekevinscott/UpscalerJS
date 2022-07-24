@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, } from './utils';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
 
 export const getInvalidTensorError = (input: tf.Tensor) => new Error(
   [
@@ -66,3 +66,9 @@ export const getImageAsTensor = async (
 
   throw getInvalidTensorError(tensor);
 };
+
+export const tensorAsBase64 = async (tensor: tf.Tensor3D) => {
+  const arr = await tensorAsClampedArray(tensor);
+  return Buffer.from(arr).toString('base64');
+};
+

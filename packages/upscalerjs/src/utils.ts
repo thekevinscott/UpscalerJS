@@ -1,11 +1,10 @@
 import { tf, } from './dependencies.generated';
-import { ROOT, } from './constants';
 import type { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
 export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
 
-function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
+export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   function fn(pixels: tf.Tensor): pixels is T {
     try {
       return pixels.shape.length === rank;
@@ -50,14 +49,6 @@ export const isTensor = (input: unknown): input is tf.Tensor => {
   return input instanceof tf.Tensor;
 };
 
-const MODEL_DIR = 'models';
-
-export const buildURL = (modelFolder: string) =>
-  `${ROOT}/${MODEL_DIR}/${modelFolder}/model.json`;
-
-export const buildConfigURL = (modelFolder: string) =>
-  `${ROOT}/${MODEL_DIR}/${modelFolder}/config.json`;
-
 export const warn = (msg: string | string[]) => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };
@@ -94,3 +85,21 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 }
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
+
+export const tensorAsClampedArray = async (tensor: tf.Tensor3D) => {
+  const [height, width, ] = tensor.shape;
+  const arr = new Uint8ClampedArray(width * height * 4);
+  const data = await tensor.data();
+  let i = 0;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const pos = (y * width + x) * 4;
+      arr[pos] = data[i]; // R
+      arr[pos + 1] = data[i + 1]; // G
+      arr[pos + 2] = data[i + 2]; // B
+      arr[pos + 3] = 255; // Alpha
+      i += 3;
+    }
+  }
+  return arr;
+};

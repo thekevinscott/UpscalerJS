@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { ModelDefinition } from '@upscalerjs/core';
 import { 
+  makeIsNDimensionalTensor,
   wrapGenerator, 
   isSingleArgProgress, 
   isMultiArgTensorProgress, 
@@ -8,9 +9,11 @@ import {
   isFourDimensionalTensor, 
   isThreeDimensionalTensor, 
   isTensor, 
+  isValidModelDefinition,
   warn, 
   isAborted,
   registerCustomLayers,
+  tensorAsClampedArray,
 } from './utils';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -19,6 +22,38 @@ jest.mock('@tensorflow/tfjs', () => ({
     registerClass: jest.fn(),
   },
 }));
+
+describe('makeIsNDimensionalTensor', () => {
+  it('checks for a 1-dimensional tensor', () => {
+    const fn = makeIsNDimensionalTensor<tf.Tensor1D>(1);
+    expect(fn(tf.tensor([1]))).toEqual(true);
+    expect(fn(tf.tensor([[1]]))).toEqual(false);
+  });
+
+  it('checks for a 2-dimensional tensor', () => {
+    const fn = makeIsNDimensionalTensor<tf.Tensor2D>(2);
+    expect(fn(tf.tensor([1]))).toEqual(false);
+    expect(fn(tf.tensor([[1]]))).toEqual(true);
+  });
+});
+
+describe('isValidModelDefinition', () => {
+  it('returns false if given an undefined', () => {
+    expect(isValidModelDefinition(undefined)).toEqual(false);
+  });
+
+  it('returns false if given path but no scale', () => {
+    expect(isValidModelDefinition({ path: 'foo', scale: undefined } as unknown as ModelDefinition )).toEqual(false);
+  });
+
+  it('returns false if given scale but no path', () => {
+    expect(isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toEqual(false);
+  });
+
+  it('returns true if given scale and path', () => {
+    expect(isValidModelDefinition({ path: 'foo', scale: 2 })).toEqual(true);
+  });
+});
 
 describe('registerCustomLayers', () => {
   it('does nothing if no custom layers are specified', () => {
@@ -247,5 +282,17 @@ describe('isTensor', () => {
   });
   it('returns false if not a tensor', () => {
     expect(isTensor([] as any)).toEqual(false);
+  });
+});
+
+describe('tensorAsClampedArray', () => {
+  it('returns an array', async () => {
+    const result = await tensorAsClampedArray(tf.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6]]]))
+    expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255]);
+  });
+
+  it('returns a clamped array', async () => {
+    const result = await tensorAsClampedArray(tf.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
+    expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
 });

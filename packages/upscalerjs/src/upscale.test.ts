@@ -11,25 +11,38 @@ import {
   cancellableUpscale,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
+  getWidthAndHeight,
+  GET_WIDTH_AND_HEIGHT_ERROR,
+  GetTensorDimensionsOpts,
+  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
 } from './upscale';
 import { wrapGenerator, isTensor } from './utils';
-import * as tensorAsBase from 'tensor-as-base64';
 import * as image from './image.generated';
 import { ModelDefinition } from "@upscalerjs/core";
 import { Progress, } from './types';
 jest.mock('./image.generated', () => ({
+  __esmodule: true,
   ...jest.requireActual('./image.generated'),
 }));
-jest.mock('tensor-as-base64');
 
 const mockedImage = image as jest.Mocked<typeof image>;
-const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
+// const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
+
+console.log(mockedImage);
 
 describe('concatTensors', () => {
   beforeEach(() => {
-    // (mockedImage as any).default.mockClear();
-    // (mockedTensorAsBase as any).default.mockClear();
-  })
+    try {
+    (mockedImage as any).default.tensorAsBase64.mockClear();
+    } catch(err) {}
+    try {
+    (mockedImage as any).default.getImageAsTensor.mockClear();
+    } catch(err) {}
+  });
   it('concats two tensors together', () => {
     const a: tf.Tensor3D = tf.tensor(
       [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
@@ -94,7 +107,7 @@ describe('getCopyOfInput', () => {
   });
 });
 
-describe('getConsistentTensorDimensions', () => {
+describe('getTensorDimensions', () => {
   interface IOpts {
     width: number;
     height: number;
@@ -1007,6 +1020,46 @@ describe('getConsistentTensorDimensions', () => {
       ],
     );
   });
+
+  it('throws an error if row is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED);
+  });
+
+  it('throws an error if col is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED);
+  });
+
+  it('throws an error if patch size is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: undefined,
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED);
+  });
+
+  it('throws an error if height is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: 0,
+      height: undefined
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED);
+  });
+
+  it('throws an error if width is not defined', () => {
+    expect(() => getTensorDimensions({
+      row: 0,
+      col: 0,
+      patchSize: 0,
+      height: 0,
+      width: undefined
+    } as unknown as GetTensorDimensionsOpts)).toThrow(GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED);
+  });
 });
 
 describe('getRowsAndColumns', () => {
@@ -1165,7 +1218,7 @@ describe('predict', () => {
   it('should invoke progress callback with percent and slice', async () => {
     console.warn = jest.fn();
     const mockResponse = 'foobarbaz';
-    (mockedTensorAsBase as any).default = async() => mockResponse;
+    (mockedImage as any).default.tensorAsBase64 = async() => mockResponse;
     const img: tf.Tensor4D = tf.ones([4, 2, 3,]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
@@ -1191,7 +1244,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a tensor', async () => {
     console.warn = jest.fn();
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1268,7 +1321,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a string but progressOutput is tensor', async () => {
     console.warn = jest.fn();
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1490,7 +1543,7 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    (mockedImage as any).default.tensorAsBase64 = async () => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, {}, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
@@ -1514,7 +1567,7 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
-    (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
       model, 
       modelDefinition: { scale: 2, } as ModelDefinition, 
@@ -1602,5 +1655,25 @@ describe('cancellableUpscale', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).not.toHaveBeenCalledWith(0.75);
     expect(progress).not.toHaveBeenCalledWith(1);
+  });
+});
+
+describe('getWidthAndHeight', () => {
+  it('throws if given a too small tensor', () => {
+    const t = tf.zeros([2,2]) as unknown as tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+  });
+
+  it('throws if given a too large tensor', () => {
+    const t = tf.zeros([2,2,2,2,2]) as unknown as tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+  });
+
+  it('returns width and height for a 4d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1,2,3,4]) as tf.Tensor4D)).toEqual([2,3]);
+  });
+
+  it('returns width and height for a 3d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1,2,3]) as tf.Tensor3D)).toEqual([1,2]);
   });
 });

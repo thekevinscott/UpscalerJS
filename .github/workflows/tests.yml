@@ -157,7 +157,11 @@ jobs:
         run: pnpm install --filter=!"@upscalerjs/examples.*"
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 10
+          max_attempts: 7
+          command: pnpm test:integration:browserstack --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 

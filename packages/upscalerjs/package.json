@@ -38,8 +38,8 @@
     "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:dependencies 'node' && pnpm build:cjs --outDir dist/node/cjs",
     "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:dependencies 'node-gpu' && pnpm build:cjs --outDir dist/node-gpu/cjs",
     "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5",
-    "build:esm": "tsc -p tsconfig.browser.json --module esnext --target esnext --outDir dist/browser/esm",
-    "build:umd:tsc": "rimraf dist/tmp && tsc -p tsconfig.browser.json --module es2015 --target es5 --outDir dist/tmp",
+    "build:esm": "tsc -p tsconfig.browser.esm.json --module esnext --target esnext --outDir dist/browser/esm",
+    "build:umd:tsc": "rimraf dist/tmp && tsc -p tsconfig.browser.umd.json --module es2015 --target es5 --outDir dist/tmp",
     "build:umd:rollup": "pnpm rollup -c rollup.config.ts --failAfterWarnings",
     "build:umd:generate": "pnpm build:umd:tsc && pnpm build:umd:rollup",
     "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
@@ -84,8 +84,7 @@
   },
   "dependencies": {
     "@upscalerjs/esrgan-slim": "workspace:*",
-    "@upscalerjs/core": "workspace:*",
-    "tensor-as-base64": "^0.3.0"
+    "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
     "seedrandom": "2.4.4",

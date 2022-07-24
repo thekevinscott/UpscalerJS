@@ -15,6 +15,9 @@ type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
 type Meta = { [key: string]: string | number | Meta | null | undefined };
 
+export type PreProcess = ProcessFn<Tensor4D>;
+export type PostProcess = ProcessFn<Tensor3D>;
+
 export interface ModelDefinition {
   path: string;
   scale: 2 | 3 | 4;
