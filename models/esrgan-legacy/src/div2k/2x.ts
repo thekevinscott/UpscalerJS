@@ -1,4 +1,4 @@
-import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
+import type { Tensor, Tensor3D, } from '@tensorflow/tfjs-core';
 import type * as _tfng from '@tensorflow/tfjs-node-gpu';
 import type * as _tfn from '@tensorflow/tfjs-node';
 import type * as _tf from '@tensorflow/tfjs';
