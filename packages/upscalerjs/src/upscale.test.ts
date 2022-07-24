@@ -11,6 +11,8 @@ import {
   cancellableUpscale,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
+  getWidthAndHeight,
+  GET_WIDTH_AND_HEIGHT_ERROR,
 } from './upscale';
 import { wrapGenerator, isTensor } from './utils';
 import * as image from './image.generated';
@@ -1607,5 +1609,25 @@ describe('cancellableUpscale', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).not.toHaveBeenCalledWith(0.75);
     expect(progress).not.toHaveBeenCalledWith(1);
+  });
+});
+
+describe('getWidthAndHeight', () => {
+  it('throws if given a too small tensor', () => {
+    const t = tf.zeros([2,2]) as unknown as tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+  });
+
+  it('throws if given a too large tensor', () => {
+    const t = tf.zeros([2,2,2,2,2]) as unknown as tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+  });
+
+  it('returns width and height for a 4d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1,2,3,4]) as tf.Tensor4D)).toEqual([2,3]);
+  });
+
+  it('returns width and height for a 3d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1,2,3]) as tf.Tensor3D)).toEqual([1,2]);
   });
 });
