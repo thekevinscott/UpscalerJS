@@ -98,7 +98,7 @@ export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn)
 export const tensorAsClampedArray = async (tensor: tf.Tensor3D) => {
   const [height, width, ] = tensor.shape;
   const clampedTensor = tf.tidy(() => {
-    const fill = tf.fill([height, width,], 255).reshape([2,2,1,]);
+    const fill = tf.fill([height, width,], 255).expandDims(2);
     return tensor.clipByValue(0, 255).concat([fill,], 2);
   });
   return await clampedTensor.data();
