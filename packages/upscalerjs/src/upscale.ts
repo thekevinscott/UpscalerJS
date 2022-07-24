@@ -318,7 +318,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
               (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = await tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
               (<MultiArgProgress<'src'>>progress)(percent, src);
             }
@@ -421,7 +421,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
     return <UpscaleResponse<O>>postprocessedPixels;
   }
 
-  const base64Src = await tensorAsBase64(postprocessedPixels);
+  const base64Src = tensorAsBase64(postprocessedPixels);
   postprocessedPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 }
