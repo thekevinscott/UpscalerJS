@@ -95,11 +95,8 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = async (tensor: tf.Tensor3D) => {
-  const [height, width, ] = tensor.shape;
-  const clampedTensor = tf.tidy(() => {
-    const fill = tf.fill([height, width,], 255).expandDims(2);
-    return tensor.clipByValue(0, 255).concat([fill,], 2);
-  });
-  return await clampedTensor.data();
-};
+export const tensorAsClampedArray = (tensor: tf.Tensor3D) => tf.tidy(() => {
+  const [height, width,] = tensor.shape;
+  const fill = tf.fill([height, width,], 255).expandDims(2);
+  return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
+});
