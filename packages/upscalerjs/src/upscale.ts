@@ -244,6 +244,8 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     modelDefinition,
   }: UpscaleInternalArgs
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
+  // TODO: Remove this
+  await Promise.resolve();
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
