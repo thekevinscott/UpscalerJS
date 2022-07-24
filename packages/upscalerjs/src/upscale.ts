@@ -319,6 +319,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
+              console.log('what is src', src);
               squeezedTensor.dispose();
               (<MultiArgProgress<'src'>>progress)(percent, src);
             }
