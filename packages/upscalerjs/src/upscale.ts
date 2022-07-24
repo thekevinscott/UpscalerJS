@@ -137,6 +137,21 @@ const checkAndAdjustSliceSize = (
   }
 };
 
+export interface GetTensorDimensionsOpts {
+  row: number;
+  col: number;
+  patchSize: number;
+  height: number;
+  width: number;
+  padding?: number;
+}
+
+export const GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED = new Error('Row is undefined');
+export const GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED = new Error('Column is undefined');
+export const GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED = new Error('Patch Size is undefined');
+export const GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED = new Error('Height is undefined');
+export const GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED = new Error('Width is undefined');
+
 export const getTensorDimensions = ({
   row,
   col,
@@ -144,30 +159,23 @@ export const getTensorDimensions = ({
   height,
   width,
   padding = 0,
-}: {
-  row: number;
-  col: number;
-  patchSize: number;
-  height: number;
-  width: number;
-  padding?: number;
-}) => {
+}: GetTensorDimensionsOpts) => {
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
   if (row === undefined) {
-    throw new Error('row is undefined');
+    throw GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED;
   }
   if (col === undefined) {
-    throw new Error('col is undefined');
+    throw GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED;
   }
   if (patchSize === undefined) {
-    throw new Error('patchSize is undefined');
+    throw GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED;
   }
   if (height === undefined) {
-    throw new Error('height is undefined');
+    throw GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED;
   }
   if (width === undefined) {
-    throw new Error('width is undefined');
+    throw GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED;
   }
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;

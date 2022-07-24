@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { ModelDefinition } from '@upscalerjs/core';
 import { 
+  makeIsNDimensionalTensor,
   wrapGenerator, 
   isSingleArgProgress, 
   isMultiArgTensorProgress, 
@@ -21,6 +22,20 @@ jest.mock('@tensorflow/tfjs', () => ({
     registerClass: jest.fn(),
   },
 }));
+
+describe('makeIsNDimensionalTensor', () => {
+  it('checks for a 1-dimensional tensor', () => {
+    const fn = makeIsNDimensionalTensor<tf.Tensor1D>(1);
+    expect(fn(tf.tensor([1]))).toEqual(true);
+    expect(fn(tf.tensor([[1]]))).toEqual(false);
+  });
+
+  it('checks for a 2-dimensional tensor', () => {
+    const fn = makeIsNDimensionalTensor<tf.Tensor2D>(2);
+    expect(fn(tf.tensor([1]))).toEqual(false);
+    expect(fn(tf.tensor([[1]]))).toEqual(true);
+  });
+});
 
 describe('isValidModelDefinition', () => {
   it('returns false if given an undefined', () => {
