@@ -80,15 +80,15 @@ export const updateSinglePackage = async (dir: string, transform: TransformPacka
 };
 
 export const getPackageJSONValue = (packageJSON: JSONSchema, depKey: string) => {
-  return depKey.split('.').reduce((json, key) => json[key], packageJSON);
+  return depKey.split('.').reduce((json, key) => json?.[key], packageJSON);
 }
 
 type Value = JSONSchema[keyof JSONSchema];
-export const updatePackageJSONForKey = (packageJSON: JSONSchema, key: string, val: Value) => {
-  return getObj(packageJSON, key.split('.'), val)
+export const updatePackageJSONForKey = (packageJSON: JSONSchema, key: string, val: Value): JSONSchema => {
+  return getObj<JSONSchema>(packageJSON, key.split('.'), val);
 }
 
-const getObj = (obj: Record<string, any>, parts: string[], val: Value): Record<string, any> => {
+function getObj<T extends Record<string, any>>(obj: T, parts: string[], val: Value): T {
   if (parts.length === 1) {
     return {
       ...obj,
