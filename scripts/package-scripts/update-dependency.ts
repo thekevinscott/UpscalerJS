@@ -54,7 +54,7 @@ const makeSetVersionForPackageJSON = (dependencies: string[], version: string): 
       packageJSON = updatePackageJSONForKey(packageJSON, packageJSONKey, packageJSONListOfDependencies)
     }
   }
-  logger.log();
+  logger.write();
   return packageJSON;
 }
 
