@@ -13,7 +13,7 @@
     "@tensorflow/tfjs-node": "^3.19.0",
     "@upscalerjs/models": "0.9.0",
     "express": "4.16.4",
-    "seedrandom": "~2.4.3",
+    "seedrandom": "3.0.5",
     "upscaler": "1.0.0-beta.5"
   },
   "devDependencies": {
