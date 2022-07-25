@@ -5,7 +5,8 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tf from '@tensorflow/tfjs-node';
+import * as tf from '@tensorflow/tfjs';
+import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
@@ -105,8 +106,8 @@ describe('Model Loading Integration Tests', () => {
       });
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
-    const predictedTensor = tf.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tf.image.resizeNearestNeighbor(tf.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as tf.Tensor3D, [4,4]);
+    const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tf.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as tf.Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
@@ -124,8 +125,8 @@ describe('Model Loading Integration Tests', () => {
       });
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
-    const predictedTensor = tf.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tf.image.resizeNearestNeighbor(tf.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D, [4,4]);
+    const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
