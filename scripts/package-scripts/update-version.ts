@@ -3,20 +3,19 @@ import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
 
+/****
+ * Type Definitions
+ */
 type Answers = { packages: Array<Package>, version: string, updateDependencies?: boolean, }
 
+/****
+ * Constants
+ */
 const ROOT_DIR = path.resolve(__dirname, '../..');
-console.log(ROOT_DIR);
 
 const logger: PackageUpdaterLogger = (file: string) => {
   return `- Updated ${getPreparedFolderName(getPackageJSONPath(file))}`;
 }
-
-// const commitPackageJSON = async (dir: string) => {
-//   const file = getPackageJSONPath(dir);
-//   const cmd = `git add "${file}"`
-//   await execute(cmd);
-// }
 
 const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn => (packageJSON) => {
   packageJSON.version = version;
@@ -121,16 +120,3 @@ export default updateVersion;
 if (require.main === module) {
   updateVersion();
 }
-
-// const formatArray = (packages: Array<string>) => {
-//   if (packages.length === 1) {
-//     return packages[0];
-//   }
-//   if (packages.length === 2) {
-//     return packages.join(' and ');
-//   }
-//   return [
-//     packages.slice(0, -1).join(', '),
-//     packages.pop(),
-//   ].join(' and ');
-// }
