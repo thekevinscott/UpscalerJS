@@ -13,11 +13,9 @@ import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
 import { isModelDefinitionFn, } from './utils';
 
-// TODO: Why do we need to explicitly cast this to ModelDefinition?
-// For some reason, TS is picking this up as *any* even though in the editor
-// it's defined as ModelDefinition
+// TODO: Why doesn't eslint pick this type up correctly?
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const DEFAULT_MODEL: ModelDefinitionObjectOrFn = ESRGANSlim;
+const DEFAULT_MODEL = ESRGANSlim;
 
 const getModel = (modelDefinition: ModelDefinitionObjectOrFn = DEFAULT_MODEL) => {
   /* eslint-disable @typescript-eslint/no-unsafe-call */
