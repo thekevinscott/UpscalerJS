@@ -66,7 +66,6 @@ describe('CDN Integration Tests', () => {
     const requests: string[] = [];
 
     _page.on('request', (request) => {
-      console.log(request.url())
       requests.push(request.url())
       request.continue();
     });
