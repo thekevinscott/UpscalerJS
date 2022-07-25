@@ -254,6 +254,8 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     modelDefinition,
   }: UpscaleInternalArgs
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
+  // TODO: Remove this
+  await Promise.resolve();
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -328,7 +330,8 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
               (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = await tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(squeezedTensor);
+              console.log('what is src', src);
               squeezedTensor.dispose();
               (<MultiArgProgress<'src'>>progress)(percent, src);
             }
@@ -431,7 +434,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
     return <UpscaleResponse<O>>postprocessedPixels;
   }
 
-  const base64Src = await tensorAsBase64(postprocessedPixels);
+  const base64Src = tensorAsBase64(postprocessedPixels);
   postprocessedPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 }

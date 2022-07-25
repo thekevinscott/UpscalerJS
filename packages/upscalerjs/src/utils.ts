@@ -15,17 +15,21 @@ export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number) {
   return fn;
 }
 
+export const MISSING_MODEL_DEFINITION_ERROR = new Error('You must provide a model definition');
+export const MISSING_MODEL_DEFINITION_PATH_ERROR = new Error('You must provide a path for a model definition');
+export const MISSING_MODEL_DEFINITION_SCALE_ERROR = new Error('You must provide a scale for a model definition');
+export const LOGICAL_ERROR = new Error('There is a bug with the upscaler code. Please report this.');
 export function getModelDefinitionError(modelDefinition?: ModelDefinition) {
   if (!modelDefinition) {
-    return new Error('You must provide a model definition');
+    return MISSING_MODEL_DEFINITION_ERROR;
   }
   if (!modelDefinition.path) {
-    return new Error('No model path provided');
+    return MISSING_MODEL_DEFINITION_PATH_ERROR;
   }
   if (!modelDefinition.scale) {
-    return new Error('No model scale provided');
+    return MISSING_MODEL_DEFINITION_SCALE_ERROR;
   }
-  return new Error('Bug with code');
+  return LOGICAL_ERROR;
 }
 
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
@@ -86,20 +90,8 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = async (tensor: tf.Tensor3D) => {
-  const [height, width, ] = tensor.shape;
-  const arr = new Uint8ClampedArray(width * height * 4);
-  const data = await tensor.data();
-  let i = 0;
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const pos = (y * width + x) * 4;
-      arr[pos] = data[i]; // R
-      arr[pos + 1] = data[i + 1]; // G
-      arr[pos + 2] = data[i + 2]; // B
-      arr[pos + 3] = 255; // Alpha
-      i += 3;
-    }
-  }
-  return arr;
-};
+export const tensorAsClampedArray = (tensor: tf.Tensor3D) => tf.tidy(() => {
+  const [height, width,] = tensor.shape;
+  const fill = tf.fill([height, width,], 255).expandDims(2);
+  return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
+});

@@ -1,4 +1,5 @@
-import { tf } from './dependencies.generated';
+// import { tf } from './dependencies.generated';
+import * as tf from '@tensorflow/tfjs-node';
 import {
   AbortError,
   predict,
@@ -31,8 +32,6 @@ jest.mock('./image.generated', () => ({
 
 const mockedImage = image as jest.Mocked<typeof image>;
 // const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
-
-console.log(mockedImage);
 
 describe('concatTensors', () => {
   beforeEach(() => {
@@ -1218,7 +1217,7 @@ describe('predict', () => {
   it('should invoke progress callback with percent and slice', async () => {
     console.warn = jest.fn();
     const mockResponse = 'foobarbaz';
-    (mockedImage as any).default.tensorAsBase64 = async() => mockResponse;
+    (mockedImage as any).default.tensorAsBase64 = () => mockResponse;
     const img: tf.Tensor4D = tf.ones([4, 2, 3,]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
@@ -1543,7 +1542,7 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
-    (mockedImage as any).default.tensorAsBase64 = async () => 'foobarbaz';
+    (mockedImage as any).default.tensorAsBase64 = () => 'foobarbaz';
     const result = await wrapGenerator(upscale(img, {}, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
