@@ -257,8 +257,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progress: Progress<'tensor'> = (rate, slice) => {
-          // TODO: Figure out why slice is not being typed as a tensor
-          resolve([rate, slice as unknown as tf.Tensor]);
+          resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
           patchSize: 12,
