@@ -1,5 +1,4 @@
 import yargs from 'yargs';
-import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { 
@@ -55,6 +54,7 @@ const makeSetVersionForPackageJSON = (dependencies: string[], version: string): 
       packageJSON = updatePackageJSONForKey(packageJSON, packageJSONKey, packageJSONListOfDependencies)
     }
   }
+  logger.log();
   return packageJSON;
 }
 
