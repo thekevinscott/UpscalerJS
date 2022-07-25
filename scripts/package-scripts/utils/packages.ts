@@ -80,7 +80,7 @@ export const updateSinglePackage = async (dir: string, transform: TransformPacka
 };
 
 export const getPackageJSONValue = (packageJSON: JSONSchema, depKey: string) => {
-  return depKey.split('.').reduce((json, key) => json[key], packageJSON);
+  return depKey.split('.').reduce((json, key) => json?.[key], packageJSON);
 }
 
 type Value = JSONSchema[keyof JSONSchema];
