@@ -23,15 +23,15 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   }
   const upscaledImageBuffer = Buffer.from(partsAfterBase64, 'base64');
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);
-  if (upscaledSrc) {
-    console.log(`Writing upscaled image to ${upscaledSrc}`)
-    writeImage(upscaledSrc, upscaledImage);
-  }
 
   try {
   expect(fixture.width).toEqual(upscaledImage.width);
   expect(fixture.height).toEqual(upscaledImage.height);
   } catch(err) {
+    if (upscaledSrc) {
+      console.log(`Writing upscaled image to ${upscaledSrc}`)
+      writeImage(upscaledSrc, upscaledImage);
+    }
     throw new Error(`Mismatch in image dimensions.
     
     Upscaled Image: w ${upscaledImage.width} h ${upscaledImage.height}
@@ -42,6 +42,10 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   const diff = new PNG({ width: fixture.width, height: fixture.height });
   const mismatched = pixelmatch(fixture.data, upscaledImage.data, diff.data, fixture.width, fixture.height, { threshold: THRESHOLD });
   if (mismatched > 0) {
+    if (upscaledSrc) {
+      console.log(`Writing upscaled image to ${upscaledSrc}`)
+      writeImage(upscaledSrc, upscaledImage);
+    }
     console.log(`Mismatch, writing diff image to ${diffSrc}`)
     writeImage(diffSrc, diff);
   }

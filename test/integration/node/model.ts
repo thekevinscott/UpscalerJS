@@ -74,7 +74,7 @@ const getUpscalerArgs = () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  describe('Test specific model implementations', () => {
+  describe.only('Test specific model implementations', () => {
     getAllAvailableModelPackages().filter(p => p === 'esrgan-legacy').map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
