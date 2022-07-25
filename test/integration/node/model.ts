@@ -36,11 +36,10 @@ const upscaleImageToUInt8Array = async (args, filename) => {
 const main = async (model) => {
   const tensor = await upscaleImageToUInt8Array(model, TENSOR_PATH);
   // because we are requesting a tensor, it is possible that the tensor will
-  // contain out-of-bounds pixels; therefore, we should ensure we clip it ourselves.
-  const clippedTensor = tensor.clipByValue(0, 255);
+  // contain out-of-bounds pixels; part of the value of this test is ensuring
+  // that those values are clipped in a post-process step.
+  const upscaledImage = await tf.node.encodePng(tensor);
   tensor.dispose();
-  const upscaledImage = await tf.node.encodePng(clippedTensor);
-  clippedTensor.dispose();
   return base64ArrayBuffer(upscaledImage);
 }
 
