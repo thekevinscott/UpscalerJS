@@ -24,16 +24,23 @@ const upscaleImageToUInt8Array = async (args, filename) => {
   });
   const bytes = new Uint8Array(JSON.parse(fs.readFileSync(filename, 'utf-8')));
   const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
-  return await upscaler.upscale(tensor, {
+  const result = await upscaler.upscale(tensor, {
     output: 'tensor',
     patchSize: 64,
     padding: 6,
   });
+  tensor.dispose();
+  return result;
 }
 
 const main = async (model) => {
   const tensor = await upscaleImageToUInt8Array(model, TENSOR_PATH);
-  const upscaledImage = await tf.node.encodePng(tensor)
+  // because we are requesting a tensor, it is possible that the tensor will
+  // contain out-of-bounds pixels; therefore, we should ensure we clip it ourselves.
+  const clippedTensor = tensor.clipByValue(0, 255);
+  tensor.dispose();
+  const upscaledImage = await tf.node.encodePng(clippedTensor);
+  clippedTensor.dispose();
   return base64ArrayBuffer(upscaledImage);
 }
 
@@ -74,8 +81,8 @@ const getUpscalerArgs = () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  describe.only('Test specific model implementations', () => {
-    getAllAvailableModelPackages().filter(p => p === 'esrgan-legacy').map(packageName => {
+  describe('Test specific model implementations', () => {
+    getAllAvailableModelPackages().map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
         models.forEach(({ cjs }) => {
