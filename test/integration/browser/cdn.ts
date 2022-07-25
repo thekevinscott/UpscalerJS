@@ -17,7 +17,7 @@ const CDNS = [
 const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
 
 const TRACK_TIME = false;
-jest.setTimeout(5 * 1000);
+jest.setTimeout(10000);
 jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
