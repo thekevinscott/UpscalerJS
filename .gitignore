@@ -25,3 +25,4 @@ umd-tmp
 *.tgz
 yarn.lock
 test/**/package-lock.json
+tmp

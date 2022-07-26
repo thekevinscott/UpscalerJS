@@ -1,3 +1,9 @@
+import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { clipOutput, } from '../utils/clipOutput';
 import getModelDefinition from '../utils/getModelDefinition';
 
-export default getModelDefinition(4, 'div2k/4x');
+const SCALE = 4;
+
+const modelDefinition: ModelDefinitionFn = tf => getModelDefinition(SCALE, `div2k/${SCALE}x`, clipOutput(tf));
+
+export default modelDefinition;
