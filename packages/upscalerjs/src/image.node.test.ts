@@ -1,7 +1,7 @@
 import fs from 'fs';
 import http from 'http';
 import path from 'path';
-import { getImageAsTensor, getInvalidTensorError, } from './image.node';
+import { getImageAsTensor, getInvalidInput, getInvalidTensorError, } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
 
@@ -73,6 +73,12 @@ describe('Image', () => {
       await expect(() => getImageAsTensor(input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
+    });
+
+    it('handles invalid input', async () => {
+      await expect(() => getImageAsTensor(123 as unknown as tf.Tensor3D))
+        .rejects
+        .toThrow(getInvalidInput(123));
     });
   });
 });
