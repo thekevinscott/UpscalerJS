@@ -95,3 +95,9 @@ export const tensorAsClampedArray = (tensor: tf.Tensor3D) => tf.tidy(() => {
   const fill = tf.fill([height, width,], 255).expandDims(2);
   return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
+
+export const getModel = (modelDefinition: ModelDefinitionObjectOrFn) => {
+  /* eslint-disable @typescript-eslint/no-unsafe-call */
+  /* eslint-disable @typescript-eslint/no-unsafe-return */
+  return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
+};
