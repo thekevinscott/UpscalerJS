@@ -3,7 +3,7 @@ import http from 'http';
 import path from 'path';
 import { 
   getImageAsTensor, 
-  getInvalidTensorError,
+  getInvalidInput,
   tensorAsBase64,
   getInvalidTensorError,
 } from './image.node';
