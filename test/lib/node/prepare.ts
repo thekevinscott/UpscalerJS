@@ -4,10 +4,12 @@ import fs from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
 import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
-import { LOCAL_UPSCALER_NAME } from "./constants";
+import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
+import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
 
 const ROOT = path.join(__dirname);
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
+const MODELS_PATH = path.join(ROOT, '../../../models');
 
 export const prepareScriptBundleForNodeCJS = async () => {
   await installNodeModules(ROOT);
@@ -16,6 +18,10 @@ export const prepareScriptBundleForNodeCJS = async () => {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
+    ...getAllAvailableModelPackages().map(packageName => ({
+      src: path.resolve(MODELS_PATH, packageName),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+    })),
   ]);
 };
 
@@ -51,6 +57,6 @@ export const testNodeScript = async (contents: GetContents, logExtra = true) => 
       }
     });
     data = fs.readFileSync(outputFile);
-  })
+  });
   return data;
 }

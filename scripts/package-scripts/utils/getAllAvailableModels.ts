@@ -22,6 +22,7 @@ export const getAllAvailableModels = (model: string) => {
     return {
       export: key,
       esm: key.substring(2),
+      cjs: key.substring(2),
       umd: umdName,
     };
   });

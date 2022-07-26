@@ -1,7 +1,10 @@
-import fs from 'fs';
+import path from 'path';
+import fs from 'fs-extra';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
 import { PNG } from 'pngjs';
+
+const ROOT = path.resolve(__dirname, '../../../');
 
 // 0.10 works for browser; 0.12 for node.
 const THRESHOLD = 0.12;
@@ -11,7 +14,6 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
     throw new Error(`Type of src is not string. src: ${JSON.stringify(src)}`)
   }
   const fixture = getFixtureAsBuffer(fixtureSrc);
-  // console.log('fixture', fixtureSrc, fixture.width, fixture.height);
   if (!src.includes('base64,')) {
     throw new Error(`No "base64," tag found in the incoming src, this may indicate a bad src attribute. src: ${src}`);
   }
@@ -21,15 +23,15 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   }
   const upscaledImageBuffer = Buffer.from(partsAfterBase64, 'base64');
   const upscaledImage = PNG.sync.read(upscaledImageBuffer);
-  if (upscaledSrc) {
-    console.log(`Writing upscaled image to ${upscaledSrc}`)
-    fs.writeFileSync(upscaledSrc, PNG.sync.write(upscaledImage));
-  }
 
   try {
   expect(fixture.width).toEqual(upscaledImage.width);
   expect(fixture.height).toEqual(upscaledImage.height);
   } catch(err) {
+    if (upscaledSrc) {
+      console.log(`Writing upscaled image to ${upscaledSrc}`)
+      writeImage(upscaledSrc, upscaledImage);
+    }
     throw new Error(`Mismatch in image dimensions.
     
     Upscaled Image: w ${upscaledImage.width} h ${upscaledImage.height}
@@ -40,8 +42,18 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
   const diff = new PNG({ width: fixture.width, height: fixture.height });
   const mismatched = pixelmatch(fixture.data, upscaledImage.data, diff.data, fixture.width, fixture.height, { threshold: THRESHOLD });
   if (mismatched > 0) {
+    if (upscaledSrc) {
+      console.log(`Writing upscaled image to ${upscaledSrc}`)
+      writeImage(upscaledSrc, upscaledImage);
+    }
     console.log(`Mismatch, writing diff image to ${diffSrc}`)
-    fs.writeFileSync(diffSrc, PNG.sync.write(diff));
+    writeImage(diffSrc, diff);
   }
   expect(mismatched).toEqual(0);
+}
+
+const writeImage = (pathToImage: string, contents: PNG) => {
+  const fullPathToImage = path.resolve(ROOT, 'test-output', pathToImage);
+  fs.mkdirpSync(path.resolve(ROOT, fullPathToImage, '..'));
+  fs.writeFileSync(fullPathToImage, PNG.sync.write(contents));
 }
