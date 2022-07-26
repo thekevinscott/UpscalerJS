@@ -439,6 +439,20 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   return <UpscaleResponse<O>>base64Src;
 }
 
+export const makeTick = (signal: AbortSignal) => async (result?: YieldedIntermediaryValue) => {
+  await tf.nextFrame();
+  if (isAborted(signal)) {
+    // only dispose tensor if we are aborting; if aborted, the called function will have
+    // no opportunity to dispose of its memory
+    if (Array.isArray(result)) {
+      result.forEach(r => r.dispose());
+    } else if (isTensor(result)) {
+      result.dispose();
+    }
+    throw new AbortError();
+  }
+};
+
 interface UpscaleInternalArgs {
   model: tf.LayersModel,
   modelDefinition: ModelDefinition,
@@ -450,19 +464,7 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
     signal: AbortSignal;
   },
 ): Promise<UpscaleResponse<O>> {
-  const tick = async (result?: YieldedIntermediaryValue) => {
-    await tf.nextFrame();
-    if (isAborted(signal) || isAborted(internalArgs.signal)) {
-      // only dispose tensor if we are aborting; if aborted, the called function will have
-      // no opportunity to dispose of its memory
-      if (Array.isArray(result)) {
-        result.forEach(r => r.dispose());
-      } else if (isTensor(result)) {
-        result.dispose();
-      }
-      throw new AbortError();
-    }
-  };
+  const tick = makeTick(signal || internalArgs.signal);
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(
     input,
