@@ -9,16 +9,16 @@ import { resolver, } from './resolver';
 // const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
 
+export const getMissingMatchesError = (moduleEntryPoint: string) => new Error(
+  `No matches could be found for module entry point ${moduleEntryPoint}`
+);
+
 const DIST_REGEXP = new RegExp('(.*)dist');
 export const getModuleFolder = (name: string) => {
   const moduleEntryPoint = resolver(name);
-  const matches = moduleEntryPoint.match(DIST_REGEXP);
-  if (!matches) {
-    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
-  }
-  const match = matches.pop();
+  const match = moduleEntryPoint.match(DIST_REGEXP)?.pop();
   if (!match) {
-    throw new Error(`No matches could be found for module entry point ${moduleEntryPoint}`);
+    throw getMissingMatchesError(moduleEntryPoint);
   }
   return match;
 };

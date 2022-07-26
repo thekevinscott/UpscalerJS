@@ -2,6 +2,7 @@ import {
   loadModel,
   getModelPath,
   getModuleFolder,
+  getMissingMatchesError,
 } from "./loadModel.node";
 import * as tf from '@tensorflow/tfjs-node';
 import path from 'path';
@@ -32,7 +33,7 @@ const getResolver = (fn: () => string) => (fn) as unknown as typeof require.reso
 describe('getModuleFolder', () => {
   it('returns undefined if a module cannot be found', () => {
     mockedResoler.resolver.mockImplementation(getResolver(() => 'foo'));
-    expect(() => getModuleFolder('foo')).toThrow();
+    expect(() => getModuleFolder('foo')).toThrowError(getMissingMatchesError('foo'));
   });
 
   it('returns the path to the module', () => {
