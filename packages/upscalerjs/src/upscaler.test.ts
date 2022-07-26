@@ -73,6 +73,24 @@ describe('Upscaler', () => {
     await tick();
   }), 100);
 
+  it('is able to dispose', async () => {
+    const dispose = jest.fn();
+    const mockModel = {
+      dispose,
+    };
+    mockedLoadModel.loadModel.mockImplementation(async () => ({
+      modelDefinition: {
+        path: 'foo',
+        scale: 2,
+      },
+      model: mockModel as unknown as LayersModel,
+    }));
+    const upscaler = new Upscaler();
+    await upscaler.dispose();
+    expect(dispose).toHaveBeenCalled();
+
+  });
+
   it('is able to warmup', async () => {
     mockedWarmup.default = jest.fn();
     const modelDefinitionPromise = new Promise<{
