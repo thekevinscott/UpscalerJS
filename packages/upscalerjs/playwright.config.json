@@ -1,0 +1,6 @@
+{
+  "browser": "firefox",
+  "input": [
+    "src/image.browser.test.ts"
+  ]
+}
