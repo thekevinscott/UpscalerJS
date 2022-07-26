@@ -97,7 +97,7 @@
     "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-node": "^3.19.0",
     "@tensorflow/tfjs-node-gpu": "^3.19.0",
-    "seedrandom": "2.4.4"
+    "seedrandom": "3.0.5"
   },
   "author": "Kevin Scott",
   "license": "MIT"
