@@ -433,7 +433,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
     return <UpscaleResponse<O>>postprocessedPixels;
   }
 
-  postprocessedPixels.print();
   const base64Src = tensorAsBase64(postprocessedPixels);
   postprocessedPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
