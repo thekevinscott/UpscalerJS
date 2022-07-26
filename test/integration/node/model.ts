@@ -78,8 +78,8 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    const SPECIFIC_PACKAGE = undefined;
-    const SPECIFIC_MODEL = undefined;
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
     getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
