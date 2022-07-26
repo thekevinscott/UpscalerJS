@@ -15,7 +15,7 @@ export const CDNS = [
   // 'cdnjs',
 ];
 
-export const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
+export const getLoadModelErrorMessage = (modelPath: string) => new Error(`Could not resolve URL ${modelPath}`);
 
 export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
   if (packageInformation) {
@@ -28,7 +28,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
         // there was an issue with the CDN, try another
       }
     }
-    throw new Error(LOAD_MODEL_ERROR_MESSAGE(modelPath));
+    throw getLoadModelErrorMessage(modelPath);
   }
   return await tf.loadLayersModel(modelPath);
 };

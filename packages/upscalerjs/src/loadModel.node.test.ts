@@ -4,8 +4,8 @@ import {
   getModuleFolder,
 } from "./loadModel.node";
 import * as tf from '@tensorflow/tfjs-node';
-import path from 'path';
 jest.mock('@tensorflow/tfjs-node');
+import path from 'path';
 import * as utils from './utils';
 import * as resolver from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
