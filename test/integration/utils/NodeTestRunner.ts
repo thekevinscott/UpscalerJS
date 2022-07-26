@@ -27,21 +27,27 @@ export class NodeTestRunner {
   trackTime: boolean;
   dependencies: Dependencies;
   main?: Main;
+  globals: Globals;
 
   constructor({
     trackTime = false,
     dependencies = {},
     main,
+    globals = {},
   }: {
     trackTime?: boolean;
     main?: Main,
     dependencies?: Dependencies;
+    globals?: Globals;
   } = {}) {
     this.trackTime = trackTime;
     this.dependencies = {
       ...DEFAULT_DEPENDENCIES,
       ...dependencies,
     };
+    this.globals = {
+      ...globals,
+    }
     this.main = main;
   }
 
@@ -72,7 +78,10 @@ export class NodeTestRunner {
     return testNodeScript(writeScript({
       ...this.dependencies,
       ...dependencies,
-    }, _main, globals));
+    }, _main, {
+      ...this.globals,
+      ...globals,
+    }));
   }
 
   /****
