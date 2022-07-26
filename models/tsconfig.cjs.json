@@ -3,6 +3,6 @@
   "compilerOptions": {
     "moduleResolution": "Node",
     "target": "ES5",
-    "module": "commonjs",
+    "module": "ESNext",
   }
 }
