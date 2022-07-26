@@ -58,7 +58,7 @@ const makeSetVersionForPackageJSON = (dependencies: string[], version: string): 
   return packageJSON;
 }
 
-function* getMatchingDependency(matchingDependencies: string[], packageJSONListOfDependencies?: Dependency) {
+export function* getMatchingDependency(matchingDependencies: string[], packageJSONListOfDependencies?: Dependency) {
   if (packageJSONListOfDependencies) {
     const entries = Object.entries(packageJSONListOfDependencies);
     for (let i = 0; i < entries.length; i++) {
@@ -179,7 +179,6 @@ const getArgs = async (): Promise<Args> => {
     packages,
   }
 }
-
 
 if (require.main === module) {
   (async () => {
