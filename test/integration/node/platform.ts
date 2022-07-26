@@ -7,6 +7,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
+const MODEL = path.resolve(__dirname, '../../__fixtures__', 'pixelator/pixelator.json');
 const main: Main = async (deps) => {
   const {
     Upscaler,
@@ -15,7 +16,7 @@ const main: Main = async (deps) => {
     flower,
   } = deps;
   const upscaler = new Upscaler({
-    model: path.resolve(__dirname, '../../__fixtures__', 'pixelator/pixelator.json'),
+    model: MODEL,
   });
   const bytes = new Uint8Array(flower);
   const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
