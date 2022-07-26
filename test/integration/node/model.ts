@@ -17,6 +17,7 @@ const main: Main = async (deps) => {
     flower,
     model,
   } = deps;
+  console.log('model', model);
   const upscaler = new Upscaler({
     model,
   });
@@ -63,7 +64,7 @@ describe('Model Loading Integration Tests', () => {
     checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
   });
 
-  it.only("loads a locally exposed model via file:// path", async () => {
+  it("loads a locally exposed model via file:// path", async () => {
     const result = await testRunner.test({
       globals: {
         model: JSON.stringify({
@@ -74,7 +75,7 @@ describe('Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
+    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
   describe('Test specific model implementations', () => {

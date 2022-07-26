@@ -226,7 +226,7 @@ export const withTmpDir = async (callback: WithTmpDirFn, rootDir?: string) => {
   finally {
     try {
       if (tmpDir) {
-        // rimraf.sync(tmpDir);
+        rimraf.sync(tmpDir);
       }
     }
     catch (e) {

@@ -36,7 +36,6 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
   await withTmpDir(async tmpDir => {
     const hash = getCryptoName(contents);
     const FILENAME = path.resolve(tmpDir, `${hash}.js`);
-    console.log(FILENAME);
     fs.writeFileSync(FILENAME, contents, 'utf-8');
 
     await callExec(`node "${FILENAME}"`, {
