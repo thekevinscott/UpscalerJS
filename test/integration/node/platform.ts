@@ -1,6 +1,7 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
+import { NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -49,8 +50,11 @@ const getModelPath = () => {
 `;
 
 describe('Platform Integration Tests', () => {
+  const testRunner = new NodeTestRunner({
+    trackTime: false,
+  });
   beforeAll(async () => {
-    await prepareScriptBundleForNodeCJS();
+    await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   });
 
   [

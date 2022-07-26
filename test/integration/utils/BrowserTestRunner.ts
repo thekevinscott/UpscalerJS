@@ -2,33 +2,11 @@ import http from 'http';
 import puppeteer from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { isIgnoredMessage } from './messages';
+import { timeit } from './timeit';
 
 type Bundle = () => Promise<void>;
 
 const DEFAULT_PORT = 8098;
-
-function timeIt<T extends unknown[]>(msg: string) {
-  return  (
-    testRunner: BrowserTestRunner,
-    _: string | symbol,
-    descriptor: PropertyDescriptor
-  ) => {
-    // return 
-    const origFn = descriptor.value;
-    descriptor.value = async function (...args: T) {
-      const start = new Date().getTime();
-      const result = await origFn.apply(this, args);
-
-      if (testRunner.trackTime) {
-        const end = new Date().getTime();
-        const duration = Math.round((end - start) / 1000);
-        console.log(`Completed ${msg} in ${duration} seconds`);
-      }
-      return result;
-    };
-    return descriptor;
-  };
-}
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
@@ -214,13 +192,13 @@ export class BrowserTestRunner {
    * Jest lifecycle methods
    */
 
-  @timeIt<[Bundle]>('beforeAll scaffolding')
+  @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     await bundle();
     await this.startServer();
   }
 
-  @timeIt('afterAll clean up')
+  @timeit('afterAll clean up')
   async afterAll() {
     const stopBrowser = this._browser ? this.stopBrowser : () => {};
     await Promise.all([
@@ -229,13 +207,13 @@ export class BrowserTestRunner {
     ]);
   }
 
-  @timeIt<[string]>('beforeEach scaffolding')
+  @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.startBrowser();
     await this.navigateToServer(pageTitleToAwait);
   }
 
-  @timeIt<[AfterEachCallback]>('afterEach clean up')
+  @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([
       this.stopBrowser(),

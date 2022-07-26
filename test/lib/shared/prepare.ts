@@ -214,8 +214,8 @@ export const installLocalPackage = async (src: string, dest: string) => {
 };
 
 type WithTmpDirFn = (tmp: string) => Promise<void>;
-export const withTmpDir = async (callback: WithTmpDirFn) => {
-  let tmpDir = await getTmpDir();
+export const withTmpDir = async (callback: WithTmpDirFn, rootDir?: string) => {
+  let tmpDir = await getTmpDir(rootDir);
   if (!fs.existsSync(tmpDir)) {
     throw new Error(`Tmp directory ${tmpDir} was not created`);
   }
@@ -226,7 +226,7 @@ export const withTmpDir = async (callback: WithTmpDirFn) => {
   finally {
     try {
       if (tmpDir) {
-        rimraf.sync(tmpDir);
+        // rimraf.sync(tmpDir);
       }
     }
     catch (e) {
@@ -235,8 +235,8 @@ export const withTmpDir = async (callback: WithTmpDirFn) => {
   }
 };
 
-const getTmpDir = async (): Promise<string> => {
-  const folder = path.resolve(ROOT, 'tmp', getCryptoName(`${Math.random()}`));
+const getTmpDir = async (root = path.resolve(ROOT, 'tmp')): Promise<string> => {
+  const folder = path.resolve(root, getCryptoName(`${Math.random()}`));
   await mkdirp(folder);
   return folder;
 };
