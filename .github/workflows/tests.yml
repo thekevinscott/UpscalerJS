@@ -91,11 +91,24 @@ jobs:
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:playwright
 
-      - name: 'Codecov'
-        uses: codecov/codecov-action@v3
+      # - name: 'Codecov'
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     files: ./packages/upscalerjs/coverage/coverage-final.json,./packages/upscalerjs/.nyc_output/coverage-pw.json
+      #     verbose: true
+
+      - name: 'Upload Playwright Artifact'
+        uses: actions/upload-artifact@v2
         with:
-          files: ./packages/upscalerjs/coverage/coverage-final.json,./packages/upscalerjs/.nyc_output/coverage-pw.json
-          verbose: true
+          name: frontend-artifacts-playwright
+          path: ./packages/upscalerjs/.nyc_output/coverage-pw.json
+
+      - name: 'Upload Jest Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend-artifacts-node
+          path: ./packages/upscalerjs/coverage/coverage-final.json
+
 
   unit-node:
     name: 'Unit / Node'
@@ -124,11 +137,31 @@ jobs:
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:node
 
+      # - name: 'Codecov'
+      #   uses: codecov/codecov-action@v3
+      #   with:
+      #     directory: ./packages/upscalerjs/coverage
+      #     verbose: true
+
+      - name: 'Upload Jest Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend-artifacts-node
+          path: ./packages/upscalerjs/coverage/coverage-final.json
+
+  upload-to-codecov:
+    name: 'Upload to CodeCov'
+    runs-on: ubuntu-latest
+    needs: [ unit-node, unit-browser ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
       - name: 'Codecov'
         uses: codecov/codecov-action@v3
-        with:
-          directory: ./packages/upscalerjs/coverage
-          verbose: true
 
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
