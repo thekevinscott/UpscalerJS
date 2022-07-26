@@ -1216,7 +1216,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with percent and slice', async () => {
     console.warn = jest.fn();
-    const mockResponse = 'foobarbaz';
+    const mockResponse = 'foobarbaz1';
     (mockedImage as any).default.tensorAsBase64 = () => mockResponse;
     const img: tf.Tensor4D = tf.ones([4, 2, 3,]).expandDims(0);
     const scale = 2;
@@ -1243,7 +1243,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a tensor', async () => {
     console.warn = jest.fn();
-    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz2';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1320,7 +1320,7 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a string but progressOutput is tensor', async () => {
     console.warn = jest.fn();
-    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz3';
     const img: tf.Tensor4D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1542,12 +1542,12 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
-    (mockedImage as any).default.tensorAsBase64 = () => 'foobarbaz';
+    (mockedImage as any).default.tensorAsBase64 = () => 'foobarbaz4';
     const result = await wrapGenerator(upscale(img, {}, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
     }));
-    expect(result).toEqual('foobarbaz');
+    expect(result).toEqual('foobarbaz4');
   });
 
   it('should return a tensor if specified', async () => {
@@ -1566,7 +1566,7 @@ describe('upscale', () => {
     const model = {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
-    // (mockedTensorAsBase as any).default = async() => 'foobarbaz';
+    // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
       model, 
       modelDefinition: { scale: 2, } as ModelDefinition, 
@@ -1654,6 +1654,31 @@ describe('cancellableUpscale', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).not.toHaveBeenCalledWith(0.75);
     expect(progress).not.toHaveBeenCalledWith(1);
+  });
+
+  it('returns processed pixels', async () => {
+    const mockResponse = 'foobarbaz6';
+    (mockedImage as any).default.tensorAsBase64 = () => mockResponse;
+    const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
+    (mockedImage as any).default.getImageAsTensor = () => img;
+    const controller = new AbortController();
+    const scale = 2;
+    const patchSize = 2;
+    const predictedPixels = tf
+      .fill([patchSize * scale, patchSize * scale, 3,], img.dataSync()[0])
+      .expandDims(0);
+    const model = {
+      predict: jest.fn(() => predictedPixels.clone()),
+    } as unknown as tf.LayersModel;
+    const result = await cancellableUpscale(img, {
+      patchSize,
+      padding: 0,
+    }, {
+      model,
+      modelDefinition: { scale, } as ModelDefinition,
+      signal: controller.signal,
+    });
+    expect(result).toEqual(mockResponse);
   });
 });
 
