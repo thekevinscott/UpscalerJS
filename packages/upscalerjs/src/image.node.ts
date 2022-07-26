@@ -69,7 +69,6 @@ export const getImageAsTensor = async (
 
 export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   const arr = tensorAsClampedArray(tensor);
-  tensor.dispose();
   return Buffer.from(arr).toString('base64');
 };
 
