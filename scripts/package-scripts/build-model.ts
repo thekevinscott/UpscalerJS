@@ -14,6 +14,7 @@ import scaffoldDependenciesConfig from '../../models/scaffolder';
 import { OutputFormat } from './utils/types';
 import { compileTypescript } from './utils/compile';
 import { transformAsync} from '@babel/core';
+import { getAllFilesRecursively } from './utils/getAllFilesRecursively';
 
 /****
  * Constants
@@ -75,10 +76,9 @@ const buildUMD = async (modelFolder: string) => {
  * CJS build function
  */
 const babelTransform = async (directory: string) => {
-  const files = fs.readdirSync(directory);
+  const files = getAllFilesRecursively(directory, file => file.endsWith('.js'));
 
-  await Promise.all(files.filter(file => file.endsWith('.js')).map(async file => {
-    const filePath = path.resolve(directory, file);
+  await Promise.all(files.map(async filePath => {
     const contents = fs.readFileSync(filePath, 'utf-8');
     const transformedCode = await transformAsync(contents, {
       plugins: [
