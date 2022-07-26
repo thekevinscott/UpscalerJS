@@ -95,6 +95,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           directory: ./packages/upscalerjs
+          files: ./coverage/coverage-final.json,./nyc_output/coverage-pw.json
           verbose: true
 
   unit-node:
