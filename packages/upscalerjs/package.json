@@ -57,7 +57,7 @@
     "lint:node:fix": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern **/*.browser.ts --fix",
     "test": "pnpm run test:unit",
     "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
-    "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test src/*.browser.test.ts -r mocha -b firefox",
+    "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test src/image.browser.test.ts -r mocha -b firefox",
     "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
     "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
     "validate:build": "ts-node ../../scripts/validate-build.ts packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
