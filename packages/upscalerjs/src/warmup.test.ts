@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 import warmup from './warmup';
 import type { ModelDefinition, } from "@upscalerjs/core";
 
