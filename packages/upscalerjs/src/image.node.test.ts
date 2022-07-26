@@ -1,7 +1,11 @@
 import fs from 'fs';
 import http from 'http';
 import path from 'path';
-import { getImageAsTensor, getInvalidTensorError, } from './image.node';
+import { 
+  getImageAsTensor, 
+  getInvalidTensorError,
+  tensorAsBase64,
+ } from './image.node';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
 
@@ -74,5 +78,12 @@ describe('Image', () => {
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
+  });
+});
+
+describe('tensorAsBase64', () => {
+  it('returns a tensor as base64', () => {
+    const t: tf.Tensor3D = tf.ones([2,2,3]);
+    expect(tensorAsBase64(t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
   });
 });
