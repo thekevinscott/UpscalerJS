@@ -17,7 +17,6 @@ const main: Main = async (deps) => {
     flower,
     model,
   } = deps;
-  console.log('model', model);
   const upscaler = new Upscaler({
     model,
   });
