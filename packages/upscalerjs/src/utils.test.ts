@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ModelDefinition } from '@upscalerjs/core';
+import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 import { 
   getModelDefinitionError,
   makeIsNDimensionalTensor,
@@ -19,6 +19,7 @@ import {
   MISSING_MODEL_DEFINITION_PATH_ERROR,
   MISSING_MODEL_DEFINITION_SCALE_ERROR,
   LOGICAL_ERROR,
+  getModel,
 } from './utils';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -319,3 +320,24 @@ describe('getModelDefinitionError', () => {
     expect(getModelDefinitionError({ path: 'foo', scale: 2 } as unknown as ModelDefinition)).toEqual(LOGICAL_ERROR);
   });
 })
+
+describe('getModel', () => {
+  it('returns model definition', () => {
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      scale: 2,
+    };
+
+    expect(getModel(modelDefinition)).toEqual(modelDefinition)
+  });
+
+  it('returns model definition from model definition fn', () => {
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      scale: 2,
+    };
+    const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
+
+    expect(getModel(modelDefinitionFn)).toEqual(modelDefinition)
+  });
+});
