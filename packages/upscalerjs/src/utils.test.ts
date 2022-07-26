@@ -1,4 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-node';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 import { 
   getModelDefinitionError,
