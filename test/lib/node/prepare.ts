@@ -33,17 +33,15 @@ export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdou
 };
 
 export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
-  const TMP = path.resolve(ROOT, './tmp');
-  await mkdirp(TMP);
-  const hash = getCryptoName(contents);
-  const FILENAME = path.resolve(TMP, `${hash}.js`);
-  fs.writeFileSync(FILENAME, contents, 'utf-8');
+  await withTmpDir(async tmpDir => {
+    const hash = getCryptoName(contents);
+    const FILENAME = path.resolve(tmpDir, `${hash}.js`);
+    fs.writeFileSync(FILENAME, contents, 'utf-8');
 
-  await callExec(`node "${FILENAME}"`, {
-    cwd: ROOT
-  }, stdout);
-
-  rimraf.sync(TMP);
+    await callExec(`node "${FILENAME}"`, {
+      cwd: ROOT
+    }, stdout);
+  }, path.resolve(ROOT, './tmp'))
 };
 
 export type GetContents = (outputFile: string) => string;
