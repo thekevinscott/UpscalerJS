@@ -1,8 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
-import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
+import { AVAILABLE_PACKAGES, DIRECTORIES, getPackageJSON, getPackageJSONPath, getPackageJSONValue, getPreparedFolderName, Package, ROOT, TransformPackageJsonFn, updateMultiplePackages, updatePackageJSONForKey, updateSinglePackage, UPSCALER_JS } from './utils/packages';
 import { Dependency } from '@schemastore/package';
 
 type Answers = { packages: Array<Package>, version: string}
@@ -33,16 +32,6 @@ const makeSetVersionForPackageJSON = (version: string): TransformPackageJsonFn =
   }
   return packageJSON;
 }
-
-
-// const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
-//   const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
-//   if (file.endsWith('package.json')) {
-//     fs.writeFileSync(file, stringifiedContents);
-//   } else {
-//     fs.writeFileSync(path.resolve(file, 'package.json'), stringifiedContents);
-//   }
-// };
 
 function* getMatchingTFJS(deps?: Dependency) {
   if (deps) {
@@ -99,33 +88,17 @@ const updateTFJS = async () => {
     return;
   }
 
-    const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
+  const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
 
-    await Promise.all(packages.map(packageKey => {
-      const pkg = DIRECTORIES[packageKey];
-      if (pkg === undefined) {
-        throw new Error(`Package ${packageKey} is not defined.`);
-      }
-      const { multiple, directory } = pkg;
-      const fn = multiple ? updateMultiplePackages : updateSinglePackage;
-      return fn(directory, setVersionForPackageJSON);
-    }));
-//   packages.forEach(packageKey => {
-//     if (packageKey === EXAMPLES) {
-//       updateMultiplePackages(EXAMPLES_DIR, version)
-//     } else if (packageKey === 'Test') {
-//       updateMultiplePackages(TEST_DIR, version)
-//     } else if (packageKey === UPSCALER_JS) {
-//       updateSinglePackage(UPSCALERJS_DIR, version)
-//     } else if (packageKey === ROOT) {
-//       updateSinglePackage(ROOT_DIR, version)
-//     } else if (packageKey === CORE) {
-//       updateSinglePackage(CORE_DIR, version);
-//     } else if (packageKey === WRAPPER) {
-//       updateSinglePackage(WRAPPER_DIR, version);
-//     }
-// // const AVAILABLE_PACKAGES = [ UPSCALER_JS, MODELS, EXAMPLES, ROOT, CORE, WRAPPER ];
-//   });
+  await Promise.all(packages.map(packageKey => {
+    const pkg = DIRECTORIES[packageKey];
+    if (pkg === undefined) {
+      throw new Error(`Package ${packageKey} is not defined.`);
+    }
+    const { multiple, directory } = pkg;
+    const fn = multiple ? updateMultiplePackages : updateSinglePackage;
+    return fn(directory, setVersionForPackageJSON);
+  }));
 };
 
 export default updateTFJS;

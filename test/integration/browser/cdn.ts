@@ -3,7 +3,7 @@
  */
 import { bundle, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tf from '@tensorflow/tfjs';
+import type tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import type puppeteer from 'puppeteer';
 
@@ -17,7 +17,7 @@ const CDNS = [
 const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
 
 const TRACK_TIME = false;
-jest.setTimeout(5 * 1000);
+jest.setTimeout(20000);
 jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
@@ -66,7 +66,6 @@ describe('CDN Integration Tests', () => {
     const requests: string[] = [];
 
     _page.on('request', (request) => {
-      console.log(request.url())
       requests.push(request.url())
       request.continue();
     });

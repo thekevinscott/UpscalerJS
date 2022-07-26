@@ -7,6 +7,7 @@
     "find-all-packages": "pnpm run_command ./package-scripts/find-all-packages.ts",
     "update:version": "pnpm run_command ./package-scripts/update-version.ts",
     "update:tfjs": "pnpm run_command ./package-scripts/update-tfjs.ts",
+    "update:dependency": "pnpm run_command ./package-scripts/update-dependency.ts",
     "test:integration:browserstack": "pnpm run_command ./test.ts --platform browser --kind browserstack",
     "test:integration:browser": "pnpm run_command ./test.ts --platform browser",
     "test:integration:node": "pnpm run_command ./test.ts --platform node",

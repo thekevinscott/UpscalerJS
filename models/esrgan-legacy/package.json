@@ -86,18 +86,18 @@
     "dist/**/*"
   ],
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.18.0"
+    "@tensorflow/tfjs": "^3.19.0"
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "^3.18.0",
-    "@tensorflow/tfjs-layers": "^3.18.0",
-    "@tensorflow/tfjs": "^3.18.0",
-    "@tensorflow/tfjs-node": "^3.18.0",
-    "@tensorflow/tfjs-node-gpu": "^3.18.0",
-    "seedrandom": "2.4.4"
+    "@tensorflow/tfjs-core": "^3.19.0",
+    "@tensorflow/tfjs-layers": "^3.19.0",
+    "@tensorflow/tfjs": "^3.19.0",
+    "@tensorflow/tfjs-node": "^3.19.0",
+    "@tensorflow/tfjs-node-gpu": "^3.19.0",
+    "seedrandom": "3.0.5"
   },
   "author": "Kevin Scott",
   "license": "MIT"
