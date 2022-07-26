@@ -13,6 +13,8 @@ import rollupConfig from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
 import { OutputFormat } from './utils/types';
 import { compileTypescript } from './utils/compile';
+import { transformAsync} from '@babel/core';
+import { getAllFilesRecursively } from './utils/getAllFilesRecursively';
 
 /****
  * Constants
@@ -73,11 +75,28 @@ const buildUMD = async (modelFolder: string) => {
 /****
  * CJS build function
  */
+const babelTransform = async (directory: string) => {
+  const files = getAllFilesRecursively(directory, file => file.endsWith('.js'));
+
+  await Promise.all(files.map(async filePath => {
+    const contents = fs.readFileSync(filePath, 'utf-8');
+    const transformedCode = await transformAsync(contents, {
+      plugins: [
+        "@babel/plugin-transform-modules-commonjs",
+        "babel-plugin-add-module-exports",
+      ],
+    });
+    fs.writeFileSync(filePath, transformedCode?.code || '');
+  }));
+};
+
 const buildCJS = async (modelFolder: string) => {
   const dist = path.resolve(modelFolder, 'dist/cjs');
   await mkdirp(dist);
 
   await compileTypescript(modelFolder, 'cjs');
+
+  await babelTransform(dist);
 };
 
 /****

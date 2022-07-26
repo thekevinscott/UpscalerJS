@@ -78,10 +78,12 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    getAllAvailableModelPackages().map(packageName => {
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
+    getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.forEach(({ cjs }) => {
+        models.filter(m => SPECIFIC_MODEL === undefined || m.esm === SPECIFIC_MODEL).forEach(({ cjs }) => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
             const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
@@ -90,7 +92,7 @@ describe('Model Loading Integration Tests', () => {
                 customModel: importPath,
               },
               globals: {
-                model: 'customModel.default',
+                model: 'customModel',
               }
             });
 
