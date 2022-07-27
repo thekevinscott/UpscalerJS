@@ -91,23 +91,13 @@ jobs:
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:playwright
 
-      # - name: 'Codecov'
-      #   uses: codecov/codecov-action@v3
-      #   with:
-      #     files: ./packages/upscalerjs/coverage/coverage-final.json,./packages/upscalerjs/.nyc_output/coverage-pw.json
-      #     verbose: true
-
-      - name: 'Upload Playwright Artifact'
+      - name: 'Upload Unit Browser Artifact'
         uses: actions/upload-artifact@v2
         with:
-          name: frontend-artifacts-playwright
-          path: ./packages/upscalerjs/.nyc_output/coverage-pw.json
-
-      - name: 'Upload Jest Artifact'
-        uses: actions/upload-artifact@v2
-        with:
-          name: frontend-artifacts-node
-          path: ./packages/upscalerjs/coverage/coverage-final.json
+          name: artifacts-test-unit-browser
+          path: |
+            ./packages/upscalerjs/.nyc_output/coverage-pw.json
+            ./packages/upscalerjs/coverage/coverage-final.json
 
 
   unit-node:
@@ -143,10 +133,10 @@ jobs:
       #     directory: ./packages/upscalerjs/coverage
       #     verbose: true
 
-      - name: 'Upload Jest Artifact'
+      - name: 'Upload Unit Node Artifact'
         uses: actions/upload-artifact@v2
         with:
-          name: frontend-artifacts-node
+          name: artifacts-test-unit-node
           path: ./packages/upscalerjs/coverage/coverage-final.json
 
   upload-to-codecov:
