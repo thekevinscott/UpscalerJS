@@ -152,6 +152,13 @@ jobs:
 
       - name: 'Codecov'
         uses: codecov/codecov-action@v3
+        with:
+          files: |
+            artifacts-test-unit-node/coverage-final.json,
+            artifacts-test-unit-browser/coverage/coverage-final.json,
+            artifacts-test-unit-browser/.nyc_output/coverage-pw.json
+          # files: ./packages/upscalerjs/coverage/coverage-final.json,./packages/upscalerjs/.nyc_output/coverage-pw.json
+          verbose: true
 
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
