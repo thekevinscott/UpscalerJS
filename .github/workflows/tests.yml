@@ -150,6 +150,15 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
+      - name: ls
+        run: ls
+
+      - name: ls artifacts-test-unit-node
+        run: ls artifacts-test-unit-node
+
+      - name: ls artifacts-test-unit-browser
+        run: ls artifacts-test-unit-browser
+
       - name: 'Codecov'
         uses: codecov/codecov-action@v3
         with:
