@@ -1,5 +1,10 @@
 lockfileVersion: 5.4
 
+overrides:
+  '@tensorflow/tfjs': ^3.19.0
+  '@tensorflow/tfjs-node': ^3.19.0
+  '@tensorflow/tfjs-node-gpu': ^3.19.0
+
 importers:
 
   .:
@@ -497,21 +502,6 @@ importers:
       '@types/yargs': 17.0.10
       inquirer: 8.2.4
       yargs: 17.5.1
-
-  test/lib/node:
-    specifiers:
-      '@tensorflow/tfjs-node': ^3.19.0
-      '@tensorflow/tfjs-node-gpu': ^3.19.0
-      seedrandom: 3.0.5
-      tslib: ^2.4.0
-      yargs: ^17.3.1
-    dependencies:
-      '@tensorflow/tfjs-node': 3.19.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-node-gpu': 3.19.0_seedrandom@3.0.5
-      yargs: 17.5.1
-    devDependencies:
-      seedrandom: 3.0.5
-      tslib: 2.4.0
 
 packages:
 
@@ -4853,6 +4843,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs-node/3.19.0_seedrandom@3.0.5:
     resolution: {integrity: sha512-6l8+56J66zf5k+WS8zTA1SbXno+iV7LgchwKPa62fsPRwjdzNIm1QondJbQYbFOILYx6bsgJs7nOoxStOlygAw==}
@@ -17482,6 +17473,7 @@ packages:
   /yargs-parser/21.0.1:
     resolution: {integrity: sha512-9BK1jFpLzJROCI5TzwZL/TU4gqjK5xiHV/RfWLOahrjAko/e4DJkRDZQXfvqAsiZzzYhgAzbgz6lg48jcm4GLg==}
     engines: {node: '>=12'}
+    dev: true
 
   /yargs-unparser/2.0.0:
     resolution: {integrity: sha512-7pRTIA9Qc1caZ0bZ6RYRGbHJthJWuakf+WmHK0rVeLkNrrGhfoabBNdue6kdINI6r4if7ocq9aD/n7xwKOdzOA==}
@@ -17533,6 +17525,7 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.1
+    dev: true
 
   /yauzl/2.10.0:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
