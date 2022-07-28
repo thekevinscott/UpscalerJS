@@ -1,8 +1,6 @@
 import callExec from "../utils/callExec";
-import { mkdirp } from "fs-extra";
 import fs from 'fs';
 import path from 'path';
-import rimraf from 'rimraf';
 import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
@@ -32,37 +30,51 @@ export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdou
   }, stdout);
 };
 
-export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
-  await withTmpDir(async tmpDir => {
-    const hash = getCryptoName(contents);
-    const FILENAME = path.resolve(tmpDir, `${hash}.js`);
-    fs.writeFileSync(FILENAME, contents, 'utf-8');
+const formatTestName = (testName: string) => testName.replace(/[\W_]+/g,"-");
 
-    await callExec(`node "${FILENAME}"`, {
-      cwd: ROOT
-    }, stdout);
-  }, { rootDir: path.resolve(ROOT, './tmp') })
+const getTestName = (testName: string | undefined, contents: string) => {
+  return `${testName ? formatTestName(testName) : getCryptoName(contents)}.js`;
+}
+
+interface ExecuteNodeScriptOpts {
+  stdout?: Stdout;
+}
+type ExecuteNodeScript = (fileName: string, opts?: ExecuteNodeScriptOpts) => Promise<void>;
+export const executeNodeScript: ExecuteNodeScript = async (fileName: string, { stdout } = {}) => {
+  await callExec(`node "${fileName}"`, {
+    cwd: ROOT
+  }, stdout);
 };
 
-export type GetContents = (outputFile: string) => string;
+export type GetScriptContents = (outputFile: string) => string;
 interface TestNodeScriptOpts {
   logExtra?: boolean;
   removeTmpDir?: boolean;
+  testName?: string;
 }
-type TestNodeScript = (contents: GetContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
-export const testNodeScript: TestNodeScript = async (contents, {
+type TestNodeScript = (getScriptContents: GetScriptContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
+export const testNodeScript: TestNodeScript = async (getScriptContents, {
   logExtra = true,
   removeTmpDir,
+  testName,
 } = {}) => {
   let data;
   await withTmpDir(async tmpDir => {
-    const outputFile = path.join(tmpDir, 'data');
-    await executeNodeScript(contents(outputFile).trim(), chunk => {
-      if (logExtra) {
-        console.log('[PAGE]', chunk);
-      }
+    const dataFile = path.join(tmpDir, getCryptoName(`${Math.random()}`));
+    const contentOutput = getScriptContents(dataFile).trim();
+    const fileName = path.resolve(tmpDir, getTestName(testName, contentOutput));
+    fs.writeFileSync(fileName, contentOutput, 'utf-8');
+    await executeNodeScript(fileName, {
+      stdout: chunk => {
+        if (logExtra) {
+          console.log('[PAGE]', chunk);
+        }
+      },
     });
-    data = fs.readFileSync(outputFile);
-  }, { removeTmpDir });
+    data = fs.readFileSync(dataFile);
+  }, {
+    rootDir: path.resolve(ROOT, './tmp'),
+    removeTmpDir,
+  });
   return data;
 }

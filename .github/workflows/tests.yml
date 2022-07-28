@@ -54,6 +54,9 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
+      - name: 'Build Upscaler dependencies'
+        run: 'pnpm --filter="upscaler" build:dependencies'
+
       - name: 'Build'
         run: 'pnpm --filter="upscaler" build:only'
 

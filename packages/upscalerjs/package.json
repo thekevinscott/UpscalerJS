@@ -3,8 +3,8 @@
   "version": "1.0.0-beta.5",
   "description": "Increase Image Resolution with Tensorflow.js",
   "exports": {
-    "./node": "./dist/node/cjs/index.js",
-    "./node-gpu": "./dist/node-gpu/cjs/index.js",
+    "./node": "./dist/node/cjs/cjs.js",
+    "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
     ".": "./dist/browser/esm/index.js"
   },
   "engines": {
@@ -33,13 +33,14 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "pnpm build:only && pnpm validate:build",
+    "build": "pnpm build:dependencies && pnpm build:only && pnpm validate:build",
     "build:only": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
     "build:browser": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm -o umd",
     "build:browser:esm": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm",
     "build:browser:umd": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o umd",
     "build:node": "pnpm --filter @upscalerjs/scripts build:upscaler node -o cjs",
     "build:node-gpu": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs",
+    "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
@@ -56,7 +57,8 @@
     "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json",
     "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
     "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
-    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/index.d.ts' -c './dist/node-gpu/cjs/index.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
+    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
+
     "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"pnpm build:umd\" -i \"test.ts\" -i \"generated.ts\"",

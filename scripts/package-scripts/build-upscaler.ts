@@ -6,13 +6,11 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import rollupConfig from '../../models/rollup.config';
 import { OutputFormat, Platform } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { getOutputFormats } from './prompt/getOutputFormats';
 import { getPlatform } from './prompt/getPlatform';
-import { babelTransform } from './utils/babelTransform';
 
 /****
  * Types
@@ -104,7 +102,6 @@ const buildCJS: BuildFn = async (platform, {
   await compileTypescript(UPSCALER_DIR, 'cjs', {
     outDir: distFolder,
   });
-  await babelTransform(distFolder);
 };
 
 /****

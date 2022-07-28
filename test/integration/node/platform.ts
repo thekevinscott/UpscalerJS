@@ -1,6 +1,6 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS, GetContents, testNodeScript } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS, GetScriptContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
