@@ -71,4 +71,3 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   const arr = tensorAsClampedArray(tensor);
   return Buffer.from(arr).toString('base64');
 };
-

@@ -124,10 +124,23 @@ jobs:
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:node
 
+      - name: 'Upload Unit Node Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts-test-unit-node
+          path: ./packages/upscalerjs/coverage/coverage-final.json
+
+  upload-to-codecov:
+    name: 'Upload to CodeCov'
+    runs-on: ubuntu-latest
+    needs: [ unit-node, unit-browser-jest, unit-browser-playwright ]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
       - name: 'Codecov'
         uses: codecov/codecov-action@v3
         with:
-          directory: ./packages/upscalerjs/coverage
           verbose: true
 
   integration-browser-browserstack:

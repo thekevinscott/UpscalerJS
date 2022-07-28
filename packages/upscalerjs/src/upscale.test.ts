@@ -22,34 +22,35 @@ import {
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   makeTick,
 } from './upscale';
-import * as utils from './utils';
-import * as image from './image.generated';
+import { tensorAsBase64, getImageAsTensor, } from './image.generated';
+import { wrapGenerator, isTensor, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
 import { Progress, } from './types';
+import { mockFn } from '../../../test/lib/shared/mockers';
+
 jest.mock('./image.generated', () => ({
   __esmodule: true,
   ...jest.requireActual('./image.generated'),
+  tensorAsBase64: jest.fn(),
+  getImageAsTensor: jest.fn(),
+  isTensor: jest.fn(),
 }));
 jest.mock('./utils', () => ({
   __esmodule: true,
   ...jest.requireActual('./utils'),
+  isTensor: jest.fn(),
 }));
 
-const mockedImage = image as jest.Mocked<typeof image>;
-const mockedUtils = utils as jest.Mocked<typeof utils>;
-// const mockedTensorAsBase = tensorAsBase as jest.Mocked<typeof tensorAsBase>;
+const mockedTensorAsBase64 = mockFn(tensorAsBase64);
+const mockedGetImageAsTensor = mockFn(getImageAsTensor);
+const mockedIsTensor = mockFn(isTensor);
+
 
 describe('concatTensors', () => {
   beforeEach(() => {
-    try {
-    (mockedImage as any).default.tensorAsBase64.mockClear();
-    } catch(err) {}
-    try {
-    (mockedImage as any).default.getImageAsTensor.mockClear();
-    } catch(err) {}
-    try {
-    (mockedUtils as any).default.isTensor.mockClear();
-    } catch(err) {}
+    mockedTensorAsBase64.mockClear();
+    mockedGetImageAsTensor.mockClear();
+    mockedIsTensor.mockClear();
   });
   it('concats two tensors together', () => {
     const a: tf.Tensor3D = tf.tensor(
@@ -1130,7 +1131,7 @@ describe('predict', () => {
     const model = {
       predict: jest.fn(() => pred),
     } as unknown as tf.LayersModel;
-    const result = await utils.wrapGenerator(
+    const result = await wrapGenerator(
       predict(img.expandDims(0), {
       }, { model, modelDefinition: { scale: 2, } as ModelDefinition })
     );
@@ -1152,7 +1153,7 @@ describe('predict', () => {
         return tf.fill([2, 2, 3,], pixel.dataSync()[0]).expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    const result = await utils.wrapGenerator(predict(
+    const result = await wrapGenerator(predict(
       img.expandDims(0),
       {
         patchSize: 1,
@@ -1209,7 +1210,7 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn();
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1226,7 +1227,7 @@ describe('predict', () => {
   it('should invoke progress callback with percent and slice', async () => {
     console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
-    (mockedImage as any).default.tensorAsBase64 = () => mockResponse;
+    mockedTensorAsBase64.mockImplementation(() => mockResponse);
     const img: tf.Tensor4D = tf.ones([4, 2, 3,]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
@@ -1238,7 +1239,7 @@ describe('predict', () => {
       }),
     } as unknown as tf.LayersModel;
     const progress = jest.fn((_1: any, _2: any) => {});
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1306,7 +1307,7 @@ describe('predict', () => {
         ]);
       }
     }) as unknown as Progress<'tensor', undefined>
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1383,7 +1384,7 @@ describe('predict', () => {
         ]);
       }
     }) as Progress<'src', 'tensor'>
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         patchSize,
         padding: 0,
@@ -1417,7 +1418,7 @@ describe('predict', () => {
           .expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         patchSize,
       }, { model, modelDefinition: { scale, } as ModelDefinition })
@@ -1437,7 +1438,7 @@ describe('predict', () => {
           .expandDims(0);
       }),
     } as unknown as tf.LayersModel;
-    await utils.wrapGenerator(
+    await wrapGenerator(
       predict(img, {
         progress: () => { },
       }, { model, modelDefinition: { scale, } as ModelDefinition })
@@ -1519,7 +1520,7 @@ describe('predict', () => {
         if (expectation.shouldDispose) {
           if (Array.isArray(result.value)) {
             result.value.forEach(t => t.dispose());
-          } else if (utils.isTensor(result.value)) {
+          } else if (isTensor(result.value)) {
             result.value.dispose();
           }
         }
@@ -1547,12 +1548,12 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsTensor = () => img;
+    mockedGetImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
-    (mockedImage as any).default.tensorAsBase64 = () => 'foobarbaz4';
-    const result = await utils.wrapGenerator(upscale(img, {}, {
+    mockedTensorAsBase64.mockImplementation(() => 'foobarbaz4');
+    const result = await wrapGenerator(upscale(img, {}, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
     }));
@@ -1570,13 +1571,13 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    (mockedImage as any).default.getImageAsTensor = () => img;
+    mockedGetImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
       predict: jest.fn(() => upscaledTensor),
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
-    const result = await utils.wrapGenerator(upscale(img, { output: 'tensor', }, { 
+    const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
       model, 
       modelDefinition: { scale: 2, } as ModelDefinition, 
     }));
@@ -1590,7 +1591,7 @@ describe('upscale', () => {
 describe('cancellableUpscale', () => {
   it('is able to cancel an in-flight request', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    (mockedImage as any).default.getImageAsTensor = () => img;
+    mockedGetImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -1629,7 +1630,7 @@ describe('cancellableUpscale', () => {
 
   it('is able to cancel an in-flight request with an internal signal', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    (mockedImage as any).default.getImageAsTensor = () => img;
+    mockedGetImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -1667,9 +1668,9 @@ describe('cancellableUpscale', () => {
 
   it('returns processed pixels', async () => {
     const mockResponse = 'foobarbaz6';
-    (mockedImage as any).default.tensorAsBase64 = () => mockResponse;
+    mockedTensorAsBase64.mockImplementation(() => mockResponse);
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    (mockedImage as any).default.getImageAsTensor = () => img;
+    mockedGetImageAsTensor.mockImplementation(async () => img);
     const controller = new AbortController();
     const scale = 2;
     const patchSize = 2;
@@ -1713,7 +1714,7 @@ describe('getWidthAndHeight', () => {
 
 describe('makeTick', () => {
   it('disposes of an in-flight tensor', (done) => {
-    (mockedUtils as any).default.isTensor = () => true;
+    mockedIsTensor.mockImplementation(() => true);
     const abortController = new AbortController();
     const dispose = jest.fn();
     const t = {
@@ -1731,7 +1732,7 @@ describe('makeTick', () => {
   }, 100);
 
   it('disposes of a multiple in-flight tensors', (done) => {
-    (mockedUtils as any).default.isTensor = () => false;
+    mockedIsTensor.mockImplementation(() => false);
     const abortController = new AbortController();
     const dispose = jest.fn();
     const getTensor = () => ({
@@ -1752,7 +1753,7 @@ describe('makeTick', () => {
   }, 100);
 
   it('ignores any non-tensor results', (done) => {
-    (mockedUtils as any).default.isTensor = () => false;
+    mockedIsTensor.mockImplementation(() => false);
     const abortController = new AbortController();
     const tick = makeTick(abortController.signal);
     tick(undefined).then(() => {
