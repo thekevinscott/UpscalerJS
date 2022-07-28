@@ -1,6 +1,6 @@
 import { timeit } from "./timeit";
 import Upscaler from '../../../packages/upscalerjs/src/index';
-import { GetContents, testNodeScript } from "../../lib/node/prepare";
+import { GetScriptContents, testNodeScript } from "../../lib/node/prepare";
 
 type Bundle = () => Promise<void>;
 
@@ -52,17 +52,6 @@ export class NodeTestRunner {
   }
 
   /****
-   * Getters and setters
-   */
-
-  // getLocal<T extends puppeteer.Browser | puppeteer.Page | http.Server>(key: '_server' | '_browser' | '_page'): T {
-  //   if (!this[key]) {
-  //     throw new Error(`${key.substring(1)} is undefined`);
-  //   }
-  //   return this[key] as T;
-  // }
-
-  /****
    * Utility methods
    */
 
@@ -75,13 +64,18 @@ export class NodeTestRunner {
     if (!_main) {
       throw new Error('No main function defined');
     }
-    return testNodeScript(writeScript({
+
+    const contents = getScriptContents({
       ...this.dependencies,
       ...dependencies,
     }, _main, {
       ...this.globals,
       ...globals,
-    }));
+    });
+    return testNodeScript(contents, {
+      removeTmpDir: true, // set to false if you need to inspect the Node output files
+      testName: expect.getState().currentTestName,
+    });
   }
 
   /****
@@ -98,7 +92,11 @@ export class NodeTestRunner {
   }
 }
 
-const writeScript = (dependencies: Dependencies, main: Main, globals: Globals): GetContents => (outputFile: string) => `
+const getScriptContents = (
+  dependencies: Dependencies, 
+  main: Main, 
+  globals: Globals
+): GetScriptContents => (outputFile: string) => `
 const { __awaiter } = require("tslib");
 
 ${Object.entries(dependencies).map(makeDependency).join('\n')}

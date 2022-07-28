@@ -1,27 +1,27 @@
 import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
-import inquirer from 'inquirer';
 import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
-import rollupConfig from '../../models/rollup.config';
+import { inputOptions, } from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
-import { OutputFormat } from './utils/types';
+import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { transformAsync} from '@babel/core';
 import { getAllFilesRecursively } from './utils/getAllFilesRecursively';
+import { getOutputFormats } from './prompt/getOutputFormats';
+import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
+import { babelTransform } from './utils/babelTransform';
 
 /****
  * Constants
  */
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-const AVAILABLE_MODELS = getAllAvailableModelPackages();
 const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 /****
@@ -56,7 +56,7 @@ const buildUMD = async (modelFolder: string) => {
 
     mkdirpSync(FILE_DIST);
     await rollupBuild({
-      ...rollupConfig,
+      ...inputOptions,
       input,
     }, [{
       file,
@@ -75,27 +75,10 @@ const buildUMD = async (modelFolder: string) => {
 /****
  * CJS build function
  */
-const babelTransform = async (directory: string) => {
-  const files = getAllFilesRecursively(directory, file => file.endsWith('.js'));
-
-  await Promise.all(files.map(async filePath => {
-    const contents = fs.readFileSync(filePath, 'utf-8');
-    const transformedCode = await transformAsync(contents, {
-      plugins: [
-        "@babel/plugin-transform-modules-commonjs",
-        "babel-plugin-add-module-exports",
-      ],
-    });
-    fs.writeFileSync(filePath, transformedCode?.code || '');
-  }));
-};
-
 const buildCJS = async (modelFolder: string) => {
   const dist = path.resolve(modelFolder, 'dist/cjs');
   await mkdirp(dist);
-
   await compileTypescript(modelFolder, 'cjs');
-
   await babelTransform(dist);
 };
 
@@ -129,6 +112,16 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 }
 
 const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS) => {
+  if (models.length === 0) {
+    console.log('No models selected, nothing to do.')
+    return;
+  }
+
+  if (outputFormats.length === 0) {
+    console.log('No output formats selected, nothing to do.')
+    return;
+  }
+
   return await Promise.all(models.map(model => buildModel(model, outputFormats)))
 }
 
@@ -139,51 +132,6 @@ export default buildModels;
  */
 
 type Answers = { models: Array<string>, outputFormats: Array<OutputFormat> }
-
-const getModel = async (model?: string | number) => {
-  if (typeof model == 'string') {
-    return [model];
-  }
-
-  const { models } = await inquirer.prompt<Answers>([
-    {
-      type: 'checkbox',
-      name: 'models',
-      message: 'Which models do you want to build?',
-      choices: AVAILABLE_MODELS,
-    },
-  ]);
-  return models;
-}
-
-
-const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat => {
-  for (let i = 0; i < DEFAULT_OUTPUT_FORMATS.length; i++) {
-    const f = DEFAULT_OUTPUT_FORMATS[i];
-    if (f === outputFormat) {
-      return true;
-    }
-  }
-  return false;
-}
-
-const getOutputFormats = async (outputFormat?: unknown) => {
-  if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
-    return [outputFormat]
-  }
-  if (Array.isArray(outputFormat)) {
-    return outputFormat;
-  }
-  const { outputFormats } = await inquirer.prompt<Answers>([
-    {
-      type: 'checkbox',
-      name: 'outputFormats',
-      message: 'Which output formats do you want to build?',
-      choices: ['cjs', 'esm', 'umd'],
-    },
-  ]);
-  return outputFormats;
-}
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('build models', 'build models', yargs => {
@@ -199,16 +147,6 @@ const getArgs = async (): Promise<Answers> => {
 
   const models = await getModel(argv._[0]);
   const outputFormats = await getOutputFormats(argv.o);
-
-  if (models?.length === 0) {
-    console.log('No models selected, nothing to do.')
-    process.exit(0);
-  }
-
-  if (outputFormats?.length === 0) {
-    console.log('No output formats selected, nothing to do.')
-    process.exit(0);
-  }
 
   return {
     models,

@@ -33,17 +33,14 @@
     "dist/**/*"
   ],
   "scripts": {
-    "build": "rimraf dist && pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
-    "build:browser": "rimraf dist/browser && mkdir -p dist/browser && pnpm scaffold:dependencies 'browser' && pnpm build:umd && pnpm build:esm",
-    "build:node": "rimraf dist/node && mkdir -p dist/node && pnpm scaffold:dependencies 'node' && pnpm build:cjs --outDir dist/node/cjs",
-    "build:node-gpu": "rimraf dist/node-gpu && mkdir -p dist/node-gpu && pnpm scaffold:dependencies 'node-gpu' && pnpm build:cjs --outDir dist/node-gpu/cjs",
-    "build:cjs": "tsc -p tsconfig.node.json --module commonjs --target es5",
-    "build:esm": "tsc -p tsconfig.browser.esm.json --module esnext --target esnext --outDir dist/browser/esm",
-    "build:umd:tsc": "rimraf dist/tmp && tsc -p tsconfig.browser.umd.json --module es2015 --target es5 --outDir dist/tmp",
-    "build:umd:rollup": "pnpm rollup -c rollup.config.ts --failAfterWarnings",
-    "build:umd:generate": "pnpm build:umd:tsc && pnpm build:umd:rollup",
-    "build:umd:compress": "uglifyjs --source-map --comments --output dist/browser/umd/upscaler.min.js -- dist/browser/umd/upscaler.js",
-    "build:umd": "pnpm build:umd:generate && pnpm build:umd:compress && rimraf dist/tmp",
+    "build": "pnpm build:dependencies && pnpm build:only && pnpm validate:build",
+    "build:only": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
+    "build:browser": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm -o umd",
+    "build:browser:esm": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm",
+    "build:browser:umd": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o umd",
+    "build:node": "pnpm --filter @upscalerjs/scripts build:upscaler node -o cjs",
+    "build:node-gpu": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs",
+    "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
@@ -60,7 +57,8 @@
     "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json",
     "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
     "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
-    "validate:build": "ts-node ../../scripts/validate-build.ts packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
+    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
+
     "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"pnpm build:umd\" -i \"test.ts\" -i \"generated.ts\"",
@@ -87,6 +85,7 @@
     "@upscalerjs/esrgan-slim": "workspace:*"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@tensorflow/tfjs": "^3.19.0",
     "@tensorflow/tfjs-node": "^3.19.0",
     "@tensorflow/tfjs-node-gpu": "^3.19.0",

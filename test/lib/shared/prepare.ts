@@ -1,14 +1,13 @@
 import { Dependency } from '@schemastore/package';
-import crypto from 'crypto';
 import fs from 'fs';
-import { mkdirp, mkdirpSync } from 'fs-extra';
+import { mkdirpSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
-// import zlib from 'zlib';
 import tar from 'tar';
+import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -212,33 +211,3 @@ export const installLocalPackage = async (src: string, dest: string) => {
     });
   })
 };
-
-type WithTmpDirFn = (tmp: string) => Promise<void>;
-export const withTmpDir = async (callback: WithTmpDirFn, rootDir?: string) => {
-  let tmpDir = await getTmpDir(rootDir);
-  if (!fs.existsSync(tmpDir)) {
-    throw new Error(`Tmp directory ${tmpDir} was not created`);
-  }
-
-  try {
-    await callback(tmpDir);
-  }
-  finally {
-    try {
-      if (tmpDir) {
-        rimraf.sync(tmpDir);
-      }
-    }
-    catch (e) {
-      console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
-    }
-  }
-};
-
-const getTmpDir = async (root = path.resolve(ROOT, 'tmp')): Promise<string> => {
-  const folder = path.resolve(root, getCryptoName(`${Math.random()}`));
-  await mkdirp(folder);
-  return folder;
-};
-
-export const getCryptoName = (contents: string) => crypto.createHash('md5').update(contents).digest('hex');

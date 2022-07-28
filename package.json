@@ -23,6 +23,7 @@
     ]
   },
   "scripts": {
+    "build": "pnpm build",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm install --filter=!\"@upscalerjs/examples.*\"",
     "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
@@ -39,7 +40,11 @@
     "test:integration:browserstack": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
     "test:integration:browser": "pnpm --filter @upscalerjs/scripts test:integration:browser",
     "test:integration:node": "pnpm --filter @upscalerjs/scripts test:integration:node",
-    "test:memory-leaks": "pnpm --filter @upscalerjs/scripts test:memory-leaks"
+    "test:memory-leaks": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
+    "test:unit": "pnpm --filter upscaler test:unit",
+    "test:unit:browser:playwright": "pnpm --filter upscaler test:unit:browser:playwright",
+    "test:unit:browser:jest": "pnpm --filter upscaler test:unit:browser:jest",
+    "test:unit:node": "pnpm --filter upscaler test:unit:node"
   },
   "repository": {
     "type": "git",
@@ -56,6 +61,7 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",
     "@babel/core": "^7.0.0-beta.44",
+    "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@babel/preset-env": "^7.0.0-beta.44",
     "@babel/preset-typescript": "^7.18.6",

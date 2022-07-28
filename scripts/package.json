@@ -5,6 +5,8 @@
     "run_command": "ts-node --project ./tsconfig.json",
     "example": "pnpm run_command ./start-example.ts",
     "find-all-packages": "pnpm run_command ./package-scripts/find-all-packages.ts",
+    "build:upscaler": "pnpm run_command ./package-scripts/build-upscaler.ts",
+    "validate:build": "pnpm run_command ./package-scripts/validate-build.ts",
     "update:version": "pnpm run_command ./package-scripts/update-version.ts",
     "update:tfjs": "pnpm run_command ./package-scripts/update-tfjs.ts",
     "update:dependency": "pnpm run_command ./package-scripts/update-dependency.ts",

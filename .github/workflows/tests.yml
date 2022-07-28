@@ -54,11 +54,14 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
+      - name: 'Build Upscaler dependencies'
+        run: 'pnpm --filter="upscaler" build:dependencies'
+
       - name: 'Build'
-        run: 'pnpm --filter=!"@upscalerjs/models" --filter=!"@upscalerjs/scripts" --filter=!"@upscalerjs/examples.*" build'
+        run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Validate'
-        run: 'pnpm --filter "*" validate:build'
+        run: 'pnpm --filter="upscaler" validate:build'
 
   unit-browser-jest:
     name: 'Unit / Browser / Jest'

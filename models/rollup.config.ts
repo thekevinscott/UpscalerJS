@@ -1,10 +1,13 @@
 // This file is extended via build-model.ts
 import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { nodeResolve, } from '@rollup/plugin-node-resolve';
+import type { InputOptions, } from 'rollup';
 
-export default {
+export const inputOptions: InputOptions = {
   context: 'window',
-  external: ['@tensorflow/tfjs'],
+  external: [
+    '@tensorflow/tfjs',
+  ],
   plugins: [
     nodeResolve({
       preferBuiltins: true,
@@ -13,5 +16,5 @@ export default {
       ],
     }),
     commonjs(),
-  ]
-}
+  ],
+};

@@ -7,7 +7,17 @@ export async function rollupBuild(inputOptions: RollupOptions, outputOptionsList
   let buildFailed = false;
   try {
     // create a bundle
-    bundle = await rollup(inputOptions);
+    bundle = await rollup({
+      ...inputOptions,
+      onwarn: (warning) => {
+        if (warning.code === 'MIXED_EXPORTS') {
+          throw new Error(warning.message);
+        } else {
+          console.warn(warning);
+          throw new Error(warning.message);
+        }
+      }
+    });
 
     // // an array of file names this bundle depends on
     // console.log(bundle.watchFiles);

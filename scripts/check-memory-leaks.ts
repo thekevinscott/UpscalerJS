@@ -7,9 +7,9 @@ import dotenv from 'dotenv';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs';
-import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import buildModels from './package-scripts/build-model';
+import buildUpscaler from './package-scripts/build-upscaler';
 
 dotenv.config();
 

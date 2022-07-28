@@ -6,6 +6,7 @@ import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../l
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
+import type { Tensor, Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -91,7 +92,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D;
+      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = src;
@@ -107,7 +108,7 @@ describe('Model Loading Integration Tests', () => {
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tfn.image.resizeNearestNeighbor(tf.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as tf.Tensor3D, [4,4]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
@@ -117,16 +118,16 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D;
+      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       return upscaler.upscale(tensor, {
         output: 'tensor',
-      }).then((output: tf.Tensor) => {
+      }).then((output: Tensor) => {
         return Array.from(output.dataSync());
       });
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D, [4,4]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 

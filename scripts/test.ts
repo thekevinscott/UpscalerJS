@@ -8,10 +8,10 @@ import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
 import yargs from 'yargs';
-import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
-import { OutputFormat } from './package-scripts/utils/types';
+import { OutputFormat } from './package-scripts/prompt/types';
+import buildUpscaler from './package-scripts/build-upscaler';
 
 dotenv.config();
 
@@ -106,7 +106,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     const durations = await buildModels(modelPackages, getOutputFormats(platform));
     console.log([
       `** built models: ${getOutputFormats(platform)}`,
-      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations[i]} ms`),
+      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
     ].join('\n'));
   }
   if (argv.skipBuild !== true) {
