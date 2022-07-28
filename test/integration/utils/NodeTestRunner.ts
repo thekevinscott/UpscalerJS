@@ -72,7 +72,7 @@ export class NodeTestRunner {
       ...globals,
     });
     return testNodeScript(contents, {
-      removeTmpDir: false,
+      removeTmpDir: true, // set to false if you need to inspect the Node output files
     });
   }
 
@@ -90,7 +90,11 @@ export class NodeTestRunner {
   }
 }
 
-const writeScript = (dependencies: Dependencies, main: Main, globals: Globals): GetContents => (outputFile: string) => `
+const writeScript = (
+  dependencies: Dependencies, 
+  main: Main, 
+  globals: Globals
+): GetContents => (outputFile: string) => `
 const { __awaiter } = require("tslib");
 
 ${Object.entries(dependencies).map(makeDependency).join('\n')}
