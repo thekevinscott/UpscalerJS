@@ -5,7 +5,8 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tf from '@tensorflow/tfjs';
+import * as tfb from '@tensorflow/tfjs';
+import type { Tensor, Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -91,7 +92,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D;
+      const tensor = tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = src;
@@ -101,13 +102,13 @@ describe('Model Loading Integration Tests', () => {
       return upscaler.upscale(tensor).then((output: string) => {
         return loadImage(output);
       }).then((img: HTMLImageElement) => {
-        const predictedPixels = tf.browser.fromPixels(img);
+        const predictedPixels = tfb.browser.fromPixels(img);
         return Array.from(predictedPixels.dataSync());
       });
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tfn.image.resizeNearestNeighbor(tf.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as tf.Tensor3D, [4,4]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
@@ -117,16 +118,16 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D;
+      const tensor = tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       return upscaler.upscale(tensor, {
         output: 'tensor',
-      }).then((output: tf.Tensor) => {
+      }).then((output: Tensor) => {
         return Array.from(output.dataSync());
       });
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as tf.Tensor3D, [4,4]);
+    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
@@ -197,7 +198,7 @@ declare global {
   interface Window {
     Upscaler: typeof Upscaler;
     flower: string;
-    tf: typeof tf;
+    tf: typeof tfb;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;
     PixelUpsampler2x: ModelDefinition;
