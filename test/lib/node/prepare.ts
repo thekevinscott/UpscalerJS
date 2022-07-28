@@ -1,9 +1,10 @@
 import callExec from "../utils/callExec";
 import fs from 'fs';
 import path from 'path';
-import { getCryptoName, installLocalPackages, installNodeModules, withTmpDir } from "../shared/prepare";
+import { installLocalPackages, installNodeModules } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
+import { getHashedName, withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 
 const ROOT = path.join(__dirname);
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
@@ -33,7 +34,7 @@ export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdou
 const formatTestName = (testName: string) => testName.replace(/[\W_]+/g,"-");
 
 const getTestName = (testName: string | undefined, contents: string) => {
-  return `${testName ? formatTestName(testName) : getCryptoName(contents)}.js`;
+  return `${testName ? formatTestName(testName) : getHashedName(contents)}.js`;
 }
 
 interface ExecuteNodeScriptOpts {
@@ -60,7 +61,7 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
 } = {}) => {
   let data;
   await withTmpDir(async tmpDir => {
-    const dataFile = path.join(tmpDir, getCryptoName(`${Math.random()}`));
+    const dataFile = path.join(tmpDir, getHashedName(`${Math.random()}`));
     const contentOutput = getScriptContents(dataFile).trim();
     const fileName = path.resolve(tmpDir, getTestName(testName, contentOutput));
     fs.writeFileSync(fileName, contentOutput, 'utf-8');

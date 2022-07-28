@@ -11,6 +11,7 @@ import { OutputFormat, Platform } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { getOutputFormats } from './prompt/getOutputFormats';
 import { getPlatform } from './prompt/getPlatform';
+import { withTmpDir } from './utils/withTmpDir';
 
 /****
  * Types
@@ -33,6 +34,12 @@ const DIST = path.resolve(UPSCALER_DIR, 'dist');
 
 const getDistFolder = (platform: Platform, outputFormat: OutputFormat) => {
   return path.resolve(DIST, platform, outputFormat);
+};
+
+const cleanOutput = (distFolder: string, clearDistFolder: boolean) => {
+  if (clearDistFolder) {
+    rimraf.sync(distFolder);
+  }
 }
 
 /****
@@ -42,9 +49,7 @@ const buildESM: BuildFn = async (platform, {
   clearDistFolder = true,
 } = {}) => {
   const distFolder = getDistFolder(platform, 'esm');
-  if (clearDistFolder) {
-    rimraf.sync(distFolder);
-  }
+  cleanOutput(distFolder, clearDistFolder);
   await compileTypescript(UPSCALER_DIR, 'esm', {
     outDir: distFolder,
   });
@@ -56,33 +61,36 @@ const buildESM: BuildFn = async (platform, {
 const buildUMD: BuildFn = async (platform, {
   clearDistFolder = true,
 } = {}) => {
-  const tmp = path.resolve(DIST, 'tmp')
   const distFolder = getDistFolder(platform, 'umd');
-  if (clearDistFolder) {
-    rimraf.sync(distFolder);
-  }
-  await compileTypescript(UPSCALER_DIR, 'umd', {
-    outDir: tmp,
+  cleanOutput(distFolder, clearDistFolder);
+  await withTmpDir(async tmpDir => {
+    await compileTypescript(UPSCALER_DIR, 'umd', {
+      outDir: tmpDir,
+    });
+
+    const temporaryInputFile = path.resolve(tmpDir, 'umd.js');
+
+    const filename = 'upscaler.js';
+    const umdName = 'Upscaler';
+    const outputFileName = path.resolve(distFolder, path.dirname(filename));
+    const file = path.basename(filename);
+
+    mkdirpSync(distFolder);
+
+    await rollupBuild({
+      ...inputOptions,
+      input: temporaryInputFile,
+    }, [{
+      ...outputOptions,
+      file,
+      name: umdName,
+    }], outputFileName);
+
+    uglify(outputFileName, file);
+  }, {
+    rootDir: path.resolve(DIST, 'tmp'),
+    removeTmpDir: true, // set this to false to debug tmp outputs
   });
-
-  const filename = 'upscaler.js';
-  const umdName = 'Upscaler';
-  const fileDest = path.resolve(distFolder, path.dirname(filename));
-  const input = path.resolve(tmp, filename);
-  const file = path.basename(filename);
-
-  mkdirpSync(distFolder);
-  await rollupBuild({
-    ...inputOptions,
-    input,
-  }, [{
-    ...outputOptions,
-    file,
-    name: umdName,
-  }], fileDest);
-
-  uglify(fileDest, file);
-  rimraf.sync(tmp);
 };
 
 /****
@@ -92,9 +100,7 @@ const buildCJS: BuildFn = async (platform, {
   clearDistFolder = true,
 } = {}) => {
   const distFolder = getDistFolder(platform, 'cjs');
-  if (clearDistFolder) {
-    rimraf.sync(distFolder);
-  }
+  cleanOutput(distFolder, clearDistFolder);
   await mkdirp(distFolder);
   await compileTypescript(UPSCALER_DIR, 'cjs', {
     outDir: distFolder,
