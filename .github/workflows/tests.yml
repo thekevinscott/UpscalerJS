@@ -60,8 +60,8 @@ jobs:
       - name: 'Validate'
         run: 'pnpm --filter "*" validate:build'
 
-  unit-browser:
-    name: 'Unit / Browser'
+  unit-browser-jest:
+    name: 'Unit / Browser / Jest'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -87,15 +87,47 @@ jobs:
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:jest
 
+      - name: 'Upload Unit Browser Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts-test-unit-browser-jest
+          path: |
+            ./packages/upscalerjs/coverage/coverage-final.json
+
+  unit-browser-playwright:
+    name: 'Unit / Browser / Playwright'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: 'Install dependencies'
+        run: pnpm install --filter=!"@upscalerjs/examples.*"
+
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
         run: pnpm test:unit:browser:playwright
 
-      - name: 'Codecov'
-        uses: codecov/codecov-action@v3
+      - name: 'Upload Unit Browser Artifact'
+        uses: actions/upload-artifact@v2
         with:
-          files: ./packages/upscalerjs/coverage/coverage-final.json,./packages/upscalerjs/.nyc_output/coverage-pw.json
-          verbose: true
+          name: artifacts-test-unit-browser-playwright
+          path: |
+            ./packages/upscalerjs/.nyc_output/coverage-pw.json
+
 
   unit-node:
     name: 'Unit / Node'
