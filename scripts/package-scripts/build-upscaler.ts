@@ -55,10 +55,6 @@ const buildESM: BuildFn = async (platform, {
 /****
  * UMD build function
  */
-const getUMDNames = (modelFolder: string): Record<string, string> => {
-  return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
-}
-
 const buildUMD: BuildFn = async (platform, {
   clearDistFolder = true,
 } = {}) => {
@@ -71,7 +67,7 @@ const buildUMD: BuildFn = async (platform, {
     outDir: tmp,
   });
 
-  const filename = 'umd.js';
+  const filename = 'upscaler.js';
   const umdName = 'Upscaler';
   const fileDest = path.resolve(distFolder, path.dirname(filename));
   const input = path.resolve(tmp, filename);
@@ -91,7 +87,7 @@ const buildUMD: BuildFn = async (platform, {
   }], fileDest);
 
   uglify(fileDest, file);
-  // rimraf.sync(tmp);
+  rimraf.sync(tmp);
 };
 
 /****
@@ -121,7 +117,16 @@ const OUTPUT_FORMAT_FNS: Record<OutputFormat, BuildFn> = {
   esm: buildESM,
 }
 
-const buildUpscaler = async (platform: Platform, outputFormats: OutputFormat[], opts?: BuildFnOptions) => {
+const getDefaultOutputFormats = (platform: Platform): OutputFormat[] => {
+  if (platform === 'browser') {
+    return ['esm', 'umd'];
+  }
+
+  return ['cjs'];
+};
+
+const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions) => {
+  const outputFormats = _outputFormats || getDefaultOutputFormats(platform);
   if (outputFormats.length === 0) {
     console.log('No output formats selected, nothing to do.')
     process.exit(0);

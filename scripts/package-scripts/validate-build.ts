@@ -1,10 +1,9 @@
 import path from 'path';
 import yargs from 'yargs';
 import fs from 'fs';
-import { getPackageJSON, JSONSchema } from './package-scripts/utils/packages';
-import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
+import { getPackageJSON, JSONSchema } from './utils/packages';
 
-const ROOT = path.resolve(__dirname, '..');
+const ROOT = path.resolve(__dirname, '../..');
 const UPSCALER_JS = path.resolve(ROOT, 'packages/upscalerjs');
 const UPSCALER_JS_DIST = path.resolve(UPSCALER_JS, 'dist');
 
