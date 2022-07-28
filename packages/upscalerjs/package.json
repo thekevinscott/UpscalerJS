@@ -35,6 +35,8 @@
   "scripts": {
     "build": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
     "build:browser": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm -o umd",
+    "build:browser:esm": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm",
+    "build:browser:umd": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o umd",
     "build:node": "pnpm --filter @upscalerjs/scripts build:upscaler node -o cjs",
     "build:node-gpu": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs",
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
