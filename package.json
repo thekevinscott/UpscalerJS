@@ -23,6 +23,7 @@
     ]
   },
   "scripts": {
+    "build": "pnpm build",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm install --filter=!\"@upscalerjs/examples.*\"",
     "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
