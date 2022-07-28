@@ -11,6 +11,7 @@ export const babelTransform = async (directory: string) => {
       plugins: [
         "@babel/plugin-transform-modules-commonjs",
         "babel-plugin-add-module-exports",
+        "@babel/plugin-proposal-export-namespace-from",
       ],
     });
     fs.writeFileSync(filePath, transformedCode?.code || '');

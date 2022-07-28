@@ -1,9 +1,6 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "moduleResolution": "Node",
     "target": "ES5",
     "module": "ESNext",
   },
