@@ -1,4 +1,4 @@
-import fs, { mkdirp } from 'fs-extra';
+import { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
 import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies';
@@ -6,7 +6,7 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import rollupConfig from '../../models/rollup.config';
+import { inputOptions, outputOptions, } from '../../packages/upscalerjs/rollup.config';
 import { OutputFormat, Platform } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { getOutputFormats } from './prompt/getOutputFormats';
@@ -73,15 +73,12 @@ const buildUMD: BuildFn = async (platform, {
 
   mkdirpSync(distFolder);
   await rollupBuild({
-    ...rollupConfig,
+    ...inputOptions,
     input,
   }, [{
+    ...outputOptions,
     file,
-    format: 'umd',
     name: umdName,
-    globals: {
-      '@tensorflow/tfjs': 'tf',
-    }
   }], fileDest);
 
   uglify(fileDest, file);

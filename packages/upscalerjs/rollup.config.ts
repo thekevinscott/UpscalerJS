@@ -1,18 +1,12 @@
 import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { nodeResolve, } from '@rollup/plugin-node-resolve';
+import type { InputOptions, OutputOptions, } from 'rollup';
 
-export default {
-  input: "dist/tmp/umd.js",
-  output: {
-    file: "dist/browser/umd/upscaler.js",
-    format: 'umd',
-    name: 'Upscaler',
-    globals: {
-      '@tensorflow/tfjs': 'tf'
-    }
-  },
+export const inputOptions: InputOptions = {
   context: 'window',
-  external: ['@tensorflow/tfjs'],
+  external: [
+    '@tensorflow/tfjs',
+  ],
   plugins: [
     nodeResolve({
       preferBuiltins: true,
@@ -21,5 +15,12 @@ export default {
       ],
     }),
     commonjs(),
-  ]
+  ],
+};
+
+export const outputOptions: OutputOptions = {
+  format: 'umd',
+  globals: {
+    '@tensorflow/tfjs': 'tf',
+  },
 };

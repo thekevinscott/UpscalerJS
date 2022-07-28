@@ -1,15 +1,13 @@
 import fs, { mkdirp } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
-import inquirer from 'inquirer';
 import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { getAllAvailableModelPackages } from './utils/getAllAvailableModels';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
-import rollupConfig from '../../models/rollup.config';
+import { inputOptions, } from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
@@ -58,7 +56,7 @@ const buildUMD = async (modelFolder: string) => {
 
     mkdirpSync(FILE_DIST);
     await rollupBuild({
-      ...rollupConfig,
+      ...inputOptions,
       input,
     }, [{
       file,
