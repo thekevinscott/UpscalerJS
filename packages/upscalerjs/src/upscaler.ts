@@ -7,7 +7,7 @@ import type {
   Progress,
 } from './types';
 import { loadModel, } from './loadModel.generated';
-import warmup from './warmup';
+import { warmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';

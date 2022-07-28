@@ -2,14 +2,13 @@ import { tf, } from './dependencies.generated';
 import type { ModelDefinition, } from '@upscalerjs/core';
 import type { WarmupSizes, WarmupSizesByPatchSize, } from './types';
 
-
 const isWarmupSizeByPatchSize = (
   size: WarmupSizes,
 ): size is WarmupSizesByPatchSize => {
   return 'patchSize' in size;
 };
 
-const warmup = async (
+export const warmup = async (
   modelPackage: Promise<{
     model: tf.LayersModel;
     modelDefinition: ModelDefinition;
@@ -43,5 +42,3 @@ const warmup = async (
     }
   }
 };
-
-export default warmup;
