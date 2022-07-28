@@ -71,34 +71,27 @@ const buildUMD: BuildFn = async (platform, {
     outDir: tmp,
   });
 
-  const files = getPackageJSONExports(UPSCALER_DIR);
-  const umdNames = getUMDNames(UPSCALER_DIR);
-  await Promise.all(files.map(async exportName => {
-    const umdName = umdNames[exportName];
-    if (!umdName) {
-      throw new Error(`No UMD name defined in ${UPSCALER_DIR}/umd-names.json for ${exportName}`)
+  const filename = 'umd.js';
+  const umdName = 'Upscaler';
+  const fileDest = path.resolve(distFolder, path.dirname(filename));
+  const input = path.resolve(tmp, filename);
+  const file = path.basename(filename);
+
+  mkdirpSync(distFolder);
+  await rollupBuild({
+    ...rollupConfig,
+    input,
+  }, [{
+    file,
+    format: 'umd',
+    name: umdName,
+    globals: {
+      '@tensorflow/tfjs': 'tf',
     }
-    const filename = `${exportName === '.' ? 'index' : exportName}.js`;
-    const FILE_DIST = path.resolve(DIST, path.dirname(filename));
-    const input = path.resolve(tmp, filename);
-    const file = path.basename(filename);
+  }], fileDest);
 
-    mkdirpSync(FILE_DIST);
-    await rollupBuild({
-      ...rollupConfig,
-      input,
-    }, [{
-      file,
-      format: 'umd',
-      name: umdName,
-      globals: {
-        '@tensorflow/tfjs': 'tf',
-      }
-    }], FILE_DIST);
-
-    uglify(FILE_DIST, file);
-  }));
-  rimraf.sync(tmp);
+  uglify(fileDest, file);
+  // rimraf.sync(tmp);
 };
 
 /****
