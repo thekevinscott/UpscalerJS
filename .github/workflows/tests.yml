@@ -58,7 +58,7 @@ jobs:
         run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Validate'
-        run: 'pnpm validate:build'
+        run: 'pnpm --filter="upscaler" validate:build'
 
   unit-browser-jest:
     name: 'Unit / Browser / Jest'
