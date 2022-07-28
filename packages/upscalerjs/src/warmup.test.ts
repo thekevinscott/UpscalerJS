@@ -1,5 +1,5 @@
-import * as tf from '@tensorflow/tfjs-node';
-import warmup from './warmup';
+import type { LayersModel } from '@tensorflow/tfjs-node';
+import { warmup } from './warmup';
 import type { ModelDefinition, } from "@upscalerjs/core";
 
 const getFakeModel = () => {
@@ -12,14 +12,14 @@ const getFakeModel = () => {
 
   return {
     predict,
-  } as unknown as tf.LayersModel;
+  } as unknown as LayersModel;
 };
 
 describe('Warmup', () => {
   it('throws if given an invalid size', async () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
-      model: tf.LayersModel;
+      model: LayersModel;
       modelDefinition: ModelDefinition;
     }>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
@@ -35,7 +35,7 @@ describe('Warmup', () => {
   it('throws if given an invalid set of warmup sizes', () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
-      model: tf.LayersModel;
+      model: LayersModel;
       modelDefinition: ModelDefinition;
     }>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
@@ -46,7 +46,7 @@ describe('Warmup', () => {
   it('does nothing if provided an empty array', async () => {
     const fakeModel = getFakeModel();
     const model = new Promise<{
-      model: tf.LayersModel;
+      model: LayersModel;
       modelDefinition: ModelDefinition;
     }>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
@@ -59,7 +59,7 @@ describe('Warmup', () => {
     it('predicts on a single item', async () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
-        model: tf.LayersModel;
+        model: LayersModel;
         modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
@@ -78,7 +78,7 @@ describe('Warmup', () => {
     it('predicts on multiple items', async () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
-        model: tf.LayersModel;
+        model: LayersModel;
         modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
@@ -107,7 +107,7 @@ describe('Warmup', () => {
     it('predicts on a single item', async () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
-        model: tf.LayersModel;
+        model: LayersModel;
         modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({
@@ -126,7 +126,7 @@ describe('Warmup', () => {
     it('predicts on multiple items', async () => {
       const fakeModel = getFakeModel();
       const model = new Promise<{
-        model: tf.LayersModel;
+        model: LayersModel;
         modelDefinition: ModelDefinition;
       }>((resolve) =>
         resolve({

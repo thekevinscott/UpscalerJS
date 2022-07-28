@@ -15,12 +15,16 @@ export const getInvalidInput = (input: unknown) => new Error([
   `a Uint8Array, or a Buffer.`,
 ].join(' '));
 
+export const getInvalidImageSrcInput = (input: string) => new Error([
+  `Image specified at path ${input} could not be found`,
+].join(' '));
+
 const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
 
 const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tensor4D => {
   if (isUint8Array(input)) {
-    // TODO: This doesn't work I don't think?
+    // TODO: This doesn't work I don't think? Because we don't know the shape of the array?
     return tf.node.decodeImage(input);
   }
 
@@ -38,8 +42,16 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
     //   const image = new Uint8Array(arrayBuffer);
     //   return tf.node.decodeImage(image);
     // } else {
-      const image = new Uint8Array(fs.readFileSync(input));
-      return tf.node.decodeImage(image);
+      try {
+        const image = new Uint8Array(fs.readFileSync(input));
+        return tf.node.decodeImage(image);
+      } catch(err: unknown) {
+        if (err instanceof Error && err?.message.includes('no such file or directory')) {
+          throw getInvalidImageSrcInput(input);
+        } else {
+          throw err;
+        }
+      }
     // }
   }
 
@@ -71,4 +83,3 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   const arr = tensorAsClampedArray(tensor);
   return Buffer.from(arr).toString('base64');
 };
-
