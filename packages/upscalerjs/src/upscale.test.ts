@@ -1,4 +1,3 @@
-// import { tf } from './dependencies.generated';
 import * as tf from '@tensorflow/tfjs-node';
 import {
   AbortError,
@@ -22,35 +21,37 @@ import {
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   makeTick,
 } from './upscale';
-import { tensorAsBase64, getImageAsTensor, } from './image.generated';
-import { wrapGenerator, isTensor, } from './utils';
+import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
+import { wrapGenerator, isTensor as _isTensor, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
 import { Progress, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
-jest.mock('./image.generated', () => ({
-  __esmodule: true,
-  ...jest.requireActual('./image.generated'),
-  tensorAsBase64: jest.fn(),
-  getImageAsTensor: jest.fn(),
-  isTensor: jest.fn(),
-}));
-jest.mock('./utils', () => ({
-  __esmodule: true,
-  ...jest.requireActual('./utils'),
-  isTensor: jest.fn(),
-}));
+jest.mock('./image.generated', () => {
+  const { tensorAsBase64, getImageAsTensor, ...rest } = jest.requireActual('./image.generated');
+  return {
+    ...rest,
+    tensorAsBase64: jest.fn(tensorAsBase64),
+    getImageAsTensor: jest.fn(getImageAsTensor),
+  };
+});
+jest.mock('./utils', () => {
+  const { isTensor, ...rest} = jest.requireActual('./utils');
+  return {
+    ...rest,
+    isTensor: jest.fn(isTensor),
+  };
+});
 
-const mockedTensorAsBase64 = mockFn(tensorAsBase64);
-const mockedGetImageAsTensor = mockFn(getImageAsTensor);
-const mockedIsTensor = mockFn(isTensor);
-
+const tensorAsBase64 = mockFn(_tensorAsBase64);
+const getImageAsTensor = mockFn(_getImageAsTensor);
+const isTensor = mockFn(_isTensor);
 
 describe('concatTensors', () => {
   beforeEach(() => {
-    mockedTensorAsBase64.mockClear();
-    mockedGetImageAsTensor.mockClear();
-    mockedIsTensor.mockClear();
+    tensorAsBase64.mockClear();
+    getImageAsTensor.mockClear();
+    isTensor.mockClear();
   });
   it('concats two tensors together', () => {
     const a: tf.Tensor3D = tf.tensor(
@@ -1227,7 +1228,7 @@ describe('predict', () => {
   it('should invoke progress callback with percent and slice', async () => {
     console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
-    mockedTensorAsBase64.mockImplementation(() => mockResponse);
+    tensorAsBase64.mockImplementation(() => mockResponse);
     const img: tf.Tensor4D = tf.ones([4, 2, 3,]).expandDims(0);
     const scale = 2;
     const patchSize = 2;
@@ -1520,7 +1521,7 @@ describe('predict', () => {
         if (expectation.shouldDispose) {
           if (Array.isArray(result.value)) {
             result.value.forEach(t => t.dispose());
-          } else if (isTensor(result.value)) {
+          } else if (_isTensor(result.value)) {
             result.value.dispose();
           }
         }
@@ -1548,11 +1549,11 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    mockedGetImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
+    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
-    mockedTensorAsBase64.mockImplementation(() => 'foobarbaz4');
+    tensorAsBase64.mockImplementation(() => 'foobarbaz4');
     const result = await wrapGenerator(upscale(img, {}, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
@@ -1571,7 +1572,7 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    mockedGetImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
+    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
       predict: jest.fn(() => upscaledTensor),
@@ -1591,7 +1592,7 @@ describe('upscale', () => {
 describe('cancellableUpscale', () => {
   it('is able to cancel an in-flight request', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    mockedGetImageAsTensor.mockImplementation(async () => img);
+    getImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -1630,7 +1631,7 @@ describe('cancellableUpscale', () => {
 
   it('is able to cancel an in-flight request with an internal signal', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    mockedGetImageAsTensor.mockImplementation(async () => img);
+    getImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -1668,9 +1669,9 @@ describe('cancellableUpscale', () => {
 
   it('returns processed pixels', async () => {
     const mockResponse = 'foobarbaz6';
-    mockedTensorAsBase64.mockImplementation(() => mockResponse);
+    tensorAsBase64.mockImplementation(() => mockResponse);
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    mockedGetImageAsTensor.mockImplementation(async () => img);
+    getImageAsTensor.mockImplementation(async () => img);
     const controller = new AbortController();
     const scale = 2;
     const patchSize = 2;
@@ -1714,7 +1715,7 @@ describe('getWidthAndHeight', () => {
 
 describe('makeTick', () => {
   it('disposes of an in-flight tensor', (done) => {
-    mockedIsTensor.mockImplementation(() => true);
+    isTensor.mockImplementation(() => true);
     const abortController = new AbortController();
     const dispose = jest.fn();
     const t = {
@@ -1732,7 +1733,7 @@ describe('makeTick', () => {
   }, 100);
 
   it('disposes of a multiple in-flight tensors', (done) => {
-    mockedIsTensor.mockImplementation(() => false);
+    isTensor.mockImplementation(() => false);
     const abortController = new AbortController();
     const dispose = jest.fn();
     const getTensor = () => ({
@@ -1753,7 +1754,7 @@ describe('makeTick', () => {
   }, 100);
 
   it('ignores any non-tensor results', (done) => {
-    mockedIsTensor.mockImplementation(() => false);
+    isTensor.mockImplementation(() => false);
     const abortController = new AbortController();
     const tick = makeTick(abortController.signal);
     tick(undefined).then(() => {

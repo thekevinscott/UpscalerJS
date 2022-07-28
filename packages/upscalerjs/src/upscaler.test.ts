@@ -1,45 +1,58 @@
 import { Upscaler } from './upscaler';
 import type { LayersModel } from '@tensorflow/tfjs';
-import * as loadModel from './loadModel.generated';
-import * as warmup from './warmup';
-import * as upscale from './upscale';
+import { loadModel as _loadModel, } from './loadModel.generated';
+import { warmup as _warmup, } from './warmup';
+import { cancellableUpscale as _cancellableUpscale, } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
-jest.mock('./upscale', () => ({
-  ...(jest.requireActual('./upscale') as typeof upscale),
-}));
-jest.mock('./loadModel.generated');
-jest.mock('./warmup');
-jest.mock('./dependencies.generated', () => ({
-  tf: {},
-  ESRGANSlim: {},
-}));
+import { mockFn } from '../../../test/lib/shared/mockers';
+jest.mock('./upscale', () => {
+  const { cancellableUpscale, ...rest } = jest.requireActual('./upscale');
+  return {
+    ...rest,
+    cancellableUpscale: jest.fn(cancellableUpscale),
+  };
+});
+jest.mock('./loadModel.generated', () => {
+  const { loadModel, ...rest } = jest.requireActual('./loadModel.generated');
+  return {
+    ...rest,
+    loadModel: jest.fn(loadModel),
+  };
+});
+jest.mock('./warmup', () => {
+  const { warmup, ...rest } = jest.requireActual('./warmup');
+  return {
+    ...rest,
+    warmup: jest.fn(warmup),
+  };
+});
+jest.mock('./dependencies.generated', () => {
+  const dependencies = jest.requireActual('./dependencies.generated');
+  return {
+    ...dependencies,
+  };
+});
 
-const mockedUpscale = upscale as jest.Mocked<typeof upscale>;
-const mockedLoadModel = loadModel as jest.Mocked<typeof loadModel>;
-const mockedWarmup = warmup as jest.Mocked<typeof warmup>;
+const cancellableUpscale = mockFn(_cancellableUpscale);
+const warmup = mockFn(_warmup);
+const loadModel = mockFn(_loadModel);
 
 describe('Upscaler', () => {
   beforeEach(() => {
-    [
-      mockedLoadModel.loadModel,
-      (mockedUpscale as any).default.cancellableUpscale,
-      mockedWarmup.default,
-    ].forEach(fn => {
-      try {
-        fn.mockClear();
-      } catch(err) {}
-    });
+    cancellableUpscale.mockClear();
+    warmup.mockClear();
+    loadModel.mockClear();
   });
 
   it('is able to abort multiple times', (): Promise<void> => new Promise(async (resolve, reject) => {
-    mockedLoadModel.loadModel.mockImplementation(async () => {
+    loadModel.mockImplementation(async () => {
       return {
         modelDefinition: {
           path: 'foo',
           scale: 2,
         },
-        model: 'foo' as any,
+        model: 'foo' as unknown as LayersModel,
       };
     });
 
@@ -62,7 +75,7 @@ describe('Upscaler', () => {
       }
       return '';
     });
-    (mockedUpscale as any).default.cancellableUpscale = cancellableUpscale;
+    cancellableUpscale.mockImplementation(cancellableUpscale)
 
     const upscaler = new Upscaler();
     upscaler.upscale('foo');
@@ -78,7 +91,7 @@ describe('Upscaler', () => {
     const mockModel = {
       dispose,
     };
-    mockedLoadModel.loadModel.mockImplementation(async () => ({
+    loadModel.mockImplementation(async () => ({
       modelDefinition: {
         path: 'foo',
         scale: 2,
@@ -92,7 +105,6 @@ describe('Upscaler', () => {
   });
 
   it('is able to warmup', async () => {
-    mockedWarmup.default = jest.fn();
     const modelDefinitionPromise = new Promise<{
       modelDefinition: ModelDefinition;
       model: LayersModel;
@@ -103,10 +115,11 @@ describe('Upscaler', () => {
       },
       model: 'foo' as unknown as LayersModel,
     }));
-    mockedLoadModel.loadModel.mockImplementation(() => modelDefinitionPromise);
+    loadModel.mockImplementation(() => modelDefinitionPromise);
+    warmup.mockImplementation(async () => {});
     const upscaler = new Upscaler();
     const warmupSizes: WarmupSizes[] = [[2,2]];
     await upscaler.warmup(warmupSizes);
-    expect(mockedWarmup.default).toBeCalledWith(modelDefinitionPromise, warmupSizes);
+    expect(warmup).toBeCalledWith(modelDefinitionPromise, warmupSizes);
   });
 });
