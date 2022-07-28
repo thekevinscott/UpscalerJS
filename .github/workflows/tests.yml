@@ -173,25 +173,9 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
-      - name: ls
-        run: ls
-
-      - name: ls artifacts-test-unit-node
-        run: ls artifacts-test-unit-node
-
-      - name: ls artifacts-test-unit-browser-playwright
-        run: ls artifacts-test-unit-browser-playwright
-
-      - name: ls artifacts-test-unit-browser-jest
-        run: ls artifacts-test-unit-browser-jest
-
       - name: 'Codecov'
         uses: codecov/codecov-action@v3
         with:
-          # files: |
-          #   artifacts-test-unit-node/coverage-final.json,
-          #   artifacts-test-unit-browser/coverage/coverage-final.json,
-          #   artifacts-test-unit-browser/.nyc_output/coverage-pw.json
           verbose: true
 
   integration-browser-browserstack:
