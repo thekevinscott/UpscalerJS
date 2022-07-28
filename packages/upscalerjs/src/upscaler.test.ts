@@ -2,10 +2,19 @@ import { Upscaler } from './upscaler';
 import type { LayersModel } from '@tensorflow/tfjs';
 import { loadModel as _loadModel, } from './loadModel.generated';
 import { warmup as _warmup, } from './warmup';
+import { getImageAsTensor as _getImageAsTensor } from './image.generated';
 import { cancellableUpscale as _cancellableUpscale, } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
 import { mockFn } from '../../../test/lib/shared/mockers';
+import * as _tf from '@tensorflow/tfjs-node';
+jest.mock('./image.generated', () => {
+  const { getImageAsTensor, ...rest } = jest.requireActual('./image.generated');
+  return {
+    ...rest,
+    getImageAsTensor: jest.fn(getImageAsTensor),
+  };
+});
 jest.mock('./upscale', () => {
   const { cancellableUpscale, ...rest } = jest.requireActual('./upscale');
   return {
@@ -37,12 +46,14 @@ jest.mock('./dependencies.generated', () => {
 const cancellableUpscale = mockFn(_cancellableUpscale);
 const warmup = mockFn(_warmup);
 const loadModel = mockFn(_loadModel);
+const getImageAsTensor = mockFn(_getImageAsTensor);
 
 describe('Upscaler', () => {
   beforeEach(() => {
     cancellableUpscale.mockClear();
     warmup.mockClear();
     loadModel.mockClear();
+    getImageAsTensor.mockClear();
   });
 
   it('is able to abort multiple times', (): Promise<void> => new Promise(async (resolve, reject) => {
@@ -52,13 +63,16 @@ describe('Upscaler', () => {
           path: 'foo',
           scale: 2,
         },
-        model: 'foo' as unknown as LayersModel,
+        model: {
+          predict: jest.fn(() => _tf.ones([1,2,2,3])),
+        } as unknown as LayersModel,
       };
     });
+    getImageAsTensor.mockImplementation(async () => _tf.ones([1,2,2,3]));
 
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
-    const cancellableUpscale = jest.fn(async function (_1, _2, { signal }: {
+    cancellableUpscale.mockImplementation(async function (_1, _2, { signal }: {
       signal: AbortSignal;
     }) {
       try {
@@ -75,7 +89,6 @@ describe('Upscaler', () => {
       }
       return '';
     });
-    cancellableUpscale.mockImplementation(cancellableUpscale)
 
     const upscaler = new Upscaler();
     upscaler.upscale('foo');
