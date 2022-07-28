@@ -1,7 +1,7 @@
 import path from 'path';
 // import ts, { ProjectReference } from 'typescript';
 import callExec from '../../../test/lib/utils/callExec';
-import { OutputFormat } from './types';
+import { OutputFormat } from '../prompt/types';
 
 // export function _old_compile(rootNames: string[], options: ts.CompilerOptions, projectReferences?: Array<ProjectReference>) {
 //   let program = ts.createProgram({
@@ -28,10 +28,18 @@ import { OutputFormat } from './types';
 //   return emitResult;
 // };
 
-export const compileTypescript = (modelFolder: string, outputFormat: OutputFormat) => callExec([
+type CompileTypescriptOpts = {
+  outDir?: string;
+}
+type CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, opts?: CompileTypescriptOpts) => Promise<void>;
+
+export const compileTypescript: CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, {
+  outDir,
+} = {}) => callExec([
   `tsc`,
   `-p`,
   path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
-].join(' '), {
+  outDir ? `--outDir ${outDir}` : undefined,
+].filter(Boolean).join(' '), {
   cwd: modelFolder,
 });

@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "target": "ES5",
+    "module": "ESNext",
+  },
+  "include": ["src/umd.ts"],
+  "exclude": ["node_modules"]
+}

@@ -91,7 +91,7 @@ const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platf
 /****
  * Utility methods
  */
-function load(filePath: string): Promise<{
+export function loadScaffoldDependenciesConfig(filePath: string): Promise<{
   default: ScaffoldDependenciesConfig
 }> {
   return import(filePath);
@@ -101,7 +101,18 @@ function load(filePath: string): Promise<{
  * Main function
  */
 
-const scaffoldDependencies = async (packageRoot: string, { files, scaffoldPlatformFiles, }: ScaffoldDependenciesConfig, platform?: Platform) => {
+type ScaffoldDependencies = (
+  packageRoot: string, 
+  opts: ScaffoldDependenciesConfig, 
+  platform?: Platform
+) => Promise<void>;
+const scaffoldDependencies: ScaffoldDependencies = async (
+  packageRoot,
+  {
+    files,
+    scaffoldPlatformFiles,
+  },
+  platform) => {
   const PACKAGE_ROOT = path.resolve(ROOT, packageRoot);
   const PACKAGE_SRC = path.resolve(PACKAGE_ROOT, 'src');
   if (scaffoldPlatformFiles) {
@@ -174,7 +185,7 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     const argv = await getArgs();
-    const { default: config } = await load(path.resolve(ROOT, argv.config));
+    const { default: config } = await loadScaffoldDependenciesConfig(path.resolve(ROOT, argv.config));
     await scaffoldDependencies(argv.targetPackage, config, argv.platform);
   })();
 }

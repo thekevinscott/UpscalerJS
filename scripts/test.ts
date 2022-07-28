@@ -11,7 +11,7 @@ import yargs from 'yargs';
 import { buildUpscaler } from "../test/lib/utils/buildUpscaler";
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
-import { OutputFormat } from './package-scripts/utils/types';
+import { OutputFormat } from './package-scripts/prompt/types';
 
 dotenv.config();
 
