@@ -5,7 +5,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import * as tfb from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs';
 import type { Tensor, Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -92,7 +92,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
+      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = src;
@@ -102,7 +102,7 @@ describe('Model Loading Integration Tests', () => {
       return upscaler.upscale(tensor).then((output: string) => {
         return loadImage(output);
       }).then((img: HTMLImageElement) => {
-        const predictedPixels = tfb.browser.fromPixels(img);
+        const predictedPixels = tf.browser.fromPixels(img);
         return Array.from(predictedPixels.dataSync());
       });
     }, startingPixels);
@@ -118,7 +118,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['2x'],
       });
-      const tensor = tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
+      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       return upscaler.upscale(tensor, {
         output: 'tensor',
       }).then((output: Tensor) => {
@@ -198,7 +198,7 @@ declare global {
   interface Window {
     Upscaler: typeof Upscaler;
     flower: string;
-    tf: typeof tfb;
+    tf: typeof tf;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;
     PixelUpsampler2x: ModelDefinition;
