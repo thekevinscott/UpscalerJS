@@ -41,11 +41,19 @@ export const executeNodeScript = async (contents: string, stdout?: Stdout) => {
     await callExec(`node "${FILENAME}"`, {
       cwd: ROOT
     }, stdout);
-  }, path.resolve(ROOT, './tmp'))
+  }, { rootDir: path.resolve(ROOT, './tmp') })
 };
 
 export type GetContents = (outputFile: string) => string;
-export const testNodeScript = async (contents: GetContents, logExtra = true) => {
+interface TestNodeScriptOpts {
+  logExtra?: boolean;
+  removeTmpDir?: boolean;
+}
+type TestNodeScript = (contents: GetContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
+export const testNodeScript: TestNodeScript = async (contents, {
+  logExtra = true,
+  removeTmpDir,
+} = {}) => {
   let data;
   await withTmpDir(async tmpDir => {
     const outputFile = path.join(tmpDir, 'data');
@@ -55,6 +63,6 @@ export const testNodeScript = async (contents: GetContents, logExtra = true) => 
       }
     });
     data = fs.readFileSync(outputFile);
-  });
+  }, { removeTmpDir });
   return data;
 }

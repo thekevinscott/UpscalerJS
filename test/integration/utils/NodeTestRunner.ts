@@ -52,17 +52,6 @@ export class NodeTestRunner {
   }
 
   /****
-   * Getters and setters
-   */
-
-  // getLocal<T extends puppeteer.Browser | puppeteer.Page | http.Server>(key: '_server' | '_browser' | '_page'): T {
-  //   if (!this[key]) {
-  //     throw new Error(`${key.substring(1)} is undefined`);
-  //   }
-  //   return this[key] as T;
-  // }
-
-  /****
    * Utility methods
    */
 
@@ -75,13 +64,16 @@ export class NodeTestRunner {
     if (!_main) {
       throw new Error('No main function defined');
     }
-    return testNodeScript(writeScript({
+    const contents = writeScript({
       ...this.dependencies,
       ...dependencies,
     }, _main, {
       ...this.globals,
       ...globals,
-    }));
+    });
+    return testNodeScript(contents, {
+      removeTmpDir: false,
+    });
   }
 
   /****

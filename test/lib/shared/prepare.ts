@@ -213,8 +213,13 @@ export const installLocalPackage = async (src: string, dest: string) => {
   })
 };
 
+interface WithTmpDirOpts {
+  rootDir?: string;
+  removeTmpDir?: boolean;
+}
+type WithTmpDir = (callback: WithTmpDirFn, opts?: WithTmpDirOpts) => Promise<void>
 type WithTmpDirFn = (tmp: string) => Promise<void>;
-export const withTmpDir = async (callback: WithTmpDirFn, rootDir?: string) => {
+export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir } = {}) => {
   let tmpDir = await getTmpDir(rootDir);
   if (!fs.existsSync(tmpDir)) {
     throw new Error(`Tmp directory ${tmpDir} was not created`);
@@ -225,7 +230,7 @@ export const withTmpDir = async (callback: WithTmpDirFn, rootDir?: string) => {
   }
   finally {
     try {
-      if (tmpDir) {
+      if (tmpDir && removeTmpDir) {
         rimraf.sync(tmpDir);
       }
     }
