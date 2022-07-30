@@ -1,4 +1,4 @@
-import { tf, ESRGANSlim, } from './dependencies.generated';
+import { ESRGANSlim, } from './dependencies.generated';
 import type {
   UpscalerOptions,
   UpscaleArgs,

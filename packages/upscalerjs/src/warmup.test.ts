@@ -1,6 +1,6 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
-import { warmup } from './warmup';
-import type { ModelDefinition, } from "@upscalerjs/core";
+import { getInvalidValueError, warmup } from './warmup';
+import { ModelPackage } from './types';
 
 const getFakeModel = () => {
   const predict = jest.fn(() => {
@@ -18,26 +18,20 @@ const getFakeModel = () => {
 describe('Warmup', () => {
   it('throws if given an invalid size', async () => {
     const fakeModel = getFakeModel();
-    const model = new Promise<{
-      model: LayersModel;
-      modelDefinition: ModelDefinition;
-    }>((resolve) =>
+    const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     await expect(warmup(model, [['foo', 1,],] as any)).rejects.toThrow(
-      'Invalid value passed to warmup in warmupSizes. Expected two numbers, got foo,1',
+      getInvalidValueError(['foo', 1])
     );
     await expect(warmup(model, [[1, 'foo',],] as any)).rejects.toThrow(
-      'Invalid value passed to warmup in warmupSizes. Expected two numbers, got 1,foo',
+      getInvalidValueError([1, 'foo'])
     );
   });
 
   it('throws if given an invalid set of warmup sizes', () => {
     const fakeModel = getFakeModel();
-    const model = new Promise<{
-      model: LayersModel;
-      modelDefinition: ModelDefinition;
-    }>((resolve) =>
+    const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     expect(warmup(model, [20, 20,] as any)).rejects.toEqual(expect.anything());
@@ -45,10 +39,7 @@ describe('Warmup', () => {
 
   it('does nothing if provided an empty array', async () => {
     const fakeModel = getFakeModel();
-    const model = new Promise<{
-      model: LayersModel;
-      modelDefinition: ModelDefinition;
-    }>((resolve) =>
+    const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
     await warmup(model, []);
@@ -58,10 +49,7 @@ describe('Warmup', () => {
   describe('Numeric sizes', () => {
     it('predicts on a single item', async () => {
       const fakeModel = getFakeModel();
-      const model = new Promise<{
-        model: LayersModel;
-        modelDefinition: ModelDefinition;
-      }>((resolve) =>
+      const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
           modelDefinition: { path: 'foo', scale: 2, },
@@ -77,10 +65,7 @@ describe('Warmup', () => {
 
     it('predicts on multiple items', async () => {
       const fakeModel = getFakeModel();
-      const model = new Promise<{
-        model: LayersModel;
-        modelDefinition: ModelDefinition;
-      }>((resolve) =>
+      const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
           modelDefinition: { path: 'foo', scale: 2, },
@@ -106,10 +91,7 @@ describe('Warmup', () => {
   describe('Patch Sizes', () => {
     it('predicts on a single item', async () => {
       const fakeModel = getFakeModel();
-      const model = new Promise<{
-        model: LayersModel;
-        modelDefinition: ModelDefinition;
-      }>((resolve) =>
+      const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
           modelDefinition: { path: 'foo', scale: 2, },
@@ -125,10 +107,7 @@ describe('Warmup', () => {
 
     it('predicts on multiple items', async () => {
       const fakeModel = getFakeModel();
-      const model = new Promise<{
-        model: LayersModel;
-        modelDefinition: ModelDefinition;
-      }>((resolve) =>
+      const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
           modelDefinition: { path: 'foo', scale: 2, },

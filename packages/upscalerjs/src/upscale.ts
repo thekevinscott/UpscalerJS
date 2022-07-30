@@ -1,5 +1,4 @@
 import { tf, } from './dependencies.generated';
-import type { ModelDefinition, } from '@upscalerjs/core';
 import type { 
   UpscaleArgs, 
   ProcessFn, 
@@ -17,6 +16,8 @@ import {
   isProgress, 
   isMultiArgTensorProgress, 
   isAborted,
+  isThreeDimensionalTensor,
+  isFourDimensionalTensor,
  } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
@@ -43,22 +44,21 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
 ].join('\n');
 
-export const GET_WIDTH_AND_HEIGHT_ERROR = (tensor: tf.Tensor): Error => new Error(
+export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error(
   `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
     tensor.shape,
   )}`,
 );
 
 export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
-  if (tensor.shape.length === 4) {
-    return tensor.shape.slice(1, 3);
+  if (isFourDimensionalTensor(tensor)) {
+    return [tensor.shape[1], tensor.shape[2],];
+  }
+  if (isThreeDimensionalTensor(tensor)) {
+    return [tensor.shape[0], tensor.shape[1],];
   }
 
-  if (tensor.shape.length === 3) {
-    return tensor.shape.slice(0, 2);
-  }
-
-  throw GET_WIDTH_AND_HEIGHT_ERROR(tensor);
+  throw GET_INVALID_SHAPED_TENSOR(tensor);
 };
 
 export const getRowsAndColumns = (
@@ -256,7 +256,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   {
     model,
     modelDefinition,
-  }: UpscaleInternalArgs
+  }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   // TODO: Remove this
   await Promise.resolve();
@@ -374,10 +374,7 @@ export function getProcessedPixels<T extends tf.Tensor>(
   upscaledTensor: T,
   processFn?: ProcessFn<T>,
 ): T {
-  if (processFn) {
-    return processFn(upscaledTensor);
-  }
-  return upscaledTensor.clone();
+  return processFn ? processFn(upscaledTensor) : upscaledTensor.clone();
 }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
@@ -390,7 +387,7 @@ type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
-  { model, modelDefinition, }: UpscaleInternalArgs,
+  { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
