@@ -10,7 +10,7 @@ export const getInvalidValueError = (size: unknown): Error => new Error(
   `Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${JSON.stringify(size)}`
 );
 
-const warmupModel = async (model: ModelPackage['model'], [width, height]: NumericWarmupSizes) => {
+const warmupModel = async (model: ModelPackage['model'], [width, height,]: NumericWarmupSizes) => {
   const pred = tf.tidy(() => model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D);
   await tf.nextFrame();
   pred.dataSync();
