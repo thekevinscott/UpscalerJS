@@ -1,14 +1,14 @@
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
 
-export const getInvalidTensorError = (input: tf.Tensor) => new Error(
+export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
     [
       `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
       'Only 3 or 4 rank tensors are supported.',
     ].join(' '),
   );
 
-export const getInvalidImageError = () => new Error([
+export const getInvalidImageError = (): Error => new Error([
   'Failed to load image',
 ].join(' '));
 

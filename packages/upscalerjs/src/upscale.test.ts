@@ -12,7 +12,7 @@ import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   getWidthAndHeight,
-  GET_WIDTH_AND_HEIGHT_ERROR,
+  GET_INVALID_SHAPED_TENSOR,
   GetTensorDimensionsOpts,
   GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
@@ -1696,12 +1696,12 @@ describe('cancellableUpscale', () => {
 describe('getWidthAndHeight', () => {
   it('throws if given a too small tensor', () => {
     const t = tf.zeros([2,2]) as unknown as tf.Tensor3D;
-    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
   });
 
   it('throws if given a too large tensor', () => {
     const t = tf.zeros([2,2,2,2,2]) as unknown as tf.Tensor3D;
-    expect(() => getWidthAndHeight(t)).toThrow(GET_WIDTH_AND_HEIGHT_ERROR(t));
+    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
   });
 
   it('returns width and height for a 4d tensor', () => {

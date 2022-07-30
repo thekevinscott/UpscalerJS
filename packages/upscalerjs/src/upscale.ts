@@ -1,5 +1,4 @@
 import { tf, } from './dependencies.generated';
-import type { ModelDefinition, } from '@upscalerjs/core';
 import type { 
   UpscaleArgs, 
   ProcessFn, 
@@ -7,6 +6,7 @@ import type {
   UpscaleResponse, 
   Progress, 
   MultiArgProgress,
+  ModelPackage,
  } from './types';
 import { getImageAsTensor, tensorAsBase64, } from './image.generated';
 import { 
@@ -16,6 +16,8 @@ import {
   isProgress, 
   isMultiArgTensorProgress, 
   isAborted,
+  isThreeDimensionalTensor,
+  isFourDimensionalTensor,
  } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
 
@@ -42,22 +44,21 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
 ].join('\n');
 
-export const GET_WIDTH_AND_HEIGHT_ERROR = (tensor: tf.Tensor) => new Error(
+export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error(
   `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
     tensor.shape,
   )}`,
 );
 
-export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D) => {
-  if (tensor.shape.length === 4) {
-    return tensor.shape.slice(1, 3);
+export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
+  if (isFourDimensionalTensor(tensor)) {
+    return [tensor.shape[1], tensor.shape[2],];
+  }
+  if (isThreeDimensionalTensor(tensor)) {
+    return [tensor.shape[0], tensor.shape[1],];
   }
 
-  if (tensor.shape.length === 3) {
-    return tensor.shape.slice(0, 2);
-  }
-
-  throw GET_WIDTH_AND_HEIGHT_ERROR(tensor);
+  throw GET_INVALID_SHAPED_TENSOR(tensor);
 };
 
 export const getRowsAndColumns = (
@@ -76,11 +77,12 @@ export const getRowsAndColumns = (
 };
 
 // check that padding has not pushed our origins off the board
+// mutating function
 const checkAndAdjustStartingPosition = (
   dimension: number,
   origin: [number, number],
   sliceOrigin: [number, number],
-) => {
+): void => {
   // check that our origin is not off the board.
   if (origin[dimension] < 0) {
     // first, find out how much it overhangs
@@ -94,6 +96,7 @@ const checkAndAdjustStartingPosition = (
   }
 };
 
+// mutating function
 const checkAndAdjustEndingPosition = (
   size: number,
   dimension: number,
@@ -101,7 +104,7 @@ const checkAndAdjustEndingPosition = (
   origin: [number, number],
   sliceOrigin: [number, number],
   sliceEndPosition: [number, number],
-) => {
+): void => {
   // check that our final positions are not off the board
   if (endPosition[dimension] > size) {
     // box overhangs in the y direction, bring origin back and cut off the appropriate section.
@@ -127,11 +130,12 @@ const checkAndAdjustEndingPosition = (
   }
 };
 
+// mutating function
 const checkAndAdjustSliceSize = (
   dimension: number,
   size: [number, number],
   sliceEndPosition: [number, number],
-) => {
+): void => {
   if (sliceEndPosition[dimension] > size[dimension]) {
     sliceEndPosition[dimension] = size[dimension];
   }
@@ -252,7 +256,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   {
     model,
     modelDefinition,
-  }: UpscaleInternalArgs
+  }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   // TODO: Remove this
   await Promise.resolve();
@@ -370,23 +374,20 @@ export function getProcessedPixels<T extends tf.Tensor>(
   upscaledTensor: T,
   processFn?: ProcessFn<T>,
 ): T {
-  if (processFn) {
-    return processFn(upscaledTensor);
-  }
-  return upscaledTensor.clone();
+  return processFn ? processFn(upscaledTensor) : upscaledTensor.clone();
 }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
-export const getCopyOfInput = (input: GetImageAsTensorInput) => isTensor(input) ? input.clone() : input;
+export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => isTensor(input) ? input.clone() : input;
 
 type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D>;
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
-  { model, modelDefinition, }: UpscaleInternalArgs,
+  { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
@@ -438,7 +439,8 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   return <UpscaleResponse<O>>base64Src;
 }
 
-export const makeTick = (signal: AbortSignal) => async (result?: YieldedIntermediaryValue) => {
+type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
+export const makeTick = (signal: AbortSignal): TickFunction => async result => {
   await tf.nextFrame();
   if (isAborted(signal)) {
     // only dispose tensor if we are aborting; if aborted, the called function will have
@@ -452,14 +454,10 @@ export const makeTick = (signal: AbortSignal) => async (result?: YieldedIntermed
   }
 };
 
-interface UpscaleInternalArgs {
-  model: tf.LayersModel,
-  modelDefinition: ModelDefinition,
-}
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   { signal, ...args }: UpscaleArgs<P, O, PO>,
-  internalArgs: UpscaleInternalArgs & {
+  internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
 ): Promise<UpscaleResponse<O>> {
