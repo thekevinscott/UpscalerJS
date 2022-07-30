@@ -2,20 +2,20 @@ import fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
 
-export const getInvalidTensorError = (input: tf.Tensor) => new Error(
+export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
   [
     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
     'Only 3 or 4 rank tensors are supported.',
   ].join(' '),
 );
 
-export const getInvalidInput = (input: unknown) => new Error([
+export const getInvalidInput = (input: unknown): Error => new Error([
   `Unknown input ${JSON.stringify(input)} provided. Input must be either a rank 3 or 4 tensor,`,
   `a string representing a local path or http-accessible path to an image,`,
   `a Uint8Array, or a Buffer.`,
 ].join(' '));
 
-export const getInvalidImageSrcInput = (input: string) => new Error([
+export const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));
 

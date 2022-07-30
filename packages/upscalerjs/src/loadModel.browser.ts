@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { ModelDefinition, } from '@upscalerjs/core';
-import type { PackageInformation, } from './types';
+import type { ModelPackage, PackageInformation, } from './types';
 import {
   getModelDefinitionError,
   isValidModelDefinition,
@@ -19,9 +19,9 @@ export const CDNS = [
   // 'cdnjs',
 ];
 
-export const getLoadModelErrorMessage = (modelPath: string) => new Error(`Could not resolve URL ${modelPath}`);
+export const getLoadModelErrorMessage = (modelPath: string): Error => new Error(`Could not resolve URL ${modelPath}`);
 
-export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation) => {
+export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation): Promise<tf.LayersModel> => {
   if (packageInformation) {
     for (let i = 0; i < CDNS.length; i++) {
       const { fn: getCDNFn, } = CDNS[i];
@@ -39,10 +39,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
 
 export const loadModel = async (
   modelDefinition: ModelDefinition | undefined,
-): Promise<{
-  model: tf.LayersModel;
-  modelDefinition: ModelDefinition;
-}> => {
+): Promise<ModelPackage> => {
   if (isValidModelDefinition(modelDefinition)) {
     registerCustomLayers(modelDefinition);
 

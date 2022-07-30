@@ -5,12 +5,14 @@ import type {
   WarmupSizes,
   ResultFormat,
   Progress,
+  UpscaleResponse,
+  ModelPackage,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { warmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
-import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
@@ -20,10 +22,7 @@ const DEFAULT_MODEL: ModelDefinitionObjectOrFn = ESRGANSlim;
 
 export class Upscaler {
   _opts: UpscalerOptions;
-  _model: Promise<{
-    model: tf.LayersModel;
-    modelDefinition: ModelDefinition;
-  }>;
+  _model: Promise<ModelPackage>;
   abortController = new AbortController();
 
   constructor(opts: UpscalerOptions = {}) {
@@ -34,20 +33,20 @@ export class Upscaler {
     void warmup(this._model, this._opts.warmupSizes || []);
   }
 
-  dispose = async () => {
+  dispose = async (): Promise<void> => {
     const { model, } = await this._model;
     model.dispose();
   };
 
-  getModel = () => this._model;
-  warmup = async (warmupSizes: WarmupSizes[]) => {
+  getModel = (): Promise<ModelPackage> => this._model;
+  warmup = async (warmupSizes: WarmupSizes[]): Promise<void> => {
     await warmup(this._model, warmupSizes);
   };
 
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
     options: UpscaleArgs<P, O, PO> = {},
-  ) => {
+  ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
     return cancellableUpscale(image, options, {
       model,
@@ -56,7 +55,7 @@ export class Upscaler {
     });
   };
 
-  abort = () => {
+  abort = (): void => {
     this.abortController.abort();
     this.abortController = new AbortController();
   };

@@ -1,11 +1,12 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
   padding?: number;
 };
-export type WarmupSizes = [number, number] | WarmupSizesByPatchSize;
+export type NumericWarmupSizes = [number, number];
+export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize;
 export interface UpscalerOptions {
   model?: ModelDefinitionObjectOrFn;
   warmupSizes?: WarmupSizes[];
@@ -34,7 +35,11 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
   signal?: AbortSignal;
 }
 
-
 export type Layer = tf.layers.Layer;
 
 export { PackageInformation, ProcessFn, } from '@upscalerjs/core';
+
+export interface ModelPackage {
+  model: tf.LayersModel;
+  modelDefinition: ModelDefinition;
+}
