@@ -20,6 +20,7 @@ import {
   MISSING_MODEL_DEFINITION_SCALE_ERROR,
   LOGICAL_ERROR,
   getModel,
+  hasValidChannels,
 } from './utils';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -339,5 +340,15 @@ describe('getModel', () => {
     const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
 
     expect(getModel(modelDefinitionFn)).toEqual(modelDefinition)
+  });
+});
+
+describe('hasValidChannels', () => {
+  it('returns true if a tensor has valid channels', () => {
+    expect(hasValidChannels(tf.ones([4,4,3]))).toEqual(true);
+  });
+
+  it('returns false if a tensor does not have valid channels', () => {
+    expect(hasValidChannels(tf.ones([4,4,4]))).toEqual(false);
   });
 });
