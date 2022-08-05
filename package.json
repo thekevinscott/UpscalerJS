@@ -29,7 +29,7 @@
     "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
     "update:dependency": "pnpm --filter @upscalerjs/scripts update:dependency",
     "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
-    "update:version": "pnpm --filter @upscalerjs/scripts update:version",
+    "update:version": "pnpm --filter @upscalerjs/scripts update:version && pnpm liteinstall",
     "commit-latest-version-changes": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify",
     "version": "pnpm run pin-cdn",
     "pin-cdn": "node scripts/pin-cdn.js",
