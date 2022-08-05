@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/test.esm.esbuild",
   "private": true,
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.5",
   "main": "index.js",
   "dependencies": {
     "@tensorflow/tfjs": "^3.19.0"
