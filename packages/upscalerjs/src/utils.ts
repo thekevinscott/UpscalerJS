@@ -100,3 +100,5 @@ export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
   /* eslint-disable @typescript-eslint/no-unsafe-return */
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
 };
+
+export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
