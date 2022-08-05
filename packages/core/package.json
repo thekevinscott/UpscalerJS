@@ -9,9 +9,8 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/validate-build.ts packages/core",
     "build": "tsc"
   },
