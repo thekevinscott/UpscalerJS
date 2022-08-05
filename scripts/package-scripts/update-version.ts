@@ -89,7 +89,15 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
       const dependencyDirectories = [DIRECTORIES[EXAMPLES], DIRECTORIES[WRAPPER]];
       const dependencyUpdater: TransformPackageJsonFn = packageJSON => {
         const deps = packageJSON.dependencies;
-        deps['upscaler'] = version;
+        if (deps) {
+          return {
+            ...packageJSON,
+            dependencies: {
+              ...deps,
+              'upscaler': version,
+            }
+          };
+        }
         return packageJSON;
       }
       const dependencyLogger: PackageUpdaterLogger = dir => {

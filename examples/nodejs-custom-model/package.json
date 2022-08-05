@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/examples.nodejs-custom-model",
   "private": true,
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.5",
   "description": "Demonstration of Node.js usage of UpscalerJS with a local custom model",
   "author": "Kevin Scott",
   "license": "MIT",
