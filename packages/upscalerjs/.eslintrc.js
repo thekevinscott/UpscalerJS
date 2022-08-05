@@ -14,7 +14,6 @@ module.exports = {
     "@typescript-eslint"
   ],
   "rules": {
-    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/semi": ["error", "always"],
     "comma-dangle": ["error", "always"],
     "curly": ["error", "all"],

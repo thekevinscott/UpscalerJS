@@ -337,12 +337,16 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
+
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
       colTensor!.dispose();
       yield [upscaledTensor,];
     }
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const squeezedTensor = upscaledTensor!.squeeze() as tf.Tensor3D;
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     upscaledTensor!.dispose();
     return squeezedTensor;
   }
