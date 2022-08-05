@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, hasValidChannels, } from './utils';
 
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
   [
@@ -19,12 +19,16 @@ export const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));
 
+export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error([
+  `Invalid channels, only 3 channels are supported at this time. You provided: "${input.shape.slice(-1)[0]}".`,
+  `Full tensor shape: ${JSON.stringify(input.shape)}`,
+].join(' '));
+
 const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
 
 const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tensor4D => {
   if (isUint8Array(input)) {
-    // TODO: This doesn't work I don't think? Because we don't know the shape of the array?
     return tf.node.decodeImage(input);
   }
 
@@ -37,22 +41,16 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
   }
 
   if (isString(input)) {
-    // if (input.startsWith('http')) {
-    //   const arrayBuffer = await fetch(input).then(r => r.blob()).then(blob => blob.arrayBuffer());
-    //   const image = new Uint8Array(arrayBuffer);
-    //   return tf.node.decodeImage(image);
-    // } else {
-      try {
-        const image = new Uint8Array(fs.readFileSync(input));
-        return tf.node.decodeImage(image);
-      } catch(err: unknown) {
-        if (err instanceof Error && err?.message.includes('no such file or directory')) {
-          throw getInvalidImageSrcInput(input);
-        } else {
-          throw err;
-        }
+    try {
+      const image = new Uint8Array(fs.readFileSync(input));
+      return tf.node.decodeImage(image);
+    } catch (err: unknown) {
+      if (err instanceof Error && err?.message.includes('no such file or directory')) {
+        throw getInvalidImageSrcInput(input);
+      } else {
+        throw err;
       }
-    // }
+    }
   }
 
   throw getInvalidInput(input); 
@@ -65,6 +63,10 @@ export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
 ): Promise<tf.Tensor4D> => {
   const tensor = getTensorFromInput(input);
+
+  if (!hasValidChannels(tensor)) {
+    throw getInvalidChannelsOfTensor(tensor);
+  }
 
   if (isThreeDimensionalTensor(tensor)) {
     const expandedTensor: tf.Tensor4D = tensor.expandDims(0);
