@@ -1,5 +1,4 @@
 import { timeit } from "./timeit";
-import Upscaler from '../../../packages/upscalerjs/src/index';
 import { GetScriptContents, testNodeScript } from "../../lib/node/prepare";
 
 type Bundle = () => Promise<void>;
@@ -7,7 +6,7 @@ type Bundle = () => Promise<void>;
 export type Dependencies = Record<string, string>;
 export type DefinedDependencies = Record<string, any>;
 export type Main = (dependencies: DefinedDependencies) => Promise<void>;
-export type Globals = Record<string, string>;
+export type Globals = Record<string, any>;
 
 interface TestOpts {
   dependencies?: Dependencies;
@@ -72,15 +71,18 @@ export class NodeTestRunner {
       ...this.globals,
       ...globals,
     });
-    return testNodeScript(contents, {
-      removeTmpDir: true, // set to false if you need to inspect the Node output files
-      testName: expect.getState().currentTestName,
-    });
+    try {
+      return await testNodeScript(contents, {
+        removeTmpDir: true, // set to false if you need to inspect the Node output files
+        testName: expect.getState().currentTestName,
+      });
+    } catch(err: any) {
+      console.log(err);
+      const message = err.message;
+      const pertinentLine = message.split('Error: ').pop().split('\n')[0].trim();
+      throw new Error(pertinentLine);
+    }
   }
-
-  /****
-   * Start and stop methods
-   */
 
   /****
    * Jest lifecycle methods

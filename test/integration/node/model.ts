@@ -1,10 +1,9 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS, GetScriptContents, testNodeScript } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { DefinedDependencies, Dependencies, Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { ModelDefinition } from '../../../packages/upscalerjs/src';
+import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -36,7 +35,7 @@ const main: Main = async (deps) => {
   return base64ArrayBuffer(upscaledImage);
 };
 
-describe('Model Loading Integration Tests', () => {
+describe('Node Model Loading Integration Tests', () => {
   const testRunner = new NodeTestRunner({
     main,
     trackTime: false,
