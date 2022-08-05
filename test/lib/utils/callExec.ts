@@ -4,7 +4,7 @@ type StdErr = (chunk: string) => void;
 const callExec = (cmd: string, options: any, stdout?: StdOut | boolean, stderr: StdErr | boolean = true): Promise<void> => new Promise((resolve, reject) => {
   const spawnedProcess = exec(cmd, options, (error: Error) => {
     if (error) {
-      reject(error.message);
+      reject(error);
     } else {
       resolve();
     }
