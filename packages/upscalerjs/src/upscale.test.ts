@@ -20,6 +20,7 @@ import {
   GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   makeTick,
+  GET_UNDEFINED_TENSORS_ERROR,
 } from './upscale';
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, } from './utils';
@@ -69,6 +70,10 @@ describe('concatTensors', () => {
     expect(result.dataSync()).toEqual(expected.dataSync());
     expect(a.isDisposed).toBe(true);
     expect(b.isDisposed).toBe(true);
+  });
+
+  it('throws if given no tensors', () => {
+    expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR());
   });
 });
 
@@ -1368,90 +1373,117 @@ describe('predict', () => {
 
   describe('memory cleanup in predict', () => {
     it('should clear up all memory while running predict without patch size', async () => {
-      const img: tf.Tensor4D = tf.tidy(() => tf.ones([4, 4, 3,]).expandDims(0));
+      const IMG_SIZE = 2;
+      tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const scale = 2;
-      const patchSize = 2;
-      const model = {
-        predict: (pixel: any) => tf.tidy(() => tf
-          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
-          .expandDims(0)),
-      } as unknown as tf.LayersModel;
-      const gen = predict(img, {}, { model, modelDefinition: { scale, } as ModelDefinition });
+      const gen = predict(tensor, {}, modelPackage);
       let { value, done } = await gen.next();
       expect(done).toEqual(true);
       expect(Array.isArray(value)).toEqual(false);
-      expect((value as tf.Tensor).dataSync()).toEqual(img.dataSync());
+      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, value as tf.Tensor4D));
       (value as tf.Tensor).dispose();
       expect(tf.memory().numTensors).toEqual(startingTensors);
-      img.dispose();
     });
 
     it('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
-      const img: tf.Tensor4D = tf.tidy(() => tf.ones([IMG_SIZE, IMG_SIZE, 3,]).expandDims(0));
+      tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const scale = 2;
       const patchSize = 2;
-      const model = {
-        predict: (pixel: any) => tf.tidy(() => tf
-          .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
-          .expandDims(0)),
-      } as unknown as tf.LayersModel;
-      const gen = predict(img, {
+      const gen = predict(tensor, {
         patchSize,
-      }, { model, modelDefinition: { scale, } as ModelDefinition });
+      }, modelPackage);
 
-      let count = 0;
-      const getColExpectations = () => ([
-        {count: startingTensors + 2 },
-        {count: startingTensors + 3 },
-        {count: startingTensors + 3 },
-        {count: startingTensors + 3 },
-        {count: startingTensors + 3 },
-        {count: startingTensors + 2 },
-      ]);
-      const getRowExpectations = () => ([
-        // for row loop, row = 0
-        {count: startingTensors + 2 },
-        // for col loop, row = 0, col = 0
-        ...getColExpectations(),
-        // for col loop, row = 0, col = 1
-        ...getColExpectations(),
-        // for row loop, row = 0
-        {count: startingTensors + 1 },
-      ]);
-      const expectations: Array<{count: number, shouldDispose?: boolean}> = [
-        {count: startingTensors, },
-        {count: startingTensors + 1 },
+      let currentExpectationIndex = 0;
+      const expectations = [
+        // 284
+        0, 
 
-        // for row loop, row = 0
-        ...getRowExpectations(),
+        // row loop 0
+        // 289
+        0, 
 
-        // for row loop, row = 1
-        ...getRowExpectations(),
-      ];
+        // row loop 0, col loop 0
+        // 299
+        0, 
+        // 304
+        1, // 1 transitory tensor
+        // 307
+        1, // 1 transitory tensor
+        // 313
+        1, // 1 transitory tensor
+        // 333
+        1, // 1 transitory tensor
+        // 337
+        1, // 0 transitory tensors, 1 col tensor
+
+        // row loop 0, col loop 1
+        // 299
+        1, // 0 transitory tensors, 1 col tensor
+        // 304
+        2, // 1 transitory tensor, 1 col tensor
+        // 307
+        2, // 1 transitory tensor, 1 col tensor
+        // 313
+        2, // 1 transitory tensor, 1 col tensor
+        // 333
+        2, // 1 transitory tensor, 1 col tensor
+        // 337
+        1, // 0 transitory tensors, 1 col tensor
+
+        // 342
+        1, // 0 transitory tensors, 0 col tensor, 1 row tensor
+
+        // row loop 1
+        // 289
+        1, 
+
+        // row loop 1, col loop 0
+        // 299
+        1, // 0 transitory tensors, 0 col tensor, 1 row tensor
+        // 304
+        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
+        // 307
+        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
+        // 313
+        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
+        // 333
+        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
+        // 337
+        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
+
+        // row loop 1, col loop 1
+        // 299
+        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
+        // 304
+        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
+        // 307
+        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
+        // 313
+        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
+        // 333
+        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
+        // 337
+        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
+
+        // 342
+        1, // 0 transitory tensor, 0 col tensor, 1 row tensor
+      ]
       let result = await gen.next();
       while (!result.done) {
-        const expectation = expectations[count];
-        // console.log('memory', result, count, tf.memory(), expectation);
-        expect(tf.memory().numTensors).toEqual(expectation.count);
-        if (expectation.shouldDispose) {
-          if (Array.isArray(result.value)) {
-            result.value.forEach(t => t.dispose());
-          } else if (_isTensor(result.value)) {
-            result.value.dispose();
-          }
-        }
-        count++;
+        const expectation = expectations[currentExpectationIndex];
+        const memory = tf.memory();
+        const countedTensors = memory.numTensors - startingTensors
+        // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+        expect(countedTensors).toEqual(expectation);
+        currentExpectationIndex++;
         result = await gen.next()
       }
       (result.value as tf.Tensor).dispose();
-      expect(count === expectations.length);
+      expect(currentExpectationIndex === expectations.length);
       
       expect(tf.memory().numTensors).toEqual(startingTensors);
-      img.dispose();
     });
   });
 });

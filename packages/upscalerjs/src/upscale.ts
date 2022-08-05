@@ -50,6 +50,8 @@ export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error
   )}`,
 );
 
+export const GET_UNDEFINED_TENSORS_ERROR = () => new Error('No defined tensors were passed to concatTensors');
+
 export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
   if (isFourDimensionalTensor(tensor)) {
     return [tensor.shape[1], tensor.shape[2],];
@@ -244,12 +246,23 @@ export const getTensorDimensions = ({
   };
 };
 
-export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T>, axis = 0): T {
-  const concatenatedTensor = tf.concat(tensors, axis);
-  tensors.forEach(tensor => tensor.dispose());
-  return concatenatedTensor;
+export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T | undefined>, axis = 0): T {
+  const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = [];
+  for (let i = 0; i < tensors.length; i++) {
+    const tensor = tensors[i];
+    if (tensor !== undefined) {
+      definedTensors.push(tensor);
+    }
+  }
+  if (definedTensors.length === 0) {
+    throw GET_UNDEFINED_TENSORS_ERROR();
+  }
+  const concatenatedTensor = tf.concat(definedTensors, axis);
+  tensors.forEach(tensor => tensor?.dispose());
+  return concatenatedTensor as T;
 }
 
+/* eslint-disable @typescript-eslint/require-await */
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
@@ -258,8 +271,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     modelDefinition,
   }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  // TODO: Remove this
-  await Promise.resolve();
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
@@ -269,33 +280,13 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   const patchSize = originalPatchSize;
 
   if (patchSize) {
-    const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
-    const { size: originalSize, } = getTensorDimensions({
-      row: 0,
-      col: 0,
-      patchSize,
-      height,
-      width,
-      padding,
-    });
-    let upscaledTensor: tf.Tensor4D = tf.zeros([
-      1,
-      0,
-      originalSize[1] * scale * columns,
-      channels,
-    ]);
-    yield upscaledTensor;
+    let upscaledTensor: undefined | tf.Tensor4D;
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
-      let colTensor: tf.Tensor4D = tf.zeros([
-        1,
-        originalSize[0] * scale,
-        0,
-        channels,
-      ]);
+      let colTensor: undefined | tf.Tensor4D;
       yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
@@ -348,13 +339,17 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
-      colTensor.dispose();
+
+      /* eslint-disable @typescript-eslint/no-non-null-assertion */
+      colTensor!.dispose();
       yield [upscaledTensor,];
     }
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-    const squeezedTensor = upscaledTensor.squeeze() as tf.Tensor3D;
-    upscaledTensor.dispose();
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    const squeezedTensor = upscaledTensor!.squeeze() as tf.Tensor3D;
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+    upscaledTensor!.dispose();
     return squeezedTensor;
   }
 
@@ -382,7 +377,7 @@ export function getProcessedPixels<T extends tf.Tensor>(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => isTensor(input) ? input.clone() : input;
 
-type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D>;
+type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
@@ -446,7 +441,7 @@ export const makeTick = (signal: AbortSignal): TickFunction => async result => {
     // only dispose tensor if we are aborting; if aborted, the called function will have
     // no opportunity to dispose of its memory
     if (Array.isArray(result)) {
-      result.forEach(r => r.dispose());
+      result.forEach(r => r?.dispose());
     } else if (isTensor(result)) {
       result.dispose();
     }

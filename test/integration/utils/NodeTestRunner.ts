@@ -77,7 +77,6 @@ export class NodeTestRunner {
         testName: expect.getState().currentTestName,
       });
     } catch(err: any) {
-      console.log(err);
       const message = err.message;
       const pertinentLine = message.split('Error: ').pop().split('\n')[0].trim();
       throw new Error(pertinentLine);
