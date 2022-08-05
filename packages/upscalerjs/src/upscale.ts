@@ -279,20 +279,10 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   const patchSize = originalPatchSize;
 
   if (patchSize) {
-    // const channels = 3;
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
-    // const { size: originalSize, } = getTensorDimensions({
-    //   row: 0,
-    //   col: 0,
-    //   patchSize,
-    //   height,
-    //   width,
-    //   padding,
-    // });
     let upscaledTensor: undefined | tf.Tensor4D;
-    yield upscaledTensor;
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
       let colTensor: undefined | tf.Tensor4D;
