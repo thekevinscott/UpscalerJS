@@ -20,6 +20,7 @@ import {
   GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   makeTick,
+  UNDEFINED_TENSORS_ERROR,
 } from './upscale';
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, } from './utils';
@@ -69,6 +70,10 @@ describe('concatTensors', () => {
     expect(result.dataSync()).toEqual(expected.dataSync());
     expect(a.isDisposed).toBe(true);
     expect(b.isDisposed).toBe(true);
+  });
+
+  it('throws if given no tensors', () => {
+    expect(concatTensors([undefined, undefined])).toThrowError(UNDEFINED_TENSORS_ERROR);
   });
 });
 

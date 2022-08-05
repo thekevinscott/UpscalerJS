@@ -50,6 +50,8 @@ export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error
   )}`,
 );
 
+export const UNDEFINED_TENSORS_ERROR = new Error('No defined tensors were passed to concatTensors');
+
 export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
   if (isFourDimensionalTensor(tensor)) {
     return [tensor.shape[1], tensor.shape[2],];
@@ -253,7 +255,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
     }
   }
   if (definedTensors.length === 0) {
-    throw new Error('No defined tensors were passed to concatTensors');
+    throw UNDEFINED_TENSORS_ERROR;
   }
   const concatenatedTensor = tf.concat(definedTensors, axis);
   tensors.forEach(tensor => tensor?.dispose());
