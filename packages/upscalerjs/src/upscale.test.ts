@@ -1140,20 +1140,27 @@ describe('predict', () => {
     }
   });
 
+  const getWidthAndHeight = (img: tf.Tensor3D | tf.Tensor4D) => {
+    if (img.shape.length === 4) {
+      return [img.shape[1], img.shape[2]];
+    }
+    return [img.shape[0], img.shape[1]];
+  };
+
   const checkStartingTensorAgainstUpscaledTensor = (img?: tf.Tensor3D | tf.Tensor4D, result?: tf.Tensor3D | tf.Tensor4D, scale = SCALE) => tf.tidy(() => {
     if (!img) {
       throw new Error('No starting tensor provided.')
     }
-    const originalImageData = tf.image.resizeNearestNeighbor(img, [img.shape[0] * scale, img.shape[1] * scale]).expandDims(0).dataSync();
-    const resultData = result?.dataSync();
-    console.log(originalImageData);
-    console.log(resultData);
-    expect(resultData).toEqual(originalImageData);
+    const [height, width] = getWidthAndHeight(img);
+    const resizedOriginal = tf.image.resizeNearestNeighbor(img, [height * scale, width * scale]).expandDims(0);
+    resizedOriginal.print();
+    result?.print();
+    expect(resizedOriginal.dataSync()).toEqual(result?.dataSync());
   });
 
-  const getTensor = (width: number, height: number): tf.Tensor3D => {
-    return tf.range(1, 1 + (width * height), 1).reshape([height, width, 1]).tile([1, 1, 3]);
-  }
+  const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
+
+  const getTensor = (height: number, width: number): tf.Tensor3D => tf.tidy(() => getTensorRange(width, height).reshape([height, width, 1]).tile([1, 1, 3]));
 
   it('should make a prediction', async () => {
     const spy = jest.spyOn(model, 'predict');
@@ -1180,8 +1187,8 @@ describe('predict', () => {
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
 
-  it('should make a prediction with a patchSize and a lopsided image', async () => {
-    const tensor = getTensor(2, 2);
+  it('should make a prediction with a patchSize and a tall image', async () => {
+    const tensor = getTensor(4, 2);
     const result = await wrapGenerator(predict(
       tensor.expandDims(0),
       {
@@ -1231,29 +1238,52 @@ describe('predict', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 
-  it('should invoke progress callback with slice as tensor, if output is a tensor', async () => {
+  it('should invoke progress callback with slice as tensor, if output is a tensor, for a tall image', async () => {
     console.warn = jest.fn();
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz2';
+    tensor = getTensor(4, 2).expandDims(0) as tf.Tensor4D;
+    const patchSize = 2;
+    const getSlice = (t: tf.Tensor, x: number, y: number) => tf.tidy(() => t.slice([0, x, y], [1, patchSize, patchSize]) as tf.Tensor3D);
+    const progress = jest.fn((rate: number, progressTensor: tf.Tensor3D) => {
+      if (rate === .5) {
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 0, 0), progressTensor));
+      } else if (rate === 1) {
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 2, 0), progressTensor));
+      } else {
+        throw new Error(`Unexpected rate: ${rate}`);
+      }
+    }) as unknown as Progress<'tensor', undefined>
+    await wrapGenerator(
+      predict(tensor, {
+        patchSize,
+        padding: 0,
+        progress,
+        output: 'tensor',
+      }, modelPackage)
+    );
+    expect(progress).toHaveBeenCalledWith(0.5,
+      expect.objectContaining({
+        shape: [4, 4, 3,],
+      }),
+    );
+    expect(progress).toHaveBeenCalledWith(1,
+      expect.objectContaining({
+        shape: [4, 4, 3,],
+      }),
+    );
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  it('should invoke progress callback with slice as tensor, if output is a tensor, for a wide image', async () => {
+    console.warn = jest.fn();
     tensor = getTensor(2, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
+    const getSlice = (t: tf.Tensor, x: number, y: number) => tf.tidy(() => t.slice([0, x, y], [1, patchSize, patchSize]) as tf.Tensor3D);
     const progress = jest.fn((rate: number, progressTensor: tf.Tensor3D) => {
-      const data = progressTensor.dataSync();
       if (rate === .5) {
-        tf.tidy(() => {
-          const expectedTensor = tensor?.slice([0, 0, 0, 0], [1, 2, 2, 3,]);
-          checkStartingTensorAgainstUpscaledTensor(expectedTensor, progressTensor);
-        });
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 0, 0), progressTensor));
       } else if (rate === 1) {
-        expect(data).toEqual([
-          ...Array(6).fill(5),
-          ...Array(6).fill(6),
-          ...Array(6).fill(5),
-          ...Array(6).fill(6),
-          ...Array(6).fill(7),
-          ...Array(6).fill(8),
-          ...Array(6).fill(7),
-          ...Array(6).fill(8),
-        ]);
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 0, 2), progressTensor));
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
@@ -1281,33 +1311,16 @@ describe('predict', () => {
 
   it('should invoke progress callback with slice as tensor, if output is a string but progressOutput is tensor', async () => {
     console.warn = jest.fn();
-    // (mockedTensorAsBase as any).default = async() => 'foobarbaz3';
-    tensor = getTensor(2, 4).expandDims(0) as tf.Tensor4D;
+    tensor = getTensor(4, 2).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    const progress = jest.fn((rate: number, tensor: tf.Tensor3D) => {
-      const data = Array.from(tensor.dataSync());
+    const getSlice = (t: tf.Tensor, x: number, y: number) => tf.tidy(() => t.slice([0, x, y], [1, patchSize, patchSize]) as tf.Tensor3D);
+    const progress = jest.fn((rate: number, progressTensor: tf.Tensor3D) => {
       if (rate === .5) {
-        expect(data).toEqual([
-          ...Array(6).fill(1),
-          ...Array(6).fill(2),
-          ...Array(6).fill(1),
-          ...Array(6).fill(2),
-          ...Array(6).fill(3),
-          ...Array(6).fill(4),
-          ...Array(6).fill(3),
-          ...Array(6).fill(4),
-        ]);
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 0, 0), progressTensor));
+      } else if (rate === 1) {
+        tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(getSlice(tensor!, 2, 0), progressTensor));
       } else {
-        expect(data).toEqual([
-          ...Array(6).fill(5),
-          ...Array(6).fill(6),
-          ...Array(6).fill(5),
-          ...Array(6).fill(6),
-          ...Array(6).fill(7),
-          ...Array(6).fill(8),
-          ...Array(6).fill(7),
-          ...Array(6).fill(8),
-        ]);
+        throw new Error(`Unexpected rate: ${rate}`);
       }
     }) as Progress<'src', 'tensor'>
     await wrapGenerator(
