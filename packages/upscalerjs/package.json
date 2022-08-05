@@ -52,7 +52,7 @@
     "lint:browser:fix": "pnpm scaffold:dependencies 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern **/*.node.ts --fix",
     "lint:node": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern **/*.browser.ts",
     "lint:node:fix": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern **/*.browser.ts --fix",
-    "test": "pnpm run test:unit",
+    "test": "pnpm build:dependencies && pnpm run test:unit",
     "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
     "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json",
     "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
