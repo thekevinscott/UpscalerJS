@@ -34,7 +34,7 @@ const main: Main = async (deps) => {
   return base64ArrayBuffer(upscaledImage);
 };
 
-describe('Platform Integration Tests', () => {
+describe('Node Platforms Integration Tests', () => {
   const testRunner = new NodeTestRunner({
     main,
     trackTime: false,

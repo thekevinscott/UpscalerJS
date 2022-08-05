@@ -1,10 +1,9 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS, GetScriptContents, testNodeScript } from '../../lib/node/prepare';
+import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { DefinedDependencies, Dependencies, Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { ModelDefinition } from '../../../packages/upscalerjs/src';
+import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -36,7 +35,7 @@ const main: Main = async (deps) => {
   return base64ArrayBuffer(upscaledImage);
 };
 
-describe('Model Loading Integration Tests', () => {
+describe('Node Model Loading Integration Tests', () => {
   const testRunner = new NodeTestRunner({
     main,
     trackTime: false,
@@ -77,31 +76,31 @@ describe('Model Loading Integration Tests', () => {
     checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
   });
 
-  // describe('Test specific model implementations', () => {
-  //   const SPECIFIC_PACKAGE: string | undefined = undefined;
-  //   const SPECIFIC_MODEL: string | undefined = undefined;
-  //   getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
-  //     describe(packageName, () => {
-  //       const models = getAllAvailableModels(packageName);
-  //       models.filter(m => SPECIFIC_MODEL === undefined || m.esm === SPECIFIC_MODEL).forEach(({ cjs }) => {
-  //         const cjsName = cjs || 'index';
-  //         it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
-  //           const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
-  //           const result = await testRunner.test({
-  //             dependencies: {
-  //               customModel: importPath,
-  //             },
-  //             globals: {
-  //               model: 'customModel',
-  //             }
-  //           });
+  describe('Test specific model implementations', () => {
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
+    getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
+      describe(packageName, () => {
+        const models = getAllAvailableModels(packageName);
+        models.filter(m => SPECIFIC_MODEL === undefined || m.esm === SPECIFIC_MODEL).forEach(({ cjs }) => {
+          const cjsName = cjs || 'index';
+          it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
+            const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
+            const result = await testRunner.test({
+              dependencies: {
+                customModel: importPath,
+              },
+              globals: {
+                model: 'customModel',
+              }
+            });
 
-  //           expect(result).not.toEqual('');
-  //           const formattedResult = `data:image/png;base64,${result}`;
-  //           checkImage(formattedResult, `${packageName}/${cjsName}/result.png`, `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
-  //         });
-  //       });
-  //     });
-  //   });
-  // });
+            expect(result).not.toEqual('');
+            const formattedResult = `data:image/png;base64,${result}`;
+            checkImage(formattedResult, `${packageName}/${cjsName}/result.png`, `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
+          });
+        });
+      });
+    });
+  });
 });
