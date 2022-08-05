@@ -184,16 +184,16 @@ describe('Node Image Loading Integration Tests', () => {
     });
   });
 
-  // describe('Patch sizes', () => {
-  //   it.only("upscales an imported local image path with patch sizes", async () => {
-  //     const result = await testRunner.test({
-  //       globals: {
-  //         image: JSON.stringify(IMAGE_FIXTURE_PATH),
-  //         patchSize: 4,
-  //         padding: 2,
-  //       },
-  //     });
-  //     checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
-  //   });
-  // });
+  describe('Patch sizes', () => {
+    it("upscales an imported local image path with patch sizes", async () => {
+      const result = await testRunner.test({
+        globals: {
+          image: JSON.stringify(IMAGE_FIXTURE_PATH),
+          patchSize: 4,
+          padding: 2,
+        },
+      });
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
+    });
+  });
 });

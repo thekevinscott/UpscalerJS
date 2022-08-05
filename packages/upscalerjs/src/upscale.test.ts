@@ -1439,7 +1439,7 @@ describe('predict', () => {
         expect(tf.memory().numTensors).toEqual(expectation.count);
         if (expectation.shouldDispose) {
           if (Array.isArray(result.value)) {
-            result.value.forEach(t => t.dispose());
+            result.value.forEach(t => t?.dispose());
           } else if (_isTensor(result.value)) {
             result.value.dispose();
           }
