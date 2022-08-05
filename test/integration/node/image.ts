@@ -10,6 +10,8 @@ const FIXTURES_PATH = path.resolve(__dirname, '../../__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small-15.jpg');
 const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small.png');
 const MODEL_PATH = 'file://' + path.join(FIXTURES_PATH, 'pixelator/pixelator.json');
+const EXPECTED_UPSCALED_IMAGE = 'upscaled-4x-pixelator-15.png';
+const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 // TODO: How to import this, instead of copying it?
 // import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/image.node';
@@ -82,7 +84,7 @@ describe('Node Image Loading Integration Tests', () => {
           image: `new Uint8Array(fs.readFileSync('${IMAGE_FIXTURE_PATH}'))`,
         },
       });
-      checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
     });
 
     it('throws if given 4-channel Uint8Array', async () => {
@@ -102,7 +104,7 @@ describe('Node Image Loading Integration Tests', () => {
           image: `fs.readFileSync('${IMAGE_FIXTURE_PATH}')`,
         },
       });
-      checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if a Buffer has invalid channels", async () => {
@@ -122,7 +124,7 @@ describe('Node Image Loading Integration Tests', () => {
           image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([16, 16, 3])`,
         },
       });
-      checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if 3D Tensor has invalid channels", async () => {
@@ -140,7 +142,7 @@ describe('Node Image Loading Integration Tests', () => {
           image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([1, 16, 16, 3])`,
         },
       });
-      checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if 4D Tensor has invalid channels", async () => {
@@ -160,7 +162,7 @@ describe('Node Image Loading Integration Tests', () => {
           image: JSON.stringify(IMAGE_FIXTURE_PATH),
         },
       });
-      checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if string provided is an invalid path", async () => {
@@ -190,7 +192,7 @@ describe('Node Image Loading Integration Tests', () => {
   //         padding: 2,
   //       },
   //     });
-  //     checkImage(`data:image/png;base64,${result}`, "upscaled-4x-pixelator.png", 'diff.png');
+  //     checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE, DIFF_IMAGE_OUTPUT);
   //   });
   // });
 });
