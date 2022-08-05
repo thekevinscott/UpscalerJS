@@ -1153,8 +1153,6 @@ describe('predict', () => {
     }
     const [height, width] = getWidthAndHeight(img);
     const resizedOriginal = tf.image.resizeNearestNeighbor(img, [height * scale, width * scale]).expandDims(0);
-    resizedOriginal.print();
-    result?.print();
     expect(resizedOriginal.dataSync()).toEqual(result?.dataSync());
   });
 
