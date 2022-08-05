@@ -1368,25 +1368,25 @@ describe('predict', () => {
 
   describe('memory cleanup in predict', () => {
     it('should clear up all memory while running predict without patch size', async () => {
-      const img: tf.Tensor4D = tf.tidy(() => tf.ones([4, 4, 3,]).expandDims(0));
+      const IMG_SIZE = 2;
+      tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const gen = predict(img, {}, modelPackage);
+      const gen = predict(tensor, {}, modelPackage);
       let { value, done } = await gen.next();
       expect(done).toEqual(true);
       expect(Array.isArray(value)).toEqual(false);
-      expect((value as tf.Tensor).dataSync()).toEqual(img.dataSync());
+      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, value as tf.Tensor4D));
       (value as tf.Tensor).dispose();
       expect(tf.memory().numTensors).toEqual(startingTensors);
-      img.dispose();
     });
 
     it('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
-      const img: tf.Tensor4D = tf.tidy(() => tf.ones([IMG_SIZE, IMG_SIZE, 3,]).expandDims(0));
+      tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
       const patchSize = 2;
-      const gen = predict(img, {
+      const gen = predict(tensor, {
         patchSize,
       }, modelPackage);
 
@@ -1479,7 +1479,6 @@ describe('predict', () => {
       expect(currentExpectationIndex === expectations.length);
       
       expect(tf.memory().numTensors).toEqual(startingTensors);
-      img.dispose();
     });
   });
 });
