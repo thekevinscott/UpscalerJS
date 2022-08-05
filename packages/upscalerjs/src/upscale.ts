@@ -283,38 +283,19 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
-    const { size: originalSize, } = getTensorDimensions({
-      row: 0,
-      col: 0,
-      patchSize,
-      height,
-      width,
-      padding,
-    });
-    console.log(originalSize);
-    // const totalWidth = originalSize[1] * scale * columns;
-    // const totalHeight = originalSize[0] * scale;
-    const totalWidth = 64;
-    const totalHeight = 60;
-    console.log('final width', totalWidth);
-    console.log('final height', totalHeight);
+    // const { size: originalSize, } = getTensorDimensions({
+    //   row: 0,
+    //   col: 0,
+    //   patchSize,
+    //   height,
+    //   width,
+    //   padding,
+    // });
     let upscaledTensor: undefined | tf.Tensor4D;
-    //  = tf.zeros([
-    //   1,
-    //   64,
-    //   0,
-    //   channels,
-    // ]);
     yield upscaledTensor;
     const total = rows * columns;
     for (let row = 0; row < rows; row++) {
       let colTensor: undefined | tf.Tensor4D;
-      //  = tf.zeros([
-      //   1,
-      //   0,
-      //   16,
-      //   channels,
-      // ]);
       yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
@@ -361,13 +342,11 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         }
         yield [upscaledTensor, colTensor, slicedPrediction,];
 
-        console.log('concat the col tensor');
         colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
         slicedPrediction.dispose();
         yield [upscaledTensor, colTensor,];
       }
 
-      console.log('concat the final tensor');
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
       colTensor!.dispose();
       yield [upscaledTensor,];
