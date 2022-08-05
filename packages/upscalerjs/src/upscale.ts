@@ -260,6 +260,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor as T;
 }
 
+/* eslint-disable @typescript-eslint/require-await */
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
@@ -268,8 +269,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     modelDefinition,
   }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  // TODO: Remove this
-  await Promise.resolve();
   const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
