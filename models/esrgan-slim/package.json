@@ -19,7 +19,7 @@
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/validate-build.ts models/esrgan-slim",
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd"
   },
   "keywords": [
