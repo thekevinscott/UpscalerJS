@@ -3,6 +3,7 @@
   "version": "0.12.0",
   "private": true,
   "scripts": {
+    "prebuild": "test \"$CI\" = true && npx pnpm install -r --store=node_modules/.pnpm-store || echo skipping pnpm install",
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
