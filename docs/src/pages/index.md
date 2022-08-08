@@ -191,8 +191,8 @@ The available types for output are:
 
 For larger images, attempting to run inference can impact UI performance. To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
 
-```
 ```javascript
+({
   patchSize: 64,
   padding: 5,
 })
@@ -348,7 +348,7 @@ If specifying a patch size but not padding, you will likely encounter artifactin
 
 Most of the time, this artifacting is undesired. To resolve the artifacting, add an explicit padding:
 
-```
+```javascript
 upscaler.upscale('/path/to/img', {
   patchSize: 64,
   padding: 4,
@@ -359,7 +359,7 @@ upscaler.upscale('/path/to/img', {
 
 If you would like to keep artifacting but hide the warning message, pass an explicit padding value of 0:
 
-```
+```javascript
 upscaler.upscale('/path/to/img', {
   patchSize: 64,
   padding: 0,
@@ -372,7 +372,7 @@ If you've specified a `progress` callback but are not specifying `patchSize` in 
 
 In order to have your `progress` callback be called, provide explicit patch sizes:
 
-```
+```javascript
 upscaler.upscale('/path/to/img', {
   patchSize: 64,
   progress: ...
@@ -381,8 +381,6 @@ upscaler.upscale('/path/to/img', {
 ## Contributions 
 
 Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.
-
-To contribute pretrained models, head over to [UpscalerJS-models](https://github.com/thekevinscott/UpscalerJS-models).
 
 ## Support
 
@@ -395,3 +393,4 @@ To contribute pretrained models, head over to [UpscalerJS-models](https://github
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE) for details.
 
 Copyright (c) Kevin Scott ([@thekevinscott](https://thekevinscott.com))
+
