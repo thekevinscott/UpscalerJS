@@ -155,6 +155,8 @@ importers:
       prism-react-renderer: ^1.3.5
       react: ^17.0.2
       react-dom: ^17.0.2
+      typedoc: ^0.23.10
+      typedoc-plugin-markdown: ^3.13.4
       typescript: ^4.7.4
     dependencies:
       '@docusaurus/core': 2.0.1_aoyvzlomggvyirsrnkx2lqkjiy
@@ -170,6 +172,8 @@ importers:
       '@tsconfig/docusaurus': 1.0.6
       concurrently: 7.3.0
       docusaurus-plugin-typedoc: 0.17.5_e6antoqkoip4fafe7ecefzcrwu
+      typedoc: 0.23.10_typescript@4.7.4
+      typedoc-plugin-markdown: 3.13.4_typedoc@0.23.10
       typescript: 4.7.4
 
   examples/basic:
