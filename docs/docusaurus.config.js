@@ -24,6 +24,8 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: ['docusaurus-plugin-sass'],
+
   presets: [
     [
       'classic',
@@ -37,7 +39,7 @@ const config = {
         //   //   `${GITHUB_ROOT}/tree/main/packages/create-docusaurus/templates/shared/`,
         // },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: require.resolve('./src/css/custom.scss'),
         },
       }),
     ],

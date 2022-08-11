@@ -1,8 +1,6 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+* {
+  box-sizing: border-box;
+}
 
 /* You can override the default Infima variables here. */
 :root {
@@ -34,6 +32,8 @@ html[data-theme='dark'] {
   --ifm-background-surface-color: #011627;
 }
 
-html article {
-  font-size: 120%;
+html {
+  article {
+    font-size: 120%;
+  }
 }

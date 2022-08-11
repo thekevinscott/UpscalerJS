@@ -1,0 +1,36 @@
+#images {
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  padding: 0 20px;
+  flex: 1;
+  overflow-y: scroll;
+}
+
+#imageList {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  // padding-top: 16px;
+}
+
+.image {
+  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+
+  a {
+    border-radius: 4px;
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+    }
+  }
+
+}
+
+#loading {
+  margin-top: 20px;
+}

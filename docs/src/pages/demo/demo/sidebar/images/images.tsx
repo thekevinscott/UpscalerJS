@@ -1,0 +1,60 @@
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import styles from './images.module.scss';
+import Loading from '@site/src/components/loading/loading';
+
+
+export default function Images({
+  searchValue,
+}: {
+  searchValue: string;
+}) {
+  const timer = useRef<number>();
+  const [first, setFirst] = useState(false);
+  const [images, setImages] = useState<undefined | { tags: string, pageURL: string, url: string }[]>();
+
+  const search = useCallback(async (value: string) => {
+    const resp = await fetch(`https://image-search.upscaler.workers.dev?q=${value}`);
+    const { hits } = await resp.json();
+    setImages(hits.map(hit => ({
+      url: hit.previewURL,
+      pageURL: hit.pageURL,
+      tags: hit.tags,
+    })));
+  }, []);
+
+  useEffect(() => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+
+    setImages(undefined);
+
+    timer.current = window.setTimeout(() => {
+      search(searchValue);
+    }, first === false ? 0 : 800);
+
+    setFirst(true);
+
+    return () => {
+      clearTimeout(timer.current);
+    }
+  }, [timer, searchValue]);
+
+  return (
+    <div id={styles.images}>
+      {images ? (
+        <div id={styles.imageList}>{images.map(image => (
+          <div className={styles.image} key={image.url}>
+            <a href="#"><img src={image.url} /></a>
+          </div>
+        ))}</div>
+      ) : (
+        <div id={styles.loading}>
+          <Loading />
+        </div>
+      )}
+    </div>
+  );
+}
+
+
