@@ -6,6 +6,7 @@ import type {
   UpscaleResponse, 
   Progress, 
   MultiArgProgress,
+  SingleArgProgress,
   ModelPackage,
   BASE64,
   TENSOR,
@@ -321,7 +322,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           const index = row * columns + col + 1;
           const percent = index / total;
           if (progress.length <= 1) {
-            progress(percent);
+            (<SingleArgProgress>progress)(percent);
           } else {
             const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
