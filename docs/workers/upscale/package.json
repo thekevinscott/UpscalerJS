@@ -18,10 +18,9 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "^3.19.0",
-    "@tensorflow/tfjs-node": "^3.19.0",
     "aws-sdk": "^2.1193.0",
+    "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
-    "nock": "^13.2.9",
-    "tensor-as-base64": "^0.3.0"
+    "nock": "^13.2.9"
   }
 }

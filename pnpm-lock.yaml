@@ -223,6 +223,9 @@ importers:
       '@upscalerjs/esrgan-slim': workspace:*
       '@upscalerjs/workers.shared': workspace:*
       aws-sdk: ^2.1193.0
+      buffer-image-size: ^0.6.4
+      image-size: ^1.0.2
+      jpeg-js: ^0.4.4
       mock-aws-s3: ^4.0.2
       nock: ^13.2.9
       tensor-as-base64: ^0.3.0
@@ -233,6 +236,9 @@ importers:
       '@tensorflow/tfjs': 3.19.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node': 3.19.0_seedrandom@3.0.5
       aws-sdk: 2.1193.0
+      buffer-image-size: 0.6.4
+      image-size: 1.0.2
+      jpeg-js: 0.4.4
       mock-aws-s3: 4.0.2
       nock: 13.2.9
       tensor-as-base64: 0.3.0_@tensorflow+tfjs@3.19.0
@@ -8298,6 +8304,13 @@ packages:
   /buffer-from/1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
+  /buffer-image-size/0.6.4:
+    resolution: {integrity: sha512-nEh+kZOPY1w+gcCMobZ6ETUp9WfibndnosbpwB1iJk/8Gt5ZF2bhS6+B6bPYz424KtwsR6Rflc3tCz1/ghX2dQ==}
+    engines: {node: '>=4.0'}
+    dependencies:
+      '@types/node': 18.0.1
+    dev: false
+
   /buffer/4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
     dependencies:
@@ -14521,6 +14534,10 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.0
       '@sideway/pinpoint': 2.0.0
+
+  /jpeg-js/0.4.4:
+    resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==}
+    dev: false
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

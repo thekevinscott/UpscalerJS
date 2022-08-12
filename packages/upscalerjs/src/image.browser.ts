@@ -33,7 +33,7 @@ const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tens
   return tf.browser.fromPixels(input);
 };
 
-// Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
+// TODO: Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
 type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
 export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
 export const getImageAsTensor = async (
