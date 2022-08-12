@@ -13,8 +13,8 @@ export default function Images({
   const [images, setImages] = useState<undefined | { tags: string, pageURL: string, url: string }[]>();
 
   const search = useCallback(async (value: string) => {
-    const resp = await fetch(`https://image-search.upscaler.workers.dev?q=${value}`);
-    const { hits } = await resp.json();
+    const resp = await fetch(`http://image-search.upscalerjs.com?q=${value}`);
+    const { response: { hits }} = await resp.json();
     setImages(hits.map(hit => ({
       url: hit.previewURL,
       pageURL: hit.pageURL,

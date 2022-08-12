@@ -1,11 +1,12 @@
-name = "image-search-dev"
+name = "upscale-dev"
 main = "src/index.ts"
 compatibility_date = "2022-08-10"
 workers_dev = true
+node_compat = true
 
 [env.production]
-name = "image-search-prod"
+name = "upscale-prod"
 workers_dev = false
 routes = [
-	{ pattern = "image-search.upscalerjs.com", custom_domain = true }
+	{ pattern = "upscale.upscalerjs.com", custom_domain = true }
 ]

@@ -1,0 +1,115 @@
+/**
+ * Types
+ */
+type Callback = () => Promise<Response>;
+type GetResponse = () => Promise<Response>;
+
+/**
+ * Constants
+ */
+const CACHE_LENGTH = 60 * 60 * 24; // 1 day
+
+const ALLOWED_DOMAINS = [
+  'http://localhost:3000', 
+  'https://upscalerjs.com', 
+  'https://image-search.upscalerjs.com',
+  'https://image-search-dev.upscaler.workers.dev',
+];
+
+/**
+ * Utility functions
+ */
+const getHeaders = (cacheLength: number) => new Headers({
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Max-Age': '86400',
+  'content-type': 'application/json;charset=UTF-8',
+  "Cache-Control": `s-maxage=${cacheLength}`,
+});
+
+const prepareResponse = async (response: Response, headers: Headers) => {
+  const text = await response.text();
+  try {
+    const json = JSON.parse(text); // ensure it is valid json
+    const results = JSON.stringify({
+      time: Date.now(),
+      response: json,
+    });
+    const status = response.status;
+    const statusText = response.statusText;
+    return new Response(results, {
+      headers,
+      status,
+      statusText,
+    });
+  } catch (err) {
+    console.error('Error parsing JSON', text);
+    return new Response(JSON.stringify({ text }), {
+      headers,
+      status: 500,
+    });
+  }
+}
+
+/**
+ * Server wrapper functions
+ */
+const wrapCache = async (request: Request, ctx: ExecutionContext, getResponse: GetResponse, headers: Headers) => {
+  const cacheUrl = new URL(request.url);
+
+  // Construct the cache key from the cache URL
+  const cacheKey = new Request(cacheUrl.toString(), request);
+  const cache = caches.default;
+
+  // Check whether the value is already available in the cache
+  // if not, you will need to fetch it from origin, and store it in the cache
+  // for future access
+  let response = await cache.match(cacheKey);
+
+  if (!response) {
+    response = await prepareResponse(await getResponse(), headers);
+
+    // Cache API respects Cache-Control headers. Setting s-max-age to 10
+    // will limit the response to be in cache for 10 seconds max
+
+    // Any changes made to the response here will be reflected in the cached value
+    response.headers.append("Cache-Control", `s-maxage=${headers.get('cache-length')}`)
+
+    // Store the fetched response as cacheKey
+    // Use waitUntil so you can return the response without blocking on
+    // writing to cache
+    // ctx.waitUntil(cache.put(cacheKey, response.clone()));
+  }
+  return response;
+}
+
+type HandleUpscalerJSRequest = (callback: Callback, opts: {
+  request: Request;
+  ctx: ExecutionContext;
+  cacheLength: number;
+}) => Promise<Response>;
+export const handleUpscalerJSRequest: HandleUpscalerJSRequest = async (callback, {
+  cacheLength,
+  request,
+  ctx,
+}) => {
+  const headers = getHeaders(cacheLength)
+  const origin = request.headers.get('origin') || '';
+  try {
+    if (!ALLOWED_DOMAINS.includes(origin)) {
+      return new Response(JSON.stringify({ error: 'Not allowed', origin }), {
+        status: 403,
+        headers,
+      });
+    }
+
+    return wrapCache(request, ctx, callback, headers);
+  } catch (err) {
+    console.error('Error', err);
+    return new Response(JSON.stringify({ error: (<Error>err).message }), {
+      status: 500,
+        headers,
+    });
+  }
+}
