@@ -322,7 +322,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           const index = row * columns + col + 1;
           const percent = index / total;
           if (progress.length <= 1) {
-            (<SingleArgProgress>progress)(percent);
+            progress(percent);
           } else {
             const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
