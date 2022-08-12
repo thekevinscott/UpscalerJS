@@ -12,8 +12,8 @@ export interface UpscalerOptions {
   warmupSizes?: WarmupSizes[];
 }
 
-type BASE64 = 'base64';
-type TENSOR = 'tensor';
+export type BASE64 = 'base64';
+export type TENSOR = 'tensor';
 export type ResultFormat = BASE64 | TENSOR | undefined;
 export type UpscaleResponse<O extends ResultFormat> = O extends BASE64 ? string : tf.Tensor3D;
 export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = 

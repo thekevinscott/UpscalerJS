@@ -4,7 +4,7 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
-import Upscaler, { Progress } from 'upscaler';
+import Upscaler, { BASE64, Progress } from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const TRACK_TIME = false;
@@ -215,7 +215,7 @@ describe('Upscale Integration Tests', () => {
         upscaler.upscale(window['flower'], {
           patchSize: 8,
           padding: 2,
-          output: 'src',
+          output: 'base64',
           progress: (rate: number) => {
             progressRates.push(rate);
           },
@@ -226,7 +226,7 @@ describe('Upscale Integration Tests', () => {
       expect(progressRates).toEqual([.25, .5, .75, 1]);
     });
 
-    it("calls back to progress with a src", async () => {
+    it("calls back to progress with a base64", async () => {
       const [rate, slice] = await page().evaluate((): Promise<[number, string]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
@@ -234,13 +234,13 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
-        const progress: Progress<'src'> = (rate, slice) => {
+        const progress: Progress<BASE64> = (rate, slice) => {
           resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
           patchSize: 12,
           padding: 2,
-          output: 'src',
+          output: 'base64',
           progress,
         });
       }));
