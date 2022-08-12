@@ -6,7 +6,6 @@ import type {
   UpscaleResponse, 
   Progress, 
   MultiArgProgress,
-  SingleArgProgress,
   ModelPackage,
   BASE64,
   TENSOR,
