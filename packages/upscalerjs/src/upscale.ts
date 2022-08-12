@@ -7,6 +7,8 @@ import type {
   Progress, 
   MultiArgProgress,
   ModelPackage,
+  BASE64,
+  TENSOR,
  } from './types';
 import { getImageAsTensor, tensorAsBase64, } from './image.generated';
 import { 
@@ -20,6 +22,8 @@ import {
   isFourDimensionalTensor,
  } from './utils';
 import type { GetImageAsTensorInput, } from './image.generated';
+
+type DEFAULT_OUTPUT = BASE64;
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -263,7 +267,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 }
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
   { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
   {
@@ -322,12 +326,12 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              (<MultiArgProgress<'tensor'>>progress)(percent, squeezedTensor);
+              (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              (<MultiArgProgress<'src'>>progress)(percent, src);
+              (<MultiArgProgress<BASE64>>progress)(percent, src);
             }
           }
         }
@@ -379,7 +383,7 @@ export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorIn
 
 type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
 
-export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition, }: ModelPackage,
@@ -449,7 +453,7 @@ export const makeTick = (signal: AbortSignal): TickFunction => async result => {
   }
 };
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   { signal, ...args }: UpscaleArgs<P, O, PO>,
   internalArgs: ModelPackage & {
