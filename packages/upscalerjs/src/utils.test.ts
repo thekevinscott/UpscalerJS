@@ -231,11 +231,11 @@ describe('isMultiArgProgress', () => {
   });
 
   it('returns false for a multi arg tensor string function', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'src', 'src')).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'base64', 'base64')).toEqual(false);
   });
 
   it('returns false for a multi arg tensor string function with overloaded outputs', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'src')).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'base64')).toEqual(false);
   });
 
   it('returns true for a multi arg tensor function', () => {
@@ -243,7 +243,7 @@ describe('isMultiArgProgress', () => {
   });
 
   it('returns true for a multi arg tensor function with conflicting outputs', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'src', 'tensor')).toEqual(true);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'base64', 'tensor')).toEqual(true);
   });
 });
 
