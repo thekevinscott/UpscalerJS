@@ -7,6 +7,7 @@ import type {
   Progress,
   UpscaleResponse,
   ModelPackage,
+  BASE64,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { warmup, } from './warmup';
@@ -43,7 +44,7 @@ export class Upscaler {
     await warmup(this._model, warmupSizes);
   };
 
-  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
     options: UpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {

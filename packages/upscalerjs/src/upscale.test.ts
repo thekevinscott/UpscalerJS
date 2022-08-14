@@ -25,7 +25,7 @@ import {
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
-import { ModelPackage, Progress, } from './types';
+import { BASE64, ModelPackage, Progress, TENSOR, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./image.generated', () => {
@@ -1325,13 +1325,13 @@ describe('predict', () => {
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
-    }) as Progress<'src', 'tensor'>
+    }) as Progress<BASE64, TENSOR>
     await wrapGenerator(
       predict(tensor, {
         patchSize,
         padding: 0,
         progress,
-        output: 'src',
+        output: 'base64',
         progressOutput: 'tensor',
       }, modelPackage)
     );
@@ -1489,7 +1489,7 @@ describe('predict', () => {
 });
 
 describe('upscale', () => {
-  it('should return a base64 src by default', async () => {
+  it('should return a base64 string by default', async () => {
     const img: tf.Tensor3D = tf.tensor([
       [
         [1, 1, 1,],
