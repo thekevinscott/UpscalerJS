@@ -565,7 +565,7 @@ describe('Memory Leaks', () => {
           },
         });
         await upscaler.upscale(window['flower'], {
-          output: 'src',
+          output: 'base64',
           patchSize: 14,
           padding: 2,
           progress: (_, slice) => {
@@ -598,7 +598,7 @@ describe('Memory Leaks', () => {
           },
         });
         await upscaler.upscale(window['flower'], {
-          output: 'src',
+          output: 'base64',
           progressOutput: 'tensor',
           patchSize: 14,
           padding: 2,
@@ -639,7 +639,7 @@ describe('Memory Leaks', () => {
           },
         });
         upscaler.upscale(window['flower'], {
-          output: 'src',
+          output: 'base64',
           signal: abortController.signal,
         }).catch(() => {
           upscaler.dispose().then(resolve);
@@ -668,7 +668,7 @@ describe('Memory Leaks', () => {
         });
         try {
           await upscaler.upscale(window['flower'], {
-            output: 'src',
+            output: 'base64',
             signal: abortController.signal,
             patchSize: 14,
             padding: 2,

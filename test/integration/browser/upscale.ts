@@ -71,7 +71,7 @@ describe('Upscale Integration Tests', () => {
         upscaler.upscale(window['flower'], {
           patchSize: 4,
           padding: 2,
-          output: 'src',
+          output: 'base64',
           signal: abortController.signal,
           progress: (rate: number) => {
             const curTime = new Date().getTime();
@@ -125,7 +125,7 @@ describe('Upscale Integration Tests', () => {
         const options: any = {
           patchSize: 4,
           padding: 2,
-          output: 'src',
+          output: 'base64',
           progress: (rate: number) => {
             const curTime = new Date().getTime();
             window['durations'].push(curTime - startTime);
@@ -179,7 +179,7 @@ describe('Upscale Integration Tests', () => {
         const options: any = {
           patchSize: 4,
           padding: 2,
-          output: 'src',
+          output: 'base64',
           progress: (rate: number) => {
             if (rate >= .5) {
               window['upscaler'].abort();
