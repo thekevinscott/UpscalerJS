@@ -36,35 +36,34 @@ import * as tf from '@tensorflow/tfjs';
 //   }
 
 export default function Demo() {
-  // const [file, setFile] = useState();
-  const handleFileChange = useCallback(e => {
-    // setFile(e.files[0]);
-    doit(e.files[0]);
-  }, []);
-  const doit = useCallback((file: File) => {
-    const formData = new FormData();
+  // // const [file, setFile] = useState();
+  // const handleFileChange = useCallback(e => {
+  //   // setFile(e.files[0]);
+  //   doit(e.files[0]);
+  // }, []);
+  // const doit = useCallback((file: File) => {
+  //   const formData = new FormData();
     
-    formData.append('file', file);
+  //   formData.append('file', file);
   
-      const options = {
-        method: 'POST',
-        body: formData,
-      };
+  //     const options = {
+  //       method: 'POST',
+  //       body: formData,
+  //     };
       
-    fetch('http://localhost:8787', options).then(r => r.json()).then(resp => {
-      try { document.getElementById('upscaledImg').remove(); } catch (err) { }
-      const canvas = document.createElement('canvas')
-      canvas.id = 'upscaledImg';
-      document.body.prepend(canvas);
-      const t = tf.tensor(resp.response.upscaledSrc, [64, 64, 3]) as tf.Tensor3D;
-      tf.browser.toPixels(t, canvas);
-    });
+  //   fetch('http://localhost:8787', options).then(r => r.json()).then(resp => {
+  //     try { document.getElementById('upscaledImg').remove(); } catch (err) { }
+  //     const canvas = document.createElement('canvas')
+  //     canvas.id = 'upscaledImg';
+  //     document.body.prepend(canvas);
+  //     const t = tf.tensor(resp.response.upscaledSrc, [64, 64, 3]) as tf.Tensor3D;
+  //     tf.browser.toPixels(t, canvas);
+  //   });
       
-  }, []);
+  // }, []);
 
   return (
     <div id={styles.page}>
-      <input type="file" onChange={handleFileChange} />
       <Checkerboard />
       <Sidebar />
     </div>
