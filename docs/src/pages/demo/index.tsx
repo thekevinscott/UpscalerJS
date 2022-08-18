@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Layout from '@theme/Layout';
 import Demo from './demo/demo';
 

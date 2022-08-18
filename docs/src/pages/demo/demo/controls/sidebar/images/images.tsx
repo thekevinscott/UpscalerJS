@@ -1,12 +1,15 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import styles from './images.module.scss';
 import Loading from '@site/src/components/loading/loading';
+import type { UploadedImage } from '../../../types';
 
-
+export type SelectImage = (img: UploadedImage) => void;
 export default function Images({
   searchValue,
+  selectImage,
 }: {
   searchValue: string;
+  selectImage: SelectImage;
 }) {
   const timer = useRef<number>();
   const [first, setFirst] = useState(false);
@@ -45,7 +48,10 @@ export default function Images({
       {images ? (
         <div id={styles.imageList}>{images.map(image => (
           <div className={styles.image} key={image.url}>
-            <a href="#"><img src={image.url} /></a>
+            <a onClick={e => {
+              e.preventDefault();
+              selectImage({ src: image.url, filename: image.tags });
+            }}><img src={image.url} /></a>
           </div>
         ))}</div>
       ) : (

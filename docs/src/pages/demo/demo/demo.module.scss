@@ -1,0 +1,11 @@
+#page {
+  flex: 1;
+  position: relative;
+  background-color: #fff;
+}
+html[data-theme='dark'] {
+  #page {
+    background-color: #010e1a;
+  }
+}
+

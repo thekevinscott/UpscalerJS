@@ -1,17 +1,15 @@
 #images {
   display: flex;
   flex-direction: column;
-  // align-items: center;
-  padding: 0 20px;
   flex: 1;
   overflow-y: scroll;
+  padding: 0 20px;
 }
 
 #imageList {
   display: flex;
   flex-direction: column;
   flex: 1;
-  // padding-top: 16px;
 }
 
 .image {
@@ -22,10 +20,14 @@
   a {
     border-radius: 4px;
     overflow: hidden;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     img {
       display: block;
-      width: 100%;
     }
   }
 

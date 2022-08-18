@@ -1,0 +1,14 @@
+#configuration {
+  #image {
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    small {
+      display: block;
+      color: rgba(0,0,0,0.6);
+    }
+  }
+}

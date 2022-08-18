@@ -1,0 +1,44 @@
+#controlPane {
+  position: absolute;
+  z-index: 2;
+  overflow: hidden;
+  transition-property: width;
+  transition-duration: .4s;
+
+  &.right {
+    right: 0;
+    height: 100%;
+  }
+
+  &.bottom {
+    bottom: 0;
+    width: 100%;
+  }
+
+  #controlPaneInner {
+    &.right {
+      margin-left: 100%;
+    }
+    transition-property: margin;
+    transition-duration: .4s;
+    height: 100%;
+
+    background: rgba(255,255,255,0.7);
+    overflow: hidden;
+
+    &.open {
+      &.right {
+        margin-left: 0%;
+      }
+    }
+
+  }
+}
+
+html[data-theme='dark'] {
+  #controlPane {
+    #controlPaneInner {
+      background: rgba(4, 11, 17, 0.8);
+    }
+  }
+}
