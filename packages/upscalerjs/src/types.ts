@@ -45,3 +45,13 @@ export interface ModelPackage {
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
 }
+
+// TODO: Remove this in favor of UpscaleArgs. This is to deprecate the 'src' option for output.
+export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> {
+  output?: 'base64' | 'tensor' | 'src';
+  progressOutput?: 'base64' | 'tensor' | 'src';
+  patchSize?: number;
+  padding?: number;
+  progress?: P;
+  signal?: AbortSignal;
+}
