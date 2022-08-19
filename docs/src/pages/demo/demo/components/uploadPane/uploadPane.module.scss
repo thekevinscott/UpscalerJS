@@ -9,7 +9,6 @@ $smallPadding: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
   justify-content: flex-end;
   border-radius: 8px;
   cursor: pointer;
@@ -21,14 +20,12 @@ $smallPadding: 10px;
     transition-duration: .2s;
     opacity: 0.1;
     background-repeat: no-repeat;
-    background-position: center 200%;
+    background-position: center;
     background-image: url(./mountain.svg);
     z-index: 1;
     content: "";
     flex: 1;
   }
-
-
 
   background-color: rgba(255,255,255,0.9);
   border: 2px dashed rgba(4,60,94,.5);
@@ -47,7 +44,6 @@ $smallPadding: 10px;
 
 html[data-theme='dark'] {
   #uploadPane {
-    background-color: #0a2235;
     border: 2px dashed rgba(4, 60, 94, .5);
 
     &:hover {

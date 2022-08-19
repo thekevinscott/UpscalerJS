@@ -1,15 +1,14 @@
 import React from 'react';
 import styles from './pane.module.scss';
 import classNames from 'classnames';
-console.log(styles);
 
 export default function Pane({
-  size,
+  size = 'large',
   classes = {},
   children,
   ...props
 }: {
-  size: 'small' | 'large';
+  size?: 'small' | 'large';
   classes?: Record<string, boolean>;
   children?: JSX.Element | JSX.Element[];
 }) {

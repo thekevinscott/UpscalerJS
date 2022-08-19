@@ -1,0 +1,19 @@
+#container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  margin-left: -25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  z-index: 2;
+}
+
+html[data-theme='dark'] {
+  #dialogue {
+    background-color: #0a2235;
+  }
+}

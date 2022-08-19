@@ -13,3 +13,10 @@ export interface UploadedImage {
 export interface ProcessedImage extends UploadedImage {
   el: HTMLImageElement;
 }
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export type UpscaleChoice = 'original' | 'downscaled';
