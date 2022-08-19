@@ -157,7 +157,7 @@ importers:
       concurrently: ^7.3.0
       docusaurus-plugin-sass: ^0.2.2
       docusaurus-plugin-typedoc: ^0.17.5
-      image-comparison-viewer: workspace:*
+      image-comparison-viewer: '*'
       prism-react-renderer: ^1.3.5
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -177,7 +177,7 @@ importers:
       '@shoelace-style/shoelace': 2.0.0-beta.80
       classnames: 2.3.1
       clsx: 1.2.1
-      image-comparison-viewer: link:../packages/image-comparison-viewer
+      image-comparison-viewer: 0.1.8
       prism-react-renderer: 1.3.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -559,19 +559,6 @@ importers:
       '@tensorflow/tfjs-core': ^3.19.0
     dependencies:
       '@tensorflow/tfjs-core': 3.19.0
-
-  packages/image-comparison-viewer:
-    specifiers:
-      '@types/node': ^18.7.3
-      lit: ^2.0.2
-      typescript: ^4.5.4
-      vite: ^2.9.15
-    dependencies:
-      lit: 2.3.0
-    devDependencies:
-      '@types/node': 18.7.3
-      typescript: 4.7.4
-      vite: 2.9.15
 
   packages/upscalerjs:
     specifiers:
@@ -10880,7 +10867,6 @@ packages:
     resolution: {integrity: sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /esbuild/0.14.39:
     resolution: {integrity: sha512-2kKujuzvRWYtwvNjYDY444LQIA3TyJhJIX3Yo4+qkFlDDtGlSicWgeHVJqMUP/2sSfH10PGwfsj+O2ro1m10xQ==}
@@ -12729,7 +12715,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.73.0
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   /htmlnano/2.0.2_svgo@2.8.0:
     resolution: {integrity: sha512-+ZrQFS4Ub+zd+/fWwfvoYCEGNEa0/zrpys6CyXxvZDwtL7Pl+pOtRkiujyvBQ7Lmfp7/iEPxtOFgxWA16Gkj3w==}
@@ -12944,6 +12930,12 @@ packages:
   /ignore/5.2.0:
     resolution: {integrity: sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==}
     engines: {node: '>= 4'}
+
+  /image-comparison-viewer/0.1.8:
+    resolution: {integrity: sha512-ElcfZQHVEo2V8H5t7j9Z4M4idpnuSSIBUlR8yc0jvW1AMFxWqpIXM6FowlonJ4+AyEPjBAB64Jb7ti7KReTR2A==}
+    dependencies:
+      lit: 2.3.0
+    dev: false
 
   /image-size/1.0.2:
     resolution: {integrity: sha512-xfOoWjceHntRb3qFCrh5ZFORYH8XCdYpASltMhZ/Q0KZiOwjdE/Yl2QCiWdwD+lygV5bMCvauzgu5PxBX/Yerg==}
@@ -19789,7 +19781,6 @@ packages:
       terser: 5.14.1
       uglify-js: 3.16.2
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
-    dev: true
 
   /terser-webpack-plugin/5.3.3_webpack@5.73.0:
     resolution: {integrity: sha512-Fx60G5HNYknNTNQnzQ1VePRuu89ZVYWfjRAeT5rITuCY/1b08s49e5kSQwHDirKZWuoKOBRFS98EUUoZ9kLEwQ==}
@@ -20263,7 +20254,6 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -20694,30 +20684,6 @@ packages:
       unist-util-stringify-position: 2.0.3
       vfile-message: 2.0.4
 
-  /vite/2.9.15:
-    resolution: {integrity: sha512-fzMt2jK4vQ3yK56te3Kqpkaeq9DkcZfBbzHwYpobasvgYmP2SoAr6Aic05CsB4CzCZbsDv4sujX3pkEGhLabVQ==}
-    engines: {node: '>=12.2.0'}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-    dependencies:
-      esbuild: 0.14.51
-      postcss: 8.4.14
-      resolve: 1.22.1
-      rollup: 2.75.7
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
-
   /vite/3.0.0:
     resolution: {integrity: sha512-M7phQhY3+fRZa0H+1WzI6N+/onruwPTBTMvaj7TzgZ0v2TE+N2sdLKxJOfOv9CckDWt5C4HmyQP81xB4dwRKzA==}
     engines: {node: '>=14.18.0'}
@@ -21077,7 +21043,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: true
 
   /webpackbar/5.0.2_webpack@5.73.0:
     resolution: {integrity: sha512-BmFJo7veBDgQzfWXl/wwYXr/VFus0614qZ8i9znqcl9fnEdiVkdbi0TedLQ6xAK92HZHDJ0QmyQ0fmuZPAgCYQ==}
