@@ -22,21 +22,18 @@ export const useUpscaler = (img?: HTMLImageElement) => {
 
   const setUpscaledSrc = useCallback((newSrc: string) => {
     upscaledSrc.current = newSrc;
-  }, [upscaledSrc]);
+  }, []);
+
   const setUpscaledTensor = useCallback((newTensor: tf.Tensor3D) => {
+    if (upscaledTensor.current) {
+      upscaledTensor.current.dispose();
+    }
     upscaledTensor.current = newTensor;
     setUpscaledSrc(tensorAsImage(newTensor));
-  }, [upscaledTensor]);
-
-  const progressCallback = useCallback<MultiArgProgress<'tensor'>>(async (rate: number, slice: tf.Tensor3D) => {
-    setProgress(rate);
-    if (upscaledTensor.current) {
-      setUpscaledTensor(spliceTensor(upscaledTensor.current, slice, 0, 0));
-    }
-  }, [setProgress]);
+  }, [setUpscaledSrc]);
 
   const upscale = useCallback(async (img: HTMLImageElement) => {
-    setUpscaledTensor(tf.image.resizeBilinear(tf.browser.fromPixels(img), [img.height * SCALE, img.width * SCALE]));
+    setUpscaledTensor(tf.tidy(() => tf.image.resizeBilinear(tf.browser.fromPixels(img), [img.height * SCALE, img.width * SCALE])));
     setUpscaling(true);
     try {
       const finalTensor = await upscaler.upscale(img, {
@@ -45,8 +42,10 @@ export const useUpscaler = (img?: HTMLImageElement) => {
         padding: 2,
         progress: (rate, slice) => {
           setProgress(rate);
+          const _slice = slice as unknown as tf.Tensor3D;
           if (upscaledTensor.current) {
-            setUpscaledTensor(spliceTensor(upscaledTensor.current, slice as unknown as tf.Tensor3D, 0, 0));
+            setUpscaledTensor(spliceTensor(upscaledTensor.current, _slice, 0, 0));
+            _slice.dispose();
           }
         }
       });
