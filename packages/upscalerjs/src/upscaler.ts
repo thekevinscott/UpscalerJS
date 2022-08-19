@@ -8,6 +8,7 @@ import type {
   UpscaleResponse,
   ModelPackage,
   BASE64,
+  UpscaleArgs,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { warmup, } from './warmup';
@@ -49,7 +50,8 @@ export class Upscaler {
     options: TempUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, parseUpscaleOptions<P, O, PO>(options), {
+    const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
+    return cancellableUpscale(image, parsedOptions, {
       model,
       modelDefinition,
       signal: this.abortController.signal,

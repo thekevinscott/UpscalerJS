@@ -48,8 +48,8 @@ export interface ModelPackage {
 
 // TODO: Remove this in favor of UpscaleArgs. This is to deprecate the 'src' option for output.
 export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> {
-  output?: 'base64' | 'tensor' | 'src';
-  progressOutput?: 'base64' | 'tensor' | 'src';
+  output?: O | 'src';
+  progressOutput?: PO | 'src';
   patchSize?: number;
   padding?: number;
   progress?: P;
