@@ -313,7 +313,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         const processedPrediction = prediction.clone();
         prediction.dispose();
         yield [upscaledTensor, colTensor, processedPrediction,];
-        const slicedPrediction = prediction.slice(
+        const slicedPrediction = processedPrediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
           [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
         );
