@@ -103,18 +103,18 @@ export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
 
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
 
-export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> (opts: TempUpscaleArgs<P, O, PO>): UpscaleArgs<P, O, PO> {
-  return {
-    ...opts,
-    output: parseUpscaleOutput('output', opts.output) as O,
-    progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
-  };
-}
-
 export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'tensor'): undefined | 'base64' | 'tensor' {
   if (option === 'src') {
     console.warn(`You have provided "src" as an option to ${key}. You should switch this to "base64". "src" is deprecated and will be removed in a future version.`);
     return 'base64';
   }
   return option;
+}
+
+export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> (opts: TempUpscaleArgs<P, O, PO>): UpscaleArgs<P, O, PO> {
+  return {
+    ...opts,
+    output: parseUpscaleOutput('output', opts.output) as O,
+    progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
+  };
 }
