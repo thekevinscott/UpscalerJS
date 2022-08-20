@@ -21,6 +21,7 @@ export class BrowserTestRunner {
   private _server: http.Server | undefined;
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
+  private _context: puppeteer.BrowserContext | undefined;
 
   constructor({
     mockCDN = undefined,
@@ -73,6 +74,15 @@ export class BrowserTestRunner {
       throw new Error('Browser is already active');
     }
     this._browser = browser;
+  }
+
+
+  get context(): puppeteer.BrowserContext { return this.getLocal('_context'); }
+  set context(context: puppeteer.BrowserContext | undefined) {
+    if (context && this._context) {
+      throw new Error('Context is already active');
+    }
+    this._context = context;
   }
 
   get page(): puppeteer.Page {
@@ -141,7 +151,11 @@ export class BrowserTestRunner {
 
   async startBrowser() {
     this.browser = await puppeteer.launch();
-    this.page = await this.browser.newPage();
+  }
+
+  async createNewPage() {
+    this.context = await this.browser.createIncognitoBrowserContext();
+    this.page = await this.context.newPage();
     if (this.log) {
       this.page.on('console', message => {
         const text = message.text().trim();
@@ -178,13 +192,22 @@ export class BrowserTestRunner {
     }
   }
 
-  async stopBrowser() {
+  async closeBrowser() {
     try {
       await this.browser.close();
       this.browser = undefined;
-      this.page = undefined;
     } catch (err) {
       this.warn('No browser found');
+    }
+  }
+
+  async closeContext() {
+    try {
+      await this.context.close();
+      this.context = undefined;
+      this.page = undefined;
+    } catch (err) {
+      this.warn('No context found');
     }
   }
 
@@ -194,29 +217,30 @@ export class BrowserTestRunner {
 
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
-    await bundle();
-    await this.startServer();
+    await Promise.all([
+      bundle().then(() => this.startServer()),
+      this.startBrowser(),
+    ]);
   }
 
   @timeit('afterAll clean up')
   async afterAll() {
-    const stopBrowser = this._browser ? this.stopBrowser : () => {};
     await Promise.all([
       this.stopServer(),
-      stopBrowser,
+      this.closeBrowser(),
     ]);
   }
 
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
-    await this.startBrowser();
+    await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([
-      this.stopBrowser(),
+      this.closeContext(),
       callback(),
     ]);
   }
