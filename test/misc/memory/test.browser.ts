@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
-jest.retryTimes(1);
+jest.retryTimes(0);
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
@@ -654,8 +654,9 @@ describe('Memory Leaks', () => {
     checkMemory(names, startingMemory, endingMemory);
   });
 
-  it('should cancel without leaking memory with patch sizes', async () => {
+  it.only('should cancel without leaking memory with patch sizes', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
+    console.log('starting', startingMemory)
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
@@ -686,6 +687,7 @@ describe('Memory Leaks', () => {
 
     await tick(page);
     const endingMemory = await getMemory(page);
+    console.log('ending', endingMemory)
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });

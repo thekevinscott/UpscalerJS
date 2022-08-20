@@ -111,7 +111,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   }
   if (argv.skipBuild !== true) {
     if (platform === 'browser') {
-      await buildUpscaler(platform);
+      await buildUpscaler('browser');
     } else if (platform === 'node') {
       await buildUpscaler('node');
       await buildUpscaler('node-gpu');
