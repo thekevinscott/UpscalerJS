@@ -23,19 +23,26 @@ describe('Build Integration Tests', () => {
     });
   }, 5000);
 
-  const start = async (bundle: () => Promise<void>, dist: string, mockCDN: MockCDN) => {
+  const start = async (bundle: () => Promise<void>, dist: string, mockCDN: MockCDN, pageTitle: string | null = null) => {
     await bundle();
     testRunner.mockCDN = mockCDN;
     await Promise.all([
       testRunner.startServer(dist),
       testRunner.startBrowser(),
     ]);
-    await testRunner.navigateToServer(null);
-    return testRunner.page;
+    await testRunner.navigateToServer(pageTitle);
+    const end = async () => {
+      await Promise.all([
+        testRunner.stopServer(),
+        testRunner.closeBrowser(),
+
+      ]);
+    };
+    return { page: testRunner.page, end } ;
   }
 
   it("upscales using a UMD build via a script tag", async () => {
-    const page = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
+    const { page, end } = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
@@ -47,10 +54,11 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    end();
   });
 
   it("upscales using a UMD build with a specified model", async () => {
-    const page = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
+    const { page, end } = await start(prepareScriptBundleForUMD, UMD_DIST, umdMockCDN);
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const pixelUpsampler = window['PixelUpsampler4x'];
@@ -60,13 +68,14 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    end();
   });
 
   it("upscales using an ESM build using Webpack", async () => {
-    const page = await start(async () => {
+    const { page, end } = await start(async () => {
       await prepareScriptBundleForESM();
       await bundleWebpack();
-    }, WEBPACK_DIST, webpackMockCDN);
+    }, WEBPACK_DIST, webpackMockCDN, '| Loaded');
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
@@ -78,6 +87,7 @@ describe('Build Integration Tests', () => {
       return upscaler.upscale(window['flower']);
     });
     checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    end();
   });
 });
 

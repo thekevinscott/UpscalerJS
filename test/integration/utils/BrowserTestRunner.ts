@@ -157,7 +157,7 @@ export class BrowserTestRunner {
     })
   }
 
-  private async _startBrowser() {
+  public async startBrowser() {
     this.browser = await puppeteer.launch();
   }
 
@@ -207,7 +207,7 @@ export class BrowserTestRunner {
     this._bootstrapCDN();
   }
 
-  private async _closeBrowser() {
+  public async closeBrowser() {
     try {
       await this.browser.close();
       this.browser = undefined;
@@ -234,7 +234,7 @@ export class BrowserTestRunner {
   async beforeAll(bundle: Bundle) {
     await Promise.all([
       bundle().then(() => this.startServer()),
-      this._startBrowser(),
+      this.startBrowser(),
     ]);
   }
 
@@ -242,7 +242,7 @@ export class BrowserTestRunner {
   async afterAll() {
     await Promise.all([
       this.stopServer(),
-      this._closeBrowser(),
+      this.closeBrowser(),
     ]);
   }
 
