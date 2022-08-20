@@ -50,7 +50,7 @@ export class BrowserTestRunner {
    * Getters and setters
    */
 
-  getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page'): T {
+  private _getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
     if (!this[key]) {
       throw new Error(`${key.substring(1)} is undefined`);
     }
@@ -60,7 +60,7 @@ export class BrowserTestRunner {
   get mockCDN(): MockCDN | undefined { return this._mockCDN; }
   set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
 
-  get server(): http.Server { return this.getLocal('_server'); }
+  get server(): http.Server { return this._getLocal('_server'); }
   set server(server: http.Server | undefined) {
     if (server && this._server) {
       throw new Error('Server is already active');
@@ -68,7 +68,7 @@ export class BrowserTestRunner {
     this._server = server;
   }
 
-  get browser(): puppeteer.Browser { return this.getLocal('_browser'); }
+  get browser(): puppeteer.Browser { return this._getLocal('_browser'); }
   set browser(browser: puppeteer.Browser | undefined) {
     if (browser && this._browser) {
       throw new Error('Browser is already active');
@@ -77,7 +77,7 @@ export class BrowserTestRunner {
   }
 
 
-  get context(): puppeteer.BrowserContext { return this.getLocal('_context'); }
+  get context(): puppeteer.BrowserContext { return this._getLocal('_context'); }
   set context(context: puppeteer.BrowserContext | undefined) {
     if (context && this._context) {
       throw new Error('Context is already active');
@@ -86,7 +86,7 @@ export class BrowserTestRunner {
   }
 
   get page(): puppeteer.Page {
-    const page = this.getLocal<puppeteer.Page>('_page');
+    const page = this._getLocal<puppeteer.Page>('_page');
     // if (page && page.isClosed() === true) {
     //   throw new Error('Page is already closed; did you forget to close and restart the browser?');
     // }
@@ -105,20 +105,20 @@ export class BrowserTestRunner {
    * Utility methods
    */
 
-  warn (msg: string) {
+  private _warn (msg: string) {
     if (this.showWarnings) {
       console.warn(msg);// skipcq: JS-0002
     }
   }
 
-  async waitForTitle(pageTitleToAwait: string) {
+  private async _waitForTitle(pageTitleToAwait: string) {
     await this.page.waitForFunction(`document.title.endsWith("${pageTitleToAwait}")`);
   }
 
-  async navigateToServer(pageTitleToAwait: string | null) {
+  private async _navigateToServer(pageTitleToAwait: string | null) {
     await this.page.goto(`http://localhost:${this.port}`);
     if (pageTitleToAwait !== null) {
-      await this.waitForTitle(pageTitleToAwait);
+      await this._waitForTitle(pageTitleToAwait);
     }
   }
 
@@ -143,7 +143,7 @@ export class BrowserTestRunner {
           }
         });
       } catch (err) {
-        this.warn('No server found');
+        this._warn('No server found');
         resolve();
       }
     })
@@ -153,9 +153,7 @@ export class BrowserTestRunner {
     this.browser = await puppeteer.launch();
   }
 
-  async createNewPage() {
-    this.context = await this.browser.createIncognitoBrowserContext();
-    this.page = await this.context.newPage();
+  private _attachLogger() {
     if (this.log) {
       this.page.on('console', message => {
         const text = message.text().trim();
@@ -166,7 +164,9 @@ export class BrowserTestRunner {
         }
       });
     }
+  }
 
+  private _bootstrapCDN() {
     const mockCDN = this.mockCDN;
     if (mockCDN !== undefined) {
       this.page.setRequestInterception(true);
@@ -192,12 +192,19 @@ export class BrowserTestRunner {
     }
   }
 
+  async createNewPage() {
+    this.context = await this.browser.createIncognitoBrowserContext();
+    this.page = await this.context.newPage();
+    this._attachLogger();
+    this._bootstrapCDN();
+  }
+
   async closeBrowser() {
     try {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this.warn('No browser found');
+      this._warn('No browser found');
     }
   }
 
@@ -207,7 +214,7 @@ export class BrowserTestRunner {
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this.warn('No context found');
+      this._warn('No context found');
     }
   }
 
@@ -234,7 +241,7 @@ export class BrowserTestRunner {
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
-    await this.navigateToServer(pageTitleToAwait);
+    await this._navigateToServer(pageTitleToAwait);
   }
 
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
