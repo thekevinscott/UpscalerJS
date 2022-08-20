@@ -119,6 +119,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     console.log(`** built upscaler: ${platform}`)
   }
   const args = [
+    'pnpm',
     'jest',
     '--config',
     path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),

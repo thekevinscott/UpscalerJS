@@ -27,10 +27,11 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 (async function main() {
   const argv = await yargs(process.argv.slice(2)).options({
     skipBuild: { type: 'boolean' },
+    skipModelBuild: { type: 'boolean' },
   }).argv;
 
   if (argv.skipModelBuild !== true) {
-    const outputFormats: OutputFormat[] = ['esm'];
+    const outputFormats: OutputFormat[] = ['esm', 'cjs'];
     const modelPackages = getAllAvailableModelPackages();
     const durations = await buildModels(modelPackages, outputFormats);
     console.log([
