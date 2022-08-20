@@ -1377,11 +1377,28 @@ describe('predict', () => {
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
       const gen = predict(tensor, {}, modelPackage);
-      let { value, done } = await gen.next();
-      expect(done).toEqual(true);
-      expect(Array.isArray(value)).toEqual(false);
-      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, value as tf.Tensor4D));
-      (value as tf.Tensor).dispose();
+
+
+      let currentExpectationIndex = 0;
+      const expectations = [
+        1, //   yield [pred,];
+      ];
+      let result = await gen.next();
+      while (!result.done) {
+        const expectation = expectations[currentExpectationIndex];
+        const memory = tf.memory();
+        const countedTensors = memory.numTensors - startingTensors
+        // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+        expect(countedTensors).toEqual(expectation);
+        currentExpectationIndex++;
+        result = await gen.next()
+      }
+      expect(result.done).toEqual(true);
+      expect(Array.isArray(result.value)).toEqual(false);
+      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, result.value as tf.Tensor4D));
+      (result.value as tf.Tensor).dispose();
+      expect(currentExpectationIndex === expectations.length);
+      
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
@@ -1469,7 +1486,7 @@ describe('predict', () => {
 
         // 342
         1, // 0 transitory tensor, 0 col tensor, 1 row tensor
-      ]
+      ];
       let result = await gen.next();
       while (!result.done) {
         const expectation = expectations[currentExpectationIndex];
@@ -1526,7 +1543,7 @@ describe('upscale', () => {
     getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
-      predict: jest.fn(() => upscaledTensor),
+      predict: jest.fn(() => upscaledTensor.clone()),
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 

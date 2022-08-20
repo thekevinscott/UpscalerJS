@@ -361,12 +361,13 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   }
 
-  return tf.tidy(() => {
-    const pred = model.predict(pixels) as tf.Tensor4D;
-    // https://github.com/tensorflow/tfjs/issues/1125
-    /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-    return pred.squeeze() as tf.Tensor3D;
-  });
+  const pred = model.predict(pixels) as tf.Tensor4D;
+  yield [pred,];
+  // https://github.com/tensorflow/tfjs/issues/1125
+  /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+  const squeezedTensor = pred.squeeze() as tf.Tensor3D;
+  pred.dispose();
+  return squeezedTensor;
 }
 
 export function getProcessedPixels<T extends tf.Tensor>(
