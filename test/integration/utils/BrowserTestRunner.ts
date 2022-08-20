@@ -200,7 +200,7 @@ export class BrowserTestRunner {
     }
   }
 
-  private async _createNewPage() {
+  public async createNewPage() {
     this.context = await this.browser.createIncognitoBrowserContext();
     this.page = await this.context.newPage();
     this._attachLogger();
@@ -248,7 +248,7 @@ export class BrowserTestRunner {
 
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
-    await this._createNewPage();
+    await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 

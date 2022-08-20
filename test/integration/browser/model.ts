@@ -17,13 +17,15 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
-const getAllModelsToTest = () => getAllAvailableModelPackages().reduce((arr, packageName) => {
-  return arr.concat(getAllAvailableModels(packageName).map(({ esm: esmName = 'index', umd: umdName }) => ({
+const MODELS_TO_TEST = getAllAvailableModelPackages().reduce((arr, packageName) => {
+  return arr.concat(getAllAvailableModels(packageName).map(({ esm: esmName, umd: umdName }) => ({
     packageName,
-    esmName,
+    esmName: esmName || 'index',
     umdName
   })));
 }, [] as { packageName: string; esmName: string; umdName: string }[]);
+
+console.log(MODELS_TO_TEST);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
@@ -142,7 +144,7 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     describe('esm', () => {
-      getAllModelsToTest().map(({ packageName, esmName }) => {
+      MODELS_TO_TEST.map(({ packageName, esmName }) => {
         it(`upscales with ${packageName}/${esmName} as esm`, async () => {
           await testRunner.navigateToServer('| Loaded');
           const result = await page().evaluate(([packageName, modelName]) => {
@@ -191,7 +193,7 @@ describe('Model Loading Integration Tests', () => {
         await umdTestRunner.afterEach();
       });
 
-      getAllModelsToTest().map(({ packageName, esmName, umdName }) => {
+      MODELS_TO_TEST.map(({ packageName, esmName, umdName }) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
