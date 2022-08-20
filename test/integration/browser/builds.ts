@@ -28,7 +28,7 @@ describe('Build Integration Tests', () => {
     testRunner.mockCDN = mockCDN;
     await Promise.all([
       testRunner.startServer(dist),
-      testRunner.startBrowser(),
+      testRunner.startBrowser().then(testRunner.createNewPage),
     ]);
     await testRunner.navigateToServer(pageTitle);
     const end = async () => {
