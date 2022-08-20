@@ -254,6 +254,7 @@ export class BrowserTestRunner {
 
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
+    console.log('** after each');
     await Promise.all([
       this._closeContext(),
       callback(),
