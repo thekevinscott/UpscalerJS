@@ -656,7 +656,6 @@ describe('Memory Leaks', () => {
 
   it('should cancel without leaking memory with patch sizes', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
-    console.log('starting', startingMemory)
     await page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
@@ -687,7 +686,6 @@ describe('Memory Leaks', () => {
 
     await tick(page);
     const endingMemory = await getMemory(page);
-    console.log('ending', endingMemory)
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
