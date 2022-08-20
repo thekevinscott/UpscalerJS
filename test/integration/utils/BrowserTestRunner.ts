@@ -22,8 +22,10 @@ export class BrowserTestRunner {
   private _browser: puppeteer.Browser | undefined;
   private _page: puppeteer.Page | undefined;
   private _context: puppeteer.BrowserContext | undefined;
+  private _name?: string;
 
   constructor({
+    name,
     mockCDN = undefined,
     dist = '',
     port = DEFAULT_PORT,
@@ -31,6 +33,7 @@ export class BrowserTestRunner {
     log = true,
     showWarnings = false,
   }: {
+    name?: string;
     mockCDN?: MockCDN;
     dist?: string;
     port?: number;
@@ -38,6 +41,7 @@ export class BrowserTestRunner {
     log?: boolean;
     showWarnings?: boolean;
   } = {}) {
+    this._name = name;
     this.mockCDN = mockCDN;
     this.dist = dist;
     this.showWarnings = showWarnings;
@@ -50,9 +54,9 @@ export class BrowserTestRunner {
    * Getters and setters
    */
 
-  getLocal<T extends puppeteer.Browser | puppeteer.Page | http.Server>(key: '_server' | '_browser' | '_page'): T {
+  private _getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
     if (!this[key]) {
-      throw new Error(`${key.substring(1)} is undefined`);
+      throw new Error(this._getLogMessage(`${key.substring(1)} is undefined`));
     }
     return this[key] as T;
   }
@@ -60,33 +64,33 @@ export class BrowserTestRunner {
   get mockCDN(): MockCDN | undefined { return this._mockCDN; }
   set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
 
-  get server(): http.Server { return this.getLocal('_server'); }
+  get server(): http.Server { return this._getLocal('_server'); }
   set server(server: http.Server | undefined) {
     if (server && this._server) {
-      throw new Error('Server is already active');
+      throw new Error(this._getLogMessage(`Server is already active`));
     }
     this._server = server;
   }
 
-  get browser(): puppeteer.Browser { return this.getLocal('_browser'); }
+  get browser(): puppeteer.Browser { return this._getLocal('_browser'); }
   set browser(browser: puppeteer.Browser | undefined) {
     if (browser && this._browser) {
-      throw new Error('Browser is already active');
+      throw new Error(this._getLogMessage(`Browser is already active`));
     }
     this._browser = browser;
   }
 
 
-  get context(): puppeteer.BrowserContext { return this.getLocal('_context'); }
+  get context(): puppeteer.BrowserContext { return this._getLocal('_context'); }
   set context(context: puppeteer.BrowserContext | undefined) {
     if (context && this._context) {
-      throw new Error('Context is already active');
+      throw new Error(this._getLogMessage(`Context is already active`));
     }
     this._context = context;
   }
 
   get page(): puppeteer.Page {
-    const page = this.getLocal<puppeteer.Page>('_page');
+    const page = this._getLocal<puppeteer.Page>('_page');
     // if (page && page.isClosed() === true) {
     //   throw new Error('Page is already closed; did you forget to close and restart the browser?');
     // }
@@ -95,7 +99,7 @@ export class BrowserTestRunner {
   set page(page: puppeteer.Page | undefined) {
     {
       if (page && this._page) {
-        throw new Error('Page is already active');
+        throw new Error(this._getLogMessage(`Page is already active`));
       }
       this._page = page;
     }
@@ -105,17 +109,21 @@ export class BrowserTestRunner {
    * Utility methods
    */
 
-  warn (msg: string) {
+  private _getLogMessage (msg: string) {
+    return [msg, this._name].filter(Boolean).join(' | ');
+  }
+
+  private _warn (msg: string) {
     if (this.showWarnings) {
-      console.warn(msg);// skipcq: JS-0002
+      console.warn(this._getLogMessage(msg));// skipcq: JS-0002
     }
   }
 
-  async waitForTitle(pageTitleToAwait: string) {
+  public async waitForTitle(pageTitleToAwait: string) {
     await this.page.waitForFunction(`document.title.endsWith("${pageTitleToAwait}")`);
   }
 
-  async navigateToServer(pageTitleToAwait: string | null) {
+  public async navigateToServer(pageTitleToAwait: string | null) {
     await this.page.goto(`http://localhost:${this.port}`);
     if (pageTitleToAwait !== null) {
       await this.waitForTitle(pageTitleToAwait);
@@ -143,19 +151,17 @@ export class BrowserTestRunner {
           }
         });
       } catch (err) {
-        this.warn('No server found');
+        this._warn(`No server found`);
         resolve();
       }
     })
   }
 
-  async startBrowser() {
+  private async _startBrowser() {
     this.browser = await puppeteer.launch();
   }
 
-  async createNewPage() {
-    this.context = await this.browser.createIncognitoBrowserContext();
-    this.page = await this.context.newPage();
+  private _attachLogger() {
     if (this.log) {
       this.page.on('console', message => {
         const text = message.text().trim();
@@ -166,7 +172,9 @@ export class BrowserTestRunner {
         }
       });
     }
+  }
 
+  private _bootstrapCDN() {
     const mockCDN = this.mockCDN;
     if (mockCDN !== undefined) {
       this.page.setRequestInterception(true);
@@ -192,22 +200,29 @@ export class BrowserTestRunner {
     }
   }
 
-  async closeBrowser() {
+  private async _createNewPage() {
+    this.context = await this.browser.createIncognitoBrowserContext();
+    this.page = await this.context.newPage();
+    this._attachLogger();
+    this._bootstrapCDN();
+  }
+
+  private async _closeBrowser() {
     try {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this.warn('No browser found');
+      this._warn(`No browser found`);
     }
   }
 
-  async closeContext() {
+  private async _closeContext() {
     try {
       await this.context.close();
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this.warn('No context found');
+      this._warn(`No context found`);
     }
   }
 
@@ -219,7 +234,7 @@ export class BrowserTestRunner {
   async beforeAll(bundle: Bundle) {
     await Promise.all([
       bundle().then(() => this.startServer()),
-      this.startBrowser(),
+      this._startBrowser(),
     ]);
   }
 
@@ -227,20 +242,20 @@ export class BrowserTestRunner {
   async afterAll() {
     await Promise.all([
       this.stopServer(),
-      this.closeBrowser(),
+      this._closeBrowser(),
     ]);
   }
 
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
-    await this.createNewPage();
+    await this._createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([
-      this.closeContext(),
+      this._closeContext(),
       callback(),
     ]);
   }

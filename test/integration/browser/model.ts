@@ -6,7 +6,7 @@ import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../l
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import type { Tensor, Tensor3D, } from '@tensorflow/tfjs';
+import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -19,6 +19,7 @@ jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
+    name: 'esm',
     mockCDN: esbuildMockCDN,
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
@@ -132,63 +133,82 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    const UMD_PORT = 8096;
-    const umdTestRunner = new BrowserTestRunner({
-      mockCDN: umdMockCDN,
-      dist: UMD_DIST,
-      port: UMD_PORT,
+    const getAllModelsToTest = () => {
+      return getAllAvailableModelPackages().reduce((arr, packageName) => {
+        const models = getAllAvailableModels(packageName);
+        return arr.concat(models.map(({ esm, umd: umdName }) => {
+          const esmName = esm || 'index';
+          return {
+            packageName,
+            esmName,
+            umdName
+          }
+        }));
+      }, [] as { packageName: string; esmName: string; umdName: string}[]);
+    };
+
+    describe('esm', () => {
+      getAllModelsToTest().map(({ packageName, esmName }) => {
+        it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+          await testRunner.navigateToServer('| Loaded');
+          const result = await page().evaluate(([packageName, modelName]) => {
+            if (!modelName) {
+              throw new Error(`No model name found for package ${packageName}`);
+            }
+            // TODO: window fails to be typed correctly in CI
+            // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
+            // Locally it works fine
+            const modelDefinition = (window as any)[packageName][modelName];
+            if (!modelDefinition) {
+              throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
+            }
+            const upscaler = new window['Upscaler']({
+              model: modelDefinition,
+            });
+            return upscaler.upscale(window['flower']);
+          }, [packageName, esmName]);
+          checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+        });
+      });
     });
 
-    beforeAll(async function modelBeforeAll() {
-      await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
-    }, 20000);
+    describe('umd', () => {
+      const UMD_PORT = 8096;
+      const umdTestRunner = new BrowserTestRunner({
+        name: 'umd',
+        mockCDN: umdMockCDN,
+        dist: UMD_DIST,
+        port: UMD_PORT,
+      });
 
-    afterAll(async function modelAfterAll() {
-      await new Promise(r => setTimeout(r, 20000));
-      await umdTestRunner.afterAll();
-    }, 30000);
+      beforeAll(async function modelBeforeAll() {
+        await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
+      }, 20000);
 
-    getAllAvailableModelPackages().filter(m => m === 'pixel-upsampler').map(packageName => {
-      describe(packageName, () => {
-        const models = getAllAvailableModels(packageName);
-        models.filter(n => n.esm === '2x').forEach(({ esm, umd: umdName }) => {
-          const esmName = esm || 'index';
-          it(`upscales with ${packageName}/${esmName} as esm`, async () => {
-            await testRunner.navigateToServer('| Loaded');
-            const result = await page().evaluate(([packageName, modelName]) => {
-              if (!modelName) {
-                throw new Error(`No model name found for package ${packageName}`);
-              }
-              // TODO: window fails to be typed correctly in CI
-              // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
-              // Locally it works fine
-              const modelDefinition = (window as any)[packageName][modelName];
-              if (!modelDefinition) {
-                throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
-              }
-              const upscaler = new window['Upscaler']({
-                model: modelDefinition,
-              });
-              return upscaler.upscale(window['flower']);
-            }, [packageName, esmName]);
-            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-          });
+      afterAll(async function modelAfterAll() {
+        await umdTestRunner.afterAll();
+      }, 30000);
 
-          it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-            await umdTestRunner.startBrowser();
-            await umdTestRunner.navigateToServer(null);
-            const result = await umdTestRunner.page.evaluate(([umdName]) => {
-              const model: ModelDefinition = (<any>window)[umdName];
-              const upscaler = new window['Upscaler']({
-                model,
-              });
-              return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
-            }, [umdName]);
-            checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
-            await umdTestRunner.closeBrowser();
-          });
+      beforeEach(async function beforeEach() {
+        await umdTestRunner.beforeEach('| Loaded');
+      });
+
+      afterEach(async function afterEach() {
+        await umdTestRunner.afterEach();
+      });
+
+      getAllModelsToTest().map(({ packageName, esmName, umdName }) => {
+        it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+          const result = await umdTestRunner.page.evaluate(([umdName]) => {
+            const model: ModelDefinition = (<any>window)[umdName];
+            const upscaler = new window['Upscaler']({
+              model,
+            });
+            return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+          }, [umdName]);
+          checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
         });
-      })
+      });
     });
   });
 
