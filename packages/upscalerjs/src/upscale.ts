@@ -266,6 +266,19 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor as T;
 }
 
+// this function disposes of any input tensors
+export function processAndDisposeOfTensor<T extends tf.Tensor>(
+  tensor: T,
+  processFn?: ProcessFn<T>,
+): T {
+  if (processFn) {
+    const processedTensor = processFn(tensor);
+    tensor.dispose();
+    return processedTensor;
+  }
+  return tensor;
+}
+
 /* eslint-disable @typescript-eslint/require-await */
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
@@ -373,19 +386,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   pred.dispose();
 
   return processAndDisposeOfTensor(squeezedTensor, modelDefinition.postprocess);
-}
-
-// this function disposes of any input tensors
-export function processAndDisposeOfTensor<T extends tf.Tensor>(
-  tensor: T,
-  processFn?: ProcessFn<T>,
-): T {
-  if (processFn) {
-    const processedTensor = processFn(tensor);
-    tensor.dispose();
-    return processedTensor;
-  }
-  return tensor;
 }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
