@@ -326,7 +326,8 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           if (progress.length <= 1) {
             progress(percent);
           } else {
-            const squeezedTensor: tf.Tensor3D = slicedPrediction.squeeze();
+            /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+            const squeezedTensor = processAndDisposeOfTensor(slicedPrediction.squeeze() as tf.Tensor3D, modelDefinition.postprocess);
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
               (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor);
@@ -370,7 +371,21 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
   const squeezedTensor = pred.squeeze() as tf.Tensor3D;
   pred.dispose();
-  return squeezedTensor;
+
+  return processAndDisposeOfTensor(squeezedTensor, modelDefinition.postprocess);
+}
+
+// this function disposes of any input tensors
+export function processAndDisposeOfTensor<T extends tf.Tensor>(
+  tensor: T,
+  processFn?: ProcessFn<T>,
+): T {
+  if (processFn) {
+    const processedTensor = processFn(tensor);
+    tensor.dispose();
+    return processedTensor;
+  }
+  return tensor;
 }
 
 export function getProcessedPixels<T extends tf.Tensor>(
@@ -426,19 +441,12 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   preprocessedPixels.dispose();
   const upscaledPixels: tf.Tensor3D = result.value;
 
-  const postprocessedPixels = getProcessedPixels<tf.Tensor3D>(
-    upscaledPixels,
-    modelDefinition.postprocess,
-  );
-  upscaledPixels.dispose();
-  yield postprocessedPixels;
-
   if (args.output === 'tensor') {
-    return <UpscaleResponse<O>>postprocessedPixels;
+    return <UpscaleResponse<O>>upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(postprocessedPixels);
-  postprocessedPixels.dispose();
+  const base64Src = tensorAsBase64(upscaledPixels);
+  upscaledPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 }
 
