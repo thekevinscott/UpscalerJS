@@ -654,7 +654,7 @@ describe('Memory Leaks', () => {
     checkMemory(names, startingMemory, endingMemory);
   });
 
-  it.only('should cancel without leaking memory with patch sizes', async () => {
+  it('should cancel without leaking memory with patch sizes', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
     console.log('starting', startingMemory)
     await page.evaluate(async (times) => {
