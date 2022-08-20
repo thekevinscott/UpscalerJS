@@ -17,6 +17,14 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
+const getAllModelsToTest = () => getAllAvailableModelPackages().reduce((arr, packageName) => {
+  return arr.concat(getAllAvailableModels(packageName).map(({ esm: esmName = 'index', umd: umdName }) => ({
+    packageName,
+    esmName,
+    umdName
+  })));
+}, [] as { packageName: string; esmName: string; umdName: string }[]);
+
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     name: 'esm',
@@ -133,20 +141,6 @@ describe('Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    const getAllModelsToTest = () => {
-      return getAllAvailableModelPackages().reduce((arr, packageName) => {
-        const models = getAllAvailableModels(packageName);
-        return arr.concat(models.map(({ esm, umd: umdName }) => {
-          const esmName = esm || 'index';
-          return {
-            packageName,
-            esmName,
-            umdName
-          }
-        }));
-      }, [] as { packageName: string; esmName: string; umdName: string}[]);
-    };
-
     describe('esm', () => {
       getAllModelsToTest().map(({ packageName, esmName }) => {
         it(`upscales with ${packageName}/${esmName} as esm`, async () => {
@@ -190,7 +184,7 @@ describe('Model Loading Integration Tests', () => {
       }, 30000);
 
       beforeEach(async function beforeEach() {
-        await umdTestRunner.beforeEach('| Loaded');
+        await umdTestRunner.beforeEach(null);
       });
 
       afterEach(async function afterEach() {
