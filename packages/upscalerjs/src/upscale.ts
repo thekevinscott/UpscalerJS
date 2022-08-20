@@ -326,7 +326,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
         const processedPrediction = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
-        prediction.dispose();
         yield [upscaledTensor, colTensor, processedPrediction,];
         const slicedPrediction = processedPrediction.slice(
           [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
@@ -383,7 +382,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   const pred = model.predict(pixels) as tf.Tensor4D;
   yield [pred,];
   const postprocessedTensor = processAndDisposeOfTensor(pred, modelDefinition.postprocess);
-  pred.dispose();
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
   return tf.tidy(() => postprocessedTensor.squeeze() as tf.Tensor3D);
