@@ -50,7 +50,7 @@ export class BrowserTestRunner {
    * Getters and setters
    */
 
-  getLocal<T extends puppeteer.Browser | puppeteer.Page | | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page'): T {
+  getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page'): T {
     if (!this[key]) {
       throw new Error(`${key.substring(1)} is undefined`);
     }
