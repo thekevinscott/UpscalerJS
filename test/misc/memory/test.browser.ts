@@ -90,7 +90,7 @@ const prototypes: Array<PrototypeDefinition> = [
   },
 ];
 
-const getStartingMemory = async (page: Page, prototypes: Array<PrototypeDefinition>) => {
+const getStartingMemory = async (page: Page) => {
   const memory = await getMemory(page);
   expect(memory.LayersModel).toEqual(EXPECTED_LAYER_MODELS);
   expect(memory.Upscaler).toEqual(EXPECTED_UPSCALERS);
@@ -164,7 +164,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   // //   // it('should throw because of upscalers', async () => {
-  // //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  // //   //   const startingMemory = await getStartingMemory(page);
 
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
@@ -182,7 +182,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   // //   // it('should throw because of layer models', async () => {
-  // //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  // //   //   const startingMemory = await getStartingMemory(page);
 
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
@@ -200,7 +200,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   //   // it('should throw because of tensors', async () => {
-  //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  //   //   const startingMemory = await getStartingMemory(page);
 
   //   //   await page.evaluate(async (times) => {
   //   //     for (let i = 0; i < times; i++) {
@@ -215,7 +215,7 @@ describe('Memory Leaks', () => {
   // })
 
   it('should create upscalers', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
@@ -240,7 +240,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should create an Upscaler instance and warm up', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
@@ -266,7 +266,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should create an Upscaler instance with a custom model', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
@@ -289,7 +289,7 @@ describe('Memory Leaks', () => {
 
   describe('Upscale with base64 output', () => {
     it('should upscale with no pre / post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
       const image = await testRunner.page.evaluate(async (times) => {
         const Upscaler = window['Upscaler'];
@@ -316,7 +316,7 @@ describe('Memory Leaks', () => {
     });
 
     it('should upscale with a pre and no post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
       const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
@@ -345,7 +345,7 @@ describe('Memory Leaks', () => {
     });
     
     it('should upscale with no pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
       const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
@@ -374,7 +374,7 @@ describe('Memory Leaks', () => {
     });
 
     it('should upscale with a pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
       const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
@@ -405,7 +405,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should upscale with a pre and a post processing functions into a tensor', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
     await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
@@ -446,7 +446,7 @@ describe('Memory Leaks', () => {
       const img = await getImage();
       window['src'] = await window['tf'].browser.fromPixels(img);
     });
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
     const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
@@ -478,7 +478,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should upscale with a pre and a post processing functions with patch sizes', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
@@ -509,7 +509,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should upscale with the idealo model', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const ESRGANGANS = window['esrgan-legacy']['gans'];
@@ -533,7 +533,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should callback to progress with a src', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       let output;
@@ -566,7 +566,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should callback to progress with a tensor', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       let output: tf.Tensor;
@@ -607,7 +607,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     await testRunner.page.evaluate((times) => new Promise(resolve => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
@@ -635,7 +635,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory with patch sizes', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
@@ -671,7 +671,7 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
