@@ -99,6 +99,21 @@ describe('processAndDisposeOfTensor', () => {
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
   });
+
+  it('processes a tensor and does not dispose of it if it is already disposed', () => {
+    const mockDispose = jest.fn();
+    const mockTensor = jest.fn().mockImplementation(() => {
+      return { dispose: mockDispose } as any as tf.Tensor3D;
+    });
+    const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
+      t.dispose();
+      return 'foo';
+    });
+    const value = processAndDisposeOfTensor(mockTensor(), process);
+    expect(value).toEqual('foo');
+    expect(process).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('getCopyOfInput', () => {

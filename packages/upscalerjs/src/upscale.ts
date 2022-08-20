@@ -273,7 +273,9 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
 ): T {
   if (processFn) {
     const processedTensor = processFn(tensor);
-    tensor.dispose();
+    if (!tensor.isDisposed) {
+      tensor.dispose();
+    }
     return processedTensor;
   }
   return tensor;
@@ -323,7 +325,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
-        const processedPrediction = prediction.clone();
+        const processedPrediction = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
         prediction.dispose();
         yield [upscaledTensor, colTensor, processedPrediction,];
         const slicedPrediction = processedPrediction.slice(
@@ -340,7 +342,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             progress(percent);
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-            const squeezedTensor = processAndDisposeOfTensor(slicedPrediction.squeeze() as tf.Tensor3D, modelDefinition.postprocess);
+            const squeezedTensor = slicedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
               (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor);
@@ -380,12 +382,11 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 
   const pred = model.predict(pixels) as tf.Tensor4D;
   yield [pred,];
+  const postprocessedTensor = processAndDisposeOfTensor(pred, modelDefinition.postprocess);
+  pred.dispose();
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-  const squeezedTensor = pred.squeeze() as tf.Tensor3D;
-  pred.dispose();
-
-  return processAndDisposeOfTensor(squeezedTensor, modelDefinition.postprocess);
+  return tf.tidy(() => postprocessedTensor.squeeze() as tf.Tensor3D);
 }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated

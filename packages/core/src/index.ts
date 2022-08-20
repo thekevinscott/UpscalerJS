@@ -24,7 +24,7 @@ export interface ModelDefinition {
   channels?: 3;
   packageInformation?: PackageInformation;
   preprocess?: ProcessFn<Tensor4D>;
-  postprocess?: ProcessFn<Tensor3D>;
+  postprocess?: ProcessFn<Tensor4D>;
   customLayers?: CustomLayer[];
 
   meta?: Meta;
