@@ -1385,7 +1385,7 @@ describe('predict', () => {
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
-    it('should clear up all memory while running predict with patch size', async () => {
+    it.only('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
@@ -1397,63 +1397,59 @@ describe('predict', () => {
 
       let currentExpectationIndex = 0;
       const expectations = [
-        0, // yield
+        [0, '// yield',],
 
-        // row loop 0
-        0, // yield [colTensor, upscaledTensor,];
+          [0, '// row loop 0 // yield',],
 
-        // row loop 0, col loop 0
-        0, // yield [upscaledTensor, colTensor,];
-        1, // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPixels,];
-        1, // 1 transitory tensor // yield [upscaledTensor, colTensor, prediction,];
-        1, // 1 transitory tensor // yield [upscaledTensor, colTensor, processedPrediction,];
-        1, // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        1, // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        1, // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];
+            [0, '// row loop 0, col loop 0 // 0 transitory tensors, 0 col tensor // yield [colTensor, upscaledTensor,]; ',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-        // row loop 0, col loop 1
-        1, // 0 transitory tensors, 1 col tensor
-        1, // 0 transitory tensors, 1 col tensor yield [upscaledTensor, colTensor,];
-        2, // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPixels,];
-        2, // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, prediction,];
-        2, // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, processedPrediction,];
-        2, // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        2, // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        1, // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];
+            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-        // row loop 0 end
-        1, // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];
+          [1, '// row loop 0 end // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
 
-        // row loop 1
-        1, // yield [colTensor, upscaledTensor,];
+          [1, '// row loop 1 // yield [colTensor, upscaledTensor,];',],
 
-        // row loop 1, col loop 0
-        1, // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        2, // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];
+            [1, '// row loop 1, col loop 1 // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-        // row loop 1, col loop 1
-        2, // 0 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];
-        2, // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];
+            [2, '// row loop 1, col loop 1 // 0 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-        1, // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];
+          [1, '// 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
       ]
       let result = await gen.next();
       while (!result.done) {
-        const expectation = expectations[currentExpectationIndex];
+        const [expectation,expectationKey] = expectations[currentExpectationIndex];
         const memory = tf.memory();
         const countedTensors = memory.numTensors - startingTensors
         // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+        try {
         expect(countedTensors).toEqual(expectation);
+        } catch(err) {
+          throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+        }
         currentExpectationIndex++;
         result = await gen.next()
       }
