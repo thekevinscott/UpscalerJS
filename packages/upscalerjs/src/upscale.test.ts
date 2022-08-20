@@ -5,7 +5,7 @@ import {
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
-  getProcessedPixels,
+  processAndDisposeOfTensor,
   concatTensors,
   upscale,
   cancellableUpscale,
@@ -77,25 +77,27 @@ describe('concatTensors', () => {
   });
 });
 
-describe('getProcessedPixels', () => {
-  it('clones tensor if not given a process function', () => {
-    const mockClone = jest.fn();
+describe('processAndDisposeOfTensor', () => {
+  it('returns a tensor as is if given no process function', () => {
+    const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { clone: mockClone } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as tf.Tensor3D;
     });
-    getProcessedPixels(mockTensor());
-    expect(mockClone).toBeCalledTimes(1);
+    const value = processAndDisposeOfTensor(mockTensor());
+    expect(value).toEqual(mockTensor);
+    expect(mockDispose).not.toHaveBeenCalled();
   });
 
-  it('calls process function if given one', () => {
-    const mockClone = jest.fn();
+  it('processes a tensor and disposes of it if given a process function', () => {
+    const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { clone: mockClone } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as tf.Tensor3D;
     });
-    const processFn = jest.fn();
-    getProcessedPixels(mockTensor(), processFn);
-    expect(mockClone).toBeCalledTimes(0);
-    expect(processFn).toBeCalledTimes(1);
+    const process = jest.fn().mockImplementation(() => 'foo');
+    const value = processAndDisposeOfTensor(mockTensor(), process);
+    expect(value).toEqual('foo');
+    expect(process).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 });
 
