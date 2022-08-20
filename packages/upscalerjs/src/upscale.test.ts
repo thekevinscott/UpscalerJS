@@ -1543,7 +1543,7 @@ describe('upscale', () => {
     getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
-      predict: jest.fn(() => upscaledTensor),
+      predict: jest.fn(() => upscaledTensor.clone()),
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
