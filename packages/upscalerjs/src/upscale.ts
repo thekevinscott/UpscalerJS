@@ -411,11 +411,11 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = getProcessedPixels<tf.Tensor4D>(
-    startingPixels,
-    modelDefinition.preprocess,
-  );
-  startingPixels.dispose();
+  let preprocessedPixels = startingPixels;
+  if (modelDefinition.preprocess) {
+    preprocessedPixels = modelDefinition.preprocess(startingPixels);
+    startingPixels.dispose();
+  }
   yield preprocessedPixels;
 
   const gen = predict(
