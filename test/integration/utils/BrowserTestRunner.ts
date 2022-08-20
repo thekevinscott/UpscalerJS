@@ -111,14 +111,14 @@ export class BrowserTestRunner {
     }
   }
 
-  private async _waitForTitle(pageTitleToAwait: string) {
+  public async waitForTitle(pageTitleToAwait: string) {
     await this.page.waitForFunction(`document.title.endsWith("${pageTitleToAwait}")`);
   }
 
-  private async _navigateToServer(pageTitleToAwait: string | null) {
+  public async navigateToServer(pageTitleToAwait: string | null) {
     await this.page.goto(`http://localhost:${this.port}`);
     if (pageTitleToAwait !== null) {
-      await this._waitForTitle(pageTitleToAwait);
+      await this.waitForTitle(pageTitleToAwait);
     }
   }
 
@@ -241,7 +241,7 @@ export class BrowserTestRunner {
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
-    await this._navigateToServer(pageTitleToAwait);
+    await this.navigateToServer(pageTitleToAwait);
   }
 
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
