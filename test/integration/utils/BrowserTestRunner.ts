@@ -56,7 +56,7 @@ export class BrowserTestRunner {
 
   private _getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
     if (!this[key]) {
-      this._error(`${key.substring(1)} is undefined`);
+      throw new Error(this._getLogMessage(`${key.substring(1)} is undefined`));
     }
     return this[key] as T;
   }
@@ -67,7 +67,7 @@ export class BrowserTestRunner {
   get server(): http.Server { return this._getLocal('_server'); }
   set server(server: http.Server | undefined) {
     if (server && this._server) {
-      this._error(`Server is already active`);
+      throw new Error(this._getLogMessage(`Server is already active`));
     }
     this._server = server;
   }
@@ -75,7 +75,7 @@ export class BrowserTestRunner {
   get browser(): puppeteer.Browser { return this._getLocal('_browser'); }
   set browser(browser: puppeteer.Browser | undefined) {
     if (browser && this._browser) {
-      this._error(`Browser is already active`);
+      throw new Error(this._getLogMessage(`Browser is already active`));
     }
     this._browser = browser;
   }
@@ -84,7 +84,7 @@ export class BrowserTestRunner {
   get context(): puppeteer.BrowserContext { return this._getLocal('_context'); }
   set context(context: puppeteer.BrowserContext | undefined) {
     if (context && this._context) {
-      this._error(`Context is already active`);
+      throw new Error(this._getLogMessage(`Context is already active`));
     }
     this._context = context;
   }
@@ -99,7 +99,7 @@ export class BrowserTestRunner {
   set page(page: puppeteer.Page | undefined) {
     {
       if (page && this._page) {
-        this._error(`Page is already active`);
+        throw new Error(this._getLogMessage(`Page is already active`));
       }
       this._page = page;
     }
@@ -109,13 +109,13 @@ export class BrowserTestRunner {
    * Utility methods
    */
 
-  private _error (msg: string) {
-    throw new Error([msg, this._name].filter(Boolean).join(' | '));
+  private _getLogMessage (msg: string) {
+    return [msg, this._name].filter(Boolean).join(' | ');
   }
 
   private _warn (msg: string) {
     if (this.showWarnings) {
-      console.warn(msg);// skipcq: JS-0002
+      console.warn(this._getLogMessage(msg));// skipcq: JS-0002
     }
   }
 
@@ -151,14 +151,13 @@ export class BrowserTestRunner {
           }
         });
       } catch (err) {
-        this._warn(`No server found | ${this._name}`);
+        this._warn(`No server found`);
         resolve();
       }
     })
   }
 
   private async _startBrowser() {
-    console.log(`****** start browser | ${this._name}`)
     this.browser = await puppeteer.launch();
   }
 
@@ -213,7 +212,7 @@ export class BrowserTestRunner {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this._warn(`No browser found | ${this._name}`);
+      this._warn(`No browser found`);
     }
   }
 
@@ -223,7 +222,7 @@ export class BrowserTestRunner {
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this._warn(`No context found | ${this._name}`);
+      this._warn(`No context found`);
     }
   }
 

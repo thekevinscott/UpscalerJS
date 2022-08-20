@@ -189,6 +189,14 @@ describe('Model Loading Integration Tests', () => {
         await umdTestRunner.afterAll();
       }, 30000);
 
+      beforeEach(async function beforeEach() {
+        await umdTestRunner.beforeEach('| Loaded');
+      });
+
+      afterEach(async function afterEach() {
+        await umdTestRunner.afterEach();
+      });
+
       getAllModelsToTest().map(({ packageName, esmName, umdName }) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName]) => {
