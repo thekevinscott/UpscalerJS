@@ -30,11 +30,9 @@ describe('Build Integration Tests', () => {
   });
 
   afterEach(async function afterEach() {
-    await Promise.all([
-      testRunner.afterEach(async () => {
-        await testRunner.stopServer();
-      }),
-    ])
+    await testRunner.afterEach(async () => {
+      await testRunner.stopServer();
+    });
   }, 5000);
 
   const start = async (bundle: () => Promise<void>, dist: string, mockCDN: MockCDN, pageTitle: string | null = null) => {
