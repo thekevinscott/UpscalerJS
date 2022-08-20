@@ -388,13 +388,6 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   return tensor;
 }
 
-export function getProcessedPixels<T extends tf.Tensor>(
-  upscaledTensor: T,
-  processFn?: ProcessFn<T>,
-): T {
-  return processFn ? processFn(upscaledTensor) : upscaledTensor.clone();
-}
-
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
@@ -411,11 +404,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  let preprocessedPixels = startingPixels;
-  if (modelDefinition.preprocess) {
-    preprocessedPixels = modelDefinition.preprocess(startingPixels);
-    startingPixels.dispose();
-  }
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess);
   yield preprocessedPixels;
 
   const gen = predict(
