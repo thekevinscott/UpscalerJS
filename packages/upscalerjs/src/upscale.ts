@@ -399,6 +399,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
+  console.log('1', tf.memory());
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
@@ -406,6 +407,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess);
   yield preprocessedPixels;
 
+  console.log('2', tf.memory());
   const gen = predict(
     preprocessedPixels,
     args,
@@ -426,9 +428,11 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
       yield preprocessedPixels;
     }
   }
+  console.log('3', tf.memory());
   preprocessedPixels.dispose();
   const upscaledPixels: tf.Tensor3D = result.value;
 
+  console.log('4', tf.memory());
   if (args.output === 'tensor') {
     return <UpscaleResponse<O>>upscaledPixels;
   }

@@ -424,7 +424,7 @@ describe('Memory Leaks', () => {
     });
   });
 
-  it('should upscale with a pre and a post processing functions into a tensor', async () => {
+  it.only('should upscale with a pre and a post processing functions into a tensor', async () => {
     const startingMemory = await getStartingMemory(page, prototypes);
 
     await page.evaluate(async (times) => {
