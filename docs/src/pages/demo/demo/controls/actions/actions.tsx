@@ -8,10 +8,13 @@ export type HandleZoom = (zoom: number) => void;
 export default function Actions({ 
   handleZoom,
   zoom,
+  handleDownload,
 }: {
+  handleDownload?: () => void;
   handleZoom: HandleZoom;
   zoom: number;
 }) {
+  const disabled = handleDownload === undefined;
   return (
     <div id={styles.actions}>
       <div id={styles.left}>
@@ -26,7 +29,7 @@ export default function Actions({
         />
       </div>
       <div id={styles.right}>
-        <Button size="large" variant="primary">
+        <Button disabled={disabled} size="large" variant="primary" onClick={handleDownload}>
           Download Upscaled Image
           <Icon slot="suffix" name="download"></Icon>
         </Button>

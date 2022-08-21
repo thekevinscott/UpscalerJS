@@ -16,6 +16,7 @@ export default function Controls({
   zoom,
   progress,
   cancelUpscale,
+  handleDownload,
 }: {
   selectImage: SelectImage;
   state: State;
@@ -23,6 +24,7 @@ export default function Controls({
   handleZoom: HandleZoom;
   progress: JSX.Element | boolean;
   cancelUpscale: () => void;
+  handleDownload?: () => void;
 }) {
   const [open, setOpen] = useState(true);
   const handleToggle = useCallback(() => {
@@ -42,7 +44,7 @@ export default function Controls({
         <Sidebar selectImage={selectImage} />
       </ControlPane>
       <ControlPane open={getStateForActions(state, open)} position="bottom" height={120}>
-        <Actions handleZoom={handleZoom} zoom={zoom} />
+        <Actions handleZoom={handleZoom} zoom={zoom} handleDownload={handleDownload} />
       </ControlPane>
     </div>
   );

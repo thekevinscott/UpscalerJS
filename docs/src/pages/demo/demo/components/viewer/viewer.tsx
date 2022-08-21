@@ -30,7 +30,6 @@ export default function Viewer({
       setResizedImage(undefined);
     }
   }, [src]);
-  const foo = useRef<HTMLDivElement>();
 
   useEffect(() => {
     document.body.addEventListener('dragger-change-event', handleDrag);
@@ -51,7 +50,7 @@ export default function Viewer({
 
   return (
     <div id={styles.viewer}>
-      <image-comparison-viewer-dragger-handle ref={foo} initialValue={handleX} onDraggerChangeEvent={handleDrag} />
+      <image-comparison-viewer-dragger-handle initialValue={handleX} onDraggerChangeEvent={handleDrag} />
       <image-comparison-viewer comparisonX={handleX} zoom={zoom}>
         <img src={upscaledSrc} />
         <img src={resizedImage?.src} />

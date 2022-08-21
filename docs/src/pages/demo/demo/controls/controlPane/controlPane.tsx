@@ -25,7 +25,7 @@ export default function ControlPane({
     }}
     >
       <div id={styles.controlPaneInner} className={classNames({ [styles.open]: open, ...getPosition(position) })} style={{
-         marginBottom: open ? 0 : height * -1,
+         marginBottom: open || !height ? 0 : height * -1,
           }}>
         {children}
       </div>

@@ -1,10 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import * as tf from '@tensorflow/tfjs';
-import Upscaler, { AbortError, MultiArgProgress } from 'upscaler';
-import { resizeImage } from '../utils/resizeImage';
-import { spliceImage } from '../utils/spliceImage';
-import { tensorAsImage } from '../utils/tensorAsImage';
-import { spliceTensor } from '../utils/spliceTensor';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Upscaler, { AbortError } from 'upscaler';
+import { useCanvas } from './useCanvas';
 
 const PATCH_SIZE = 32;
 const SCALE = 4;
@@ -18,45 +14,34 @@ export const useUpscaler = (img?: HTMLImageElement) => {
   const [progress, setProgress] = useState(0);
 
   const upscaledSrc = useRef<string>();
-  const upscaledTensor = useRef<tf.Tensor3D>();
+
+  const { drawImage, createCanvas } = useCanvas(SCALE);
 
   const setUpscaledSrc = useCallback((newSrc: string) => {
     upscaledSrc.current = newSrc;
   }, []);
 
-  const setUpscaledTensor = useCallback((newTensor: tf.Tensor3D) => {
-    if (upscaledTensor.current) {
-      upscaledTensor.current.dispose();
-    }
-    upscaledTensor.current = newTensor;
-    setUpscaledSrc(tensorAsImage(newTensor));
-  }, [setUpscaledSrc]);
-
   const upscale = useCallback(async (img: HTMLImageElement) => {
-    setUpscaledTensor(tf.tidy(() => tf.image.resizeBilinear(tf.browser.fromPixels(img), [img.height * SCALE, img.width * SCALE])));
+    setUpscaledSrc(createCanvas(img));
     setUpscaling(true);
     try {
-      const finalTensor = await upscaler.upscale(img, {
-        output: 'tensor',
+      const upscaledImage = await upscaler.upscale(img, {
+        output: 'base64',
         patchSize: PATCH_SIZE,
         padding: 2,
-        progress: (rate, slice) => {
+        progress: async (rate, slice, row, col) => {
           setProgress(rate);
-          const _slice = slice as unknown as tf.Tensor3D;
-          if (upscaledTensor.current) {
-            setUpscaledTensor(spliceTensor(upscaledTensor.current, _slice, 0, 0));
-            _slice.dispose();
-          }
+          setUpscaledSrc(await drawImage(slice, PATCH_SIZE * SCALE, col, row));
         }
       });
-      setUpscaledTensor(finalTensor);
+      // setUpscaledSrc(upscaledImage);
     } catch(err) {
       if (!(err instanceof AbortError)) {
         throw err;
       }
     }
     setUpscaling(false);
-  }, [setUpscaling, setProgress]);
+  }, [createCanvas, setUpscaling, setProgress]);
 
   const cancelUpscale = useCallback(() => {
     try {
