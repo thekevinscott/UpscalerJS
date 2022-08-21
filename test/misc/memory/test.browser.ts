@@ -1,9 +1,9 @@
-import puppeteer, { Browser, BrowserContext, Page } from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
-import { startServer } from '../../lib/shared/server';
 import http from 'http';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
+import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
 
 const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -90,7 +90,7 @@ const prototypes: Array<PrototypeDefinition> = [
   },
 ];
 
-const getStartingMemory = async (page: Page, prototypes: Array<PrototypeDefinition>) => {
+const getStartingMemory = async (page: Page) => {
   const memory = await getMemory(page);
   expect(memory.LayersModel).toEqual(EXPECTED_LAYER_MODELS);
   expect(memory.Upscaler).toEqual(EXPECTED_UPSCALERS);
@@ -98,44 +98,24 @@ const getStartingMemory = async (page: Page, prototypes: Array<PrototypeDefiniti
 };
 
 describe('Memory Leaks', () => {
-  let browser: Browser;
-  let context: BrowserContext;
-  let page: Page;
-  let server: http.Server;
-
-  beforeAll(async () => {
-    const start = async () => {
-      await bundle();
-      server = await startServer(PORT, DIST);
-    }
-    const launch = async () => {
-      browser = await puppeteer.launch();
-    }
-    await Promise.all([
-      launch(),
-      start(),
-    ]);
+  const testRunner = new BrowserTestRunner({
+    dist: DIST,
   });
 
-  beforeEach(async () => {
-    context = await browser.createIncognitoBrowserContext();
-    page = await context.newPage();
-    // page.on('console', message => {
-    //   console.log('[PAGE]', message.text());
-    // });
-    await page.goto(`http://localhost:${PORT}`)
-  })
+  beforeAll(async function beforeAll() {
+    await testRunner.beforeAll(bundle);
+  }, 60000);
 
-  afterEach(async () => {
-    await context.close();
-  })
+  afterAll(async function modelAfterAll() {
+    await testRunner.afterAll();
+  }, 10000);
 
-  afterAll(async () => {
-    await new Promise(resolve => setTimeout(resolve, 10000))
-    await Promise.all([
-      stopServer(server),
-      browser.close(),
-    ]);
+  beforeEach(async function beforeEach() {
+    await testRunner.beforeEach('| Loaded');
+  });
+
+  afterEach(async function afterEach() {
+    await testRunner.afterEach();
   });
 
   const tick = async (page: puppeteer.Page, tickTime = 10) => {
@@ -184,7 +164,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   // //   // it('should throw because of upscalers', async () => {
-  // //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  // //   //   const startingMemory = await getStartingMemory(page);
 
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
@@ -202,7 +182,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   // //   // it('should throw because of layer models', async () => {
-  // //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  // //   //   const startingMemory = await getStartingMemory(page);
 
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
@@ -220,7 +200,7 @@ describe('Memory Leaks', () => {
   // //   // });
 
   //   // it('should throw because of tensors', async () => {
-  //   //   const startingMemory = await getStartingMemory(page, prototypes);
+  //   //   const startingMemory = await getStartingMemory(page);
 
   //   //   await page.evaluate(async (times) => {
   //   //     for (let i = 0; i < times; i++) {
@@ -235,9 +215,9 @@ describe('Memory Leaks', () => {
   // })
 
   it('should create upscalers', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
-    await page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         // TODO: Revert this to use the default
@@ -252,17 +232,17 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
+    await tick(testRunner.page);
 
-    const endingMemory = await getMemory(page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should create an Upscaler instance and warm up', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
-    await page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const ESRGANGANS = window['esrgan-legacy']['gans'];
       for (let i = 0; i < times; i++) {
@@ -278,17 +258,17 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
+    await tick(testRunner.page);
 
-    const endingMemory = await getMemory(page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should create an Upscaler instance with a custom model', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
-    await page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
@@ -301,17 +281,17 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   describe('Upscale with base64 output', () => {
     it('should upscale with no pre / post processing functions', async () => {
-      const startingMemory = await getStartingMemory(page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
-      const image = await page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async (times) => {
         const Upscaler = window['Upscaler'];
         let image;
         for (let i = 0; i < times; i++) {
@@ -328,17 +308,17 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick(page);
-      const endingMemory = await getMemory(page);
+      await tick(testRunner.page);
+      const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
     });
 
     it('should upscale with a pre and no post processing functions', async () => {
-      const startingMemory = await getStartingMemory(page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
-      const image = await page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         let image;
@@ -357,17 +337,17 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick(page);
-      const endingMemory = await getMemory(page);
+      await tick(testRunner.page);
+      const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
     });
     
     it('should upscale with no pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
-      const image = await page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         let image;
@@ -386,17 +366,17 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick(page);
-      const endingMemory = await getMemory(page);
+      await tick(testRunner.page);
+      const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
     });
 
     it('should upscale with a pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(page, prototypes);
+      const startingMemory = await getStartingMemory(testRunner.page);
 
-      const image = await page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         let image;
@@ -416,18 +396,18 @@ describe('Memory Leaks', () => {
         return image;
       }, TIMES_TO_CHECK);
 
-      await tick(page);
-      const endingMemory = await getMemory(page);
+      await tick(testRunner.page);
+      const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
       expect(image.substring(0,22)).toEqual('data:image/png;base64,');
     });
   });
 
-  it.only('should upscale with a pre and a post processing functions into a tensor', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
+  it('should upscale with a pre and a post processing functions into a tensor', async () => {
+    const startingMemory = await getStartingMemory(testRunner.page);
 
-    await page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
@@ -449,14 +429,14 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should upscale with a pre and a post processing functions from a tensor', async () => {
-    await page.evaluate(async () => {
+    await testRunner.page.evaluate(async () => {
       const getImage = (): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = window['flower'];
@@ -466,9 +446,9 @@ describe('Memory Leaks', () => {
       const img = await getImage();
       window['src'] = await window['tf'].browser.fromPixels(img);
     });
-    const startingMemory = await getStartingMemory(page, prototypes);
+    const startingMemory = await getStartingMemory(testRunner.page);
 
-    const image = await page.evaluate(async (times) => {
+    const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       let output: string;
@@ -488,18 +468,18 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
-    const isDisposed = await page.evaluate(async () => window['src'].isDisposed);
+    const isDisposed = await testRunner.page.evaluate(async () => window['src'].isDisposed);
     expect(isDisposed).toEqual(false);
   });
 
   it('should upscale with a pre and a post processing functions with patch sizes', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    const image = await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       let output;
@@ -521,16 +501,16 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should upscale with the idealo model', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    const image = await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const ESRGANGANS = window['esrgan-legacy']['gans'];
       let output;
@@ -545,16 +525,16 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a src', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    const image = await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       let output;
       for (let i = 0; i < times; i++) {
@@ -578,16 +558,16 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect((image as string).substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a tensor', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    const image = await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       let output: tf.Tensor;
       for (let i = 0; i < times; i++) {
@@ -616,19 +596,19 @@ describe('Memory Leaks', () => {
       return output;
     }, TIMES_TO_CHECK);
 
-    await tick(page);
+    await tick(testRunner.page);
     expect(image.shape).toEqual([8, 8, 3]);
-    await page.evaluate(() => {
+    await testRunner.page.evaluate(() => {
       window['output'].dispose();
     })
-    const endingMemory = await getMemory(page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should cancel without leaking memory', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    await page.evaluate((times) => new Promise(resolve => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    await testRunner.page.evaluate((times) => new Promise(resolve => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
@@ -648,15 +628,15 @@ describe('Memory Leaks', () => {
       }
     }), TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should cancel without leaking memory with patch sizes', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
@@ -684,15 +664,15 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
 
   it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
-    const startingMemory = await getStartingMemory(page, prototypes);
-    await page.evaluate(async (times) => {
+    const startingMemory = await getStartingMemory(testRunner.page);
+    await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
@@ -721,8 +701,8 @@ describe('Memory Leaks', () => {
       }
     }, TIMES_TO_CHECK);
 
-    await tick(page);
-    const endingMemory = await getMemory(page);
+    await tick(testRunner.page);
+    const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
   });
