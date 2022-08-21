@@ -32,7 +32,7 @@ export default {
 
 const fetchFromPixabay = async (PIXABAY_API_KEY: string, request: Request): Promise<Response> => {
   const query = new URL(request.url).searchParams.get('q');
-  const url = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${query}&safesearch=1`;
+  const url = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${query}&safesearch=true`;
   return await fetch(url, {
     headers: {
       'content-type': 'application/json;charset=UTF-8',
