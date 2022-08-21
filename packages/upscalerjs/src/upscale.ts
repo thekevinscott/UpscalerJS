@@ -344,12 +344,12 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             const squeezedTensor = slicedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor);
+              (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              (<MultiArgProgress<BASE64>>progress)(percent, src);
+              (<MultiArgProgress<BASE64>>progress)(percent, src, row, col);
             }
           }
         }

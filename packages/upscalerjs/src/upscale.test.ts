@@ -1258,6 +1258,27 @@ describe('predict', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 
+  it('should invoke progress callback with percent, slice, row, and col', async () => {
+    console.warn = jest.fn();
+    const mockResponse = 'foobarbaz1';
+    tensorAsBase64.mockImplementation(() => mockResponse);
+    const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
+    const patchSize = 2;
+    const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => {});
+    await wrapGenerator(
+      predict(tensor, {
+        patchSize,
+        padding: 0,
+        progress,
+      }, modelPackage)
+    );
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
   it('should invoke progress callback with slice as tensor, if output is a tensor, for a tall image', async () => {
     console.warn = jest.fn();
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz2';

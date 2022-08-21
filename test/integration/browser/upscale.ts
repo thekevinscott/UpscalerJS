@@ -270,6 +270,34 @@ describe('Upscale Integration Tests', () => {
       expect(typeof rate).toEqual('number');
       expect(slice.shape).toEqual([48, 48, 3]);
     });
+
+    it("calls back to progress with a row and col", async () => {
+      const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
+        const upscaler = new window['Upscaler']({
+          model: {
+            path: '/pixelator/pixelator.json',
+            scale: 4,
+          },
+        });
+        const progressRates: Array<[number, number]> = [];
+        const progress: Progress<'base64'> = (rate, slice, row, col) => {
+          progressRates.push([row, col]);
+        };
+        upscaler.upscale(window['flower'], {
+          patchSize: 8,
+          padding: 0,
+          progress,
+        }).then(() => {
+          resolve(progressRates)
+        });
+      }));
+      expect(progressRates).toEqual([
+        [0, 0],
+        [0, 1],
+        [1, 0],
+        [1, 1],
+      ]);
+    });
   });
 });
 

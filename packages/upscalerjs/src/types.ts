@@ -25,7 +25,7 @@ export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultF
         TENSOR :
         BASE64;
 
-export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>) => void;
+export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>, row: number, col: number) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
 export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>{
