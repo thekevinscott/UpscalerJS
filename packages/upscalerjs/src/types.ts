@@ -12,21 +12,23 @@ export interface UpscalerOptions {
   warmupSizes?: WarmupSizes[];
 }
 
-export type ResultFormat = 'src' | 'tensor' | undefined;
-export type UpscaleResponse<O extends ResultFormat> = O extends 'src' ? string : tf.Tensor3D;
-export type ProgressResponse<O extends ResultFormat = 'src', PO extends ResultFormat = undefined> = 
-  PO extends 'src' ? 
-    'src' : 
-    PO extends 'tensor' ? 
-      'tensor' :
-      O extends 'tensor' ?
-        'tensor' :
-        'src';
+export type BASE64 = 'base64';
+export type TENSOR = 'tensor';
+export type ResultFormat = BASE64 | TENSOR | undefined;
+export type UpscaleResponse<O extends ResultFormat> = O extends BASE64 ? string : tf.Tensor3D;
+export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = 
+  PO extends BASE64 ? 
+    BASE64 : 
+    PO extends TENSOR ? 
+      TENSOR :
+      O extends TENSOR ?
+        TENSOR :
+        BASE64;
 
-export type MultiArgProgress<O extends ResultFormat = 'src'> = (amount: number, slice: UpscaleResponse<O>) => void;
+export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>) => void;
 export type SingleArgProgress = (amount: number) => void;
-export type Progress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
-export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>{
+export type Progress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
+export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>{
   output?: O;
   patchSize?: number;
   padding?: number;
@@ -42,4 +44,14 @@ export { PackageInformation, ProcessFn, } from '@upscalerjs/core';
 export interface ModelPackage {
   model: tf.LayersModel;
   modelDefinition: ModelDefinition;
+}
+
+// TODO: Remove this in favor of UpscaleArgs. This is to deprecate the 'src' option for output.
+export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> {
+  output?: O | 'src';
+  progressOutput?: PO | 'src';
+  patchSize?: number;
+  padding?: number;
+  progress?: P;
+  signal?: AbortSignal;
 }

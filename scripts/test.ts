@@ -111,7 +111,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   }
   if (argv.skipBuild !== true) {
     if (platform === 'browser') {
-      await buildUpscaler(platform);
+      await buildUpscaler('browser');
     } else if (platform === 'node') {
       await buildUpscaler('node');
       await buildUpscaler('node-gpu');
@@ -119,6 +119,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     console.log(`** built upscaler: ${platform}`)
   }
   const args = [
+    'pnpm',
     'jest',
     '--config',
     path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),

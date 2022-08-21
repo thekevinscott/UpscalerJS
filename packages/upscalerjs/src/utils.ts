@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
+import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
 export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
@@ -56,9 +56,9 @@ export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };
 
-export function isProgress<O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(p: undefined | Progress<ResultFormat, ResultFormat>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
+export function isProgress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(p: undefined | Progress<ResultFormat, ResultFormat>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
 export function isSingleArgProgress(p: Progress<ResultFormat, ResultFormat>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
-export const isMultiArgTensorProgress = (p: Progress<ResultFormat, ResultFormat>, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgProgress<'tensor'> => {
+export const isMultiArgTensorProgress = (p: Progress<ResultFormat, ResultFormat>, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgProgress<TENSOR> => {
   if (!isProgress(p) || p.length <= 1) {
     return false;
   }
@@ -102,3 +102,19 @@ export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
 };
 
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
+
+export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'tensor'): undefined | 'base64' | 'tensor' {
+  if (option === 'src') {
+    console.warn(`You have provided "src" as an option to ${key}. You should switch this to "base64". "src" is deprecated and will be removed in a future version.`);
+    return 'base64';
+  }
+  return option;
+}
+
+export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> (opts: TempUpscaleArgs<P, O, PO>): UpscaleArgs<P, O, PO> {
+  return {
+    ...opts,
+    output: parseUpscaleOutput('output', opts.output) as O,
+    progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
+  };
+}

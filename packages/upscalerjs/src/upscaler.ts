@@ -1,19 +1,21 @@
 import { ESRGANSlim, } from './dependencies.generated';
 import type {
   UpscalerOptions,
-  UpscaleArgs,
+  TempUpscaleArgs,
   WarmupSizes,
   ResultFormat,
   Progress,
   UpscaleResponse,
   ModelPackage,
+  BASE64,
+  UpscaleArgs,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { warmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
-import { getModel, } from './utils';
+import { getModel, parseUpscaleOptions, } from './utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
@@ -43,12 +45,13 @@ export class Upscaler {
     await warmup(this._model, warmupSizes);
   };
 
-  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = 'src', PO extends ResultFormat = undefined>(
+  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
-    options: UpscaleArgs<P, O, PO> = {},
+    options: TempUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, options, {
+    const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
+    return cancellableUpscale(image, parsedOptions, {
       model,
       modelDefinition,
       signal: this.abortController.signal,

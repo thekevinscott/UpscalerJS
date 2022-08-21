@@ -10,6 +10,7 @@ import yargs from 'yargs';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import buildModels from './package-scripts/build-model';
 import buildUpscaler from './package-scripts/build-upscaler';
+import { OutputFormat } from './package-scripts/prompt/types';
 
 dotenv.config();
 
@@ -26,15 +27,21 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 (async function main() {
   const argv = await yargs(process.argv.slice(2)).options({
     skipBuild: { type: 'boolean' },
+    skipModelBuild: { type: 'boolean' },
   }).argv;
 
+  if (argv.skipModelBuild !== true) {
+    const outputFormats: OutputFormat[] = ['esm', 'cjs'];
+    const modelPackages = getAllAvailableModelPackages();
+    const durations = await buildModels(modelPackages, outputFormats);
+    console.log([
+      `** built models: ${outputFormats}`,
+      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
+    ].join('\n'));
+  }
   if (argv.skipBuild !== true) {
     await buildUpscaler('browser');
     console.log(`** built upscaler: browser`)
-  }
-  if (argv.skipModelBuild !== true) {
-    await buildModels(getAllAvailableModelPackages(), ['esm']);
-    console.log(`** built models: ${['esm']}`)
   }
   const args = [
     'pnpm',

@@ -5,7 +5,7 @@ import {
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
-  getProcessedPixels,
+  processAndDisposeOfTensor,
   concatTensors,
   upscale,
   cancellableUpscale,
@@ -25,7 +25,7 @@ import {
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
-import { ModelPackage, Progress, } from './types';
+import { BASE64, ModelPackage, Progress, TENSOR, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./image.generated', () => {
@@ -77,25 +77,42 @@ describe('concatTensors', () => {
   });
 });
 
-describe('getProcessedPixels', () => {
-  it('clones tensor if not given a process function', () => {
-    const mockClone = jest.fn();
+describe('processAndDisposeOfTensor', () => {
+  it('returns a tensor as is if given no process function', () => {
+    const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { clone: mockClone } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as tf.Tensor3D;
     });
-    getProcessedPixels(mockTensor());
-    expect(mockClone).toBeCalledTimes(1);
+    const value = processAndDisposeOfTensor(mockTensor());
+    expect(value).toEqual(mockTensor);
+    expect(mockDispose).not.toHaveBeenCalled();
   });
 
-  it('calls process function if given one', () => {
-    const mockClone = jest.fn();
+  it('processes a tensor and disposes of it if given a process function', () => {
+    const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { clone: mockClone } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as tf.Tensor3D;
     });
-    const processFn = jest.fn();
-    getProcessedPixels(mockTensor(), processFn);
-    expect(mockClone).toBeCalledTimes(0);
-    expect(processFn).toBeCalledTimes(1);
+    const process = jest.fn().mockImplementation(() => 'foo');
+    const value = processAndDisposeOfTensor(mockTensor(), process);
+    expect(value).toEqual('foo');
+    expect(process).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('processes a tensor and does not dispose of it if it is already disposed', () => {
+    const mockDispose = jest.fn();
+    const mockTensor = jest.fn().mockImplementation(() => {
+      return { dispose: mockDispose } as any as tf.Tensor3D;
+    });
+    const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
+      t.dispose();
+      return 'foo';
+    });
+    const value = processAndDisposeOfTensor(mockTensor(), process);
+    expect(value).toEqual('foo');
+    expect(process).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -1325,13 +1342,13 @@ describe('predict', () => {
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
-    }) as Progress<'src', 'tensor'>
+    }) as Progress<BASE64, TENSOR>
     await wrapGenerator(
       predict(tensor, {
         patchSize,
         padding: 0,
         progress,
-        output: 'src',
+        output: 'base64',
         progressOutput: 'tensor',
       }, modelPackage)
     );
@@ -1377,15 +1394,32 @@ describe('predict', () => {
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
       const gen = predict(tensor, {}, modelPackage);
-      let { value, done } = await gen.next();
-      expect(done).toEqual(true);
-      expect(Array.isArray(value)).toEqual(false);
-      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, value as tf.Tensor4D));
-      (value as tf.Tensor).dispose();
+
+
+      let currentExpectationIndex = 0;
+      const expectations = [
+        1, //   yield [pred,];
+      ];
+      let result = await gen.next();
+      while (!result.done) {
+        const expectation = expectations[currentExpectationIndex];
+        const memory = tf.memory();
+        const countedTensors = memory.numTensors - startingTensors
+        // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+        expect(countedTensors).toEqual(expectation);
+        currentExpectationIndex++;
+        result = await gen.next()
+      }
+      expect(result.done).toEqual(true);
+      expect(Array.isArray(result.value)).toEqual(false);
+      tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, result.value as tf.Tensor4D));
+      (result.value as tf.Tensor).dispose();
+      expect(currentExpectationIndex === expectations.length);
+      
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
-    it('should clear up all memory while running predict with patch size', async () => {
+    it.only('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
@@ -1397,86 +1431,59 @@ describe('predict', () => {
 
       let currentExpectationIndex = 0;
       const expectations = [
-        // 284
-        0, 
+        [0, '// yield',],
 
-        // row loop 0
-        // 289
-        0, 
+          [0, '// row loop 0 // yield',],
 
-        // row loop 0, col loop 0
-        // 299
-        0, 
-        // 304
-        1, // 1 transitory tensor
-        // 307
-        1, // 1 transitory tensor
-        // 313
-        1, // 1 transitory tensor
-        // 333
-        1, // 1 transitory tensor
-        // 337
-        1, // 0 transitory tensors, 1 col tensor
+            [0, '// row loop 0, col loop 0 // 0 transitory tensors, 0 col tensor // yield [colTensor, upscaledTensor,]; ',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 0 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-        // row loop 0, col loop 1
-        // 299
-        1, // 0 transitory tensors, 1 col tensor
-        // 304
-        2, // 1 transitory tensor, 1 col tensor
-        // 307
-        2, // 1 transitory tensor, 1 col tensor
-        // 313
-        2, // 1 transitory tensor, 1 col tensor
-        // 333
-        2, // 1 transitory tensor, 1 col tensor
-        // 337
-        1, // 0 transitory tensors, 1 col tensor
+            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-        // 342
-        1, // 0 transitory tensors, 0 col tensor, 1 row tensor
+          [1, '// row loop 0 end // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
 
-        // row loop 1
-        // 289
-        1, 
+          [1, '// row loop 1 // yield [colTensor, upscaledTensor,];',],
 
-        // row loop 1, col loop 0
-        // 299
-        1, // 0 transitory tensors, 0 col tensor, 1 row tensor
-        // 304
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
-        // 307
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
-        // 313
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
-        // 333
-        2, // 1 transitory tensor, 0 col tensor, 1 row tensor
-        // 337
-        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
+            [1, '// row loop 1, col loop 1 // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-        // row loop 1, col loop 1
-        // 299
-        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
-        // 304
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
-        // 307
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
-        // 313
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
-        // 333
-        3, // 1 transitory tensor, 1 col tensor, 1 row tensor
-        // 337
-        2, // 0 transitory tensor, 1 col tensor, 1 row tensor
+            [2, '// row loop 1, col loop 1 // 0 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-        // 342
-        1, // 0 transitory tensor, 0 col tensor, 1 row tensor
-      ]
+          [1, '// 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
+      ];
       let result = await gen.next();
       while (!result.done) {
-        const expectation = expectations[currentExpectationIndex];
+        const [expectation,expectationKey] = expectations[currentExpectationIndex];
         const memory = tf.memory();
         const countedTensors = memory.numTensors - startingTensors
         // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+        try {
         expect(countedTensors).toEqual(expectation);
+        } catch(err) {
+          throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+        }
         currentExpectationIndex++;
         result = await gen.next()
       }
@@ -1489,7 +1496,7 @@ describe('predict', () => {
 });
 
 describe('upscale', () => {
-  it('should return a base64 src by default', async () => {
+  it('should return a base64 string by default', async () => {
     const img: tf.Tensor3D = tf.tensor([
       [
         [1, 1, 1,],
@@ -1526,7 +1533,7 @@ describe('upscale', () => {
     getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
-      predict: jest.fn(() => upscaledTensor),
+      predict: jest.fn(() => upscaledTensor.clone()),
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
