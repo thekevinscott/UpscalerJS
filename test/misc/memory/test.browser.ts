@@ -494,6 +494,7 @@ describe('Memory Leaks', () => {
         });
         output = await upscaler.upscale(window['flower'], {
           patchSize: 5,
+          padding: 0,
         });
 
         await upscaler.dispose();

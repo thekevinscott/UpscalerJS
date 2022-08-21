@@ -61,6 +61,10 @@ export class BrowserTestRunner {
     return this[key] as T;
   }
 
+  get serverURL() {
+    return `http://localhost:${this.port}`;
+  }
+
   get mockCDN(): MockCDN | undefined { return this._mockCDN; }
   set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
 
@@ -124,7 +128,7 @@ export class BrowserTestRunner {
   }
 
   public async navigateToServer(pageTitleToAwait: string | null) {
-    await this.page.goto(`http://localhost:${this.port}`);
+    await this.page.goto(this.serverURL);
     if (pageTitleToAwait !== null) {
       await this.waitForTitle(pageTitleToAwait);
     }
@@ -136,6 +140,7 @@ export class BrowserTestRunner {
 
   async startServer(dist?: string, port?: number) {
     this.server = await startServer(port || this.port, dist || this.dist);
+    console.log(`Server running at ${this.serverURL}`);
     return this.server;
   }
 
