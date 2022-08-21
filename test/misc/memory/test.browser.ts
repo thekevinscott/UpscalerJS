@@ -36,7 +36,7 @@ const PORT = 8099;
 
 // This is the number of times to run every chunk of code to check for memory leaks.
 // 7 is a nice awkward number that should be a red flag if we see it in the memory reports.
-const TIMES_TO_CHECK = 7;
+const TIMES_TO_CHECK = 1;
 
 interface PrototypeDefinition {
   name: 'LayersModel' | 'Upscaler';
@@ -494,6 +494,7 @@ describe('Memory Leaks', () => {
         });
         output = await upscaler.upscale(window['flower'], {
           patchSize: 5,
+          padding: 0,
         });
 
         await upscaler.dispose();

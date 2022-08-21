@@ -272,7 +272,7 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   processFn?: ProcessFn<T>,
 ): T {
   if (processFn) {
-    const processedTensor = processFn(tensor);
+    const processedTensor = tf.tidy(() => processFn(tensor));
     if (!tensor.isDisposed) {
       tensor.dispose();
     }
@@ -382,9 +382,12 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   const pred = model.predict(pixels) as tf.Tensor4D;
   yield [pred,];
   const postprocessedTensor = processAndDisposeOfTensor(pred, modelDefinition.postprocess);
+
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-  return tf.tidy(() => postprocessedTensor.squeeze() as tf.Tensor3D);
+  const squeezedTensor = postprocessedTensor.squeeze() as tf.Tensor3D;
+  postprocessedTensor.dispose();
+  return squeezedTensor;
 }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
@@ -399,7 +402,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   args: UpscaleArgs<P, O, PO>,
   { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
-  console.log('1', tf.memory());
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
@@ -407,7 +409,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess);
   yield preprocessedPixels;
 
-  console.log('2', tf.memory());
   const gen = predict(
     preprocessedPixels,
     args,
@@ -428,11 +429,9 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
       yield preprocessedPixels;
     }
   }
-  console.log('3', tf.memory());
   preprocessedPixels.dispose();
   const upscaledPixels: tf.Tensor3D = result.value;
 
-  console.log('4', tf.memory());
   if (args.output === 'tensor') {
     return <UpscaleResponse<O>>upscaledPixels;
   }
