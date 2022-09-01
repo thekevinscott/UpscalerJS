@@ -37,7 +37,7 @@ const upscale = async (t: tf.Tensor4D) => {
 };
 
 export default {
-  async fetch(
+  fetch(
     request: Request,
     _env: Env,
     ctx: ExecutionContext,

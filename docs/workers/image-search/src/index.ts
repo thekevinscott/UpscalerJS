@@ -27,7 +27,7 @@ const fetchFromPixabay = async (PIXABAY_API_KEY: string, request: Request): Prom
 }
 
 export default {
-  async fetch(
+  fetch(
     request: Request,
     { PIXABAY_API_KEY }: Env,
     ctx: ExecutionContext,

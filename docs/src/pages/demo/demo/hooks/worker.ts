@@ -94,7 +94,7 @@ onmessage = async ({ data: { type, data } }) => {
         output: 'tensor',
         patchSize,
         padding,
-        progress: async (rate, _slice, row, col) => {
+        progress: (rate, _slice, row, col) => {
           const slice = _slice as unknown as tf.Tensor;
           postMessage({
             type: SenderWorkerState.PROGRESS,
