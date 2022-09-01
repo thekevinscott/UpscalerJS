@@ -29,7 +29,8 @@
     "react-dropzone": "^11.0.2",
     "react-github-btn": "^1.3.0",
     "react-icons": "^4.4.0",
-    "react-loading": "^2.0.3"
+    "react-loading": "^2.0.3",
+    "tensor-as-base64": "^0.3.0"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "2.0.1",

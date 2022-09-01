@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import { AbortError } from 'upscaler';
 import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
-import { tensorAsBase64 } from '@site/../packages/upscalerjs/dist/browser/esm/image.generated';
+import { tensorAsBase64 } from 'tensor-as-base64';
 
 const SCALE = 4;
 
