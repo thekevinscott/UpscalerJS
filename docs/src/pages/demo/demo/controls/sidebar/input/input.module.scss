@@ -1,0 +1,36 @@
+#container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  padding: 4px 0 4px 10px;
+  cursor: text;
+  border: 1px solid transparent;
+
+  &:focus-within {
+    border: 1px solid #5392F9;
+    box-shadow: 0 0 4px #5392F9;
+  }
+
+  #input {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: black;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    svg {
+      flex: 0;
+      min-width: 26px;
+    }
+  }
+}

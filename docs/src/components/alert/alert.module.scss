@@ -1,0 +1,9 @@
+html[data-theme='light'] {
+  --sl-panel-background-color: #fff;
+  --sl-color-warning-600: #c16d38;
+}
+
+html[data-theme='dark'] {
+  --sl-panel-background-color: #1f4868;
+  --sl-color-warning-600: #c16d38;
+}

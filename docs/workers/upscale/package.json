@@ -1,0 +1,26 @@
+{
+  "name": "@upscalerjs/workers.upscale",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.14.1",
+    "@types/node": "^17.0.39",
+    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/workers.shared": "workspace:*",
+    "typescript": "^4.7.4",
+    "upscaler": "workspace:*",
+    "wrangler": "2.0.25"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish",
+    "deploy:prod": "wrangler publish -e production"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.19.0",
+    "aws-sdk": "^2.1193.0",
+    "jpeg-js": "^0.4.4",
+    "mock-aws-s3": "^4.0.2",
+    "nock": "^13.2.9"
+  }
+}

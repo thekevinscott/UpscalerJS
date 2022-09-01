@@ -1,0 +1,44 @@
+$largeImage: 240px;
+$smallImage: 80px;
+
+$largePadding: 20px;
+$smallPadding: 10px;
+
+#pane {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  // justify-content: flex-end;
+  border-radius: 8px;
+  cursor: pointer;
+  transition-duration: .1s;
+  overflow: hidden;
+  text-align: center;
+
+  background-color: rgba(255,255,255,0.9);
+  border: 2px dashed rgba(4,60,94,.5);
+}
+
+
+html[data-theme='dark'] {
+  #pane {
+    background-color: #0a2235;
+    border: 2px dashed rgba(4, 60, 94, .5);
+  }
+}
+
+  .large {
+    padding: $largePadding;
+    &:before {
+      background-size: $largeImage $largeImage;
+    }
+  }
+
+  .small {
+    padding: $smallPadding;
+    &:before {
+      background-size: $smallImage $smallImage;
+    }
+  }

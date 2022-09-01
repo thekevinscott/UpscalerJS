@@ -1,0 +1,21 @@
+.actions {
+  height: 120px;
+  padding: 20px 0 20px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+#left, #right {
+  display: flex;
+  align-items: center;
+}
+
+#right {
+  justify-content: flex-end;
+}
+
+// #divider {
+//   height: 4px;
+//   width: 80px;
+//   transform: rotate(90deg) translate(25px, 0);
+// }

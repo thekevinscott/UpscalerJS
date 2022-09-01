@@ -1,0 +1,49 @@
+#warning {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  cursor: default;
+  flex: 1;
+  z-index: 2;
+
+  sl-alert {
+    margin-bottom: 20px;
+  }
+}
+
+img#uploadedImage {
+  margin: 0 auto;
+}
+
+#options {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  a {
+    // flex: 1;
+    // text-align: right;
+    display: flex;
+    // justify-content: flex-end;
+    align-items: flex-end;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  #left {
+    flex: 1;
+  }
+
+  #right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}

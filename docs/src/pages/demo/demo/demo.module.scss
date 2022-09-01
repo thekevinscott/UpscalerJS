@@ -1,0 +1,19 @@
+#page {
+  flex: 1;
+  position: relative;
+  background-color: #fff;
+
+  img {
+    user-drag: none;  
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+}
+html[data-theme='dark'] {
+  #page {
+    background-color: #010e1a;
+  }
+}

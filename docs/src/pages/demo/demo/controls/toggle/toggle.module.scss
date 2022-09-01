@@ -1,0 +1,23 @@
+$width: 200px;
+#toggle {
+  position: absolute;
+  left: 50%;
+  width: $width;
+  margin-left: ($width / -2);
+  z-index: 2;
+  top: 10px;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 980px) {
+  #toggle {
+    display: none;
+  }
+}
