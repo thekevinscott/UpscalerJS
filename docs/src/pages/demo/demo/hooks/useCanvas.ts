@@ -5,8 +5,8 @@ const manipulateOriginalImage = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext('2d');
   const imgPixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
   let min = Infinity;
-  for (const y = 0; y < imgPixels.height; y++) {
-    for (const x = 0; x < imgPixels.width; x++) {
+  for (let y = 0; y < imgPixels.height; y++) {
+    for (let x = 0; x < imgPixels.width; x++) {
       const i = (y * 4) * imgPixels.width + x * 4;
       const avg = (imgPixels.data[i] + imgPixels.data[i + 1] + imgPixels.data[i + 2]) / 3 / 2;
       if (avg < min) {
