@@ -62,10 +62,10 @@ export default function Viewer({
 type CustomElement<T> = Partial<T & DOMAttributes<T>>;
 
 declare global {
-  namespace JSX {
+  namespace JSX { // skipcq: js-0337
     interface IntrinsicElements {
-      ['image-comparison-viewer']: CustomElement<ImageComparisonViewer>; // skipcq: js-0337
-      ['image-comparison-viewer-dragger-handle']: CustomElement<ImageComparisonViewerDraggerHandle>; // skipcq: js-0337
+      ['image-comparison-viewer']: CustomElement<ImageComparisonViewer>;
+      ['image-comparison-viewer-dragger-handle']: CustomElement<ImageComparisonViewerDraggerHandle>;
     }
   }
 }
