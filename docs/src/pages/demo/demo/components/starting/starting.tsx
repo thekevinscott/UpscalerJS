@@ -123,7 +123,7 @@ export default function Starting({
             <Loading />
           )}
           {hasBeenBenchmarked && (
-            <p>You can choose a patch size above, or accept the default. Click the Start button when you're ready.</p>
+            <p>You can choose a patch size above, or accept the default. Click the Start button when you&apos;re ready.</p>
           )}
         <div id={styles.options}>
           <div id={styles.right}>

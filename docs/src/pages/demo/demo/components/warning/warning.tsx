@@ -29,7 +29,7 @@ export default function Warning({
         <p>
           Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels, 
           which may be too large to upscale in your browser. 
-          It's recommended that we first downscale your image 
+          It&apos;s recommended that we first downscale your image 
           to <strong>{img.width}</strong> by <strong>{img.height}</strong> before 
           upscaling to demonstrate UpscalerJS.
         </p>
