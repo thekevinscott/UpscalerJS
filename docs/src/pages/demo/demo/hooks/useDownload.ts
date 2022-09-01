@@ -5,10 +5,10 @@ export const useDownload = (name?: string, progress?: number, upscaledSrc?: stri
 
   const handleDownload = useCallback(() => {
     if (!isDownloadDisabled) {
-      const a = document.createElement("a");
-      a.href = upscaledSrc;
-      a.download = name;
-      a.click();
+      const anchor = document.createElement("a");
+      anchor.href = upscaledSrc;
+      anchor.download = name;
+      anchor.click();
 
     }
   }, [isDownloadDisabled]);

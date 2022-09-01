@@ -15,12 +15,12 @@ export function useShoelaceEventListener<T extends HTMLElement>(callback: Shoela
   }, [callback, JSON.stringify(eventNames)]);
 
   useEffect(() => {
-    const c = ref.current;
-    if (c) {
+    const current = ref.current;
+    if (current) {
       eventNames.forEach(eventName => {
-        c.addEventListener(eventName, handleEvent);
+        current.addEventListener(eventName, handleEvent);
         return () => {
-          c.removeEventListener(eventName, handleEvent);
+          current.removeEventListener(eventName, handleEvent);
         }
       });
     }
