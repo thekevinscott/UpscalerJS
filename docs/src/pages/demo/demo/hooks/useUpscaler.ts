@@ -114,7 +114,9 @@ export const useUpscaler = (img?: HTMLImageElement) => {
         } = data;
         if (id === img.src) {
           setProgress(rate);
-          const dataURL = tf.tidy(() => tensorAsBase64(tf.tensor3d(slice, shape)));
+          const tensor = tf.tensor3d(slice, shape);
+          const dataURL = await tensorAsBase64(tensor);
+          tensor.dispose();
           setUpscaledSrc(await drawImage(dataURL, patchSize * SCALE, col, row));
           if (rate === 1) {
             setUpscaling(false);
