@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React from 'react';
 import styles from './actions.module.scss';
 import { Range } from '@site/src/components/range/range';
 import { Button } from '@site/src/components/button/button';

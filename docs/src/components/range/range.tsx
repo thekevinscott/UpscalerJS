@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { SlRange  } from '@shoelace-style/shoelace/dist/react';
 
 export const Range = ({ onChange, ...props }) => {

@@ -1,4 +1,4 @@
-import React, { createRef, DOMAttributes, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, { DOMAttributes, useCallback, useEffect, useState } from 'react';
 import styles from './viewer.module.scss';
 import 'image-comparison-viewer';
 import { ImageComparisonViewer, ImageComparisonViewerDraggerHandle, DraggerChangeEvent } from 'image-comparison-viewer';

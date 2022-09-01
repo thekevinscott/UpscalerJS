@@ -4,6 +4,8 @@ import { Button } from '@site/src/components/button/button';
 
 type HandleToggle = () => void;
 
+const getMessage = (open: boolean) => open ? 'Hide Controls' : 'Show Controls';
+
 export default function Toggle({ 
   open,
   handleToggle,
@@ -16,13 +18,4 @@ export default function Toggle({
     <Button onClick={handleToggle}>{getMessage(open)}</Button>
     </div>
   );
-}
-
-
-const getMessage = (open: boolean) => {
-  if (open) {
-    return 'Hide Controls';
-  }
-
-  return 'Show Controls';
 }

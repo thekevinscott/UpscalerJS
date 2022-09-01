@@ -15,7 +15,6 @@ export default function ControlPane({
   children,
   open,
   position,
-  width,
   height,
   mobile,
   fullHeight,
@@ -24,7 +23,6 @@ export default function ControlPane({
   children: JSX.Element;
   open: boolean;
   position: Position,
-  width?: number;
   height?: number;
   mobile?: boolean;
   fullHeight?: boolean;

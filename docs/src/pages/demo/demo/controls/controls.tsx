@@ -62,7 +62,7 @@ export default function Controls({
         </div>
       </div>
       {state !== State.BENCHMARKING && <Toggle handleToggle={handleToggle} open={open} />}
-      <ControlPane open={getStateForSidebar(state, open)} position="right" width={200}>
+      <ControlPane open={getStateForSidebar(state, open)} position="right">
         <Sidebar selectImage={selectImage} state={state} />
       </ControlPane>
       <ControlPane open={getStateForActions(state, open)} position="bottom" height={120}>

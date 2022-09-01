@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React from 'react';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
 import { SlButton } from '@shoelace-style/shoelace/dist/react';
 

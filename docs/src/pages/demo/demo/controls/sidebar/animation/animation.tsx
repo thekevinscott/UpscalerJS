@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import styles from './animation.module.scss';
 
 const SIZE = 20;
@@ -35,8 +35,6 @@ const useAnimate = (canvasRef: MutableRefObject<HTMLCanvasElement>) => {
 export default function Animation({ }) {
   const canvasRef = useRef<HTMLCanvasElement>();
   useAnimate(canvasRef);
-
-  const timer = useRef<number>();
 
   return (
     <div id={styles.animation}>

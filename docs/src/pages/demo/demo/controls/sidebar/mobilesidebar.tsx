@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { Input } from '@site/src/components/input/input';
 import { Icon } from '@site/src/components/icon/icon';
