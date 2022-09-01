@@ -4,6 +4,13 @@ import styles from './controlPane.module.scss';
 
 type Position = 'right' | 'bottom';
 
+const getPosition = (position: Position) => {
+  return {
+    [styles.right]: position === 'right',
+    [styles.bottom]: position === 'bottom',
+  }
+}
+
 export default function ControlPane({ 
   children,
   open,
@@ -44,11 +51,4 @@ export default function ControlPane({
       </div>
     </div>
   );
-}
-
-const getPosition = (position: Position) => {
-  return {
-    [styles.right]: position === 'right',
-    [styles.bottom]: position === 'bottom',
-  }
 }

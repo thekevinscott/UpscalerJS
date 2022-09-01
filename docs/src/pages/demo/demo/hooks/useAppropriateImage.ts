@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export const useAppropriateImage = ({ hasBeenRescaled, choice, downscaledImage, _originalImage }) => {
   return useMemo<undefined | HTMLImageElement>(() => {

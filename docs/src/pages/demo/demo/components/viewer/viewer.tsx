@@ -1,4 +1,4 @@
-import React, { createRef, DOMAttributes, useCallback, useEffect, useRef, useState } from 'react';
+import React, { createRef, DOMAttributes, ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './viewer.module.scss';
 import 'image-comparison-viewer';
 import { ImageComparisonViewer, ImageComparisonViewerDraggerHandle, DraggerChangeEvent } from 'image-comparison-viewer';
@@ -59,7 +59,7 @@ export default function Viewer({
   );
 }
 
-type CustomElement<T> = Partial<T & DOMAttributes<T> & { children: any }>;
+type CustomElement<T> = Partial<T & DOMAttributes<T>>;
 
 declare global {
   namespace JSX {

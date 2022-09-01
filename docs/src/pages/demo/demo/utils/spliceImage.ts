@@ -1,4 +1,3 @@
-import { getCanvas } from "./getCanvas";
 import { getHTMLImageElement } from "./getHTMLImageElement";
 
 export const spliceImage = async (canvas: HTMLCanvasElement, slice: undefined | string, patchSize: number, x: number, y: number) => {

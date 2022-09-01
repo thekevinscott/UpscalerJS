@@ -7,6 +7,18 @@ import { State } from '../../types';
 import ControlPane from '../controlPane/controlPane';
 import classNames from 'classnames';
 
+const getStateForMobileSidebar = (state: State, open: boolean) => {
+  if (open === false) {
+    return false;
+  }
+
+  if (state === State.UPLOAD) {
+    return true;
+  }
+
+  return false;
+}
+
 export default function MobileSidebar({
   state,
   selectImage,
@@ -20,23 +32,6 @@ export default function MobileSidebar({
   const handleChange = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
-
-  const timer = useRef<number>();
-  const [showUploadButton, setShowUploadButton] = useState(false);
-  useEffect(() => {
-    clearTimeout(timer.current);
-    if (state === State.COMPLETE) {
-      timer.current = window.setTimeout(() => {
-        setShowUploadButton(true);
-      }, 500);
-    } else {
-      setShowUploadButton(false);
-    }
-
-    return () => {
-      clearTimeout(timer.current);
-    }
-  }, [state]);
 
   const [expanded, setFullHeight] = useState(false);
 
@@ -53,7 +48,7 @@ export default function MobileSidebar({
       <div id={styles.mobileSidebar} className={classNames({ [styles.expanded]: expanded })}>
         <Icon onClick={handleBlur} id={styles.close} className={classNames({ [styles.visible]: expanded })} name="x-circle" slot="suffix"></Icon>
         <p>Alternatively, you can search for sample images to upscale below.</p>
-        <Input placeholder="Search images" size="small" onSlFocus={handleFocus} onSlInput={event => handleChange((event.target as any).value)}>
+        <Input placeholder="Search images" size="small" onSlFocus={handleFocus} onSlInput={event => handleChange((event.target as HTMLInputElement).value)}>
           <Icon name="search" slot="suffix"></Icon>
         </Input>
         {expanded && (
@@ -65,16 +60,4 @@ export default function MobileSidebar({
       </div>
     </ControlPane>
   );
-}
-
-const getStateForMobileSidebar = (state: State, open: boolean) => {
-  if (open === false) {
-    return false;
-  }
-
-  if (state === State.UPLOAD) {
-    return true;
-  }
-
-  return false;
 }

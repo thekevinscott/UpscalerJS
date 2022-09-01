@@ -11,6 +11,26 @@ import { Button } from '@site/src/components/button/button';
 import MobileSidebar from './sidebar/mobilesidebar';
 import MobileFooter from './sidebar/mobileFooter';
 
+const getStateForActions = (state: State, open: boolean) => {
+  if (open === false) {
+    return false;
+  }
+
+  if (state === State.COMPLETE || state === State.PROCESSING) {
+    return true;
+  }
+
+  return false;
+}
+
+const getStateForSidebar = (state: State, open: boolean) => {
+  if (state === State.BENCHMARKING) {
+    return false;
+  }
+
+  return open;
+}
+
 export default function Controls({ 
   selectImage,
   state,
@@ -54,24 +74,4 @@ export default function Controls({
       </MobileFooter>
     </div>
   );
-}
-
-const getStateForActions = (state: State, open: boolean) => {
-  if (open === false) {
-    return false;
-  }
-
-  if (state === State.COMPLETE || state === State.PROCESSING) {
-    return true;
-  }
-
-  return false;
-}
-
-const getStateForSidebar = (state: State, open: boolean) => {
-  if (state === State.BENCHMARKING) {
-    return false;
-  }
-
-  return open;
 }

@@ -7,8 +7,6 @@ type GetResponse = () => Promise<Response>;
 /**
  * Constants
  */
-const CACHE_LENGTH = 60 * 60 * 24; // 1 day
-
 const ALLOWED_DOMAINS = [
   'http://localhost:3000', 
   'https://upscalerjs.com', 

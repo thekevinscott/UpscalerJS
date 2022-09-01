@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
-import Upscaler, { AbortError } from 'upscaler';
-import { getCanvas } from '../utils/getCanvas';
+import { AbortError } from 'upscaler';
 import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
-import { getHTMLImageElement } from '../utils/getHTMLImageElement';
 import { tensorAsBase64 } from '@site/../packages/upscalerjs/dist/browser/esm/image.generated';
-import { removeAlpha } from '../utils/removeAlpha';
 
 const SCALE = 4;
 

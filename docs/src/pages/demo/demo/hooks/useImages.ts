@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { ProcessedImage, Size, UploadedImage, UpscaleChoice } from '../types';
 import { getHTMLImageElement } from '../utils/getHTMLImageElement';
 import { getRecommendedImageSize } from '../utils/getRecommendedImageSize';

@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { Input } from '@site/src/components/input/input';
 import { Icon } from '@site/src/components/icon/icon';
@@ -44,7 +44,7 @@ export default function Sidebar({
         <div id={styles.uploadAnother} className={classNames({ [styles.visible]: showUploadButton })}>
           <Button variant="primary" onClick={() => selectImage(undefined)}>Upload Image</Button>
         </div>
-        <Input placeholder="Search images" size="small" onSlInput={event => handleChange((event.target as any).value)}>
+        <Input placeholder="Search images" size="small" onSlInput={event => handleChange((event.target as HTMLInputElement).value)}>
           <Icon name="search" slot="suffix"></Icon>
         </Input>
         <small className={styles.info}>Images provided from <a target="_blank" href="https://pixabay.com">pixabay</a></small>

@@ -1,4 +1,4 @@
-import Upscaler, { AbortError } from 'upscaler';
+import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 
 export enum ReceiverWorkerState {

@@ -9,6 +9,59 @@ import Dialogue from '../dialogue/dialogue';
 import Pane from '../pane/pane';
 import classNames from 'classnames';
 
+const Row = ({
+  patchSize,
+  duration,
+  hasBeenBenchmarked,
+  chosenPatchSize,
+  choosePatchSize,
+}: {
+  patchSize: number;
+  duration: number;
+  hasBeenBenchmarked: boolean;
+  chosenPatchSize?: number,
+  choosePatchSize: (patchSize: number) => void,
+}) => {
+  const ref = useRef<HTMLInputElement>();
+  const id = `patch-size-${patchSize}`;
+  const handleClick = useCallback(() => {
+    const current = ref.current;
+    if (hasBeenBenchmarked && current) {
+      current.click();
+    }
+  }, [hasBeenBenchmarked, ref]);
+
+  return (
+    <tr key={patchSize} onClick={handleClick} className={classNames({ [styles.active]: hasBeenBenchmarked })}>
+      <td>
+        <div>
+        <input
+          ref={ref}
+          checked={chosenPatchSize === patchSize}
+          disabled={!hasBeenBenchmarked}
+          type="radio"
+          id={id}
+          name="patch-size"
+          value={patchSize}
+          onChange={() => choosePatchSize(patchSize)}
+        />
+        </div>
+      </td>
+      <td>
+        <div>
+        {patchSize}px
+        </div>
+      </td>
+      <td>
+        <div>
+        {duration ? `${duration}ms` : <Spinner />}
+
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function Starting({
   hasBeenBenchmarked,
   start,
@@ -82,58 +135,5 @@ export default function Starting({
       </div>
       </Pane>
     </Dialogue>
-  );
-}
-
-const Row = ({
-  patchSize,
-  duration,
-  hasBeenBenchmarked,
-  chosenPatchSize,
-  choosePatchSize,
-}: {
-  patchSize: number;
-  duration: number;
-  hasBeenBenchmarked: boolean;
-  chosenPatchSize?: number,
-  choosePatchSize: (patchSize: number) => void,
-}) => {
-  const ref = useRef<HTMLInputElement>();
-  const id = `patch-size-${patchSize}`;
-  const handleClick = useCallback(() => {
-    const current = ref.current;
-    if (hasBeenBenchmarked && current) {
-      current.click();
-    }
-  }, [hasBeenBenchmarked, ref]);
-
-  return (
-    <tr key={patchSize} onClick={handleClick} className={classNames({ [styles.active]: hasBeenBenchmarked })}>
-      <td>
-        <div>
-        <input
-          ref={ref}
-          checked={chosenPatchSize === patchSize}
-          disabled={!hasBeenBenchmarked}
-          type="radio"
-          id={id}
-          name="patch-size"
-          value={patchSize}
-          onChange={() => choosePatchSize(patchSize)}
-        />
-        </div>
-      </td>
-      <td>
-        <div>
-        {patchSize}px
-        </div>
-      </td>
-      <td>
-        <div>
-        {duration ? `${duration}ms` : <Spinner />}
-
-        </div>
-      </td>
-    </tr>
   );
 }

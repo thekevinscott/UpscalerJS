@@ -1,4 +1,3 @@
-import { getCanvas } from "./getCanvas";
 import { getHTMLImageElement } from "./getHTMLImageElement";
 
 export const removeAlpha = async (src: string) => {
