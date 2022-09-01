@@ -90,7 +90,7 @@ type HandleUpscalerJSRequest = (callback: Callback, opts: {
   ctx: ExecutionContext;
   cacheLength: number;
 }) => Promise<Response>;
-export const handleUpscalerJSRequest: HandleUpscalerJSRequest = async (callback, {
+export const handleUpscalerJSRequest: HandleUpscalerJSRequest = async (callback, { //skipcq: JS-0116
   cacheLength,
   request,
   ctx,
