@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { getHTMLImageElement } from '../utils/getHTMLImageElement';
 import { spliceImage } from '../utils/spliceImage';
 
 const manipulateOriginalImage = (canvas: HTMLCanvasElement) => {

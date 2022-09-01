@@ -52,3 +52,9 @@ $width: 200px;
 //     }
 //   }
 // }
+
+@media only screen and (max-width: 980px) {
+  #toggle {
+    display: none;
+  }
+}

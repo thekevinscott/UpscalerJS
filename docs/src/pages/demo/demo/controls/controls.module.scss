@@ -35,3 +35,27 @@
   width: 100%;
   margin-top: 20px;
 }
+
+@media only screen and (max-width: 980px) {
+  #controls {
+    .mobileFooterActions {
+      flex-direction: column;
+      height: 220px;
+      padding: 20px;
+
+      > div {
+        justify-content: center !important;
+        align-items: center !important;
+      }
+    }
+  }
+
+  #progress {
+    &.right {
+      #progressBar {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  }
+}

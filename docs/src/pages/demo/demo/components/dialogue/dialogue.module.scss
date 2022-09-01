@@ -12,6 +12,15 @@
   z-index: 2;
 }
 
+@media only screen and (max-width: 980px) {
+  #container {
+    font-size: 14px;
+    left: 50%;
+    width: 84%;
+    margin-left: -42%;
+  }
+}
+
 html[data-theme='dark'] {
   #dialogue {
     background-color: #0a2235;

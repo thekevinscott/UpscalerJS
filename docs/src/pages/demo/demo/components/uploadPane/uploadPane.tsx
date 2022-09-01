@@ -37,7 +37,8 @@ export default function UploadPane({
           }}
           size={size}
         >
-          <Button variant="primary">{isDragActive ? 'Drop Image' : 'Upload Image' }</Button>
+          <p>Upload an image from your computer, or choose from one of the images in the search field.</p>
+          <Button size="large" variant="primary">{isDragActive ? 'Drop Image' : 'Upload Image' }</Button>
         </Pane>
       )}
     </Upload>

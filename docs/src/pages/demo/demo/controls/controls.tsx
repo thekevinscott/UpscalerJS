@@ -8,6 +8,8 @@ import Actions, { HandleZoom } from './actions/actions';
 import { State } from '../types';
 import classNames from 'classnames';
 import { Button } from '@site/src/components/button/button';
+import MobileSidebar from './sidebar/mobilesidebar';
+import MobileFooter from './sidebar/mobileFooter';
 
 export default function Controls({ 
   selectImage,
@@ -39,13 +41,17 @@ export default function Controls({
           {progress}
         </div>
       </div>
-      <Toggle handleToggle={handleToggle} open={open} />
-      <ControlPane open={open} position="right" width={200}>
-        <Sidebar selectImage={selectImage} />
+      {state !== State.BENCHMARKING && <Toggle handleToggle={handleToggle} open={open} />}
+      <ControlPane open={getStateForSidebar(state, open)} position="right" width={200}>
+        <Sidebar selectImage={selectImage} state={state} />
       </ControlPane>
       <ControlPane open={getStateForActions(state, open)} position="bottom" height={120}>
         <Actions handleZoom={handleZoom} zoom={zoom} handleDownload={handleDownload} />
       </ControlPane>
+      <MobileSidebar selectImage={selectImage} state={state} open={open} />
+      <MobileFooter state={state} open={open}>
+        <Actions handleDownload={handleDownload} />
+      </MobileFooter>
     </div>
   );
 }
@@ -60,4 +66,12 @@ const getStateForActions = (state: State, open: boolean) => {
   }
 
   return false;
+}
+
+const getStateForSidebar = (state: State, open: boolean) => {
+  if (state === State.BENCHMARKING) {
+    return false;
+  }
+
+  return open;
 }

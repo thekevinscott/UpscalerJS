@@ -1,5 +1,6 @@
 export enum State {
-  NOT_STARTED,
+  BENCHMARKING,
+  UPLOAD,
   WARNING,
   PROCESSING,
   COMPLETE,

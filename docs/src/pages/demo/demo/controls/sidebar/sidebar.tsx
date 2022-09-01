@@ -1,13 +1,18 @@
-import React, { useCallback, useState } from 'react';
+import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.scss';
 import { Input } from '@site/src/components/input/input';
 import { Icon } from '@site/src/components/icon/icon';
 import Images, { SelectImage } from './images/images';
-import UploadPane from '../../components/uploadPane/uploadPane';
+import { Button } from '@site/src/components/button/button';
+import { State } from '../../types';
+import classNames from 'classnames';
+import Animation from './animation/animation';
 
 export default function Sidebar({
+  state,
   selectImage,
 }: {
+  state: State,
   selectImage: SelectImage,
 }) {
   const [searchValue, setSearchValue] = useState('');
@@ -15,9 +20,30 @@ export default function Sidebar({
     setSearchValue(value);
   }, []);
 
+  const timer = useRef<number>();
+  const [showUploadButton, setShowUploadButton] = useState(false);
+  useEffect(() => {
+    clearTimeout(timer.current);
+    if (state === State.COMPLETE) {
+      timer.current = window.setTimeout(() => {
+        setShowUploadButton(true);
+      }, 500);
+    } else {
+      setShowUploadButton(false);
+    }
+
+    return () => {
+      clearTimeout(timer.current);
+    }
+  }, [state]);
+
   return (
     <div id={styles.sidebar}>
       <div id={styles.header}>
+        <Animation />
+        <div id={styles.uploadAnother} className={classNames({ [styles.visible]: showUploadButton })}>
+          <Button variant="primary" onClick={() => selectImage(undefined)}>Upload Image</Button>
+        </div>
         <Input placeholder="Search images" size="small" onSlInput={event => handleChange((event.target as any).value)}>
           <Icon name="search" slot="suffix"></Icon>
         </Input>

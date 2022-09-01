@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './demo.module.scss';
 import Viewer from './components/viewer/viewer';
 import Controls from './controls/controls';
@@ -11,9 +11,34 @@ import { useDemoLifecycleState } from './hooks/useDemoLifecycleState';
 import { useImages } from './hooks/useImages';
 import { ProgressBar } from './components/progressBar/progressBar';
 import { useDownload } from './hooks/useDownload';
+import Starting from './components/starting/starting';
+
+const globalStyle = document.createElement('style');
+globalStyle.type = 'text/css';
+globalStyle.innerHTML = `
+body {
+  position: fixed;
+  overflow: hidden !important;
+  width: 100%;
+}
+`;
 
 export default function Demo() {
   useShoelaceColorTheme();
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const head = document.getElementsByTagName('head')[0];
+    head.appendChild(globalStyle);
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, user-scalable=no';
+    head.appendChild(meta)
+
+    return () => {
+      head.removeChild(globalStyle);
+      head.removeChild(meta);
+    }
+  }, []);
   const { 
     upscaledSrc,
     originalSize, 
@@ -25,13 +50,20 @@ export default function Demo() {
     progress,
     cancelUpscale,
     filename,
+    hasBeenBenchmarked,
+    benchmarks,
+    patchSize,
+    choosePatchSize,
   } = useImages();
 
   const { handleDownload } = useDownload(filename, progress, upscaledSrc);
 
   const lifecycleState = useDemoLifecycleState({
+    progress,
+    upscaledSrc,
     hasBeenRescaled, 
     img,
+    started,
   });
 
   const [zoom, setZoom] = useState(.75);
@@ -41,7 +73,16 @@ export default function Demo() {
   return (
     <UploadContext.Provider value={{ handleUpload: setUploadedImage }}>
       <div id={styles.page}>
-        {lifecycleState === State.NOT_STARTED && (
+        {lifecycleState === State.BENCHMARKING && (
+          <Starting 
+            benchmarks={benchmarks} 
+            start={() => setStarted(true)} 
+            hasBeenBenchmarked={hasBeenBenchmarked}
+            patchSize={patchSize}
+            choosePatchSize={choosePatchSize}
+           />
+        )}
+        {lifecycleState === State.UPLOAD && (
           <UploadDialogue />
         )}
         {lifecycleState === State.WARNING && (
