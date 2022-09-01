@@ -18,7 +18,11 @@ const CACHE_LENGTH = 60 * 60 * 24; // 1 day
 
 const fetchFromPixabay = async (PIXABAY_API_KEY: string, request: Request): Promise<Response> => {
   const query = new URL(request.url).searchParams.get('q');
-  const url = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&q=${query}&safesearch=true`;
+  let url = `https://pixabay.com/api/?key=${PIXABAY_API_KEY}&safesearch=true`;
+  if (query !== null) {
+    url = `${url}&q=${query}`;
+  }
+
   return await fetch(url, {
     headers: {
       'content-type': 'application/json;charset=UTF-8',

@@ -72,7 +72,10 @@ const wrapCache = async (request: Request, ctx: ExecutionContext, getResponse: G
     // will limit the response to be in cache for 10 seconds max
 
     // Any changes made to the response here will be reflected in the cached value
-    response.headers.append("Cache-Control", `s-maxage=${headers.get('cache-length')}`)
+    const cacheLength = headers.get('cache-length');
+    if (cacheLength !== null) {
+      response.headers.append("Cache-Control", `s-maxage=${cacheLength}`)
+    }
 
     // Store the fetched response as cacheKey
     // Use waitUntil so you can return the response without blocking on
