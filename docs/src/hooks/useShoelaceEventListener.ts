@@ -9,8 +9,6 @@ export function useShoelaceEventListener<T extends HTMLElement>(callback: Shoela
     const target = e.target as T;
     if (callback) {
       callback(target, e);
-    } else {
-      // console.warn('No callback defined for event', e);
     }
   }, [callback, JSON.stringify(eventNames)]);
 
@@ -19,10 +17,12 @@ export function useShoelaceEventListener<T extends HTMLElement>(callback: Shoela
     if (current) {
       eventNames.forEach(eventName => {
         current.addEventListener(eventName, handleEvent);
-        return () => {
-          current.removeEventListener(eventName, handleEvent);
-        }
       });
+      return () => {
+        eventNames.forEach(eventName => {
+          current.removeEventListener(eventName, handleEvent);
+        });
+      }
     }
   }, [handleEvent, ref]);
 
