@@ -32,13 +32,13 @@ html[data-theme='dark'] {
   .large {
     padding: $largePadding;
     &:before {
-      background-size: $largeImage $largeImage;
+      background-size: $largeImage;
     }
   }
 
   .small {
     padding: $smallPadding;
     &:before {
-      background-size: $smallImage $smallImage;
+      background-size: $smallImage;
     }
   }
