@@ -23,7 +23,7 @@ body {
 }
 `;
 
-export default function Demo() {
+export function Demo() {
   useShoelaceColorTheme();
   const [started, setStarted] = useState(false);
   useEffect(() => {
