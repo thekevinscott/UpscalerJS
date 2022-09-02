@@ -7,7 +7,7 @@ export default function DemoPage() {
     <Layout title="Demo" description="A Demo of UpscalerJS">
       <BrowserOnly>
         {() => {
-          const Demo = require('@site/src/components/demo/demo').Demo;
+          const Demo = require('@site/src/components/demo/demo').Demo; // skipcq: js-0359
           return (<Demo />);
         }}
       </BrowserOnly>
