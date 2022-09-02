@@ -10,8 +10,10 @@ type GetResponse = () => Promise<Response>;
 const ALLOWED_DOMAINS = [
   'http://localhost:3000', 
   'https://upscalerjs.com', 
+  'http://image-search.upscalerjs.com',
   'https://image-search.upscalerjs.com',
   'https://image-search-dev.upscaler.workers.dev',
+  'https://image-search-prod.upscaler.workers.dev',
 ];
 
 /**
@@ -95,14 +97,24 @@ export const handleUpscalerJSRequest: HandleUpscalerJSRequest = async (callback,
   request,
   ctx,
 }) => {
+  const url = new URL(request.url);
+
+  if (url.protocol === 'http:') {
+    url.protocol = 'https:';
+    return Response.redirect(url.toString(), 301);
+  }
+
   const headers = getHeaders(cacheLength)
   const origin = request.headers.get('origin') || '';
   try {
     if (!ALLOWED_DOMAINS.includes(origin)) {
+      console.log(`Should 403, because origin is not in allowed domains. Origin is "${origin}" and ALLOWED_DOMAINS include`, ALLOWED_DOMAINS)
       return new Response(JSON.stringify({ error: 'Not allowed', origin }), {
         status: 403,
         headers,
       });
+    } else {
+      console.log(`This request is valid, because origin is "${origin}" which is in ALLOWED_DOMAINS`);
     }
 
     return wrapCache(request, ctx, callback, headers);

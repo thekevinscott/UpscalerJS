@@ -3,6 +3,9 @@ import styles from './images.module.scss';
 import Loading from '@site/src/components/loading/loading';
 import type { UploadedImage } from '../../../types';
 
+const IMAGE_SEARCH_ROOT = 'https://image-search-prod.upscaler.workers.dev';
+// const IMAGE_SEARCH_ROOT = 'https://image-search.upscalerjs.com';
+
 export type SelectImage = (img: UploadedImage) => void;
 export default function Images({
   searchValue,
@@ -16,7 +19,7 @@ export default function Images({
   const [images, setImages] = useState<undefined | { tags: string, pageURL: string, url: string }[]>();
 
   const search = useCallback(async (value: string) => {
-    const resp = await fetch(`http://image-search.upscalerjs.com?q=${value}`);
+    const resp = await fetch(`${IMAGE_SEARCH_ROOT}?q=${value}`);
     const { response: { hits }} = await resp.json();
     setImages(hits.map(hit => ({
       url: hit.previewURL,
