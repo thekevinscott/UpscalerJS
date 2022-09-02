@@ -14,7 +14,8 @@
   justify-content: center;
   align-items: center;
   z-index: 2;
-  width: 100%;
+  margin-left: 0;
+  width: calc(100% - 0px);
   padding: 0 20px;
   bottom: 20px;
   transition-duration: .4s;
