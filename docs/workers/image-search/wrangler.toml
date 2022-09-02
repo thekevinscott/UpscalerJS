@@ -5,7 +5,10 @@ workers_dev = true
 
 [env.production]
 name = "image-search-prod"
-workers_dev = false
-routes = [
-	{ pattern = "image-search.upscalerjs.com", custom_domain = true }
-]
+workers_dev = true
+
+# the below doesn't active https
+# workers_dev = false
+# routes = [
+# 	{ pattern = "image-search.upscalerjs.com", custom_domain = true }
+# ]
