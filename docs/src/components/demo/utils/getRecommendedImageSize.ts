@@ -1,6 +1,6 @@
 import type { Size } from "../types";
 
-const PIXEL_THRESHOLD = 400;
+const PIXEL_THRESHOLD = 600;
 
 const asInt = (n: number) => parseInt(`${n}`, 10);
 
