@@ -2,23 +2,25 @@
   "name": "@upscalerjs/scripts",
   "private": true,
   "scripts": {
-    "run_command": "ts-node --project ./tsconfig.json",
-    "example": "pnpm run_command ./start-example.ts",
-    "find-all-packages": "pnpm run_command ./package-scripts/find-all-packages.ts",
-    "build:upscaler": "pnpm run_command ./package-scripts/build-upscaler.ts",
-    "validate:build": "pnpm run_command ./package-scripts/validate-build.ts",
-    "update:version": "pnpm run_command ./package-scripts/update-version.ts",
-    "update:tfjs": "pnpm run_command ./package-scripts/update-tfjs.ts",
-    "update:dependency": "pnpm run_command ./package-scripts/update-dependency.ts",
-    "test:integration:browserstack": "pnpm run_command ./test.ts --platform browser --kind browserstack",
-    "test:integration:browser": "pnpm run_command ./test.ts --platform browser",
-    "test:integration:node": "pnpm run_command ./test.ts --platform node",
-    "test:memory-leaks": "pnpm run_command ./check-memory-leaks.ts"
+    "run-command": "ts-node --project ./tsconfig.json",
+    "convert-python-model": "pnpm run-command ./package-scripts/convert-python-model.ts",
+    "create-new-model-folder": "pnpm run-command ./package-scripts/create-new-model-folder.ts",
+    "example": "pnpm run-command ./start-example.ts",
+    "find-all-packages": "pnpm run-command ./package-scripts/find-all-packages.ts",
+    "build:upscaler": "pnpm run-command ./package-scripts/build-upscaler.ts",
+    "validate:build": "pnpm run-command ./package-scripts/validate-build.ts",
+    "update:version": "pnpm run-command ./package-scripts/update-version.ts",
+    "update:tfjs": "pnpm run-command ./package-scripts/update-tfjs.ts",
+    "update:dependency": "pnpm run-command ./package-scripts/update-dependency.ts",
+    "test:integration:browserstack": "pnpm run-command ./test.ts --platform browser --kind browserstack",
+    "test:integration:browser": "pnpm run-command ./test.ts --platform browser",
+    "test:integration:node": "pnpm run-command ./test.ts --platform node",
+    "test:memory-leaks": "pnpm run-command ./check-memory-leaks.ts"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
-    "inquirer": "^8.2.4",
     "@types/yargs": "^17.0.10",
+    "inquirer": "^8.2.4",
     "yargs": "^17.5.1"
   }
 }
