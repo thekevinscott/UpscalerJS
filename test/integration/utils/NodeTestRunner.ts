@@ -1,16 +1,16 @@
 import { timeit } from "./timeit";
-import { GetScriptContents, testNodeScript } from "../../lib/node/prepare";
+import { GetScriptContents, testNodeScript as runNodeScript } from "../../lib/node/prepare";
 
 type Bundle = () => Promise<void>;
 
 export type Dependencies = Record<string, string>;
 export type DefinedDependencies = Record<string, any>;
-export type Main = (dependencies: DefinedDependencies) => Promise<void>;
+export type Main<T extends DefinedDependencies = DefinedDependencies> = (dependencies: T) => Promise<string>;
 export type Globals = Record<string, any>;
 
-interface TestOpts {
+interface TestOpts<T extends DefinedDependencies> {
   dependencies?: Dependencies;
-  main?: Main;
+  main?: Main<T>;
   globals?: Globals;
 }
 
@@ -22,10 +22,10 @@ const DEFAULT_DEPENDENCIES = {
   path: 'path',
 };
 
-export class NodeTestRunner {
+export class NodeTestRunner<T extends DefinedDependencies> {
   trackTime: boolean;
   dependencies: Dependencies;
-  main?: Main;
+  main?: Main<T>;
   globals: Globals;
 
   constructor({
@@ -35,7 +35,7 @@ export class NodeTestRunner {
     globals = {},
   }: {
     trackTime?: boolean;
-    main?: Main,
+    main?: Main<T>,
     dependencies?: Dependencies;
     globals?: Globals;
   } = {}) {
@@ -54,11 +54,13 @@ export class NodeTestRunner {
    * Utility methods
    */
 
-  async test({
+  async run({
     dependencies = {},
     main,
     globals = {},
-  }: TestOpts) {
+  }: TestOpts<T>, {
+    removeTmpDir = true, // set to false if you need to inspect the Node output files
+  } = {}) {
     const _main = main || this.main;
     if (!_main) {
       throw new Error('No main function defined');
@@ -71,10 +73,14 @@ export class NodeTestRunner {
       ...this.globals,
       ...globals,
     });
+    let testName = '';
     try {
-      return await testNodeScript(contents, {
-        removeTmpDir: true, // set to false if you need to inspect the Node output files
-        testName: expect.getState().currentTestName,
+      testName = expect.getState().currentTestName;
+    } catch(err) {}
+    try {
+      return await runNodeScript(contents, {
+        removeTmpDir,
+        testName,
       });
     } catch(err: any) {
       const message = err.message;
@@ -87,28 +93,29 @@ export class NodeTestRunner {
    * Jest lifecycle methods
    */
 
-  @timeit<[Bundle], NodeTestRunner>('beforeAll scaffolding')
+  @timeit<[Bundle], NodeTestRunner<T>>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     await bundle();
   }
 }
 
-const getScriptContents = (
+function getScriptContents<T extends DefinedDependencies>(
   dependencies: Dependencies, 
-  main: Main, 
+  main: Main<T>, 
   globals: Globals
-): GetScriptContents => (outputFile: string) => `
+): GetScriptContents {
+  return (outputFile: string) => `
 const { __awaiter } = require("tslib");
 
 ${Object.entries(dependencies).map(makeDependency).join('\n')}
 ${Object.entries(globals).map(makeGlobal).join('\n')}
 (async () => {
-  const data = await ${main.toString()}({
-    ${Object.keys({
-      ...dependencies,
-      ...globals,
-    }).map((key) => `${key},`).join('\n')}
-  });
+  const main = ${main.toString()};
+  const data = await main({ ${Object.keys({
+    ...dependencies,
+    ...globals,
+  }).join(', ')} });
   fs.writeFileSync('${outputFile}', data);
 })();
 `;
+}

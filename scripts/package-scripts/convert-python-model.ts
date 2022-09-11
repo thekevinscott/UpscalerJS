@@ -3,6 +3,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import callExec from '../../test/lib/utils/callExec';
 import { mkdirp } from 'fs-extra';
+import { runDocker } from './utils/runDocker';
 
 /****
  * Type Definitions
@@ -27,17 +28,23 @@ const convertPythonModel = async (modelPath: string, _outputDirectory: string): 
   await mkdirp(outputDirectory);
   const inputFolder = path.resolve(path.dirname(modelPath));
   const modelName = modelPath.split('/').pop();
-  const cmd = [
-    "docker run --rm",
-    `-v "${inputFolder}:/model"`,
-    `-v "${path.resolve(outputDirectory)}:/output"`,
-    'evenchange4/docker-tfjs-converter',
+  await runDocker('evenchange4/docker-tfjs-converter', [
     'tensorflowjs_converter',
     '--input_format=keras',
     `/model/${modelName}`,
     `/output/${modelName?.split('.').slice(0, -1).join('.')}`,
-  ].join(' ');
-  await callExec(cmd);
+  ].join(' '), {
+    volumes: [
+      {
+        internal: '/model',
+        external: inputFolder,
+      },
+      {
+        internal: '/output',
+        external: path.resolve(outputDirectory),
+      },
+    ]
+  });
 };
 
 export default convertPythonModel;

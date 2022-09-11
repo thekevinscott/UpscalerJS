@@ -67,6 +67,9 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
     const contentOutput = getScriptContents(dataFile).trim();
     const fileName = path.resolve(tmpDir, getTestName(testName, contentOutput));
     fs.writeFileSync(fileName, contentOutput, 'utf-8');
+    if (removeTmpDir === false) {
+      console.log(`file is ${fileName}`);
+    }
     await executeNodeScript(fileName, {
       stdout: chunk => {
         if (logExtra) {
@@ -80,6 +83,9 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
       },
     });
     data = fs.readFileSync(dataFile);
+    if (removeTmpDir === false) {
+      console.log(`tmpDir is ${tmpDir}`);
+    }
   }, {
     rootDir: path.resolve(ROOT, './tmp'),
     removeTmpDir,

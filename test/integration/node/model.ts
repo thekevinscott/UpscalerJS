@@ -52,7 +52,7 @@ describe('Node Model Loading Integration Tests', () => {
   });
 
   it("loads the default model", async () => {
-    const result = await testRunner.test({
+    const result = await testRunner.run({
       globals: {
         model: 'undefined',
       },
@@ -63,7 +63,7 @@ describe('Node Model Loading Integration Tests', () => {
   });
 
   it("loads a locally exposed model via file:// path", async () => {
-    const result = await testRunner.test({
+    const result = await testRunner.run({
       globals: {
         model: JSON.stringify({
           path: 'file://' + path.join(__dirname, '../../__fixtures__', 'pixelator/pixelator.json'),
@@ -86,7 +86,7 @@ describe('Node Model Loading Integration Tests', () => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
             const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
-            const result = await testRunner.test({
+            const result = await testRunner.run({
               dependencies: {
                 customModel: importPath,
               },

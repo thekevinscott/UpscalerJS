@@ -23,5 +23,6 @@ const callExec = (cmd: string, options: any = {}, stdout?: StdOut | boolean, std
   } else {
     spawnedProcess.stdout.pipe(process.stdout);
   }
-})
+});
+
 export default callExec;
