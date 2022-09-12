@@ -97,6 +97,6 @@
     "eslint-plugin-jsdoc": "^37.8.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "seedrandom": "3.0.5",
-    "ts-jest": "^28.0.5"
+    "ts-jest": "^29.0.0"
   }
 }
