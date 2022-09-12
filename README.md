@@ -50,7 +50,7 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 ## Documentation
 
-[View the docs here.](https://thekevinscott.github.io/UpscalerJS/)
+[View the docs here.](https://upscalerjs.com)
 
 ## License
 
