@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "copy": "rm -rf dist && cp -r src dist",
-    "start": "npm copy && esbuild src/*.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
+    "dev": "npm run copy && esbuild src/*.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
   },
   "author": "Kevin Scott",
   "license": "MIT",
