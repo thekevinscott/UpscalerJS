@@ -2,4 +2,4 @@
 
 Shows how to use UpscalerJS in Node.
 
-[See this live](https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs).
+[Open in Stackblitz](https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/nodejs).
