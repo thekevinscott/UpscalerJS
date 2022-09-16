@@ -4,7 +4,7 @@
   "description": "Side-by-side comparisons of pretrained models with UpscalerJS",
   "main": "index.js",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.19.0",
+    "@tensorflow/tfjs": "^3.20.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.1",
