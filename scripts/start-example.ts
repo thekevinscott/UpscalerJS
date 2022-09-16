@@ -9,8 +9,9 @@ import kill from 'tree-kill';
 import chokidar from 'chokidar';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
-import callExec, { runProcess } from '../test/lib/utils/callExec';
+import callExec from '../test/lib/utils/callExec';
 import buildUpscaler from './package-scripts/build-upscaler';
+import { exec, ExecOptions } from 'child_process';
 
 /****
  * Type Definitions
@@ -40,6 +41,17 @@ const getPlatform = (packageJSON: Record<string, any>): Platform => {
   throw new Error('Could not determine valid TFJS dependency in example package.json')
 };
 
+const getExampleInfo = (examplePath: string) => {
+  const packageJSON = JSON.parse(fs.readFileSync(path.resolve(examplePath, 'package.json'), 'utf8'));
+  const exampleName = packageJSON.name;
+  const platform = getPlatform(packageJSON);
+
+  return {
+    exampleName,
+    platform,
+  };
+}
+
 /****
  * Main function
  */
@@ -55,28 +67,29 @@ const getProcessCommand = (platform: Platform, exampleName: string, skipBuild?: 
   ];
 };
 
-const startExample = async (exampleDirectory: string, skipBuild?: boolean) => {
-  const exampleDirectoryPath = path.resolve(ROOT_DIR, 'examples', exampleDirectory);
+const startExample = async (example: string, skipBuild?: boolean) => {
+  const examplePath = path.resolve(ROOT_DIR, 'examples', example);
   try {
-    fs.accessSync(exampleDirectoryPath);
+    fs.accessSync(examplePath);
   } catch(err) {
-    console.log(`Directory ${exampleDirectory} does not exist. Make sure you are specifying a valid folder in the ./examples folder`)
+    console.log(`Directory ${example} does not exist. Make sure you are specifying a valid folder in the ./examples folder`)
     process.exit(1)
   }
 
   // get package name from directory
-  const packageJSON = JSON.parse(fs.readFileSync(path.resolve(exampleDirectoryPath, 'package.json'), 'utf8'));
-  const exampleName = packageJSON.name;
-  const platform = getPlatform(packageJSON);
+  const { platform } = getExampleInfo(examplePath);
 
   if (skipBuild !== true) {
     buildUpscaler(platform);
   }
 
-  let childProcess = callExec(`pnpm --filter ${exampleName} dev`, true, true);
-  while (childProcess) {
-
-  }
+  console.log('ok')
+  const childProcess = exec('ls', {
+    cwd: examplePath,
+  }, (error) => {
+    console.log('back', error);
+  });
+  console.log('done', childProcess)
   // let childProcess: ChildProcessWithoutNullStreams;
   // const onChange: OnChange = () => () => {
   //   if (childProcess?.pid) {
