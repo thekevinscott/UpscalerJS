@@ -31,7 +31,7 @@ buttonWithoutWW.onclick = async () => {
   const upscaler = new Upscaler();
   await disable();
   upscaler.upscale(img, {
-    patchSize: 64,
-    padding: 4,
+    patchSize: 16,
+    padding: 2,
   }).then(writeOutput);
 };

@@ -10,7 +10,6 @@ const upscaler = new Upscaler({
   model: {
     path: tf.io.fileSystem(path.resolve(__dirname, '../node_modules/@upscalerjs/models/models/div2k/005-2x/model.json')),
     scale: 2,
-
   },
 });
 

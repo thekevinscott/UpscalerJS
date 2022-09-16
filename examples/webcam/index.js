@@ -3,6 +3,7 @@ const target = document.getElementById("target");
 const info = document.getElementById("info");
 const video = document.getElementById("video");
 const button = document.getElementById("button");
+const imageContainer = document.getElementById("image");
 const canvas = document.createElement("canvas");
 canvas.width = video.width;
 canvas.height = video.height;
@@ -22,11 +23,17 @@ navigator.mediaDevices
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
       const data = canvas.toDataURL("image/png");
+      const img = new Image();
+      img.src = data;
+      const p = document.createElement('p');
+      p.innerText = 'Frame taken';
+      imageContainer.appendChild(p);
+      imageContainer.appendChild(img);
       info.innerText = "Upscaling...";
       const start = new Date().getTime();
       upscaler.upscale(data, {
         patchSize: 16,
-        padding: 4,
+        padding: 2,
       }).then(upscaledImgSrc => {
         const img = document.createElement("img");
         img.src = upscaledImgSrc;
