@@ -78,7 +78,7 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.19.0"
+    "@tensorflow/tfjs": "^3.20.0"
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
@@ -86,10 +86,10 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
-    "@tensorflow/tfjs": "^3.19.0",
-    "@tensorflow/tfjs-node": "^3.19.0",
-    "@tensorflow/tfjs-node-gpu": "^3.19.0",
-    "@types/jest": "^28.1.4",
+    "@tensorflow/tfjs": "^3.20.0",
+    "@tensorflow/tfjs-node": "^3.20.0",
+    "@tensorflow/tfjs-node-gpu": "^3.20.0",
+    "@types/jest": "^29.0.3",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "chokidar": "^3.5.3",
@@ -98,6 +98,6 @@
     "eslint-plugin-jsdoc": "^37.8.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "seedrandom": "3.0.5",
-    "ts-jest": "^28.0.5"
+    "ts-jest": "^29.0.1"
   }
 }

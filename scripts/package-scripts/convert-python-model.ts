@@ -1,9 +1,8 @@
 import yargs from 'yargs';
 import path from 'path';
-import inquirer from 'inquirer';
-import callExec from '../../test/lib/utils/callExec';
 import { mkdirp } from 'fs-extra';
 import { runDocker } from './utils/runDocker';
+import { getString } from './prompt/getString';
 
 /****
  * Type Definitions
@@ -54,23 +53,6 @@ export default convertPythonModel;
  */
 
 type Answers = { modelPath: string; outputDirectory: string }
-
-export const getString = async (message: string, arg?: string | number) => {
-  if (typeof arg == 'string') {
-    return arg;
-  }
-
-  const response = await inquirer.prompt<{
-    arg: string
-  }>([
-    {
-      name: 'arg',
-      message,
-    },
-  ]);
-  return response.arg;
-}
-
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('convert python model', 'build models', yargs => {

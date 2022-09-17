@@ -3,6 +3,8 @@ import path from 'path';
 import inquirer from 'inquirer';
 import callExec from '../../test/lib/utils/callExec';
 import fs, { mkdirp, mkdirpSync } from 'fs-extra';
+import { getString } from './prompt/getString';
+import { getNumber } from './prompt/getNumber';
 
 /****
  * Type Definitions
@@ -202,38 +204,6 @@ export default createNewModelFolder;
  */
 
 type Answers = { name: string; description: string; UMDName: string; scale: number }
-
-export const getString = async (message: string, arg?: unknown) => {
-  if (typeof arg == 'string') {
-    return arg;
-  }
-
-  const response = await inquirer.prompt<{
-    arg: string
-  }>([
-    {
-      name: 'arg',
-      message,
-    },
-  ]);
-  return response.arg;
-};
-
-export const getNumber = async (message: string, arg?: unknown) => {
-  if (typeof arg == 'number') {
-    return arg;
-  }
-
-  const response = await inquirer.prompt<{
-    arg: number;
-  }>([
-    {
-      name: 'arg',
-      message,
-    },
-  ]);
-  return response.arg;
-};
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('create new model folder', 'create folder', yargs => {

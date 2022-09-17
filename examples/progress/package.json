@@ -5,29 +5,16 @@
   "description": "Demonstration of upscale progress with UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development parcel index.html --no-hmr --open"
+    "dev": "vite"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
-    "parcel": "2.4.1"
+    "vite": "*"
   },
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^3.19.0",
-    "seedrandom": "3.0.5",
+    "@tensorflow/tfjs": "^3.20.0",
+    "seedrandom": "^3.0.5",
     "upscaler": "1.0.0-beta.6"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }

@@ -11,6 +11,7 @@ import { mkdirp, mkdirpSync } from 'fs-extra';
 import { makeTmpDir } from '../utils/withTmpDir';
 import { ModelDefinition } from '@upscalerjs/core';
 import nqdm from 'nqdm';
+import { getString } from '../prompt/getString';
 const Upscaler = require('upscaler/node');
 const sizeOf = util.promisify(imageSize);
 const writeFile = util.promisify(fs.writeFile);
@@ -301,24 +302,9 @@ export default benchmarkPerformance;
 /****
  * Functions to expose the main function as a CLI tool
  */
-export const getString = async (message: string, arg?: string | number) => {
-  if (typeof arg == 'string') {
-    return arg;
-  }
-
-  const response = await inquirer.prompt<{
-    arg: string
-  }>([
-    {
-      name: 'arg',
-      message,
-    },
-  ]);
-  return response.arg;
-}
-
 interface Args {
   dataset: string;
+  datasetName: string;
   outputFile?: string;
   n?: number;
 }
@@ -326,7 +312,9 @@ interface Args {
 const getArgs = async (): Promise<Args> => {
   const argv = await yargs.command('benchmark-performance <dataset> <output-file>', 'benchmark performance', yargs => {
     yargs.positional('dataset', {
-      describe: 'The dataset to run inference against',
+      describe: 'The path to the dataset to run inference against',
+    }).positional('datasetName', {
+      describe: 'The name of the dataset',
     }).options({
       outputFile: { type: 'string' },
       n: { type: 'number' },
@@ -336,10 +324,11 @@ const getArgs = async (): Promise<Args> => {
   .argv;
 
   const dataset = await getString('What is the path to the dataset you wish to use?', argv._[0]);
-  // const outputFile = await getString('What is the path to the output file you wish to write to?', argv._[1]);
+  const datasetName = await getString('What is the name of the dataset you wish to use?', argv._[1]);
 
   return {
     dataset,
+    datasetName,
     outputFile: typeof argv.outputFile === 'string' ? argv.outputFile : undefined,
     n: typeof argv.n === 'number' ? argv.n : undefined,
   }
@@ -348,7 +337,7 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     await checkImagemagickInstallation()
-    const { dataset, outputFile, n } = await getArgs();
+    const { dataset, datasetName, outputFile, n } = await getArgs();
     await benchmarkPerformance(['esrgan-slim/dist/cjs/index.js'], [dataset], { outputFile, n });
   })();
 }
