@@ -2,8 +2,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "strict": true,
-    "moduleResolution": "Node16",
     "experimentalDecorators": true,
+    "moduleResolution": "node",
     "target": "ES2022",
     "esModuleInterop": true,
     "resolveJsonModule": true,

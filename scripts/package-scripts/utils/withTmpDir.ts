@@ -1,8 +1,8 @@
 import path from 'path';
-import crypto from 'crypto';
 import rimraf from 'rimraf';
 import fs from 'fs';
 import { mkdirp, mkdirpSync } from 'fs-extra';
+import { getHashedName } from './getHashedName';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -38,5 +38,3 @@ export const makeTmpDir = (root = path.resolve(ROOT, 'tmp')): string => {
   }
   return folder;
 };
-
-export const getHashedName = (contents: string) => crypto.createHash('md5').update(contents).digest('hex');
