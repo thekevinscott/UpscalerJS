@@ -4,14 +4,10 @@
 
 import fs from 'fs';
 import path from 'path';
-import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
-import kill from 'tree-kill';
-import chokidar from 'chokidar';
+import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
-import callExec from '../test/lib/utils/callExec';
 import buildUpscaler from './package-scripts/build-upscaler';
-import { exec, ExecOptions } from 'child_process';
 
 /****
  * Type Definitions
@@ -80,31 +76,15 @@ const startExample = async (example: string, skipBuild?: boolean) => {
   const { platform } = getExampleInfo(examplePath);
 
   if (skipBuild !== true) {
-    buildUpscaler(platform);
+    await buildUpscaler(platform);
+    console.log(`** built upscaler: ${platform}`)
   }
 
-  console.log('ok')
-  const childProcess = exec('ls', {
+  spawn("npm", ['install', '&&', 'npm', 'run', 'dev'], {
+    shell: true,
     cwd: examplePath,
-  }, (error) => {
-    console.log('back', error);
+    stdio: "inherit"
   });
-  console.log('done', childProcess)
-  // let childProcess: ChildProcessWithoutNullStreams;
-  // const onChange: OnChange = () => () => {
-  //   if (childProcess?.pid) {
-  //     kill(childProcess.pid);
-  //   }
-  //   childProcess = runProcess(getProcessCommand(platform, exampleName, skipBuild).join(' '));
-  // };
-  // chokidar.watch(path.resolve(__dirname, '../packages/upscalerjs/src'), {
-  //   ignored: /((^|[\/\\])\..|test.ts|generated.ts)/, // ignore dotfiles
-  //   persistent: true
-  // }).on('all', onChange('upscalerjs'));
-  // chokidar.watch(exampleDirectoryPath, {
-  //   ignored: /((^|[\/\\])\..|node_modules|dist)/, // ignore dotfiles and other folders
-  //   persistent: true
-  // }).on('all', onChange('example'));
 };
 
 
