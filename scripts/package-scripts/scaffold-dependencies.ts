@@ -94,7 +94,6 @@ const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platf
 export function loadScaffoldDependenciesConfig(filePath: string): Promise<{
   default: ScaffoldDependenciesConfig
 }> {
-  console.log('filepath', filePath);
   return import(filePath);
 }
 

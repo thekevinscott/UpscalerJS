@@ -1,7 +1,7 @@
 import path from 'path';
 import rimraf from 'rimraf';
 import fs from 'fs';
-import { mkdirp, mkdirpSync } from 'fs-extra';
+import { mkdirpSync } from 'fs-extra';
 import { getHashedName } from './getHashedName';
 
 const ROOT = path.join(__dirname, '../../..');

@@ -1,5 +1,4 @@
 import yargs from 'yargs';
-import inquirer from 'inquirer';
 import path from 'path';
 import fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
@@ -7,16 +6,14 @@ import imageSize from 'image-size';
 import util from 'util';
 import sharp from 'sharp';
 import callExec from '../../../test/lib/utils/callExec';
-import { mkdirp, mkdirpSync, readdirSync } from 'fs-extra';
+import { mkdirpSync, readdirSync } from 'fs-extra';
 import asyncPool from "tiny-async-pool";
 import { makeTmpDir } from '../utils/withTmpDir';
 import { ModelDefinition } from '@upscalerjs/core';
 import { getString } from '../prompt/getString';
-import { getHashedName } from '../utils/getHashedName';
 const crimsonProgressBar = require("crimson-progressbar");
 const Upscaler = require('upscaler/node');
 const sizeOf = util.promisify(imageSize);
-// const writeFile = util.promisify(fs.writeFile);
 
 /****
  * Constants
@@ -36,6 +33,24 @@ interface BenchmarkResult {
   ssim: number;
   psnr: number;
 }
+
+interface ImagePackage {
+    path: string;
+    width: number;
+    height: number;
+}
+
+interface ProcessedFileDefinition {
+  original: ImagePackage;
+  downscaled: ImagePackage;
+  cropped: Record<number, {
+    original: ImagePackage;
+    downscaled: ImagePackage;
+  }>;
+  fileName: string;
+}
+
+type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
 
 /****
  * Utility Functions & Classes
@@ -92,24 +107,6 @@ export const runScript = async (cmd: string) => {
   }
   return [stdout, stderr, err];
 };
-
-interface ImagePackage {
-    path: string;
-    width: number;
-    height: number;
-}
-
-interface ProcessedFileDefinition {
-  original: ImagePackage;
-  downscaled: ImagePackage;
-  cropped: Record<number, {
-    original: ImagePackage;
-    downscaled: ImagePackage;
-  }>;
-  fileName: string;
-}
-
-type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
 
 class Dataset {
   definition: DatasetDefinition;
@@ -240,9 +237,6 @@ class Dataset {
           height: originalHeight,
           width: originalWidth,
         },
-        downscaled: {
-          path: downscaledPath,
-        },
       } = this.database[filename][scale];
 
       if (cropped && !this.database[filename][scale].cropped[cropped]) {
@@ -281,7 +275,7 @@ class Dataset {
       }
     }
 
-    for await (const value of asyncPool(20, files, processFile)) {
+    for await (const _ of asyncPool(20, files, processFile)) {
       callback();
     }
   }
@@ -366,8 +360,8 @@ class Benchmarker {
     const upscaledFolder = path.resolve(this.tmpDir, 'upscaled');
     const diffFolder = path.resolve(this.tmpDir, 'diff');
     const results = new Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>();
-    for (const [datasetName, dataset] of this.datasets) {
-      for (const [modelName, _model] of this.models) {
+    for (const [_datasetName, dataset] of this.datasets) {
+      for (const [_modelName, _model] of this.models) {
         const model = await _model;
         const { modelDefinition } = await model.getModel();
         await dataset.initialize(modelDefinition.scale, cropped);
