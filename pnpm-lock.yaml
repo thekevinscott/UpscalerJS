@@ -157,7 +157,7 @@ importers:
       concurrently: ^7.3.0
       docusaurus-plugin-sass: ^0.2.2
       docusaurus-plugin-typedoc: ^0.17.5
-      image-comparison-viewer: ^0.2.1
+      image-comparison-viewer: ^0.4.0
       prism-react-renderer: ^1.3.5
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -178,7 +178,7 @@ importers:
       '@shoelace-style/shoelace': 2.0.0-beta.80
       classnames: 2.3.1
       clsx: 1.2.1
-      image-comparison-viewer: 0.2.1
+      image-comparison-viewer: 0.4.0
       prism-react-renderer: 1.3.5_react@17.0.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -8113,6 +8113,11 @@ packages:
     dependencies:
       duplexer: 0.1.2
 
+  /hammerjs/2.0.8:
+    resolution: {integrity: sha512-tSQXBXS/MWQOn/RKckawJ61vvsDpCom87JgxiYdGwHdOa0ht0vzUWDlfioofFCRU0L+6NGDt6XzbgoJvZkMeRQ==}
+    engines: {node: '>=0.8.0'}
+    dev: false
+
   /handle-thing/2.0.1:
     resolution: {integrity: sha512-9Qn4yBxelxoh2Ow62nP+Ka/kMnOXRi8BXnRaUwezLNhqelnN49xKz4F/dPP8OYLxLxq6JDtZb2i9XznUQbNPTg==}
 
@@ -8465,9 +8470,10 @@ packages:
     resolution: {integrity: sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==}
     engines: {node: '>= 4'}
 
-  /image-comparison-viewer/0.2.1:
-    resolution: {integrity: sha512-dqpxo34Cc8dquiZfCUif31v9aQetiT8r6y90WEbLRw2P51p678dmgyOjpibQsIwz9uETzdcfcolQyC1/ZFEwQw==}
+  /image-comparison-viewer/0.4.0:
+    resolution: {integrity: sha512-4teZplVxkDgTok2ccqZqh65AXlw+hBfihKVI2FIAyRh3jahxRqP6fJ6//A8IYq4+H836SihkRbrvnMfgqNoceg==}
     dependencies:
+      hammerjs: 2.0.8
       lit: 2.3.0
     dev: false
 
