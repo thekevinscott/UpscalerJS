@@ -13,7 +13,7 @@
 }
 
 img#uploadedImage {
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
 }
 
 #options {
@@ -45,5 +45,25 @@ img#uploadedImage {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
+  }
+}
+
+@media only screen and (max-width: 980px) {
+  #options {
+    flex-direction: column-reverse;
+
+    #left {
+      width: 100%;
+  
+      a {
+        justify-content: center;
+      }
+    }
+
+    #right {
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
   }
 }

@@ -58,3 +58,11 @@ html[data-theme='dark'] {
   }
 }
 
+
+@media only screen and (max-height: 700px) {
+  .uploadPane {
+    &:before {
+      opacity: 0.5;
+    }
+  }
+}

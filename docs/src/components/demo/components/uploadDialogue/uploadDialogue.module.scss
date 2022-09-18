@@ -3,3 +3,9 @@
   display: flex;
   flex: 1;
 }
+@media only screen and (max-width: 980px) {
+  #uploadDialogue {
+    min-height: calc(100% - 142px);
+    margin-top: calc(-142px + 40px);
+  }
+}

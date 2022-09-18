@@ -29,16 +29,23 @@ html[data-theme='dark'] {
   }
 }
 
-  .large {
-    padding: $largePadding;
-    &:before {
-      background-size: $largeImage;
-    }
+.large {
+  padding: $largePadding;
+  &:before {
+    background-size: $largeImage;
   }
+}
 
-  .small {
-    padding: $smallPadding;
-    &:before {
-      background-size: $smallImage;
-    }
+.small {
+  padding: $smallPadding;
+  &:before {
+    background-size: $smallImage;
   }
+}
+
+@media only screen and (max-width: 980px) {
+  #pane {
+    max-height: calc(100% - 40px);
+    overflow-y: scroll;
+  }
+}

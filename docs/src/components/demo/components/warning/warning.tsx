@@ -27,20 +27,12 @@ export default function Warning({
         </Alert>
         <img id={styles.uploadedImage} src={img.src} />
         <p>
-          Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels, 
-          which may be too large to upscale in your browser. 
-          It&apos;s recommended that we first downscale your image 
-          to <strong>{img.width}</strong> by <strong>{img.height}</strong> before 
+          Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels. Large images can take a long time to upscale in the browser.
+        </p>
+        <p>
+          We recommend first downscaling your image to 
+          to <strong>{img.width}</strong> by <strong>{img.height}</strong> pixels before 
           upscaling to demonstrate UpscalerJS.
-        </p>
-        <p>
-          The speed of upscaling is determined by your hardware, browser, and the model you 
-          choose. Larger images can take extremely long amounts of time to upscale in the browser 
-          or, for particularly older hardware, crash your browser.
-        </p>
-        <p>
-          To upscale larger images fast, you can run UpscalerJS server-side using NodeJS, 
-          and for the best speed, leverage a server-side GPU.
         </p>
         <div id={styles.options}>
           <div id={styles.left}>
