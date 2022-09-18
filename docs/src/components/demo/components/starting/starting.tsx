@@ -93,12 +93,10 @@ export default function Starting({
             </>
           )}
         </Alert>
-        <strong>Benchmarks</strong>
+        <h1>Benchmarks</h1>
         <p>
-          Patch sizes allow UpscalerJS to subdivide an image into smaller patches for processing, which are 
-          stitched together upon completion.
-          This allows for a more responsive UI, at the cost of a longer overall upscale.
-          Below are measurements for increasing patch sizes in your browser in milliseconds.
+          Patch sizes allow UpscalerJS to subdivide an image into smaller patches for processing.
+          Below are live measurements for your browser processing at various patch sizes.
         </p>
           {benchmarks ? (
             <table>

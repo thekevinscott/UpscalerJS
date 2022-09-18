@@ -12,8 +12,19 @@
     -ms-user-select: none;
   }
 }
+
 html[data-theme='dark'] {
   #page {
     background-color: #010e1a;
+  }
+}
+
+@media only screen and (max-width: 980px) {
+  sl-alert {
+    display: none;
+  }
+
+  h1 {
+    font-size: 18px;
   }
 }
