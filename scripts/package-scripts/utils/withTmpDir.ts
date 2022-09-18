@@ -1,8 +1,8 @@
 import path from 'path';
-import crypto from 'crypto';
 import rimraf from 'rimraf';
 import fs from 'fs';
-import { mkdirp } from 'fs-extra';
+import { mkdirpSync } from 'fs-extra';
+import { getHashedName } from './getHashedName';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -10,13 +10,10 @@ interface WithTmpDirOpts {
   rootDir?: string;
   removeTmpDir?: boolean;
 }
-type WithTmpDir = (callback: WithTmpDirFn, opts?: WithTmpDirOpts) => Promise<void>
+type WithTmpDir = (callback: WithTmpDirFn, opts?: WithTmpDirOpts) => (Promise<void> | void);
 type WithTmpDirFn = (tmp: string) => Promise<void>;
 export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir } = {}) => {
-  let tmpDir = await getTmpDir(rootDir);
-  if (!fs.existsSync(tmpDir)) {
-    throw new Error(`Tmp directory ${tmpDir} was not created`);
-  }
+  const tmpDir = makeTmpDir(rootDir);
 
   try {
     await callback(tmpDir);
@@ -33,10 +30,11 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir }
   }
 };
 
-const getTmpDir = async (root = path.resolve(ROOT, 'tmp')): Promise<string> => {
+export const makeTmpDir = (root = path.resolve(ROOT, 'tmp')): string => {
   const folder = path.resolve(root, getHashedName(`${Math.random()}`));
-  await mkdirp(folder);
+  mkdirpSync(folder);
+  if (!fs.existsSync(folder)) {
+    throw new Error(`Tmp directory ${folder} was not created`);
+  }
   return folder;
 };
-
-export const getHashedName = (contents: string) => crypto.createHash('md5').update(contents).digest('hex');

@@ -103,7 +103,7 @@ export function loadScaffoldDependenciesConfig(filePath: string): Promise<{
 
 type ScaffoldDependencies = (
   packageRoot: string, 
-  opts: ScaffoldDependenciesConfig, 
+  config: ScaffoldDependenciesConfig, 
   platform?: Platform
 ) => Promise<void>;
 const scaffoldDependencies: ScaffoldDependencies = async (

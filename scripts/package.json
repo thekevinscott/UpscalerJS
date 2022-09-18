@@ -2,25 +2,36 @@
   "name": "@upscalerjs/scripts",
   "private": true,
   "scripts": {
-    "run-command": "ts-node --project ./tsconfig.json",
-    "convert-python-model": "pnpm run-command ./package-scripts/convert-python-model.ts",
-    "create-new-model-folder": "pnpm run-command ./package-scripts/create-new-model-folder.ts",
-    "example": "pnpm run-command ./start-example.ts",
-    "find-all-packages": "pnpm run-command ./package-scripts/find-all-packages.ts",
-    "build:upscaler": "pnpm run-command ./package-scripts/build-upscaler.ts",
-    "validate:build": "pnpm run-command ./package-scripts/validate-build.ts",
-    "update:version": "pnpm run-command ./package-scripts/update-version.ts",
-    "update:tfjs": "pnpm run-command ./package-scripts/update-tfjs.ts",
-    "update:dependency": "pnpm run-command ./package-scripts/update-dependency.ts",
-    "test:integration:browserstack": "pnpm run-command ./test.ts --platform browser --kind browserstack",
-    "test:integration:browser": "pnpm run-command ./test.ts --platform browser",
-    "test:integration:node": "pnpm run-command ./test.ts --platform node",
-    "test:memory-leaks": "pnpm run-command ./check-memory-leaks.ts"
+    "__run_command": "ts-node --project ./tsconfig.json",
+    "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
+    "example:start": "pnpm __run_command ./start-example.ts",
+    "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
+    "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance.ts",
+    "model:convert-python": "pnpm __run_command ./package-scripts/convert-python-model.ts",
+    "model:create": "pnpm __run_command ./package-scripts/create-new-model-folder.ts",
+    "test:integration:browserstack": "pnpm __run_command ./test.ts --platform browser --kind browserstack",
+    "test:integration:browser": "pnpm __run_command ./test.ts --platform browser",
+    "test:integration:node": "pnpm __run_command ./test.ts --platform node",
+    "test:memory-leaks": "pnpm __run_command ./check-memory-leaks.ts",
+    "update:version": "pnpm __run_command ./package-scripts/update-version.ts",
+    "update:tfjs": "pnpm __run_command ./package-scripts/update-tfjs.ts",
+    "update:dependency": "pnpm __run_command ./package-scripts/update-dependency.ts",
+    "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*",
+    "upscaler": "workspace:*"
   },
   "devDependencies": {
     "@types/inquirer": "^8.2.1",
+    "@types/sharp": "^0.30.5",
+    "@types/tiny-async-pool": "^2.0.0",
     "@types/yargs": "^17.0.10",
+    "crimson-progressbar": "^1.3.0",
+    "image-size": "^1.0.2",
     "inquirer": "^8.2.4",
+    "sharp": "^0.31.0",
+    "tiny-async-pool": "^2.1.0",
     "yargs": "^17.5.1"
   }
 }

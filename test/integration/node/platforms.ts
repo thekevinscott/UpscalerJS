@@ -59,7 +59,7 @@ describe('Node Platforms Integration Tests', () => {
     { platform: 'node-gpu', },
   ].forEach(({ platform, }) => {
     it(`loads a model with ${platform}`, async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         dependencies: {
           'tf': `@tensorflow/tfjs-${platform}`,
           'Upscaler': `${LOCAL_UPSCALER_NAME}/${platform}`,

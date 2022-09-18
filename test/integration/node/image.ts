@@ -80,7 +80,7 @@ describe('Node Image Loading Integration Tests', () => {
 
   describe('Uint8Array', () => {
     it("upscales a Uint8Array", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: `new Uint8Array(fs.readFileSync('${IMAGE_FIXTURE_PATH}'))`,
         },
@@ -90,7 +90,7 @@ describe('Node Image Loading Integration Tests', () => {
 
     it('throws if given 4-channel Uint8Array', async () => {
       const mockedTensor = tf.node.decodeImage(fs.readFileSync(BAD_IMAGE_FIXTURE_PATH));
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: `new Uint8Array(fs.readFileSync('${BAD_IMAGE_FIXTURE_PATH}'))`,
         },
@@ -100,7 +100,7 @@ describe('Node Image Loading Integration Tests', () => {
 
   describe('Buffers', () => {
     it("upscales a Buffer", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: `fs.readFileSync('${IMAGE_FIXTURE_PATH}')`,
         },
@@ -110,7 +110,7 @@ describe('Node Image Loading Integration Tests', () => {
 
     it("throws if a Buffer has invalid channels", async () => {
       const mockedTensor = tf.node.decodeImage(fs.readFileSync(BAD_IMAGE_FIXTURE_PATH));
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: `fs.readFileSync('${BAD_IMAGE_FIXTURE_PATH}')`,
         },
@@ -120,7 +120,7 @@ describe('Node Image Loading Integration Tests', () => {
 
   describe('Tensors', () => {
     it("upscales a 3D Tensor", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([16, 16, 3])`,
         },
@@ -130,7 +130,7 @@ describe('Node Image Loading Integration Tests', () => {
 
     it("throws if 3D Tensor has invalid channels", async () => {
       const t = tf.ones([16,16,4]);
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: `tf.ones([16,16,4])`,
         },
@@ -138,7 +138,7 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it("upscales a 4D Tensor", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([1, 16, 16, 3])`,
         },
@@ -148,7 +148,7 @@ describe('Node Image Loading Integration Tests', () => {
 
     it("throws if 4D Tensor has invalid channels", async () => {
       const t = tf.ones([1,16,16,4]);
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: `tf.ones([1,16,16,4])`,
         },
@@ -158,7 +158,7 @@ describe('Node Image Loading Integration Tests', () => {
 
   describe('Strings', () => {
     it("upscales a string", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: JSON.stringify(IMAGE_FIXTURE_PATH),
         },
@@ -168,7 +168,7 @@ describe('Node Image Loading Integration Tests', () => {
 
     it("throws if string provided is an invalid path", async () => {
       const input = 'foobarbaz';
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: JSON.stringify(input),
         },
@@ -176,7 +176,7 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it("throws if string provided is an invalid image", async () => {
-      await expect(() => testRunner.test({
+      await expect(() => testRunner.run({
         globals: {
           image: JSON.stringify(path.resolve(FIXTURES_PATH, 'bad-image.png')),
         },
@@ -186,7 +186,7 @@ describe('Node Image Loading Integration Tests', () => {
 
   describe('Patch sizes', () => {
     it("upscales an imported local image path with patch sizes", async () => {
-      const result = await testRunner.test({
+      const result = await testRunner.run({
         globals: {
           image: JSON.stringify(IMAGE_FIXTURE_PATH),
           patchSize: 4,

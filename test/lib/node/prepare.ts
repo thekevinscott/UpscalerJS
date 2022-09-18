@@ -4,7 +4,8 @@ import path from 'path';
 import { installLocalPackages, installNodeModules } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
-import { getHashedName, withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
+import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
+import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
 
 const ROOT = path.join(__dirname);
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
@@ -67,6 +68,9 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
     const contentOutput = getScriptContents(dataFile).trim();
     const fileName = path.resolve(tmpDir, getTestName(testName, contentOutput));
     fs.writeFileSync(fileName, contentOutput, 'utf-8');
+    if (removeTmpDir === false) {
+      console.log(`file is ${fileName}`);
+    }
     await executeNodeScript(fileName, {
       stdout: chunk => {
         if (logExtra) {
@@ -80,6 +84,9 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
       },
     });
     data = fs.readFileSync(dataFile);
+    if (removeTmpDir === false) {
+      console.log(`tmpDir is ${tmpDir}`);
+    }
   }, {
     rootDir: path.resolve(ROOT, './tmp'),
     removeTmpDir,
