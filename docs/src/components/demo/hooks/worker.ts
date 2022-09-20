@@ -24,6 +24,7 @@ let allowBenchmarking = true;
 const timesToTry = 3;
 
 const BENCHMARK_TIME_THRESHOLD = 100;
+const MINIMUM_NUMBER_OF_BENCHMARKS = 4;
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
@@ -48,7 +49,7 @@ onmessage = async ({ data: { type, data } }) => {
             durations[patchSize].push(performance.now() - start);
           }
           durations[patchSize] = durations[patchSize].reduce((s, d) => s + d, 0) / timesToTry;
-          if (durations[patchSize] > BENCHMARK_TIME_THRESHOLD) {
+          if (durations[patchSize] > BENCHMARK_TIME_THRESHOLD && Object.keys(durations).length >= MINIMUM_NUMBER_OF_BENCHMARKS) {
             allowBenchmarking = false;
           }
           postMessage({

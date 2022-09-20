@@ -25,7 +25,7 @@ body {
 
 export function Demo() {
   useShoelaceColorTheme();
-  const [started, setStarted] = useState(true);
+  const [started, setStarted] = useState(false);
   useEffect(() => {
     const head = document.getElementsByTagName('head')[0];
     head.appendChild(globalStyle);
