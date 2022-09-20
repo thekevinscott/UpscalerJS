@@ -60,6 +60,11 @@ const config = {
         //   src: 'img/logo.svg',
         // },
         items: [
+          {
+            to: '/demo',
+            position: 'left',
+            label: 'Demo',
+          },
           // {
           //   type: 'doc',
           //   docId: 'intro',
