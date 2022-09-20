@@ -11,6 +11,7 @@ import asyncPool from "tiny-async-pool";
 import { makeTmpDir } from '../utils/withTmpDir';
 import { ModelDefinition } from '@upscalerjs/core';
 import { getString } from '../prompt/getString';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
 const crimsonProgressBar = require("crimson-progressbar");
 const Upscaler = require('upscaler/node');
 const sizeOf = util.promisify(imageSize);
@@ -119,7 +120,10 @@ class Dataset {
     this.database = this.getDatasetDatabase();
   }
 
-  async initialize(scale: number, cropped?: number) {
+  async initialize(scale?: number, cropped?: number) {
+    if (scale === undefined) {
+      throw new Error('Scale cannot be undefined when initializing dataset.')
+    }
     const { name: definitionName, path: definitionPath } = this.definition;
     if (!definitionPath) {
       throw new Error([
@@ -181,42 +185,55 @@ class Dataset {
   }
 
   async prepare(files: { file: string; filePath: string }[], scale: number, callback: () => void, cropped?: number) {
-    const getDims = (fn: (size: number) => number, ...nums: number[]) => nums.map(fn);
+    const getDims = (fn: (size: number) => number, ...nums: number[]) => {
+      const result = nums.map(fn);
+      for (const r of result) {
+        if (Number.isNaN(r)) {
+          throw new Error(`Part of result is NaN: ${result} | original nums: ${nums}`)
+        }
+      }
+      return result;
+    };
     const processOriginal = async (filePath: string, filename: string) => {
       if (this.database[filename]?.[scale]) {
         return;
       }
-      const { width, height } = await getSize(filePath);
+      try {
+        const { width, height } = await getSize(filePath);
 
-      const [originalWidth, originalHeight] = getDims(n => Math.floor(n / scale) * scale, width, height);
-      const originalImage = await sharp(filePath)
-        .flatten({ background: { r: 255, g: 255, b: 255 } })
-        .resize({ width: originalWidth, height: originalHeight, fit: 'cover' })
-        .toBuffer();
-      const originalPath = this.saveImage(`${filename}-scale-${scale}-original`, originalImage);
+        const [originalWidth, originalHeight] = getDims(n => Math.floor(n / scale) * scale, width, height);
+        const originalImage = await sharp(filePath)
+          .flatten({ background: { r: 255, g: 255, b: 255 } })
+          .resize({ width: originalWidth, height: originalHeight, fit: 'cover' })
+          .toBuffer();
+        const originalPath = this.saveImage(`${filename}-scale-${scale}-original`, originalImage);
 
-      const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, width, height);
-      const downscaledImage = await sharp(originalImage)
-        .resize({ width: downscaledWidth, height: downscaledHeight })
-        .toBuffer();
-      const downscaledPath = this.saveImage(`${filename}-scale-${scale}-downscaled`, downscaledImage);
+        const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, width, height);
+        const downscaledImage = await sharp(originalImage)
+          .resize({ width: downscaledWidth, height: downscaledHeight })
+          .toBuffer();
+        const downscaledPath = this.saveImage(`${filename}-scale-${scale}-downscaled`, downscaledImage);
 
-      this.saveDatabase(filename, {
-        [scale]: {
-          cropped: {},
-          original: {
-            path: originalPath,
-            width: originalWidth,
-            height: originalHeight,
+        this.saveDatabase(filename, {
+          [scale]: {
+            cropped: {},
+            original: {
+              path: originalPath,
+              width: originalWidth,
+              height: originalHeight,
+            },
+            downscaled: {
+              path: downscaledPath,
+              width: downscaledWidth,
+              height: downscaledHeight,
+            },
+            fileName: filename,
           },
-          downscaled: {
-            path: downscaledPath,
-            width: downscaledWidth,
-            height: downscaledHeight,
-          },
-          fileName: filename,
-        },
-      });
+        });
+      } catch (err) {
+        console.error(`**** Error processing original: ${filename}`);
+        throw err;
+      }
     };
     const processFile = async ({ file: filename, filePath }: { file: string; filePath: string }) => {
       const processedFile = this.database[filename];
@@ -240,38 +257,43 @@ class Dataset {
       } = this.database[filename][scale];
 
       if (cropped && !this.database[filename][scale].cropped[cropped]) {
-        const [originalCroppedWidth, originalCroppedHeight] = [cropped, cropped];
-        const originalCroppedImage = await sharp(originalPath)
-          .extract({ width: originalCroppedWidth, height: originalCroppedHeight, top: (originalHeight / 2) - (originalCroppedHeight / 2), left: (originalWidth / 2) - (originalCroppedWidth / 2) })
-          .toBuffer();
-        const originalCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-original`, originalCroppedImage);
+        try {
+          const [originalCroppedWidth, originalCroppedHeight] = [cropped, cropped];
+          const originalCroppedImage = await sharp(originalPath)
+            .extract({ width: originalCroppedWidth, height: originalCroppedHeight, top: (originalHeight / 2) - (originalCroppedHeight / 2), left: (originalWidth / 2) - (originalCroppedWidth / 2) })
+            .toBuffer();
+          const originalCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-original`, originalCroppedImage);
 
-        const [downscaledCroppedWidth, downscaledCroppedHeight] = getDims(n => n / scale, originalCroppedWidth, originalCroppedHeight);
-        const downscaledCroppedImage = await sharp(originalCroppedImage)
-          .resize({ width: downscaledCroppedWidth, height: downscaledCroppedHeight })
-          .toBuffer();
-        const downscaledCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-downscaled`, downscaledCroppedImage);
+          const [downscaledCroppedWidth, downscaledCroppedHeight] = getDims(n => n / scale, originalCroppedWidth, originalCroppedHeight);
+          const downscaledCroppedImage = await sharp(originalCroppedImage)
+            .resize({ width: downscaledCroppedWidth, height: downscaledCroppedHeight })
+            .toBuffer();
+          const downscaledCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-downscaled`, downscaledCroppedImage);
 
-        this.saveDatabase(filename, {
-          [scale]: {
-            ...this.database[filename][scale],
-            cropped: {
-              ...this.database[filename][scale].cropped,
-              [cropped]: {
-                original: {
-                  path: originalCroppedPath,
-                  width: originalCroppedWidth,
-                  height: originalCroppedHeight,
-                },
-                downscaled: {
-                  path: downscaledCroppedPath,
-                  width: downscaledCroppedWidth,
-                  height: downscaledCroppedHeight,
-                },
+          this.saveDatabase(filename, {
+            [scale]: {
+              ...this.database[filename][scale],
+              cropped: {
+                ...this.database[filename][scale].cropped,
+                [cropped]: {
+                  original: {
+                    path: originalCroppedPath,
+                    width: originalCroppedWidth,
+                    height: originalCroppedHeight,
+                  },
+                  downscaled: {
+                    path: downscaledCroppedPath,
+                    width: downscaledCroppedWidth,
+                    height: downscaledCroppedHeight,
+                  },
+                }
               }
             }
-          }
-        });
+          });
+        } catch (err) {
+          console.error('Error processing crop');
+          throw err;
+        }
       }
     }
 
@@ -312,20 +334,33 @@ class Benchmarker {
 
   private tmpDir: string = '';
 
-  constructor(models: string[], datasets: Dataset[], n: number = Infinity, cropped?: number) {
+  constructor(modelPackages: string[], datasets: Dataset[], n: number = Infinity) {
     this.n = n;
     this.models = new Map();
     this.datasets = new Map();
     this.tmpDir = makeTmpDir();
     mkdirpSync(this.tmpDir);
-    for (const modelName of models) {
-      const pathToModel = path.resolve(ROOT_DIR, 'models', modelName);
-      this.models.set(modelName, import(pathToModel).then(model => new Upscaler(model)));
+    for (const modelPackageName of modelPackages) {
+      const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
+      const { name, exports } = JSON.parse(fs.readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
+      Object.keys(exports).map(key => {
+        const modelName = key === '.' ? name : path.join(name, key);
+        const value = exports[key];
+        if (typeof value === 'object') {
+          const { require: {
+            default: _default,
+          } } = value;
+          const pathToModel = path.resolve(modelPackageFolder, _default);
+          console.log(modelName, pathToModel)
+          this.models.set(modelName, import(pathToModel).then(model => new Upscaler(model)));
+        } else {
+          throw new Error('Handle this')
+        }
+      });
     }
     for (const dataset of datasets) {
       this.datasets.set(dataset.definition.name, dataset);
     }
-    this.benchmark(cropped);
   }
 
   cleanup() {
@@ -345,83 +380,101 @@ class Benchmarker {
   }
 
   private async calculatePerformance(upscaledPath: string, originalPath: string, diffPath: string, metric: 'ssim' | 'psnr'): Promise<number> {
-    const [_, out,] = await runScript(`magick compare -metric ${metric} ${upscaledPath} ${originalPath} ${diffPath}`);
-    if (typeof out !== 'string') {
-      throw new Error('No response from metric calculation');
+    try {
+      const [_, out,] = await runScript(`magick compare -metric ${metric} ${upscaledPath} ${originalPath} ${diffPath}`);
+      if (typeof out !== 'string') {
+        throw new Error('No response from metric calculation');
+      }
+      const value = out.split(' ')[0];
+      if (!value) {
+        throw new Error('No metric found')
+      }
+      return parseFloat(value);
+    } catch (err) {
+
+      throw new Error(`Failed at comparing ${upscaledPath} with ${originalPath}`);
     }
-    const value = out.split(' ')[0];
-    if (!value) {
-      throw new Error('No metric found')
-    }
-    return parseFloat(value);
   }
 
-  private async benchmark(cropped?: number) {
+  public async benchmark(cropped?: number) {
     const upscaledFolder = path.resolve(this.tmpDir, 'upscaled');
     const diffFolder = path.resolve(this.tmpDir, 'diff');
     const results = new Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>();
-    for (const [_datasetName, dataset] of this.datasets) {
-      for (const [_modelName, _model] of this.models) {
+    const pairs = [];
+    let total = 0;
+    for (const [datasetName, dataset] of this.datasets) {
+      for (const [modelName, _model] of this.models) {
         const model = await _model;
         const { modelDefinition } = await model.getModel();
         await dataset.initialize(modelDefinition.scale, cropped);
         const files = dataset.getFiles(modelDefinition.scale, cropped);
         const n = Math.min(this.n, files.length);
-        const ssim: number[] = [];
-        const psnr: number[] = [];
-
-        crimsonProgressBar.renderProgressBar(0, n);
-        let i = 0;
-        // const progress = (rate: number) => console.log(rate);
-        const processFile = async ({
-          original,
-          downscaled,
-          fileName: file,
-        }: { original: ImagePackage; downscaled: ImagePackage; fileName: string; }) => {
-          const {
-            width: originalWidth,
-            height: originalHeight,
-            path: originalPath,
-          } = original;
-          const {
-            path: downscaledPath,
-          } = downscaled;
-          const upscaledBuffer = await this.upscale(model, downscaledPath, 
-            // progress
-            );
-          const upscaledPath = path.resolve(upscaledFolder, file)
-          mkdirpSync(path.dirname(upscaledPath));
-          fs.writeFileSync(upscaledPath, upscaledBuffer);
-          const upscaledDimensions = await getSize(upscaledPath);
-
-          const diffPath = path.resolve(diffFolder, file);
-          mkdirpSync(path.dirname(diffPath));
-
-          if (originalWidth !== upscaledDimensions.width || originalHeight !== upscaledDimensions.height) {
-            throw new Error(`Dimensions mismatch. Original image: ${JSON.stringify({ originalWidth, originalHeight })}, Upscaled image: ${JSON.stringify(upscaledDimensions)}`)
-          }
-          ssim.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'ssim'));
-          psnr.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'psnr'));
-        }
-        
-        for await (const value of asyncPool(1, files, processFile)) {
-          i++;
-          crimsonProgressBar.renderProgressBar(i, n);
-        }
-
-        results.set({
+        total += n;
+        pairs.push({
+          n,
+          datasetName,
+          dataset, 
+          model, 
+          modelName,
           modelDefinition,
-          dataset,
-        }, {
-          psnr: avg(psnr),
-          ssim: avg(ssim),
+          files,
         });
       }
     }
-    results.forEach((value, { modelDefinition, dataset }) => {
-      console.log('Result for model', modelDefinition.packageInformation?.name, 'with scale', modelDefinition.scale, 'for dataset', dataset.definition.name);
-      console.log(value);
-    });
+
+    crimsonProgressBar.renderProgressBar(0, total);
+    let i = 0;
+    for (const { n, files, datasetName, modelName, dataset, model, modelDefinition} of pairs) {
+      const ssim: number[] = [];
+      const psnr: number[] = [];
+
+      console.log('Benchmarking', modelName, 'for dataset', datasetName);
+      // const progress = (rate: number) => console.log(rate);
+      const processFile = async ({
+        original,
+        downscaled,
+        fileName: file,
+      }: { original: ImagePackage; downscaled: ImagePackage; fileName: string; }) => {
+        const {
+          width: originalWidth,
+          height: originalHeight,
+          path: originalPath,
+        } = original;
+        const {
+          path: downscaledPath,
+        } = downscaled;
+        const upscaledBuffer = await this.upscale(model, downscaledPath,
+          // progress
+        );
+        const upscaledPath = path.resolve(upscaledFolder, file)
+        mkdirpSync(path.dirname(upscaledPath));
+        fs.writeFileSync(upscaledPath, upscaledBuffer);
+        const upscaledDimensions = await getSize(upscaledPath);
+
+        const diffPath = path.resolve(diffFolder, file);
+        mkdirpSync(path.dirname(diffPath));
+
+        if (originalWidth !== upscaledDimensions.width || originalHeight !== upscaledDimensions.height) {
+          throw new Error(`Dimensions mismatch. Original image: ${JSON.stringify({ originalWidth, originalHeight })}, Upscaled image: ${JSON.stringify(upscaledDimensions)}`)
+        }
+        ssim.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'ssim'));
+        psnr.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'psnr'));
+      }
+
+      for await (const value of asyncPool(1, files, processFile)) {
+        i++;
+        crimsonProgressBar.renderProgressBar(i, total);
+      }
+
+      results.set({
+        modelDefinition,
+        dataset,
+      }, {
+        psnr: avg(psnr),
+        ssim: avg(ssim),
+      });
+    }
+    return results;
   }
 }
 
@@ -429,15 +482,16 @@ class Benchmarker {
  * Main function
  */
 
-type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { outputFile?: string, n?: number, cropped?: number }) => Promise<void>;
-const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, outputFile, cropped } = {}) => new Promise(async (resolve, reject) => {
-  const datasets = datasetDefinitions.map(dataset => {
-    return new Dataset(dataset);
-  });
-  const benchmarker = new Benchmarker(models, datasets, n, cropped);
+type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { outputFile?: string, n?: number, cropped?: number }) => Promise<
+    Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>
+>;
+const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, outputFile, cropped } = {}) => {
+  const datasets = datasetDefinitions.map(dataset => new Dataset(dataset));
+  const benchmarker = new Benchmarker(models, datasets, n);
+  const results = await benchmarker.benchmark(cropped);
   benchmarker.cleanup();
-  return 'foo';
-});
+  return results;
+};
 
 export default benchmarkPerformance;
 
@@ -445,47 +499,74 @@ export default benchmarkPerformance;
  * Functions to expose the main function as a CLI tool
  */
 interface Args {
-  dataset: DatasetDefinition;
+  datasets: DatasetDefinition[];
   outputFile?: string;
   n?: number;
   cropped?: number;
+  models: Array<string>;
 }
 
-const getDataset = async (_datasetName?: unknown, _datasetPath?: unknown): Promise<DatasetDefinition> => {
-  if (typeof _datasetName === 'string' && _datasetName) {
-    return {
-      name: _datasetName,
-      path: `${_datasetPath || ''}`,
-    };
+const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
+  if (_datasets.length > 0) {
+    const datasets = [];
+    for (let i = 0; i < _datasets.length; i++) {
+      const _dataset = _datasets[i];
+      if (typeof _dataset !== 'string') {
+        throw new Error(`Dataset provided was not a string: ${_dataset}.`);
+      }
+      const dataset = _dataset.split(':');
+      if (dataset.length !== 2) {
+        throw new Error(`You must specify a dataset as <dataset_name>:<dataset_path>. You specified ${dataset}`);
+      }
+      datasets.push({
+        name: dataset[0],
+        path: dataset[1],
+      });
+    }
+    return datasets;
   }
-  const datasetName = await getString('What is the name of the dataset you wish to use?', _datasetName);
-  const datasetPath = await getString('What is the path to the dataset you wish to use?', _datasetPath);
 
-  return {
+  const datasetName = await getString('What is the name of the dataset you wish to use?', undefined);
+  const datasetPath = await getString('What is the path to the dataset you wish to use?', undefined);
+
+  return [{
     name: datasetName,
     path: datasetPath,
-  };
+  }];
+}
+
+const getModels = (model?: unknown): string[] => {
+  if (typeof model === 'string') {
+    return [model];
+  }
+
+  if (Array.isArray(model)) {
+    return model;
+  }
+
+  return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
 }
 
 const getArgs = async (): Promise<Args> => {
-  const argv = await yargs.command('benchmark-performance <dataset> <output-file>', 'benchmark performance', yargs => {
-    yargs.positional('datasetName', {
-      describe: 'The name of the dataset',
-    }).positional('datasetPath', {
-      describe: 'The path to the dataset to run inference against',
+  const argv = await yargs.command('benchmark-performance <dataset>', 'benchmark performance', yargs => {
+    yargs.positional('dataset', {
+      describe: 'The dataset',
     }).options({
       outputFile: { type: 'string' },
       n: { type: 'number' },
       cropped: { type: 'number' },
+      model: { type: 'string' },
     });
   })
   .help()
   .argv;
 
-  const dataset = await getDataset(argv._[0], argv._[1]);
+  const datasets = await getDataset(...argv._);
+  const models = getModels(argv.model);
 
   return {
-    dataset,
+    models,
+    datasets,
     outputFile: typeof argv.outputFile === 'string' ? argv.outputFile : undefined,
     n: typeof argv.n === 'number' ? argv.n : undefined,
     cropped: typeof argv.cropped === 'number' ? argv.cropped : undefined,
@@ -495,7 +576,11 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     await checkImagemagickInstallation()
-    const { dataset, outputFile, n, cropped } = await getArgs();
-    await benchmarkPerformance(['esrgan-slim/dist/cjs/index.js'], [dataset], { outputFile, n, cropped });
+    const { models, datasets, outputFile, n, cropped } = await getArgs();
+    const results = await benchmarkPerformance(models, datasets, { outputFile, n, cropped });
+    results.forEach((value, { modelDefinition, dataset }) => {
+      console.log('Result for model', modelDefinition.packageInformation?.name, 'with scale', modelDefinition.scale, 'for dataset', dataset.definition.name);
+      console.log(value);
+    });
   })();
 }
