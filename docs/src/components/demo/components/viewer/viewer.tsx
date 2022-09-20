@@ -1,7 +1,7 @@
-import React, { DOMAttributes, useCallback, useEffect, useState } from 'react';
+import React, { DOMAttributes, useEffect, useState } from 'react';
 import styles from './viewer.module.scss';
 import 'image-comparison-viewer';
-import { ImageComparisonViewer, ImageComparisonViewerDraggerHandle, DraggerChangeEvent } from 'image-comparison-viewer';
+import { ImageComparisonViewer } from 'image-comparison-viewer';
 import { getHTMLImageElement } from '../../utils/getHTMLImageElement';
 import { resizeImage } from '../../utils/resizeImage';
 
@@ -16,11 +16,6 @@ export default function Viewer({
   upscaledSrc?: string;
   src?: string;
 }) {
-  const [handleX, setHandleX] = useState(.5);
-  const handleDrag = useCallback(({ detail }: DraggerChangeEvent) => {
-    setHandleX(detail.x)
-  }, []);
-
   const [resizedImage, setResizedImage] = useState<HTMLImageElement>();
 
   useEffect(() => {
@@ -30,15 +25,6 @@ export default function Viewer({
       setResizedImage(undefined);
     }
   }, [src]);
-
-  useEffect(() => {
-    document.body.addEventListener('dragger-change-event', handleDrag);
-
-    return () => {
-      document.body.removeEventListener('dragger-change-event', handleDrag);
-    };
-  }, []);
-
 
   if (!src) {
     return (
@@ -50,8 +36,7 @@ export default function Viewer({
 
   return (
     <div id={styles.viewer}>
-      <image-comparison-viewer-dragger-handle initialValue={handleX} onDraggerChangeEvent={handleDrag} />
-      <image-comparison-viewer comparisonX={handleX} zoom={zoom}>
+      <image-comparison-viewer zoom={zoom} comparisonX={0.5}>
         <img src={upscaledSrc} />
         <img src={resizedImage?.src} />
       </image-comparison-viewer>
@@ -65,7 +50,6 @@ declare global {
   namespace JSX { // skipcq: js-0337
     interface IntrinsicElements {
       ['image-comparison-viewer']: CustomElement<ImageComparisonViewer>;
-      ['image-comparison-viewer-dragger-handle']: CustomElement<ImageComparisonViewerDraggerHandle>;
     }
   }
 }
