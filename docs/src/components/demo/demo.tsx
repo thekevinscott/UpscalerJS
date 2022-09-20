@@ -67,7 +67,7 @@ export function Demo() {
     started,
   });
 
-  const [zoom, setZoom] = useState(.75);
+  const [zoom, setZoom] = useState(0.75);
 
   const progressValue = parseInt(`${progress * 100}`, 10);
 
