@@ -128,7 +128,7 @@ export const useUpscaler = (img?: HTMLImageElement) => {
               }
             }
           } else {
-            console.warn('Received progress event, but the image id did not match the active image id')
+            console.warn(`Received progress event, but the image id ${_imageId} did not match the active image id ${imageId}`)
           }
         } else {
           console.warn('Received progress event, but we are not supposed to be upscaling.');
@@ -144,10 +144,11 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     try {
       const src = tf.browser.fromPixels(img);
       await tf.nextFrame();
+      imageId += 1;
       worker.current.postMessage({
         type: ReceiverWorkerState.UPSCALE,
         data: {
-          imageId: imageId++,
+          imageId,
           pixels: src.dataSync(),
           shape: src.shape,
           patchSize,
