@@ -54,6 +54,7 @@ export function Demo() {
     benchmarks,
     patchSize,
     choosePatchSize,
+    endBenchmarking,
   } = useImages();
 
   const { handleDownload } = useDownload(filename, progress, upscaledSrc);
@@ -66,7 +67,7 @@ export function Demo() {
     started,
   });
 
-  const [zoom, setZoom] = useState(.75);
+  const [zoom, setZoom] = useState(0.75);
 
   const progressValue = parseInt(`${progress * 100}`, 10);
 
@@ -76,7 +77,12 @@ export function Demo() {
         {lifecycleState === State.BENCHMARKING && (
           <Starting 
             benchmarks={benchmarks} 
-            start={() => setStarted(true)} 
+            start={() => {
+              if (patchSize) {
+                endBenchmarking();
+                setStarted(true);
+              }
+            }} 
             hasBeenBenchmarked={hasBeenBenchmarked}
             patchSize={patchSize}
             choosePatchSize={choosePatchSize}

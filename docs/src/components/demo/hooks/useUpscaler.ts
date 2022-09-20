@@ -42,7 +42,7 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     upscaledSrc.current = newSrc;
   }, []);
 
-  const [patchSize, setPatchSize] = useState<number>(16);
+  const [patchSize, setPatchSize] = useState<number>();
 
   const worker = useRef<Worker>();
 
@@ -102,7 +102,9 @@ export const useUpscaler = (img?: HTMLImageElement) => {
             break;
           }
         }
-        setPatchSize(maximumAllowedPatchSize);
+        if (patchSize === undefined) {
+          setPatchSize(maximumAllowedPatchSize);
+        }
         setHasBeenBenchmarked(true);
       }
       if (type === SenderWorkerState.PROGRESS) {
@@ -178,7 +180,14 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     }
   }, [img, upscale]);
 
+  const endBenchmarking = useCallback(() => {
+    worker.current.postMessage({
+      type: ReceiverWorkerState.BENCHMARK_STOP,
+    });
+  }, []);
+
   return {
+    endBenchmarking,
     cancelUpscale,
     upscaledSrc: upscaledSrc.current,
     progress: upscaling ? progress : undefined,
