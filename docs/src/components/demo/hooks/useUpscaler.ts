@@ -147,7 +147,7 @@ export const useUpscaler = (img?: HTMLImageElement) => {
       worker.current.postMessage({
         type: ReceiverWorkerState.UPSCALE,
         data: {
-          imageId,
+          imageId: imageId++,
           pixels: src.dataSync(),
           shape: src.shape,
           patchSize,
