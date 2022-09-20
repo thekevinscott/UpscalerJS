@@ -41,11 +41,13 @@ onmessage = async ({ data: { type, data } }) => {
               patchSize,
             },
           });
-          await upscaler.warmup([{ patchSize }]); // first, _actually_ warm up the model
+          // first, _actually_ warm up the model
+          await upscaler.warmup([{ patchSize }]); // skipcq: js-0032
           durations[patchSize] = [];
           for (let j = 0; j < timesToTry; j++) {
             const start = performance.now();
-            await upscaler.warmup([{ patchSize }]); // then, time how long an operation takes
+            // then, time how long an operation takes
+            await upscaler.warmup([{ patchSize }]); // skipcq: js-0032
             durations[patchSize].push(performance.now() - start);
           }
           durations[patchSize] = durations[patchSize].reduce((s, d) => s + d, 0) / timesToTry;
