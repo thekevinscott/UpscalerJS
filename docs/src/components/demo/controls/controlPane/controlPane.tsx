@@ -19,6 +19,7 @@ export default function ControlPane({
   mobile,
   fullHeight,
   assumeHeight,
+  minHeight,
 }: {
   children: JSX.Element;
   open: boolean;
@@ -27,6 +28,7 @@ export default function ControlPane({
   mobile?: boolean;
   fullHeight?: boolean;
   assumeHeight?: boolean;
+  minHeight?: number,
 }) {
   return (
     <div
@@ -40,6 +42,7 @@ export default function ControlPane({
       })}
       style={{
         width: height ? (open ? `calc(100% - 200px)` : `calc(100%)`) : undefined,
+        minHeight,
       }}
     >
       <div id={styles.controlPaneInner} className={classNames({ [styles.open]: open, ...getPosition(position) })} style={{
