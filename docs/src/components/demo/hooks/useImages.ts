@@ -30,12 +30,12 @@ export const useImages = () => {
     patchSize,
     choosePatchSize,
     benchmarks, 
-    hasBeenBenchmarked, cancelUpscale: _cancelUpscale, progress, upscaledSrc } = useUpscaler(img);
+    hasBeenBenchmarked, cancelUpscale: cancelUpscale, progress, upscaledSrc } = useUpscaler(img);
 
   const setUploadedImage = useCallback(async (uploadedImage?: UploadedImage) => {
     if (uploadedImage?.src !== _originalImage?.src) {
       reset();
-      _cancelUpscale();
+      cancelUpscale();
       if (uploadedImage) {
         _setHasBeenRescaled(false);
         const { src, filename } = uploadedImage;
@@ -55,15 +55,11 @@ export const useImages = () => {
         }
       }
     }
-  }, [_originalImage, _cancelUpscale, _setOriginalImage, _setChoice, _setHasBeenRescaled, _setDownscaledImage, reset]);
+  }, [_originalImage, cancelUpscale, _setOriginalImage, _setChoice, _setHasBeenRescaled, _setDownscaledImage, reset]);
 
   const chooseWhichImageToUse = useCallback((chosenChoice) => {
     _setChoice(chosenChoice);
   }, [_setChoice]);
-
-  const cancelUpscale = useCallback(() => {
-    _cancelUpscale();
-  }, [reset, _cancelUpscale])
 
   return {
     cancelUpscale,

@@ -90,6 +90,7 @@ onmessage = async ({ data: { type, data } }) => {
       shape,
       patchSize,
       padding,
+      imageId,
     } = data;
     const input = tf.tensor3d(pixels, shape);
     try {
@@ -102,6 +103,7 @@ onmessage = async ({ data: { type, data } }) => {
           postMessage({
             type: SenderWorkerState.PROGRESS,
             data: {
+              imageId,
               id,
               rate,
               row,
