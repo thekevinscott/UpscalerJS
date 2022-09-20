@@ -33,6 +33,7 @@ export default function Upload({
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
     accept: 'image/jpeg, image/png',
+    multiple: false,
   });
   
   return (

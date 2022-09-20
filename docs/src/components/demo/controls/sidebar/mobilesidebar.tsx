@@ -37,6 +37,11 @@ export default function MobileSidebar({
 
   const handleFocus = useCallback(() => {
     setFullHeight(true);
+    setTimeout(() => {
+
+      window.scrollTo(0, 0);
+      document.body.scrollTop = 0;
+    }, 100)
   }, []);
 
   const handleBlur = useCallback(() => {
@@ -44,7 +49,7 @@ export default function MobileSidebar({
   }, []);
 
   return (
-    <ControlPane mobile open={getStateForMobileSidebar(state, open)} position="bottom" assumeHeight={!expanded} fullHeight={expanded}>
+    <ControlPane mobile open={getStateForMobileSidebar(state, open)} position="bottom" assumeHeight={!expanded} fullHeight={expanded} minHeight={140}>
       <div id={styles.mobileSidebar} className={classNames({ [styles.expanded]: expanded })}>
         <Icon onClick={handleBlur} id={styles.close} className={classNames({ [styles.visible]: expanded })} name="x-circle" slot="suffix"></Icon>
         <p>Alternatively, you can search for sample images to upscale below.</p>
