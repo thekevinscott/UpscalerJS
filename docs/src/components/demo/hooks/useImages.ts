@@ -27,6 +27,7 @@ export const useImages = () => {
   const img = useAppropriateImage({ hasBeenRescaled, choice, downscaledImage, _originalImage });
 
   const {     
+    endBenchmarking,
     patchSize,
     choosePatchSize,
     benchmarks, 
@@ -62,6 +63,7 @@ export const useImages = () => {
   }, [_setChoice]);
 
   return {
+    endBenchmarking,
     cancelUpscale,
     originalSize: _originalImage ? { width: _originalImage.el.width, height: _originalImage.el.height, } : undefined,
     filename: _originalImage?.filename,

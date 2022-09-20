@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import styles from './starting.module.scss';
 import { Alert } from '@site/src/components/alert/alert';
 import { Icon } from '@site/src/components/icon/icon';
@@ -26,9 +26,7 @@ const Row = ({
   const id = `patch-size-${patchSize}`;
   const handleClick = useCallback(() => {
     const current = ref.current;
-    if (hasBeenBenchmarked && current) {
-      current.click();
-    }
+    current.click();
   }, [hasBeenBenchmarked, ref]);
 
   return (
@@ -38,7 +36,6 @@ const Row = ({
         <input
           ref={ref}
           checked={chosenPatchSize === patchSize}
-          disabled={!hasBeenBenchmarked}
           type="radio"
           id={id}
           name="patch-size"
@@ -75,6 +72,9 @@ export default function Starting({
   patchSize?: number,
   choosePatchSize: (patchSize: number) => void,
 }) {
+  const [isCustom, setIsCustom] = useState(false);
+  const [customPatchSize, setCustomPatchSize] = useState<number>();
+  const disabled = chosenPatchSize === undefined;
   return (
     <Dialogue>
       <Pane> 
@@ -99,6 +99,7 @@ export default function Starting({
           Below are live measurements for your browser processing at various patch sizes.
         </p>
           {benchmarks ? (
+            <>
             <table>
               <thead><tr><th></th><th>Patch Size</th><th>Duration</th></tr></thead>
               <tbody>
@@ -110,22 +111,52 @@ export default function Starting({
                       hasBeenBenchmarked={hasBeenBenchmarked}
                       patchSize={patchSize}
                       duration={duration}
-                      choosePatchSize={choosePatchSize}
-                      chosenPatchSize={chosenPatchSize}
+                      choosePatchSize={patchSize => {
+                        setIsCustom(false);
+                        choosePatchSize(patchSize);
+                      }}
+                      chosenPatchSize={!isCustom ? chosenPatchSize : undefined}
                     />
                   );
                 })}
+                <tr>
+                  <td>
+                    <input
+                      type="radio"
+                      name="patch-size"
+                      value="custom"
+                      checked={isCustom}
+                      onChange={() => {
+                        choosePatchSize(customPatchSize);
+                      }}
+                    />
+                  </td>
+                  <td colSpan={2}>
+                    <div id={styles.customPatchSizeContainer}>
+                    <input 
+                    onFocus={() => {
+                      setIsCustom(true);
+                    }}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setCustomPatchSize(parseInt(value, 10));
+                      choosePatchSize(parseInt(value, 10));
+                      setIsCustom(true);
+                    }}
+                    id={styles.customPatchSize} type="number" placeholder="Choose a custom patch size" />
+                    </div>
+                  </td>
+                </tr>
               </tbody>
             </table>
+            <p>You can choose a patch size above, or accept the default. Click the Start button when you&apos;re ready.</p>
+            </>
           ) : (
             <Loading />
           )}
-          {hasBeenBenchmarked && (
-            <p>You can choose a patch size above, or accept the default. Click the Start button when you&apos;re ready.</p>
-          )}
         <div id={styles.options}>
           <div id={styles.right}>
-            <Button size="large" disabled={!hasBeenBenchmarked} variant='primary' onClick={start}>
+            <Button size="large" variant='primary' onClick={start} disabled={disabled}>
               Start
             </Button>
           </div>

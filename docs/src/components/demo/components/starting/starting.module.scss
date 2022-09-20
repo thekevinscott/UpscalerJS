@@ -97,3 +97,28 @@
     align-items: flex-end;
   }
 }
+
+#customPatchSizeContainer {
+  padding: 0;
+  height: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+
+  #customPatchSize {
+    border-radius: 0;
+    background: none;
+    border: none;
+    height: 100%;
+    display: block;
+    width: 100%;
+    flex: 1;
+  }
+}
+
+html[data-theme='dark'] {
+  #customPatchSizeContainer {
+    background-color: #030f1a;
+  }
+}
