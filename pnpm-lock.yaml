@@ -152,6 +152,9 @@ importers:
       '@shoelace-style/shoelace': 2.0.0-beta.80
       '@tsconfig/docusaurus': ^1.0.5
       '@types/react': ^18.0.17
+      '@upscalerjs/esrgan-legacy': workspace:*
+      '@upscalerjs/esrgan-slim': workspace:*
+      '@upscalerjs/pixel-upsampler': workspace:*
       classnames: ^2.3.1
       clsx: ^1.2.1
       concurrently: ^7.3.0
@@ -170,12 +173,16 @@ importers:
       typedoc: ^0.23.10
       typedoc-plugin-markdown: ^3.13.4
       typescript: ^4.7.4
+      upscaler: workspace:*
     dependencies:
       '@docusaurus/core': 2.1.0_coe2saodzr6velnhige3ek3zsy
       '@docusaurus/preset-classic': 2.1.0_ind54bwlsfvgd4pz4wkkelf5qu
       '@docusaurus/theme-common': 2.1.0_coe2saodzr6velnhige3ek3zsy
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
+      '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
+      '@upscalerjs/esrgan-slim': link:../models/esrgan-slim
+      '@upscalerjs/pixel-upsampler': link:../models/pixel-upsampler
       classnames: 2.3.1
       clsx: 1.2.1
       image-comparison-viewer: 0.4.2
@@ -187,6 +194,7 @@ importers:
       react-icons: 4.4.0_react@17.0.2
       react-loading: 2.0.3_at7mkepldmzoo6silmqc5bca74
       tensor-as-base64: 0.3.0_@tensorflow+tfjs@3.20.0
+      upscaler: link:../packages/upscalerjs
     devDependencies:
       '@docusaurus/module-type-aliases': 2.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@docusaurus/types': 2.1.0_sfoxds7t5ydpegc3knd667wn6m
