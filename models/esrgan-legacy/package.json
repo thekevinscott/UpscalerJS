@@ -52,16 +52,16 @@
         "types": "./dist/esm/gans.d.ts",
         "default": "./dist/esm/gans.js"
       }
-    },
-    ".": {
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+    },		
+    ".": {		
+      "require": {		
+        "types": "./dist/cjs/index.d.ts",		
+        "default": "./dist/cjs/index.js"		
+      },		
+      "import": {		
+        "types": "./dist/esm/index.d.ts",		
+        "default": "./dist/esm/index.js"		
+      }		
     }
   },
   "scripts": {
