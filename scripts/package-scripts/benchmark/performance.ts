@@ -344,6 +344,11 @@ class Benchmarker {
       const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
       const { name, exports } = JSON.parse(fs.readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
       Object.keys(exports).map(key => {
+        if (key === '.' && Object.keys(exports).length > 1) {
+          // If we have a root level ./ definition, it means the model is bucket exporting all it's available
+          // models. That means we can skip this entry.
+          return;
+        }
         const modelName = key === '.' ? name : path.join(name, key);
         const value = exports[key];
         if (typeof value === 'object') {
