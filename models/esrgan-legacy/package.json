@@ -25,7 +25,7 @@
     },		
     ".": {		
       "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"		
+      "import": "./dist/esm/index.js"
     }
   },
   "scripts": {

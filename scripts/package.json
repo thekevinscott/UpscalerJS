@@ -21,9 +21,14 @@
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
+    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/esrgan-legacy": "workspace:*",
+    "@upscalerjs/pixel-upsampler": "workspace:*",
+    "cli-table": "^0.3.11",
     "upscaler": "workspace:*"
   },
   "devDependencies": {
+    "@types/cli-table": "^0.3.0",
     "@types/inquirer": "^8.2.1",
     "@types/sharp": "^0.30.5",
     "@types/tiny-async-pool": "^2.0.0",
