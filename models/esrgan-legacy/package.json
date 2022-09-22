@@ -4,64 +4,28 @@
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
     "./div2k/2x": {
-      "require": {
-        "default": "./dist/cjs/div2k/2x.js",
-        "types": "./dist/cjs/div2k/2x.d.ts"
-      },
-      "import": {
-        "default": "./dist/esm/div2k/2x.js",
-        "types": "./dist/esm/div2k/2x.d.ts"
-      }
+      "require": "./dist/cjs/div2k/2x.js",
+      "import": "./dist/esm/div2k/2x.js"
     },
     "./div2k/3x": {
-      "require": {
-        "default": "./dist/cjs/div2k/3x.js",
-        "types": "./dist/cjs/div2k/3x.d.ts"
-      },
-      "import": {
-        "default": "./dist/esm/div2k/3x.js",
-        "types": "./dist/esm/div2k/3x.d.ts"
-      }
+      "require": "./dist/cjs/div2k/3x.js",
+      "import": "./dist/esm/div2k/3x.js"
     },
     "./div2k/4x": {
-      "require": {
-        "default": "./dist/cjs/div2k/4x.js",
-        "types": "./dist/cjs/div2k/4x.d.ts"
-      },
-      "import": {
-        "default": "./dist/esm/div2k/4x.js",
-        "types": "./dist/esm/div2k/4x.d.ts"
-      }
+      "require": "./dist/cjs/div2k/4x.js",
+      "import": "./dist/esm/div2k/4x.js"
     },
     "./psnr-small": {
-      "require": {
-        "default": "./dist/cjs/psnr-small.js",
-        "types": "./dist/cjs/psnr-small.d.ts"
-      },
-      "import": {
-        "default": "./dist/esm/psnr-small.js",
-        "types": "./dist/esm/psnr-small.d.ts"
-      }
+      "require": "./dist/cjs/psnr-small.js",
+      "import": "./dist/esm/psnr-small.js"
     },
     "./gans": {
-      "require": {
-        "types": "./dist/cjs/gans.d.ts",
-        "default": "./dist/cjs/gans.js"
-      },
-      "import": {
-        "types": "./dist/esm/gans.d.ts",
-        "default": "./dist/esm/gans.js"
-      }
+      "require": "./dist/cjs/gans.js",
+      "import": "./dist/esm/gans.js"
     },		
     ".": {		
-      "require": {		
-        "types": "./dist/cjs/index.d.ts",		
-        "default": "./dist/cjs/index.js"		
-      },		
-      "import": {		
-        "types": "./dist/esm/index.d.ts",		
-        "default": "./dist/esm/index.js"		
-      }		
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"		
     }
   },
   "scripts": {

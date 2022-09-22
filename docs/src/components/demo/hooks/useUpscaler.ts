@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
-import { AbortError } from 'upscaler';
 import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
 import { tensorAsBase64 } from 'tensor-as-base64';
 
-const SCALE = 4;
+const SCALE = 2;
 
 const PATCH_SIZES = [
   4,
@@ -25,8 +24,6 @@ const PATCH_SIZES = [
   512,
   1024,
 ];
-
-let imageId = 0;
 
 export const useUpscaler = (img?: HTMLImageElement) => {
   const [upscaling, setUpscaling] = useState(false);
@@ -67,7 +64,9 @@ export const useUpscaler = (img?: HTMLImageElement) => {
         id: img?.src,
       }
     });
+  }, [img]);
 
+  useEffect(() => {
     worker.current.onmessage = async ({ data: { type, data } }) => {
       if (type === SenderWorkerState.BENCHMARK_START_MEASUREMENT) {
         const {
@@ -116,21 +115,16 @@ export const useUpscaler = (img?: HTMLImageElement) => {
             col,
             slice,
             shape,
-            imageId: _imageId,
           } = data;
-          if (imageId === _imageId) {
-            if (id === img.src) {
-              setProgress(rate);
-              const tensor = tf.tensor3d(slice, shape);
-              const dataURL = await tensorAsBase64(tensor);
-              tensor.dispose();
-              setUpscaledSrc(await drawImage(dataURL, patchSize * SCALE, col, row));
-              if (rate === 1) {
-                setUpscaling(false);
-              }
+          if (id === img.src) {
+            setProgress(rate);
+            const tensor = tf.tensor3d(slice, shape);
+            const dataURL = await tensorAsBase64(tensor);
+            tensor.dispose();
+            setUpscaledSrc(await drawImage(dataURL, patchSize * SCALE, col, row));
+            if (rate === 1) {
+              setUpscaling(false);
             }
-          } else {
-            console.warn(`Received progress event, but the image id ${_imageId} did not match the active image id ${imageId}`)
           }
         } else {
           console.warn('Received progress event, but we are not supposed to be upscaling.');
@@ -143,25 +137,17 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     setUpscaledSrc(createCanvas(img));
     setProgress(0);
     setUpscaling(true);
-    try {
-      const src = tf.browser.fromPixels(img);
-      await tf.nextFrame();
-      imageId += 1;
-      worker.current.postMessage({
-        type: ReceiverWorkerState.UPSCALE,
-        data: {
-          imageId,
-          pixels: src.dataSync(),
-          shape: src.shape,
-          patchSize,
-          padding: 2,
-        }
-      });
-    } catch(err) {
-      if (!(err instanceof AbortError)) {
-        throw err;
+    const src = tf.browser.fromPixels(img);
+    await tf.nextFrame();
+    worker.current.postMessage({
+      type: ReceiverWorkerState.UPSCALE,
+      data: {
+        pixels: src.dataSync(),
+        shape: src.shape,
+        patchSize,
+        padding: 2,
       }
-    }
+    });
   }, [patchSize, createCanvas, setUpscaling, setProgress]);
 
   const cancelUpscale = useCallback(() => {
@@ -195,5 +181,6 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     benchmarks,
     patchSize,
     choosePatchSize: setPatchSize,
+    scale: SCALE,
   }
 }

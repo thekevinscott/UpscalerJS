@@ -41,6 +41,7 @@
   }
 
   &.mobile {
+    display: none;
     #controlPaneInner {
       background: rgba(255,255,255,1);
     }

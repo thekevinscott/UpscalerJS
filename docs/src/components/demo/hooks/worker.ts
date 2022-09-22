@@ -1,4 +1,4 @@
-import Upscaler from 'upscaler';
+import Upscaler, { AbortError } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 
 export enum ReceiverWorkerState {
@@ -90,7 +90,6 @@ onmessage = async ({ data: { type, data } }) => {
       shape,
       patchSize,
       padding,
-      imageId,
     } = data;
     const input = tf.tensor3d(pixels, shape);
     try {
@@ -103,7 +102,6 @@ onmessage = async ({ data: { type, data } }) => {
           postMessage({
             type: SenderWorkerState.PROGRESS,
             data: {
-              imageId,
               id,
               rate,
               row,
@@ -115,7 +113,11 @@ onmessage = async ({ data: { type, data } }) => {
           slice.dispose();
         }
       });
-    } catch (err) { }
+    } catch (err) {
+      if (!(err instanceof AbortError)) {
+        throw err;
+      }
+     }
     input.dispose();
   } else if (type === ReceiverWorkerState.ABORT) {
     try { upscaler.abort(); } catch(err) {}
