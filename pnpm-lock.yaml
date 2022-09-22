@@ -381,11 +381,16 @@ importers:
 
   scripts:
     specifiers:
+      '@types/cli-table': ^0.3.0
       '@types/inquirer': ^8.2.1
       '@types/sharp': ^0.30.5
       '@types/tiny-async-pool': ^2.0.0
       '@types/yargs': ^17.0.10
       '@upscalerjs/core': workspace:*
+      '@upscalerjs/esrgan-legacy': workspace:*
+      '@upscalerjs/esrgan-slim': workspace:*
+      '@upscalerjs/pixel-upsampler': workspace:*
+      cli-table: ^0.3.11
       crimson-progressbar: ^1.3.0
       image-size: ^1.0.2
       inquirer: ^8.2.4
@@ -395,8 +400,13 @@ importers:
       yargs: ^17.5.1
     dependencies:
       '@upscalerjs/core': link:../packages/core
+      '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
+      '@upscalerjs/esrgan-slim': link:../models/esrgan-slim
+      '@upscalerjs/pixel-upsampler': link:../models/pixel-upsampler
+      cli-table: 0.3.11
       upscaler: link:../packages/upscalerjs
     devDependencies:
+      '@types/cli-table': 0.3.0
       '@types/inquirer': 8.2.1
       '@types/sharp': 0.30.5
       '@types/tiny-async-pool': 2.0.0
@@ -3864,6 +3874,10 @@ packages:
     resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==}
     dev: true
 
+  /@types/cli-table/0.3.0:
+    resolution: {integrity: sha512-QnZUISJJXyhyD6L1e5QwXDV/A5i2W1/gl6D6YMc8u0ncPepbv/B4w3S+izVvtAg60m6h+JP09+Y/0zF2mojlFQ==}
+    dev: true
+
   /@types/connect-history-api-fallback/1.3.5:
     resolution: {integrity: sha512-h8QJa8xSb1WD4fpKBDcATDNGXghFj6/3GRWG6dhmRcu0RX1Ubasur2Uvx5aeEwlf0MwblEC2bMzzMQntxnw/Cw==}
     dependencies:
@@ -5531,6 +5545,13 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
+  /cli-table/0.3.11:
+    resolution: {integrity: sha512-IqLQi4lO0nIB4tcdTpN4LCB9FI3uqrJZK7RC515EnhZ6qBaglkIgICb1wjeAqpdoOabm1+SuQtkXIPdYC93jhQ==}
+    engines: {node: '>= 0.2.0'}
+    dependencies:
+      colors: 1.0.3
+    dev: false
+
   /cli-table3/0.6.2:
     resolution: {integrity: sha512-QyavHCaIC80cMivimWu4aWHilIpiDpfm3hGmqAmXVL1UsnbLuBSMd21hTX6VY4ZSDSM73ESLeF8TOYId3rBTbw==}
     engines: {node: 10.* || >= 12.*}
@@ -5643,6 +5664,11 @@ packages:
 
   /colorette/2.0.19:
     resolution: {integrity: sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==}
+
+  /colors/1.0.3:
+    resolution: {integrity: sha512-pFGrxThWcWQ2MsAz6RtgeWe4NK2kUE1WfsrvvlctdII745EW9I0yflqhe7++M5LEc7bV2c/9/5zc8sFcpL0Drw==}
+    engines: {node: '>=0.1.90'}
+    dev: false
 
   /colors/1.4.0:
     resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
