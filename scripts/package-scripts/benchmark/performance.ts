@@ -12,6 +12,8 @@ import { makeTmpDir } from '../utils/withTmpDir';
 import { ModelDefinition } from '@upscalerjs/core';
 import { getString } from '../prompt/getString';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
+import Table from 'cli-table';
+
 const crimsonProgressBar = require("crimson-progressbar");
 const Upscaler = require('upscaler/node');
 const sizeOf = util.promisify(imageSize);
@@ -25,6 +27,10 @@ const CACHE_DIR = path.resolve(ROOT_DIR, './tmp/datasets');
 /****
  * Types
  */
+type Output = 'table' | 'json';
+
+type Results = Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>;
+
 interface DatasetDefinition {
   name: string;
   path?: string;
@@ -231,7 +237,7 @@ class Dataset {
           },
         });
       } catch (err) {
-        console.error(`**** Error processing original: ${filename}`);
+        console.error(`\n\n**** Error processing original: ${filename}`);
         throw err;
       }
     };
@@ -291,7 +297,7 @@ class Dataset {
             }
           });
         } catch (err) {
-          console.error('Error processing crop');
+          console.error('\n\n****Error processing crop');
           throw err;
         }
       }
@@ -333,38 +339,60 @@ class Benchmarker {
   private datasets: Map<string, Dataset>;
 
   private tmpDir: string = '';
+  private modelPackages: string[];
 
   constructor(modelPackages: string[], datasets: Dataset[], n: number = Infinity) {
     this.n = n;
+    this.modelPackages = modelPackages;
     this.models = new Map();
     this.datasets = new Map();
     this.tmpDir = makeTmpDir();
     mkdirpSync(this.tmpDir);
-    for (const modelPackageName of modelPackages) {
-      const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
-      const { name, exports } = JSON.parse(fs.readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
-      Object.keys(exports).map(key => {
-        if (key === '.' && Object.keys(exports).length > 1) {
-          // If we have a root level ./ definition, it means the model is bucket exporting all it's available
-          // models. That means we can skip this entry.
-          return;
-        }
-        const modelName = key === '.' ? name : path.join(name, key);
-        const value = exports[key];
-        if (typeof value === 'object') {
-          const { require: {
-            default: _default,
-          } } = value;
-          const pathToModel = path.resolve(modelPackageFolder, _default);
-          console.log(modelName, pathToModel)
-          this.models.set(modelName, import(pathToModel).then(model => new Upscaler(model)));
-        } else {
-          throw new Error('Handle this')
-        }
-      });
-    }
     for (const dataset of datasets) {
       this.datasets.set(dataset.definition.name, dataset);
+    }
+  }
+
+  async loadModels() {
+    for (const modelPackageName of this.modelPackages) {
+      const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
+      const { name, exports } = JSON.parse(fs.readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
+      for (const key of Object.keys(exports)) {
+        // If we have a root level ./ definition, it means the model is bucket exporting all it's available
+        // models. That means we can skip this entry.
+        if (key !== '.' || Object.keys(exports).length === 1) {
+          const modelName = key === '.' ? name : path.join(name, key);
+          const value = exports[key];
+          if (typeof value === 'object') {
+            const { require: {
+              default: importPath,
+            } } = value;
+            const pathToModel = path.resolve(modelPackageFolder, importPath);
+            console.log(modelName, pathToModel)
+            const model = (await import(pathToModel)).default;
+            const { packageInformation, ...modelDefinition } = model(tf) as ModelDefinition;
+            const upscaler = new Upscaler({ 
+              model: {
+                // provide the explicit path to avoid going through the package discovery process (which
+                // won't work because of pnpm's local linking)
+                ...modelDefinition,
+                path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
+                meta: {
+                  modelName,
+                  modelPackageFolder,
+                }
+              } 
+            });
+            this.models.set(modelName, upscaler);
+            const { modelDefinition: _modelDefinition } = await upscaler.getModel();
+            if (modelName !== _modelDefinition.meta.modelName) {
+              throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
+            }
+          } else {
+            throw new Error('Handle this')
+          }
+        }
+      }
     }
   }
 
@@ -430,6 +458,9 @@ class Benchmarker {
     crimsonProgressBar.renderProgressBar(0, total);
     let i = 0;
     for (const { n, files, datasetName, modelName, dataset, model, modelDefinition} of pairs) {
+      if (modelName !== modelDefinition.meta.modelName) {
+        throw new Error(`Mismatch, model name ${modelName} does not match package name ${modelDefinition.meta.modelName}`);
+      }
       const ssim: number[] = [];
       const psnr: number[] = [];
 
@@ -466,7 +497,7 @@ class Benchmarker {
         psnr.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'psnr'));
       }
 
-      for await (const value of asyncPool(1, files, processFile)) {
+      for await (const value of asyncPool(1, files.slice(0, n), processFile)) {
         i++;
         crimsonProgressBar.renderProgressBar(i, total);
       }
@@ -487,12 +518,11 @@ class Benchmarker {
  * Main function
  */
 
-type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { outputFile?: string, n?: number, cropped?: number }) => Promise<
-    Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>
->;
+type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { outputFile?: string, n?: number, cropped?: number }) => Promise<Results>;
 const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, outputFile, cropped } = {}) => {
   const datasets = datasetDefinitions.map(dataset => new Dataset(dataset));
   const benchmarker = new Benchmarker(models, datasets, n);
+  await benchmarker.loadModels();
   const results = await benchmarker.benchmark(cropped);
   benchmarker.cleanup();
   return results;
@@ -509,6 +539,16 @@ interface Args {
   n?: number;
   cropped?: number;
   models: Array<string>;
+  output: Output;
+}
+
+const isOutput = (output?: unknown): output is Output => output !== undefined && ['json', 'table'].includes(`${output}`);
+const getOutput = (output?: unknown): Output => {
+  if (isOutput(output)) {
+    return output;
+  }
+
+  return 'table';
 }
 
 const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
@@ -561,6 +601,7 @@ const getArgs = async (): Promise<Args> => {
       n: { type: 'number' },
       cropped: { type: 'number' },
       model: { type: 'string' },
+      output: { type: 'string' },
     });
   })
   .help()
@@ -568,9 +609,11 @@ const getArgs = async (): Promise<Args> => {
 
   const datasets = await getDataset(...argv._);
   const models = getModels(argv.model);
+  const output = getOutput(argv.output);
 
   return {
     models,
+    output,
     datasets,
     outputFile: typeof argv.outputFile === 'string' ? argv.outputFile : undefined,
     n: typeof argv.n === 'number' ? argv.n : undefined,
@@ -578,14 +621,64 @@ const getArgs = async (): Promise<Args> => {
   }
 }
 
+const displayResults = (results: Results, output: Output) => {
+  // organize by datasets
+  const resultsByDataset = new Map<Dataset, {
+    result: BenchmarkResult;
+    modelDefinition: ModelDefinition;
+  }[]>();
+  results.forEach((result, { modelDefinition, dataset }) => {
+    const existingResults = resultsByDataset.get(dataset) || [];
+    resultsByDataset.set(dataset, existingResults.concat([{
+      result,
+      modelDefinition,
+    }]));
+  });
+
+  type ResultByModel = { modelName?: string; modelScale: number; psnr: number; ssim: number };
+  const data: { dataset: string; results: ResultByModel[]; }[] = [];
+  resultsByDataset.forEach((results, dataset) => {
+    const resultsByModel: ResultByModel[] = [];
+    results.forEach(({ result, modelDefinition }) => {
+      resultsByModel.push(
+        {
+          modelName: (modelDefinition.meta as Record<string, string>).modelName, 
+          modelScale: modelDefinition.scale, 
+          psnr: result.psnr, 
+          ssim: result.ssim,
+        },
+      );
+    });
+    data.push({
+      dataset: dataset.definition.name,
+      results: resultsByModel,
+    });
+  });
+
+  if (output === 'table') {
+    data.forEach(({ dataset, results }) => {
+      console.log(`Results for Dataset "${dataset}"`);
+      const table = new Table({
+        head: ['Model', 'Scale', 'PSNR', 'SSIM'],
+      });
+      results.forEach(({ modelName, modelScale, psnr, ssim }) => {
+        table.push(
+          [modelName, modelScale, psnr, ssim],
+        );
+      });
+
+      console.log(table.toString());
+    });
+  } else {
+    console.log(JSON.stringify(data, null, 2));
+  }
+}
+
 if (require.main === module) {
   (async () => {
     await checkImagemagickInstallation()
-    const { models, datasets, outputFile, n, cropped } = await getArgs();
+    const { output, models, datasets, outputFile, n, cropped } = await getArgs();
     const results = await benchmarkPerformance(models, datasets, { outputFile, n, cropped });
-    results.forEach((value, { modelDefinition, dataset }) => {
-      console.log('Result for model', modelDefinition.packageInformation?.name, 'with scale', modelDefinition.scale, 'for dataset', dataset.definition.name);
-      console.log(value);
-    });
+    displayResults(results, output);
   })();
 }
