@@ -4,6 +4,7 @@ import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
 import { tensorAsBase64 } from 'tensor-as-base64';
 
+// TODO: This has to manually be set to the scale of the model loaded in the worker.
 const SCALE = 4;
 
 const PATCH_SIZES = [
