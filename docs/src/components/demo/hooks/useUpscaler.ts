@@ -4,7 +4,7 @@ import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
 import { tensorAsBase64 } from 'tensor-as-base64';
 
-const SCALE = 2;
+const SCALE = 4;
 
 const PATCH_SIZES = [
   4,
