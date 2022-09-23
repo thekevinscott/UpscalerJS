@@ -1,3 +1,3 @@
 import getModelDefinition from '../../utils/getModelDefinition';
-const smallX4BestValLossEpoch490 = getModelDefinition(4, 'rdn', 'models/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-09-02_1427/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch490.hdf5/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch490/model.json', {"dataset":"div2k","scale":"4"});
+const smallX4BestValLossEpoch490 = getModelDefinition(4, 'rdn', 'models/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-09-02_1427/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch490.h5/rdn-C1-D2-G4-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch490/model.json', {"dataset":"div2k","scale":"4"});
 export default smallX4BestValLossEpoch490;

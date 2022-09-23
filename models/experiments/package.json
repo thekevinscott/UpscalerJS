@@ -2,6 +2,44 @@
   "name": "@upscalerjs/experiments",
   "version": "0.1.0",
   "description": "A folder for various experimental models",
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/experiments --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/experiments",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts experiments -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.20.0"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^3.20.0",
+    "@tensorflow/tfjs-layers": "^3.20.0",
+    "@tensorflow/tfjs": "^3.20.0",
+    "@tensorflow/tfjs-node": "^3.20.0",
+    "@tensorflow/tfjs-node-gpu": "^3.20.0",
+    "seedrandom": "3.0.5"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
@@ -267,46 +305,6 @@
       "require": "./dist/cjs/models/esrgan/smallX3Epoch497.js",
       "import": "./dist/esm/models/esrgan/smallX3Epoch497.js"
     },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch474": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch474.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch474.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch478": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch478.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch478.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch483": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch483.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch483.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch480": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch480.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch480.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch486": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch486.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch486.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch489": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch489.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch489.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch492": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch492.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch492.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch495": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch495.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch495.js"
-    },
-    "./models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch498": {
-      "require": "./dist/cjs/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch498.js",
-      "import": "./dist/esm/models/esrgan/smallX3RdnC1D2G4G064T10X3Patchsize129Compress50Sharpen0Datadiv2kVaryCTrueEpoch498.js"
-    },
     "./models/esrgan/smallX4BestValGeneratorPSNRYEpoch495": {
       "require": "./dist/cjs/models/esrgan/smallX4BestValGeneratorPSNRYEpoch495.js",
       "import": "./dist/esm/models/esrgan/smallX4BestValGeneratorPSNRYEpoch495.js"
@@ -347,46 +345,6 @@
       "require": "./dist/cjs/models/esrgan/smallX4Epoch498.js",
       "import": "./dist/esm/models/esrgan/smallX4Epoch498.js"
     },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch460": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch460.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch460.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch465": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch465.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorPSNRYEpoch465.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch478": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch478.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch478.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch482.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch499": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch499.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch499.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch485": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch485.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch485.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch488": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch488.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch488.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch491": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch491.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch491.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch494": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch494.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch494.js"
-    },
-    "./models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch497": {
-      "require": "./dist/cjs/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch497.js",
-      "import": "./dist/esm/models/esrgan/smallX4RdnC1D2G4G064T10X4Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch497.js"
-    },
     "./models/esrgan/smallX8BestValGeneratorPSNRYEpoch496": {
       "require": "./dist/cjs/models/esrgan/smallX8BestValGeneratorPSNRYEpoch496.js",
       "import": "./dist/esm/models/esrgan/smallX8BestValGeneratorPSNRYEpoch496.js"
@@ -426,46 +384,6 @@
     "./models/esrgan/smallX8Epoch499": {
       "require": "./dist/cjs/models/esrgan/smallX8Epoch499.js",
       "import": "./dist/esm/models/esrgan/smallX8Epoch499.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch404": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch404.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch404.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch405": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch405.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch405.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch402": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch402.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch402.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch403": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch403.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch403.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch406": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch406.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch406.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch395": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch395.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch395.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch398": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch398.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch398.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch401": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch401.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch401.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch409": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch409.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch409.js"
-    },
-    "./models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch412": {
-      "require": "./dist/cjs/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch412.js",
-      "import": "./dist/esm/models/esrgan/smallX8RdnC1D2G4G064T10X8Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueEpoch412.js"
     },
     "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch115": {
       "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch115.js",
@@ -747,43 +665,5 @@
       "require": "./dist/cjs/models/esrgan/largeX8Epoch500.js",
       "import": "./dist/esm/models/esrgan/largeX8Epoch500.js"
     }
-  },
-  "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/experiments --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/experiments",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts experiments -o cjs -o esm -o umd"
-  },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models",
-    "esrgan"
-  ],
-  "files": [
-    "license",
-    "src/**/*",
-    "models/**/*",
-    "dist/**/*"
-  ],
-  "peerDependencies": {
-    "@tensorflow/tfjs": "^3.20.0"
-  },
-  "dependencies": {
-    "@upscalerjs/core": "workspace:*"
-  },
-  "devDependencies": {
-    "@tensorflow/tfjs-core": "^3.20.0",
-    "@tensorflow/tfjs-layers": "^3.20.0",
-    "@tensorflow/tfjs": "^3.20.0",
-    "@tensorflow/tfjs-node": "^3.20.0",
-    "@tensorflow/tfjs-node-gpu": "^3.20.0",
-    "seedrandom": "3.0.5"
-  },
-  "author": "Kevin Scott",
-  "license": "MIT"
+  }
 }

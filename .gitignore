@@ -28,3 +28,4 @@ test/**/package-lock.json
 test-output
 tmp
 .nyc_output
+output.json

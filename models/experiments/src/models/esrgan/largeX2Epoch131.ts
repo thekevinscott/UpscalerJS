@@ -1,3 +1,3 @@
 import getModelDefinition from '../../utils/getModelDefinition';
-const largeX2Epoch131 = getModelDefinition(2, 'rrdn', 'models/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-06-15_1921/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch131.hdf5/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch131/model.json', {"dataset":"div2k","scale":"2"});
+const largeX2Epoch131 = getModelDefinition(2, 'rrdn', 'models/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-06-15_1921/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch131.h5/rrdn-C4-D3-G32-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch131/model.json', {"dataset":"div2k","scale":"2"});
 export default largeX2Epoch131;

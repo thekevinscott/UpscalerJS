@@ -1,3 +1,3 @@
 import getModelDefinition from '../../utils/getModelDefinition';
-const mediumX4Epoch495 = getModelDefinition(4, 'rdn', 'models/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-09-04_0119/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch495.hdf5/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch495/model.json', {"dataset":"div2k","scale":"4"});
+const mediumX4Epoch495 = getModelDefinition(4, 'rdn', 'models/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-09-04_0119/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch495.h5/rdn-C1-D10-G64-G064-T10-x4-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_epoch495/model.json', {"dataset":"div2k","scale":"4"});
 export default mediumX4Epoch495;

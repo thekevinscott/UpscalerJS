@@ -1,3 +1,3 @@
 import getModelDefinition from '../../utils/getModelDefinition';
-const largeX3BestValLossEpoch483 = getModelDefinition(3, 'rrdn', 'models/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse/2022-08-29_1624/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch483.hdf5/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch483/model.json', {"dataset":"div2k","scale":"3"});
+const largeX3BestValLossEpoch483 = getModelDefinition(3, 'rrdn', 'models/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse/2022-08-29_1624/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch483.h5/rrdn-C4-D3-G32-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch483/model.json', {"dataset":"div2k","scale":"3"});
 export default largeX3BestValLossEpoch483;
