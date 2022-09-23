@@ -1,0 +1,3 @@
+import getModelDefinition from '../../utils/getModelDefinition';
+const mediumX2BestValGeneratorLossEpoch479 = getModelDefinition(2, 'rdn', 'models/rdn-C1-D10-G64-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse/2022-06-12_0727/rdn-C1-D10-G64-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_generator_loss_epoch479.hdf5/rdn-C1-D10-G64-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_generator_loss_epoch479/model.json', {"dataset":"div2k","scale":"2"});
+export default mediumX2BestValGeneratorLossEpoch479;

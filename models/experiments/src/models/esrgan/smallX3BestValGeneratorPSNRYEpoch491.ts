@@ -1,0 +1,3 @@
+import getModelDefinition from '../../utils/getModelDefinition';
+const smallX3BestValGeneratorPSNRYEpoch491 = getModelDefinition(3, 'rdn', 'models/rdn-C1-D2-G4-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse/2022-08-21_1602/rdn-C1-D2-G4-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_generator_PSNR_Y_epoch491.hdf5/rdn-C1-D2-G4-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_generator_PSNR_Y_epoch491/model.json', {"dataset":"div2k","scale":"3"});
+export default smallX3BestValGeneratorPSNRYEpoch491;

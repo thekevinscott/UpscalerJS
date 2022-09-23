@@ -63,6 +63,54 @@ type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
  * Utility Functions & Classes
  */
 
+const getUpscalerFromExports = async (modelPackageFolder: string, modelName: string, exports: Record<string, any>, key: string) => {
+  const value = exports[key];
+  if (typeof value === 'object') {
+    const { require: importPath, } = value;
+    const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
+    const modelDefinitionFn = (await import(pathToModel)).default;
+    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
+    const model = {
+      // provide the explicit path to avoid going through the package discovery process (which
+      // won't work because of pnpm's local linking)
+      ...modelDefinition,
+      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
+      meta: {
+        modelName,
+        modelPackageFolder,
+      }
+    }
+    try {
+      const upscaler = new Upscaler({
+        model,
+      });
+      await upscaler.getModel();
+      return upscaler;
+    } catch (err) {
+      console.error('Error instantiating upscaler for model definition', model);
+      throw err;
+    }
+  } else {
+    throw new Error('Handle this')
+  }
+};
+
+const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?: unknown) => {
+  if (modelPackageFolder === undefined) {
+    throw new Error('modelPackageFolder is undefined');
+  }
+  if (importPath === undefined) {
+    console.log('value', value);
+    throw new Error('importPath is undefined');
+  }
+  try {
+    return path.resolve(modelPackageFolder, importPath);
+  } catch (err) {
+    console.log(modelPackageFolder, importPath);
+    throw err;
+  }
+}
+
 function getFiles(dir: string): string[] {
   const dirents = readdirSync(dir, { withFileTypes: true });
   let files: string[] = [];
@@ -362,34 +410,11 @@ class Benchmarker {
         // models. That means we can skip this entry.
         if (key !== '.' || Object.keys(exports).length === 1) {
           const modelName = key === '.' ? name : path.join(name, key);
-          const value = exports[key];
-          if (typeof value === 'object') {
-            const { require: {
-              default: importPath,
-            } } = value;
-            const pathToModel = path.resolve(modelPackageFolder, importPath);
-            console.log(modelName, pathToModel)
-            const model = (await import(pathToModel)).default;
-            const { packageInformation, ...modelDefinition } = model(tf) as ModelDefinition;
-            const upscaler = new Upscaler({ 
-              model: {
-                // provide the explicit path to avoid going through the package discovery process (which
-                // won't work because of pnpm's local linking)
-                ...modelDefinition,
-                path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
-                meta: {
-                  modelName,
-                  modelPackageFolder,
-                }
-              } 
-            });
-            this.models.set(modelName, upscaler);
-            const { modelDefinition: _modelDefinition } = await upscaler.getModel();
-            if (modelName !== _modelDefinition.meta.modelName) {
-              throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
-            }
-          } else {
-            throw new Error('Handle this')
+          const upscaler = await getUpscalerFromExports(modelPackageFolder, modelName, exports, key);
+          this.models.set(modelName, upscaler);
+          const { modelDefinition: _modelDefinition } = await upscaler.getModel();
+          if (modelName !== _modelDefinition.meta.modelName) {
+            throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
           }
         }
       }
@@ -523,6 +548,7 @@ const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinit
   const datasets = datasetDefinitions.map(dataset => new Dataset(dataset));
   const benchmarker = new Benchmarker(models, datasets, n);
   await benchmarker.loadModels();
+  console.log('LOAD MODELS COMPLETE')
   const results = await benchmarker.benchmark(cropped);
   benchmarker.cleanup();
   return results;

@@ -23,6 +23,7 @@
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/esrgan-slim": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
+    "@upscalerjs/experiments": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "cli-table": "^0.3.11",
     "upscaler": "workspace:*"
