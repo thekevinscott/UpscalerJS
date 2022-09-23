@@ -140,12 +140,15 @@ const getArgs = async (): Promise<Answers> => {
     }).option('o', {
       alias: 'outputFormat',
       type: 'string',
+    }).option('a', {
+      alias: 'all',
+      type: 'boolean',
     });
   })
     .help()
     .argv;
 
-  const models = await getModel(argv._[0]);
+  const models = await getModel(argv._[0], argv.a);
   const outputFormats = await getOutputFormats(argv.o);
 
   return {

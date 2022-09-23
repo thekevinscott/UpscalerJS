@@ -4,6 +4,7 @@
   "scripts": {
     "__run_command": "ts-node --project ./tsconfig.json",
     "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
+    "build:model": "pnpm __run_command ./package-scripts/build-model.ts",
     "example:start": "pnpm __run_command ./start-example.ts",
     "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
     "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance.ts",

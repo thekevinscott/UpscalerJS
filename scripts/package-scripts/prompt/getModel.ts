@@ -3,7 +3,12 @@ import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
 
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 
-export const getModel = async (model?: string | number) => {
+export const getModel = async (model?: string | number, all?: unknown) => {
+  if (all === true) {
+    const modelPackages = getAllAvailableModelPackages();
+    return modelPackages;
+  }
+
   if (typeof model == 'string') {
     return [model];
   }
