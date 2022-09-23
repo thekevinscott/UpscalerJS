@@ -1,7 +1,7 @@
 import type * as tf from '@tensorflow/tfjs';
 import type * as tfNode from '@tensorflow/tfjs-node';
 import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
-import { Tensor, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
+import type { Tensor, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tf | typeof tfNode | typeof tfNodeGpu;
 
