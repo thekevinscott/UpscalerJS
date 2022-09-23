@@ -1,0 +1,3 @@
+import getModelDefinition from '../../utils/getModelDefinition';
+const mediumX3BestValLossEpoch488 = getModelDefinition(3, 'rdn', 'models/rdn-C1-D10-G64-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse/2022-08-28_0004/rdn-C1-D10-G64-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch488.h5/rdn-C1-D10-G64-G064-T10-x3-patchsize129-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch488/model.json', {"dataset":"div2k","scale":"3"});
+export default mediumX3BestValLossEpoch488;

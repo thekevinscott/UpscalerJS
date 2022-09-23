@@ -28,6 +28,7 @@
     "upscaler": "workspace:*",
     "@upscalerjs/esrgan-slim": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
+    "@upscalerjs/experiments": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

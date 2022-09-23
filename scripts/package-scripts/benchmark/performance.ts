@@ -62,6 +62,61 @@ type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
 /****
  * Utility Functions & Classes
  */
+const checkIntegers = (...nums: number[]) => {
+  for (const num of nums) {
+    if (num !== Math.round(num)) {
+      throw new Error(`Sizes are not integers: ${nums.join(' x ')}`);
+    }
+  }
+};
+
+const getUpscalerFromExports = async (modelPackageFolder: string, modelName: string, exports: Record<string, any>, key: string) => {
+  const value = exports[key];
+  if (typeof value === 'object') {
+    const { require: importPath, } = value;
+    const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
+    const modelDefinitionFn = (await import(pathToModel)).default;
+    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
+    const model = {
+      // provide the explicit path to avoid going through the package discovery process (which
+      // won't work because of pnpm's local linking)
+      ...modelDefinition,
+      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
+      meta: {
+        modelName,
+        modelPackageFolder,
+      }
+    }
+    try {
+      const upscaler = new Upscaler({
+        model,
+      });
+      await upscaler.getModel();
+      return upscaler;
+    } catch (err) {
+      console.error('Error instantiating upscaler for model definition', model);
+      throw err;
+    }
+  } else {
+    throw new Error('Handle this')
+  }
+};
+
+const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?: unknown) => {
+  if (modelPackageFolder === undefined) {
+    throw new Error('modelPackageFolder is undefined');
+  }
+  if (importPath === undefined) {
+    console.log('value', value);
+    throw new Error('importPath is undefined');
+  }
+  try {
+    return path.resolve(modelPackageFolder, importPath);
+  } catch (err) {
+    console.log(modelPackageFolder, importPath);
+    throw err;
+  }
+}
 
 function getFiles(dir: string): string[] {
   const dirents = readdirSync(dir, { withFileTypes: true });
@@ -208,13 +263,15 @@ class Dataset {
         const { width, height } = await getSize(filePath);
 
         const [originalWidth, originalHeight] = getDims(n => Math.floor(n / scale) * scale, width, height);
+        checkIntegers(originalWidth, originalHeight);
         const originalImage = await sharp(filePath)
           .flatten({ background: { r: 255, g: 255, b: 255 } })
           .resize({ width: originalWidth, height: originalHeight, fit: 'cover' })
           .toBuffer();
         const originalPath = this.saveImage(`${filename}-scale-${scale}-original`, originalImage);
 
-        const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, width, height);
+        const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, originalWidth, originalHeight);
+        checkIntegers(downscaledWidth, downscaledHeight);
         const downscaledImage = await sharp(originalImage)
           .resize({ width: downscaledWidth, height: downscaledHeight })
           .toBuffer();
@@ -362,34 +419,11 @@ class Benchmarker {
         // models. That means we can skip this entry.
         if (key !== '.' || Object.keys(exports).length === 1) {
           const modelName = key === '.' ? name : path.join(name, key);
-          const value = exports[key];
-          if (typeof value === 'object') {
-            const { require: {
-              default: importPath,
-            } } = value;
-            const pathToModel = path.resolve(modelPackageFolder, importPath);
-            console.log(modelName, pathToModel)
-            const model = (await import(pathToModel)).default;
-            const { packageInformation, ...modelDefinition } = model(tf) as ModelDefinition;
-            const upscaler = new Upscaler({ 
-              model: {
-                // provide the explicit path to avoid going through the package discovery process (which
-                // won't work because of pnpm's local linking)
-                ...modelDefinition,
-                path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
-                meta: {
-                  modelName,
-                  modelPackageFolder,
-                }
-              } 
-            });
-            this.models.set(modelName, upscaler);
-            const { modelDefinition: _modelDefinition } = await upscaler.getModel();
-            if (modelName !== _modelDefinition.meta.modelName) {
-              throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
-            }
-          } else {
-            throw new Error('Handle this')
+          const upscaler = await getUpscalerFromExports(modelPackageFolder, modelName, exports, key);
+          this.models.set(modelName, upscaler);
+          const { modelDefinition: _modelDefinition } = await upscaler.getModel();
+          if (modelName !== _modelDefinition.meta.modelName) {
+            throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
           }
         }
       }
@@ -464,7 +498,7 @@ class Benchmarker {
       const ssim: number[] = [];
       const psnr: number[] = [];
 
-      console.log('Benchmarking', modelName, 'for dataset', datasetName);
+      // console.log('\nBenchmarking', modelName, 'for dataset', datasetName);
       // const progress = (rate: number) => console.log(rate);
       const processFile = async ({
         original,
@@ -518,11 +552,12 @@ class Benchmarker {
  * Main function
  */
 
-type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { outputFile?: string, n?: number, cropped?: number }) => Promise<Results>;
-const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, outputFile, cropped } = {}) => {
+type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { n?: number, cropped?: number }) => Promise<Results>;
+const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, cropped } = {}) => {
   const datasets = datasetDefinitions.map(dataset => new Dataset(dataset));
   const benchmarker = new Benchmarker(models, datasets, n);
   await benchmarker.loadModels();
+  console.log('LOAD MODELS COMPLETE')
   const results = await benchmarker.benchmark(cropped);
   benchmarker.cleanup();
   return results;
@@ -610,18 +645,19 @@ const getArgs = async (): Promise<Args> => {
   const datasets = await getDataset(...argv._);
   const models = getModels(argv.model);
   const output = getOutput(argv.output);
+  const outputFile = typeof argv.outputFile === 'string' ? argv.outputFile : undefined;
 
   return {
+    outputFile,
     models,
     output,
     datasets,
-    outputFile: typeof argv.outputFile === 'string' ? argv.outputFile : undefined,
     n: typeof argv.n === 'number' ? argv.n : undefined,
     cropped: typeof argv.cropped === 'number' ? argv.cropped : undefined,
   }
 }
 
-const displayResults = (results: Results, output: Output) => {
+const displayResults = (results: Results, output: Output, outputFile?: string) => {
   // organize by datasets
   const resultsByDataset = new Map<Dataset, {
     result: BenchmarkResult;
@@ -672,13 +708,17 @@ const displayResults = (results: Results, output: Output) => {
   } else {
     console.log(JSON.stringify(data, null, 2));
   }
+
+  if (outputFile) {
+    fs.writeFileSync(outputFile, JSON.stringify(data, null, 2), 'utf-8');
+  }
 }
 
 if (require.main === module) {
   (async () => {
     await checkImagemagickInstallation()
     const { output, models, datasets, outputFile, n, cropped } = await getArgs();
-    const results = await benchmarkPerformance(models, datasets, { outputFile, n, cropped });
-    displayResults(results, output);
+    const results = await benchmarkPerformance(models, datasets, { n, cropped });
+    displayResults(results, output, outputFile);
   })();
 }

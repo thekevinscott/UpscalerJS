@@ -1,0 +1,669 @@
+{
+  "name": "@upscalerjs/experiments",
+  "version": "0.1.0",
+  "description": "A folder for various experimental models",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
+    "./models/esrgan/mediumX2BestValGeneratorPSNRYEpoch478": {
+      "require": "./dist/cjs/models/esrgan/mediumX2BestValGeneratorPSNRYEpoch478.js",
+      "import": "./dist/esm/models/esrgan/mediumX2BestValGeneratorPSNRYEpoch478.js"
+    },
+    "./models/esrgan/mediumX2BestValGeneratorLossEpoch479": {
+      "require": "./dist/cjs/models/esrgan/mediumX2BestValGeneratorLossEpoch479.js",
+      "import": "./dist/esm/models/esrgan/mediumX2BestValGeneratorLossEpoch479.js"
+    },
+    "./models/esrgan/mediumX2BestValGeneratorLossEpoch500": {
+      "require": "./dist/cjs/models/esrgan/mediumX2BestValGeneratorLossEpoch500.js",
+      "import": "./dist/esm/models/esrgan/mediumX2BestValGeneratorLossEpoch500.js"
+    },
+    "./models/esrgan/mediumX2BestValLossEpoch493": {
+      "require": "./dist/cjs/models/esrgan/mediumX2BestValLossEpoch493.js",
+      "import": "./dist/esm/models/esrgan/mediumX2BestValLossEpoch493.js"
+    },
+    "./models/esrgan/mediumX2BestValLossEpoch499": {
+      "require": "./dist/cjs/models/esrgan/mediumX2BestValLossEpoch499.js",
+      "import": "./dist/esm/models/esrgan/mediumX2BestValLossEpoch499.js"
+    },
+    "./models/esrgan/mediumX2Epoch482": {
+      "require": "./dist/cjs/models/esrgan/mediumX2Epoch482.js",
+      "import": "./dist/esm/models/esrgan/mediumX2Epoch482.js"
+    },
+    "./models/esrgan/mediumX2Epoch485": {
+      "require": "./dist/cjs/models/esrgan/mediumX2Epoch485.js",
+      "import": "./dist/esm/models/esrgan/mediumX2Epoch485.js"
+    },
+    "./models/esrgan/mediumX2Epoch488": {
+      "require": "./dist/cjs/models/esrgan/mediumX2Epoch488.js",
+      "import": "./dist/esm/models/esrgan/mediumX2Epoch488.js"
+    },
+    "./models/esrgan/mediumX2Epoch491": {
+      "require": "./dist/cjs/models/esrgan/mediumX2Epoch491.js",
+      "import": "./dist/esm/models/esrgan/mediumX2Epoch491.js"
+    },
+    "./models/esrgan/mediumX2Epoch496": {
+      "require": "./dist/cjs/models/esrgan/mediumX2Epoch496.js",
+      "import": "./dist/esm/models/esrgan/mediumX2Epoch496.js"
+    },
+    "./models/esrgan/mediumX3BestValGeneratorPSNRYEpoch480": {
+      "require": "./dist/cjs/models/esrgan/mediumX3BestValGeneratorPSNRYEpoch480.js",
+      "import": "./dist/esm/models/esrgan/mediumX3BestValGeneratorPSNRYEpoch480.js"
+    },
+    "./models/esrgan/mediumX3BestValGeneratorPSNRYEpoch492": {
+      "require": "./dist/cjs/models/esrgan/mediumX3BestValGeneratorPSNRYEpoch492.js",
+      "import": "./dist/esm/models/esrgan/mediumX3BestValGeneratorPSNRYEpoch492.js"
+    },
+    "./models/esrgan/mediumX3BestValGeneratorLossEpoch490": {
+      "require": "./dist/cjs/models/esrgan/mediumX3BestValGeneratorLossEpoch490.js",
+      "import": "./dist/esm/models/esrgan/mediumX3BestValGeneratorLossEpoch490.js"
+    },
+    "./models/esrgan/mediumX3BestValGeneratorLossEpoch500": {
+      "require": "./dist/cjs/models/esrgan/mediumX3BestValGeneratorLossEpoch500.js",
+      "import": "./dist/esm/models/esrgan/mediumX3BestValGeneratorLossEpoch500.js"
+    },
+    "./models/esrgan/mediumX3BestValLossEpoch488": {
+      "require": "./dist/cjs/models/esrgan/mediumX3BestValLossEpoch488.js",
+      "import": "./dist/esm/models/esrgan/mediumX3BestValLossEpoch488.js"
+    },
+    "./models/esrgan/mediumX3Epoch478": {
+      "require": "./dist/cjs/models/esrgan/mediumX3Epoch478.js",
+      "import": "./dist/esm/models/esrgan/mediumX3Epoch478.js"
+    },
+    "./models/esrgan/mediumX3Epoch483": {
+      "require": "./dist/cjs/models/esrgan/mediumX3Epoch483.js",
+      "import": "./dist/esm/models/esrgan/mediumX3Epoch483.js"
+    },
+    "./models/esrgan/mediumX3Epoch486": {
+      "require": "./dist/cjs/models/esrgan/mediumX3Epoch486.js",
+      "import": "./dist/esm/models/esrgan/mediumX3Epoch486.js"
+    },
+    "./models/esrgan/mediumX3Epoch495": {
+      "require": "./dist/cjs/models/esrgan/mediumX3Epoch495.js",
+      "import": "./dist/esm/models/esrgan/mediumX3Epoch495.js"
+    },
+    "./models/esrgan/mediumX3Epoch498": {
+      "require": "./dist/cjs/models/esrgan/mediumX3Epoch498.js",
+      "import": "./dist/esm/models/esrgan/mediumX3Epoch498.js"
+    },
+    "./models/esrgan/mediumX4BestValGeneratorLossEpoch489": {
+      "require": "./dist/cjs/models/esrgan/mediumX4BestValGeneratorLossEpoch489.js",
+      "import": "./dist/esm/models/esrgan/mediumX4BestValGeneratorLossEpoch489.js"
+    },
+    "./models/esrgan/mediumX4BestValGeneratorLossEpoch491": {
+      "require": "./dist/cjs/models/esrgan/mediumX4BestValGeneratorLossEpoch491.js",
+      "import": "./dist/esm/models/esrgan/mediumX4BestValGeneratorLossEpoch491.js"
+    },
+    "./models/esrgan/mediumX4BestValLossEpoch487": {
+      "require": "./dist/cjs/models/esrgan/mediumX4BestValLossEpoch487.js",
+      "import": "./dist/esm/models/esrgan/mediumX4BestValLossEpoch487.js"
+    },
+    "./models/esrgan/mediumX4BestValLossEpoch490": {
+      "require": "./dist/cjs/models/esrgan/mediumX4BestValLossEpoch490.js",
+      "import": "./dist/esm/models/esrgan/mediumX4BestValLossEpoch490.js"
+    },
+    "./models/esrgan/mediumX4BestValLossEpoch492": {
+      "require": "./dist/cjs/models/esrgan/mediumX4BestValLossEpoch492.js",
+      "import": "./dist/esm/models/esrgan/mediumX4BestValLossEpoch492.js"
+    },
+    "./models/esrgan/mediumX4Epoch466": {
+      "require": "./dist/cjs/models/esrgan/mediumX4Epoch466.js",
+      "import": "./dist/esm/models/esrgan/mediumX4Epoch466.js"
+    },
+    "./models/esrgan/mediumX4Epoch480": {
+      "require": "./dist/cjs/models/esrgan/mediumX4Epoch480.js",
+      "import": "./dist/esm/models/esrgan/mediumX4Epoch480.js"
+    },
+    "./models/esrgan/mediumX4Epoch486": {
+      "require": "./dist/cjs/models/esrgan/mediumX4Epoch486.js",
+      "import": "./dist/esm/models/esrgan/mediumX4Epoch486.js"
+    },
+    "./models/esrgan/mediumX4Epoch495": {
+      "require": "./dist/cjs/models/esrgan/mediumX4Epoch495.js",
+      "import": "./dist/esm/models/esrgan/mediumX4Epoch495.js"
+    },
+    "./models/esrgan/mediumX4Epoch498": {
+      "require": "./dist/cjs/models/esrgan/mediumX4Epoch498.js",
+      "import": "./dist/esm/models/esrgan/mediumX4Epoch498.js"
+    },
+    "./models/esrgan/mediumX8BestValGeneratorPSNRYEpoch489": {
+      "require": "./dist/cjs/models/esrgan/mediumX8BestValGeneratorPSNRYEpoch489.js",
+      "import": "./dist/esm/models/esrgan/mediumX8BestValGeneratorPSNRYEpoch489.js"
+    },
+    "./models/esrgan/mediumX8BestValGeneratorLossEpoch475": {
+      "require": "./dist/cjs/models/esrgan/mediumX8BestValGeneratorLossEpoch475.js",
+      "import": "./dist/esm/models/esrgan/mediumX8BestValGeneratorLossEpoch475.js"
+    },
+    "./models/esrgan/mediumX8BestValGeneratorLossEpoch488": {
+      "require": "./dist/cjs/models/esrgan/mediumX8BestValGeneratorLossEpoch488.js",
+      "import": "./dist/esm/models/esrgan/mediumX8BestValGeneratorLossEpoch488.js"
+    },
+    "./models/esrgan/mediumX8BestValLossEpoch480": {
+      "require": "./dist/cjs/models/esrgan/mediumX8BestValLossEpoch480.js",
+      "import": "./dist/esm/models/esrgan/mediumX8BestValLossEpoch480.js"
+    },
+    "./models/esrgan/mediumX8BestValLossEpoch492": {
+      "require": "./dist/cjs/models/esrgan/mediumX8BestValLossEpoch492.js",
+      "import": "./dist/esm/models/esrgan/mediumX8BestValLossEpoch492.js"
+    },
+    "./models/esrgan/mediumX8Epoch478": {
+      "require": "./dist/cjs/models/esrgan/mediumX8Epoch478.js",
+      "import": "./dist/esm/models/esrgan/mediumX8Epoch478.js"
+    },
+    "./models/esrgan/mediumX8Epoch483": {
+      "require": "./dist/cjs/models/esrgan/mediumX8Epoch483.js",
+      "import": "./dist/esm/models/esrgan/mediumX8Epoch483.js"
+    },
+    "./models/esrgan/mediumX8Epoch486": {
+      "require": "./dist/cjs/models/esrgan/mediumX8Epoch486.js",
+      "import": "./dist/esm/models/esrgan/mediumX8Epoch486.js"
+    },
+    "./models/esrgan/mediumX8Epoch495": {
+      "require": "./dist/cjs/models/esrgan/mediumX8Epoch495.js",
+      "import": "./dist/esm/models/esrgan/mediumX8Epoch495.js"
+    },
+    "./models/esrgan/mediumX8Epoch498": {
+      "require": "./dist/cjs/models/esrgan/mediumX8Epoch498.js",
+      "import": "./dist/esm/models/esrgan/mediumX8Epoch498.js"
+    },
+    "./models/esrgan/smallX2BestValGeneratorPSNRYEpoch483": {
+      "require": "./dist/cjs/models/esrgan/smallX2BestValGeneratorPSNRYEpoch483.js",
+      "import": "./dist/esm/models/esrgan/smallX2BestValGeneratorPSNRYEpoch483.js"
+    },
+    "./models/esrgan/smallX2BestValGeneratorPSNRYEpoch488": {
+      "require": "./dist/cjs/models/esrgan/smallX2BestValGeneratorPSNRYEpoch488.js",
+      "import": "./dist/esm/models/esrgan/smallX2BestValGeneratorPSNRYEpoch488.js"
+    },
+    "./models/esrgan/smallX2BestValGeneratorLossEpoch499": {
+      "require": "./dist/cjs/models/esrgan/smallX2BestValGeneratorLossEpoch499.js",
+      "import": "./dist/esm/models/esrgan/smallX2BestValGeneratorLossEpoch499.js"
+    },
+    "./models/esrgan/smallX2BestValGeneratorLossEpoch500": {
+      "require": "./dist/cjs/models/esrgan/smallX2BestValGeneratorLossEpoch500.js",
+      "import": "./dist/esm/models/esrgan/smallX2BestValGeneratorLossEpoch500.js"
+    },
+    "./models/esrgan/smallX2BestValLossEpoch494": {
+      "require": "./dist/cjs/models/esrgan/smallX2BestValLossEpoch494.js",
+      "import": "./dist/esm/models/esrgan/smallX2BestValLossEpoch494.js"
+    },
+    "./models/esrgan/smallX2Epoch478": {
+      "require": "./dist/cjs/models/esrgan/smallX2Epoch478.js",
+      "import": "./dist/esm/models/esrgan/smallX2Epoch478.js"
+    },
+    "./models/esrgan/smallX2Epoch481": {
+      "require": "./dist/cjs/models/esrgan/smallX2Epoch481.js",
+      "import": "./dist/esm/models/esrgan/smallX2Epoch481.js"
+    },
+    "./models/esrgan/smallX2Epoch486": {
+      "require": "./dist/cjs/models/esrgan/smallX2Epoch486.js",
+      "import": "./dist/esm/models/esrgan/smallX2Epoch486.js"
+    },
+    "./models/esrgan/smallX2Epoch491": {
+      "require": "./dist/cjs/models/esrgan/smallX2Epoch491.js",
+      "import": "./dist/esm/models/esrgan/smallX2Epoch491.js"
+    },
+    "./models/esrgan/smallX2Epoch497": {
+      "require": "./dist/cjs/models/esrgan/smallX2Epoch497.js",
+      "import": "./dist/esm/models/esrgan/smallX2Epoch497.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorLossEpoch006": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorLossEpoch006.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorLossEpoch006.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorLossEpoch009": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorLossEpoch009.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorLossEpoch009.js"
+    },
+    "./models/esrgan/smallX3BestValLossEpoch005": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValLossEpoch005.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValLossEpoch005.js"
+    },
+    "./models/esrgan/smallX3BestValLossEpoch007": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValLossEpoch007.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValLossEpoch007.js"
+    },
+    "./models/esrgan/smallX3BestValLossEpoch008": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValLossEpoch008.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValLossEpoch008.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorPSNRYEpoch491": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorPSNRYEpoch491.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorPSNRYEpoch491.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorPSNRYEpoch499": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorPSNRYEpoch499.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorPSNRYEpoch499.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorLossEpoch485": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorLossEpoch485.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorLossEpoch485.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorLossEpoch489": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorLossEpoch489.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorLossEpoch489.js"
+    },
+    "./models/esrgan/smallX3BestValGeneratorLossEpoch490": {
+      "require": "./dist/cjs/models/esrgan/smallX3BestValGeneratorLossEpoch490.js",
+      "import": "./dist/esm/models/esrgan/smallX3BestValGeneratorLossEpoch490.js"
+    },
+    "./models/esrgan/smallX3Epoch477": {
+      "require": "./dist/cjs/models/esrgan/smallX3Epoch477.js",
+      "import": "./dist/esm/models/esrgan/smallX3Epoch477.js"
+    },
+    "./models/esrgan/smallX3Epoch482": {
+      "require": "./dist/cjs/models/esrgan/smallX3Epoch482.js",
+      "import": "./dist/esm/models/esrgan/smallX3Epoch482.js"
+    },
+    "./models/esrgan/smallX3Epoch488": {
+      "require": "./dist/cjs/models/esrgan/smallX3Epoch488.js",
+      "import": "./dist/esm/models/esrgan/smallX3Epoch488.js"
+    },
+    "./models/esrgan/smallX3Epoch494": {
+      "require": "./dist/cjs/models/esrgan/smallX3Epoch494.js",
+      "import": "./dist/esm/models/esrgan/smallX3Epoch494.js"
+    },
+    "./models/esrgan/smallX3Epoch497": {
+      "require": "./dist/cjs/models/esrgan/smallX3Epoch497.js",
+      "import": "./dist/esm/models/esrgan/smallX3Epoch497.js"
+    },
+    "./models/esrgan/smallX4BestValGeneratorPSNRYEpoch495": {
+      "require": "./dist/cjs/models/esrgan/smallX4BestValGeneratorPSNRYEpoch495.js",
+      "import": "./dist/esm/models/esrgan/smallX4BestValGeneratorPSNRYEpoch495.js"
+    },
+    "./models/esrgan/smallX4BestValGeneratorLossEpoch491": {
+      "require": "./dist/cjs/models/esrgan/smallX4BestValGeneratorLossEpoch491.js",
+      "import": "./dist/esm/models/esrgan/smallX4BestValGeneratorLossEpoch491.js"
+    },
+    "./models/esrgan/smallX4BestValGeneratorLossEpoch493": {
+      "require": "./dist/cjs/models/esrgan/smallX4BestValGeneratorLossEpoch493.js",
+      "import": "./dist/esm/models/esrgan/smallX4BestValGeneratorLossEpoch493.js"
+    },
+    "./models/esrgan/smallX4BestValGeneratorLossEpoch494": {
+      "require": "./dist/cjs/models/esrgan/smallX4BestValGeneratorLossEpoch494.js",
+      "import": "./dist/esm/models/esrgan/smallX4BestValGeneratorLossEpoch494.js"
+    },
+    "./models/esrgan/smallX4BestValLossEpoch490": {
+      "require": "./dist/cjs/models/esrgan/smallX4BestValLossEpoch490.js",
+      "import": "./dist/esm/models/esrgan/smallX4BestValLossEpoch490.js"
+    },
+    "./models/esrgan/smallX4Epoch469": {
+      "require": "./dist/cjs/models/esrgan/smallX4Epoch469.js",
+      "import": "./dist/esm/models/esrgan/smallX4Epoch469.js"
+    },
+    "./models/esrgan/smallX4Epoch480": {
+      "require": "./dist/cjs/models/esrgan/smallX4Epoch480.js",
+      "import": "./dist/esm/models/esrgan/smallX4Epoch480.js"
+    },
+    "./models/esrgan/smallX4Epoch483": {
+      "require": "./dist/cjs/models/esrgan/smallX4Epoch483.js",
+      "import": "./dist/esm/models/esrgan/smallX4Epoch483.js"
+    },
+    "./models/esrgan/smallX4Epoch486": {
+      "require": "./dist/cjs/models/esrgan/smallX4Epoch486.js",
+      "import": "./dist/esm/models/esrgan/smallX4Epoch486.js"
+    },
+    "./models/esrgan/smallX4Epoch498": {
+      "require": "./dist/cjs/models/esrgan/smallX4Epoch498.js",
+      "import": "./dist/esm/models/esrgan/smallX4Epoch498.js"
+    },
+    "./models/esrgan/smallX8BestValGeneratorPSNRYEpoch496": {
+      "require": "./dist/cjs/models/esrgan/smallX8BestValGeneratorPSNRYEpoch496.js",
+      "import": "./dist/esm/models/esrgan/smallX8BestValGeneratorPSNRYEpoch496.js"
+    },
+    "./models/esrgan/smallX8BestValGeneratorLossEpoch487": {
+      "require": "./dist/cjs/models/esrgan/smallX8BestValGeneratorLossEpoch487.js",
+      "import": "./dist/esm/models/esrgan/smallX8BestValGeneratorLossEpoch487.js"
+    },
+    "./models/esrgan/smallX8BestValGeneratorLossEpoch495": {
+      "require": "./dist/cjs/models/esrgan/smallX8BestValGeneratorLossEpoch495.js",
+      "import": "./dist/esm/models/esrgan/smallX8BestValGeneratorLossEpoch495.js"
+    },
+    "./models/esrgan/smallX8BestValGeneratorLossEpoch500": {
+      "require": "./dist/cjs/models/esrgan/smallX8BestValGeneratorLossEpoch500.js",
+      "import": "./dist/esm/models/esrgan/smallX8BestValGeneratorLossEpoch500.js"
+    },
+    "./models/esrgan/smallX8BestValLossEpoch477": {
+      "require": "./dist/cjs/models/esrgan/smallX8BestValLossEpoch477.js",
+      "import": "./dist/esm/models/esrgan/smallX8BestValLossEpoch477.js"
+    },
+    "./models/esrgan/smallX8Epoch483": {
+      "require": "./dist/cjs/models/esrgan/smallX8Epoch483.js",
+      "import": "./dist/esm/models/esrgan/smallX8Epoch483.js"
+    },
+    "./models/esrgan/smallX8Epoch486": {
+      "require": "./dist/cjs/models/esrgan/smallX8Epoch486.js",
+      "import": "./dist/esm/models/esrgan/smallX8Epoch486.js"
+    },
+    "./models/esrgan/smallX8Epoch490": {
+      "require": "./dist/cjs/models/esrgan/smallX8Epoch490.js",
+      "import": "./dist/esm/models/esrgan/smallX8Epoch490.js"
+    },
+    "./models/esrgan/smallX8Epoch493": {
+      "require": "./dist/cjs/models/esrgan/smallX8Epoch493.js",
+      "import": "./dist/esm/models/esrgan/smallX8Epoch493.js"
+    },
+    "./models/esrgan/smallX8Epoch499": {
+      "require": "./dist/cjs/models/esrgan/smallX8Epoch499.js",
+      "import": "./dist/esm/models/esrgan/smallX8Epoch499.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch115": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch115.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch115.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorLossEpoch109": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorLossEpoch109.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorLossEpoch109.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch103": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch103.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch103.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch108": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch108.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch108.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch110": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch110.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch110.js"
+    },
+    "./models/esrgan/largeX2Epoch086": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch086.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch086.js"
+    },
+    "./models/esrgan/largeX2Epoch093": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch093.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch093.js"
+    },
+    "./models/esrgan/largeX2Epoch101": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch101.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch101.js"
+    },
+    "./models/esrgan/largeX2Epoch106": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch106.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch106.js"
+    },
+    "./models/esrgan/largeX2Epoch113": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch113.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch113.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch453": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch453.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch453.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch483": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch483.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch483.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch485": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch485.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch485.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch476": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch476.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch476.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch488": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch488.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch488.js"
+    },
+    "./models/esrgan/largeX2Epoch482": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch482.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch482.js"
+    },
+    "./models/esrgan/largeX2Epoch491": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch491.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch491.js"
+    },
+    "./models/esrgan/largeX2Epoch494": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch494.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch494.js"
+    },
+    "./models/esrgan/largeX2Epoch497": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch497.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch497.js"
+    },
+    "./models/esrgan/largeX2Epoch500": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch500.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch500.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch452": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch452.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch452.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch475": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch475.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch475.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorLossEpoch447": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorLossEpoch447.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorLossEpoch447.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch484": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch484.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch484.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch500": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch500.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch500.js"
+    },
+    "./models/esrgan/largeX2Epoch487": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch487.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch487.js"
+    },
+    "./models/esrgan/largeX2Epoch490": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch490.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch490.js"
+    },
+    "./models/esrgan/largeX2Epoch493": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch493.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch493.js"
+    },
+    "./models/esrgan/largeX2Epoch496": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch496.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch496.js"
+    },
+    "./models/esrgan/largeX2Epoch499": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch499.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch499.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch116": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch116.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch116.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorPSNRYEpoch117": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorPSNRYEpoch117.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorPSNRYEpoch117.js"
+    },
+    "./models/esrgan/largeX2BestValGeneratorLossEpoch144": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValGeneratorLossEpoch144.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValGeneratorLossEpoch144.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch118": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch118.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch118.js"
+    },
+    "./models/esrgan/largeX2BestValLossEpoch125": {
+      "require": "./dist/cjs/models/esrgan/largeX2BestValLossEpoch125.js",
+      "import": "./dist/esm/models/esrgan/largeX2BestValLossEpoch125.js"
+    },
+    "./models/esrgan/largeX2Epoch131": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch131.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch131.js"
+    },
+    "./models/esrgan/largeX2Epoch134": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch134.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch134.js"
+    },
+    "./models/esrgan/largeX2Epoch137": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch137.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch137.js"
+    },
+    "./models/esrgan/largeX2Epoch140": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch140.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch140.js"
+    },
+    "./models/esrgan/largeX2Epoch143": {
+      "require": "./dist/cjs/models/esrgan/largeX2Epoch143.js",
+      "import": "./dist/esm/models/esrgan/largeX2Epoch143.js"
+    },
+    "./models/esrgan/largeX3BestValGeneratorPSNRYEpoch477": {
+      "require": "./dist/cjs/models/esrgan/largeX3BestValGeneratorPSNRYEpoch477.js",
+      "import": "./dist/esm/models/esrgan/largeX3BestValGeneratorPSNRYEpoch477.js"
+    },
+    "./models/esrgan/largeX3BestValGeneratorPSNRYEpoch489": {
+      "require": "./dist/cjs/models/esrgan/largeX3BestValGeneratorPSNRYEpoch489.js",
+      "import": "./dist/esm/models/esrgan/largeX3BestValGeneratorPSNRYEpoch489.js"
+    },
+    "./models/esrgan/largeX3BestValGeneratorLossEpoch467": {
+      "require": "./dist/cjs/models/esrgan/largeX3BestValGeneratorLossEpoch467.js",
+      "import": "./dist/esm/models/esrgan/largeX3BestValGeneratorLossEpoch467.js"
+    },
+    "./models/esrgan/largeX3BestValGeneratorLossEpoch487": {
+      "require": "./dist/cjs/models/esrgan/largeX3BestValGeneratorLossEpoch487.js",
+      "import": "./dist/esm/models/esrgan/largeX3BestValGeneratorLossEpoch487.js"
+    },
+    "./models/esrgan/largeX3BestValLossEpoch483": {
+      "require": "./dist/cjs/models/esrgan/largeX3BestValLossEpoch483.js",
+      "import": "./dist/esm/models/esrgan/largeX3BestValLossEpoch483.js"
+    },
+    "./models/esrgan/largeX3Epoch480": {
+      "require": "./dist/cjs/models/esrgan/largeX3Epoch480.js",
+      "import": "./dist/esm/models/esrgan/largeX3Epoch480.js"
+    },
+    "./models/esrgan/largeX3Epoch486": {
+      "require": "./dist/cjs/models/esrgan/largeX3Epoch486.js",
+      "import": "./dist/esm/models/esrgan/largeX3Epoch486.js"
+    },
+    "./models/esrgan/largeX3Epoch492": {
+      "require": "./dist/cjs/models/esrgan/largeX3Epoch492.js",
+      "import": "./dist/esm/models/esrgan/largeX3Epoch492.js"
+    },
+    "./models/esrgan/largeX3Epoch495": {
+      "require": "./dist/cjs/models/esrgan/largeX3Epoch495.js",
+      "import": "./dist/esm/models/esrgan/largeX3Epoch495.js"
+    },
+    "./models/esrgan/largeX3Epoch498": {
+      "require": "./dist/cjs/models/esrgan/largeX3Epoch498.js",
+      "import": "./dist/esm/models/esrgan/largeX3Epoch498.js"
+    },
+    "./models/esrgan/largeX4BestValGeneratorPSNRYEpoch476": {
+      "require": "./dist/cjs/models/esrgan/largeX4BestValGeneratorPSNRYEpoch476.js",
+      "import": "./dist/esm/models/esrgan/largeX4BestValGeneratorPSNRYEpoch476.js"
+    },
+    "./models/esrgan/largeX4BestValGeneratorPSNRYEpoch488": {
+      "require": "./dist/cjs/models/esrgan/largeX4BestValGeneratorPSNRYEpoch488.js",
+      "import": "./dist/esm/models/esrgan/largeX4BestValGeneratorPSNRYEpoch488.js"
+    },
+    "./models/esrgan/largeX4BestValGeneratorPSNRYEpoch499": {
+      "require": "./dist/cjs/models/esrgan/largeX4BestValGeneratorPSNRYEpoch499.js",
+      "import": "./dist/esm/models/esrgan/largeX4BestValGeneratorPSNRYEpoch499.js"
+    },
+    "./models/esrgan/largeX4BestValGeneratorLossEpoch480": {
+      "require": "./dist/cjs/models/esrgan/largeX4BestValGeneratorLossEpoch480.js",
+      "import": "./dist/esm/models/esrgan/largeX4BestValGeneratorLossEpoch480.js"
+    },
+    "./models/esrgan/largeX4BestValLossEpoch478": {
+      "require": "./dist/cjs/models/esrgan/largeX4BestValLossEpoch478.js",
+      "import": "./dist/esm/models/esrgan/largeX4BestValLossEpoch478.js"
+    },
+    "./models/esrgan/largeX4Epoch483": {
+      "require": "./dist/cjs/models/esrgan/largeX4Epoch483.js",
+      "import": "./dist/esm/models/esrgan/largeX4Epoch483.js"
+    },
+    "./models/esrgan/largeX4Epoch486": {
+      "require": "./dist/cjs/models/esrgan/largeX4Epoch486.js",
+      "import": "./dist/esm/models/esrgan/largeX4Epoch486.js"
+    },
+    "./models/esrgan/largeX4Epoch491": {
+      "require": "./dist/cjs/models/esrgan/largeX4Epoch491.js",
+      "import": "./dist/esm/models/esrgan/largeX4Epoch491.js"
+    },
+    "./models/esrgan/largeX4Epoch494": {
+      "require": "./dist/cjs/models/esrgan/largeX4Epoch494.js",
+      "import": "./dist/esm/models/esrgan/largeX4Epoch494.js"
+    },
+    "./models/esrgan/largeX4Epoch497": {
+      "require": "./dist/cjs/models/esrgan/largeX4Epoch497.js",
+      "import": "./dist/esm/models/esrgan/largeX4Epoch497.js"
+    },
+    "./models/esrgan/largeX8BestValGeneratorPSNRYEpoch482": {
+      "require": "./dist/cjs/models/esrgan/largeX8BestValGeneratorPSNRYEpoch482.js",
+      "import": "./dist/esm/models/esrgan/largeX8BestValGeneratorPSNRYEpoch482.js"
+    },
+    "./models/esrgan/largeX8BestValGeneratorLossEpoch474": {
+      "require": "./dist/cjs/models/esrgan/largeX8BestValGeneratorLossEpoch474.js",
+      "import": "./dist/esm/models/esrgan/largeX8BestValGeneratorLossEpoch474.js"
+    },
+    "./models/esrgan/largeX8BestValLossEpoch470": {
+      "require": "./dist/cjs/models/esrgan/largeX8BestValLossEpoch470.js",
+      "import": "./dist/esm/models/esrgan/largeX8BestValLossEpoch470.js"
+    },
+    "./models/esrgan/largeX8BestValLossEpoch486": {
+      "require": "./dist/cjs/models/esrgan/largeX8BestValLossEpoch486.js",
+      "import": "./dist/esm/models/esrgan/largeX8BestValLossEpoch486.js"
+    },
+    "./models/esrgan/largeX8BestValLossEpoch488": {
+      "require": "./dist/cjs/models/esrgan/largeX8BestValLossEpoch488.js",
+      "import": "./dist/esm/models/esrgan/largeX8BestValLossEpoch488.js"
+    },
+    "./models/esrgan/largeX8Epoch485": {
+      "require": "./dist/cjs/models/esrgan/largeX8Epoch485.js",
+      "import": "./dist/esm/models/esrgan/largeX8Epoch485.js"
+    },
+    "./models/esrgan/largeX8Epoch491": {
+      "require": "./dist/cjs/models/esrgan/largeX8Epoch491.js",
+      "import": "./dist/esm/models/esrgan/largeX8Epoch491.js"
+    },
+    "./models/esrgan/largeX8Epoch494": {
+      "require": "./dist/cjs/models/esrgan/largeX8Epoch494.js",
+      "import": "./dist/esm/models/esrgan/largeX8Epoch494.js"
+    },
+    "./models/esrgan/largeX8Epoch497": {
+      "require": "./dist/cjs/models/esrgan/largeX8Epoch497.js",
+      "import": "./dist/esm/models/esrgan/largeX8Epoch497.js"
+    },
+    "./models/esrgan/largeX8Epoch500": {
+      "require": "./dist/cjs/models/esrgan/largeX8Epoch500.js",
+      "import": "./dist/esm/models/esrgan/largeX8Epoch500.js"
+    }
+  },
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/experiments --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/experiments",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts experiments -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^3.20.0"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^3.20.0",
+    "@tensorflow/tfjs-layers": "^3.20.0",
+    "@tensorflow/tfjs": "^3.20.0",
+    "@tensorflow/tfjs-node": "^3.20.0",
+    "@tensorflow/tfjs-node-gpu": "^3.20.0",
+    "seedrandom": "3.0.5"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT"
+}

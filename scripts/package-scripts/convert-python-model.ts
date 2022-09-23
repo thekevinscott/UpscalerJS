@@ -7,6 +7,7 @@ import { getString, getStringArray } from './prompt/getString';
 /****
  * Type Definitions
  */
+type Callback = (modelPath: string) => void;
 
 /****
  * Constants
@@ -16,10 +17,10 @@ const ROOT_DIR = path.resolve(__dirname, '../..');
 /****
  * Main function
  */
-const convertPythonModel = async (_modelPath: string | string[], _outputDirectory: string): Promise<void> => {
-  if (path.isAbsolute(_outputDirectory)) {
-    throw new Error('For an output directory, you must specify a single name of the model folder, it looks like you specified an absolute path.')
-  }
+const convertPythonModel = async (_modelPath: string | string[], outputDirectory: string, callback?: Callback): Promise<void> => {
+  // if (path.isAbsolute(_outputDirectory)) {
+  //   throw new Error('For an output directory, you must specify a single name of the model folder, it looks like you specified an absolute path.')
+  // }
   let modelPaths = _modelPath;
   if (typeof modelPaths === 'string') {
     modelPaths = [modelPaths];
@@ -28,8 +29,10 @@ const convertPythonModel = async (_modelPath: string | string[], _outputDirector
     if (!path.isAbsolute(modelPath)) {
       throw new Error('The model path is not an absolute path.');
     }
-    console.log(`** Converting model ${modelPath}`);
-    const outputDirectory = path.resolve(ROOT_DIR, 'models', _outputDirectory, 'models');
+    if (callback) {
+      callback(modelPath);
+    }
+    // const outputDirectory = path.resolve(ROOT_DIR, 'models', _outputDirectory, 'models');
     await mkdirp(outputDirectory);
     const inputFolder = path.resolve(path.dirname(modelPath));
     const modelName = modelPath.split('/').pop();
@@ -73,7 +76,7 @@ const getArgs = async (): Promise<Answers> => {
     .argv;
 
   const modelPath = await getStringArray('Which hdf5 model do you want to build? (You can specify multiple models by separating their paths with a space.)', argv._);
-  const outputDirectory = await getString('What model package do you want to write the output to? If this does not exist, it will be created.', argv.output);
+  const outputDirectory = await getString('What output folder do you want to write the output to? If the folder does not exist, it will be created.', argv.output);
 
   return {
     modelPath,
@@ -84,6 +87,8 @@ const getArgs = async (): Promise<Answers> => {
 if (require.main === module) {
   (async () => {
     const { modelPath, outputDirectory } = await getArgs();
-    convertPythonModel(modelPath, outputDirectory);
+    convertPythonModel(modelPath, outputDirectory, modelPath => {
+      console.log(`** Converting model ${modelPath}`);
+    });
   })();
 }
