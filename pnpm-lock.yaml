@@ -284,8 +284,8 @@ importers:
   models/esrgan-experiments:
     specifiers:
       '@tensorflow/tfjs': ^3.20.0
-      '@tensorflow/tfjs-core': ^3.19.0
-      '@tensorflow/tfjs-layers': ^3.19.0
+      '@tensorflow/tfjs-core': ^3.20.0
+      '@tensorflow/tfjs-layers': ^3.20.0
       '@tensorflow/tfjs-node': ^3.20.0
       '@tensorflow/tfjs-node-gpu': ^3.20.0
       '@upscalerjs/core': workspace:*

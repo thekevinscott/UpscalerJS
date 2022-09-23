@@ -20,7 +20,7 @@ export type PostProcess = ProcessFn<Tensor4D>;
 
 export interface ModelDefinition {
   path: string;
-  scale: 2 | 3 | 4;
+  scale: number;
   channels?: 3;
   packageInformation?: PackageInformation;
   preprocess?: PreProcess;
