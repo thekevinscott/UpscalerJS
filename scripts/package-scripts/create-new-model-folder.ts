@@ -152,6 +152,7 @@ const createNewUMDNames = (name: string) => JSON.stringify({
 const createNewSrcIndex = (scale: number) => `
 import { ModelDefinition, PostProcess, TF, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
+import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 
 export const postprocess = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
   const clippedValue = output.clipByValue(0, 255);
@@ -235,5 +236,6 @@ if (require.main === module) {
   (async () => {
     const { name, description, UMDName, scale } = await getArgs();
     createNewModelFolder(name, description, UMDName, scale);
+    console.log('** Make sure to cd to your folder, and run "pnpm install && pnpm build"');
   })();
 }

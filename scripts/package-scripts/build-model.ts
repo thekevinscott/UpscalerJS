@@ -47,7 +47,7 @@ const buildUMD = async (modelFolder: string) => {
   await Promise.all(files.map(async exportName => {
     const umdName = umdNames[exportName];
     if (!umdName) {
-      throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`)
+      throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`);
     }
     const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
