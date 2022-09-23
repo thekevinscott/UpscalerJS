@@ -5,22 +5,22 @@ import { ImageComparisonViewer } from 'image-comparison-viewer';
 import { getHTMLImageElement } from '../../utils/getHTMLImageElement';
 import { resizeImage } from '../../utils/resizeImage';
 
-const SCALE = 4;
-
 export default function Viewer({
   src,
   upscaledSrc,
   zoom,
+  scale,
 }: {
   zoom?: number;
   upscaledSrc?: string;
   src?: string;
+  scale: number;
 }) {
   const [resizedImage, setResizedImage] = useState<HTMLImageElement>();
 
   useEffect(() => {
     if (src) {
-      getHTMLImageElement(src).then(img => resizeImage(img, SCALE)).then(getHTMLImageElement).then(setResizedImage);
+      getHTMLImageElement(src).then(img => resizeImage(img, scale)).then(getHTMLImageElement).then(setResizedImage);
     } else if (resizedImage) {
       setResizedImage(undefined);
     }

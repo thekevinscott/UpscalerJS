@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "pnpm build",
+    "build:model": "pnpm --filter @upscalerjs/scripts build:model",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
     "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
@@ -122,7 +123,7 @@
     "tree-kill": "^1.2.2",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.3",
     "uglify-js": "^3.16.2",
     "upscaler": "workspace:*",
     "webpack": "^5.73.0",

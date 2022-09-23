@@ -3,9 +3,10 @@
   "version": "0.12.0",
   "private": true,
   "scripts": {
+    "build:dependencies": "pnpm --filter @upscalerjs/scripts build:model -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
     "docusaurus": "docusaurus",
-    "start": "docusaurus start --host 0.0.0.0",
-    "build": "pnpm --filter upscaler build && docusaurus build",
+    "start": "pnpm build:dependencies && docusaurus start --host 0.0.0.0",
+    "build": "pnpm build:dependencies && docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",

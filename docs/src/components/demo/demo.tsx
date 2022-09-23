@@ -55,6 +55,7 @@ export function Demo() {
     patchSize,
     choosePatchSize,
     endBenchmarking,
+    scale,
   } = useImages();
 
   const { handleDownload } = useDownload(filename, progress, upscaledSrc);
@@ -98,7 +99,7 @@ export function Demo() {
             originalSize={originalSize}
           />
         )}
-        <Viewer upscaledSrc={upscaledSrc} src={img?.src} zoom={zoom} /> 
+        <Viewer upscaledSrc={upscaledSrc} src={img?.src} zoom={zoom} scale={scale} /> 
         <Controls 
           cancelUpscale={cancelUpscale} 
           selectImage={setUploadedImage} 

@@ -1,23 +1,12 @@
-import { ModelDefinition, PostProcess, TF, } from '@upscalerjs/core';
-import { NAME, VERSION, } from '../constants.generated';
-
-export const postprocess = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
-  const clippedValue = output.clipByValue(0, 255);
-  output.dispose();
-  return clippedValue as Tensor4D;
-});
-
-const modelDefinition: ModelDefinition = {
-  scale: 2,
-  channels: 3,
-  path: 'models/model.json',
-  packageInformation: {
-    name: NAME,
-    version: VERSION,
-  },
-  meta: {
-  },
-  postprocess,
-};
-
-export default modelDefinition;
+export { default as x2small, } from  './2x/small';
+export { default as x2medium, } from './2x/medium';
+export { default as x2large, } from  './2x/large';
+export { default as x3small, } from  './3x/small';
+export { default as x3medium, } from './3x/medium';
+export { default as x3large, } from  './3x/large';
+export { default as x4small, } from  './4x/small';
+export { default as x4medium, } from './4x/medium';
+export { default as x4large, } from  './4x/large';
+export { default as x8small, } from  './8x/small';
+export { default as x8medium, } from './8x/medium';
+export { default as x8large, } from  './8x/large';

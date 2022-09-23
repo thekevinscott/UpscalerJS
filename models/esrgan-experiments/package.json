@@ -3,15 +3,57 @@
   "version": "0.1.0",
   "description": "A folder for various ESRGAN experimental models",
   "exports": {
-    ".": {
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+    "./2x/small": {
+      "require": "./dist/cjs/2x/small.js",
+      "import": "./dist/esm/2x/small.js"
+    },
+    "./2x/medium": {
+      "require": "./dist/cjs/2x/medium.js",
+      "import": "./dist/esm/2x/medium.js"
+    },
+    "./2x/large": {
+      "require": "./dist/cjs/2x/large.js",
+      "import": "./dist/esm/2x/large.js"
+    },
+    "./3x/small": {
+      "require": "./dist/cjs/3x/small.js",
+      "import": "./dist/esm/3x/small.js"
+    },
+    "./3x/medium": {
+      "require": "./dist/cjs/3x/medium.js",
+      "import": "./dist/esm/3x/medium.js"
+    },
+    "./3x/large": {
+      "require": "./dist/cjs/3x/large.js",
+      "import": "./dist/esm/3x/large.js"
+    },
+    "./4x/small": {
+      "require": "./dist/cjs/4x/small.js",
+      "import": "./dist/esm/4x/small.js"
+    },
+    "./4x/medium": {
+      "require": "./dist/cjs/4x/medium.js",
+      "import": "./dist/esm/4x/medium.js"
+    },
+    "./4x/large": {
+      "require": "./dist/cjs/4x/large.js",
+      "import": "./dist/esm/4x/large.js"
+    },
+    "./8x/small": {
+      "require": "./dist/cjs/8x/small.js",
+      "import": "./dist/esm/8x/small.js"
+    },
+    "./8x/medium": {
+      "require": "./dist/cjs/8x/medium.js",
+      "import": "./dist/esm/8x/medium.js"
+    },
+    "./8x/large": {
+      "require": "./dist/cjs/8x/large.js",
+      "import": "./dist/esm/8x/large.js"
+    },
+    ".": {		
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
     }
   },
   "scripts": {

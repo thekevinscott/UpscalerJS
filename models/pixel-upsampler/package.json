@@ -12,44 +12,20 @@
   },
   "exports": {
     "./2x": {
-      "require": {
-        "types": "./dist/cjs/2x.d.ts",
-        "default": "./dist/cjs/2x.js"
-      },
-      "import": {
-        "types": "./dist/esm/2x.d.ts",
-        "default": "./dist/esm/2x.js"
-      }
+      "require": "./dist/cjs/2x.js",
+      "import": "./dist/esm/2x.js"
     },
     "./3x": {
-      "require": {
-        "types": "./dist/cjs/3x.d.ts",
-        "default": "./dist/cjs/3x.js"
-      },
-      "import": {
-        "types": "./dist/esm/3x.d.ts",
-        "default": "./dist/esm/3x.js"
-      }
+      "require": "./dist/cjs/3x.js",
+      "import": "./dist/esm/3x.js"
     },
     "./4x": {
-      "require": {
-        "types": "./dist/cjs/4x.d.ts",
-        "default": "./dist/cjs/4x.js"
-      },
-      "import": {
-        "types": "./dist/esm/4x.d.ts",
-        "default": "./dist/esm/4x.js"
-      }
+      "require": "./dist/cjs/4x.js",
+      "import": "./dist/esm/4x.js"
     },
     ".": {
-      "require": {
-        "types": "./dist/cjs/index.d.ts",
-        "default": "./dist/cjs/index.js"
-      },
-      "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
-      }
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
     }
   },
   "keywords": [

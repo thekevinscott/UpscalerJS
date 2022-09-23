@@ -31,7 +31,12 @@ export const useImages = () => {
     patchSize,
     choosePatchSize,
     benchmarks, 
-    hasBeenBenchmarked, cancelUpscale: cancelUpscale, progress, upscaledSrc } = useUpscaler(img);
+    scale,
+    hasBeenBenchmarked,
+    cancelUpscale, 
+    progress,
+    upscaledSrc,
+  } = useUpscaler(img);
 
   const setUploadedImage = useCallback(async (uploadedImage?: UploadedImage) => {
     if (uploadedImage?.src !== _originalImage?.src) {
@@ -78,5 +83,6 @@ export const useImages = () => {
     benchmarks,
     patchSize,
     choosePatchSize,
+    scale,
   };
 };
