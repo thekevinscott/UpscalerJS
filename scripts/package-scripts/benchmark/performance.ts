@@ -118,6 +118,54 @@ const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?
   }
 }
 
+const getUpscalerFromExports = async (modelPackageFolder: string, modelName: string, exports: Record<string, any>, key: string) => {
+  const value = exports[key];
+  if (typeof value === 'object') {
+    const { require: importPath, } = value;
+    const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
+    const modelDefinitionFn = (await import(pathToModel)).default;
+    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
+    const model = {
+      // provide the explicit path to avoid going through the package discovery process (which
+      // won't work because of pnpm's local linking)
+      ...modelDefinition,
+      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
+      meta: {
+        modelName,
+        modelPackageFolder,
+      }
+    }
+    try {
+      const upscaler = new Upscaler({
+        model,
+      });
+      await upscaler.getModel();
+      return upscaler;
+    } catch (err) {
+      console.error('Error instantiating upscaler for model definition', model);
+      throw err;
+    }
+  } else {
+    throw new Error('Handle this')
+  }
+};
+
+const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?: unknown) => {
+  if (modelPackageFolder === undefined) {
+    throw new Error('modelPackageFolder is undefined');
+  }
+  if (importPath === undefined) {
+    console.log('value', value);
+    throw new Error('importPath is undefined');
+  }
+  try {
+    return path.resolve(modelPackageFolder, importPath);
+  } catch (err) {
+    console.log(modelPackageFolder, importPath);
+    throw err;
+  }
+}
+
 function getFiles(dir: string): string[] {
   const dirents = readdirSync(dir, { withFileTypes: true });
   let files: string[] = [];
