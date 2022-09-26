@@ -1,6 +1,6 @@
 import yargs from 'yargs';
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra';
 import * as tf from '@tensorflow/tfjs-node';
 import imageSize from 'image-size';
 import util from 'util';
@@ -62,43 +62,11 @@ type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
 /****
  * Utility Functions & Classes
  */
-const checkIntegers = (...nums: number[]) => {
+const checkIntegers = (key: string, ...nums: number[]) => {
   for (const num of nums) {
     if (num !== Math.round(num)) {
-      throw new Error(`Sizes are not integers: ${nums.join(' x ')}`);
+      throw new Error(`Key: ${key} | Sizes are not integers: ${nums.join(' x ')}`);
     }
-  }
-};
-
-const getUpscalerFromExports = async (modelPackageFolder: string, modelName: string, exports: Record<string, any>, key: string) => {
-  const value = exports[key];
-  if (typeof value === 'object') {
-    const { require: importPath, } = value;
-    const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
-    const modelDefinitionFn = (await import(pathToModel)).default;
-    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
-    const model = {
-      // provide the explicit path to avoid going through the package discovery process (which
-      // won't work because of pnpm's local linking)
-      ...modelDefinition,
-      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
-      meta: {
-        modelName,
-        modelPackageFolder,
-      }
-    }
-    try {
-      const upscaler = new Upscaler({
-        model,
-      });
-      await upscaler.getModel();
-      return upscaler;
-    } catch (err) {
-      console.error('Error instantiating upscaler for model definition', model);
-      throw err;
-    }
-  } else {
-    throw new Error('Handle this')
   }
 };
 
@@ -149,22 +117,6 @@ const getUpscalerFromExports = async (modelPackageFolder: string, modelName: str
     throw new Error('Handle this')
   }
 };
-
-const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?: unknown) => {
-  if (modelPackageFolder === undefined) {
-    throw new Error('modelPackageFolder is undefined');
-  }
-  if (importPath === undefined) {
-    console.log('value', value);
-    throw new Error('importPath is undefined');
-  }
-  try {
-    return path.resolve(modelPackageFolder, importPath);
-  } catch (err) {
-    console.log(modelPackageFolder, importPath);
-    throw err;
-  }
-}
 
 function getFiles(dir: string): string[] {
   const dirents = readdirSync(dir, { withFileTypes: true });
@@ -311,7 +263,7 @@ class Dataset {
         const { width, height } = await getSize(filePath);
 
         const [originalWidth, originalHeight] = getDims(n => Math.floor(n / scale) * scale, width, height);
-        checkIntegers(originalWidth, originalHeight);
+        checkIntegers('original', originalWidth, originalHeight);
         const originalImage = await sharp(filePath)
           .flatten({ background: { r: 255, g: 255, b: 255 } })
           .resize({ width: originalWidth, height: originalHeight, fit: 'cover' })
@@ -319,7 +271,7 @@ class Dataset {
         const originalPath = this.saveImage(`${filename}-scale-${scale}-original`, originalImage);
 
         const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, originalWidth, originalHeight);
-        checkIntegers(downscaledWidth, downscaledHeight);
+        checkIntegers('downscaled original', downscaledWidth, downscaledHeight);
         const downscaledImage = await sharp(originalImage)
           .resize({ width: downscaledWidth, height: downscaledHeight })
           .toBuffer();
@@ -370,12 +322,22 @@ class Dataset {
       if (cropped && !this.database[filename][scale].cropped[cropped]) {
         try {
           const [originalCroppedWidth, originalCroppedHeight] = [cropped, cropped];
+          checkIntegers('cropped original', originalCroppedWidth, originalCroppedHeight);
+          const top = Math.floor((originalHeight / 2) - (originalCroppedHeight / 2));
+          const left = Math.floor((originalWidth / 2) - (originalCroppedWidth / 2));
+          // checkIntegers('cropped original, top, left', top, left);
           const originalCroppedImage = await sharp(originalPath)
-            .extract({ width: originalCroppedWidth, height: originalCroppedHeight, top: (originalHeight / 2) - (originalCroppedHeight / 2), left: (originalWidth / 2) - (originalCroppedWidth / 2) })
+            .extract({
+              width: originalCroppedWidth,
+              height: originalCroppedHeight,
+              top,
+              left,
+            })
             .toBuffer();
           const originalCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-original`, originalCroppedImage);
 
           const [downscaledCroppedWidth, downscaledCroppedHeight] = getDims(n => n / scale, originalCroppedWidth, originalCroppedHeight);
+          checkIntegers('cropped downscaled', downscaledCroppedWidth, downscaledCroppedHeight);
           const downscaledCroppedImage = await sharp(originalCroppedImage)
             .resize({ width: downscaledCroppedWidth, height: downscaledCroppedHeight })
             .toBuffer();
@@ -479,7 +441,7 @@ class Benchmarker {
   }
 
   cleanup() {
-    fs.rmSync(this.tmpDir, { recursive: true, force: true });
+    fs.removeSync(this.tmpDir);
   }
 
   private async upscale(_upscaler: Promise<typeof Upscaler>, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
