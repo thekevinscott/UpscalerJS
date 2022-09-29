@@ -1,22 +1,11 @@
 import yargs from 'yargs';
 import path from 'path';
-import fs from 'fs-extra';
-import * as tf from '@tensorflow/tfjs-node';
-import imageSize from 'image-size';
-import util from 'util';
-import sharp from 'sharp';
+import inquirer from 'inquirer';
 import callExec from '../../../test/lib/utils/callExec';
-import { mkdirpSync, readdirSync } from 'fs-extra';
-import asyncPool from "tiny-async-pool";
-import { makeTmpDir } from '../utils/withTmpDir';
-import { ModelDefinition } from '@upscalerjs/core';
-import { getString } from '../prompt/getString';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../utils/getAllAvailableModels';
-import Table from 'cli-table';
-
-const crimsonProgressBar = require("crimson-progressbar");
-const Upscaler = require('upscaler/node');
-const sizeOf = util.promisify(imageSize);
+import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
+import { Benchmarker } from './utils/Benchmarker';
+import { DatasetDefinition } from './utils/types';
+import { Image } from './utils/Image';
 
 /****
  * Constants
@@ -27,534 +16,15 @@ const CACHE_DIR = path.resolve(ROOT_DIR, './tmp/datasets');
 /****
  * Types
  */
-type Output = 'table' | 'json';
-
-type Results = Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>;
-
-interface DatasetDefinition {
-  name: string;
-  path?: string;
-}
-
-interface BenchmarkResult {
-  ssim: number;
-  psnr: number;
-}
-
-interface ImagePackage {
-    path: string;
-    width: number;
-    height: number;
-}
-
-interface ProcessedFileDefinition {
-  original: ImagePackage;
-  downscaled: ImagePackage;
-  cropped: Record<number, {
-    original: ImagePackage;
-    downscaled: ImagePackage;
-  }>;
-  fileName: string;
-}
-
-type DatasetDatabase = Record<string, Record<number, ProcessedFileDefinition>>;
 
 /****
  * Utility Functions & Classes
  */
-const checkIntegers = (key: string, ...nums: number[]) => {
-  for (const num of nums) {
-    if (num !== Math.round(num)) {
-      throw new Error(`Key: ${key} | Sizes are not integers: ${nums.join(' x ')}`);
-    }
-  }
-};
-
-const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?: unknown) => {
-  if (modelPackageFolder === undefined) {
-    throw new Error('modelPackageFolder is undefined');
-  }
-  if (importPath === undefined) {
-    console.log('value', value);
-    throw new Error('importPath is undefined');
-  }
-  try {
-    return path.resolve(modelPackageFolder, importPath);
-  } catch (err) {
-    console.log(modelPackageFolder, importPath);
-    throw err;
-  }
-}
-
-const getUpscalerFromExports = async (modelPackageFolder: string, modelName: string, exports: Record<string, any>, key: string) => {
-  const value = exports[key];
-  if (typeof value === 'object') {
-    const { require: importPath, } = value;
-    const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
-    const modelDefinitionFn = (await import(pathToModel)).default;
-    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
-    const model = {
-      // provide the explicit path to avoid going through the package discovery process (which
-      // won't work because of pnpm's local linking)
-      ...modelDefinition,
-      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
-      meta: {
-        modelName,
-        modelPackageFolder,
-      }
-    }
-    try {
-      const upscaler = new Upscaler({
-        model,
-      });
-      await upscaler.getModel();
-      return upscaler;
-    } catch (err) {
-      console.error('Error instantiating upscaler for model definition', model);
-      throw err;
-    }
-  } else {
-    throw new Error('Handle this')
-  }
-};
-
-function getFiles(dir: string): string[] {
-  const dirents = readdirSync(dir, { withFileTypes: true });
-  let files: string[] = [];
-  for (const dirent of dirents) {
-    if (dirent.isDirectory()) {
-      for (const filename of getFiles(path.resolve(dir, dirent.name))) {
-        files.push(path.join(dirent.name, filename));
-      }
-    } else {
-      const ext = dirent.name.split('.').pop();
-      if (typeof ext === 'string' && ['jpg', 'jpeg', 'png'].includes(ext)) {
-        files.push(dirent.name);
-      }
-    }
-  }
-  return files;
-}
-
-const avg = (arr: number[]) => arr.reduce((sum, num) => sum + num, 0) / arr.length;
-
-const getSize = async (file: string): Promise<{ width: number; height: number }> => {
-  const dimensions = await sizeOf(file);
-  if (!dimensions?.width || !dimensions?.height) {
-    throw new Error(`No dimensions found for file ${file}.`)
-  }
-  return { width: dimensions.width, height: dimensions.height };
-}
-
 const checkImagemagickInstallation = async () => {
   try {
-    await callExec('convert -version');
+    await callExec('convert -version', {}, false, false);
   } catch (err) {
     throw new Error('Imagemagick does not appear to be installed. Please install it for your system.');
-  }
-}
-
-export const runScript = async (cmd: string) => {
-  let stdout = '';
-  let stderr = '';
-  let err: unknown = '';
-  try {
-    await callExec(cmd, {}, _data => {
-      stdout += _data;
-    }, _data => {
-      stderr += _data;
-    });
-  } catch (_err) {
-    err = _err;
-  }
-  return [stdout, stderr, err];
-};
-
-class Dataset {
-  definition: DatasetDefinition;
-  database: DatasetDatabase;
-
-  constructor(datasetDefinition: DatasetDefinition) {
-    this.definition = datasetDefinition;
-
-    // see if we have processed a dataset with this name
-    this.database = this.getDatasetDatabase();
-  }
-
-  async initialize(scale?: number, cropped?: number) {
-    if (scale === undefined) {
-      throw new Error('Scale cannot be undefined when initializing dataset.')
-    }
-    const { name: definitionName, path: definitionPath } = this.definition;
-    if (!definitionPath) {
-      throw new Error([
-        `The dataset ${definitionName} has not been fully processed, and you've neglected to pass a path to the dataset.`,
-        `Please pass a valid path so that the dataset can be processed and cached.`
-      ].join(' '));
-    }
-    const files = getFiles(definitionPath).map(file => ({
-      file,
-      filePath: path.resolve(definitionPath, file),
-    }));
-    let i = 0;
-    const total = files.length;
-    crimsonProgressBar.renderProgressBar(i, total);
-    await this.prepare(files, scale, () => {
-      i++;
-      crimsonProgressBar.renderProgressBar(i, total);
-    }, cropped);
-    this.saveDatabase();
-  }
-
-  getWritableName(name: string) {
-    const folder = this.definition.name;
-    const parts = name.split('.');
-    if (parts.length < 1) {
-      throw new Error('No name provided');
-    }
-    const formattedName = parts.join('.').split('/').join('-');
-    return path.resolve(CACHE_DIR, folder, formattedName);
-  }
-
-  getDatasetDatabase(): DatasetDatabase {
-    try {
-      const filename = this.getWritableName('database.json');
-      const parsedDatabaseFile = JSON.parse(fs.readFileSync(filename, 'utf-8'));
-      return parsedDatabaseFile;
-    } catch (err) {
-    }
-    return {};
-  }
-
-  saveDatabase(key?: string, payload?: any) {
-    if (key) {
-      this.database[key] = {
-        ...this.database[key],
-        ...payload,
-      }
-    }
-    const filename = this.getWritableName('database.json');
-    mkdirpSync(path.dirname(filename));
-    fs.writeFileSync(filename, JSON.stringify(this.database));
-  }
-
-  saveImage(filename: string, image: Buffer) {
-    const originalPath = this.getWritableName(filename) + '.png';
-    mkdirpSync(path.dirname(originalPath));
-    fs.writeFileSync(originalPath, image);
-    return originalPath;
-  }
-
-  async prepare(files: { file: string; filePath: string }[], scale: number, callback: () => void, cropped?: number) {
-    const getDims = (fn: (size: number) => number, ...nums: number[]) => {
-      const result = nums.map(fn);
-      for (const r of result) {
-        if (Number.isNaN(r)) {
-          throw new Error(`Part of result is NaN: ${result} | original nums: ${nums}`)
-        }
-      }
-      return result;
-    };
-    const processOriginal = async (filePath: string, filename: string) => {
-      if (this.database[filename]?.[scale]) {
-        return;
-      }
-      try {
-        const { width, height } = await getSize(filePath);
-
-        const [originalWidth, originalHeight] = getDims(n => Math.floor(n / scale) * scale, width, height);
-        checkIntegers('original', originalWidth, originalHeight);
-        const originalImage = await sharp(filePath)
-          .flatten({ background: { r: 255, g: 255, b: 255 } })
-          .resize({ width: originalWidth, height: originalHeight, fit: 'cover' })
-          .toBuffer();
-        const originalPath = this.saveImage(`${filename}-scale-${scale}-original`, originalImage);
-
-        const [downscaledWidth, downscaledHeight] = getDims(n => n / scale, originalWidth, originalHeight);
-        checkIntegers('downscaled original', downscaledWidth, downscaledHeight);
-        const downscaledImage = await sharp(originalImage)
-          .resize({ width: downscaledWidth, height: downscaledHeight })
-          .toBuffer();
-        const downscaledPath = this.saveImage(`${filename}-scale-${scale}-downscaled`, downscaledImage);
-
-        this.saveDatabase(filename, {
-          [scale]: {
-            cropped: {},
-            original: {
-              path: originalPath,
-              width: originalWidth,
-              height: originalHeight,
-            },
-            downscaled: {
-              path: downscaledPath,
-              width: downscaledWidth,
-              height: downscaledHeight,
-            },
-            fileName: filename,
-          },
-        });
-      } catch (err) {
-        console.error(`\n\n**** Error processing original: ${filename}`);
-        throw err;
-      }
-    };
-    const processFile = async ({ file: filename, filePath }: { file: string; filePath: string }) => {
-      const processedFile = this.database[filename];
-      if (processedFile?.[scale]) {
-        if (cropped === undefined) {
-          return;
-        }
-        if (processedFile?.[scale].cropped[cropped]) {
-          return;
-        }
-      }
-
-      await processOriginal(filePath, filename);
-
-      const {
-        original: {
-          path: originalPath,
-          height: originalHeight,
-          width: originalWidth,
-        },
-      } = this.database[filename][scale];
-
-      if (cropped && !this.database[filename][scale].cropped[cropped]) {
-        try {
-          const [originalCroppedWidth, originalCroppedHeight] = [cropped, cropped];
-          checkIntegers('cropped original', originalCroppedWidth, originalCroppedHeight);
-          const top = Math.floor((originalHeight / 2) - (originalCroppedHeight / 2));
-          const left = Math.floor((originalWidth / 2) - (originalCroppedWidth / 2));
-          // checkIntegers('cropped original, top, left', top, left);
-          const originalCroppedImage = await sharp(originalPath)
-            .extract({
-              width: originalCroppedWidth,
-              height: originalCroppedHeight,
-              top,
-              left,
-            })
-            .toBuffer();
-          const originalCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-original`, originalCroppedImage);
-
-          const [downscaledCroppedWidth, downscaledCroppedHeight] = getDims(n => n / scale, originalCroppedWidth, originalCroppedHeight);
-          checkIntegers('cropped downscaled', downscaledCroppedWidth, downscaledCroppedHeight);
-          const downscaledCroppedImage = await sharp(originalCroppedImage)
-            .resize({ width: downscaledCroppedWidth, height: downscaledCroppedHeight })
-            .toBuffer();
-          const downscaledCroppedPath = this.saveImage(`${filename}-scale-${scale}-cropped-${cropped}-downscaled`, downscaledCroppedImage);
-
-          this.saveDatabase(filename, {
-            [scale]: {
-              ...this.database[filename][scale],
-              cropped: {
-                ...this.database[filename][scale].cropped,
-                [cropped]: {
-                  original: {
-                    path: originalCroppedPath,
-                    width: originalCroppedWidth,
-                    height: originalCroppedHeight,
-                  },
-                  downscaled: {
-                    path: downscaledCroppedPath,
-                    width: downscaledCroppedWidth,
-                    height: downscaledCroppedHeight,
-                  },
-                }
-              }
-            }
-          });
-        } catch (err) {
-          console.error('\n\n****Error processing crop');
-          throw err;
-        }
-      }
-    }
-
-    for await (const _ of asyncPool(20, files, processFile)) {
-      callback();
-    }
-  }
-
-  getFiles(scale: number, cropped?: number) {
-    const fileNames = Object.keys(this.database).sort();
-    return fileNames.map(fileName => {
-      const file = this.database[fileName][scale];
-      if (cropped) {
-        if (!file.cropped[cropped]) {
-          throw new Error(`No cropping exists for ${cropped}`);
-        }
-        return {
-          original: file.cropped[cropped].original,
-          downscaled: file.cropped[cropped].downscaled,
-          fileName: file.fileName,
-        }
-      }
-
-      return {
-        original: file.original,
-        downscaled: file.downscaled,
-        fileName: file.fileName,
-      }
-    });
-  }
-}
-
-class Benchmarker {
-  n: number;
-
-  private models: Map<string, Promise<typeof Upscaler>>;
-  private datasets: Map<string, Dataset>;
-
-  private tmpDir: string = '';
-  private modelPackages: string[];
-
-  constructor(modelPackages: string[], datasets: Dataset[], n: number = Infinity) {
-    this.n = n;
-    this.modelPackages = modelPackages;
-    this.models = new Map();
-    this.datasets = new Map();
-    this.tmpDir = makeTmpDir();
-    mkdirpSync(this.tmpDir);
-    for (const dataset of datasets) {
-      this.datasets.set(dataset.definition.name, dataset);
-    }
-  }
-
-  async loadModels() {
-    for (const modelPackageName of this.modelPackages) {
-      const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
-      const { name, exports } = JSON.parse(fs.readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
-      for (const key of Object.keys(exports)) {
-        // If we have a root level ./ definition, it means the model is bucket exporting all it's available
-        // models. That means we can skip this entry.
-        if (key !== '.' || Object.keys(exports).length === 1) {
-          const modelName = key === '.' ? name : path.join(name, key);
-          const upscaler = await getUpscalerFromExports(modelPackageFolder, modelName, exports, key);
-          this.models.set(modelName, upscaler);
-          const { modelDefinition: _modelDefinition } = await upscaler.getModel();
-          if (modelName !== _modelDefinition.meta.modelName) {
-            throw new Error(`Mismatch, model name ${modelName} does not match package name ${_modelDefinition.meta.modelName}`);
-          }
-        }
-      }
-    }
-  }
-
-  cleanup() {
-    fs.removeSync(this.tmpDir);
-  }
-
-  private async upscale(_upscaler: Promise<typeof Upscaler>, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
-    const upscaler = await _upscaler;
-    const upscaledData = await upscaler.upscale(downscaled, {
-      output: 'tensor',
-      patchSize: 64,
-      padding: 2,
-      progress,
-    });
-    const data = await tf.node.encodePng(upscaledData);
-    return Buffer.from(data);
-  }
-
-  private async calculatePerformance(upscaledPath: string, originalPath: string, diffPath: string, metric: 'ssim' | 'psnr'): Promise<number> {
-    try {
-      const [_, out,] = await runScript(`magick compare -metric ${metric} ${upscaledPath} ${originalPath} ${diffPath}`);
-      if (typeof out !== 'string') {
-        throw new Error('No response from metric calculation');
-      }
-      const value = out.split(' ')[0];
-      if (!value) {
-        throw new Error('No metric found')
-      }
-      return parseFloat(value);
-    } catch (err) {
-
-      throw new Error(`Failed at comparing ${upscaledPath} with ${originalPath}`);
-    }
-  }
-
-  public async benchmark(cropped?: number) {
-    const upscaledFolder = path.resolve(this.tmpDir, 'upscaled');
-    const diffFolder = path.resolve(this.tmpDir, 'diff');
-    const results = new Map<{ dataset: Dataset; modelDefinition: ModelDefinition }, BenchmarkResult>();
-    const pairs = [];
-    let total = 0;
-    for (const [datasetName, dataset] of this.datasets) {
-      for (const [modelName, _model] of this.models) {
-        const model = await _model;
-        const { modelDefinition } = await model.getModel();
-        await dataset.initialize(modelDefinition.scale, cropped);
-        const files = dataset.getFiles(modelDefinition.scale, cropped);
-        const n = Math.min(this.n, files.length);
-        total += n;
-        pairs.push({
-          n,
-          datasetName,
-          dataset, 
-          model, 
-          modelName,
-          modelDefinition,
-          files,
-        });
-      }
-    }
-
-    crimsonProgressBar.renderProgressBar(0, total);
-    let i = 0;
-    for (const { n, files, datasetName, modelName, dataset, model, modelDefinition} of pairs) {
-      if (modelName !== modelDefinition.meta.modelName) {
-        throw new Error(`Mismatch, model name ${modelName} does not match package name ${modelDefinition.meta.modelName}`);
-      }
-      const ssim: number[] = [];
-      const psnr: number[] = [];
-
-      // console.log('\nBenchmarking', modelName, 'for dataset', datasetName);
-      // const progress = (rate: number) => console.log(rate);
-      const processFile = async ({
-        original,
-        downscaled,
-        fileName: file,
-      }: { original: ImagePackage; downscaled: ImagePackage; fileName: string; }) => {
-        const {
-          width: originalWidth,
-          height: originalHeight,
-          path: originalPath,
-        } = original;
-        const {
-          path: downscaledPath,
-        } = downscaled;
-        const upscaledBuffer = await this.upscale(model, downscaledPath,
-          // progress
-        );
-        const upscaledPath = path.resolve(upscaledFolder, file)
-        mkdirpSync(path.dirname(upscaledPath));
-        fs.writeFileSync(upscaledPath, upscaledBuffer);
-        const upscaledDimensions = await getSize(upscaledPath);
-
-        const diffPath = path.resolve(diffFolder, file);
-        mkdirpSync(path.dirname(diffPath));
-
-        if (originalWidth !== upscaledDimensions.width || originalHeight !== upscaledDimensions.height) {
-          throw new Error(`Dimensions mismatch. Original image: ${JSON.stringify({ originalWidth, originalHeight })}, Upscaled image: ${JSON.stringify(upscaledDimensions)}`)
-        }
-        ssim.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'ssim'));
-        psnr.push(await this.calculatePerformance(upscaledPath, originalPath, diffPath, 'psnr'));
-      }
-
-      for await (const value of asyncPool(1, files.slice(0, n), processFile)) {
-        i++;
-        crimsonProgressBar.renderProgressBar(i, total);
-      }
-
-      results.set({
-        modelDefinition,
-        dataset,
-      }, {
-        psnr: avg(psnr),
-        ssim: avg(ssim),
-      });
-    }
-    return results;
   }
 }
 
@@ -562,38 +32,75 @@ class Benchmarker {
  * Main function
  */
 
-type BenchmarkPerformance = (models: string[], datasets: DatasetDefinition[], props?: { n?: number, cropped?: number }) => Promise<Results>;
-const benchmarkPerformance: BenchmarkPerformance = async (models, datasetDefinitions, { n = Infinity, cropped } = {}) => {
-  const datasets = datasetDefinitions.map(dataset => new Dataset(dataset));
-  const benchmarker = new Benchmarker(models, datasets, n);
-  await benchmarker.loadModels();
-  console.log('LOAD MODELS COMPLETE')
-  const results = await benchmarker.benchmark(cropped);
-  benchmarker.cleanup();
-  return results;
+async function getArg<T>(options: { message: string, type: string }) {
+  const res = await inquirer.prompt<{
+    arg: string
+  }>([
+    {
+      name: 'arg',
+      ...options,
+    },
+  ]);
+  return res.arg as T;
 };
 
-export default benchmarkPerformance;
+const mark = (msg: string) => {
+  const divider = Array(98).fill('*').join('');
+  console.log(`${divider}\n${msg}\n${divider}`);
+}
+
+const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], cropSize?: number, n?: number, resultsOnly?: boolean, metric?: string) => {
+  const benchmarker = new Benchmarker(cacheDir);
+  if (resultsOnly !== true) {
+    mark('Preparing');
+  }
+  if (datasets.length === 0) {
+    let specifyDatabase = true;
+    while (specifyDatabase) {
+      specifyDatabase = await getArg<boolean>({
+        message: `Would you like to specify a dataset?`,
+        type: 'confirm',
+      });
+
+      if (specifyDatabase) {
+        const datasetName = await getArg<string>({
+          message: 'What is the name of the dataset',
+          type: 'input',
+        });
+        const datasetPath = await getArg<string>({
+          message: 'What is the path to the dataset',
+          type: 'input',
+        });
+        await benchmarker.addDatasets([{ datasetName, datasetPath }], resultsOnly);
+      }
+    }
+  } else {
+    await benchmarker.addDatasets(datasets, resultsOnly);
+  }
+  if (resultsOnly !== true) {
+    await benchmarker.prepareImages(cropSize);
+  }
+  await benchmarker.addModels(models, resultsOnly);
+  if (resultsOnly !== true) {
+    mark('Evaluating');
+    await benchmarker.benchmark(cropSize, n);
+  }
+  mark('Results');
+  await benchmarker.display(Image.getCropKey(cropSize), metric);
+};
 
 /****
  * Functions to expose the main function as a CLI tool
  */
 interface Args {
+  cacheDir: string;
+  // databaseFile: string;
   datasets: DatasetDefinition[];
-  outputFile?: string;
-  n?: number;
-  cropped?: number;
   models: Array<string>;
-  output: Output;
-}
-
-const isOutput = (output?: unknown): output is Output => output !== undefined && ['json', 'table'].includes(`${output}`);
-const getOutput = (output?: unknown): Output => {
-  if (isOutput(output)) {
-    return output;
-  }
-
-  return 'table';
+  cropSize?: number;
+  n?: number;
+  resultsOnly?: boolean;
+  metric?: string;
 }
 
 const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
@@ -609,20 +116,14 @@ const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]>
         throw new Error(`You must specify a dataset as <dataset_name>:<dataset_path>. You specified ${dataset}`);
       }
       datasets.push({
-        name: dataset[0],
-        path: dataset[1],
+        datasetName: dataset[0],
+        datasetPath: dataset[1],
       });
     }
     return datasets;
   }
 
-  const datasetName = await getString('What is the name of the dataset you wish to use?', undefined);
-  const datasetPath = await getString('What is the path to the dataset you wish to use?', undefined);
-
-  return [{
-    name: datasetName,
-    path: datasetPath,
-  }];
+  return [];
 }
 
 const getModels = (model?: unknown): string[] => {
@@ -642,11 +143,13 @@ const getArgs = async (): Promise<Args> => {
     yargs.positional('dataset', {
       describe: 'The dataset',
     }).options({
-      outputFile: { type: 'string' },
-      n: { type: 'number' },
-      cropped: { type: 'number' },
+      // databaseFile: { type: 'string' },
+      cacheDir: { type: 'string' },
       model: { type: 'string' },
-      output: { type: 'string' },
+      cropSize: { type: 'number' },
+      n: { type: 'number' },
+      resultsOnly: { type: 'boolean' },
+      metric: { type: 'string' },
     });
   })
   .help()
@@ -654,81 +157,24 @@ const getArgs = async (): Promise<Args> => {
 
   const datasets = await getDataset(...argv._);
   const models = getModels(argv.model);
-  const output = getOutput(argv.output);
-  const outputFile = typeof argv.outputFile === 'string' ? argv.outputFile : undefined;
+
+  function ifDefined<T>(key: string, type: string) { return typeof argv[key] === type ? argv[key] as T: undefined; }
 
   return {
-    outputFile,
     models,
-    output,
     datasets,
-    n: typeof argv.n === 'number' ? argv.n : undefined,
-    cropped: typeof argv.cropped === 'number' ? argv.cropped : undefined,
-  }
-}
-
-const displayResults = (results: Results, output: Output, outputFile?: string) => {
-  // organize by datasets
-  const resultsByDataset = new Map<Dataset, {
-    result: BenchmarkResult;
-    modelDefinition: ModelDefinition;
-  }[]>();
-  results.forEach((result, { modelDefinition, dataset }) => {
-    const existingResults = resultsByDataset.get(dataset) || [];
-    resultsByDataset.set(dataset, existingResults.concat([{
-      result,
-      modelDefinition,
-    }]));
-  });
-
-  type ResultByModel = { modelName?: string; modelScale: number; psnr: number; ssim: number };
-  const data: { dataset: string; results: ResultByModel[]; }[] = [];
-  resultsByDataset.forEach((results, dataset) => {
-    const resultsByModel: ResultByModel[] = [];
-    results.forEach(({ result, modelDefinition }) => {
-      resultsByModel.push(
-        {
-          modelName: (modelDefinition.meta as Record<string, string>).modelName, 
-          modelScale: modelDefinition.scale, 
-          psnr: result.psnr, 
-          ssim: result.ssim,
-        },
-      );
-    });
-    data.push({
-      dataset: dataset.definition.name,
-      results: resultsByModel,
-    });
-  });
-
-  if (output === 'table') {
-    data.forEach(({ dataset, results }) => {
-      console.log(`Results for Dataset "${dataset}"`);
-      const table = new Table({
-        head: ['Model', 'Scale', 'PSNR', 'SSIM'],
-      });
-      results.forEach(({ modelName, modelScale, psnr, ssim }) => {
-        table.push(
-          [modelName, modelScale, psnr, ssim],
-        );
-      });
-
-      console.log(table.toString());
-    });
-  } else {
-    console.log(JSON.stringify(data, null, 2));
-  }
-
-  if (outputFile) {
-    fs.writeFileSync(outputFile, JSON.stringify(data, null, 2), 'utf-8');
+    cacheDir: ifDefined('cacheDir', 'string') || CACHE_DIR,
+    cropSize: ifDefined('cropSize', 'number'),
+    n: ifDefined('n', 'number'),
+    resultsOnly: ifDefined('resultsOnly', 'boolean'),
+    metric: ifDefined('metric', 'string'),
   }
 }
 
 if (require.main === module) {
   (async () => {
     await checkImagemagickInstallation()
-    const { output, models, datasets, outputFile, n, cropped } = await getArgs();
-    const results = await benchmarkPerformance(models, datasets, { n, cropped });
-    displayResults(results, output, outputFile);
+    const args = await getArgs();
+    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.cropSize, args.n, args.resultsOnly, args.metric);
   })();
 }
