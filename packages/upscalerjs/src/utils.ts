@@ -37,7 +37,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     return false;
   }
-  return !!(modelDefinition.path && modelDefinition.scale);
+  return Boolean(modelDefinition.path && modelDefinition.scale);
 };
 
 export const registerCustomLayers = (modelDefinition: ModelDefinition): void => {
@@ -78,7 +78,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
   postNext?: PostNext<T>
 ): Promise<TReturn> {
-  let result: undefined | IteratorResult<T, TReturn> = undefined;
+  let result: undefined | IteratorResult<T, TReturn>;
   for (result = await gen.next(); !result.done; result = await gen.next()) {
     if (postNext) {
       await postNext(result.value);

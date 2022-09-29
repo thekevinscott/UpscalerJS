@@ -5,7 +5,7 @@ import ESRGANSlim from '../../models/esrgan-slim/umd-names.json';
 
 const isValidUMDNameFile = (contents: unknown): contents is {
    '.': string
-} => typeof contents === 'object' && !!contents && '.' in contents;
+} => typeof contents === 'object' && contents !== undefined && contents !== null && '.' in contents;
 
 const getESRGANUmdName = () => {
   if (isValidUMDNameFile(ESRGANSlim)) {

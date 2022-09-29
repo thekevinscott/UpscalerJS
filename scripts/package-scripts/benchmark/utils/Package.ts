@@ -32,8 +32,15 @@ export class Package extends Model {
         name: this.name,
       }
     });
+    console.log(pkg);
     if (pkg === null) {
-      throw new Error('No dataset was written');
+      throw new Error('No package was saved to the database');
+    }
+    const packageId = pkg.id;
+    if (packageId === 0) {
+      throw new Error('Package ID is 0')
+    } else if (packageId > 10) {
+      throw new Error(`Unexpected package ID: ${packageId}`)
     }
     this.id = pkg.id;
   }
@@ -43,12 +50,6 @@ export class Package extends Model {
     const models = Package.getModels(packageName);
     const progressBar = new ProgressBar(models.length);
     await this.setId();
-    const packageId = this.id;
-    if (packageId === 0) {
-      throw new Error('Package ID is 0')
-    } else if (packageId > 10) {
-      throw new Error(`Unexpected package ID: ${packageId}`)
-    }
 
     const processFile = async ([key, modelName]: [key: string, modelName: string]) => {
       const [upscaler, modelDefinition] = await UpscalerModel.getUpscaler(packageName, modelName, key);
@@ -59,7 +60,7 @@ export class Package extends Model {
           path: modelPath,
           scale: modelDefinition.scale,
           meta: modelDefinition.meta,
-          PackageId: packageId,
+          PackageId: this.id,
         }, {
           logging: console.log,
         });

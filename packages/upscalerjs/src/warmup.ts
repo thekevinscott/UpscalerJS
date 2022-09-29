@@ -1,9 +1,9 @@
 import { tf, } from './dependencies.generated';
 import type { ModelPackage, NumericWarmupSizes, WarmupSizes, WarmupSizesByPatchSize, } from './types';
 
-const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => !!size && typeof size === 'object' && 'patchSize' in size;
+const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => size !== undefined && typeof size === 'object' && 'patchSize' in size;
 const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
-  return !!size && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
+  return size !== undefined && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
 };
 
 export const getInvalidValueError = (size: unknown): Error => new Error(
