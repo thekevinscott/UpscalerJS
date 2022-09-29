@@ -32,14 +32,15 @@ export class Package extends Model {
         name: this.name,
       }
     });
-    console.log(pkg);
     if (pkg === null) {
       throw new Error('No package was saved to the database');
     }
     const packageId = pkg.id;
     if (packageId === 0) {
+      console.error(pkg);
       throw new Error('Package ID is 0')
     } else if (packageId > 10) {
+      console.error(pkg);
       throw new Error(`Unexpected package ID: ${packageId}`)
     }
     this.id = pkg.id;

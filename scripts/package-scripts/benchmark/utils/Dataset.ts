@@ -125,4 +125,10 @@ Dataset.init({
     allowNull: false,
     unique: true,
   },
+  // TODO: Remove this, which requires recreating the database from scratch
+  path: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
 }, { sequelize, modelName: 'Dataset' });

@@ -65,6 +65,7 @@ export class Database {
     await this.ready;
     const [dataset] = await Dataset.upsert({
       name: datasetName,
+      path: datasetName,
     });
     if (writeFiles) {
       await dataset.writeFiles(cacheDir, datasetPath);
