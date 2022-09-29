@@ -11,7 +11,6 @@ const SCALES = [2,3,4,8];
 export class Dataset extends Model {
   declare id: number;
   declare name: string;
-  declare path: string;
   declare getFiles: () => Promise<File[]>;
 
   private _files?: File[];
@@ -30,21 +29,6 @@ export class Dataset extends Model {
 
   get files() {
     return this.getFiles();
-    // return new Promise<File[]>(async (resolve) => {
-    //   if (!this._files?.length) {
-    //     if (!this.id) {
-    //       await this.setId();
-    //     }
-    //     const datasetId = this.id;
-    //     this._files = await File.findAll({
-    //       where: {
-    //         datasetId,
-    //       }
-    //     });
-
-    //   }
-    //   return resolve(this._files);
-    // });
   }
 
   async prepareImages(cacheDir: string, cropSize?: number) {
@@ -66,9 +50,8 @@ export class Dataset extends Model {
           }
         });
         if (image === null) {
-          // const lrPath = path.resolve(cacheDir, Image.getLrPath(file.path, scale, cropSize));
           const { cropKey, srPath, lrWidth, lrHeight, lrPath } = await Image.crop(cacheDir, file, srWidth, srHeight, scale, cropSize);
-          const [image] = await Image.upsert({
+          await Image.upsert({
             cropSize: cropKey,
             srPath,
             lrPath,
@@ -93,8 +76,8 @@ export class Dataset extends Model {
     progressBar.end();
   }
 
-  async writeFiles (cacheDir: string) {
-    const files = getFiles(this.path);
+  async writeFiles (cacheDir: string, datasetPath: string) {
+    const files = getFiles(datasetPath);
     await this.setId();
     const DatasetId = this.id;
     const presentFiles = (await this.files).reduce((obj, file) => ({
@@ -102,7 +85,7 @@ export class Dataset extends Model {
       [file.path]: file,
     }), {} as Record<string, File>);
     const processFile = async (name: string) => {
-      const filePath = path.resolve(this.path, name);
+      const filePath = path.resolve(datasetPath, name);
       const hash = File.getHash(filePath);
       const presentFile = presentFiles[filePath];
       if (!presentFile || hash !== presentFile.hash) {
@@ -138,11 +121,6 @@ Dataset.init({
     primaryKey: true
   },
   name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  path: {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
