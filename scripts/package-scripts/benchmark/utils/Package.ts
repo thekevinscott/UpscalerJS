@@ -79,7 +79,7 @@ export class Package extends Model {
           path: modelPath,
           scale: modelDefinition.scale,
           meta: modelDefinition.meta,
-          PackageId: packageId,
+          PackageId: this.id,
         });
         throw err;
       }
