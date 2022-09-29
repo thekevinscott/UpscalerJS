@@ -46,6 +46,8 @@ export class Package extends Model {
     const packageId = this.id;
     if (packageId === 0) {
       throw new Error('Package ID is 0')
+    } else if (packageId > 10) {
+      throw new Error(`Unexpected package ID: ${packageId}`)
     }
 
     const processFile = async ([key, modelName]: [key: string, modelName: string]) => {

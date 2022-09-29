@@ -173,125 +173,65 @@ export class Benchmarker {
   }
 
   async display(cropSize: string, metricName?: string) {
-    for (const dataset of this.datasets) {
-      console.log('Dataset name', dataset.name);
-      const packages = this.modelPackages;
+    const packages = this.modelPackages;
 
-      const results = await sequelize.query<{
-         value: number;
-         metric: string;
-         datasetName: string;
-         modelName: string;
-         modelScale: number;
-         modelMeta: string;
-        }>(`
-        SELECT 
-        AVG(r.value) as value,
-        m.name as metric,
-        d.name as datasetName,
-        um.name as modelName,
-        um.scale as modelScale,
-        um.meta as modelMeta
+    const getTableName = (datasetName: string, metricName: string) => [metricName, datasetName].join('_');
+    const metrics = metricName === undefined ? ['psnr', 'ssim'] : [metricName];
+    const pairs = this.datasets.reduce((arr, dataset) => {
+      return arr.concat(metrics.map(metric => [dataset.name, metric]));
+    }, [] as [string, string][]);
 
-        FROM Results r
+    const query = `
+          SELECT 
+          um.name as modelName,
+          um.scale as scale,
+          um.meta as meta,
+          ${pairs.map(([datasetName, metric]) => {
+      const tableName = getTableName(datasetName, metric);
+      return `${tableName}.value as ${tableName}`;
+    }).join(',\n')}
+          FROM aggregated_results r
+          ${pairs.map(([datasetName, metric]) => {
+      const tableName = getTableName(datasetName, metric);
+      return `
+              LEFT JOIN (
+                SELECT 
+                value, 
+                UpscalerModelId 
+                FROM aggregated_results 
+                WHERE 
+                  MetricId = (SELECT id FROM metrics WHERE name = "${metric}") 
+                  AND DatasetId = (SELECT id FROM datasets WHERE name = "${datasetName}")
+                  AND cropSize = "${cropSize}"
+                ) ${tableName} ON r.UpscalerModelId = ${tableName}.UpscalerModelId
+            `
+    }).join('\n')}
 
-        LEFT JOIN Metrics m ON m.id = r.MetricId
+          LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
+          LEFT JOIN Packages p ON p.id = um.PackageId
 
-        LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
-        LEFT JOIN Packages p ON p.id = um.PackageId
+          WHERE p.name IN(:packageNames)
+                    
+          GROUP BY r.UpscalerModelId;
+      `;
+    const results: Record<string, any>[] = await sequelize.query(query, {
+      replacements: {
+        cropSize,
+        packageNames: packages.map(p => p.name),
+      },
+      type: QueryTypes.SELECT,
+    });
+    const table = new Table({
+      head: ['Model', 'Scale', ...pairs.map(([datasetName, metric]) => [datasetName, metric.toUpperCase()].join('-'))],
+    });
 
-        LEFT JOIN Images i ON i.id = r.ImageId
-        LEFT JOIN Files f ON f.id = i.FileId
-        LEFT JOIN Datasets d ON d.id = f.DatasetId
+    results.forEach(result => {
+      table.push([result.modelName, result.scale, ...pairs.map(([datasetName, metric]) => {
+        const tableName = getTableName(datasetName, metric);
+        return result[tableName];
+      })]);
+    });
 
-        WHERE 1=1
-        AND p.name IN(:packageNames)
-        AND d.name = :datasetName
-        AND i.cropSize = :cropSize
-
-        GROUP BY 
-        m.name, 
-        d.name,
-        um.name
-
-        ${metricName ? `AND m.name = :metricName` : ''}
-      `, {
-        replacements: {
-          cropSize,
-          metricName,
-          datasetName: dataset.name,
-          packageNames: packages.map(p => p.name),
-        },
-        type: QueryTypes.SELECT,
-        // logging: console.log,
-      });
-
-      if (results.length === 0) {
-        console.log(`>> No results found for dataset ${dataset.name}`);
-      } else {
-        const resultsByModelName: Record<string, any>[] = Object.values(results.reduce((obj, result) => {
-          return {
-            ...obj,
-            [result.modelName]: {
-              ...(obj[result.modelName] || {}),
-              ...result,
-              [result.metric]: result.value,
-              meta: JSON.parse(result.modelMeta),
-            },
-          };
-        }, {} as Record<string, any>));
-        const table = new Table({
-          head: ['Model', 'Scale', ...['PSNR', 'SSIM'].filter(metric => metricName === undefined || metric.toLowerCase() === metricName)],
-        });
-        resultsByModelName.forEach(result => {
-          const row = [result.modelName, result.modelScale, ...[result.psnr, result.ssim].filter(Boolean)];
-          table.push(row);
-        });
-        console.log(table.toString());
-      }
-
-    //     results.forEach((result, { modelDefinition, dataset }) => {
-    //       const existingResults = resultsByDataset.get(dataset) || [];
-    //       resultsByDataset.set(dataset, existingResults.concat([{
-    //         result,
-    //         modelDefinition,
-    //       }]));
-    //     });
-
-    //     type ResultByModel = { modelName?: string; modelScale: number; psnr: number; ssim: number };
-    //     const data: { dataset: string; results: ResultByModel[]; }[] = [];
-    //     resultsByDataset.forEach((results, dataset) => {
-    //       const resultsByModel: ResultByModel[] = [];
-    //       results.forEach(({ result, modelDefinition }) => {
-    //         resultsByModel.push(
-    //           {
-    //             modelName: (modelDefinition.meta as Record<string, string>).modelName,
-    //             modelScale: modelDefinition.scale,
-    //             psnr: result.psnr,
-    //             ssim: result.ssim,
-    //           },
-    //         );
-    //       });
-    //       data.push({
-    //         dataset: dataset.datasetName,
-    //         results: resultsByModel,
-    //       });
-    //     });
-
-    //     data.forEach(({ dataset, results }) => {
-    //       console.log(`Results for Dataset "${dataset}"`);
-    //       const table = new Table({
-    //         head: ['Model', 'Scale', 'PSNR', 'SSIM'],
-    //       });
-    //       results.forEach(({ modelName, modelScale, psnr, ssim }) => {
-    //         table.push(
-    //           [modelName, modelScale, psnr, ssim],
-    //         );
-    //       });
-
-    //       console.log(table.toString());
-    //     });
-        }
-
+    console.log(table.toString());
   }
 }
