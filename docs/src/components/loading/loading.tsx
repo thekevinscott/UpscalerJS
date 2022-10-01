@@ -3,7 +3,7 @@ import styles from './loading.module.scss';
 import ReactLoading from 'react-loading';
 import {useColorMode} from '@docusaurus/theme-common';
 
-export function Loading({}) {
+export function Loading() {
   const {colorMode} = useColorMode();
 
   return (

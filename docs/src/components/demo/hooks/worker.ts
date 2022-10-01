@@ -79,7 +79,9 @@ onmessage = async ({ data: { type, data } }) => {
   } else if (type === ReceiverWorkerState.SET_ID) {
     try {
     upscaler.abort();
-    } catch(err) {}
+    } catch(err) {
+      // empty
+    }
     id = data.id;
   } else if (type === ReceiverWorkerState.UPSCALE) {
     if (!upscaler) {
@@ -120,7 +122,9 @@ onmessage = async ({ data: { type, data } }) => {
      }
     input.dispose();
   } else if (type === ReceiverWorkerState.ABORT) {
-    try { upscaler.abort(); } catch(err) {}
+    try { upscaler.abort(); } catch(err) {
+      // empty
+    }
   }
 }
 

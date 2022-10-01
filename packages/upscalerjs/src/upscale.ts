@@ -10,7 +10,7 @@ import type {
   BASE64,
   TENSOR,
  } from './types';
-import { getImageAsTensor, tensorAsBase64, } from './image.generated';
+import { getImageAsTensor, tensorAsBase64, GetImageAsTensorInput, } from './image.generated';
 import { 
   wrapGenerator, 
   warn, 
@@ -21,7 +21,6 @@ import {
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
  } from './utils';
-import type { GetImageAsTensorInput, } from './image.generated';
 
 type DEFAULT_OUTPUT = BASE64;
 
@@ -393,7 +392,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
-export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => isTensor(input) ? input.clone() : input;
+export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
 
 type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
 
