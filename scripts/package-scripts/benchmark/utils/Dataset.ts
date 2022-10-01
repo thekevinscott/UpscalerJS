@@ -2,10 +2,11 @@ import { DataTypes, Model, QueryTypes } from "sequelize";
 import path from 'path';
 import { File, } from "./File";
 import { Image, } from './Image';
-import { getFiles, ProgressBar } from "./utils";
+import { getFiles } from "./utils";
 import sequelize from './sequelize';
 import asyncPool from "tiny-async-pool";
 import { SCALES } from "./constants";
+import { ProgressBar } from "../../utils/ProgressBar";
 
 interface ExistingFileRow {
   fileName: string;

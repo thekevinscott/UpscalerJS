@@ -5,6 +5,7 @@ import callExec from '../../../test/lib/utils/callExec';
 import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
 import { Benchmarker } from './utils/Benchmarker';
 import { DatasetDefinition } from './utils/types';
+import { ifDefined as _ifDefined } from '../prompt/ifDefined';
 
 /****
  * Constants
@@ -155,7 +156,7 @@ const getArgs = async (): Promise<Args> => {
   const datasets = await getDataset(...argv._);
   const models = getModels(argv.model);
 
-  function ifDefined<T>(key: string, type: string) { return typeof argv[key] === type ? argv[key] as T: undefined; }
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
   return {
     models,
