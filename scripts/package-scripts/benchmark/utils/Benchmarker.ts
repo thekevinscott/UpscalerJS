@@ -9,12 +9,13 @@ import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
 import { Package } from "./Package";
 import { Image } from "./Image";
-import { getSize, ProgressBar, runScript } from "./utils";
+import { getSize, runScript } from "./utils";
 import { Metric } from './Metric';
 import { Result } from "./Result";
 import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
 import Table from "cli-table";
+import { ProgressBar } from "../../utils/ProgressBar";
 
 const Upscaler = require('upscaler/node');
 
