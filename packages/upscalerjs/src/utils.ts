@@ -2,7 +2,7 @@ import { tf, } from './dependencies.generated';
 import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
-export const isString = (pixels: unknown): pixels is string => typeof pixels === 'string';
+export const isString = (el: unknown): el is string => typeof el === 'string';
 
 type IsTensor<T extends tf.Tensor> = (pixels: tf.Tensor) => pixels is T;
 export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number): IsTensor<T> {
@@ -37,7 +37,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     return false;
   }
-  return !!(modelDefinition.path && modelDefinition.scale);
+  return Boolean(modelDefinition.path && modelDefinition.scale);
 };
 
 export const registerCustomLayers = (modelDefinition: ModelDefinition): void => {
@@ -78,7 +78,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
   postNext?: PostNext<T>
 ): Promise<TReturn> {
-  let result: undefined | IteratorResult<T, TReturn> = undefined;
+  let result: undefined | IteratorResult<T, TReturn>;
   for (result = await gen.next(); !result.done; result = await gen.next()) {
     if (postNext) {
       await postNext(result.value);

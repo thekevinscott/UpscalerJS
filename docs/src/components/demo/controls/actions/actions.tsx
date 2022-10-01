@@ -31,7 +31,7 @@ export default function Actions({
             help-text="Control the zoom of the side-by-side original and upscaled image" 
             min={0} 
             max={4} 
-            step={.01} 
+            step={0.01} 
             onChange={handleZoom}
           />
         )}

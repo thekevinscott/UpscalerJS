@@ -32,7 +32,7 @@ const useAnimate = (canvasRef: MutableRefObject<HTMLCanvasElement>) => {
   }, [canvasRef]);
 }
 
-export default function Animation({ }) {
+export default function Animation() {
   const canvasRef = useRef<HTMLCanvasElement>();
   useAnimate(canvasRef);
 
@@ -42,5 +42,3 @@ export default function Animation({ }) {
     </div>
   );
 }
-
-
