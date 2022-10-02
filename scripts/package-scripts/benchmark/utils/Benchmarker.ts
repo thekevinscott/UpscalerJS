@@ -14,10 +14,15 @@ import { Metric } from './Metric';
 import { Result } from "./Result";
 import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
-import Table from "cli-table";
 import { ProgressBar } from "../../utils/ProgressBar";
 
-const Upscaler = require('upscaler/node');
+export interface BenchmarkedResult {
+  packageName: string;
+  modelName: string;
+  scale: number;
+  meta: Record<string, string | number>;
+  values: Record<string, Record<string, number>>;
+}
 
 interface FileAndImage {
   datasetName: string;
@@ -41,8 +46,8 @@ export class Benchmarker {
   modelPackages: Package[] = [];
   datasets: Dataset[] = [];
 
-  constructor(cacheDir: string) {
-    this.database = new Database();
+  constructor(cacheDir: string, metrics: string[]) {
+    this.database = new Database(metrics);
     this.cacheDir = cacheDir;
   }
 
@@ -141,6 +146,9 @@ export class Benchmarker {
       }
       await Promise.all(metrics.map(async metric => {
         const value = await this.calculatePerformance(upscaledPath, path.resolve(cacheDir, srPath), diffPath, metric.name);
+        if (Number.isNaN(value)) {
+          throw new Error(`Metric calculation is NAN for paths ${upscaledPath}, ${srPath} and metric ${metric.name}`);
+        }
         await Result.upsert({
           value,
           MetricId: metric.id,
@@ -275,7 +283,8 @@ export class Benchmarker {
               delay,
             });
           } catch (err: unknown) {
-            errors.set(model, (errors.get(model) || []).concat({
+            const existingErrors = errors.get(model) || [] as { err: unknown; file: FileAndImage }[];
+            errors.set(model, existingErrors.concat({
               err,
               file,
             }));
@@ -288,10 +297,10 @@ export class Benchmarker {
       }
     }
     progressBar.end();
-    if (Object.values(errors).length) {
-      console.error(`The following models (${Object.keys(errors).length}) had errors`);
-      console.error(errors);
-    }
+    errors.forEach((values, model) => {
+      console.log((model as UpscalerModel).name);
+      console.log(values.map(({ err }) => err));
+    });
     console.log('processed', total, 'files');
   }
 
@@ -308,11 +317,9 @@ export class Benchmarker {
   }
 
   private async calculatePerformance(upscaledPath: string, originalPath: string, diffPath: string, metric: string): Promise<number> {
-    if (!['ssim', 'psnr'].includes(metric)) {
-      throw new Error(`Unsupported metric: ${metric}`);
-    }
     try {
-      const [_, out,] = await runScript(`magick compare -metric ${metric} ${upscaledPath} ${originalPath} ${diffPath}`);
+      const cmd = `compare -metric ${metric} ${upscaledPath} ${originalPath} ${diffPath}`;
+      const [_, out,] = await runScript(cmd);
       if (typeof out !== 'string') {
         throw new Error('No response from metric calculation');
       }
@@ -322,16 +329,15 @@ export class Benchmarker {
       }
       return parseFloat(value);
     } catch (err) {
-
       throw new Error(`Failed at comparing ${upscaledPath} with ${originalPath}`);
     }
   }
 
-  async display(cropSize?: number, metricName?: string) {
+  async retrieveResults(metrics: string[], cropSize?: number): Promise<BenchmarkedResult[]> {
     const packages = this.modelPackages;
 
-    const getTableName = (datasetName: string, metricName: string) => [metricName, datasetName].join('_');
-    const metrics = metricName === undefined ? ['psnr', 'ssim'] : [metricName];
+    const tableDivider = '___';
+    const getTableName = (datasetName: string, metricName: string) => [metricName, datasetName].join(tableDivider);
     const pairs = this.datasets.reduce((arr, dataset) => {
       return arr.concat(metrics.map(metric => [dataset.name, metric]));
     }, [] as [string, string][]);
@@ -371,25 +377,43 @@ export class Benchmarker {
                     
           GROUP BY r.UpscalerModelId;
       `;
-    const results: Record<string, any>[] = await sequelize.query(query, {
+    const results: Record<string, string | number>[] = await sequelize.query(query, {
       replacements: {
         cropKey,
         packageNames: packages.map(p => p.name),
       },
       type: QueryTypes.SELECT,
     });
-    const table = new Table({
-      head: ['Package', 'Model', 'Scale', ...pairs.map(([datasetName, metric]) => [datasetName, metric.toUpperCase()].join('-'))],
-    });
 
-    results.forEach(result => {
-      table.push([result.packageName, result.modelName, result.scale, ...pairs.map(([datasetName, metric]) => {
-        const tableName = getTableName(datasetName, metric);
-        return result[tableName] || '---';
-      })]);
-    });
+    return results.map(({
+      packageName,
+      modelName,
+      scale,
+      meta,
+      ...resultRecords
+    }) => {
+      const values = pairs.reduce((obj, [datasetName, metricName]) => {
+        const tableName = getTableName(datasetName, metricName);
+        const value = resultRecords[tableName] as number;
+        return {
+          ...obj,
+          [datasetName]: {
+            ...(obj[datasetName] || {}),
+            [metricName]: value,
+          }
+        };
+      }, {} as Record<string, Record<string, number>>);
 
-    console.log(table.toString());
+      const result: BenchmarkedResult = {
+        packageName: `${packageName}`,
+        modelName: `${modelName}`,
+        scale: parseInt(`${scale}`, 10),
+        meta: JSON.parse(`${meta}`),
+        values,
+      };
+
+      return result;
+    });
   }
 }
 

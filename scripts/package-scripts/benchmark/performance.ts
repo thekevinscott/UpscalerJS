@@ -3,16 +3,25 @@ import path from 'path';
 import inquirer from 'inquirer';
 import callExec from '../../../test/lib/utils/callExec';
 import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
-import { Benchmarker } from './utils/Benchmarker';
+import { BenchmarkedResult, Benchmarker } from './utils/Benchmarker';
 import { DatasetDefinition } from './utils/types';
 import { ifDefined as _ifDefined } from '../prompt/ifDefined';
+import Table from 'cli-table';
+import { QueryTypes, Sequelize } from 'sequelize';
 
 /****
  * Constants
  */
+const DEFAULT_METRICS = ['PSNR', 'SSIM'];
 const ROOT_DIR = path.resolve(__dirname, '../../..');
 const CACHE_DIR = path.resolve(ROOT_DIR, './tmp/datasets');
 const DELAY = 1;
+const PERFORMANCE_DATABASE_FILE = path.resolve(ROOT_DIR, 'docs/assets/performance.sql');
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: PERFORMANCE_DATABASE_FILE,
+  logging: false,
+});
 
 /****
  * Types
@@ -21,12 +30,171 @@ const DELAY = 1;
 /****
  * Utility Functions & Classes
  */
-const checkImagemagickInstallation = async () => {
+
+const checkImagemagickInstallation = async (metrics: string[]) => {
+  let data: string[] = [];
   try {
-    await callExec('convert -version', {}, false, false);
+    await callExec('compare -list metric', {}, d => {
+      data = data.concat(d.split('\n').filter(Boolean));
+    }, false);
   } catch (err) {
     throw new Error('Imagemagick does not appear to be installed. Please install it for your system.');
   }
+  const _data = data.map(d => d.toLowerCase())
+  metrics.forEach(metric => {
+    if (!_data.includes(metric.toLowerCase())) {
+      throw new Error(`Imagemagick does not support ${metric} metrics. Supported metrics include: ${data}`);
+    }
+  });
+}
+
+const saveResults = async (results: BenchmarkedResult[]) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+
+  await Promise.all([
+    `CREATE TABLE IF NOT EXISTS packages (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+  )`,
+  `CREATE TABLE IF NOT EXISTS models (
+    id INTEGER PRIMARY KEY,
+    packageId INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    scale INTEGER NOT NULL,
+    meta JSON NOT NULL,
+    UNIQUE(packageId, name)
+  )`,
+  `
+  CREATE TABLE IF NOT EXISTS datasets (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+  )`,
+  `CREATE TABLE IF NOT EXISTS metrics (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+  )`,
+  `CREATE TABLE IF NOT EXISTS results (
+    id INTEGER PRIMARY KEY,
+    value REAL NOT NULL,
+    datasetId INTEGER NOT NULL,
+    modelId INTEGER NOT NULL,
+    metricId INTEGER NOT NULL,
+    UNIQUE(datasetid,modelId,metricId)
+  )
+  `].map(query => sequelize.query(query)));
+  const { values } = results[0];
+  for (const [datasetName, metrics] of Object.entries(values)) {
+    console.log(datasetName);
+    await sequelize.query(`
+      INSERT OR IGNORE INTO datasets (name) VALUES (:name)
+    `, {
+      replacements: {
+        name: datasetName,
+      },
+      type: QueryTypes.INSERT,
+    });
+    console.log('2');
+    for (const metric of Object.keys(metrics)) {
+      await sequelize.query(`
+        INSERT OR IGNORE INTO metrics (name) VALUES (:name)
+      `, {
+        replacements: {
+          name: metric,
+        },
+        type: QueryTypes.INSERT,
+      });
+    console.log('3');
+    }
+  }
+
+  for (const { packageName, modelName, meta, scale, values } of results) {
+    await sequelize.query(`
+      INSERT OR IGNORE INTO packages (name) VALUES (:name)
+    `, {
+      replacements: {
+        name: packageName,
+      },
+      type: QueryTypes.INSERT,
+    });
+    await sequelize.query(`
+      INSERT OR IGNORE INTO models 
+      (name, scale, meta, packageId) 
+      VALUES 
+      (:name, :scale, :meta, (SELECT id FROM packages WHERE packages.name = :packageName))
+      `, {
+      replacements: {
+        name: modelName,
+        scale,
+        meta: JSON.stringify(meta),
+        packageName,
+      },
+      type: QueryTypes.INSERT,
+    });
+
+    for (const [datasetName, metrics] of Object.entries(values)) {
+      for (const [metricName, value] of Object.entries(metrics)) {
+        await sequelize.query(`
+          INSERT OR IGNORE INTO results 
+          (value, datasetId, modelId, metricId) 
+          VALUES 
+          (
+            :value,
+            (SELECT id FROM datasets WHERE datasets.name = :datasetName),
+            (SELECT id FROM metrics WHERE metrics.name = :metricName),
+            (SELECT id FROM models WHERE models.name = :modelName AND models.packageId = (SELECT id FROM packages WHERE packages.name = :packageName))
+          )
+          `, {
+          replacements: {
+            value,
+            datasetName,
+            metricName,
+            modelName,
+            packageName,
+          },
+          type: QueryTypes.INSERT,
+        });
+
+      }
+    }
+  }
+}
+
+const display = (results: BenchmarkedResult[]) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+  const { values } = results[0];
+  const datasetNames = Object.keys(values);
+  let metricNames: string[];
+  const table = new Table({
+    head: [
+      'Package', 
+      'Model', 
+      'Scale', 
+      ...datasetNames.reduce((arr, datasetName) => {
+        if (!metricNames) {
+          metricNames = Object.keys(values[datasetName]);
+        }
+        return arr.concat(metricNames.map(metric => [datasetName,metric.toUpperCase()].join('-')));
+      }, [] as string[]),
+    ],
+  });
+
+  results.forEach(result => {
+    table.push([
+      result.packageName, 
+      result.modelName, 
+      result.scale, 
+      ...datasetNames.reduce((arr, datasetName) => {
+        const metricValues = values[datasetName];
+        return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined ? val : '---'));
+      }, [] as (number | string)[]),
+    ]);
+  });
+
+  console.log(table.toString());
 }
 
 /****
@@ -50,8 +218,8 @@ const mark = (msg: string) => {
   console.log(`${divider}\n${msg}\n${divider}`);
 }
 
-const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], cropSize?: number, n?: number, resultsOnly?: boolean, metric?: string) => {
-  const benchmarker = new Benchmarker(cacheDir);
+const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean) => {
+  const benchmarker = new Benchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
   }
@@ -84,7 +252,9 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
     await benchmarker.benchmark(cropSize, n, DELAY);
   }
   mark('Results');
-  await benchmarker.display(cropSize, metric);
+  const results = await benchmarker.retrieveResults(metrics, cropSize);
+  display(results);
+  await saveResults(results);
 };
 
 /****
@@ -98,7 +268,7 @@ interface Args {
   cropSize?: number;
   n?: number;
   resultsOnly?: boolean;
-  metric?: string;
+  metrics: string[];
 }
 
 const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
@@ -152,6 +322,10 @@ const getArgs = async (): Promise<Args> => {
   })
   .help()
   .argv;
+  const metric = ifDefined<string>('metric', 'string');
+  const metrics = metric ? [metric] : DEFAULT_METRICS;
+
+  await checkImagemagickInstallation(metrics);
 
   const datasets = await getDataset(...argv._);
   const models = getModels(argv.model);
@@ -165,14 +339,13 @@ const getArgs = async (): Promise<Args> => {
     cropSize: ifDefined('cropSize', 'number'),
     n: ifDefined('n', 'number'),
     resultsOnly: ifDefined('resultsOnly', 'boolean'),
-    metric: ifDefined('metric', 'string'),
+    metrics,
   }
 }
 
 if (require.main === module) {
   (async () => {
-    await checkImagemagickInstallation()
     const args = await getArgs();
-    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.cropSize, args.n, args.resultsOnly, args.metric);
+    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly);
   })();
 }

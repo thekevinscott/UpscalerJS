@@ -12,13 +12,13 @@ import { Result } from "./Result";
 
 export class Database {
   ready: Promise<void>;
-  constructor() {
-    this.ready = this.initialize();
+  constructor(metrics: string[]) {
+    this.ready = this.initialize(metrics);
   }
 
-  async initialize() {
+  async initialize(metrics: string[]) {
     await sequelize.sync();
-    await Promise.all(['psnr', 'ssim'].map(name =>
+    await Promise.all(metrics.map(name =>
       Metric.upsert({
         name,
       })
