@@ -1,0 +1,40 @@
+body {
+  padding: 40px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+button {
+  margin-top: 20px;
+  display: block;
+  padding: 10px 40px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: rgb(154, 212, 248);
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+#controls {
+  margin-top: 20px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(0,0,0,0.2);
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  display: flex;
+}
+.control {
+  margin-right: 20px;
+  flex: 1;
+}
+.control label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: center;
+}
+hr {
+  border: none;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+table {
+  border-collapse: collapse;
+}

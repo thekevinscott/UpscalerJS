@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>Patch Sizes Example | Upscaler.JS</title>
+  <script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/plugins/tcrs-generated-labels.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/toolcool-range-slider/dist/toolcool-range-slider.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>Patch Sizes Example</h1>
+  <p>For larger images, we can use patch sizes as a way to provide a more performant UI.</p>
+  <img src="./flower.png" id="flower" />
+  <div id="controls">
+    <div class="control">
+      <label>Patch Size</label>
+      <tc-range-slider 
+        name="patch-size"
+        min="0" 
+        value="16"
+        max="128" 
+        step="1"
+        generate-labels="true"></tc-range-slider>
+    </div>
+    <div class="control">
+      <label>Padding</label>
+      <tc-range-slider 
+        name="padding"
+        value="2"
+        min="0" 
+        max="20" 
+        step="1"
+        generate-labels="true"></tc-range-slider>
+    </div>
+    <div class="control">
+      <label>Space Between Patches</label>
+      <tc-range-slider 
+        name="space-between-patches"
+        value="2"
+        min="0" 
+        max="40" 
+        step=".1"
+        generate-labels="true"></tc-range-slider>
+    </div>
+  </div>
+  <button disabled id="button">Upscale</button>
+  <hr />
+  <table id="output">
+    <tbody>
+    </tbody>
+  </table>
+  <script src="./index.js" type="module"></script>
+  </body>
+</html>
