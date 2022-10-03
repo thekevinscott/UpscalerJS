@@ -13,7 +13,7 @@
     "react-scripts": "5.0.0",
     "seedrandom": "^3.0.5",
     "typescript": "^4.8.3",
-    "upscaler": "1.0.0-beta.6"
+    "upscaler": "1.0.0-beta.7"
   },
   "scripts": {
     "dev": "PORT=1234 react-scripts start"
