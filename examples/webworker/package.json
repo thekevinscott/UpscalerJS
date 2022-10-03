@@ -1,22 +1,23 @@
 {
   "name": "@upscalerjs/examples.webworker",
   "private": true,
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Demonstration of webworker integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "copy": "rm -rf dist && cp -r src dist",
-    "dev": "npm run copy && esbuild src/*.js --servedir=dist --outdir=dist --bundle --loader:.png=dataurl"
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "*"
   },
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^3.20.0",
     "seedrandom": "^3.0.5",
-    "tensor-as-base64": "^0.3.0",
     "upscaler": "1.0.0-beta.7"
   },
-  "devDependencies": {
-    "esbuild": "^0.15.7"
+  "engines": {
+    "npm": ">8.0.0"
   }
 }

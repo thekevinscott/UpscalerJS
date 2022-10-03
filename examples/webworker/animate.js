@@ -1,11 +1,6 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext("2d");
 
-
-// ctx.beginPath();
-// ctx.arc(x,y,5,0,Math.PI*2);
-// ctx.fill();
-
 const SIZE = 20;
 const PADDING = 20;
 const width = canvas.width;
