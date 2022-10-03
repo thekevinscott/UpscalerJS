@@ -3,7 +3,7 @@ import os from 'os';
 import * as tf from '@tensorflow/tfjs-node';
 import path from 'path';
 import { DatasetDefinition } from "./types";
-import { mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
+import { existsSync, mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
 import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
@@ -51,12 +51,12 @@ export class Benchmarker {
     this.cacheDir = cacheDir;
   }
 
-  async addDatasets(datasets: DatasetDefinition[], cropSize?: number, resultsOnly?: boolean) {
+  async addDatasets(datasets: DatasetDefinition[], cropSize?: number, resultsOnly?: boolean, n = Infinity) {
     for (const datasetDefinition of datasets) {
       const cacheDir = path.resolve(this.cacheDir, datasetDefinition.datasetName);
       await mkdirp(cacheDir);
       const writeFiles = resultsOnly !== true;
-      const dataset = await this.database.addDataset(cacheDir, datasetDefinition, writeFiles, cropSize);
+      const dataset = await this.database.addDataset(cacheDir, datasetDefinition, writeFiles, cropSize, n);
       this.datasets.push(dataset);
     }
   }
@@ -111,10 +111,14 @@ export class Benchmarker {
     return this.existingResults.has(key);
   }
 
-  async benchmarkFile(dataset: Dataset, model: UpscalerModel, image: FileAndImage, metrics: Metric[], cropSize: undefined | number, {
+  async benchmarkFile(dataset: Dataset, model: UpscalerModel, image: FileAndImage, metrics: Metric[], {
     delay,
+    cropSize,
+    upscaledFolder,
   }: {
-    delay: number, 
+    delay: number; 
+    cropSize: undefined | number;
+    upscaledFolder: string;
   }) {
     const cacheDir = path.resolve(this.cacheDir, dataset.name);
     let shouldProcess = false;
@@ -127,15 +131,15 @@ export class Benchmarker {
     }
     if (shouldProcess) {
       const cropKey = Image.getCropKey(cropSize);
-      const tmpDir = os.tmpdir();
-      const upscaledFolder = path.resolve(tmpDir, `${image.imageId}`, 'upscaled');
-      const diffFolder = path.resolve(tmpDir, `${image.imageId}`, 'diff');
+      const diffFolder = path.resolve(os.tmpdir(), 'upscalerjs/diff');
       const { srPath, srHeight, srWidth, lrPath } = image;
       await new Promise(r => setTimeout(r, delay));
-      const upscaledBuffer = await this.upscale(model, path.resolve(cacheDir, lrPath));
       const upscaledPath = path.resolve(upscaledFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
       mkdirpSync(path.dirname(upscaledPath));
-      writeFileSync(upscaledPath, upscaledBuffer);
+      // if (!existsSync(upscaledPath)) {
+        const upscaledBuffer = await this.upscale(model, path.resolve(cacheDir, lrPath));
+        writeFileSync(upscaledPath, upscaledBuffer);
+      // }
       const upscaledDimensions = await getSize(upscaledPath);
 
       const diffPath = path.resolve(diffFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
@@ -197,7 +201,7 @@ export class Benchmarker {
       for (const modelPackage of this.modelPackages) {
         const models = await modelPackage.models;
         for (const model of models) {
-          total += numberOfFiles;
+          total += Math.min(n, numberOfFiles);
           evaluationPairs.push({
             dataset,
             model,
@@ -253,6 +257,7 @@ export class Benchmarker {
       cropSize,
     );
 
+
     const errors = new Map<Model, {
       err: unknown;
       file: FileAndImage;
@@ -260,6 +265,7 @@ export class Benchmarker {
 
     const progressBar = new ProgressBar(total);
     let i = 0;
+    const rootUpscaledFolder = path.resolve(this.cacheDir, 'upscaled');
 
     for (const { model, dataset } of evaluationPairs) {
       const imagesForScale = imagesByScale.get(model.scale);
@@ -274,13 +280,15 @@ export class Benchmarker {
       const progress = async (i: number) => {
         const file = files[i];
         if (!file) {
-          console.log(files, i);
-          throw new Error(`No file for index ${i}`);
+          throw new Error(`No file for index ${i}, ${JSON.stringify(files)}`);
         }
         if (!errors.get(model)) {
           try {
-            return await this.benchmarkFile(dataset, model, file, metrics, cropSize, {
+            const upscaledFolder = path.resolve(rootUpscaledFolder, model.name, `${file.imageId}`);
+            return await this.benchmarkFile(dataset, model, file, metrics, {
               delay,
+              cropSize,
+              upscaledFolder,
             });
           } catch (err: unknown) {
             const existingErrors = errors.get(model) || [] as { err: unknown; file: FileAndImage }[];
