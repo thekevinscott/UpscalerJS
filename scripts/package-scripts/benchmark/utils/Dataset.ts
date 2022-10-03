@@ -116,7 +116,7 @@ export class Dataset extends Model {
     }
   }
 
-  async writeFiles (cacheDir: string, datasetPath: string, cropSize?: number) {
+  async writeFiles (cacheDir: string, datasetPath: string, cropSize?: number, n = Infinity) {
     await this.setId();
     const cropKey = Image.getCropKey(cropSize);
     const { filesPresentInDatabase, imagesPresentInDatabase } = await this.getExistingFiles(cropKey);
@@ -163,14 +163,16 @@ export class Dataset extends Model {
         }
       }
     }
-    const processFile = async (name: string) => {
+    const processFile = async (i: number) => {
+      const name = localFilesOnDisk[i];
       const file = await getOrCreateFile(name);
       await getOrCreateImage(datasetPath, file);
     }
 
     console.log(`Dataset ${this.name}`);
-    const progressBar = new ProgressBar(localFilesOnDisk.length);
-    for await (const value of asyncPool(15, localFilesOnDisk, processFile)) {
+    const total = Math.min(n, localFilesOnDisk.length);
+    const progressBar = new ProgressBar(total);
+    for await (const value of asyncPool(15, Array(total).fill('').map((_, i) => i), processFile)) {
       progressBar.update();
     }
     progressBar.end();
