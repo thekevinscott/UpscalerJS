@@ -22,7 +22,7 @@ export function getFiles(dir: string): string[] {
       }
     }
   }
-  return files;
+  return files.sort();
 }
 
 export const getHashedFilepath = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}.png`;

@@ -86,7 +86,6 @@ const saveResults = async (results: BenchmarkedResult[]) => {
   `].map(query => sequelize.query(query)));
   const { values } = results[0];
   for (const [datasetName, metrics] of Object.entries(values)) {
-    console.log(datasetName);
     await sequelize.query(`
       INSERT OR IGNORE INTO datasets (name) VALUES (:name)
     `, {
@@ -95,7 +94,6 @@ const saveResults = async (results: BenchmarkedResult[]) => {
       },
       type: QueryTypes.INSERT,
     });
-    console.log('2');
     for (const metric of Object.keys(metrics)) {
       await sequelize.query(`
         INSERT OR IGNORE INTO metrics (name) VALUES (:name)
@@ -105,7 +103,6 @@ const saveResults = async (results: BenchmarkedResult[]) => {
         },
         type: QueryTypes.INSERT,
       });
-    console.log('3');
     }
   }
 
@@ -188,7 +185,7 @@ const display = (results: BenchmarkedResult[]) => {
       result.modelName, 
       result.scale, 
       ...datasetNames.reduce((arr, datasetName) => {
-        const metricValues = values[datasetName];
+        const metricValues = result.values[datasetName];
         return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined ? val : '---'));
       }, [] as (number | string)[]),
     ]);
@@ -240,11 +237,11 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
           message: 'What is the path to the dataset',
           type: 'input',
         });
-        await benchmarker.addDatasets([{ datasetName, datasetPath }], cropSize, resultsOnly);
+        await benchmarker.addDatasets([{ datasetName, datasetPath }], cropSize, resultsOnly, n);
       }
     }
   } else {
-    await benchmarker.addDatasets(datasets, cropSize, resultsOnly);
+    await benchmarker.addDatasets(datasets, cropSize, resultsOnly, n);
   }
   await benchmarker.addModels(models, resultsOnly);
   if (resultsOnly !== true) {

@@ -61,13 +61,13 @@ export class Database {
       `);
   }
 
-  async addDataset(cacheDir: string, { datasetName, datasetPath }: DatasetDefinition, writeFiles = true, cropSize?: number) {
+  async addDataset(cacheDir: string, { datasetName, datasetPath }: DatasetDefinition, writeFiles = true, cropSize?: number, n = Infinity) {
     await this.ready;
     const [dataset] = await Dataset.upsert({
       name: datasetName,
     });
     if (writeFiles) {
-      await dataset.writeFiles(cacheDir, datasetPath, cropSize);
+      await dataset.writeFiles(cacheDir, datasetPath, cropSize, n);
     }
     return dataset;
   }
