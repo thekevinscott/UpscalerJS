@@ -35,7 +35,7 @@
     "version": "pnpm run pin-cdn",
     "pin-cdn": "node scripts/pin-cdn.js",
     "find-all-packages": "pnpm --filter @upscalerjs/scripts find-all-packages",
-    "example": "pnpm --filter @upscalerjs/scripts example",
+    "example:start": "pnpm --filter @upscalerjs/scripts example:start",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "model:benchmark:performance": "pnpm --filter @upscalerjs/scripts model:benchmark:performance",
     "model:convert-python-model": "pnpm --filter @upscalerjs/scripts model:convert-python-model",
