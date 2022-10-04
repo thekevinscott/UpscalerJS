@@ -61,10 +61,10 @@ export class Benchmarker {
     }
   }
 
-  async addModels(modelPackageNames: string[], resultsOnly?: boolean) {
+  async addModels(modelPackageNames: string[], resultsOnly?: boolean, useGPU = false) {
     for (const packageName of modelPackageNames) {
       console.log(`Model ${packageName}`);
-      const modelPackage = await this.database.addModelPackage(packageName, resultsOnly);
+      const modelPackage = await this.database.addModelPackage(packageName, resultsOnly, useGPU);
       this.modelPackages.push(modelPackage);
     }
   }
