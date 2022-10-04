@@ -167,9 +167,20 @@ const getRunner = (runner?: string): Runner => {
   throw new Error(`Unsupported runner provided: ${runner}. You must pass either 'local' or 'browserstack'.`)
 }
 
-const getArgs = async (): Promise<Args> => {
+const getBrowserstackAccessKey = () => {
   const localEnvPath = path.resolve(ROOT_DIR, '.env')
-  const { BROWSERSTACK_ACCESS_KEY } = existsSync(localEnvPath) ? dotenv.parse(readFileSync(localEnvPath, 'utf-8')) : process.env;
+  if (existsSync(localEnvPath)) {
+    const { BROWSERSTACK_ACCESS_KEY } = dotenv.parse(readFileSync(localEnvPath, 'utf-8'));
+    if (BROWSERSTACK_ACCESS_KEY) {
+      return BROWSERSTACK_ACCESS_KEY;
+    }
+  }
+
+  return process.env.BROWSERSTACK_ACCESS_KEY;
+}
+
+const getArgs = async (): Promise<Args> => {
+  const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
   if (!BROWSERSTACK_ACCESS_KEY) {
     throw new Error(`No BROWSERSTACK_ACCESS_KEY found in .env file; have you created an .env file at the root of the repo?`);
   }
