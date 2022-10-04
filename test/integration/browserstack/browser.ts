@@ -49,7 +49,8 @@ const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json
 const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter((option: BrowserOption) => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
-  return !option.browserName?.toLowerCase().includes('iphone');
+  return true;
+  // return !option.browserName?.toLowerCase().includes('iphone');
 });
 
 const shouldPrintLogs = (entry: webdriver.logging.Entry, capabilities: BrowserOption) => {
