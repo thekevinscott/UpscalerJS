@@ -14,7 +14,7 @@ import { Metric } from './Metric';
 import { Result } from "./Result";
 import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
-import { ProgressBar } from "../../utils/ProgressBar";
+import { ProgressBar } from "../../../utils/ProgressBar";
 
 export interface BenchmarkedResult {
   packageName: string;

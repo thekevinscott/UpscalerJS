@@ -7,7 +7,7 @@ import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { ModelDefinition } from "upscaler";
 import { BaseModel } from "./BaseModel";
-import { ProgressBar } from "../../utils/ProgressBar";
+import { ProgressBar } from "../../../utils/ProgressBar";
 const Upscaler = require('upscaler/node');
 
 const packageJSONs = new Map<string, Record<string, any>>();

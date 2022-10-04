@@ -6,7 +6,7 @@ import { getFiles } from "./utils";
 import sequelize from './sequelize';
 import asyncPool from "tiny-async-pool";
 import { SCALES } from "./constants";
-import { ProgressBar } from "../../utils/ProgressBar";
+import { ProgressBar } from "../../../utils/ProgressBar";
 
 interface ExistingFileRow {
   fileName: string;
