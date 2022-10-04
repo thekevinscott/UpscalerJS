@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import { Dataset } from "./Dataset";
-import { DatasetDefinition } from "./types";
+import { DatasetDefinition, TF } from "./types";
 import sequelize from './sequelize';
 import { UpscalerModel } from "./UpscalerModel";
 import { Package } from "./Package";
@@ -72,13 +72,14 @@ export class Database {
     return dataset;
   }
 
-  async addModelPackage(packageName: string, resultsOnly?: boolean, useGPU = false) {
+  async addModelPackage(tf: TF, packageName: string, resultsOnly?: boolean, useGPU = false) {
     await this.ready;
     const modelPackage = await Package.returnUpsert({
       name: packageName,
     });
 
     modelPackage.useGPU = useGPU;
+    modelPackage.tf = tf;
 
     if (resultsOnly !== true) {
       await modelPackage.addModels();

@@ -8,6 +8,7 @@ import asyncPool from "tiny-async-pool";
 import { ModelDefinition } from "upscaler";
 import { BaseModel } from "./BaseModel";
 import { ProgressBar } from "../../../utils/ProgressBar";
+import { TF } from "./types";
 const Upscaler = require('upscaler/node');
 
 const packageJSONs = new Map<string, Record<string, any>>();
@@ -17,6 +18,7 @@ export class Package extends BaseModel {
   declare name: string;
   upscalers = new Map<string, [typeof Upscaler, ModelDefinition]>();
   useGPU = false
+  tf?: TF;
 
   getPackageName() {
     return Package.getPackageJSON(this.name).name;
@@ -66,7 +68,10 @@ export class Package extends BaseModel {
     const modelPath = UpscalerModel.buildModelPath(this.name, modelName);
     const upscaler = this.upscalers.get(modelPath);
     if (!upscaler) {
-      const _upscaler = await UpscalerModel.getUpscaler(this.name, modelName, useGPU);
+      if (!this.tf) {
+        throw new Error('No tensorflow defined');
+      }
+      const _upscaler = await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
       this.upscalers.set(modelPath, _upscaler);
       return _upscaler;
     }

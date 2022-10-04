@@ -1,9 +1,9 @@
 import { Database } from "./Database";
 import os from 'os';
-import * as tf from '@tensorflow/tfjs-node';
 import path from 'path';
 import { DatasetDefinition } from "./types";
-import { existsSync, mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
+import { mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
+import { TF } from "./types";
 import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
@@ -61,10 +61,10 @@ export class Benchmarker {
     }
   }
 
-  async addModels(modelPackageNames: string[], resultsOnly?: boolean, useGPU = false) {
+  async addModels(tf: TF, modelPackageNames: string[], resultsOnly?: boolean, useGPU = false) {
     for (const packageName of modelPackageNames) {
       console.log(`Model ${packageName}`);
-      const modelPackage = await this.database.addModelPackage(packageName, resultsOnly, useGPU);
+      const modelPackage = await this.database.addModelPackage(tf, packageName, resultsOnly, useGPU);
       this.modelPackages.push(modelPackage);
     }
   }
@@ -115,10 +115,12 @@ export class Benchmarker {
     delay,
     cropSize,
     upscaledFolder,
+    tf,
   }: {
     delay: number; 
     cropSize: undefined | number;
     upscaledFolder: string;
+    tf: TF;
   }) {
     const cacheDir = path.resolve(this.cacheDir, dataset.name);
     let shouldProcess = false;
@@ -137,7 +139,7 @@ export class Benchmarker {
       const upscaledPath = path.resolve(upscaledFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
       mkdirpSync(path.dirname(upscaledPath));
       // if (!existsSync(upscaledPath)) {
-        const upscaledBuffer = await this.upscale(model, path.resolve(cacheDir, lrPath));
+        const upscaledBuffer = await this.upscale(tf, model, path.resolve(cacheDir, lrPath));
         writeFileSync(upscaledPath, upscaledBuffer);
       // }
       const upscaledDimensions = await getSize(upscaledPath);
@@ -165,7 +167,7 @@ export class Benchmarker {
     }
   };
 
-  async benchmark(cropSize?: number, n: number = Infinity, delay = 0) {
+  async benchmark(tf: TF, cropSize?: number, n: number = Infinity, delay = 0) {
     const metrics = await Promise.all((await Metric.findAll()).map(async metric => {
       await metric.setId();
       return metric;
@@ -289,6 +291,7 @@ export class Benchmarker {
               delay,
               cropSize,
               upscaledFolder,
+              tf,
             });
           } catch (err: unknown) {
             const existingErrors = errors.get(model) || [] as { err: unknown; file: FileAndImage }[];
@@ -312,7 +315,7 @@ export class Benchmarker {
     console.log('processed', total, 'files');
   }
 
-  private async upscale(model: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
+  private async upscale(tf: TF, model: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
     const { upscaler } = model;
     const upscaledData = await upscaler.upscale(downscaled, {
       output: 'tensor',

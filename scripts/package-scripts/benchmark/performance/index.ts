@@ -231,10 +231,11 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
   } else {
     await benchmarker.addDatasets(datasets, cropSize, resultsOnly, n);
   }
-  await benchmarker.addModels(models, resultsOnly, useGPU);
+  const tf = useGPU ? require('@tensorflow/tfjs-node-gpu') : require('@tensorflow/tfjs-node');
+  await benchmarker.addModels(tf, models, resultsOnly, useGPU);
   if (resultsOnly !== true) {
     mark('Evaluating');
-    await benchmarker.benchmark(cropSize, n, DELAY);
+    await benchmarker.benchmark(tf, cropSize, n, DELAY);
   }
   mark('Results');
   const results = await benchmarker.retrieveResults(metrics, cropSize);
