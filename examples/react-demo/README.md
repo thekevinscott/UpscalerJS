@@ -2,4 +2,4 @@
 
 Shows integration with React and UpscalerJS.
 
-[Open in Stackblitz](https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/react-demo).
+[Open in Stackblitz](https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/react-demo?file=index.js&title=UpscalerJS: React Demo Example).
