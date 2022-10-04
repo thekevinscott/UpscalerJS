@@ -1,11 +1,11 @@
 import yargs from 'yargs';
 import path from 'path';
 import inquirer from 'inquirer';
-import callExec from '../../../test/lib/utils/callExec';
-import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
+import callExec from '../../../../test/lib/utils/callExec';
+import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
 import { BenchmarkedResult, Benchmarker } from './utils/Benchmarker';
 import { DatasetDefinition } from './utils/types';
-import { ifDefined as _ifDefined } from '../prompt/ifDefined';
+import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import Table from 'cli-table';
 import { QueryTypes, Sequelize } from 'sequelize';
 
@@ -194,26 +194,14 @@ const display = (results: BenchmarkedResult[]) => {
   console.log(table.toString());
 }
 
-/****
- * Main function
- */
-
-async function getArg<T>(options: { message: string, type: string }) {
-  const res = await inquirer.prompt<{
-    arg: string
-  }>([
-    {
-      name: 'arg',
-      ...options,
-    },
-  ]);
-  return res.arg as T;
-};
-
 const mark = (msg: string) => {
   const divider = Array(98).fill('*').join('');
   console.log(`${divider}\n${msg}\n${divider}`);
 }
+
+/****
+ * Main function
+ */
 
 const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean, useGPU = false) => {
   const benchmarker = new Benchmarker(cacheDir, metrics);
@@ -268,6 +256,18 @@ interface Args {
   metrics: string[];
   useGPU?: boolean;
 }
+
+async function getArg<T>(options: { message: string, type: string }) {
+  const res = await inquirer.prompt<{
+    arg: string
+  }>([
+    {
+      name: 'arg',
+      ...options,
+    },
+  ]);
+  return res.arg as T;
+};
 
 const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
   if (_datasets.length > 0) {
