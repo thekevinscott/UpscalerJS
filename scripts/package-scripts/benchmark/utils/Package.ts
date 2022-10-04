@@ -16,6 +16,7 @@ export class Package extends BaseModel {
   declare _id: number;
   declare name: string;
   upscalers = new Map<string, [typeof Upscaler, ModelDefinition]>();
+  useGPU = false
 
   getPackageName() {
     return Package.getPackageJSON(this.name).name;
@@ -61,10 +62,11 @@ export class Package extends BaseModel {
   }
 
   async getUpscaler(modelName: string): Promise<[typeof Upscaler, ModelDefinition]> {
+    const useGPU = this.useGPU;
     const modelPath = UpscalerModel.buildModelPath(this.name, modelName);
     const upscaler = this.upscalers.get(modelPath);
     if (!upscaler) {
-      const _upscaler = await UpscalerModel.getUpscaler(this.name, modelName);
+      const _upscaler = await UpscalerModel.getUpscaler(this.name, modelName, useGPU);
       this.upscalers.set(modelPath, _upscaler);
       return _upscaler;
     }

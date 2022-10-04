@@ -215,7 +215,7 @@ const mark = (msg: string) => {
   console.log(`${divider}\n${msg}\n${divider}`);
 }
 
-const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean) => {
+const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean, useGPU = false) => {
   const benchmarker = new Benchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
@@ -243,7 +243,7 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
   } else {
     await benchmarker.addDatasets(datasets, cropSize, resultsOnly, n);
   }
-  await benchmarker.addModels(models, resultsOnly);
+  await benchmarker.addModels(models, resultsOnly, useGPU);
   if (resultsOnly !== true) {
     mark('Evaluating');
     await benchmarker.benchmark(cropSize, n, DELAY);
@@ -266,6 +266,7 @@ interface Args {
   n?: number;
   resultsOnly?: boolean;
   metrics: string[];
+  useGPU?: boolean;
 }
 
 const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]> => {
@@ -314,6 +315,7 @@ const getArgs = async (): Promise<Args> => {
       cropSize: { type: 'number' },
       n: { type: 'number' },
       resultsOnly: { type: 'boolean' },
+      useGPU: { type: 'boolean' },
       metric: { type: 'string' },
     });
   })
@@ -337,12 +339,13 @@ const getArgs = async (): Promise<Args> => {
     n: ifDefined('n', 'number'),
     resultsOnly: ifDefined('resultsOnly', 'boolean'),
     metrics,
+    useGPU: ifDefined('useGPU', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly);
+    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly, args.useGPU);
   })();
 }
