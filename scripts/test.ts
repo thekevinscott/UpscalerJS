@@ -7,12 +7,12 @@ import * as dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
-import yargs from 'yargs';
+import yargs, { locale } from 'yargs';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import buildUpscaler from './package-scripts/build-upscaler';
-import { readFileSync } from 'fs-extra';
+import { existsSync, readFileSync } from 'fs-extra';
 
 
 /****
@@ -168,7 +168,8 @@ const getRunner = (runner?: string): Runner => {
 }
 
 const getArgs = async (): Promise<Args> => {
-  const { BROWSERSTACK_ACCESS_KEY } = dotenv.parse(readFileSync(path.resolve(ROOT_DIR, '.env'), 'utf-8'));
+  const localEnvPath = path.resolve(ROOT_DIR, '.env')
+  const { BROWSERSTACK_ACCESS_KEY } = existsSync(localEnvPath) ? dotenv.parse(readFileSync(localEnvPath, 'utf-8')) : process.env;
   if (!BROWSERSTACK_ACCESS_KEY) {
     throw new Error(`No BROWSERSTACK_ACCESS_KEY found in .env file; have you created an .env file at the root of the repo?`);
   }
