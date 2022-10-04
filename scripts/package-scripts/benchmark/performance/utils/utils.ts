@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { mkdirpSync, readdirSync, readFileSync, writeFileSync } from "fs-extra";
 import imageSize from 'image-size';
 import util from 'util';
-import callExec from '../../../../test/lib/utils/callExec';
+import callExec from '../../../../../test/lib/utils/callExec';
 
 const sizeOf = util.promisify(imageSize);
 
