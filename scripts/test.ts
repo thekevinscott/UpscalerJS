@@ -47,7 +47,7 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   });
 });
 
-const startBrowserstack = async (key: string): Promise<browserstack.Local> => new Promise((resolve, reject) => {
+const startBrowserstack = async (key?: string): Promise<browserstack.Local> => new Promise((resolve, reject) => {
   if (!key) {
     throw new Error('A key must be passed to start up the local browserstack service');
   }
@@ -75,7 +75,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   skipBuild,
   skipModelBuild,
 }: {
-  browserstackAccessKey: string;
+  browserstackAccessKey?: string;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
 }) => {
@@ -138,7 +138,7 @@ interface Args {
   skipModelBuild?: boolean;
   kind?: string;
   positionalArgs: (string | number)[];
-  browserstackAccessKey: string;
+  browserstackAccessKey?: string;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -181,9 +181,6 @@ const getBrowserstackAccessKey = () => {
 
 const getArgs = async (): Promise<Args> => {
   const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
-  if (!BROWSERSTACK_ACCESS_KEY) {
-    throw new Error(`No BROWSERSTACK_ACCESS_KEY found in .env file; have you created an .env file at the root of the repo?`);
-  }
 
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
