@@ -2,4 +2,4 @@
 
 Shows how to use UpscalerJS in Node.
 
-[Open in CodeSandbox](https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs).
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs">Open in CodeSandbox</a>.

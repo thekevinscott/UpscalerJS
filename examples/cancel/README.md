@@ -2,4 +2,4 @@
 
 Demonstrates how to cancel an inflight `upscale` request.
 
-[Open in Stackblitz](https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/cancel?file=index.js&title=UpscalerJS: Cancel Example).
+<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/cancel?file=index.js&title=UpscalerJS: Cancel Example">Open in Stackblitz</a>.
