@@ -248,7 +248,6 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
  */
 interface Args {
   cacheDir: string;
-  // databaseFile: string;
   datasets: DatasetDefinition[];
   models: Array<string>;
   cropSize?: number;
