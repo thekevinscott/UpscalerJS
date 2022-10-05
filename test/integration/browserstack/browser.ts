@@ -9,9 +9,8 @@ import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/p
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserOption, getBrowserOptions, getDriver } from '../../../scripts/package-scripts/utils/browserStack';
 
-const prefs = new logging.Preferences();
-prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
 
 const TRACK_TIME = true;
 const PORT = 8099;
@@ -33,24 +32,6 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(5);
 
 
-interface BrowserOption {
-  os?: string;
-  os_version: string;
-  browser?: string;
-  browser_version?: string;
-  device?: string;
-  real_mobile?: 'true';
-  browserName?: string;
-  localhost?: string;
-}
-
-const browserOptionsPath = path.resolve(__dirname, './config/browserOptions.json');
-
-const browserOptions: Array<BrowserOption> = JSON.parse(fs.readFileSync(browserOptionsPath, 'utf8')).filter((option: BrowserOption) => {
-  // return option?.os !== 'windows' && option?.os !== 'OS X';
-  // return option?.os === 'OS X';
-  return !option.browserName?.toLowerCase().includes('iphone');
-});
 
 const shouldPrintLogs = (entry: webdriver.logging.Entry, capabilities: BrowserOption) => {
   if (entry.message.includes('favicon')) {
@@ -94,16 +75,22 @@ const printLogs = (driver: webdriver.WebDriver, capabilities: BrowserOption) => 
   });
 }
 
-const getCapabilityName = (capability: BrowserOption) => {
-  if (capability.os) {
-    return `${capability.os} | ${capability.browserName}`;
-  }
-  if (capability.device) {
-    return `${capability.browserName} | ${capability.device}`;
-  }
+// const getCapabilityName = (capability: BrowserOption) => {
+//   if (capability.os) {
+//     return `${capability.os} | ${capability.browserName}`;
+//   }
+//   if (capability.device) {
+//     return `${capability.browserName} | ${capability.device}`;
+//   }
 
-  return JSON.stringify(capability)
-}
+//   return JSON.stringify(capability)
+// }
+
+const browserOptions = getBrowserOptions(option => {
+  // return option?.os !== 'windows' && option?.os !== 'OS X';
+  // return option?.os === 'OS X';
+  return !option.browserName?.toLowerCase().includes('iphone');
+});
 
 describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
@@ -122,17 +109,17 @@ describe('Browser Integration Tests', () => {
     testRunner.afterAll();
   }, 10000);
 
+  let driver: webdriver.ThenableWebDriver;
+  afterEach(async () => {
+    await driver.quit();
+  });
+
   describe.each(browserOptions)("Browser %j", (capabilities: BrowserOption) => {
     it("upscales an imported local image path", async () => {
-      // console.log('test', getCapabilityName(capabilities))
-      const driver = await new webdriver.Builder()
-        .usingServer(serverURL)
-        .setLoggingPrefs(prefs)
-        .withCapabilities({
-          ...DEFAULT_CAPABILITIES,
-          ...capabilities,
-        })
-        .build();
+      driver = getDriver(serverURL, {
+        ...DEFAULT_CAPABILITIES,
+        ...capabilities,
+      })
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
       await driver.wait(async () => {
@@ -153,7 +140,6 @@ describe('Browser Integration Tests', () => {
 
       printLogs(driver, capabilities);
       checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
-      await driver.quit();
     });
   });
 });

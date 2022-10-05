@@ -40,7 +40,7 @@ const getOutputFormats = (target: Platform): Array<OutputFormat> => {
   return ['cjs'];
 }
 
-const runProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
+const runTTYProcess = (command: string, args: Array<string> = []): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit"});
 
   spawnedProcess.on('exit', (code) => {
@@ -96,7 +96,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     // argv.watch ? '--watch' : undefined,
     ...positionalArgs,
   ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runProcess(args[0], args.slice(1));
+  const code = await runTTYProcess(args[0], args.slice(1));
   if (bsLocal !== undefined) {
     await stopBrowserstack(bsLocal);
   }

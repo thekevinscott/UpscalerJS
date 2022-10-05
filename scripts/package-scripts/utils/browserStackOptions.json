@@ -1,0 +1,60 @@
+[
+  {
+    "os": "windows",
+    "os_version": "11",
+    "browserName": "chrome",
+    "browser_version": "latest"
+  },
+  {
+    "os": "windows",
+    "os_version": "11",
+    "browserName": "firefox",
+    "browser_version": "latest"
+  },
+  {
+    "os": "windows",
+    "os_version": "11",
+    "browserName": "edge",
+    "browser_version": "latest"
+  },
+  {
+    "os": "OS X",
+    "os_version": "Big Sur",
+    "browserName": "chrome",
+    "browser_version": "latest"
+  },
+  {
+    "os": "OS X",
+    "os_version": "Big Sur",
+    "browserName": "firefox",
+    "browser_version": "latest"
+  },
+  {
+    "os": "OS X",
+    "os_version": "Big Sur",
+    "browserName": "safari",
+    "browser_version": "latest",
+    "localhost": "bs-local.com"
+  },
+  {
+    "browserName": "Android",
+    "os_version": "11.0",
+    "device": "Samsung Galaxy S21 Ultra",
+    "real_mobile": "true",
+    "localhost": "bs-local.com"
+  },
+  {
+    "browserName": "Android",
+    "os_version": "12.0",
+    "device": "Google Pixel 5",
+    "real_mobile": "true",
+    "localhost": "bs-local.com"
+  },
+  {
+    "os_version": "15",
+    "device": "iPhone XS",
+    "real_mobile": "true",
+    "browserName": "iPhone",
+    "localhost": "bs-local.com"
+  }
+]
