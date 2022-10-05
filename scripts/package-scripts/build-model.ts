@@ -11,9 +11,7 @@ import { inputOptions, } from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
-import { transformAsync} from '@babel/core';
-import { getAllFilesRecursively } from './utils/getAllFilesRecursively';
-import { getOutputFormats } from './prompt/getOutputFormats';
+import { DEFAULT_OUTPUT_FORMATS, getOutputFormats } from './prompt/getOutputFormats';
 import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
 import { babelTransform } from './utils/babelTransform';
 
@@ -22,7 +20,6 @@ import { babelTransform } from './utils/babelTransform';
  */
 const ROOT_DIR = path.resolve(__dirname, '../..');
 const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
-const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 
 /****
  * ESM build function

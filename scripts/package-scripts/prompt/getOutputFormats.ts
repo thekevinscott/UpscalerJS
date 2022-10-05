@@ -27,7 +27,7 @@ export const getOutputFormats = async (outputFormat?: unknown) => {
       type: 'checkbox',
       name: 'outputFormats',
       message: 'Which output formats do you want to build?',
-      choices: ['cjs', 'esm', 'umd'],
+      choices: DEFAULT_OUTPUT_FORMATS,
     },
   ]);
   return outputFormats;

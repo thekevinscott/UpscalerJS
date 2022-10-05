@@ -8,13 +8,11 @@ import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
 import buildUpscaler from './package-scripts/build-upscaler';
+import { Platform } from './package-scripts/prompt/types';
 
 /****
  * Type Definitions
  */
-
-type OnChange = (src: string) => (e: Array<any>) => void;
-type Platform = 'browser' | 'node' | 'node-gpu';
 
 /****
  * Constants
