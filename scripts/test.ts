@@ -3,21 +3,35 @@
  */
 
 import path from 'path';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
-import yargs from 'yargs';
+import yargs, { locale } from 'yargs';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import buildUpscaler from './package-scripts/build-upscaler';
+import { existsSync, readFileSync } from 'fs-extra';
 
-dotenv.config();
+
+/****
+ * Constants
+ */
 
 const ROOT_DIR = path.resolve(__dirname, '..');
 
-const getOutputFormats = (target: 'browser' | 'node'): Array<OutputFormat> => {
+/****
+ * Types
+ */
+type Platform = 'browser' | 'node';
+type Runner = 'local' | 'browserstack';
+
+/****
+ * Utility Functions & Classes
+ */
+
+const getOutputFormats = (target: Platform): Array<OutputFormat> => {
   if (target === 'browser') {
     // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
     return ['umd', 'esm', 'cjs'];
@@ -33,15 +47,17 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
   });
 });
 
-const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((resolve, reject) => {
+const startBrowserstack = async (key?: string): Promise<browserstack.Local> => new Promise((resolve, reject) => {
+  if (!key) {
+    throw new Error('A key must be passed to start up the local browserstack service');
+  }
   const bsLocal = new browserstack.Local();
-  const config: any = {
-    key: process.env.BROWSERSTACK_ACCESS_KEY,
+  bsLocal.start({
+    key,
     force: true,
     onlyAutomate: true,
     forceLocal: true,
-  };
-  bsLocal.start(config, (error) => {
+  }, (error) => {
     if (error) {
       return reject(error);
     }
@@ -51,46 +67,21 @@ const startBrowserstack = async (): Promise<browserstack.Local> => new Promise((
 
 const stopBrowserstack = (bsLocal: browserstack.Local): Promise<void> => new Promise(resolve => bsLocal.stop(() => resolve()));
 
-const isValidPlatform = (platform?: string): platform is 'browser' | 'node' => {
-  return platform !== undefined && ['browser', 'node'].includes(platform);
-}
-
-const getPlatform = (argPlatform: string) => {
-  const platform = argPlatform?.trim();
-
-  if (isValidPlatform(platform)) {
-    return platform;
-  }
-
-  throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
-}
-
-const isValidRunner = (runner?: string): runner is undefined | 'local' | 'browserstack' => {
-  return runner === undefined ? true : ['local', 'browserstack'].includes(runner);
-}
-
-const getRunner = (runner?: string): 'local' | 'browserstack' => {
-  if (isValidRunner(runner)) {
-    return runner === undefined ? 'local' : runner;
-
-  }
-  throw new Error(`Unsupported runner provided: ${runner}. You must pass either 'local' or 'browserstack'.`)
-}
-
-(async function main() {
-  const argv = await yargs(process.argv.slice(2)).options({
-    watch: { type: 'boolean' },
-    platform: { type: 'string', demandOption: true },
-    skipBuild: { type: 'boolean' },
-    skipModelBuild: { type: 'boolean' },
-    kind: { type: 'string' }
-  }).argv;
-
+/****
+ * Main function
+ */
+const test = async (platform: Platform, runner: Runner, positionalArgs: (string | number)[], {
+  browserstackAccessKey,
+  skipBuild,
+  skipModelBuild,
+}: {
+  browserstackAccessKey?: string;
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+}) => {
   let bsLocal: undefined | browserstack.Local;
-  const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.kind);
   if (runner === 'browserstack') {
-    bsLocal = await startBrowserstack();
+    bsLocal = await startBrowserstack(browserstackAccessKey);
     process.on('exit', async () => {
       if (bsLocal !== undefined && bsLocal.isRunning()) {
         await stopBrowserstack(bsLocal);
@@ -101,7 +92,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     }
   }
 
-  if (argv.skipModelBuild !== true) {
+  if (skipModelBuild !== true) {
     const modelPackages = getAllAvailableModelPackages();
     const durations = await buildModels(modelPackages, getOutputFormats(platform));
     console.log([
@@ -109,7 +100,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
       ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
     ].join('\n'));
   }
-  if (argv.skipBuild !== true) {
+  if (skipBuild !== true) {
     if (platform === 'browser') {
       await buildUpscaler('browser');
     } else if (platform === 'node') {
@@ -125,7 +116,7 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
     path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),
     '--detectOpenHandles',
     // argv.watch ? '--watch' : undefined,
-    ...argv._,
+    ...positionalArgs,
   ].filter(Boolean).map(arg => `${arg}`);
   const code = await runProcess(args[0], args.slice(1));
   if (bsLocal !== undefined) {
@@ -134,4 +125,99 @@ const getRunner = (runner?: string): 'local' | 'browserstack' => {
   if (code !== null) {
     process.exit(code);
   }
-})();
+}
+
+/****
+ * Functions to expose the main function as a CLI tool
+ */
+interface Args {
+  watch?: boolean;
+  platform: Platform;
+  runner: Runner;
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+  kind?: string;
+  positionalArgs: (string | number)[];
+  browserstackAccessKey?: string;
+}
+
+const isValidPlatform = (platform?: string): platform is Platform => {
+  return platform !== undefined && ['browser', 'node'].includes(platform);
+}
+
+const getPlatform = (argPlatform: string): Platform => {
+  const platform = argPlatform?.trim();
+
+  if (isValidPlatform(platform)) {
+    return platform;
+  }
+
+  throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
+}
+
+const isValidRunner = (runner?: string): runner is undefined | Runner => {
+  return runner === undefined ? true : ['local', 'browserstack'].includes(runner);
+}
+
+const getRunner = (runner?: string): Runner => {
+  if (isValidRunner(runner)) {
+    return runner === undefined ? 'local' : runner;
+
+  }
+  throw new Error(`Unsupported runner provided: ${runner}. You must pass either 'local' or 'browserstack'.`)
+}
+
+const getBrowserstackAccessKey = () => {
+  const localEnvPath = path.resolve(ROOT_DIR, '.env')
+  if (existsSync(localEnvPath)) {
+    const { BROWSERSTACK_ACCESS_KEY } = dotenv.parse(readFileSync(localEnvPath, 'utf-8'));
+    if (BROWSERSTACK_ACCESS_KEY) {
+      return BROWSERSTACK_ACCESS_KEY;
+    }
+  }
+
+  return process.env.BROWSERSTACK_ACCESS_KEY;
+}
+
+const getArgs = async (): Promise<Args> => {
+  const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
+
+  const argv = await yargs(process.argv.slice(2)).options({
+    watch: { type: 'boolean' },
+    platform: { type: 'string', demandOption: true },
+    skipBuild: { type: 'boolean' },
+    skipModelBuild: { type: 'boolean' },
+    kind: { type: 'string' }
+  }).argv;
+  const platform = getPlatform(argv.platform);
+  const runner = getRunner(argv.kind);
+  let positionalArgs = argv._;
+  if (!Array.isArray(positionalArgs)) {
+    positionalArgs = [positionalArgs];
+  }
+  return {
+    ...argv,
+    browserstackAccessKey: BROWSERSTACK_ACCESS_KEY,
+    platform,
+    runner,
+    positionalArgs,
+  }
+};
+
+if (require.main === module) {
+  (async () => {
+    const {
+      platform,
+      runner,
+      skipBuild,
+      skipModelBuild,
+      positionalArgs,
+      browserstackAccessKey,
+    } = await getArgs();
+    await test(platform, runner, positionalArgs, {
+      browserstackAccessKey,
+      skipBuild,
+      skipModelBuild,
+    });
+  })();
+}
