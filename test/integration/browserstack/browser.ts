@@ -9,71 +9,19 @@ import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/p
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { BrowserOption, getBrowserOptions, getDriver } from '../../../scripts/package-scripts/utils/browserStack';
+import { BrowserOption, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
 
 
 const TRACK_TIME = true;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
 
-const DEFAULT_CAPABILITIES = {
-  'build': process.env.BROWSERSTACK_BUILD_NAME,
-  'project': process.env.BROWSERSTACK_PROJECT_NAME,
-  'browserstack.local': true,
-  // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-}
-
-const username = process.env.BROWSERSTACK_USERNAME;
-const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
-const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(5);
 
 
-
-const shouldPrintLogs = (entry: webdriver.logging.Entry, capabilities: BrowserOption) => {
-  if (entry.message.includes('favicon')) {
-    return false;
-  }
-
-  // if running in IE, it appears TFJS is already available? Ignore warnings
-  // about the TFJS backend already being registered
-  if (entry.level.name === 'WARNING' && capabilities?.browserName === 'edge') {
-    return false;
-  }
-
-  return true;
-}
-
-const printLogs = (driver: webdriver.WebDriver, capabilities: BrowserOption) => {
-  if (capabilities?.browserName === 'firefox') {
-    if (capabilities?.os === 'windows') {
-      // There is a bug with Firefox not supporting the get logs method on Windows
-      // https://stackoverflow.com/questions/59192232/selenium-trying-to-get-firefox-console-logs-results-in-webdrivererror-http-me
-      return;
-    }
-    if (capabilities?.os === 'OS X') {
-      // Firefox does not seem to support logging on OS X either
-      // https://github.com/mozilla/geckodriver/issues/1698
-      return;
-    }
-  }
-
-  if (capabilities?.browserName === 'safari') {
-    // It looks like Safari also does not support logging
-    return;
-  }
-
-  driver.manage().logs().get(logging.Type.BROWSER).then(entries => {
-    entries.forEach(entry => {
-      if (shouldPrintLogs(entry, capabilities)) {
-        console.log('LOG [%s] %s', entry.level.name, entry.message, capabilities);
-      }
-    });
-  });
-}
 
 // const getCapabilityName = (capability: BrowserOption) => {
 //   if (capability.os) {
@@ -116,10 +64,7 @@ describe('Browser Integration Tests', () => {
 
   describe.each(browserOptions)("Browser %j", (capabilities: BrowserOption) => {
     it("upscales an imported local image path", async () => {
-      driver = getDriver(serverURL, {
-        ...DEFAULT_CAPABILITIES,
-        ...capabilities,
-      })
+      driver = getDriver(capabilities);
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
       await driver.wait(async () => {
