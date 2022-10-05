@@ -13,7 +13,8 @@ import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvai
 import { OutputFormat } from './package-scripts/prompt/types';
 import buildUpscaler from './package-scripts/build-upscaler';
 import { existsSync, readFileSync } from 'fs-extra';
-
+import { Browserstack, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
+import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 
 /****
  * Constants
@@ -34,7 +35,7 @@ type Runner = 'local' | 'browserstack';
 const getOutputFormats = (target: Platform): Array<OutputFormat> => {
   if (target === 'browser') {
     // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
-    return ['umd', 'esm', 'cjs'];
+    return DEFAULT_OUTPUT_FORMATS;
   }
   return ['cjs'];
 }
@@ -46,26 +47,6 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
     resolve(code);
   });
 });
-
-const startBrowserstack = async (key?: string): Promise<browserstack.Local> => new Promise((resolve, reject) => {
-  if (!key) {
-    throw new Error('A key must be passed to start up the local browserstack service');
-  }
-  const bsLocal = new browserstack.Local();
-  bsLocal.start({
-    key,
-    force: true,
-    onlyAutomate: true,
-    forceLocal: true,
-  }, (error) => {
-    if (error) {
-      return reject(error);
-    }
-    resolve(bsLocal);
-  });
-});
-
-const stopBrowserstack = (bsLocal: browserstack.Local): Promise<void> => new Promise(resolve => bsLocal.stop(() => resolve()));
 
 /****
  * Main function
@@ -79,7 +60,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   skipBuild?: boolean;
   skipModelBuild?: boolean;
 }) => {
-  let bsLocal: undefined | browserstack.Local;
+  let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
     bsLocal = await startBrowserstack(browserstackAccessKey);
     process.on('exit', async () => {
@@ -87,9 +68,6 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
         await stopBrowserstack(bsLocal);
       }
     });
-    if (bsLocal.isRunning() !== true) {
-      throw new Error('Browserstack failed to start');
-    }
   }
 
   if (skipModelBuild !== true) {
