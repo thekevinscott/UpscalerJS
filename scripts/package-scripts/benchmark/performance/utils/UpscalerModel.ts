@@ -1,5 +1,4 @@
 import { DataTypes, Model } from "sequelize";
-import * as tf from '@tensorflow/tfjs-node-gpu';
 import path from 'path';
 import sequelize from './sequelize';
 import { ROOT_DIR } from "./constants";
@@ -7,6 +6,7 @@ import { readFileSync } from "fs-extra";
 import { ModelDefinition } from "@upscalerjs/core";
 import { Package } from "./Package";
 import _Upscaler from 'upscaler';
+import { TF } from "./types";
 
 export class UpscalerModel extends Model {
   declare id: number;
@@ -61,7 +61,7 @@ export class UpscalerModel extends Model {
     });
   }
 
-  static async getUpscaler(modelPackageName: string, modelName: string, useGPU = false): Promise<[typeof _Upscaler, ModelDefinition]> {
+  static async getUpscaler(tf: TF, modelPackageName: string, modelName: string, useGPU = false): Promise<[_Upscaler, ModelDefinition]> {
     if (!modelPackageName) {
       throw new Error('Model package name must be provided')
     }
@@ -70,7 +70,7 @@ export class UpscalerModel extends Model {
     }
     const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
     const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
-    const upscaler = await getUpscalerFromExports(modelPackageFolder, modelName, exports, useGPU);
+    const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, exports, useGPU);
     const { modelDefinition } = await upscaler.getModel();
     return [upscaler, modelDefinition];
   }
@@ -103,8 +103,17 @@ UpscalerModel.init({
   modelName: 'UpscalerModel'
 });
 
-const getUpscalerFromExports = async (modelPackageFolder: string, key: string, exports: Record<string, any>, useGPU = false) => {
-  const Upscaler = useGPU ? require('upscaler/node-gpu') : require('upscaler/node');
+// only import it once
+let LocalUpscaler: typeof _Upscaler;
+const getGlobalUpscaler = (useGPU?: boolean): typeof _Upscaler => {
+  if (!LocalUpscaler) {
+    LocalUpscaler = useGPU ? require('upscaler/node-gpu') : require('upscaler/node');
+  }
+  return LocalUpscaler;
+}
+
+const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: string, exports: Record<string, any>, useGPU = false) => {
+  const Upscaler = getGlobalUpscaler(useGPU);
   const value = exports[key];
   if (typeof value === 'object') {
     const { require: importPath, } = value;
@@ -119,7 +128,9 @@ const getUpscalerFromExports = async (modelPackageFolder: string, key: string, e
     }
     try {
       const upscaler = new Upscaler({
-        model,
+        // TODO: Need to pull in the Upscaler type definitions for Node, for which
+        // we need ESM Node code
+        model: model as any,
       });
       await upscaler.getModel();
       return upscaler;
