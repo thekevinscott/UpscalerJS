@@ -3,17 +3,13 @@
  */
 
 import path from 'path';
-import * as dotenv from 'dotenv';
-import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
-
-import yargs, { locale } from 'yargs';
+import yargs from 'yargs';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import buildUpscaler from './package-scripts/build-upscaler';
-import { existsSync, readFileSync } from 'fs-extra';
-import { Browserstack, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
+import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 
 /****
@@ -143,18 +139,6 @@ const getRunner = (runner?: string): Runner => {
 
   }
   throw new Error(`Unsupported runner provided: ${runner}. You must pass either 'local' or 'browserstack'.`)
-}
-
-const getBrowserstackAccessKey = () => {
-  const localEnvPath = path.resolve(ROOT_DIR, '.env')
-  if (existsSync(localEnvPath)) {
-    const { BROWSERSTACK_ACCESS_KEY } = dotenv.parse(readFileSync(localEnvPath, 'utf-8'));
-    if (BROWSERSTACK_ACCESS_KEY) {
-      return BROWSERSTACK_ACCESS_KEY;
-    }
-  }
-
-  return process.env.BROWSERSTACK_ACCESS_KEY;
 }
 
 const getArgs = async (): Promise<Args> => {
