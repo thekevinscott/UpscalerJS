@@ -1,0 +1,42 @@
+#stats {
+  min-height: 60px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  position: relative;
+  padding: 20px;
+  display: flex;
+}
+
+#body {
+  padding: 20px;
+}
+
+#description {
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  display: block;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 10px;
+  display: block;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-top: 60px;
+}
+
+table th, table td {
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 5px 10px;
+}
