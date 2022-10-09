@@ -145,12 +145,10 @@ importers:
     specifiers:
       '@tensorflow/tfjs': ^3.20.0
       '@types/stats.js': ^0.17.0
-      fps: ^0.0.3
       stats.js: ^0.17.0
       vite: ^3.1.5
     dependencies:
       '@tensorflow/tfjs': 3.20.0_seedrandom@3.0.5
-      fps: 0.0.3
       stats.js: 0.17.0
     devDependencies:
       '@types/stats.js': 0.17.0
@@ -396,7 +394,6 @@ importers:
       eslint-plugin-prefer-arrow: ^1.2.3
       seedrandom: 3.0.5
       ts-jest: ^29.0.1
-      vite: ^3.1.5
     dependencies:
       '@upscalerjs/core': link:../core
       '@upscalerjs/esrgan-slim': link:../../models/esrgan-slim
@@ -415,7 +412,6 @@ importers:
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.17.0
       seedrandom: 3.0.5
       ts-jest: 29.0.1_64hd4s7miay4yqk37r4v3dndua
-      vite: 3.1.5
 
   packages/upscalerjs-wrapper:
     specifiers:
@@ -8232,12 +8228,6 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
-  /fps/0.0.3:
-    resolution: {integrity: sha512-v4mxueP7jf+B7ZU62p3z2p6oAcrlOSeOBH56CB6PW07tF+lWS/W5O0ihPQWRcBqVT307qrqIPEdoCFCP2viDaQ==}
-    dependencies:
-      inherits: 1.0.2
-    dev: false
-
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
 
@@ -9017,10 +9007,6 @@ packages:
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
-
-  /inherits/1.0.2:
-    resolution: {integrity: sha512-Al67oatbRSo3RV5hRqIoln6Y5yMVbJSIn4jEJNL7VCImzq/kLr7vvb6sFRJXqr8rpHc/2kJOM+y0sPKN47VdzA==}
-    dev: false
 
   /inherits/2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
