@@ -10,8 +10,7 @@ export class FPS {
 
   loop() {
     const now = performance.now();
-    let duration = (now - this.last);
-    this.durations.push(duration);
+    this.durations.push(now - this.last);
     this.last = now;
     if (this.stopped === false) {
       requestAnimationFrame(this.loop.bind(this));
