@@ -4,10 +4,9 @@
 
 import path from 'path';
 import * as dotenv from 'dotenv';
-import browserstack from 'browserstack-local';
 import { spawn } from 'child_process';
 
-import yargs, { locale } from 'yargs';
+import yargs from 'yargs';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';

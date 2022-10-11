@@ -2,7 +2,7 @@
   "name": "@upscalerjs/scripts",
   "private": true,
   "scripts": {
-    "__run_command": "ts-node --project ./tsconfig.json",
+    "__run_command": "ts-node --esm --project ./tsconfig.json",
     "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
     "build:model": "pnpm __run_command ./package-scripts/build-model.ts",
     "example:start": "pnpm __run_command ./start-example.ts",

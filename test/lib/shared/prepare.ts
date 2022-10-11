@@ -11,7 +11,7 @@ import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 
 const ROOT = path.join(__dirname, '../../..');
 
-export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
+export const installNodeModules = (cwd: string, silent = true) => callExec(`npm install ${silent ? '--silent' : ''} --no-audit`, {
   cwd,
 });
 
@@ -89,7 +89,11 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
 }
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
+  const timer = setTimeout(() => {
+    console.log(`It is taking a long time to install the local package ${localNameForPackage}`);
+  }, 10000);
   await installLocalPackage(src, dest);
+  clearTimeout(timer);
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)

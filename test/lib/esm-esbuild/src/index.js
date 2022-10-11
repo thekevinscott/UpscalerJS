@@ -10,8 +10,11 @@ import ESRGANDiv2K4x from '@upscalerjs-for-esbuild/esrgan-legacy/div2k/4x';
 import ESRGANPSNR from '@upscalerjs-for-esbuild/esrgan-legacy/psnr-small';
 import ESRGANGANS from '@upscalerjs-for-esbuild/esrgan-legacy/gans';
 import flower from '../../../__fixtures__/flower-small.png';
+import flower128 from '../../../__fixtures__/flower-128.png';
+
 window.tf = tf;
 window.flower = flower;
+window.flower128 = flower128;
 window.Upscaler = Upscaler;
 window['esrgan-slim'] = {
   'index': ESRGANSlim,
