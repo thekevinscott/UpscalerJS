@@ -179,16 +179,25 @@ const display = (results: BenchmarkedResult[]) => {
     ],
   });
 
-  results.forEach(result => {
-    table.push([
+  const rows: (string | number)[][] = results.sort((a, b) => {
+    const datasetName = datasetNames[0];
+    const aValues = a.values[datasetName];
+    const bValues = b.values[datasetName];
+    return bValues[metricNames[0]] - aValues[metricNames[0]];
+  }).map(result => {
+    return [
       result.packageName, 
       result.modelName, 
       result.scale, 
       ...datasetNames.reduce((arr, datasetName) => {
         const metricValues = result.values[datasetName];
-        return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined ? val : '---'));
+        return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined && val !== null ? val : '---'));
       }, [] as (number | string)[]),
-    ]);
+    ];
+  });
+
+  rows.forEach(row => {
+    table.push(row);
   });
 
   console.log(table.toString());
