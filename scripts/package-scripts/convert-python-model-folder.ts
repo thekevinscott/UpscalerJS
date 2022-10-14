@@ -61,7 +61,8 @@ const getModelInfo = (file: string) => {
   const params = folder.split('-');
   const architecture = params[0];
   const scale = params[6][1];
-  let exportName = convertStringToExport(`${folder.split('patch')[0]}-${weight?.split('vary_cFalse').pop()?.split('_').join('-').split('.')[0]}`);
+  const dataset = params[10].split('data').pop();
+  let exportName = convertStringToExport(`${folder.split('patch')[0]}-${weight?.split('vary_cFalse').pop()?.split('_').join('-').split('.')[0]}-data${dataset}`);
   let size;
   if (exportName.startsWith('rdnC1D2G4G064T10')) {
     size = 'small';
@@ -87,7 +88,7 @@ const getModelInfo = (file: string) => {
     patchSize: parseInt(`${params[7].split('patchsize').pop()}`, 10),
     compress: parseInt(`${params[8].split('compress').pop()}`, 10),
     sharpen: parseInt(`${params[9].split('sharpen').pop()}`, 10),
-    dataset: params[10].split('data').pop(),
+    dataset,
     varyCompression: params[11].split('vary_c').pop(),
     size,
   }, architecture, modelPath};
