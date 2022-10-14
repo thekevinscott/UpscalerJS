@@ -86,7 +86,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@tensorflow/tfjs": "^3.20.0",
-    "@tensorflow/tfjs-node": "^3.20.0",
+    "@tensorflow/tfjs-node": "^4.0.0",
     "@tensorflow/tfjs-node-gpu": "^3.20.0",
     "@types/jest": "^29.0.3",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
