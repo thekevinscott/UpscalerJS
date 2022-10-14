@@ -256,7 +256,26 @@ const mark = (msg: string) => {
  * Main function
  */
 
-const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean, useGPU = false, outputCSV?: string) => {
+const benchmarkPerformance = async (
+  cacheDir: string, 
+  datasets: DatasetDefinition[], 
+  packages: string[], 
+  metrics: string[], 
+  {
+    models,
+    cropSize,
+    n,
+    resultsOnly,
+    useGPU = false,
+    outputCSV,
+  }: {
+    models?: string[]
+    cropSize?: number;
+    n?: number;
+    resultsOnly?: boolean;
+    useGPU?: boolean;
+    outputCSV?: string
+  }) => {
   const benchmarker = new Benchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
@@ -285,7 +304,7 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
     await benchmarker.addDatasets(datasets, cropSize, resultsOnly, n);
   }
   const tf = useGPU ? require('@tensorflow/tfjs-node-gpu') : require('@tensorflow/tfjs-node');
-  await benchmarker.addModels(tf, models, resultsOnly, useGPU);
+  await benchmarker.addModels(tf, packages, resultsOnly, useGPU, models);
   if (resultsOnly !== true) {
     mark('Evaluating');
     await benchmarker.benchmark(tf, cropSize, n, DELAY);
@@ -305,7 +324,8 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
 interface Args {
   cacheDir: string;
   datasets: DatasetDefinition[];
-  models: Array<string>;
+  models?: Array<string>;
+  packages: Array<string>;
   cropSize?: number;
   n?: number;
   resultsOnly?: boolean;
@@ -349,7 +369,19 @@ const getDataset = async (..._datasets: unknown[]): Promise<DatasetDefinition[]>
   return [];
 }
 
-const getModels = (model?: unknown): string[] => {
+const getPackages = (pkg?: unknown): string[] => {
+  if (typeof pkg === 'string') {
+    return [pkg];
+  }
+
+  if (Array.isArray(pkg)) {
+    return pkg;
+  }
+
+  return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
+}
+
+const getModels = (model?: unknown): undefined | string[] => {
   if (typeof model === 'string') {
     return [model];
   }
@@ -358,7 +390,7 @@ const getModels = (model?: unknown): string[] => {
     return model;
   }
 
-  return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
+  return undefined;
 }
 
 const getArgs = async (): Promise<Args> => {
@@ -368,6 +400,7 @@ const getArgs = async (): Promise<Args> => {
     }).options({
       // databaseFile: { type: 'string' },
       cacheDir: { type: 'string' },
+      package: { type: 'string' },
       model: { type: 'string' },
       cropSize: { type: 'number' },
       n: { type: 'number' },
@@ -385,11 +418,13 @@ const getArgs = async (): Promise<Args> => {
   await checkImagemagickInstallation(metrics);
 
   const datasets = await getDataset(...argv._);
+  const packages = getPackages(argv.package);
   const models = getModels(argv.model);
 
   function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
   return {
+    packages,
     models,
     datasets,
     cacheDir: ifDefined('cacheDir', 'string') || CACHE_DIR,
@@ -405,6 +440,13 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly, args.useGPU, args.outputCSV);
+    await benchmarkPerformance(args.cacheDir, args.datasets, args.packages, args.metrics, {
+      models: args.models,
+      cropSize: args.cropSize,
+      n: args.n,
+      resultsOnly: args.resultsOnly,
+      useGPU: args.useGPU,
+      outputCSV: args.outputCSV
+    });
   })();
 }
