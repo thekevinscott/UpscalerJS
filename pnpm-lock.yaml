@@ -330,25 +330,6 @@ importers:
       '@tensorflow/tfjs-node-gpu': 3.20.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  models/experiments:
-    specifiers:
-      '@tensorflow/tfjs': ^3.20.0
-      '@tensorflow/tfjs-core': ^3.20.0
-      '@tensorflow/tfjs-layers': ^3.20.0
-      '@tensorflow/tfjs-node': ^3.20.0
-      '@tensorflow/tfjs-node-gpu': ^3.20.0
-      '@upscalerjs/core': workspace:*
-      seedrandom: 3.0.5
-    dependencies:
-      '@upscalerjs/core': link:../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs': 3.20.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-core': 3.20.0
-      '@tensorflow/tfjs-layers': 3.20.0_au2niqrxqvhsnv4oetlud656gy
-      '@tensorflow/tfjs-node': 3.20.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-node-gpu': 3.20.0_seedrandom@3.0.5
-      seedrandom: 3.0.5
-
   models/pixel-upsampler:
     specifiers:
       '@tensorflow/tfjs': ^3.20.0

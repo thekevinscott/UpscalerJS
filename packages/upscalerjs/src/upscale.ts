@@ -300,6 +300,18 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+    // tf.tidy(() => {
+    //   const doIt = (size: number, slice: number) => {
+    //     const start = performance.now();
+    //     const tensor = tf.ones([1, size, size, 3,]);
+    //     tensor.slice([0, 0, 0,], [-1, slice, slice,]);
+    //     console.log(`32px slice of a ${slice}px tensor`, performance.now() - start, tensor.shape, [-1, slice, slice,]);
+    //   };
+    //   doIt(64, 32);
+    //   doIt(128, 128);
+    //   doIt(128, 128);
+    //   console.log('-----');
+    // });
     yield;
     let upscaledTensor: undefined | tf.Tensor4D;
     const total = rows * columns;
@@ -307,6 +319,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       let colTensor: undefined | tf.Tensor4D;
       yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
+        const loopStart = performance.now();
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
           col,
@@ -316,22 +329,39 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           width,
         });
         yield [upscaledTensor, colTensor,];
+        let start = performance.now();
+        // console.log('pixels shape', pixels.shape, [origin[0], origin[1],], [size[0], size[1],],);
         const slicedPixels = pixels.slice(
           [0, origin[0], origin[1],],
           [-1, size[0], size[1],],
         );
+        console.log('slicePixels', performance.now() - start);
         yield [upscaledTensor, colTensor, slicedPixels,];
+        // TODO: Can this use .executeAsync instead?
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
-        const processedPrediction = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
-        yield [upscaledTensor, colTensor, processedPrediction,];
-        const slicedPrediction = processedPrediction.slice(
-          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
-          [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
+        // start = performance.now();
+        // tf.ones(processedPrediction.shape).slice([0, 0, 0,], [-1, 128, 128,]);
+        // console.log('128px slice of a 128px tensor', performance.now() - start);
+        // start = performance.now();
+        // processedPrediction.slice([0, 0, 0,], [-1, 128, 128,]);
+        // console.log('128px slice of a 128px tensor', performance.now() - start);
+        const startSlice = [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,];
+        const endSlice = [-1, sliceSize[0] * scale, sliceSize[1] * scale,];
+        start = performance.now();
+
+        // console.log('processedPrediction shape', prediction.shape, 'slice at', startSlice, endSlice);
+        // TODO: If the output size matches the slice size, skip the below slice step
+        const slicedPrediction = prediction.slice(
+          startSlice,
+          endSlice,
         );
-        processedPrediction.dispose();
+        console.log('slicePrediction', performance.now() - start);
         yield [upscaledTensor, colTensor, slicedPrediction,];
+        prediction.dispose();
+        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess);
+        yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -340,7 +370,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             progress(percent);
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-            const squeezedTensor = slicedPrediction.squeeze() as tf.Tensor3D;
+            const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
               (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor, row, col);
@@ -352,11 +382,12 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             }
           }
         }
-        yield [upscaledTensor, colTensor, slicedPrediction,];
+        yield [upscaledTensor, colTensor, processedPrediction,];
 
-        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
-        slicedPrediction.dispose();
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, processedPrediction,], 2);
+        processedPrediction.dispose();
         yield [upscaledTensor, colTensor,];
+        console.log('loop', performance.now() - loopStart);
       }
 
       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
@@ -371,6 +402,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
     const squeezedTensor = upscaledTensor!.squeeze() as tf.Tensor3D;
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     upscaledTensor!.dispose();
+    console.log('----');
     return squeezedTensor;
   }
 
@@ -442,7 +474,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
 
 type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
 export const makeTick = (signal: AbortSignal): TickFunction => async result => {
-  await tf.nextFrame();
   if (isAborted(signal)) {
     // only dispose tensor if we are aborting; if aborted, the called function will have
     // no opportunity to dispose of its memory

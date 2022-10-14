@@ -9,7 +9,7 @@ import puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
 const LOG = true;
-const THRESHOLD = .05;
+const THRESHOLD = 20; // in milliseconds
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);
@@ -108,6 +108,65 @@ describe('Speed Integration Tests', () => {
           }).then(resolve);
         }), [packageName, modelName]);
       }));
+    });
+
+    it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly with patch sizes`, async () => {
+      const times = 7;
+      const durations = await Promise.all(Array(times).fill('').map(async () => {
+        const context = await testRunner.browser.createIncognitoBrowserContext();
+        const page = await context.newPage();
+        pages.push(page);
+        await page.goto(testRunner.serverURL);
+        // await page.waitForFunction(`document.title.endsWith("| Loaded}")`);
+        return page.evaluate(([packageName, modelName]) => new Promise<[number, number]>(resolve => {
+          const patchSize = 8;
+          const times = 4;
+          const upscaler = new window['Upscaler']({
+            model: (window as any)[packageName][modelName],
+          });
+          const flower = window['flower'];
+          const waitForImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
+            const img = new Image();
+            img.src = src;
+            img.onload = () => resolve(img);
+          });
+          const measure = (fn: () => Promise<any>) => new Promise(r => {
+            const start = performance.now();
+            return fn().then(() => r(performance.now() - start));
+          })
+          return waitForImage(flower).then(img => {
+            const flowerPixels = tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
+            return Promise.all([
+              upscaler.getModel(),
+              upscaler.warmup([{
+                patchSize,
+                padding: 0,
+              }]),
+            ]).then(([{ model }]) => {
+              return measure(() => new Promise(r => {
+                tf.tidy(() => {
+                  for (let i = 0; i < times; i++) {
+                    model.predict(flowerPixels);
+                  }
+                });
+                r(undefined);
+              })).then(rawDuration => {
+                let output: undefined | tf.Tensor = undefined;
+                return measure(() => upscaler.upscale(flowerPixels, {
+                  output: 'tensor',
+                  patchSize,
+                  padding: 0,
+                })).then(upscalerJSDuration => {
+                  if (output !== undefined) {
+                    (output as tf.Tensor).dispose();
+                  }
+                  return [rawDuration, upscalerJSDuration] as [number, number];
+                });
+              });
+            });
+          }).then(resolve);
+        }), [packageName, modelName]);
+      }));
       let rawDuration = 0;
       let upscalerJSDuration = 0;
       for (const [raw, upscalerJS] of durations) {
@@ -117,6 +176,9 @@ describe('Speed Integration Tests', () => {
 
       rawDuration /= times;
       upscalerJSDuration /= times;
+
+      console.log('raw duration', rawDuration)
+      console.log('upscalerJS Duration', upscalerJSDuration)
 
       expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
     });
@@ -133,41 +195,9 @@ declare global {
     'esrgan-legacy': Record<string, ModelDefinition>;
     PixelUpsampler2x: ModelDefinition;
   }
-}
-
-declare global {
   namespace jest {
     interface Matchers<R> {
       toBeWithin: (expected: [number, number]) => CustomMatcherResult;
     }
   }
 }
-
-expect.extend({
-  toBeWithin(received, [rawDuration, threshold]) {
-    const lowerBound = (rawDuration * (1 - THRESHOLD));
-    const upperBound = (rawDuration * (1 + THRESHOLD));
-    const getMessage = (not = false, extra?: string) => {
-      return () => [
-        `Expected ${received.toFixed(3)}${not ? ' not' : ''} to be within ${threshold * 100}% of ${rawDuration.toFixed(3)}, or [${lowerBound.toFixed(3)}, ${upperBound.toFixed(3)}].`,
-        extra,
-      ].join('\n\n');
-    }
-    if (received <= upperBound && received >= lowerBound) {
-      console.log('we good')
-      return {
-        message: getMessage(true),
-        pass: true
-      };
-    } else {
-      console.log('we NOT good!')
-      const extra = received < lowerBound ? 
-      `The value was less than lower bounds by ${(lowerBound - received).toFixed(3)}.` : 
-      `The value was greater than upper bounds by ${(received - upperBound).toFixed(3)}, or ${((1 / (rawDuration / received) - 1) * 100).toFixed(2)}% higher.`;
-      return {
-        message: getMessage(false, extra),
-        pass: false,
-      };
-    }
-  }
-});

@@ -5,6 +5,7 @@
      "^.+\\.(ts|tsx)?$": "ts-jest",
      "^.+\\.(js|jsx)$": "babel-jest"
   },
+  "setupFilesAfterEnv": ["./jest.setup.ts"],
   "collectCoverage": false,
   "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
