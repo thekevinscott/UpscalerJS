@@ -7,6 +7,7 @@ import { BenchmarkedResult, Benchmarker } from './utils/Benchmarker';
 import { DatasetDefinition } from './utils/types';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import Table from 'cli-table';
+import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';
 
 /****
@@ -158,6 +159,48 @@ const saveResults = async (results: BenchmarkedResult[]) => {
   }
 }
 
+const writeResultsToOutput = (results: BenchmarkedResult[], outputCSV: string) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+  const { values } = results[0];
+  const datasetNames = Object.keys(values);
+  let metricNames: string[];
+  const head = [
+    'Package',
+    'Model',
+    'Scale',
+    ...datasetNames.reduce((arr, datasetName) => {
+      if (!metricNames) {
+        metricNames = Object.keys(values[datasetName]);
+      }
+      return arr.concat(metricNames.map(metric => [datasetName,metric.toUpperCase()].join('-')));
+    }, [] as string[]),
+  ];
+
+  const rows: (string | number)[][] = results.sort((a, b) => {
+    const datasetName = datasetNames[0];
+    const aValues = a.values[datasetName];
+    const bValues = b.values[datasetName];
+    return bValues[metricNames[0]] - aValues[metricNames[0]];
+  }).map(result => {
+    return [
+      result.packageName,
+      result.modelName,
+      result.scale,
+      ...datasetNames.reduce((arr, datasetName) => {
+        const metricValues = result.values[datasetName];
+        return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined && val !== null ? val : '---'));
+      }, [] as (number | string)[]),
+    ];
+  });
+
+  writeFileSync(outputCSV, [
+    head.join(','),
+    ...rows.map(row => row.join(',')),
+  ].join('\n'), 'utf-8');
+}
+
 const display = (results: BenchmarkedResult[]) => {
   if (results.length === 0) {
     throw new Error('No results found');
@@ -165,18 +208,19 @@ const display = (results: BenchmarkedResult[]) => {
   const { values } = results[0];
   const datasetNames = Object.keys(values);
   let metricNames: string[];
+  const head = [
+    'Package',
+    'Model',
+    'Scale',
+    ...datasetNames.reduce((arr, datasetName) => {
+      if (!metricNames) {
+        metricNames = Object.keys(values[datasetName]);
+      }
+      return arr.concat(metricNames.map(metric => [datasetName,metric.toUpperCase()].join('-')));
+    }, [] as string[]),
+  ];
   const table = new Table({
-    head: [
-      'Package', 
-      'Model', 
-      'Scale', 
-      ...datasetNames.reduce((arr, datasetName) => {
-        if (!metricNames) {
-          metricNames = Object.keys(values[datasetName]);
-        }
-        return arr.concat(metricNames.map(metric => [datasetName,metric.toUpperCase()].join('-')));
-      }, [] as string[]),
-    ],
+    head,
   });
 
   const rows: (string | number)[][] = results.sort((a, b) => {
@@ -186,9 +230,9 @@ const display = (results: BenchmarkedResult[]) => {
     return bValues[metricNames[0]] - aValues[metricNames[0]];
   }).map(result => {
     return [
-      result.packageName, 
-      result.modelName, 
-      result.scale, 
+      result.packageName,
+      result.modelName,
+      result.scale,
       ...datasetNames.reduce((arr, datasetName) => {
         const metricValues = result.values[datasetName];
         return arr.concat(metricNames.map(metricName => metricValues[metricName]).map(val => val !== undefined && val !== null ? val : '---'));
@@ -212,7 +256,7 @@ const mark = (msg: string) => {
  * Main function
  */
 
-const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean, useGPU = false) => {
+const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinition[], models: string[], metrics: string[], cropSize?: number, n?: number, resultsOnly?: boolean, useGPU = false, outputCSV?: string) => {
   const benchmarker = new Benchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
@@ -250,6 +294,9 @@ const benchmarkPerformance = async (cacheDir: string, datasets: DatasetDefinitio
   const results = await benchmarker.retrieveResults(metrics, cropSize);
   display(results);
   await saveResults(results);
+  if (outputCSV) {
+    writeResultsToOutput(results, outputCSV);
+  }
 };
 
 /****
@@ -264,6 +311,7 @@ interface Args {
   resultsOnly?: boolean;
   metrics: string[];
   useGPU?: boolean;
+  outputCSV?: string;
 }
 
 async function getArg<T>(options: { message: string, type: string }) {
@@ -326,6 +374,7 @@ const getArgs = async (): Promise<Args> => {
       resultsOnly: { type: 'boolean' },
       useGPU: { type: 'boolean' },
       metric: { type: 'string' },
+      outputCSV: { type: 'string' },
     });
   })
   .help()
@@ -349,12 +398,13 @@ const getArgs = async (): Promise<Args> => {
     resultsOnly: ifDefined('resultsOnly', 'boolean'),
     metrics,
     useGPU: ifDefined('useGPU', 'boolean'),
+    outputCSV: ifDefined('outputCSV', 'string'),
   }
 }
 
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly, args.useGPU);
+    await benchmarkPerformance(args.cacheDir, args.datasets, args.models, args.metrics, args.cropSize, args.n, args.resultsOnly, args.useGPU, args.outputCSV);
   })();
 }
