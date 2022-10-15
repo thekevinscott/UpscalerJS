@@ -110,32 +110,54 @@ const setupSpeedBenchmarking = async (fn: () => Promise<void>) => {
  * Main function
  */
 
-const benchmarkModel = async (driver: webdriver.WebDriver, model: string, size: number, patchSize?: number): Promise<Record<string, any>> => driver.executeScript(({ model, size, patchSize }: { model: string, size: number, patchSize?: number }) => {
-  const tf = window['tf'];
-  const Upscaler = window['Upscaler'];
-  const upscaler = new Upscaler({
-    model: JSON.parse(model),
-  });
-  const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
+type BenchmarkModel = (
+  driver: webdriver.WebDriver, 
+  model: string, 
+  size: number, 
+  patchSize?: number
+) => Promise<Record<string, any>>;
+interface ExecuteScriptOpts {
+  model: string;
+  size: number;
+  patchSize?: number;
+}
+const benchmarkModel: BenchmarkModel = async (
+  driver,
+  model,
+  size,
+  patchSize,
+) => driver.executeScript(async ({ 
+  model, 
+  size, 
+  patchSize 
+}: ExecuteScriptOpts) => {
+  await new Promise(r => setTimeout(r, 1));
+  return { foo: 'foo' };
+  // const tf = window['tf'];
+  // const Upscaler = window['Upscaler'];
+  // const upscaler = new Upscaler({
+  //   model: JSON.parse(model),
+  // });
+  // const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
 
-  return upscaler.warmup([{
-    patchSize: patchSize || size,
-    padding: 0,
-  }]).then(() => {
-    const start = performance.now();
-    return upscaler.upscale(input, {
-      output: 'tensor',
-      patchSize,
-    }).then((tensor) => {
-      // const shape = tensor.shape;
-      const end = performance.now();
-      tensor.dispose();
-      input.dispose();
-      return {
-        duration: end - start,
-      };
-    });
-  });
+  // return upscaler.warmup([{
+  //   patchSize: patchSize || size,
+  //   padding: 0,
+  // }]).then(() => {
+  //   const start = performance.now();
+  //   return upscaler.upscale(input, {
+  //     output: 'tensor',
+  //     patchSize,
+  //   }).then((tensor) => {
+  //     // const shape = tensor.shape;
+  //     const end = performance.now();
+  //     tensor.dispose();
+  //     input.dispose();
+  //     return {
+  //       duration: end - start,
+  //     };
+  //   });
+  // });
 }, { model, size, patchSize });
 
 const benchmarkDevice = async (capabilities: BrowserOption, model: string, sizes: number[], times: number, poolNum: number, callback: () => void) => {
@@ -150,10 +172,11 @@ const benchmarkDevice = async (capabilities: BrowserOption, model: string, sizes
   }
   const progress = async (size: number) => {
     try {
-      const { duration } = await benchmarkModel(driver, JSON.stringify({
+      const { duration, ...foo } = await benchmarkModel(driver, JSON.stringify({
         // path: '/pixelator/pixelator.json',
         // scale: 4,
       }), size, 5);
+        console.log('REST', foo);
       durations.push({
         duration,
         size,
