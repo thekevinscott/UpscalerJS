@@ -39,6 +39,7 @@
     "example:start": "pnpm --filter @upscalerjs/scripts example:start",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "model:benchmark:performance": "pnpm --filter @upscalerjs/scripts model:benchmark:performance",
+    "model:benchmark:speed": "pnpm --filter @upscalerjs/scripts model:benchmark:speed",
     "model:convert-python-model": "pnpm --filter @upscalerjs/scripts model:convert-python-model",
     "model:convert-python-model-folder": "pnpm --filter @upscalerjs/scripts model:convert-python-model-folder",
     "model:create": "pnpm --filter @upscalerjs/scripts model:create",
