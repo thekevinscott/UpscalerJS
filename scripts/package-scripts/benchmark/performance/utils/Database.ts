@@ -72,7 +72,7 @@ export class Database {
     return dataset;
   }
 
-  async addModelPackage(tf: TF, packageName: string, resultsOnly?: boolean, useGPU = false) {
+  async addModelPackage(tf: TF, packageName: string, resultsOnly?: boolean, useGPU = false, models?: string[]) {
     await this.ready;
     const modelPackage = await Package.returnUpsert({
       name: packageName,
@@ -82,7 +82,7 @@ export class Database {
     modelPackage.tf = tf;
 
     if (resultsOnly !== true) {
-      await modelPackage.addModels();
+      await modelPackage.addModels(models);
     }
 
     return modelPackage;
