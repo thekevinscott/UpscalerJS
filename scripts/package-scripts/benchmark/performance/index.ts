@@ -307,10 +307,10 @@ const benchmarkPerformance = async (
   await benchmarker.addModels(tf, packages, resultsOnly, useGPU, models);
   if (resultsOnly !== true) {
     mark('Evaluating');
-    await benchmarker.benchmark(tf, cropSize, n, DELAY);
+    await benchmarker.benchmark(tf, packages, cropSize, n, models, DELAY);
   }
   mark('Results');
-  const results = await benchmarker.retrieveResults(metrics, cropSize);
+  const results = await benchmarker.retrieveResults(metrics, cropSize, models);
   display(results);
   await saveResults(results);
   if (outputCSV) {
