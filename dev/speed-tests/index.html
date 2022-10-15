@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>UpscalerJS Development: Speed Tests</title>
+  <link rel="stylesheet" href="../global.css" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <div id="stats"></div>
+
+  <div id="body">
+    <div id="description">
+    <p>This page runs a speed test on UpscalerJS.</p>
+    <p>
+      Each model has some inherent amount of latency to run. We want to ensure that the surrounding UpscalerJS does not add 
+      significant latency to the baseline model latency.</p>
+    <p>This page runs two tests: it runs a basic model with minimal latency that simply scales up an image without upscaling,
+      and then it runs a version of the GANS model. For each test, it first runs the model raw 
+      (e.g., by calling <code>model.predict</code> directly), and then again using UpscalerJS.</p>
+
+    </div>
+    <button id="start" disabled>Start Benchmarking Test</button>
+    <label>Size of the tensor to run through the models</label>
+    <input id="tensor-size" type="text" value="64" />
+    <p><label>Status: </label><span id="status">Preparing</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Type</th>
+          <th>Duration</th>
+          <th>FPS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="simple-raw">
+          <td>Simple</td>
+          <td>Raw</td>
+          <td class="duration"></td>
+          <td class="fps"></td>
+        </tr>
+        <tr id="simple-upscalerjs">
+          <td>Simple</td>
+          <td>UpscalerJS</td>
+          <td class="duration"></td>
+          <td class="fps"></td>
+        </tr>
+        <tr id="gans-raw">
+          <td>GANs</td>
+          <td>Raw</td>
+          <td class="duration"></td>
+          <td class="fps"></td>
+        </tr>
+        <tr id="gans-upscalerjs">
+          <td>GANs</td>
+          <td>UpscalerJS</td>
+          <td class="duration"></td>
+          <td class="fps"></td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+  <script type="module" src="./index.ts"></script>
+</body>
+</html>

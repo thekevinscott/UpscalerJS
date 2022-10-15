@@ -62,7 +62,7 @@ const getModelInfo = (file: string) => {
   const architecture = params[0];
   const scale = params[6][1];
   const dataset = params[10].split('data').pop();
-  let exportName = convertStringToExport(`${folder.split('patch')[0]}-${weight?.split('vary_cFalse').pop()?.split('_').join('-').split('.')[0]}-dataset-${dataset}`);
+  let exportName = convertStringToExport(`${folder.split('patch')[0]}-${weight?.split('vary_cFalse').pop()?.split('_').join('-').split('.')[0]}-data${dataset}`);
   let size;
   if (exportName.startsWith('rdnC1D2G4G064T10')) {
     size = 'small';

@@ -25,6 +25,7 @@
   "scripts": {
     "build": "pnpm build",
     "build:model": "pnpm --filter @upscalerjs/scripts build:model",
+    "dev": "vite --config ./dev/vite.config.ts",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
     "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
@@ -60,9 +61,9 @@
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.20.0",
-    "@tensorflow/tfjs-node": "^3.20.0",
-    "@tensorflow/tfjs-node-gpu": "^3.20.0"
+    "@tensorflow/tfjs": "^4.0.0",
+    "@tensorflow/tfjs-node": "^4.0.0",
+    "@tensorflow/tfjs-node-gpu": "^4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",
@@ -74,9 +75,9 @@
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@schemastore/package": "^0.0.6",
-    "@tensorflow/tfjs": "^3.20.0",
-    "@tensorflow/tfjs-node": "^3.20.0",
-    "@tensorflow/tfjs-node-gpu": "^3.20.0",
+    "@tensorflow/tfjs": "^4.0.0",
+    "@tensorflow/tfjs-node": "^4.0.0",
+    "@tensorflow/tfjs-node-gpu": "^4.0.0",
     "@types/babel__core": "^7.1.19",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
@@ -134,9 +135,9 @@
   "packageManager": "pnpm@3.1.0",
   "pnpm": {
     "overrides": {
-      "@tensorflow/tfjs": "^3.20.0",
-      "@tensorflow/tfjs-node": "^3.20.0",
-      "@tensorflow/tfjs-node-gpu": "^3.20.0"
+      "@tensorflow/tfjs": "^4.0.0",
+      "@tensorflow/tfjs-node": "^4.0.0",
+      "@tensorflow/tfjs-node-gpu": "^4.0.0"
     }
   }
 }

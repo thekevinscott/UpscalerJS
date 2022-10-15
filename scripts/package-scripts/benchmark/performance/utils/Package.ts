@@ -78,9 +78,21 @@ export class Package extends BaseModel {
     return upscaler;
   }
 
-  async addModels() {
+  async addModels(models?: string[]) {
     const packageName = this.name;
-    const modelKeysAndPaths = Package.getExportedModelsFromPackageJSON(packageName);
+    const modelKeysAndPaths = Package.getExportedModelsFromPackageJSON(packageName).filter((name) => {
+      if (models === undefined) {
+        return true;
+      }
+
+      return models.reduce((shouldInclude, model) => {
+        if (shouldInclude) {
+          return true;
+        }
+
+        return name.toLowerCase().includes(model.toLowerCase());
+      }, false);
+    });
     const existingUpscalerModelNames = new Set<any>((await this.getUpscalerModels()).map(model => model.name));
     const progressBar = new ProgressBar(modelKeysAndPaths.length);
 

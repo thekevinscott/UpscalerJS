@@ -13,7 +13,7 @@ export type JSONSchema = JSONSchemaForNPMPackageJsonFiles & {
 
 const DIRNAME = __dirname;
 
-export type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper';
+export type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper' | 'Dev';
 export type TransformPackageJsonFn = (packageJSON: JSONSchema, dir: string) => JSONSchema;
 export type PackageUpdaterLogger = (file: string) => (string | undefined);
 
@@ -24,8 +24,10 @@ export const WRAPPER = 'Wrapper';
 export const EXAMPLES = 'Examples';
 export const MODELS = 'Models';
 export const TEST = 'Test';
+export const DEV = 'Development';
+export const DOCS = 'Docs';
 
-export const AVAILABLE_PACKAGES = [ ROOT, UPSCALER_JS, CORE, MODELS, EXAMPLES, TEST, WRAPPER ];
+export const AVAILABLE_PACKAGES = [ ROOT, UPSCALER_JS, CORE, MODELS, EXAMPLES, TEST, WRAPPER, DEV, DOCS ];
 
 const ROOT_DIR = path.resolve(DIRNAME, '../../..');
 const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
@@ -38,6 +40,8 @@ export const DIRECTORIES: Record<string, { directory: string, multiple?: boolean
   [EXAMPLES]: { directory: path.resolve(ROOT_DIR, 'examples'), multiple: true },
   [TEST]: { directory: path.resolve(ROOT_DIR, 'test/lib'), multiple: true },
   [WRAPPER]: { directory: path.resolve(PACKAGES_DIR, 'upscalerjs-wrapper') },
+  [DEV]: { directory: path.resolve(ROOT_DIR, 'dev') },
+  [DOCS]: { directory: path.resolve(ROOT_DIR, 'docs'), multiple: true },
 }
 
 export const getPreparedFolderName = (file: string) => {

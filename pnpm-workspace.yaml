@@ -1,4 +1,5 @@
 packages:
+  - 'dev/**'
   - 'packages/**'
   - 'models/**'
   - 'scripts/**'
