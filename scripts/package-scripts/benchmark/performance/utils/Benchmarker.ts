@@ -167,7 +167,7 @@ export class Benchmarker {
     }
   };
 
-  async benchmark(tf: TF, cropSize?: number, n: number = Infinity, delay = 0) {
+  async benchmark(tf: TF, packageNames: string[], cropSize?: number, n: number = Infinity, modelNames?: string[], delay = 0) {
     const metrics = await Promise.all((await Metric.findAll()).map(async metric => {
       await metric.setId();
       return metric;
@@ -201,13 +201,15 @@ export class Benchmarker {
         throw new Error(`Could not find number of files for dataset ${dataset.name}`);
       }
       for (const modelPackage of this.modelPackages) {
-        const models = await modelPackage.models;
-        for (const model of models) {
-          total += Math.min(n, numberOfFiles);
-          evaluationPairs.push({
-            dataset,
-            model,
-          });
+        if (packageNames.includes(modelPackage.name)) {
+          const models = await modelPackage.getModels(modelNames);
+          for (const model of models) {
+            total += Math.min(n, numberOfFiles);
+            evaluationPairs.push({
+              dataset,
+              model,
+            });
+          }
         }
       }
     }
@@ -344,7 +346,7 @@ export class Benchmarker {
     }
   }
 
-  async retrieveResults(metrics: string[], cropSize?: number): Promise<BenchmarkedResult[]> {
+  async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[]): Promise<BenchmarkedResult[]> {
     const packages = this.modelPackages;
 
     const tableDivider = '___';
@@ -384,14 +386,22 @@ export class Benchmarker {
           LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
           LEFT JOIN Packages p ON p.id = um.PackageId
 
-          WHERE p.name IN(:packageNames)
+          WHERE 1=1
+          AND p.name IN(:packageNames)
+          ${modelNames ? `AND um.name IN (:modelNames)` : ''}
                     
           GROUP BY r.UpscalerModelId;
       `;
+    let queryModelNames: string[] = [];
+    for (const pkg of packages) {
+      const models = await pkg.getModels(modelNames);
+      queryModelNames = queryModelNames.concat(models.map(m => m.name));
+    }
     const results: Record<string, string | number>[] = await sequelize.query(query, {
       replacements: {
         cropKey,
         packageNames: packages.map(p => p.name),
+        modelNames: queryModelNames,
       },
       type: QueryTypes.SELECT,
     });

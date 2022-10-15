@@ -78,9 +78,10 @@ export class Package extends BaseModel {
     return upscaler;
   }
 
-  async addModels(models?: string[]) {
+  getModelKeysAndPaths() {
+    const models = this._models;
     const packageName = this.name;
-    const modelKeysAndPaths = Package.getExportedModelsFromPackageJSON(packageName).filter((name) => {
+    return Package.getExportedModelsFromPackageJSON(packageName).filter((name) => {
       if (models === undefined) {
         return true;
       }
@@ -93,6 +94,13 @@ export class Package extends BaseModel {
         return name.toLowerCase().includes(model.toLowerCase());
       }, false);
     });
+
+  }
+
+  private _models?: string[];
+  async addModels(models?: string[]) {
+    this._models = models;
+    const modelKeysAndPaths = this.getModelKeysAndPaths();
     const existingUpscalerModelNames = new Set<any>((await this.getUpscalerModels()).map(model => model.name));
     const progressBar = new ProgressBar(modelKeysAndPaths.length);
 
@@ -129,15 +137,35 @@ export class Package extends BaseModel {
   }
 
   get models() {
-    return new Promise<UpscalerModel[]>(async resolve => {
-      const models = await this.getUpscalerModels();
-      await Promise.all(models.map(async model => {
+    throw new Error();
+  }
+
+  async getModels(modelNames?: string[]) {
+    const models = await this.getUpscalerModels();
+    const filteredModels = models.filter(model => {
+      if (modelNames === undefined) {
+        return true;
+      }
+
+      return modelNames.reduce((shouldInclude, modelName) => {
+        if (shouldInclude) {
+          return true;
+        }
+
+        return model.name.toLowerCase().includes(modelName.toLowerCase());
+      }, false);
+    });
+    await Promise.all(filteredModels.map(async model => {
+      try {
         const [upscaler, modelDefinition] = await this.getUpscaler(model.name);
         model.upscaler = upscaler;
         model.modelDefinition = modelDefinition;
-      }));
-      return resolve(models);
-    });
+        return model;
+      } catch (err) {
+        return undefined;
+      }
+    }).filter(model => model));
+    return filteredModels;
   }
 }
 

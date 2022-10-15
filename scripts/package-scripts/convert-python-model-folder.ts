@@ -94,9 +94,12 @@ const getModelInfo = (file: string) => {
   }, architecture, modelPath};
 }
 
-const updateIndex = (folder: string, files: string[]) => {
+const updateIndex = (folder: string, files: string[], shouldClearOutExports?: boolean) => {
   const packageJSONPath = path.resolve(folder, 'package.json');
   const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
+  if (shouldClearOutExports === true) {
+    packageJSON['exports'] = {};
+  }
   packageJSON['exports'] = {
     ...packageJSON['exports'],
     ".": {
@@ -136,11 +139,8 @@ export default ${exportName};
 /****
  * Main function
  */
-const convertPythonModelFolder = async (folder: string, outputModel: string, convertModels = true) => {
+const convertPythonModelFolder = async (folder: string, outputModel: string, convertModels = true, shouldClearOutExports?: boolean) => {
   const files = filterFiles(readModelDirectory(folder));
-  if (files.length === 0) {
-    throw new Error(`No files found in folder ${folder}`)
-  }
   const progressBar = new ProgressBar(files.length)
   const outputModelFolder = path.resolve(MODELS_FOLDER, outputModel);
   for (const file of files) {
@@ -153,13 +153,18 @@ const convertPythonModelFolder = async (folder: string, outputModel: string, con
   }
   progressBar.end();
 
-  updateIndex(outputModelFolder, files);
+  updateIndex(outputModelFolder, files, shouldClearOutExports);
 };
 
 /****
  * Functions to expose the main function as a CLI tool
  */
-type Answers = { modelFolder: string; outputModel: string; skipConvertModels?: boolean }
+type Answers = { 
+  modelFolder: string; 
+  outputModel: string; 
+  skipConvertModels?: boolean;
+  shouldClearOutExports?: boolean;
+}
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('convert-python-model-folder', 'convert folder', yargs => {
@@ -169,6 +174,7 @@ const getArgs = async (): Promise<Answers> => {
       describe: 'The output model folder to write to',
     }).options({
       skipConvertModels: { type: 'boolean' },
+      shouldClearOutExports: { type: 'boolean' },
     });
   })
     .help()
@@ -179,6 +185,7 @@ const getArgs = async (): Promise<Answers> => {
 
   return {
     skipConvertModels: ifDefined(argv, 'skipConvertModels', 'boolean'),
+    shouldClearOutExports: ifDefined(argv, 'shouldClearOutExports', 'boolean'),
     outputModel,
     modelFolder
   };
@@ -187,6 +194,6 @@ const getArgs = async (): Promise<Answers> => {
 if (require.main === module) {
   (async () => {
     const { modelFolder, outputModel, skipConvertModels } = await getArgs();
-    await convertPythonModelFolder(modelFolder, outputModel, skipConvertModels !== true);
+    await convertPythonModelFolder(modelFolder, outputModel, skipConvertModels !== true, shouldClearOutExports);
   })();
 }

@@ -71,6 +71,9 @@ export class UpscalerModel extends Model {
     const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
     const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
     const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, exports, useGPU);
+    if (!upscaler) {
+      throw new Error();
+    }
     const { modelDefinition } = await upscaler.getModel();
     return [upscaler, modelDefinition];
   }
@@ -115,6 +118,9 @@ const getGlobalUpscaler = (useGPU?: boolean): typeof _Upscaler => {
 const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: string, exports: Record<string, any>, useGPU = false) => {
   const Upscaler = getGlobalUpscaler(useGPU);
   const value = exports[key];
+  // if (!value) {
+  //   throw new Error(`No value for ${key} in exports`);
+  // }
   if (typeof value === 'object') {
     const { require: importPath, } = value;
     const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
@@ -138,9 +144,9 @@ const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: s
       console.error('Error instantiating upscaler for model definition', model);
       throw err;
     }
-  } else {
-    console.error(value);
-    throw new Error('Handle this')
+  // } else {
+  //   console.error(exports, key, value);
+  //   throw new Error('Handle this')
   }
 };
 
