@@ -7,9 +7,6 @@ import { existsSync, readFileSync } from 'fs-extra';
 /****
  * Types
  */
-// type Platform = 'browser' | 'node';
-// type Runner = 'local' | 'browserstack';
-
 export type Browserstack = browserstack.Local;
 
 export interface BrowserOption {
