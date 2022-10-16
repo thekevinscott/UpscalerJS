@@ -20,9 +20,10 @@ import { UpscalerOptions } from 'upscaler/dist/browser/esm/types';
  */
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
-const TIMES = 5;
+const TIMES = 10;
 const SIZES = [
-  // 8, 16, 32, 
+  // 8, 16,
+  32, 
   64, 
   // 128, 160, 192, 
   // 256, 384, 
@@ -159,23 +160,20 @@ const benchmarkModel: BenchmarkModel = async (
   return { duration: durations / times };
 }, { times, upscalerOpts, size, patchSize });
 
-const benchmarkDevice = async (capabilities: BrowserOption, upscalerOpts: UpscalerOptions, sizes: number[], times: number, poolNum: number, callback: () => void) => {
+const benchmarkDevice = async (capabilities: BrowserOption, upscalerOpts: UpscalerOptions, sizes: number[], callback: () => void) => {
   const driver = await setupDriver(capabilities);
   // console.log(capabilities)
-  const durations: any[] = [];
+  const durationsMap = new Map<number, number[]>();
   const iterations = [];
-  for (const _ of Array(times)) {
+  for (const _ of Array(TIMES)) {
     for (const size of sizes) {
       iterations.push(size);
     }
   }
   const progress = async (size: number) => {
     try {
-      const { duration } = await benchmarkModel(driver, upscalerOpts, size, times);
-      durations.push({
-        duration,
-        size,
-      });
+      const { duration } = await benchmarkModel(driver, upscalerOpts, size, TIMES);
+      durationsMap.set(size, (durationsMap.get(size) || []).concat(duration))
       await printLogs(driver, capabilities);
     } catch (err: unknown) {
       if (err instanceof Error && 'message' in err && err.message.includes('Failed to link vertex and fragment shaders')) {
@@ -184,10 +182,13 @@ const benchmarkDevice = async (capabilities: BrowserOption, upscalerOpts: Upscal
       }
     }
   }
-  for await (const _ of asyncPool(poolNum, iterations, progress)) {
+  for await (const _ of asyncPool(7, iterations, progress)) {
     callback();
   }
-  console.log(durations.filter(({ duration }) => !Number.isNaN(duration)));
+  durationsMap.forEach((durations, size) => {
+    const avgDuration = durations.filter(d => !Number.isNaN(d)).reduce((sum, d) => sum + d, 0);
+    console.log('Average duration for size', size, '(averaged over 100 times)', avgDuration) ;
+  });
   return driver;
 }
 
@@ -210,7 +211,7 @@ const benchmarkSpeed = async () => setupSpeedBenchmarking(async () => {
       scale: 4,
       },
     };
-    const driver = await benchmarkDevice(capabilities, upscalerOpts, SIZES, TIMES, 3, () => {
+    const driver = await benchmarkDevice(capabilities, upscalerOpts, SIZES, () => {
       bar.update();
     });
     try {
