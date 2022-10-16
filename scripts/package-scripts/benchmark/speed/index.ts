@@ -13,6 +13,7 @@ import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels'
 import { BrowserOption, getBrowserOptions, getBrowserstackAccessKey, getDriver, printLogs, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack';
 import { ProgressBar } from '../../utils/ProgressBar';
 import asyncPool from 'tiny-async-pool';
+import { UpscalerOptions } from 'upscaler/dist/browser/esm/types';
 
 /****
  * Constants
@@ -110,35 +111,55 @@ const setupSpeedBenchmarking = async (fn: () => Promise<void>) => {
  * Main function
  */
 
-const benchmarkModel = async (driver: webdriver.WebDriver, model: string, size: number, patchSize?: number): Promise<Record<string, any>> => driver.executeScript(({ model, size, patchSize }: { model: string, size: number, patchSize?: number }) => {
+type BenchmarkModel = (
+  driver: webdriver.WebDriver, 
+  upscalerOpts: UpscalerOptions, 
+  size: number, 
+  times: number,
+  patchSize?: number
+) => Promise<Record<string, any>>;
+interface ExecuteScriptOpts {
+  upscalerOpts: UpscalerOptions;
+  size: number;
+  times: number;
+  patchSize?: number;
+}
+const benchmarkModel: BenchmarkModel = async (
+  driver,
+  upscalerOpts,
+  size,
+  times,
+  patchSize,
+) => driver.executeScript(async ({ 
+  upscalerOpts, 
+  size, 
+  times,
+  patchSize,
+}: ExecuteScriptOpts) => {
   const tf = window['tf'];
   const Upscaler = window['Upscaler'];
-  const upscaler = new Upscaler({
-    model: JSON.parse(model),
-  });
+  const upscaler = new Upscaler(upscalerOpts);
   const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
-
-  return upscaler.warmup([{
+  await new Promise(r => setTimeout(r, 1));
+  await upscaler.warmup([{
     patchSize: patchSize || size,
     padding: 0,
-  }]).then(() => {
+  }]);
+  let durations = 0;
+  for (let i = 0; i < times; i++) {
     const start = performance.now();
-    return upscaler.upscale(input, {
+    const tensor = await upscaler.upscale(input, {
       output: 'tensor',
       patchSize,
-    }).then((tensor) => {
-      // const shape = tensor.shape;
-      const end = performance.now();
-      tensor.dispose();
-      input.dispose();
-      return {
-        duration: end - start,
-      };
     });
-  });
-}, { model, size, patchSize });
+    durations += performance.now() - start;
+    tensor.dispose();
+  }
+  input.dispose();
+  return { duration: durations / times };
+}, { times, upscalerOpts, size, patchSize });
 
-const benchmarkDevice = async (capabilities: BrowserOption, model: string, sizes: number[], times: number, poolNum: number, callback: () => void) => {
+const benchmarkDevice = async (capabilities: BrowserOption, upscalerOpts: UpscalerOptions, sizes: number[], times: number, poolNum: number, callback: () => void) => {
   const driver = await setupDriver(capabilities);
   // console.log(capabilities)
   const durations: any[] = [];
@@ -150,10 +171,7 @@ const benchmarkDevice = async (capabilities: BrowserOption, model: string, sizes
   }
   const progress = async (size: number) => {
     try {
-      const { duration } = await benchmarkModel(driver, JSON.stringify({
-        // path: '/pixelator/pixelator.json',
-        // scale: 4,
-      }), size, 5);
+      const { duration } = await benchmarkModel(driver, upscalerOpts, size, times);
       durations.push({
         duration,
         size,
@@ -182,8 +200,17 @@ const benchmarkSpeed = async () => setupSpeedBenchmarking(async () => {
   }
   const bar = new ProgressBar(pairs.length * SIZES.length * TIMES);
   const progress = async (i: number) => {
-    const { capabilities, model } = pairs[i];
-    const driver = await benchmarkDevice(capabilities, model, SIZES, TIMES, 3, () => {
+    const { 
+      capabilities, 
+      // model,
+     } = pairs[i];
+    const upscalerOpts: UpscalerOptions = {
+      model: {
+      path: '/pixelator/pixelator.json',
+      scale: 4,
+      },
+    };
+    const driver = await benchmarkDevice(capabilities, upscalerOpts, SIZES, TIMES, 3, () => {
       bar.update();
     });
     try {
@@ -192,7 +219,6 @@ const benchmarkSpeed = async () => setupSpeedBenchmarking(async () => {
       console.log('Failed to close driver with', err)
     }
   }
-  // so 9 active threads
   for await (const _ of asyncPool(7, Array(pairs.length).fill('').map((_, i) => i), progress)) { }
   bar.end();
 });
