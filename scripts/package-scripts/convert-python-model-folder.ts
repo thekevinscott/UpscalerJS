@@ -193,7 +193,7 @@ const getArgs = async (): Promise<Answers> => {
 
 if (require.main === module) {
   (async () => {
-    const { modelFolder, outputModel, skipConvertModels } = await getArgs();
+    const { modelFolder, outputModel, skipConvertModels, shouldClearOutExports } = await getArgs();
     await convertPythonModelFolder(modelFolder, outputModel, skipConvertModels !== true, shouldClearOutExports);
   })();
 }
