@@ -40,14 +40,53 @@ interface ExistingResult {
   ImageId: number;
 }
 
-export class Benchmarker {
+export class PerformanceBenchmarker {
   database: Database;
   cacheDir: string;
   modelPackages: Package[] = [];
   datasets: Dataset[] = [];
 
   constructor(cacheDir: string, metrics: string[]) {
-    this.database = new Database(metrics);
+    this.database = new Database(async (sequelize) => {
+
+    await Promise.all(metrics.map(name =>
+      Metric.upsert({
+        name,
+      })
+    ));
+
+    await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
+    await sequelize.query(`
+        CREATE VIEW aggregated_results
+        AS
+        SELECT 
+
+        AVG(r.value) as value, 
+        d.id as DatasetId, 
+        r.MetricId, 
+        r.UpscalerModelId, 
+        i.cropSize
+
+        FROM Results r
+
+        LEFT JOIN Metrics m ON m.id = r.MetricId
+
+        LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
+        LEFT JOIN Packages p ON p.id = um.PackageId
+
+        LEFT JOIN Images i ON i.id = r.ImageId
+        LEFT JOIN Files f ON f.id = i.FileId
+        LEFT JOIN Datasets d ON d.id = f.DatasetId
+
+        WHERE 1=1
+
+        GROUP BY 
+        m.name, 
+        d.name,
+        um.name,
+        i.cropSize
+      `);
+    });
     this.cacheDir = cacheDir;
   }
 

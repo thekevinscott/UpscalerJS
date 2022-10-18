@@ -3,7 +3,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import callExec from '../../../../test/lib/utils/callExec';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import { BenchmarkedResult, Benchmarker } from './utils/Benchmarker';
+import { BenchmarkedResult, PerformanceBenchmarker } from './utils/PerformanceBenchmarker';
 import { DatasetDefinition } from './utils/types';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import Table from 'cli-table';
@@ -276,7 +276,7 @@ const benchmarkPerformance = async (
     useGPU?: boolean;
     outputCSV?: string
   }) => {
-  const benchmarker = new Benchmarker(cacheDir, metrics);
+  const benchmarker = new PerformanceBenchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
   }
