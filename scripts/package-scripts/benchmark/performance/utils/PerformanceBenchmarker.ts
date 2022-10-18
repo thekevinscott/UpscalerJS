@@ -201,8 +201,6 @@ export class PerformanceBenchmarker {
           ImageId: image.imageId,
         });
       }));
-    } else {
-      console.log('.')
     }
   };
 
