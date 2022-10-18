@@ -332,25 +332,6 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  models/experiments:
-    specifiers:
-      '@tensorflow/tfjs': ^4.0.0
-      '@tensorflow/tfjs-core': ^4.0.0
-      '@tensorflow/tfjs-layers': ^4.0.0
-      '@tensorflow/tfjs-node': ^4.0.0
-      '@tensorflow/tfjs-node-gpu': ^4.0.0
-      '@upscalerjs/core': workspace:*
-      seedrandom: 3.0.5
-    dependencies:
-      '@upscalerjs/core': link:../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-core': 4.0.0
-      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
-      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
-      seedrandom: 3.0.5
-
   models/pixel-upsampler:
     specifiers:
       '@tensorflow/tfjs': ^4.0.0
@@ -390,7 +371,7 @@ importers:
       chokidar: ^3.5.3
       eslint: ^8.8.0
       eslint-config-prettier: ^8.3.0
-      eslint-plugin-jsdoc: ^37.8.2
+      eslint-plugin-jsdoc: ^39.3.13
       eslint-plugin-prefer-arrow: ^1.2.3
       seedrandom: 3.0.5
       ts-jest: ^29.0.1
@@ -408,7 +389,7 @@ importers:
       chokidar: 3.5.3
       eslint: 8.17.0
       eslint-config-prettier: 8.5.0_eslint@8.17.0
-      eslint-plugin-jsdoc: 37.9.7_eslint@8.17.0
+      eslint-plugin-jsdoc: 39.3.13_eslint@8.17.0
       eslint-plugin-prefer-arrow: 1.2.3_eslint@8.17.0
       seedrandom: 3.0.5
       ts-jest: 29.0.1
@@ -2620,13 +2601,13 @@ packages:
       - uglify-js
       - webpack-cli
 
-  /@es-joy/jsdoccomment/0.20.1:
-    resolution: {integrity: sha512-oeJK41dcdqkvdZy/HctKklJNkt/jh+av3PZARrZEl+fs/8HaHeeYoAvEwOV0u5I6bArTF17JEsTZMY359e/nfQ==}
-    engines: {node: ^12 || ^14 || ^16 || ^17}
+  /@es-joy/jsdoccomment/0.32.0:
+    resolution: {integrity: sha512-sbA+4b9VZSf9DJqGrTRS6jxclyA5WpWiKXWxVqEN5HP4LOECJGfZlTS82l9w/byp4pXGPYsf5WQrW2iDG7+cKw==}
+    engines: {node: ^14 || ^16 || ^17 || ^18}
     dependencies:
-      comment-parser: 1.3.0
+      comment-parser: 1.3.1
       esquery: 1.4.0
-      jsdoc-type-pratt-parser: 2.2.5
+      jsdoc-type-pratt-parser: 3.1.0
     dev: true
 
   /@esbuild-plugins/node-globals-polyfill/0.1.1_esbuild@0.14.51:
@@ -3053,7 +3034,7 @@ packages:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.3.7
+      semver: 7.3.8
       tar: 6.1.11
     transitivePeerDependencies:
       - encoding
@@ -3276,7 +3257,7 @@ packages:
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.3.7
+      semver: 7.3.8
     dev: false
     optional: true
 
@@ -4334,7 +4315,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.3.7
+      semver: 7.3.8
       tsutils: 3.21.0
     transitivePeerDependencies:
       - supports-color
@@ -5675,8 +5656,8 @@ packages:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
 
-  /comment-parser/1.3.0:
-    resolution: {integrity: sha512-hRpmWIKgzd81vn0ydoWoyPoALEOnF4wt8yKD35Ib1D6XC2siLiYaiqfGkYrunuKdsXGwpBpHU3+9r+RVw2NZfA==}
+  /comment-parser/1.3.1:
+    resolution: {integrity: sha512-B52sN2VNghyq5ofvUsqZjmk6YkihBX5vMSChmSK9v4ShjKf3Vk5Xcmgpw4o+iIgtrnM/u5FiMpz9VKb8lpBveA==}
     engines: {node: '>= 12.0.0'}
     dev: true
 
@@ -5973,7 +5954,7 @@ packages:
       postcss-modules-scope: 3.0.0_postcss@8.4.14
       postcss-modules-values: 4.0.0_postcss@8.4.14
       postcss-value-parser: 4.2.0
-      semver: 7.3.7
+      semver: 7.3.8
       webpack: 5.73.0
 
   /css-minimizer-webpack-plugin/4.0.0_ym7haxui4mhsv4z74sxfalk3f4:
@@ -7417,20 +7398,19 @@ packages:
       eslint: 8.17.0
     dev: true
 
-  /eslint-plugin-jsdoc/37.9.7_eslint@8.17.0:
-    resolution: {integrity: sha512-8alON8yYcStY94o0HycU2zkLKQdcS+qhhOUNQpfONHHwvI99afbmfpYuPqf6PbLz5pLZldG3Te5I0RbAiTN42g==}
-    engines: {node: ^12 || ^14 || ^16 || ^17}
+  /eslint-plugin-jsdoc/39.3.13_eslint@8.17.0:
+    resolution: {integrity: sha512-yF16kYmoz8pcEZXxX2kdaBwWFvXrUpxuF+ZgG/0PKLKcT9lGKFi4Mn0Mk/KqJeMgUprFDCzNTjnzYGf8tdNrAA==}
+    engines: {node: ^14 || ^16 || ^17 || ^18}
     peerDependencies:
       eslint: ^7.0.0 || ^8.0.0
     dependencies:
-      '@es-joy/jsdoccomment': 0.20.1
-      comment-parser: 1.3.0
+      '@es-joy/jsdoccomment': 0.32.0
+      comment-parser: 1.3.1
       debug: 4.3.4
       escape-string-regexp: 4.0.0
       eslint: 8.17.0
       esquery: 1.4.0
-      regextras: 0.8.0
-      semver: 7.3.7
+      semver: 7.3.8
       spdx-expression-parse: 3.0.1
     transitivePeerDependencies:
       - supports-color
@@ -7994,7 +7974,7 @@ packages:
       memfs: 3.4.4
       minimatch: 3.1.2
       schema-utils: 2.7.0
-      semver: 7.3.7
+      semver: 7.3.8
       tapable: 1.1.3
       typescript: 4.8.3
       webpack: 5.73.0
@@ -9678,7 +9658,7 @@ packages:
       jest-util: 28.1.1
       natural-compare: 1.4.0
       pretty-format: 28.1.1
-      semver: 7.3.7
+      semver: 7.3.8
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9804,8 +9784,8 @@ packages:
     dependencies:
       argparse: 2.0.1
 
-  /jsdoc-type-pratt-parser/2.2.5:
-    resolution: {integrity: sha512-2a6eRxSxp1BW040hFvaJxhsCMI9lT8QB8t14t+NY5tC5rckIR0U9cr2tjOeaFirmEOy6MHvmJnY7zTBHq431Lw==}
+  /jsdoc-type-pratt-parser/3.1.0:
+    resolution: {integrity: sha512-MgtD0ZiCDk9B+eI73BextfRrVQl0oyzRG8B2BjORts6jbunj4ScKPcyXGTbB6eXL4y9TzxCm6hyeLq/2ASzNdw==}
     engines: {node: '>=12.0.0'}
     dev: true
 
@@ -10662,7 +10642,7 @@ packages:
     resolution: {integrity: sha512-YPG3Co0luSu6GwOBsmIdGW6Wx0NyNDLg/hriIyDllVsNwnI6UeqaWShxC3lbH4LtEQUgoLP3XR1ndXiDAWvmRw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.3.7
+      semver: 7.3.8
     dev: true
 
   /node-addon-api/4.3.0:
@@ -11349,7 +11329,7 @@ packages:
       cosmiconfig: 7.0.1
       klona: 2.0.5
       postcss: 8.4.14
-      semver: 7.3.7
+      semver: 7.3.8
       webpack: 5.73.0
 
   /postcss-merge-idents/5.1.1_postcss@8.4.14:
@@ -12222,11 +12202,6 @@ packages:
       unicode-match-property-ecmascript: 2.0.0
       unicode-match-property-value-ecmascript: 2.0.0
 
-  /regextras/0.8.0:
-    resolution: {integrity: sha512-k519uI04Z3SaY0fLX843MRXnDeG2+vHOFsyhiPZvNLe7r8rD2YNRjq4BQLZZ0oAr2NrtvZlICsXysGNFPGa3CQ==}
-    engines: {node: '>=0.1.14'}
-    dev: true
-
   /registry-auth-token/3.3.2:
     resolution: {integrity: sha512-JL39c60XlzCVgNrO+qq68FoNb56w/m7JYvGR2jT5iR1xBrUA3Mfx5Twk5rqTThPmQKMWydGmq8oFtDlxfrmxnQ==}
     dependencies:
@@ -12553,7 +12528,7 @@ packages:
       loader-utils: 2.0.2
       neo-async: 2.6.2
       schema-utils: 3.1.1
-      semver: 7.3.7
+      semver: 7.3.8
     dev: true
 
   /sass-loader/13.0.2:
@@ -12689,6 +12664,13 @@ packages:
 
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
+    engines: {node: '>=10'}
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+
+  /semver/7.3.8:
+    resolution: {integrity: sha512-NB1ctGL5rlHrPJtFDVIVzTyQylMLu9N9VICA6HSFJo8MCGVTMW6gfpicwKmmK/dAjTOrqu5l63JJOpDSrAis3A==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -14136,7 +14118,7 @@ packages:
       is-yarn-global: 0.3.0
       latest-version: 5.1.0
       pupa: 2.1.1
-      semver: 7.3.7
+      semver: 7.3.8
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
 
