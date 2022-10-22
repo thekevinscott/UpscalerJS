@@ -6,6 +6,7 @@ import convertPythonModel from './convert-python-model';
 import { getString } from './prompt/getString';
 import { ifDefined } from './prompt/ifDefined';
 import { ProgressBar } from './utils/ProgressBar';
+import { getHashedFilepath } from './benchmark/performance/utils/utils';
 
 /****
  * Type Definitions
@@ -54,14 +55,30 @@ const convertStringToExport = (name: string) => {
   }, parts[0]);
 }
 
+const splitParams = (folder: string) => {
+  const params: string[] = folder.split('-');
+  const expectedParams = {
+    C: parseInt(params[1].slice(1), 10),
+    D: parseInt(params[2].slice(1), 10),
+    G: parseInt(params[3].slice(1), 10),
+    G0: parseInt(params[4].slice(2), 10),
+    T: parseInt(params[5].slice(1), 10),
+    patchSize: parseInt(`${params[7].split('patchsize').pop()}`, 10),
+    compress: parseInt(`${params[8].split('compress').pop()}`, 10),
+    sharpen: parseInt(`${params[9].split('sharpen').pop()}`, 10),
+    architecture: params[0],
+    scale: params[6][1],
+    dataset: params[10].split('data').pop()?.toLowerCase(),
+    varyCompression: params[11].split('vary_c').pop(),
+  };
+  return expectedParams;
+}
+
 const getModelInfo = (file: string) => {
   const parts = file.split('/');
   const folder = parts[0];
   const weight = parts.pop();
-  const params = folder.split('-');
-  const architecture = params[0];
-  const scale = params[6][1];
-  const dataset = params[10].split('data').pop();
+  const { architecture, dataset, C, D, G, G0, T, scale, patchSize, compress, sharpen, varyCompression } = splitParams(folder);
   let exportName = convertStringToExport(`${folder.split('patch')[0]}-${weight?.split('vary_cFalse').pop()?.split('_').join('-').split('.')[0]}-data${dataset}`);
   let size;
   if (exportName.startsWith('rdnC1D2G4G064T10')) {
@@ -76,23 +93,41 @@ const getModelInfo = (file: string) => {
     size = 'large';
     exportName = `large${exportName.slice(18)}`;
   }
-  const modelPath = `models/${file}/${weight?.split('.')[0]}/model.json`;
+  const hash = getHashedFilepath(file).slice(0, 8);
+  exportName = `${exportName}_${hash}`;
+  // const pathToModelFolder = file.split('/').pop()?.split('.')[0];
+  const modelPath = `models/esrgan/${file}/model.json`;
+  if (modelPath.includes('.h5')) {
+    console.error('export name', exportName);
+    console.error('file', file.split('/').pop()?.split('.')[0]);
+    console.error('weight', weight);
+    throw new Error(`Bad model path, ".h5" should not be in the path name: ${modelPath}`);
+  }
   return { exportName, scale, meta: {
     scale: parseInt(scale, 10),
     architecture,
-    C: parseInt(params[1].slice(1), 10),
-    D: parseInt(params[2].slice(1), 10),
-    G: parseInt(params[3].slice(1), 10),
-    G0: parseInt(params[4].slice(2), 10),
-    T: parseInt(params[5].slice(1), 10),
-    patchSize: parseInt(`${params[7].split('patchsize').pop()}`, 10),
-    compress: parseInt(`${params[8].split('compress').pop()}`, 10),
-    sharpen: parseInt(`${params[9].split('sharpen').pop()}`, 10),
+    C,
+    D,
+    G,
+    G0,
+    T,
+    patchSize,
+    compress,
+    sharpen,
     dataset,
-    varyCompression: params[11].split('vary_c').pop(),
+    varyCompression,
     size,
   }, architecture, modelPath};
 }
+
+const getSrcForFile = (file: string) => {
+    const { exportName, scale, meta, architecture, modelPath } = getModelInfo(file);
+  return `
+import getModelDefinition from '../../utils/getModelDefinition';
+const ${exportName} = getModelDefinition(${scale}, '${architecture}', '${modelPath}', ${JSON.stringify(meta, null, 2)});
+export default ${exportName};
+`.trim();
+};
 
 const updateIndex = (folder: string, files: string[], shouldClearOutExports?: boolean) => {
   const packageJSONPath = path.resolve(folder, 'package.json');
@@ -112,14 +147,10 @@ const updateIndex = (folder: string, files: string[], shouldClearOutExports?: bo
 
   const index: string[] = [];
   files.forEach(file => {
-    const { exportName, scale, meta, architecture, modelPath } = getModelInfo(file);
+    const { exportName } = getModelInfo(file);
     const indexPath = path.resolve(folder, `src/models/esrgan/${exportName}.ts`);
     mkdirpSync(path.dirname(indexPath));
-    fs.writeFileSync(indexPath, `
-import getModelDefinition from '../../utils/getModelDefinition';
-const ${exportName} = getModelDefinition(${scale}, '${architecture}', '${modelPath}', ${JSON.stringify(meta, null, 2)});
-export default ${exportName};
-`.trim(), 'utf-8');
+    fs.writeFileSync(indexPath, getSrcForFile(file), 'utf-8');
     packageJSON['exports'] = {
       ...packageJSON['exports'],
       [`./models/esrgan/${exportName}`]: {
@@ -140,20 +171,36 @@ export default ${exportName};
  * Main function
  */
 const convertPythonModelFolder = async (folder: string, outputModel: string, convertModels = true, shouldClearOutExports?: boolean) => {
-  const files = filterFiles(readModelDirectory(folder));
+  const totalFiles = readModelDirectory(folder);
+  const files = filterFiles(totalFiles);
+  if (files.length === 0) {
+    throw new Error(`No files found for folder ${folder} after filter. Pre-filter, the total files count was ${totalFiles.length}`)
+  }
+
   const progressBar = new ProgressBar(files.length)
   const outputModelFolder = path.resolve(MODELS_FOLDER, outputModel);
   for (const file of files) {
     const fullfilepath = path.resolve(folder, file);
-    const outputDirectory = path.resolve(outputModelFolder, 'models', file);
+    const fileWithoutModel = file.split('/').slice(0, -1).join('/')
+    const outputDirectory = path.resolve(outputModelFolder, 'models/esrgan', fileWithoutModel);
     if (convertModels) {
-      await convertPythonModel(fullfilepath, outputDirectory);
+      try {
+        await convertPythonModel(fullfilepath, outputDirectory);
+      } catch(err) {
+        console.error('There was an error', err);
+      }
     }
     progressBar.update();
   }
   progressBar.end();
 
-  updateIndex(outputModelFolder, files, shouldClearOutExports);
+  updateIndex(outputModelFolder, files.map(file => {
+    const splitFile = file.split('.').shift();
+    if (splitFile === undefined) {
+      throw new Error(`Broken: ${file}`);
+    }
+    return splitFile;
+  }), shouldClearOutExports);
 };
 
 /****

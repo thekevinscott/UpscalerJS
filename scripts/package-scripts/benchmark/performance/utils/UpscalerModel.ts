@@ -102,8 +102,15 @@ UpscalerModel.init({
     type: DataTypes.JSON,
   },
 }, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['name', 'PackageId']
+    }
+  ],
   sequelize,
-  modelName: 'UpscalerModel'
+  modelName: 'UpscalerModel',
+  
 });
 
 // only import it once
@@ -118,9 +125,6 @@ const getGlobalUpscaler = (useGPU?: boolean): typeof _Upscaler => {
 const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: string, exports: Record<string, any>, useGPU = false) => {
   const Upscaler = getGlobalUpscaler(useGPU);
   const value = exports[key];
-  // if (!value) {
-  //   throw new Error(`No value for ${key} in exports`);
-  // }
   if (typeof value === 'object') {
     const { require: importPath, } = value;
     const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
@@ -144,9 +148,6 @@ const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: s
       console.error('Error instantiating upscaler for model definition', model);
       throw err;
     }
-  // } else {
-  //   console.error(exports, key, value);
-  //   throw new Error('Handle this')
   }
 };
 

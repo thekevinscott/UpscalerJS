@@ -232,22 +232,27 @@ export class PerformanceBenchmarker {
 
     const evaluationPairs: { dataset: Dataset; model: UpscalerModel; }[] = [];
     let total = 0;
+    const modelsForDatasets = [];
+    for (const modelPackage of this.modelPackages) {
+      if (packageNames.includes(modelPackage.name)) {
+        const models = await modelPackage.getModels(modelNames);
+        console.log('models for', modelPackage.name, models.length)
+        for (const model of models) {
+          modelsForDatasets.push(model);
+        }
+      }
+    }
     for (const dataset of this.datasets) {
       const numberOfFiles = countsByDataset.get(dataset.name);
       if (numberOfFiles === undefined) {
         throw new Error(`Could not find number of files for dataset ${dataset.name}`);
       }
-      for (const modelPackage of this.modelPackages) {
-        if (packageNames.includes(modelPackage.name)) {
-          const models = await modelPackage.getModels(modelNames);
-          for (const model of models) {
-            total += Math.min(n, numberOfFiles);
-            evaluationPairs.push({
-              dataset,
-              model,
-            });
-          }
-        }
+      for (const model of modelsForDatasets) {
+        total += Math.min(n, numberOfFiles);
+        evaluationPairs.push({
+          dataset,
+          model,
+        });
       }
     }
 
