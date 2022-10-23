@@ -2,33 +2,29 @@ import Upscaler from 'upscaler';
 import webdriver from 'selenium-webdriver';
 import { bundle, DIST } from '../../../../test/lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
+import path from 'path';
+import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import yargs from 'yargs';
 import { startServer } from '../../../../test/lib/shared/server';
 import http from 'http';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import { BrowserOption, getBrowserOptions, getBrowserstackAccessKey, getDriver, printLogs, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack';
-import { ProgressBar } from '../../utils/ProgressBar';
-import asyncPool from 'tiny-async-pool';
-import { UpscalerOptions } from 'upscaler/dist/browser/esm/types';
+import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack';
+import { BenchmarkedSpeedResult, SpeedBenchmarker } from '../performance/utils/SpeedBenchmarker';
+import { TF } from "../performance/utils/types";
+import Table from 'cli-table';
+import sequelize from '../performance/utils/sequelize';
+import { QueryTypes } from 'sequelize';
+import { writeFileSync } from 'fs-extra';
+import { Device } from '../performance/utils/Device';
+import { Local } from 'browserstack-local';
 
 /****
  * Constants
  */
 const PORT = 8099;
-const DEFAULT_LOCALHOST = 'localhost';
-const TIMES = 10;
-const SIZES = [
-  // 8, 16,
-  32, 
-  64, 
-  // 128, 160, 192, 
-  // 256, 384, 
-  // 512, 768, 1024
-];
-
-const browserOptions = getBrowserOptions(option => {
-  return option?.os === 'OS X';
-});
+const SHOW_DEVICES = false;
+const ROOT_DIR = path.resolve(__dirname, '../../../..');
+const SCREENSHOT_DIR = path.resolve(ROOT_DIR, './tmp/screenshots');
 
 /****
  * Types
@@ -60,174 +56,446 @@ const closeServer = (server: http.Server) => new Promise<void>((resolve, reject)
   }
 });
 
-const setupDriver = async (capabilities: BrowserOption) => {
-  const driver = getDriver(capabilities);
-  const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
-  await driver.get(ROOT_URL);
-  await driver.wait(async () => {
-    const title = await driver.getTitle();
-    return title.endsWith('| Loaded');
-  }, 3000);
-  return driver;
-}
-
 const startBrowserstack = async () => {
   const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
   const bsLocal = await _startBrowserstack(BROWSERSTACK_ACCESS_KEY);
-  process.on('exit', async () => {
-    if (bsLocal !== undefined && bsLocal.isRunning()) {
-      await stopBrowserstack(bsLocal);
-    }
-  });
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: () => Promise<void>) => {
-  await bundle();
-  const bsLocal = await startBrowserstack();
-  const server = await startServer(PORT, DIST);
+const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { skipBundle }: { skipBundle?: boolean }) => {
+  if (skipBundle !== true) {
+    console.log('bundling')
+    await bundle({
+      verbose: true,
+      skipInstallNodeModules: true,
+    });
+  }
+  console.log('Starting local browserstack and local server');
+  const [bsLocal, server] = await Promise.all([
+    startBrowserstack(),
+    startServer(PORT, DIST),
+  ]);
+  console.log('Successfully started local browserstack and local server')
+
+  const closeAll = async () => await Promise.all([
+    bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
+    closeServer(server),
+  ])
+
+  process.on('exit', closeAll);
 
   let err: unknown;
   try {
-    await fn();
+    await fn(bsLocal, server);
   } catch(error: unknown) {
     err = error;
   }
 
-  if (bsLocal !== undefined) {
-    await stopBrowserstack(bsLocal);
-  }
-  await closeServer(server);
+  console.log('Closing local browserstack and local server');
+  await closeAll();
+  console.log('Successfully closed local browserstack and local server');
   if (err !== undefined) {
     console.error(err);
     process.exit(1);
   }
 };
 
+const mark = (msg: string) => {
+  const divider = Array(98).fill('*').join('');
+  console.log(`${divider}\n${msg}\n${divider}`);
+}
+
+const getDeviceName = (result: BenchmarkedSpeedResult) => {
+  return [
+    result.deviceOs,
+    result.deviceOsVersion,
+    result.deviceBrowserName,
+    result.deviceBrowserVersion,
+    result.device,
+  ].filter(Boolean).join(', ');
+}
+
+const display = (results: BenchmarkedSpeedResult[]) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+  const head = [
+    'Package',
+    'Model',
+    'Scale',
+    'Device',
+    'Speed',
+    'Iterations',
+    'Size',
+  ];
+  const table = new Table({
+    head,
+  });
+
+  const rows: (string | number)[][] = results.sort((a, b) => {
+    return a.duration - b.duration;
+  }).map(result => {
+    return [
+      result.packageName,
+      result.modelName,
+      result.scale,
+      getDeviceName(result),
+      result.duration,
+      result.times,
+      result.size,
+    ];
+  });
+
+  rows.forEach(row => {
+    table.push(row);
+  });
+
+  console.log(table.toString());
+}
+
+const saveResults = async (results: BenchmarkedSpeedResult[]) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+
+  await Promise.all([
+    `CREATE TABLE IF NOT EXISTS packages (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE
+  )`,
+  `CREATE TABLE IF NOT EXISTS models (
+    id INTEGER PRIMARY KEY,
+    packageId INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    scale INTEGER NOT NULL,
+    meta JSON NOT NULL,
+    UNIQUE(packageId, name)
+  )`,
+  `CREATE TABLE IF NOT EXISTS devices (
+    id INTEGER PRIMARY KEY,
+    os TEXT,
+    os_version TEXT,
+    browserName TEXT,
+    browser_version TEXT,
+    device TEXT,
+    real_mobile BOOLEAN
+  )`,
+  `CREATE TABLE IF NOT EXISTS results (
+    id INTEGER PRIMARY KEY,
+    value REAL NOT NULL,
+    times REAL NOT NULL,
+    size INTEGER NOT NULL,
+    deviceId INTEGER NOT NULL,
+    modelId INTEGER NOT NULL,
+    UNIQUE(deviceId,modelId)
+  )
+  `].map(query => sequelize.query(query)));
+  const packages = new Map<string, { packageName: string }>();
+  const models = new Map<string, { packageName: string; modelName: string; scale: number; meta: Record<string, string | number>}>();
+  const devices = new Map<string, {
+    device?: string; deviceOs?: string; deviceOsVersion?: string; deviceBrowserName?: string; deviceBrowserVersion?: string; deviceIsRealMobile?: boolean;
+  }>();
+  for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
+    packages.set(packageName, { packageName });
+    models.set(`${packageName}-${modelName}`, {
+      packageName,
+      modelName,
+      scale,
+      meta,
+    });
+    devices.set([
+      device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+    ].join('-'), {
+      device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+    });
+  }
+
+  type QueryFn <Args extends any[]> = (...args: Args) => Promise<undefined | Array<any>>;
+  function createIfNotExists<Args extends any[]>(selectQuery: QueryFn<Args>, createQuery: QueryFn<Args>) {
+    return async (...args: Args) => {
+      const results = await selectQuery(...args);
+      if (results === undefined || results.length === 0) {
+        await createQuery(...args);
+      }
+    }
+  }
+
+  const createPackageIfNotExists = createIfNotExists<[string]>((packageName) => sequelize.query(`SELECT 1 FROM packages WHERE name = :name`, {
+    type: QueryTypes.SELECT,
+    replacements: {
+      name: packageName,
+    }
+  }), async (packageName) => sequelize.query(`
+      INSERT OR IGNORE INTO packages (name) VALUES (:name)
+    `, {
+    replacements: {
+      name: packageName,
+    },
+    type: QueryTypes.INSERT,
+  }));
+
+  const createModelIfNotExists = createIfNotExists<[string, string, number, Record<string, string | number>]>((modelName, packageName) => sequelize.query(`
+      SELECT 1 FROM models 
+      WHERE name = :name
+      AND packageId = (SELECT id FROM packages WHERE packages.name = :packageName)
+  `, {
+    type: QueryTypes.SELECT,
+    replacements: {
+      name: modelName,
+      packageName,
+    }
+  }), async (modelName, packageName, scale, meta) => sequelize.query(`
+    INSERT OR IGNORE INTO models
+    (name, scale, meta, packageId) 
+       VALUES
+      (:name, :scale, :meta, (SELECT id FROM packages WHERE packages.name = :packageName))
+       `, {
+    replacements: {
+      name: modelName,
+      scale,
+      meta: JSON.stringify(meta),
+      packageName,
+    },
+    type: QueryTypes.INSERT,
+  }));
+
+  const createDeviceIfNotExists = createIfNotExists<[string | undefined, string | undefined, string | undefined, string | undefined, string | undefined, boolean | undefined]>((
+    device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+    ) => sequelize.query(`
+    SELECT 1 FROM devices
+    WHERE 1=1
+    AND os = :os
+    AND os_version = :os_version
+    AND browserName = :browserName
+    AND browser_version = :browser_version
+    AND device = :device
+    AND real_mobile = :real_mobile
+  `, {
+    type: QueryTypes.SELECT,
+        replacements: Device.getCapabilitiesForQuery({
+          os: deviceOs,
+          os_version: deviceOsVersion,
+          browserName: deviceBrowserName,
+          browser_version: deviceBrowserVersion,
+          device,
+          real_mobile: deviceIsRealMobile,
+        }),
+  }), async (
+        device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+    ) => sequelize.query(`
+      INSERT OR IGNORE INTO devices
+      (
+        os,
+        os_version,
+        browserName,
+        browser_version,
+        device,
+        real_mobile
+      )
+      VALUES 
+      (
+        :os,
+        :os_version,
+        :browserName,
+        :browser_version,
+        :device,
+        :real_mobile
+      )
+      `, {
+        replacements: Device.getCapabilitiesForQuery({
+          os: deviceOs,
+          os_version: deviceOsVersion,
+          browserName: deviceBrowserName,
+          browser_version: deviceBrowserVersion,
+          device,
+          real_mobile: deviceIsRealMobile,
+        }),
+        type: QueryTypes.INSERT,
+  }));
+  
+  for (const packageName in packages) {
+    await createPackageIfNotExists(packageName);
+  }
+  for (const [_, { modelName, packageName, scale, meta }] of models) {
+    await createModelIfNotExists(modelName, packageName, scale, meta)
+  }
+  for (const [_, {
+    device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+  }] of devices) {
+    await createDeviceIfNotExists(
+    device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
+    )
+  }
+  for (const { size, packageName, modelName, duration, times, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
+    await sequelize.query(`
+      INSERT OR IGNORE INTO results 
+      (value, times, modelId, deviceId) 
+      VALUES 
+      (
+        :value,
+        :times,
+        :size,
+        (SELECT id FROM models WHERE models.name = :modelName AND models.packageId = (SELECT id FROM packages WHERE packages.name = :packageName))
+        (
+          SELECT id FROM devices d 
+          WHERE 1=1 
+          AND d.os = :os
+          AND d.os_version = :os_version
+          AND d.browserName = :browserName
+          AND d.browser_version = :browser_version
+          AND d.device = :device
+          AND d.real_mobile = :real_mobile
+        )
+      )
+      `, {
+      replacements: {
+        value: duration,
+        times,
+        size,
+        modelName,
+        packageName,
+        device, 
+        os: deviceOs, 
+        os_version: deviceOsVersion, 
+        browserName: deviceBrowserName, 
+        browser_version: deviceBrowserVersion, 
+        real_mobile: deviceIsRealMobile,
+      },
+      type: QueryTypes.INSERT,
+    });
+  }
+}
+
+const writeResultsToOutput = (results: BenchmarkedSpeedResult[], outputCSV: string) => {
+  if (results.length === 0) {
+    throw new Error('No results found');
+  }
+
+  const head = [
+    'Package',
+    'Model',
+    'Scale',
+    'Duration',
+    'Iterations',
+    'Size',
+    'Device',
+    'Device OS',
+    'Device OS Version',
+    'Device Browser Name',
+    'Device Browser Version',
+    'Device is Real Mobile',
+  ];
+  const table = new Table({
+    head,
+  });
+
+  const rows: (string | number)[][] = results.sort((a, b) => {
+    return a.duration - b.duration;
+  }).map(result => {
+    return [
+      result.packageName,
+      result.modelName,
+      result.scale,
+      result.duration,
+      result.times,
+      result.size,
+      result.device || '---', 
+      result.deviceOs || '---', 
+      result.deviceOsVersion || '---', 
+      result.deviceBrowserName || '---', 
+      result.deviceBrowserVersion || '---', 
+      result.deviceIsRealMobile ? 'yes' : 'no',
+    ];
+  });
+
+  rows.forEach(row => {
+    table.push(row);
+  });
+
+  writeFileSync(outputCSV, [
+    head.join(','),
+    ...rows.map(row => row.join(',')),
+  ].join('\n'), 'utf-8');
+}
+
 /****
  * Main function
  */
 
-type BenchmarkModel = (
-  driver: webdriver.WebDriver, 
-  upscalerOpts: UpscalerOptions, 
-  size: number, 
-  times: number,
-  patchSize?: number
-) => Promise<Record<string, any>>;
-interface ExecuteScriptOpts {
-  upscalerOpts: UpscalerOptions;
-  size: number;
-  times: number;
-  patchSize?: number;
-}
-const benchmarkModel: BenchmarkModel = async (
-  driver,
-  upscalerOpts,
-  size,
-  times,
-  patchSize,
-) => driver.executeScript(async ({ 
-  upscalerOpts, 
-  size, 
-  times,
-  patchSize,
-}: ExecuteScriptOpts) => {
-  const tf = window['tf'];
-  const Upscaler = window['Upscaler'];
-  const upscaler = new Upscaler(upscalerOpts);
-  const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
-  await new Promise(r => setTimeout(r, 1));
-  await upscaler.warmup([{
-    patchSize: patchSize || size,
-    padding: 0,
-  }]);
-  let durations = 0;
-  for (let i = 0; i < times; i++) {
-    const start = performance.now();
-    const tensor = await upscaler.upscale(input, {
-      output: 'tensor',
-      patchSize,
-    });
-    durations += performance.now() - start;
-    tensor.dispose();
+const benchmarkSpeed = async (
+  packages: string[], 
+  {
+  models,
+  resultsOnly,
+  outputCSV,
+  times = 10,
+  skipDisplayResults,
+  skipBundle,
+}: {
+  times?: number;
+  models?: string[]
+  outputCSV?: string;
+  resultsOnly?: boolean;
+  skipDisplayResults?: boolean;
+  skipBundle?: boolean,
+}) => setupSpeedBenchmarking(async (bsLocal, server) => {
+  const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
+  await benchmarker.initialize();
+  if (resultsOnly !== true) {
+    mark('Preparing');
   }
-  input.dispose();
-  return { duration: durations / times };
-}, { times, upscalerOpts, size, patchSize });
-
-const benchmarkDevice = async (capabilities: BrowserOption, upscalerOpts: UpscalerOptions, sizes: number[], callback: () => void) => {
-  const driver = await setupDriver(capabilities);
-  // console.log(capabilities)
-  const durationsMap = new Map<number, number[]>();
-  const iterations = [];
-  for (const _ of Array(TIMES)) {
-    for (const size of sizes) {
-      iterations.push(size);
+  let tf: TF;
+  await benchmarker.addModels(packages, models, resultsOnly, false, modelPackage => {
+    if (!tf) {
+      tf = require('@tensorflow/tfjs-node');
     }
-  }
-  const progress = async (size: number) => {
-    try {
-      const { duration } = await benchmarkModel(driver, upscalerOpts, size, TIMES);
-      durationsMap.set(size, (durationsMap.get(size) || []).concat(duration))
-      await printLogs(driver, capabilities);
-    } catch (err: unknown) {
-      if (err instanceof Error && 'message' in err && err.message.includes('Failed to link vertex and fragment shaders')) {
-      } else {
-        console.error(err, err);
-      }
-    }
-  }
-  for await (const _ of asyncPool(7, iterations, progress)) {
-    callback();
-  }
-  durationsMap.forEach((durations, size) => {
-    const avgDuration = durations.filter(d => !Number.isNaN(d)).reduce((sum, d) => sum + d, 0);
-    console.log('Average duration for size', size, '(averaged over 100 times)', avgDuration) ;
+    modelPackage.tf = tf;
   });
-  return driver;
-}
+  const mobileOptions = getMobileBrowserOptions().filter(o => {
+    // return o.real_mobile === 'true' && (o.device?.toLowerCase().includes('iphone') || o.device?.toLowerCase().includes('ipad'));
+    // return o.real_mobile === 'true';
+    // return true;
+    return o.device !== "iPad Air 4";
+  });
 
-const benchmarkSpeed = async () => setupSpeedBenchmarking(async () => {
-  const pairs: { capabilities: BrowserOption; model: string }[] = [];
-  for (const capabilities of browserOptions.slice(0, 1)) {
-    for (const model of ['esrgan-slim']) {
-      pairs.push({ capabilities, model });
-    }
-  }
-  const bar = new ProgressBar(pairs.length * SIZES.length * TIMES);
-  const progress = async (i: number) => {
-    const { 
-      capabilities, 
-      // model,
-     } = pairs[i];
-    const upscalerOpts: UpscalerOptions = {
-      model: {
-      path: '/pixelator/pixelator.json',
-      scale: 4,
-      },
-    };
-    const driver = await benchmarkDevice(capabilities, upscalerOpts, SIZES, () => {
-      bar.update();
+  if (SHOW_DEVICES) {
+    console.log('Devices:');
+    mobileOptions.forEach(d => {
+      const device = [d.browserName, d.device, d.os_version, d.browser_version].filter(Boolean).join(', ');
+      console.log(`  - ${device}`);
     });
-    try {
-      driver.quit();
-    } catch (err) {
-      console.log('Failed to close driver with', err)
-    }
   }
-  for await (const _ of asyncPool(7, Array(pairs.length).fill('').map((_, i) => i), progress)) { }
-  bar.end();
-});
+
+  await benchmarker.addDevices(mobileOptions);
+  if (resultsOnly !== true) {
+    mark('Evaluating');
+    await benchmarker.benchmark(packages, times, models);
+  }
+  mark('Results');
+  const results = await benchmarker.retrieveResults(models);
+  if (skipDisplayResults !== true) {
+    display(results);
+  }
+  await saveResults(results);
+  if (outputCSV) {
+    writeResultsToOutput(results, outputCSV);
+  }
+}, { skipBundle });
 
 /****
  * Functions to expose the main function as a CLI tool
  */
 interface Args {
-  models: Array<string>;
+  models?: Array<string>;
+  packages: Array<string>;
+  times?: number;
+  resultsOnly?: boolean;
+  outputCSV?: string;
+  skipDisplayResults?: boolean;
+  skipBundle?: boolean;
 }
 
-const getModels = (model?: unknown): string[] => {
+const getModels = (model?: unknown): undefined | string[] => {
   if (typeof model === 'string') {
     return [model];
   }
@@ -236,32 +504,63 @@ const getModels = (model?: unknown): string[] => {
     return model;
   }
 
-  return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
+  return undefined;
 }
+
+const getPackages = (pkg?: unknown): string[] => {
+  if (typeof pkg === 'string') {
+    return [pkg];
+  }
+
+  if (Array.isArray(pkg)) {
+    return pkg;
+  }
+
+  return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
+};
 
 const getArgs = async (): Promise<Args> => {
   const argv = await yargs.command('benchmark-speed', 'benchmark speed', yargs => {
     yargs
-    // .positional('dataset', {
-    //   describe: 'The dataset',
-    // })
     .options({
       model: { type: 'string' },
+      package: { type: 'string' },
+      times: { type: 'number' },
+      resultsOnly: { type: 'boolean' },
+      outputCSV: { type: 'string' },
+      skipDisplayResults: { type: 'boolean' },
+      skipBundle: { type: 'boolean' },
     });
   })
   .help()
   .argv;
 
+  const packages = getPackages(argv.package);
   const models = getModels(argv.model);
 
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
+
   return {
+    packages,
     models,
+    times: ifDefined('times', 'number'),
+    resultsOnly: ifDefined('resultsOnly', 'boolean'),
+    outputCSV: ifDefined('outputCSV', 'string'),
+    skipDisplayResults: ifDefined('skipDisplayResults', 'boolean'),
+    skipBundle: ifDefined('skipBundle', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await benchmarkSpeed();
+    await benchmarkSpeed(args.packages, {
+      models: args.models,
+      times: args.times,
+      resultsOnly: args.resultsOnly,
+      outputCSV: args.outputCSV,
+      skipDisplayResults: args.skipDisplayResults,
+      skipBundle: args.skipBundle,
+    });
   })();
 }

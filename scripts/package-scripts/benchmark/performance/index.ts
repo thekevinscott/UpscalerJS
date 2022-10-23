@@ -278,7 +278,8 @@ const benchmarkPerformance = async (
     outputCSV?: string
     skipDisplayResults?: boolean;
   }) => {
-  const benchmarker = new PerformanceBenchmarker(cacheDir, metrics);
+  const benchmarker = new PerformanceBenchmarker(cacheDir);
+  await benchmarker.initialize(metrics);
   if (resultsOnly !== true) {
     mark('Preparing');
   }
@@ -306,7 +307,9 @@ const benchmarkPerformance = async (
     await benchmarker.addDatasets(datasets, cropSize, resultsOnly, n);
   }
   const tf = useGPU ? require('@tensorflow/tfjs-node-gpu') : require('@tensorflow/tfjs-node');
-  await benchmarker.addModels(tf, packages, resultsOnly, useGPU, models);
+  await benchmarker.addModels(packages, models, resultsOnly, useGPU, modelPackage => {
+    modelPackage.tf = tf;
+  });
   if (resultsOnly !== true) {
     mark('Evaluating');
     await benchmarker.benchmark(tf, packages, cropSize, n, models, DELAY);

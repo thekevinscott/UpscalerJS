@@ -1,4 +1,3 @@
-import { Database } from "./Database";
 import os from 'os';
 import path from 'path';
 import { DatasetDefinition } from "./types";
@@ -7,14 +6,16 @@ import { TF } from "./types";
 import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
-import { Package } from "./Package";
 import { Image } from "./Image";
 import { getSize, runScript } from "./utils";
 import { Metric } from './Metric';
-import { Result } from "./Result";
+import { PerformanceMeasurement } from "./PerformanceMeasurement";
 import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
+import { Benchmarker } from "./Benchmarker";
+
+const AGGREGATED_RESULTS_NAME = 'performance_aggregated_results';
 
 export interface BenchmarkedResult {
   packageName: string;
@@ -40,14 +41,17 @@ interface ExistingResult {
   ImageId: number;
 }
 
-export class PerformanceBenchmarker {
-  database: Database;
+export class PerformanceBenchmarker extends Benchmarker {
   cacheDir: string;
-  modelPackages: Package[] = [];
   datasets: Dataset[] = [];
 
-  constructor(cacheDir: string, metrics: string[]) {
-    this.database = new Database(async (sequelize) => {
+  constructor(cacheDir: string) {
+    super();
+    this.cacheDir = cacheDir;
+  }
+
+  async initialize(metrics: string[]) {
+    this.database.initialize((async (sequelize) => {
 
     await Promise.all(metrics.map(name =>
       Metric.upsert({
@@ -56,8 +60,9 @@ export class PerformanceBenchmarker {
     ));
 
     await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
+    await sequelize.query(`DROP VIEW IF EXISTS ${AGGREGATED_RESULTS_NAME}`);
     await sequelize.query(`
-        CREATE VIEW aggregated_results
+        CREATE VIEW ${AGGREGATED_RESULTS_NAME}
         AS
         SELECT 
 
@@ -86,8 +91,7 @@ export class PerformanceBenchmarker {
         um.name,
         i.cropSize
       `);
-    });
-    this.cacheDir = cacheDir;
+    }));
   }
 
   async addDatasets(datasets: DatasetDefinition[], cropSize?: number, resultsOnly?: boolean, n = Infinity) {
@@ -97,14 +101,6 @@ export class PerformanceBenchmarker {
       const writeFiles = resultsOnly !== true;
       const dataset = await this.database.addDataset(cacheDir, datasetDefinition, writeFiles, cropSize, n);
       this.datasets.push(dataset);
-    }
-  }
-
-  async addModels(tf: TF, modelPackageNames: string[], resultsOnly?: boolean, useGPU = false, models?: string[]) {
-    for (const packageName of modelPackageNames) {
-      console.log(`Model ${packageName}`);
-      const modelPackage = await this.database.addModelPackage(tf, packageName, resultsOnly, useGPU, models);
-      this.modelPackages.push(modelPackage);
     }
   }
 
@@ -194,7 +190,7 @@ export class PerformanceBenchmarker {
         if (Number.isNaN(value)) {
           throw new Error(`Metric calculation is NAN for paths ${upscaledPath}, ${srPath} and metric ${metric.name}`);
         }
-        await Result.upsert({
+        await PerformanceMeasurement.upsert({
           value,
           MetricId: metric.id,
           UpscalerModelId: model.id,
@@ -236,7 +232,6 @@ export class PerformanceBenchmarker {
     for (const modelPackage of this.modelPackages) {
       if (packageNames.includes(modelPackage.name)) {
         const models = await modelPackage.getModels(modelNames);
-        console.log('models for', modelPackage.name, models.length)
         for (const model of models) {
           modelsForDatasets.push(model);
         }
@@ -408,7 +403,7 @@ export class PerformanceBenchmarker {
       const tableName = getTableName(datasetName, metric);
       return `${tableName}.value as ${tableName}`;
     }).join(',\n')}
-          FROM aggregated_results r
+          FROM ${AGGREGATED_RESULTS_NAME} r
           ${pairs.map(([datasetName, metric]) => {
       const tableName = getTableName(datasetName, metric);
       return `
@@ -416,7 +411,7 @@ export class PerformanceBenchmarker {
                 SELECT 
                 value, 
                 UpscalerModelId 
-                FROM aggregated_results 
+                FROM ${AGGREGATED_RESULTS_NAME}
                 WHERE 
                   MetricId = (SELECT id FROM metrics WHERE name = "${metric}") 
                   AND DatasetId = (SELECT id FROM datasets WHERE name = "${datasetName}")
@@ -429,8 +424,8 @@ export class PerformanceBenchmarker {
           LEFT JOIN Packages p ON p.id = um.PackageId
 
           WHERE 1=1
-          AND p.name IN(:packageNames)
-          ${modelNames ? `AND um.name IN (:modelNames)` : ''}
+          AND p.name IN (:packageNames)
+          AND um.name IN (:modelNames)
                     
           GROUP BY r.UpscalerModelId;
       `;

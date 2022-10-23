@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { mkdirpSync, readdirSync, readFileSync, writeFileSync } from "fs-extra";
 import imageSize from 'image-size';
 import util from 'util';
+import webdriver from 'selenium-webdriver';
 import callExec from '../../../../../test/lib/utils/callExec';
 
 const sizeOf = util.promisify(imageSize);
@@ -84,3 +85,48 @@ export const runScript = async (cmd: string) => {
   }
   return [stdout, stderr, err];
 };
+
+export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: any) => Promise<T>, args?: any, {
+  pollTime = 100, timeout = 60 * 1000 * 5
+}: {
+  pollTime?: number;
+  timeout?: number;
+} = {}) {
+  const wait = (d: number) => new Promise(r => setTimeout(r, d));
+  const localKey = `___result_${Math.random()}___`;
+  const mainFn = new Function(`
+    const main = ${fn.toString()}
+    main(...arguments).then((result) => {
+      window['${localKey}'] = result;
+    });
+  `);
+  try {
+    driver.executeScript(mainFn, args);
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`Error executing main script: ${err.message}`);
+    } else {
+      throw err;
+    }
+  }
+  let response: T | undefined;
+  const start = performance.now();
+  while (!response) {
+    if (performance.now() - start > timeout) {
+      throw new Error(`Failed to execute script after ${timeout} ms`);
+    }
+    try {
+      response = await driver.executeScript<T | undefined>((localKey: string) => window[localKey], localKey);
+    } catch(err) {
+      console.error('Error executing script', err);
+    }
+    await wait(pollTime);
+  }
+  return response;
+}
+
+declare global {
+  interface Window {
+    [index: string]: any;
+  }
+}

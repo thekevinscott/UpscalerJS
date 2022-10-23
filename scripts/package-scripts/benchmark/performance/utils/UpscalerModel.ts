@@ -1,12 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import path from 'path';
 import sequelize from './sequelize';
-import { ROOT_DIR } from "./constants";
 import { readFileSync } from "fs-extra";
 import { ModelDefinition } from "@upscalerjs/core";
 import { Package } from "./Package";
 import _Upscaler from 'upscaler';
 import { TF } from "./types";
+import { MODELS_DIR } from "../../../utils/constants";
 
 export class UpscalerModel extends Model {
   declare id: number;
@@ -68,7 +68,7 @@ export class UpscalerModel extends Model {
     if (!modelName) {
       throw new Error('Model name must be provided')
     }
-    const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
+    const modelPackageFolder = path.resolve(MODELS_DIR, modelPackageName);
     const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
     const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, exports, useGPU);
     if (!upscaler) {

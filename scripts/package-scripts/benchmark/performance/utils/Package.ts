@@ -1,7 +1,6 @@
 import { DataTypes, Model, QueryTypes } from "sequelize";
 import path from 'path';
 import sequelize from './sequelize';
-import { ROOT_DIR } from "./constants";
 import { readFileSync } from "fs-extra";
 import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
@@ -9,6 +8,7 @@ import { ModelDefinition } from "upscaler";
 import { BaseModel } from "./BaseModel";
 import { ProgressBar } from "../../../utils/ProgressBar";
 import { TF } from "./types";
+import { MODELS_DIR } from "../../../utils/constants";
 const Upscaler = require('upscaler/node');
 
 const packageJSONs = new Map<string, Record<string, any>>();
@@ -27,7 +27,7 @@ export class Package extends BaseModel {
   static getPackageJSON(packageName: string) {
     const packageJSON = packageJSONs.get(packageName);
     if (!packageJSON) {
-      const modelPackageFolder = path.resolve(ROOT_DIR, 'models', packageName);
+      const modelPackageFolder = path.resolve(MODELS_DIR, packageName);
       const packageJSON = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
       packageJSONs.set(packageName, packageJSON);
       return packageJSON;
@@ -88,7 +88,7 @@ export class Package extends BaseModel {
     }
   }
 
-  async getUpscalerModels() {
+  async getUpscalerModels(): Promise<UpscalerModel[]> {
     await this.clearOutDuplicates();
     const names = this.getModelKeysAndPaths();
     const PackageId = this.getId();
@@ -157,12 +157,8 @@ export class Package extends BaseModel {
     const progressBar = new ProgressBar(modelKeysAndPaths.length);
 
     const processFile = async (modelName: string) => {
-      // const modelPath = path.join(packageName, modelName);
       if (!existingUpscalerModelNames.has(modelName)) {
         const PackageId = this.getId();
-        if (PackageId > 10) {
-          throw new Error(`Unexpected ID: ${PackageId}`)
-        }
         const [_, modelDefinition] = await this.getUpscaler(modelName);
         try {
           await UpscalerModel.upsert({
@@ -192,7 +188,7 @@ export class Package extends BaseModel {
     throw new Error();
   }
 
-  async getModels(modelNames?: string[]) {
+  async getModels(modelNames?: string[]): Promise<UpscalerModel[]> {
     const models = await this.getUpscalerModels();
     const filteredModels = models.filter(model => {
       if (modelNames === undefined) {
