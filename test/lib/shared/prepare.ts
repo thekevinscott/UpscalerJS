@@ -8,6 +8,7 @@ import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scrip
 import callExec from "../utils/callExec";
 import tar from 'tar';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
+import { getHashedFilepath } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
 
 const ROOT = path.join(__dirname, '../../..');
 
@@ -212,22 +213,25 @@ export const installLocalPackage = async (src: string, dest: string) => {
   })
 };
 
-interface Package {
-  name: string;
-  path: string;
+export interface Import {
+  packageName: string;
+  paths: { name: string; path: string; }[];
 }
 
-export const writeIndex = async (target: string, upscalerName: string, packages: Package[] = [], namespace?: string) => {
+export const writeIndex = async (target: string, upscalerName: string, imports: Import[] = []) => {
   const contents = `
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from '${upscalerName}';
 import flower from '../../../__fixtures__/flower-small.png';
 
-${packages.map(({ path }, i) => {
-return `import _${i} from '${path}';`;
-}).join('\n')}
-${packages.map(({ name, path }, i) => {
-return `window['${name}'] = _${i}`;
+${imports.map(({ paths }) => paths.map(({ path }) => {
+  return `import _${getHashedFilepath(path)} from '${path}';`;
+}).join('\n')).join('\n')}
+
+${imports.map(({ packageName: packageName, paths }) => {
+  return `window['${packageName}'] = {
+    ${paths.map(({ path, name }) => `'${name}': _${getHashedFilepath(path)}`).join(',')}
+  }`;
 }).join('\n')}
 
 window.tfjs = tf;

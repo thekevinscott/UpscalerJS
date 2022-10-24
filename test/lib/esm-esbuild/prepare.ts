@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -12,17 +12,22 @@ const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(ROOT, '../../../models')
 
 const PACKAGES = [
-  'esrgan-slim',
-  'pixel-upsampler',
-  'esrgan-legacy',
+  { packageName: 'esrgan-slim', models: [
+    { path: '', name: 'index',},
+  ]},
+  { packageName: 'pixel-upsampler', models: [
+    { path: '2x', name: '2x',},
+    { path: '3x', name: '3x',},
+    { path: '4x', name: '4x',},
+  ]},
+  { packageName: 'esrgan-legacy', models: [
+    { path: 'div2k/2x', name: 'div2k/2x',},
+    { path: 'div2k/3x', name: 'div2k/3x',},
+    { path: 'div2k/4x', name: 'div2k/4x',},
+    { path: 'psnr-small', name: 'psnr-small',},
+    { path: 'gans', name: 'gans', },
+  ]},
 ];
-
-const camelCaseName = (name: string) => name.split('-').map((part, i) => {
-  if (i > 0) {
-    return `${part[0].toUpperCase()}${part.slice(1)}`;
-  }
-  return part;
-}).join('');
 
 export const bundle = async () => {
   await installNodeModules(ROOT);
@@ -31,19 +36,25 @@ export const bundle = async () => {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
-    ...PACKAGES.map(name => ({
-      src: path.resolve(MODELS_PATH, name),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, name),
+    ...PACKAGES.map(({ packageName }) => ({
+      src: path.resolve(MODELS_PATH, packageName),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
     })),
   ]);
   copyFixtures(DIST, false);
 
   const entryFile = path.join(ROOT, 'src/index.js');
-  await writeIndex(entryFile, LOCAL_UPSCALER_NAME,
-    PACKAGES.map(name => ({
-      name: camelCaseName(name),
-      path: `${LOCAL_UPSCALER_NAMESPACE}/${name}`,
-    })), LOCAL_UPSCALER_NAMESPACE);
+  const imports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => {
+    const _import: Import = {
+      packageName,
+      paths: models.map(({ name, path }) => ({
+        name,
+        path: [LOCAL_UPSCALER_NAMESPACE, name, path].filter(Boolean).join('/'),
+      })),
+    };
+    return arr.concat(_import);
+  }, [] as Import[]);
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME, imports);
   const buildResult = await build({
     entryPoints: [entryFile],
     bundle: true,
