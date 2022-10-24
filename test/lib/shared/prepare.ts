@@ -1,6 +1,6 @@
 import { Dependency } from '@schemastore/package';
 import fs from 'fs';
-import { mkdirpSync } from 'fs-extra';
+import { mkdirpSync, writeFileSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -210,4 +210,32 @@ export const installLocalPackage = async (src: string, dest: string) => {
       cwd: tmp,
     });
   })
+};
+
+interface Package {
+  name: string;
+  path: string;
+}
+
+export const writeIndex = async (target: string, upscalerName: string, packages: Package[] = [], namespace?: string) => {
+  const contents = `
+import * as tf from '@tensorflow/tfjs';
+import Upscaler from '${upscalerName}';
+import flower from '../../../__fixtures__/flower-small.png';
+
+${packages.map(({ path }, i) => {
+return `import _${i} from '${path}';`;
+}).join('\n')}
+${packages.map(({ name, path }, i) => {
+return `window['${name}'] = _${i}`;
+}).join('\n')}
+
+window.tfjs = tf;
+window.flower = flower;
+window.Upscaler = Upscaler;
+document.title = document.title + '| Loaded';
+document.body.querySelector('#output').innerHTML = document.title;
+`;
+  writeFileSync(target, contents, 'utf-8');
+
 };

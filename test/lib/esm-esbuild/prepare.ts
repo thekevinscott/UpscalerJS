@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-import { installLocalPackages, installNodeModules } from '../shared/prepare';
+import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -11,6 +11,19 @@ export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(ROOT, '../../../models')
 
+const PACKAGES = [
+  'esrgan-slim',
+  'pixel-upsampler',
+  'esrgan-legacy',
+];
+
+const camelCaseName = (name: string) => name.split('-').map((part, i) => {
+  if (i > 0) {
+    return `${part[0].toUpperCase()}${part.slice(1)}`;
+  }
+  return part;
+}).join('');
+
 export const bundle = async () => {
   await installNodeModules(ROOT);
   await installLocalPackages(ROOT, [
@@ -18,24 +31,21 @@ export const bundle = async () => {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'pixel-upsampler'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'pixel-upsampler'),
-    },
+    ...PACKAGES.map(name => ({
+      src: path.resolve(MODELS_PATH, name),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, name),
+    })),
   ]);
   copyFixtures(DIST, false);
 
-  const entryFiles = path.join(ROOT, 'src/index.js');
+  const entryFile = path.join(ROOT, 'src/index.js');
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME,
+    PACKAGES.map(name => ({
+      name: camelCaseName(name),
+      path: `${LOCAL_UPSCALER_NAMESPACE}/${name}`,
+    })), LOCAL_UPSCALER_NAMESPACE);
   const buildResult = await build({
-    entryPoints: [entryFiles],
+    entryPoints: [entryFile],
     bundle: true,
     loader: {
       '.png': 'file',
