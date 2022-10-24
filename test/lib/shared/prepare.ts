@@ -6,11 +6,13 @@ import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
+import crypto from 'crypto';
 import tar from 'tar';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
-import { getHashedFilepath } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
 
 const ROOT = path.join(__dirname, '../../..');
+
+export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
 export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
   cwd,
@@ -219,20 +221,22 @@ export interface Import {
 }
 
 export const writeIndex = async (target: string, upscalerName: string, imports: Import[] = []) => {
+  const importCommands = imports.map(({ paths }) => paths.map(({ path }) => {
+    return `import _${getHashedName(path)} from '${path}';`;
+  }).join('\n')).join('\n');
+  const windowDefinitions = imports.map(({ packageName: packageName, paths }) => `window['${packageName}'] = {
+${paths.map(({ path, name }) => `  ['${name}']: _${getHashedName(path)},`).join('\n')}
+}`).join('\n');
   const contents = `
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from '${upscalerName}';
 import flower from '../../../__fixtures__/flower-small.png';
 
-${imports.map(({ paths }) => paths.map(({ path }) => {
-  return `import _${getHashedFilepath(path)} from '${path}';`;
-}).join('\n')).join('\n')}
+/*** Auto-generated import commands ***/
+${importCommands}
 
-${imports.map(({ packageName: packageName, paths }) => {
-  return `window['${packageName}'] = {
-    ${paths.map(({ path, name }) => `'${name}': _${getHashedFilepath(path)}`).join(',')}
-  }`;
-}).join('\n')}
+/*** Auto-generated window definition commands ***/
+${windowDefinitions}
 
 window.tfjs = tf;
 window.flower = flower;
@@ -240,6 +244,5 @@ window.Upscaler = Upscaler;
 document.title = document.title + '| Loaded';
 document.body.querySelector('#output').innerHTML = document.title;
 `;
-  writeFileSync(target, contents, 'utf-8');
-
+  writeFileSync(target, contents.trim(), 'utf-8');
 };

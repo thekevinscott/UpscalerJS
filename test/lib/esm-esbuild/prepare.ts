@@ -30,6 +30,18 @@ const PACKAGES = [
 ];
 
 export const bundle = async () => {
+  const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => {
+    const _import: Import = {
+      packageName,
+      paths: models.map(({ name, path }) => ({
+        name,
+        path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
+      })),
+    };
+    return arr.concat(_import);
+  }, [] as Import[]);
+  const entryFile = path.join(ROOT, 'src/index.js');
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   await installNodeModules(ROOT);
   await installLocalPackages(ROOT, [
     {
@@ -43,18 +55,6 @@ export const bundle = async () => {
   ]);
   copyFixtures(DIST, false);
 
-  const entryFile = path.join(ROOT, 'src/index.js');
-  const imports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => {
-    const _import: Import = {
-      packageName,
-      paths: models.map(({ name, path }) => ({
-        name,
-        path: [LOCAL_UPSCALER_NAMESPACE, name, path].filter(Boolean).join('/'),
-      })),
-    };
-    return arr.concat(_import);
-  }, [] as Import[]);
-  await writeIndex(entryFile, LOCAL_UPSCALER_NAME, imports);
   const buildResult = await build({
     entryPoints: [entryFile],
     bundle: true,
