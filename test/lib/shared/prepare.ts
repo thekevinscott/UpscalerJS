@@ -1,15 +1,18 @@
 import { Dependency } from '@schemastore/package';
 import fs from 'fs';
-import { mkdirpSync } from 'fs-extra';
+import { mkdirpSync, writeFileSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
+import crypto from 'crypto';
 import tar from 'tar';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 
 const ROOT = path.join(__dirname, '../../..');
+
+export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
 export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
   cwd,
@@ -210,4 +213,13 @@ export const installLocalPackage = async (src: string, dest: string) => {
       cwd: tmp,
     });
   })
+};
+
+export interface Import {
+  packageName: string;
+  paths: { name: string; path: string; }[];
+}
+
+export const writeIndex = (target: string, contents: string) => {
+  writeFileSync(target, contents.trim(), 'utf-8');
 };
