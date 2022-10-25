@@ -1,12 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { buildSync, build } from 'esbuild';
+import { build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-<<<<<<< HEAD
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
-=======
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
->>>>>>> 592a12197689c557db4920ebd5a509f878549ef1
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -33,17 +29,15 @@ const PACKAGES = [
   ]},
 ];
 
+const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => arr.concat({
+  packageName,
+  paths: models.map(({ name, path }) => ({
+    name,
+    path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
+  })),
+}), [] as Import[]);
+
 export const bundle = async () => {
-  const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => {
-    const _import: Import = {
-      packageName,
-      paths: models.map(({ name, path }) => ({
-        name,
-        path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
-      })),
-    };
-    return arr.concat(_import);
-  }, [] as Import[]);
   const entryFile = path.join(ROOT, 'src/index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   await installNodeModules(ROOT);
