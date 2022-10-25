@@ -22,7 +22,7 @@ describe('Upscale Integration Tests', () => {
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);
-  }, 120000);
+  }, 60000);
 
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();

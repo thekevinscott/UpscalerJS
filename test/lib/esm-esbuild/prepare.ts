@@ -41,7 +41,7 @@ export const bundle = async () => {
     return arr.concat(_import);
   }, [] as Import[]);
   const entryFile = path.join(ROOT, 'src/index.js');
-  await writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
+  // await writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   await installNodeModules(ROOT);
   await installLocalPackages(ROOT, [
     {
