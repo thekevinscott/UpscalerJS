@@ -218,11 +218,7 @@ describe('Memory Leaks', () => {
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
-        // TODO: Revert this to use the default
-        // const upscaler = new Upscaler();
-        const upscaler = new Upscaler({
-          model: window['pixel-upsampler']['4x'],
-        });
+        const upscaler = new Upscaler();
         await upscaler.dispose();
       }
     }, TIMES_TO_CHECK);
@@ -239,15 +235,9 @@ describe('Memory Leaks', () => {
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
-      const ESRGANGANS = window['esrgan-legacy']['gans'];
       for (let i = 0; i < times; i++) {
-        // TODO: Revert this to use the default
-        // const upscaler = new Upscaler({
-        //   warmupSizes: [[50, 50]],
-        // });
         const upscaler = new Upscaler({
           warmupSizes: [[50, 50]],
-          model: ESRGANGANS,
         });
         await upscaler.dispose();
       }
