@@ -2,11 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-<<<<<<< HEAD
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
-=======
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
->>>>>>> 592a12197689c557db4920ebd5a509f878549ef1
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
