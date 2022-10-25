@@ -1,6 +1,6 @@
 import yargs from 'yargs';
 import path from 'path';
-import { mkdirp } from 'fs-extra';
+import { existsSync, fstat, mkdirp } from 'fs-extra';
 import { runDocker } from './utils/runDocker';
 import { getString, getStringArray } from './prompt/getString';
 
@@ -36,11 +36,15 @@ const convertPythonModel = async (_modelPath: string | string[], outputDirectory
     await mkdirp(outputDirectory);
     const inputFolder = path.resolve(path.dirname(modelPath));
     const modelName = modelPath.split('/').pop();
+    const outputName = modelName?.split('.').slice(0, -1).join('.');
+    if (!outputName) {
+      throw new Error(`No output name was found for model name ${modelName}`);
+    }
     await runDocker('evenchange4/docker-tfjs-converter', [
       'tensorflowjs_converter',
       '--input_format=keras',
       `/model/${modelName}`,
-      `/output/${modelName?.split('.').slice(0, -1).join('.')}`,
+      `/output/${outputName}`,
     ].join(' '), {
       volumes: [
         {
@@ -53,6 +57,11 @@ const convertPythonModel = async (_modelPath: string | string[], outputDirectory
         },
       ]
     });
+    // assert that file exists
+    const expectedOutput = path.resolve(outputDirectory, outputName);
+    if (!existsSync(expectedOutput)) {
+      throw new Error(`File was not found at ${expectedOutput}`);
+    }
   }
 };
 

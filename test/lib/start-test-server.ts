@@ -46,11 +46,6 @@ type Answers = { type: TestServerType, port: number };
 
 const isValidType = (type: string = ''): type is TestServerType => AVAILABLE_SERVER_TYPES.includes(type);
 
-
-
-
-
-
 const startTestServer: StartTestServer = async (type, port = 8099) => {
   let dist;
   if (type === 'esbuild') {

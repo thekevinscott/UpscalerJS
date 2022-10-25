@@ -71,6 +71,9 @@ export class UpscalerModel extends Model {
     const modelPackageFolder = path.resolve(ROOT_DIR, 'models', modelPackageName);
     const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
     const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, exports, useGPU);
+    if (!upscaler) {
+      throw new Error();
+    }
     const { modelDefinition } = await upscaler.getModel();
     return [upscaler, modelDefinition];
   }
@@ -99,8 +102,15 @@ UpscalerModel.init({
     type: DataTypes.JSON,
   },
 }, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['name', 'PackageId']
+    }
+  ],
   sequelize,
-  modelName: 'UpscalerModel'
+  modelName: 'UpscalerModel',
+  
 });
 
 // only import it once
@@ -138,9 +148,6 @@ const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: s
       console.error('Error instantiating upscaler for model definition', model);
       throw err;
     }
-  } else {
-    console.error(value);
-    throw new Error('Handle this')
   }
 };
 

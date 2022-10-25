@@ -40,14 +40,53 @@ interface ExistingResult {
   ImageId: number;
 }
 
-export class Benchmarker {
+export class PerformanceBenchmarker {
   database: Database;
   cacheDir: string;
   modelPackages: Package[] = [];
   datasets: Dataset[] = [];
 
   constructor(cacheDir: string, metrics: string[]) {
-    this.database = new Database(metrics);
+    this.database = new Database(async (sequelize) => {
+
+    await Promise.all(metrics.map(name =>
+      Metric.upsert({
+        name,
+      })
+    ));
+
+    await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
+    await sequelize.query(`
+        CREATE VIEW aggregated_results
+        AS
+        SELECT 
+
+        AVG(r.value) as value, 
+        d.id as DatasetId, 
+        r.MetricId, 
+        r.UpscalerModelId, 
+        i.cropSize
+
+        FROM Results r
+
+        LEFT JOIN Metrics m ON m.id = r.MetricId
+
+        LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
+        LEFT JOIN Packages p ON p.id = um.PackageId
+
+        LEFT JOIN Images i ON i.id = r.ImageId
+        LEFT JOIN Files f ON f.id = i.FileId
+        LEFT JOIN Datasets d ON d.id = f.DatasetId
+
+        WHERE 1=1
+
+        GROUP BY 
+        m.name, 
+        d.name,
+        um.name,
+        i.cropSize
+      `);
+    });
     this.cacheDir = cacheDir;
   }
 
@@ -61,10 +100,10 @@ export class Benchmarker {
     }
   }
 
-  async addModels(tf: TF, modelPackageNames: string[], resultsOnly?: boolean, useGPU = false) {
+  async addModels(tf: TF, modelPackageNames: string[], resultsOnly?: boolean, useGPU = false, models?: string[]) {
     for (const packageName of modelPackageNames) {
       console.log(`Model ${packageName}`);
-      const modelPackage = await this.database.addModelPackage(tf, packageName, resultsOnly, useGPU);
+      const modelPackage = await this.database.addModelPackage(tf, packageName, resultsOnly, useGPU, models);
       this.modelPackages.push(modelPackage);
     }
   }
@@ -162,12 +201,10 @@ export class Benchmarker {
           ImageId: image.imageId,
         });
       }));
-    } else {
-      console.log('.')
     }
   };
 
-  async benchmark(tf: TF, cropSize?: number, n: number = Infinity, delay = 0) {
+  async benchmark(tf: TF, packageNames: string[], cropSize?: number, n: number = Infinity, modelNames?: string[], delay = 0) {
     const metrics = await Promise.all((await Metric.findAll()).map(async metric => {
       await metric.setId();
       return metric;
@@ -195,20 +232,27 @@ export class Benchmarker {
 
     const evaluationPairs: { dataset: Dataset; model: UpscalerModel; }[] = [];
     let total = 0;
+    const modelsForDatasets = [];
+    for (const modelPackage of this.modelPackages) {
+      if (packageNames.includes(modelPackage.name)) {
+        const models = await modelPackage.getModels(modelNames);
+        console.log('models for', modelPackage.name, models.length)
+        for (const model of models) {
+          modelsForDatasets.push(model);
+        }
+      }
+    }
     for (const dataset of this.datasets) {
       const numberOfFiles = countsByDataset.get(dataset.name);
       if (numberOfFiles === undefined) {
         throw new Error(`Could not find number of files for dataset ${dataset.name}`);
       }
-      for (const modelPackage of this.modelPackages) {
-        const models = await modelPackage.models;
-        for (const model of models) {
-          total += Math.min(n, numberOfFiles);
-          evaluationPairs.push({
-            dataset,
-            model,
-          });
-        }
+      for (const model of modelsForDatasets) {
+        total += Math.min(n, numberOfFiles);
+        evaluationPairs.push({
+          dataset,
+          model,
+        });
       }
     }
 
@@ -344,7 +388,7 @@ export class Benchmarker {
     }
   }
 
-  async retrieveResults(metrics: string[], cropSize?: number): Promise<BenchmarkedResult[]> {
+  async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[]): Promise<BenchmarkedResult[]> {
     const packages = this.modelPackages;
 
     const tableDivider = '___';
@@ -384,14 +428,22 @@ export class Benchmarker {
           LEFT JOIN UpscalerModels um ON um.id = r.UpscalerModelId
           LEFT JOIN Packages p ON p.id = um.PackageId
 
-          WHERE p.name IN(:packageNames)
+          WHERE 1=1
+          AND p.name IN(:packageNames)
+          ${modelNames ? `AND um.name IN (:modelNames)` : ''}
                     
           GROUP BY r.UpscalerModelId;
       `;
+    let queryModelNames: string[] = [];
+    for (const pkg of packages) {
+      const models = await pkg.getModels(modelNames);
+      queryModelNames = queryModelNames.concat(models.map(m => m.name));
+    }
     const results: Record<string, string | number>[] = await sequelize.query(query, {
       replacements: {
         cropKey,
         packageNames: packages.map(p => p.name),
+        modelNames: queryModelNames,
       },
       type: QueryTypes.SELECT,
     });

@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { installLocalPackages, installNodeModules } from '../shared/prepare';
+import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -25,12 +25,13 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
   rimraf.sync(DIST);
   copyFixtures(DIST);
 
-  const entryFiles = path.join(ROOT, 'src/index.js');
+  const entryFile = path.join(ROOT, 'src/index.js');
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME);
 
   const compiler = webpack({
     mode: 'production',
     context: ROOT,
-    entry: entryFiles,
+    entry: entryFile,
     stats: 'errors-only',
     plugins: [new HtmlWebpackPlugin({
       title: 'UpscalerJS Integration Test: ESM via Webpack',

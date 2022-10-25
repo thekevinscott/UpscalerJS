@@ -32,8 +32,6 @@ const countObjects = async (page: Page, prototype: puppeteer.JSHandle): Promise<
   return numberOfObjects;
 };
 
-const PORT = 8099;
-
 // This is the number of times to run every chunk of code to check for memory leaks.
 // 7 is a nice awkward number that should be a red flag if we see it in the memory reports.
 const TIMES_TO_CHECK = 7;
@@ -104,7 +102,7 @@ describe('Memory Leaks', () => {
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);
-  }, 60000);
+  }, 120000);
 
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();
@@ -223,10 +221,7 @@ describe('Memory Leaks', () => {
         // TODO: Revert this to use the default
         // const upscaler = new Upscaler();
         const upscaler = new Upscaler({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          }
+          model: window['pixel-upsampler']['4x'],
         });
         await upscaler.dispose();
       }
@@ -272,10 +267,7 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
-          },
+          model: window['pixel-upsampler']['4x'],
         });
         await upscaler.dispose();
       }
@@ -296,10 +288,7 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-            model: {
-              path: '/pixelator/pixelator.json',
-              scale: 4,
-            },
+          model: window['pixel-upsampler']['4x'],
           });
           image = await upscaler.upscale(window['flower']);
 
@@ -325,8 +314,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              scale: 4,
-              path: '/pixelator/pixelator.json',
+              ...window['pixel-upsampler']['4x'],
               preprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -354,8 +342,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              scale: 4,
-              path: '/pixelator/pixelator.json',
+              ...window['pixel-upsampler']['4x'],
               postprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -383,8 +370,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              scale: 4,
-              path: '/pixelator/pixelator.json',
+              ...window['pixel-upsampler']['4x'],
               preprocess: (image) => tf.mul(image, 1),
               postprocess: (image) => tf.mul(image, 1),
             }
@@ -413,8 +399,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            scale: 4,
-            path: '/pixelator/pixelator.json',
+            ...window['pixel-upsampler']['4x'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -455,8 +440,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            scale: 4,
-            path: '/pixelator/pixelator.json',
+            ...window['pixel-upsampler']['4x'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -486,8 +470,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            scale: 4,
-            path: '/pixelator/pixelator.json',
+            ...window['pixel-upsampler']['4x'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -541,8 +524,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
+            ...window['pixel-upsampler']['4x'],
           },
         });
         await upscaler.upscale(window['flower'], {
@@ -574,8 +556,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
+            ...window['pixel-upsampler']['4x'],
           },
         });
         await upscaler.upscale(window['flower'], {
@@ -615,8 +596,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
+            ...window['pixel-upsampler']['4x'],
           },
         });
         upscaler.upscale(window['flower'], {
@@ -643,8 +623,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
+            ...window['pixel-upsampler']['4x'],
           },
         });
         try {
@@ -679,8 +658,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            path: '/pixelator/pixelator.json',
-            scale: 4,
+            ...window['pixel-upsampler']['4x'],
           },
         });
         try {

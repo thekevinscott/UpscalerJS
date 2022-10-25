@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, QueryTypes } from "sequelize";
 import path from 'path';
 import sequelize from './sequelize';
 import { ROOT_DIR } from "./constants";
@@ -55,12 +55,57 @@ export class Package extends BaseModel {
     name,
   }));
 
+  async clearOutDuplicates() {
+    const PackageId = this.getId();
+    const rows = await sequelize.query<{ id: number; name: string }>(`
+      SELECT 
+      u.id, u.name
+      FROM upscalerModels u
+      LEFT JOIN packages p ON p.id = u.PackageId
+      WHERE 1=1
+      AND p.id = :PackageId
+      ;
+    `, {
+      replacements: {
+        PackageId,
+      },
+      type: QueryTypes.SELECT,
+    });
+    const seenNames = new Set();
+    for (const row of rows) {
+      if (seenNames.has(row.name)) {
+        await sequelize.query(`
+          DELETE FROM upscalerModels
+          WHERE id = :ModelId
+          ;
+        `, {
+          replacements: {
+            ModelId: row.id,
+          },
+        });
+      }
+      seenNames.add(row.name);
+    }
+  }
+
   async getUpscalerModels() {
-    return UpscalerModel.findAll({
+    await this.clearOutDuplicates();
+    const names = this.getModelKeysAndPaths();
+    const PackageId = this.getId();
+    const results = await UpscalerModel.findAll({
       where: {
-        PackageId: this.getId(),
+        PackageId,
+        name: names,
       }
     });
+    const modelNames = new Set();
+    for (const result of results) {
+      if (modelNames.has(result.name)) {
+        throw new Error(`Duplicate entry exists for name ${result.name} for package ${this.name}`)
+      }
+      modelNames.add(result.name);
+    }
+    return results;
   }
 
   async getUpscaler(modelName: string): Promise<[typeof Upscaler, ModelDefinition]> {
@@ -78,9 +123,36 @@ export class Package extends BaseModel {
     return upscaler;
   }
 
-  async addModels() {
+  getModelKeysAndPaths() {
+    const models = this._models;
     const packageName = this.name;
-    const modelKeysAndPaths = Package.getExportedModelsFromPackageJSON(packageName);
+    return Package.getExportedModelsFromPackageJSON(packageName).filter((name) => {
+      if (models === undefined) {
+        return true;
+      }
+
+      return models.reduce((shouldInclude, model) => {
+        if (shouldInclude) {
+          return true;
+        }
+
+        return name.toLowerCase().includes(model.toLowerCase());
+      }, false);
+    });
+
+  }
+
+  private _models?: string[];
+  async addModels(models?: string[]) {
+    this._models = models;
+    const modelKeysAndPaths = this.getModelKeysAndPaths().filter(model => {
+      if (models) {
+        return models.reduce((isMatch, modelPart) => {
+          return isMatch || model.toLowerCase().includes(modelPart.toLowerCase());
+        }, false);
+      }
+      return true;
+    });
     const existingUpscalerModelNames = new Set<any>((await this.getUpscalerModels()).map(model => model.name));
     const progressBar = new ProgressBar(modelKeysAndPaths.length);
 
@@ -110,22 +182,42 @@ export class Package extends BaseModel {
         }
       }
     };
-    for await (const value of asyncPool(5, modelKeysAndPaths, processFile)) {
+    for await (const _ of asyncPool(1, [...modelKeysAndPaths], processFile)) {
       progressBar.update();
     }
     progressBar.end();
   }
 
   get models() {
-    return new Promise<UpscalerModel[]>(async resolve => {
-      const models = await this.getUpscalerModels();
-      await Promise.all(models.map(async model => {
+    throw new Error();
+  }
+
+  async getModels(modelNames?: string[]) {
+    const models = await this.getUpscalerModels();
+    const filteredModels = models.filter(model => {
+      if (modelNames === undefined) {
+        return true;
+      }
+
+      return modelNames.reduce((shouldInclude, modelName) => {
+        if (shouldInclude) {
+          return true;
+        }
+
+        return model.name.toLowerCase().includes(modelName.toLowerCase());
+      }, false);
+    });
+    await Promise.all(filteredModels.map(async model => {
+      try {
         const [upscaler, modelDefinition] = await this.getUpscaler(model.name);
         model.upscaler = upscaler;
         model.modelDefinition = modelDefinition;
-      }));
-      return resolve(models);
-    });
+        return model;
+      } catch (err) {
+        return undefined;
+      }
+    }).filter(model => model));
+    return filteredModels;
   }
 }
 

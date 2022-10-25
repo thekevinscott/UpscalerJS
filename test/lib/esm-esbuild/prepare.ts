@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { buildSync, build } from 'esbuild';
+import { build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-import { installLocalPackages, installNodeModules } from '../shared/prepare';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -11,31 +11,50 @@ export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(ROOT, '../../../models')
 
+const PACKAGES = [
+  { packageName: 'esrgan-slim', models: [
+    { path: '', name: 'index',},
+  ]},
+  { packageName: 'pixel-upsampler', models: [
+    { path: '2x', name: '2x',},
+    { path: '3x', name: '3x',},
+    { path: '4x', name: '4x',},
+  ]},
+  { packageName: 'esrgan-legacy', models: [
+    { path: 'div2k/2x', name: 'div2k/2x',},
+    { path: 'div2k/3x', name: 'div2k/3x',},
+    { path: 'div2k/4x', name: 'div2k/4x',},
+    { path: 'psnr-small', name: 'psnr-small',},
+    { path: 'gans', name: 'gans', },
+  ]},
+];
+
+const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => arr.concat({
+  packageName,
+  paths: models.map(({ name, path }) => ({
+    name,
+    path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
+  })),
+}), [] as Import[]);
+
 export const bundle = async () => {
+  const entryFile = path.join(ROOT, 'src/index.js');
+  writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   await installNodeModules(ROOT);
   await installLocalPackages(ROOT, [
     {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'pixel-upsampler'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'pixel-upsampler'),
-    },
+    ...PACKAGES.map(({ packageName }) => ({
+      src: path.resolve(MODELS_PATH, packageName),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+    })),
   ]);
   copyFixtures(DIST, false);
 
-  const entryFiles = path.join(ROOT, 'src/index.js');
   const buildResult = await build({
-    entryPoints: [entryFiles],
+    entryPoints: [entryFile],
     bundle: true,
     loader: {
       '.png': 'file',
