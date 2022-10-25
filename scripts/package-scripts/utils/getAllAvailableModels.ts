@@ -11,10 +11,10 @@ export const getAllAvailableModelPackages = (): Array<string> => fs.readdirSync(
   return !['dist', 'types', 'node_modules'].includes(file) && fs.lstatSync(path.resolve(MODELS_DIR, file)).isDirectory();
 });
 
-export const getAllAvailableModels = (model: string) => {
-  const modelDir = path.resolve(MODELS_DIR, model);
-  const umdNames = jsonParse(path.resolve(modelDir, 'umd-names.json'));
-  return getPackageJSONExports(modelDir).map(key => {
+export const getAllAvailableModels = (packageName: string) => {
+  const modelPackageDir = path.resolve(MODELS_DIR, packageName);
+  const umdNames = jsonParse(path.resolve(modelPackageDir, 'umd-names.json'));
+  return getPackageJSONExports(modelPackageDir).map(key => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
       throw new Error(`No UMD name defined for ${key}`);
