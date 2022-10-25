@@ -220,6 +220,29 @@ export interface Import {
   paths: { name: string; path: string; }[];
 }
 
-export const writeIndex = (target: string, contents: string) => {
+export const writeIndex = (target: string, upscalerName: string, imports: Import[] = []) => {
+  const importCommands = imports.map(({ paths }) => paths.map(({ path }) => {
+    return `import _${getHashedName(path)} from '${path}';`;
+  }).join('\n')).join('\n');
+  const windowDefinitions = imports.map(({ packageName: packageName, paths }) => `window['${packageName}'] = {
+${paths.map(({ path, name }) => `  ['${name}']: _${getHashedName(path)},`).join('\n')}
+}`).join('\n');
+  const contents = `
+import * as tf from '@tensorflow/tfjs';
+import Upscaler from '${upscalerName}';
+import flower from '../../../__fixtures__/flower-small.png';
+
+/*** Auto-generated import commands ***/
+${importCommands}
+
+/*** Auto-generated window definition commands ***/
+${windowDefinitions}
+
+window.tfjs = tf;
+window.flower = flower;
+window.Upscaler = Upscaler;
+document.title = document.title + '| Loaded';
+document.body.querySelector('#output').innerHTML = document.title;
+`;
   writeFileSync(target, contents.trim(), 'utf-8');
 };

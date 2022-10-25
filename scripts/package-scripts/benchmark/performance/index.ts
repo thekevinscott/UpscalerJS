@@ -268,6 +268,7 @@ const benchmarkPerformance = async (
     resultsOnly,
     useGPU = false,
     outputCSV,
+    skipDisplayResults,
   }: {
     models?: string[]
     cropSize?: number;
@@ -275,6 +276,7 @@ const benchmarkPerformance = async (
     resultsOnly?: boolean;
     useGPU?: boolean;
     outputCSV?: string
+    skipDisplayResults?: boolean;
   }) => {
   const benchmarker = new PerformanceBenchmarker(cacheDir, metrics);
   if (resultsOnly !== true) {
@@ -311,7 +313,9 @@ const benchmarkPerformance = async (
   }
   mark('Results');
   const results = await benchmarker.retrieveResults(metrics, cropSize, models);
-  display(results);
+  if (skipDisplayResults !== true) {
+    display(results);
+  }
   await saveResults(results);
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
@@ -332,6 +336,7 @@ interface Args {
   metrics: string[];
   useGPU?: boolean;
   outputCSV?: string;
+  skipDisplayResults?: boolean;
 }
 
 async function getArg<T>(options: { message: string, type: string }) {
@@ -408,6 +413,7 @@ const getArgs = async (): Promise<Args> => {
       useGPU: { type: 'boolean' },
       metric: { type: 'string' },
       outputCSV: { type: 'string' },
+      skipDisplayResults: { type: 'boolean' },
     });
   })
   .help()
@@ -434,6 +440,7 @@ const getArgs = async (): Promise<Args> => {
     metrics,
     useGPU: ifDefined('useGPU', 'boolean'),
     outputCSV: ifDefined('outputCSV', 'string'),
+    skipDisplayResults: ifDefined('skipDisplayResults', 'boolean'),
   }
 }
 
@@ -446,7 +453,8 @@ if (require.main === module) {
       n: args.n,
       resultsOnly: args.resultsOnly,
       useGPU: args.useGPU,
-      outputCSV: args.outputCSV
+      outputCSV: args.outputCSV,
+      skipDisplayResults: args.skipDisplayResults,
     });
   })();
 }

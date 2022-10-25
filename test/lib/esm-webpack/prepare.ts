@@ -26,16 +26,7 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
   copyFixtures(DIST);
 
   const entryFile = path.join(ROOT, 'src/index.js');
-  writeIndex(entryFile, `
-import * as tf from '@tensorflow/tfjs';
-import Upscaler from 'upscaler-for-esm-webpack';
-import flower from '../../../__fixtures__/flower-small.png';
-window.tfjs = tf;
-window.flower = flower;
-window.Upscaler = Upscaler;
-document.title = document.title + ' | Loaded';
-document.body.querySelector('#output').innerHTML = document.title;
-  `);
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME);
 
   const compiler = webpack({
     mode: 'production',

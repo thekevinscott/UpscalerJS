@@ -2,7 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { buildSync, build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
-import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+<<<<<<< HEAD
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+=======
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+>>>>>>> 592a12197689c557db4920ebd5a509f878549ef1
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
@@ -11,63 +15,50 @@ export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(ROOT, '../../../models')
 
+const PACKAGES = [
+  { packageName: 'esrgan-slim', models: [
+    { path: '', name: 'index',},
+  ]},
+  { packageName: 'pixel-upsampler', models: [
+    { path: '2x', name: '2x',},
+    { path: '3x', name: '3x',},
+    { path: '4x', name: '4x',},
+  ]},
+  { packageName: 'esrgan-legacy', models: [
+    { path: 'div2k/2x', name: 'div2k/2x',},
+    { path: 'div2k/3x', name: 'div2k/3x',},
+    { path: 'div2k/4x', name: 'div2k/4x',},
+    { path: 'psnr-small', name: 'psnr-small',},
+    { path: 'gans', name: 'gans', },
+  ]},
+];
+
 export const bundle = async () => {
+  const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => {
+    const _import: Import = {
+      packageName,
+      paths: models.map(({ name, path }) => ({
+        name,
+        path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
+      })),
+    };
+    return arr.concat(_import);
+  }, [] as Import[]);
+  const entryFile = path.join(ROOT, 'src/index.js');
+  writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   await installNodeModules(ROOT);
   await installLocalPackages(ROOT, [
     {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-slim'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-slim'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'esrgan-legacy'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'esrgan-legacy'),
-    },
-    {
-      src: path.resolve(MODELS_PATH, 'pixel-upsampler'),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, 'pixel-upsampler'),
-    },
+    ...PACKAGES.map(({ packageName }) => ({
+      src: path.resolve(MODELS_PATH, packageName),
+      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+    })),
   ]);
   copyFixtures(DIST, false);
 
-  const entryFile = path.join(ROOT, 'src/index.js');
-  writeIndex(entryFile, `
-import * as tf from '@tensorflow/tfjs';
-import ESRGANSlim from '@upscalerjs-for-esbuild/esrgan-slim';
-import Upscaler from 'upscaler-for-esbuild';
-import pixelUpsampler2x from '@upscalerjs-for-esbuild/pixel-upsampler/2x';
-import pixelUpsampler3x from '@upscalerjs-for-esbuild/pixel-upsampler/3x';
-import pixelUpsampler4x from '@upscalerjs-for-esbuild/pixel-upsampler/4x';
-import ESRGANDiv2K2x from '@upscalerjs-for-esbuild/esrgan-legacy/div2k/2x';
-import ESRGANDiv2K3x from '@upscalerjs-for-esbuild/esrgan-legacy/div2k/3x';
-import ESRGANDiv2K4x from '@upscalerjs-for-esbuild/esrgan-legacy/div2k/4x';
-import ESRGANPSNR from '@upscalerjs-for-esbuild/esrgan-legacy/psnr-small';
-import ESRGANGANS from '@upscalerjs-for-esbuild/esrgan-legacy/gans';
-import flower from '../../../__fixtures__/flower-small.png';
-window.tf = tf;
-window.flower = flower;
-window.Upscaler = Upscaler;
-window['esrgan-slim'] = {
-  'index': ESRGANSlim,
-};
-window['pixel-upsampler'] = {
-  '2x': pixelUpsampler2x,
-  '3x': pixelUpsampler3x,
-  '4x': pixelUpsampler4x,
-};
-window['esrgan-legacy'] = {
-  'div2k/2x': ESRGANDiv2K2x,
-  'div2k/3x': ESRGANDiv2K3x,
-  'div2k/4x': ESRGANDiv2K4x,
-  'psnr-small': ESRGANPSNR,
-  'gans': ESRGANGANS,
-};
-document.title = document.title + ' | Loaded';
-document.body.querySelector('#output').innerHTML = document.title;
-  `);
   const buildResult = await build({
     entryPoints: [entryFile],
     bundle: true,
