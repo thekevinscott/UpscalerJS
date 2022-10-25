@@ -5,28 +5,43 @@ import { copyFixtures } from '../utils/copyFixtures';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(ROOT, '../../../models')
 
+const packages = getAllAvailableModelPackages();
+
 const PACKAGES = [
-  { packageName: 'esrgan-slim', models: [
-    { path: '', name: 'index',},
-  ]},
-  { packageName: 'pixel-upsampler', models: [
-    { path: '2x', name: '2x',},
-    { path: '3x', name: '3x',},
-    { path: '4x', name: '4x',},
-  ]},
-  { packageName: 'esrgan-legacy', models: [
-    { path: 'div2k/2x', name: 'div2k/2x',},
-    { path: 'div2k/3x', name: 'div2k/3x',},
-    { path: 'div2k/4x', name: 'div2k/4x',},
-    { path: 'psnr-small', name: 'psnr-small',},
-    { path: 'gans', name: 'gans', },
-  ]},
+  ...packages.map(packageName => ({
+    packageName,
+    models: getAllAvailableModels(packageName).map(({ esm }) => {
+      return esm === '' ? {
+        path: '',
+        name: 'index',
+      } : {
+        path: esm,
+        name: esm,
+      };
+    }),
+  })),
+  // { packageName: 'esrgan-slim', models: [
+  //   { path: '', name: 'index',},
+  // ]},
+  // { packageName: 'pixel-upsampler', models: [
+  //   { path: '2x', name: '2x',},
+  //   { path: '3x', name: '3x',},
+  //   { path: '4x', name: '4x',},
+  // ]},
+  // { packageName: 'esrgan-legacy', models: [
+  //   { path: 'div2k/2x', name: 'div2k/2x',},
+  //   { path: 'div2k/3x', name: 'div2k/3x',},
+  //   { path: 'div2k/4x', name: 'div2k/4x',},
+  //   { path: 'psnr-small', name: 'psnr-small',},
+  //   { path: 'gans', name: 'gans', },
+  // ]},
 ];
 
 const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => arr.concat({
