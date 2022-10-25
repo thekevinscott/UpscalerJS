@@ -102,7 +102,7 @@ describe('Memory Leaks', () => {
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundle);
-  }, 60000);
+  }, 120000);
 
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();
