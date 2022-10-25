@@ -225,7 +225,7 @@ export const writeIndex = (target: string, upscalerName: string, imports: Import
     return `import _${getHashedName(path)} from '${path}';`;
   }).join('\n')).join('\n');
   const windowDefinitions = imports.map(({ packageName: packageName, paths }) => `window['${packageName}'] = {
-${paths.map(({ path, name }) => `  ['${name}']: _${getHashedName(path)},`).join('\n')}
+${paths.map(({ path, name }) => `  '${name}': _${getHashedName(path)},`).join('\n')}
 }`).join('\n');
   const contents = `
 import * as tf from '@tensorflow/tfjs';
@@ -238,7 +238,7 @@ ${importCommands}
 /*** Auto-generated window definition commands ***/
 ${windowDefinitions}
 
-window.tfjs = tf;
+window.tf = tf;
 window.flower = flower;
 window.Upscaler = Upscaler;
 document.title = document.title + '| Loaded';
