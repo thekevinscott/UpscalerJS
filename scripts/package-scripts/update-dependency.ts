@@ -169,7 +169,7 @@ const getArgs = async (): Promise<Args> => {
   .help()
   .argv;
 
-  const dependency = await getDependency(argv.dependency);
+  const dependency = await getDependency(argv._[0]);
   const version = await getVersion(argv.version);
   const packages = await getPackages(argv.packages);
 
