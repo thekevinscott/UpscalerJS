@@ -245,7 +245,7 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(typeof rate).toEqual('number');
-      checkImage(slice, "slice-patchsize-12-padding-2.png", 'diff.png');
+      checkImage(slice, "pixel-upsampler/4x/slice-patchsize-12-padding-2.png", 'diff.png');
     });
 
     it("calls back to progress with a tensor", async () => {
