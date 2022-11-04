@@ -20,8 +20,12 @@
 
     </div>
     <button id="start" disabled>Start Benchmarking Test</button>
+    <label for="include-gans">Include GANS</label>
+    <input type="checkbox" id="include-gans" name="include-gans" />
     <label>Size of the tensor to run through the models</label>
     <input id="tensor-size" type="text" value="64" />
+    <label>(Optional) Patch size</label>
+    <input id="patch-size" type="text" value="32" />
     <p><label>Status: </label><span id="status">Preparing</span></p>
     <table>
       <thead>
