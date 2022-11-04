@@ -72,7 +72,7 @@ export const isAborted = (abortSignal?: AbortSignal): boolean => {
   return false;
 };
 
-type PostNext<T = unknown> = ((value: T) => (void | Promise<void>));
+type PostNext<T = unknown> = ((value: T) => (void));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>(
   gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
@@ -81,7 +81,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   let result: undefined | IteratorResult<T, TReturn>;
   for (result = await gen.next(); !result.done; result = await gen.next()) {
     if (postNext) {
-      await postNext(result.value);
+      postNext(result.value);
     }
   }
   return result.value;

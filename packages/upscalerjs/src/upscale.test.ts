@@ -1701,14 +1701,15 @@ describe('makeTick', () => {
       dispose,
     } as unknown as tf.Tensor3D;
     const tick = makeTick(abortController.signal);
-    tick(t).then(() => {
+    abortController.abort();
+    try {
+      tick(t);
       throw new Error('Should have thrown.');
-    }).catch(err => {
+    } catch (err) {
       expect(dispose).toHaveBeenCalled();
       expect(err instanceof AbortError).toBe(true);
       done();
-    });
-    abortController.abort();
+    }
   }, 100);
 
   it('disposes of a multiple in-flight tensors', (done) => {
@@ -1720,28 +1721,30 @@ describe('makeTick', () => {
     }) as unknown as tf.Tensor3D;
     const mockTensors = Array(3).fill('').map(() => getTensor());
     const tick = makeTick(abortController.signal);
-    tick(mockTensors).then(() => {
+    abortController.abort();
+    try {
+      tick(mockTensors);
       throw new Error('Should have thrown.');
-    }).catch(err => {
+    } catch (err) {
       mockTensors.forEach(t => {
         expect(t.dispose).toHaveBeenCalled();
       });
       expect(err instanceof AbortError).toBe(true);
       done();
-    });
-    abortController.abort();
+    }
   }, 100);
 
   it('ignores any non-tensor results', (done) => {
     isTensor.mockImplementation(() => false);
     const abortController = new AbortController();
     const tick = makeTick(abortController.signal);
-    tick(undefined).then(() => {
+    abortController.abort();
+    try {
+      tick(undefined);
       throw new Error('Should have thrown.');
-    }).catch(err => {
+    } catch (err) {
       expect(err instanceof AbortError).toBe(true);
       done();
-    });
-    abortController.abort();
+    }
   }, 100);
 });

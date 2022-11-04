@@ -30,7 +30,6 @@ export const warmup = async (
   modelPackage: Promise<ModelPackage>,
   sizes: (WarmupSizes | unknown)[],
 ): Promise<void> => {
-  await tf.nextFrame();
   const { model, } = await modelPackage;
   for (const size of sizes) {
     if (isWarmupSizeByPatchSize(size) || isNumericWarmupSize(size)) {

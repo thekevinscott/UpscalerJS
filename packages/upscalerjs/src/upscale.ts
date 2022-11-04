@@ -442,9 +442,8 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   return <UpscaleResponse<O>>base64Src;
 }
 
-type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
-export const makeTick = (signal: AbortSignal): TickFunction => async result => {
-  await tf.nextFrame();
+type TickFunction = (result?: YieldedIntermediaryValue) => void;
+export const makeTick = (signal: AbortSignal): TickFunction => result => {
   if (isAborted(signal)) {
     // only dispose tensor if we are aborting; if aborted, the called function will have
     // no opportunity to dispose of its memory
@@ -465,12 +464,12 @@ export async function cancellableUpscale<P extends Progress<O, PO>, O extends Re
   },
 ): Promise<UpscaleResponse<O>> {
   const tick = makeTick(signal || internalArgs.signal);
-  await tick();
+  tick();
   const upscaledPixels = await wrapGenerator(upscale(
     input,
     args,
     internalArgs,
   ), tick);
-  await tick();
+  tick();
   return upscaledPixels;
 }
