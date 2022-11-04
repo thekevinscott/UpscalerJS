@@ -6,15 +6,15 @@ import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
-import crypto from 'crypto';
 import tar from 'tar';
+import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 
 const ROOT = path.join(__dirname, '../../..');
 
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
-export const installNodeModules = (cwd: string) => callExec('npm install --silent --no-audit', {
+export const installNodeModules = (cwd: string, silent = true) => callExec(`npm install ${silent ? '--silent' : ''} --no-audit`, {
   cwd,
 });
 
@@ -92,7 +92,11 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
 }
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
+  const timer = setTimeout(() => {
+    console.log(`It is taking a long time to install the local package ${localNameForPackage}`);
+  }, 10000);
   await installLocalPackage(src, dest);
+  clearTimeout(timer);
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)
