@@ -46,7 +46,7 @@ describe('Upscale Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 
   describe('Cancel', () => {
@@ -198,7 +198,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 
@@ -245,7 +245,7 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(typeof rate).toEqual('number');
-      checkImage(slice, "slice-patchsize-12-padding-2.png", 'diff.png');
+      checkImage(slice, "pixel-upsampler/4x/slice-patchsize-12-padding-2.png", 'diff.png');
     });
 
     it("calls back to progress with a tensor", async () => {

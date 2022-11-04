@@ -10,8 +10,8 @@ const FIXTURES_PATH = path.resolve(__dirname, '../../__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small-15.jpg');
 const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small.png');
 const MODEL_PATH = 'file://' + path.join(FIXTURES_PATH, 'pixelator/pixelator.json');
-const EXPECTED_UPSCALED_IMAGE_15 = 'upscaled-4x-pixelator-15.png';
-const EXPECTED_UPSCALED_IMAGE_16 = 'upscaled-4x-pixelator.png';
+const EXPECTED_UPSCALED_IMAGE_15 = 'pixel-upsampler/4x/result-15.png';
+const EXPECTED_UPSCALED_IMAGE_16 = 'pixel-upsampler/4x/result.png';
 const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 // TODO: How to import this, instead of copying it?

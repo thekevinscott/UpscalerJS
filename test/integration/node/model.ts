@@ -59,7 +59,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-gans.png", 'diff.png');
+    checkImage(formattedResult, "esrgan-legacy/gans/result.png", 'diff.png');
   });
 
   it("loads a locally exposed model via file:// path", async () => {
@@ -73,7 +73,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(formattedResult, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 
   describe('Test specific model implementations', () => {

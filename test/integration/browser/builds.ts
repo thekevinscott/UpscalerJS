@@ -55,7 +55,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 
   it("upscales using a UMD build with a specified model", async () => {
@@ -68,7 +68,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 
   it("upscales using an ESM build using Webpack", async () => {
@@ -86,7 +86,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 });
 
