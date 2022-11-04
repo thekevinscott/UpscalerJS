@@ -443,6 +443,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
 }
 
 type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
+/* eslint-disable @typescript-eslint/require-await */
 export const makeTick = (signal: AbortSignal): TickFunction => async result => {
   if (isAborted(signal)) {
     // only dispose tensor if we are aborting; if aborted, the called function will have
