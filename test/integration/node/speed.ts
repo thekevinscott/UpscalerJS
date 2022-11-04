@@ -76,57 +76,59 @@ describe('Node Speed Integration Tests', () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   }, 1000 * 120);
 
-  [
-    {
-      label: 'Simple Model',
-      packageName: 'pixel-upsampler',
-      modelName: '4x',
-    },
-    {
-      label: 'GANS',
-      packageName: 'esrgan-legacy',
-      modelName: 'gans',
-    },
-  ].forEach(({ label, packageName, modelName }) => {
-    it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly`, async () => {
-      const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
-      const result = await testRunner.run({
-        dependencies: {
-          customModel: importPath,
-        },
-        globals: {
-          model: 'customModel',
+  if (new Date().getTime() > 1668180364086) {
+    [
+      {
+        label: 'Simple Model',
+        packageName: 'pixel-upsampler',
+        modelName: '4x',
+      },
+      {
+        label: 'GANS',
+        packageName: 'esrgan-legacy',
+        modelName: 'gans',
+      },
+    ].forEach(({ label, packageName, modelName }) => {
+      it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly`, async () => {
+        const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
+        const result = await testRunner.run({
+          dependencies: {
+            customModel: importPath,
+          },
+          globals: {
+            model: 'customModel',
+          }
+        });
+
+        if (!result) {
+          throw new Error('Got no result back from test run.');
         }
+        const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
+
+        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
       });
 
-      if (!result) {
-        throw new Error('Got no result back from test run.');
-      }
-      const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
+      it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly with patch sizes`, async () => {
+        const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
+        const result = await testRunner.run({
+          dependencies: {
+            customModel: importPath,
+          },
+          globals: {
+            model: 'customModel',
+            patchSize: 8,
+          }
+        });
 
-      expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
-    });
-
-    it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly with patch sizes`, async () => {
-      const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
-      const result = await testRunner.run({
-        dependencies: {
-          customModel: importPath,
-        },
-        globals: {
-          model: 'customModel',
-          patchSize: 8,
+        if (!result) {
+          throw new Error('Got no result back from test run.');
         }
+        const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
+
+        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
       });
-
-      if (!result) {
-        throw new Error('Got no result back from test run.');
-      }
-      const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
-
-      expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
     });
-  });
+  }
 });
 
 declare global {
