@@ -47,6 +47,7 @@ describe('Speed Integration Tests', () => {
     await testRunner.afterEach();
   });
 
+  /*
   [
     {
       label: 'Simple Model',
@@ -183,6 +184,7 @@ describe('Speed Integration Tests', () => {
       expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
     });
   });
+  */
 });
 
 declare global {

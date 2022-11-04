@@ -58,7 +58,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x-gans.png", 'diff.png');
+    checkImage(result, "esrgan-legacy/gans/result.png", 'diff.png');
   });
 
   it("can import a specific model", async () => {
