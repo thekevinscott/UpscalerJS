@@ -324,28 +324,16 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
+
         const startSlice = [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,];
         const endSlice = [-1, sliceSize[0] * scale, sliceSize[1] * scale,];
-
-
-
         const slicedPrediction = prediction.slice(
           startSlice, endSlice,
         );
+        prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction,];
         const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess);
-        prediction.dispose();
         yield [upscaledTensor, colTensor, processedPrediction,];
-        // const processedPrediction = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
-        // yield [upscaledTensor, colTensor, processedPrediction,];
-        // const slicedPrediction = processedPrediction.slice(
-        //   startSlice, endSlice,
-        // );
-        // processedPrediction.dispose();
-        // yield [upscaledTensor, colTensor, slicedPrediction,];
-
-
-
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
