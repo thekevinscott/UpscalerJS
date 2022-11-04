@@ -51,12 +51,11 @@ export class Upscaler {
   ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
     const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
-    const result = cancellableUpscale(image, parsedOptions, {
+    return cancellableUpscale(image, parsedOptions, {
       model,
       modelDefinition,
       signal: this.abortController.signal,
     });
-    return result;
   };
 
   abort = (): void => {
