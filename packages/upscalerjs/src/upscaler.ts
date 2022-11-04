@@ -49,7 +49,6 @@ export class Upscaler {
     image: GetImageAsTensorInput,
     options: TempUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
-    const start = performance.now();
     const { model, modelDefinition, } = await this._model;
     const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
     const result = cancellableUpscale(image, parsedOptions, {
@@ -57,7 +56,6 @@ export class Upscaler {
       modelDefinition,
       signal: this.abortController.signal,
     });
-    console.log('full upscale', performance.now() - start);
     return result;
   };
 
