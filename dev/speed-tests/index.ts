@@ -9,6 +9,7 @@ const start = document.querySelector('#start')!;
 const status = document.querySelector('#status')!;
 const tensorSize = document.querySelector('#tensor-size')! as HTMLInputElement;
 const patchSize = document.querySelector('#patch-size')! as HTMLInputElement;
+const includeGans = document.querySelector('input[type=checkbox][name="include-gans"]')! as HTMLInputElement;
 
 (async () => {
   const simpleUpscaler = new Upscaler({
@@ -45,7 +46,7 @@ const patchSize = document.querySelector('#patch-size')! as HTMLInputElement;
     }
     let times = Math.ceil(tensorSizeValue / patchSizeValue);
     times *= times;
-    const input = tf.ones([1, tensorSizeValue, tensorSizeValue, 3,]) as tf.Tensor4D;
+    const input = tf.ones([64, tensorSizeValue, tensorSizeValue, 3,]) as tf.Tensor4D;
     const patchInput = tf.ones([1, patchSizeValue, patchSizeValue, 3,]) as tf.Tensor4D;
     const rows = [
       {
@@ -58,17 +59,18 @@ const patchSize = document.querySelector('#patch-size')! as HTMLInputElement;
         fn: () => predictWithUpscaler(simpleUpscaler, input, patchSizeValue),
         tr: document.querySelector('#simple-upscalerjs')!,
       },
-      {
-        label: 'GANs Raw',
-        fn: () => predictWithModel(gansModel, patchInput, times),
-        tr: document.querySelector('#gans-raw')!,
-      },
-      {
-        label: 'GANs UpscalerJS',
-        fn: () => predictWithUpscaler(gansUpscaler, input, patchSizeValue),
-        tr: document.querySelector('#gans-upscalerjs')!,
-      },
-    ];
+      ...(includeGans.checked ? [
+        {
+          label: 'GANs Raw',
+          fn: () => predictWithModel(gansModel, patchInput, times),
+          tr: document.querySelector('#gans-raw')!,
+        },
+        // {
+        //   label: 'GANs UpscalerJS',
+        //   fn: () => predictWithUpscaler(gansUpscaler, input, patchSizeValue),
+        //   tr: document.querySelector('#gans-upscalerjs')!,
+        // },
+      ] : [])];
     for (const { tr } of rows) {
       tr.querySelector('td.duration')!.innerHTML = ``;
       tr.querySelector('td.fps')!.innerHTML = ``;
@@ -78,11 +80,13 @@ const patchSize = document.querySelector('#patch-size')! as HTMLInputElement;
     tf.tidy(() => simpleModel.predict(patchInput)),
     await tf.nextFrame();
     await simpleUpscaler.upscale(patchInput);
-    status.innerHTML = `Warming up gans model`;
-    await new Promise(r => setTimeout(r, 10));
-    tf.tidy(() => gansModel.predict(patchInput)),
-    await tf.nextFrame();
-    await gansUpscaler.upscale(patchInput);
+    if (includeGans.checked) {
+      status.innerHTML = `Warming up gans model`;
+      await new Promise(r => setTimeout(r, 10));
+      tf.tidy(() => gansModel.predict(patchInput)),
+        await tf.nextFrame();
+      await gansUpscaler.upscale(patchInput);
+    }
     status.innerHTML = `Warmed up`;
     await tf.nextFrame();
     await new Promise(r => setTimeout(r, 10));
@@ -95,6 +99,7 @@ const patchSize = document.querySelector('#patch-size')! as HTMLInputElement;
       let output: undefined | tf.Tensor = undefined;
       try {
         output = await fn();
+        console.log(output.shape);
         // if (JSON.stringify(output.shape) !== JSON.stringify([tensorSizeValue * 4, tensorSizeValue * 4, 3])) {
         //   throw new Error(`Size mismatch: ${output.shape}`);
         // }

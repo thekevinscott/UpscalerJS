@@ -323,19 +323,11 @@ importers:
     dependencies:
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
-<<<<<<< HEAD
-      '@tensorflow/tfjs': 3.20.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-core': 3.20.0
-      '@tensorflow/tfjs-layers': 3.20.0_au2niqrxqvhsnv4oetlud656gy
-      '@tensorflow/tfjs-node': 3.20.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-node-gpu': 3.20.0_seedrandom@3.0.5
-=======
       '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.0.0
       '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
       '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
->>>>>>> ks/refactor-server-build-scripts
       seedrandom: 3.0.5
 
   models/pixel-upsampler:
