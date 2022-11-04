@@ -307,7 +307,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
       let colTensor: undefined | tf.Tensor4D;
       yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
-        const loopStart = performance.now();
         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
           row,
           col,
