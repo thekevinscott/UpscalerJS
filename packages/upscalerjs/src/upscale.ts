@@ -324,14 +324,16 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
-        const processedPrediction = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
-        yield [upscaledTensor, colTensor, processedPrediction,];
-        const slicedPrediction = processedPrediction.slice(
-          [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,],
-          [-1, sliceSize[0] * scale, sliceSize[1] * scale,],
+
+        const startSlice = [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,];
+        const endSlice = [-1, sliceSize[0] * scale, sliceSize[1] * scale,];
+        const slicedPrediction = prediction.slice(
+          startSlice, endSlice,
         );
-        processedPrediction.dispose();
+        prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction,];
+        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess);
+        yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
@@ -340,7 +342,7 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             progress(percent);
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-            const squeezedTensor = slicedPrediction.squeeze() as tf.Tensor3D;
+            const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
               (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor, row, col);
@@ -352,10 +354,10 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
             }
           }
         }
-        yield [upscaledTensor, colTensor, slicedPrediction,];
+        yield [upscaledTensor, colTensor, processedPrediction,];
 
-        colTensor = concatTensors<tf.Tensor4D>([colTensor, slicedPrediction,], 2);
-        slicedPrediction.dispose();
+        colTensor = concatTensors<tf.Tensor4D>([colTensor, processedPrediction,], 2);
+        processedPrediction.dispose();
         yield [upscaledTensor, colTensor,];
       }
 
