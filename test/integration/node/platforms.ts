@@ -66,7 +66,7 @@ describe('Node Platforms Integration Tests', () => {
         },
       });
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(formattedResult, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 });

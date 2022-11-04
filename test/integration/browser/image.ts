@@ -52,7 +52,7 @@ describe('Image Format Integration Tests', () => {
         });
         return upscaler.upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales an HTML Image", async () => {
@@ -69,7 +69,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(img).then(resolve);
         }
       }), []);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales an HTML Image from the page", async () => {
@@ -88,7 +88,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a tensor from an HTML image", async () => {
@@ -107,7 +107,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
@@ -122,7 +122,7 @@ describe('Image Format Integration Tests', () => {
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.upscale(tensor).then(resolve);
       }), flowerPixels);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a rank 4 tensor", async () => {
@@ -141,7 +141,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
@@ -156,7 +156,7 @@ describe('Image Format Integration Tests', () => {
         });
         return upscaler.upscale(src);
       }, originalImage);
-      checkImage(upscaledSrc, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 
@@ -174,7 +174,7 @@ describe('Image Format Integration Tests', () => {
           padding: 2,
         });
       });
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 });
