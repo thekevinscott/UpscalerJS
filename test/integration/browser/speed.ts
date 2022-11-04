@@ -184,6 +184,10 @@ describe('Speed Integration Tests', () => {
         expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
       });
     });
+  } else {
+    it('passes', () => {
+      expect(1).toEqual(1);
+    })
   }
 });
 
