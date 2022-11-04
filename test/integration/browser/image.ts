@@ -56,7 +56,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales an HTML Image", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+      const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -69,11 +69,11 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(img).then(resolve);
         }
       }), []);
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales an HTML Image from the page", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+      const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -88,11 +88,11 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a tensor from an HTML image", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+      const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -107,11 +107,11 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
-      const upscaledSrc = await page().evaluate((pixels) => new Promise(resolve => {
+      const result = await page().evaluate((pixels) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -122,11 +122,11 @@ describe('Image Format Integration Tests', () => {
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.upscale(tensor).then(resolve);
       }), flowerPixels);
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a rank 4 tensor", async () => {
-      const upscaledSrc = await page().evaluate(() => new Promise(resolve => {
+      const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -141,13 +141,13 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
         }
       }));
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
       const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
-      const upscaledSrc = await page().evaluate(src => {
+      const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
           model: {
             path: '/pixelator/pixelator.json',
@@ -156,7 +156,7 @@ describe('Image Format Integration Tests', () => {
         });
         return upscaler.upscale(src);
       }, originalImage);
-      checkImage(upscaledSrc, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 
