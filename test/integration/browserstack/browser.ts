@@ -84,7 +84,7 @@ describe('Browser Integration Tests', () => {
       });
 
       printLogs(driver, capabilities);
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 });

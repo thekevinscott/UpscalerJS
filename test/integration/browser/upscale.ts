@@ -46,7 +46,7 @@ describe('Upscale Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
   });
 
   describe('Cancel', () => {
@@ -198,7 +198,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "upscaled-4x-pixelator.png", 'diff.png');
+      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
     });
   });
 
