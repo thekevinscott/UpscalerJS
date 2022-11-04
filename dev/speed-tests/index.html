@@ -20,8 +20,10 @@
 
     </div>
     <button id="start" disabled>Start Benchmarking Test</button>
+    <label for="include-simple">Include Simple</label>
+    <input type="checkbox" id="include-simple" name="include-simple" />
     <label for="include-gans">Include GANS</label>
-    <input type="checkbox" id="include-gans" name="include-gans" />
+    <input type="checkbox" id="include-gans" name="include-gans" checked />
     <label>Size of the tensor to run through the models</label>
     <input id="tensor-size" type="text" value="64" />
     <label>(Optional) Patch size</label>

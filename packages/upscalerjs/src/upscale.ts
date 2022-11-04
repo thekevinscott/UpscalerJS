@@ -271,7 +271,9 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   processFn?: ProcessFn<T>,
 ): T {
   if (processFn) {
+    // const start = performance.now();
     const processedTensor = tf.tidy(() => processFn(tensor));
+    // console.log('process fn', performance.now() - start);
     if (!tensor.isDisposed) {
       tensor.dispose();
     }
@@ -321,7 +323,9 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
           [-1, size[0], size[1],],
         );
         yield [upscaledTensor, colTensor, slicedPixels,];
+        const start = performance.now();
         const prediction = model.predict(slicedPixels) as tf.Tensor4D;
+        console.log('pr', performance.now() - start);
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
 
@@ -444,7 +448,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
 
 type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
 export const makeTick = (signal: AbortSignal): TickFunction => async result => {
-  await tf.nextFrame();
   if (isAborted(signal)) {
     // only dispose tensor if we are aborting; if aborted, the called function will have
     // no opportunity to dispose of its memory
