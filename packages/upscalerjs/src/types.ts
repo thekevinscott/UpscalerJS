@@ -39,7 +39,7 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
 
 export type Layer = tf.layers.Layer;
 
-export { PackageInformation, ProcessFn, } from '@upscalerjs/core';
+export type { PackageInformation, ProcessFn, } from '@upscalerjs/core';
 
 export interface ModelPackage {
   model: tf.LayersModel;
