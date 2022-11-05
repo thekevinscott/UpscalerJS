@@ -21,7 +21,7 @@ import {
   GET_UNDEFINED_TENSORS_ERROR,
 } from './upscale';
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
-import { wrapGenerator, isTensor as _isTensor, } from './utils';
+import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
 import { BASE64, ModelPackage, Progress, TENSOR, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';

@@ -21,16 +21,7 @@ import {
   LOGICAL_ERROR,
   getModel,
   hasValidChannels,
-  AbortError,
-  makeTick,
 } from './utils';
-import { mockFn } from '../../../test/lib/shared/mockers';
-
-const isTensor = mockFn(_isTensor);
-
-jest.mock('./utils', () => {
-  return jest.requireActual('./utils');
-});
 
 jest.mock('@tensorflow/tfjs', () => ({
   ...(jest.requireActual('@tensorflow/tfjs') ),
@@ -360,58 +351,4 @@ describe('hasValidChannels', () => {
   it('returns false if a tensor does not have valid channels', () => {
     expect(hasValidChannels(tf.ones([4,4,4]))).toEqual(false);
   });
-});
-
-describe('makeTick', () => {
-  it('disposes of an in-flight tensor', (done) => {
-    isTensor.mockImplementation(() => true);
-    const abortController = new AbortController();
-    const dispose = jest.fn();
-    const t = {
-      dispose,
-    } as unknown as tf.Tensor3D;
-    const tick = makeTick(abortController.signal);
-    tick(t).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      expect(dispose).toHaveBeenCalled();
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
-
-  it('disposes of a multiple in-flight tensors', (done) => {
-    isTensor.mockImplementation(() => false);
-    const abortController = new AbortController();
-    const dispose = jest.fn();
-    const getTensor = () => ({
-      dispose,
-    }) as unknown as tf.Tensor3D;
-    const mockTensors = Array(3).fill('').map(() => getTensor());
-    const tick = makeTick(abortController.signal);
-    tick(mockTensors).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      mockTensors.forEach(t => {
-        expect(t.dispose).toHaveBeenCalled();
-      });
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
-
-  it('ignores any non-tensor results', (done) => {
-    isTensor.mockImplementation(() => false);
-    const abortController = new AbortController();
-    const tick = makeTick(abortController.signal);
-    tick(undefined).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
 });

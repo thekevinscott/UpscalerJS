@@ -20,8 +20,8 @@ import {
   isMultiArgTensorProgress, 
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
-  makeTick,
  } from './utils';
+import { makeTick, } from './makeTick';
 
 type DEFAULT_OUTPUT = BASE64;
 
