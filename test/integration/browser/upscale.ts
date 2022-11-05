@@ -126,6 +126,7 @@ describe('Upscale Integration Tests', () => {
           patchSize: 4,
           padding: 2,
           output: 'base64',
+          awaitNextFrame: true,
           progress: (rate: number) => {
             const curTime = new Date().getTime();
             window['durations'].push(curTime - startTime);
