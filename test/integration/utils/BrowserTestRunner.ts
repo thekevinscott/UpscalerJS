@@ -140,7 +140,7 @@ export class BrowserTestRunner {
 
   async startServer(dist?: string, port?: number) {
     this.server = await startServer(port || this.port, dist || this.dist);
-    console.log(`Server running at ${this.serverURL}`);
+    // console.log(`Server running at ${this.serverURL}`);
     return this.server;
   }
 

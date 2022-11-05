@@ -25,8 +25,6 @@ const MODELS_TO_TEST = getAllAvailableModelPackages().reduce((arr, packageName) 
   })));
 }, [] as { packageName: string; esmName: string; umdName: string }[]);
 
-console.log(MODELS_TO_TEST);
-
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     name: 'esm',
