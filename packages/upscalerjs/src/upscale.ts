@@ -9,6 +9,7 @@ import type {
   ModelPackage,
   BASE64,
   TENSOR,
+  YieldedIntermediaryValue,
  } from './types';
 import { getImageAsTensor, tensorAsBase64, GetImageAsTensorInput, } from './image.generated';
 import { 
@@ -17,16 +18,12 @@ import {
   isTensor, 
   isProgress, 
   isMultiArgTensorProgress, 
-  isAborted,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  makeTick,
  } from './utils';
 
 type DEFAULT_OUTPUT = BASE64;
-
-export class AbortError extends Error {
-  message = 'The upscale request received an abort signal';
-}
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
@@ -396,8 +393,6 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
 
-type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
-
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
   args: UpscaleArgs<P, O, PO>,
@@ -441,23 +436,6 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   upscaledPixels.dispose();
   return <UpscaleResponse<O>>base64Src;
 }
-
-type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
-export const makeTick = (signal: AbortSignal, awaitNextFrame?: boolean): TickFunction => async result => {
-  if (awaitNextFrame) {
-    await tf.nextFrame();
-  }
-  if (isAborted(signal)) {
-    // only dispose tensor if we are aborting; if aborted, the called function will have
-    // no opportunity to dispose of its memory
-    if (Array.isArray(result)) {
-      result.forEach(r => r?.dispose());
-    } else if (isTensor(result)) {
-      result.dispose();
-    }
-    throw new AbortError();
-  }
-};
 
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,

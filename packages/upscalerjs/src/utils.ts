@@ -1,6 +1,10 @@
 import { tf, } from './dependencies.generated';
-import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
+import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, YieldedIntermediaryValue, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+
+export class AbortError extends Error {
+  message = 'The upscale request received an abort signal';
+}
 
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
@@ -118,3 +122,20 @@ export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultF
     progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
   };
 }
+
+type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
+export const makeTick = (signal: AbortSignal, awaitNextFrame?: boolean): TickFunction => async result => {
+  if (awaitNextFrame) {
+    await tf.nextFrame();
+  }
+  if (isAborted(signal)) {
+    // only dispose tensor if we are aborting; if aborted, the called function will have
+    // no opportunity to dispose of its memory
+    if (Array.isArray(result)) {
+      result.forEach(r => r?.dispose());
+    } else if (isTensor(result)) {
+      result.dispose();
+    }
+    throw new AbortError();
+  }
+};
