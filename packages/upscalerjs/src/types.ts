@@ -35,6 +35,7 @@ export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat =
   progress?: P;
   progressOutput?: PO;
   signal?: AbortSignal;
+  awaitNextFrame?: boolean;
 }
 
 export type Layer = tf.layers.Layer;
