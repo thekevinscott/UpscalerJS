@@ -1,5 +1,6 @@
+import { makeTick, } from './makeTick';
 import { tf, } from './dependencies.generated';
-import type { ModelPackage, NumericWarmupSizes, WarmupSizes, WarmupSizesByPatchSize, } from './types';
+import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, } from './types';
 
 const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => size !== null && typeof size === 'object' && 'patchSize' in size;
 const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
@@ -39,16 +40,21 @@ const getWidthAndHeight = (size: WarmupSizes): [number, number] => {
   return size;
 };
 
-export const warmup = async (
+export const cancellableWarmup = async (
   modelPackage: Promise<ModelPackage>,
   sizes: (WarmupSizes | unknown)[],
+  { signal = undefined, awaitNextFrame = false, }: WarmupArgs = {},
+  internalArgs: { // skipcq: js-0302
+    signal: AbortSignal;
+  },
 ): Promise<void> => {
-  await tf.nextFrame();
+  const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
+  await tick();
   for (const size of sizes) {
-    if (isWarmupSizeByPatchSize(size) || isNumericWarmupSize(size)) {
-      await warmupModel(modelPackage, getWidthAndHeight(size));
-    } else {
+    if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
       throw getInvalidValueError(size);
     }
+    await warmupModel(modelPackage, getWidthAndHeight(size));
+    await tick();
   }
 };

@@ -9,9 +9,10 @@ import type {
   ModelPackage,
   BASE64,
   UpscaleArgs,
+  WarmupArgs,
 } from './types';
 import { loadModel, } from './loadModel.generated';
-import { warmup, } from './warmup';
+import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
@@ -32,7 +33,7 @@ export class Upscaler {
       ...opts,
     };
     this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    void warmup(this._model, this._opts.warmupSizes || []);
+    void this.warmup(this._opts.warmupSizes || []); // skipcq: js-0098
   }
 
   dispose = async (): Promise<void> => {
@@ -41,8 +42,10 @@ export class Upscaler {
   };
 
   getModel = (): Promise<ModelPackage> => this._model;
-  warmup = async (warmupSizes: WarmupSizes[]): Promise<void> => {
-    await warmup(this._model, warmupSizes);
+  warmup = async (warmupSizes: WarmupSizes[], options?: WarmupArgs): Promise<void> => {
+    await cancellableWarmup(this._model, warmupSizes, options, {
+      signal: this.abortController.signal,
+    });
   };
 
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(

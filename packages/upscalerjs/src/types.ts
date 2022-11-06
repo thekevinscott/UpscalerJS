@@ -56,3 +56,10 @@ export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultForm
   progress?: P;
   signal?: AbortSignal;
 }
+
+export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
+
+export interface WarmupArgs {
+  signal?: AbortSignal;
+  awaitNextFrame?: boolean;
+}

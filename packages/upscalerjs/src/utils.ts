@@ -2,6 +2,10 @@ import { tf, } from './dependencies.generated';
 import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 
+export class AbortError extends Error {
+  message = 'The upscale request received an abort signal';
+}
+
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
 type IsTensor<T extends tf.Tensor> = (pixels: tf.Tensor) => pixels is T;

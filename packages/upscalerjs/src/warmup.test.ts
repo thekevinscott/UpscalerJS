@@ -1,6 +1,7 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
-import { getInvalidValueError, warmup } from './warmup';
+import { getInvalidValueError, cancellableWarmup } from './warmup';
 import { ModelPackage } from './types';
+import { AbortError } from './utils';
 
 const getFakeModel = () => {
   const predict = jest.fn(() => {
@@ -21,10 +22,14 @@ describe('Warmup', () => {
     const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
-    await expect(warmup(model, [['foo', 1,],] as any)).rejects.toThrow(
+    await expect(cancellableWarmup(model, [['foo', 1,],] as any, undefined, {
+      signal: new AbortController().signal,
+    })).rejects.toThrow(
       getInvalidValueError(['foo', 1])
     );
-    await expect(warmup(model, [[1, 'foo',],] as any)).rejects.toThrow(
+    await expect(cancellableWarmup(model, [[1, 'foo',],] as any, undefined, {
+      signal: new AbortController().signal,
+    })).rejects.toThrow(
       getInvalidValueError([1, 'foo'])
     );
   });
@@ -34,7 +39,9 @@ describe('Warmup', () => {
     const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
-    expect(warmup(model, [20, 20,] as any)).rejects.toEqual(expect.anything());
+    expect(cancellableWarmup(model, [20, 20,] as any, undefined, {
+      signal: new AbortController().signal,
+    })).rejects.toEqual(expect.anything());
   });
 
   it('does nothing if provided an empty array', async () => {
@@ -42,7 +49,9 @@ describe('Warmup', () => {
     const model = new Promise<ModelPackage>((resolve) =>
       resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
     );
-    await warmup(model, []);
+    await cancellableWarmup(model, [], undefined, {
+      signal: new AbortController().signal,
+    });
     expect((await model).model.predict).not.toHaveBeenCalled();
   });
 
@@ -55,7 +64,9 @@ describe('Warmup', () => {
           modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [[20, 10,],]);
+      await cancellableWarmup(model, [[20, 10,],], undefined, {
+        signal: new AbortController().signal,
+      });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
           shape: [1, 10, 20, 3,],
@@ -71,10 +82,12 @@ describe('Warmup', () => {
           modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [
+      await cancellableWarmup(model, [
         [20, 10,],
         [200, 100,],
-      ]);
+      ], undefined, {
+        signal: new AbortController().signal,
+      });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
           shape: [1, 10, 20, 3,],
@@ -97,7 +110,9 @@ describe('Warmup', () => {
           modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [{ patchSize: 10, },]);
+      await cancellableWarmup(model, [{ patchSize: 10, },], undefined, {
+        signal: new AbortController().signal,
+      });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
           shape: [1, 10, 10, 3,],
@@ -113,7 +128,9 @@ describe('Warmup', () => {
           modelDefinition: { path: 'foo', scale: 2, },
         }),
       );
-      await warmup(model, [{ patchSize: 10, }, { patchSize: 20, },]);
+      await cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], undefined, {
+        signal: new AbortController().signal,
+      });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
           shape: [1, 10, 10, 3,],
@@ -124,6 +141,67 @@ describe('Warmup', () => {
           shape: [1, 20, 20, 3,],
         }),
       );
+    });
+  });
+
+  describe('Cancelling', () => {
+    it('is able to cancel an in-flight request', async () => {
+      const controller = new AbortController();
+
+      const predict = jest.fn(() => {
+        controller.abort();
+        return {
+          dataSync: () => {},
+          dispose: () => {},
+        };
+      });
+
+      const fakeModel = {
+        predict,
+      } as unknown as LayersModel;
+      const model = new Promise<ModelPackage>((resolve) =>
+        resolve({
+          model: fakeModel,
+          modelDefinition: { path: 'foo', scale: 2, },
+        }),
+      );
+      await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
+        signal: controller.signal,
+        awaitNextFrame: true,
+      }, {
+        signal: new AbortController().signal,
+      }))
+        .rejects
+        .toThrow(AbortError);
+    });
+
+    it('is able to cancel an in-flight request with an internal signal', async () => {
+      const controller = new AbortController();
+
+      const predict = jest.fn(() => {
+        controller.abort();
+        return {
+          dataSync: () => {},
+          dispose: () => {},
+        };
+      });
+
+      const fakeModel = {
+        predict,
+      } as unknown as LayersModel;
+      const model = new Promise<ModelPackage>((resolve) =>
+        resolve({
+          model: fakeModel,
+          modelDefinition: { path: 'foo', scale: 2, },
+        }),
+      );
+      await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
+        awaitNextFrame: true,
+      }, {
+        signal: controller.signal,
+      }))
+        .rejects
+        .toThrow(AbortError);
     });
   });
 });
