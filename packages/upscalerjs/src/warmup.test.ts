@@ -1,8 +1,9 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
 import * as tf from '@tensorflow/tfjs-node';
 import { getInvalidValueError, cancellableWarmup, warmup } from './warmup';
-import { ModelPackage } from './types';
+import { ModelPackage, NumericWarmupSizes, WarmupSizesByPatchSize } from './types';
 import { AbortError } from './utils';
+import { PostProcess, PreProcess } from '@upscalerjs/core';
 
 const getFakeModel = () => {
   const predict = jest.fn(() => {
@@ -210,12 +211,7 @@ describe('Cancellable Warmup', () => {
 describe('Warmup', () => {
   it('should clear up all memory while running without pre or post functions', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn(() => {
-      return {
-        dataSync: () => {},
-        dispose: () => {},
-      };
-    });
+    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -230,14 +226,15 @@ describe('Warmup', () => {
 
     let currentExpectationIndex = 0;
     const expectations = [
-      [0, '// yield',],
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
     ];
     let result = await gen.next();
     while (!result.done) {
       const [expectation, expectationKey] = expectations[currentExpectationIndex];
       const memory = tf.memory();
       const countedTensors = memory.numTensors - startingTensors
-      console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
       try {
         expect(countedTensors).toEqual(expectation);
       } catch (err) {
@@ -246,10 +243,177 @@ describe('Warmup', () => {
       currentExpectationIndex++;
       result = await gen.next()
     }
-    (result.value as tf.Tensor).dispose();
     expect(currentExpectationIndex === expectations.length);
 
     expect(tf.memory().numTensors).toEqual(startingTensors);
   });
 
+  it('should clear up all memory while running with a pre function', async () => {
+    const startingTensors = tf.memory().numTensors;
+    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+
+    const fakeModel = {
+      predict,
+    } as unknown as LayersModel;
+    const preprocess: PreProcess = (t: tf.Tensor) => t.clone() as tf.Tensor4D;
+    const modelPackage = new Promise<ModelPackage>((resolve) =>
+      resolve({
+        model: fakeModel,
+        modelDefinition: { path: 'foo', scale: 2, preprocess, },
+      }),
+    );
+    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+
+    let currentExpectationIndex = 0;
+    const expectations = [
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// pre process // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
+    ];
+    let result = await gen.next();
+    while (!result.done) {
+      const [expectation, expectationKey] = expectations[currentExpectationIndex];
+      const memory = tf.memory();
+      const countedTensors = memory.numTensors - startingTensors
+      try {
+        expect(countedTensors).toEqual(expectation);
+      } catch (err) {
+        throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+      }
+      currentExpectationIndex++;
+      result = await gen.next()
+    }
+    expect(currentExpectationIndex === expectations.length);
+
+    expect(tf.memory().numTensors).toEqual(startingTensors);
+  });
+
+  it('should clear up all memory while running with a post function', async () => {
+    const startingTensors = tf.memory().numTensors;
+    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+
+    const fakeModel = {
+      predict,
+    } as unknown as LayersModel;
+    const postprocess: PostProcess = (t: tf.Tensor) => t.clone() as tf.Tensor4D;
+    const modelPackage = new Promise<ModelPackage>((resolve) =>
+      resolve({
+        model: fakeModel,
+        modelDefinition: { path: 'foo', scale: 2, postprocess, },
+      }),
+    );
+    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+
+    let currentExpectationIndex = 0;
+    const expectations = [
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [1, '// postprocess // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
+    ];
+    let result = await gen.next();
+    while (!result.done) {
+      const [expectation, expectationKey] = expectations[currentExpectationIndex];
+      const memory = tf.memory();
+      const countedTensors = memory.numTensors - startingTensors
+      try {
+        expect(countedTensors).toEqual(expectation);
+      } catch (err) {
+        throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+      }
+      currentExpectationIndex++;
+      result = await gen.next()
+    }
+    expect(currentExpectationIndex === expectations.length);
+
+    expect(tf.memory().numTensors).toEqual(startingTensors);
+  });
+
+  it('should clear up all memory while running with a pre and post function', async () => {
+    const startingTensors = tf.memory().numTensors;
+    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+
+    const fakeModel = {
+      predict,
+    } as unknown as LayersModel;
+    const preprocess: PreProcess = (t: tf.Tensor) => t.clone() as tf.Tensor4D;
+    const postprocess: PostProcess = (t: tf.Tensor) => t.clone() as tf.Tensor4D;
+    const modelPackage = new Promise<ModelPackage>((resolve) =>
+      resolve({
+        model: fakeModel,
+        modelDefinition: { path: 'foo', scale: 2, preprocess, postprocess, },
+      }),
+    );
+    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+
+    let currentExpectationIndex = 0;
+    const expectations = [
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// preprocess // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [1, '// postprocess // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
+    ];
+    let result = await gen.next();
+    while (!result.done) {
+      const [expectation, expectationKey] = expectations[currentExpectationIndex];
+      const memory = tf.memory();
+      const countedTensors = memory.numTensors - startingTensors
+      try {
+        expect(countedTensors).toEqual(expectation);
+      } catch (err) {
+        throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+      }
+      currentExpectationIndex++;
+      result = await gen.next()
+    }
+    expect(currentExpectationIndex === expectations.length);
+
+    expect(tf.memory().numTensors).toEqual(startingTensors);
+  });
+
+  it('should clear up all memory while running with sizes of different formats', async () => {
+    const startingTensors = tf.memory().numTensors;
+    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+
+    const fakeModel = {
+      predict,
+    } as unknown as LayersModel;
+    const modelPackage = new Promise<ModelPackage>((resolve) =>
+      resolve({
+        model: fakeModel,
+        modelDefinition: { path: 'foo', scale: 2, },
+      }),
+    );
+    const patchSizeWarmUp: WarmupSizesByPatchSize = { patchSize: 10, };
+    const numericWarmUpSize: NumericWarmupSizes = [10, 10];
+    const gen = warmup(modelPackage, [patchSizeWarmUp, numericWarmUpSize]);
+
+    let currentExpectationIndex = 0;
+    const expectations = [
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
+      [1, '// initial dummy tensor // yield [dummyTensor,]; ',],
+      [1, '// post predict // yield [dummyTensor,]; ',],
+      [0, '// end of loop // yield; ',],
+    ];
+    let result = await gen.next();
+    while (!result.done) {
+      const [expectation, expectationKey] = expectations[currentExpectationIndex];
+      const memory = tf.memory();
+      const countedTensors = memory.numTensors - startingTensors
+      try {
+        expect(countedTensors).toEqual(expectation);
+      } catch (err) {
+        throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+      }
+      currentExpectationIndex++;
+      result = await gen.next()
+    }
+    expect(currentExpectationIndex === expectations.length);
+
+    expect(tf.memory().numTensors).toEqual(startingTensors);
+  });
 });
