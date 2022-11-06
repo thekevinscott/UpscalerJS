@@ -1,6 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node';
 import {
-  AbortError,
   predict,
   getRowsAndColumns,
   getTensorDimensions,
@@ -19,11 +18,10 @@ import {
   GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
-  makeTick,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './upscale';
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
-import { wrapGenerator, isTensor as _isTensor, } from './utils';
+import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
 import { BASE64, ModelPackage, Progress, TENSOR, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
@@ -1690,58 +1688,4 @@ describe('getWidthAndHeight', () => {
   it('returns width and height for a 3d tensor', () => {
     expect(getWidthAndHeight(tf.zeros([1,2,3]) as tf.Tensor3D)).toEqual([1,2]);
   });
-});
-
-describe('makeTick', () => {
-  it('disposes of an in-flight tensor', (done) => {
-    isTensor.mockImplementation(() => true);
-    const abortController = new AbortController();
-    const dispose = jest.fn();
-    const t = {
-      dispose,
-    } as unknown as tf.Tensor3D;
-    const tick = makeTick(abortController.signal);
-    tick(t).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      expect(dispose).toHaveBeenCalled();
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
-
-  it('disposes of a multiple in-flight tensors', (done) => {
-    isTensor.mockImplementation(() => false);
-    const abortController = new AbortController();
-    const dispose = jest.fn();
-    const getTensor = () => ({
-      dispose,
-    }) as unknown as tf.Tensor3D;
-    const mockTensors = Array(3).fill('').map(() => getTensor());
-    const tick = makeTick(abortController.signal);
-    tick(mockTensors).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      mockTensors.forEach(t => {
-        expect(t.dispose).toHaveBeenCalled();
-      });
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
-
-  it('ignores any non-tensor results', (done) => {
-    isTensor.mockImplementation(() => false);
-    const abortController = new AbortController();
-    const tick = makeTick(abortController.signal);
-    tick(undefined).then(() => {
-      throw new Error('Should have thrown.');
-    }).catch(err => {
-      expect(err instanceof AbortError).toBe(true);
-      done();
-    });
-    abortController.abort();
-  }, 100);
 });
