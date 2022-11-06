@@ -33,7 +33,7 @@ jest.mock('./warmup', () => {
   const { warmup, ...rest } = jest.requireActual('./warmup');
   return {
     ...rest,
-    warmup: jest.fn(warmup),
+    cancellableWarmup: jest.fn(warmup),
   };
 });
 jest.mock('./dependencies.generated', () => {
