@@ -1,5 +1,6 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
-import { getInvalidValueError, cancellableWarmup } from './warmup';
+import * as tf from '@tensorflow/tfjs-node';
+import { getInvalidValueError, cancellableWarmup, warmup } from './warmup';
 import { ModelPackage } from './types';
 import { AbortError } from './utils';
 
@@ -16,7 +17,7 @@ const getFakeModel = () => {
   } as unknown as LayersModel;
 };
 
-describe('Warmup', () => {
+describe('Cancellable Warmup', () => {
   it('throws if given an invalid size', async () => {
     const fakeModel = getFakeModel();
     const model = new Promise<ModelPackage>((resolve) =>
@@ -204,4 +205,51 @@ describe('Warmup', () => {
         .toThrow(AbortError);
     });
   });
+});
+
+describe('Warmup', () => {
+  it('should clear up all memory while running without pre or post functions', async () => {
+    const startingTensors = tf.memory().numTensors;
+    const predict = jest.fn(() => {
+      return {
+        dataSync: () => {},
+        dispose: () => {},
+      };
+    });
+
+    const fakeModel = {
+      predict,
+    } as unknown as LayersModel;
+    const modelPackage = new Promise<ModelPackage>((resolve) =>
+      resolve({
+        model: fakeModel,
+        modelDefinition: { path: 'foo', scale: 2, },
+      }),
+    );
+    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+
+    let currentExpectationIndex = 0;
+    const expectations = [
+      [0, '// yield',],
+    ];
+    let result = await gen.next();
+    while (!result.done) {
+      const [expectation, expectationKey] = expectations[currentExpectationIndex];
+      const memory = tf.memory();
+      const countedTensors = memory.numTensors - startingTensors
+      console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
+      try {
+        expect(countedTensors).toEqual(expectation);
+      } catch (err) {
+        throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
+      }
+      currentExpectationIndex++;
+      result = await gen.next()
+    }
+    (result.value as tf.Tensor).dispose();
+    expect(currentExpectationIndex === expectations.length);
+
+    expect(tf.memory().numTensors).toEqual(startingTensors);
+  });
+
 });
