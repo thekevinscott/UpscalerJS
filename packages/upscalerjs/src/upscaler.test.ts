@@ -1,7 +1,7 @@
 import { Upscaler } from './upscaler';
 import type { LayersModel } from '@tensorflow/tfjs';
 import { loadModel as _loadModel, } from './loadModel.generated';
-import { warmup as _warmup, } from './warmup';
+import { cancellableWarmup as _warmup, } from './warmup';
 import { getImageAsTensor as _getImageAsTensor } from './image.generated';
 import { cancellableUpscale as _cancellableUpscale, } from './upscale';
 import { WarmupSizes } from './types';
