@@ -31,7 +31,7 @@ export const cancellableWarmup = async (
   modelPackage: Promise<ModelPackage>,
   sizes: (WarmupSizes | unknown)[],
   { signal = undefined, awaitNextFrame = false, }: WarmupArgs = {},
-  internalArgs: {
+  internalArgs: { // skipcq: js-0302
     signal: AbortSignal;
   },
 ): Promise<void> => {

@@ -33,7 +33,7 @@ export class Upscaler {
       ...opts,
     };
     this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    void this.warmup(this._opts.warmupSizes || []);
+    void this.warmup(this._opts.warmupSizes || []); // skipcq: js-0098
   }
 
   dispose = async (): Promise<void> => {
