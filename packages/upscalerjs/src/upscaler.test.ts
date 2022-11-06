@@ -1,7 +1,7 @@
 import { Upscaler } from './upscaler';
 import type { LayersModel } from '@tensorflow/tfjs';
 import { loadModel as _loadModel, } from './loadModel.generated';
-import { cancellableWarmup as _warmup, } from './warmup';
+import { cancellableWarmup as _cancellableWarmup, } from './warmup';
 import { getImageAsTensor as _getImageAsTensor } from './image.generated';
 import { cancellableUpscale as _cancellableUpscale, } from './upscale';
 import { WarmupSizes } from './types';
@@ -30,10 +30,10 @@ jest.mock('./loadModel.generated', () => {
   };
 });
 jest.mock('./warmup', () => {
-  const { warmup, ...rest } = jest.requireActual('./warmup');
+  const { cancellableWarmup, ...rest } = jest.requireActual('./warmup');
   return {
     ...rest,
-    cancellableWarmup: jest.fn(warmup),
+    cancellableWarmup: jest.fn(cancellableWarmup),
   };
 });
 jest.mock('./dependencies.generated', () => {
@@ -44,14 +44,14 @@ jest.mock('./dependencies.generated', () => {
 });
 
 const cancellableUpscale = mockFn(_cancellableUpscale);
-const warmup = mockFn(_warmup);
+const cancellableWarmup = mockFn(_cancellableWarmup);
 const loadModel = mockFn(_loadModel);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 
 describe('Upscaler', () => {
   beforeEach(() => {
     cancellableUpscale.mockClear();
-    warmup.mockClear();
+    cancellableWarmup.mockClear();
     loadModel.mockClear();
     getImageAsTensor.mockClear();
   });
@@ -129,10 +129,10 @@ describe('Upscaler', () => {
       model: 'foo' as unknown as LayersModel,
     }));
     loadModel.mockImplementation(() => modelDefinitionPromise);
-    warmup.mockImplementation(async () => {});
+    cancellableWarmup.mockImplementation(async () => {});
     const upscaler = new Upscaler();
     const warmupSizes: WarmupSizes[] = [[2,2]];
     await upscaler.warmup(warmupSizes);
-    expect(warmup).toBeCalledWith(modelDefinitionPromise, warmupSizes);
+    expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
   });
 });
