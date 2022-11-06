@@ -33,7 +33,9 @@ export class Upscaler {
       ...opts,
     };
     this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    void this.warmup(this._opts.warmupSizes || []); // skipcq: js-0098
+    if (this._opts.warmupSizes?.length) {
+      void this.warmup(this._opts.warmupSizes || []); // skipcq: js-0098
+    }
   }
 
   dispose = async (): Promise<void> => {
@@ -54,12 +56,11 @@ export class Upscaler {
   ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
     const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
-    const result = await cancellableUpscale(image, parsedOptions, {
+    return await cancellableUpscale(image, parsedOptions, {
       model,
       modelDefinition,
       signal: this.abortController.signal,
     });
-    return result;
   };
 
   abort = (): void => {

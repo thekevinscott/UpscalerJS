@@ -1438,7 +1438,7 @@ describe('predict', () => {
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
-    it.only('should clear up all memory while running predict with patch size', async () => {
+    it('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;

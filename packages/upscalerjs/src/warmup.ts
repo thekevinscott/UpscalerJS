@@ -1,6 +1,7 @@
 import { makeTick, } from './makeTick';
 import { tf, } from './dependencies.generated';
-import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, } from './types';
+import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
+import { wrapGenerator, } from './utils';
 
 const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => size !== null && typeof size === 'object' && 'patchSize' in size;
 const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
@@ -40,6 +41,41 @@ const getWidthAndHeight = (size: WarmupSizes): [number, number] => {
   return size;
 };
 
+export async function* warmup(
+  modelPackage: Promise<ModelPackage>,
+  sizes: (WarmupSizes | unknown)[],
+): AsyncGenerator<YieldedIntermediaryValue> {
+  const { model, modelDefinition, } = await modelPackage;
+  for (const size of sizes) {
+    if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
+      throw getInvalidValueError(size);
+    }
+    const [ width, height, ] = getWidthAndHeight(size);
+
+    let dummyTensor = tf.zeros([1, height, width, 3,]) as tf.Tensor4D;
+    yield [dummyTensor,];
+    if (modelDefinition.preprocess) {
+      const oldDummyTensor = dummyTensor;
+      dummyTensor = modelDefinition.preprocess(oldDummyTensor);
+      oldDummyTensor.dispose();
+      yield [dummyTensor,];
+    }
+    const oldDummyTensor = dummyTensor;
+    dummyTensor = model.predict(oldDummyTensor) as tf.Tensor4D;
+    oldDummyTensor.dispose();
+    yield [dummyTensor,];
+    if (modelDefinition.postprocess) {
+      const oldDummyTensor = dummyTensor;
+      dummyTensor = modelDefinition.postprocess(oldDummyTensor);
+      oldDummyTensor.dispose();
+      yield [dummyTensor,];
+    }
+    dummyTensor.dispose();
+
+    yield;
+  }
+}
+
 export const cancellableWarmup = async (
   modelPackage: Promise<ModelPackage>,
   sizes: (WarmupSizes | unknown)[],
@@ -50,11 +86,8 @@ export const cancellableWarmup = async (
 ): Promise<void> => {
   const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
   await tick();
-  for (const size of sizes) {
-    if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
-      throw getInvalidValueError(size);
-    }
-    await warmupModel(modelPackage, getWidthAndHeight(size));
-    await tick();
-  }
+  await wrapGenerator(warmup(
+    modelPackage,
+    sizes,
+  ), tick);
 };
