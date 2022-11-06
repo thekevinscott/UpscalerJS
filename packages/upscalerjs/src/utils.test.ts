@@ -9,7 +9,7 @@ import {
   isString, 
   isFourDimensionalTensor, 
   isThreeDimensionalTensor, 
-  isTensor as _isTensor, 
+  isTensor, 
   isValidModelDefinition,
   warn, 
   isAborted,

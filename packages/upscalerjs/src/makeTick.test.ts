@@ -16,6 +16,8 @@ jest.mock('./utils', () => {
   };
 });
 
+console.log(isTensor);
+
 describe('makeTick', () => {
   it('disposes of an in-flight tensor', (done) => {
     isTensor.mockImplementation(() => true);
