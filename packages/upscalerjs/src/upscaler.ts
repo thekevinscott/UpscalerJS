@@ -26,6 +26,8 @@ const DEFAULT_MODEL: ModelDefinitionObjectOrFn = ESRGANSlim;
 export class Upscaler {
   _opts: UpscalerOptions;
   _model: Promise<ModelPackage>;
+  _ready: Promise<void>;
+  _readyResolver?: () => void;
   abortController = new AbortController();
 
   constructor(opts: UpscalerOptions = {}) {
@@ -33,25 +35,30 @@ export class Upscaler {
       ...opts,
     };
     this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    if (this._opts.warmupSizes?.length) {
-      void this.warmup(this._opts.warmupSizes || []); // skipcq: js-0098
-    }
+    this._ready = new Promise<void>((resolve) => {
+      void this.warmup(this._opts.warmupSizes).then(resolve); // skipcq: js-0098
+    });
   }
 
   dispose = async (): Promise<void> => {
+    await this._ready;
     const { model, } = await this._model;
     model.dispose();
   };
 
   getModel = (): Promise<ModelPackage> => this._model;
-  warmup = async (warmupSizes: WarmupSizes[], options?: WarmupArgs): Promise<void> => cancellableWarmup(this._model, warmupSizes, options, {
-    signal: this.abortController.signal,
-  });
+  warmup = async (warmupSizes: WarmupSizes[] = [], options?: WarmupArgs): Promise<void> => {
+    await this._ready;
+    return cancellableWarmup(this._model, warmupSizes, options, {
+      signal: this.abortController.signal,
+    });
+  };
 
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
     options: TempUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
+    await this._ready;
     const { model, modelDefinition, } = await this._model;
     const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
     return cancellableUpscale(image, parsedOptions, {

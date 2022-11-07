@@ -237,7 +237,8 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          warmupSizes: [[50, 50]],
+          warmupSizes: [[10, 10]],
+          model: window['pixel-upsampler']['4x'],
         });
         await upscaler.dispose();
       }
