@@ -1,7 +1,7 @@
 import { makeTick, } from './makeTick';
 import { tf, } from './dependencies.generated';
 import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
-import { wrapGenerator, } from './utils';
+import { processAndDisposeOfTensor, wrapGenerator, } from './utils';
 
 const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => size !== null && typeof size === 'object' && 'patchSize' in size;
 const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
@@ -34,20 +34,15 @@ export async function* warmup(
 
     let dummyTensor = tf.zeros([1, height, width, 3,]) as tf.Tensor4D;
     yield [dummyTensor,];
-    if (modelDefinition.preprocess) {
-      const oldDummyTensor = dummyTensor;
-      dummyTensor = modelDefinition.preprocess(oldDummyTensor);
-      oldDummyTensor.dispose();
-      yield [dummyTensor,];
-    }
-    const oldDummyTensor = dummyTensor;
-    dummyTensor = model.predict(oldDummyTensor) as tf.Tensor4D;
-    oldDummyTensor.dispose();
-    yield [dummyTensor,];
-    if (modelDefinition.postprocess) {
-      const oldDummyTensor = dummyTensor;
-      dummyTensor = modelDefinition.postprocess(oldDummyTensor);
-      oldDummyTensor.dispose();
+
+    const fns = [
+      modelDefinition.preprocess,
+      (t: tf.Tensor4D) => model.predict(t) as tf.Tensor4D,
+      modelDefinition.postprocess,
+    ].filter(Boolean);
+    for (let i = 0; i < fns.length; i++) {
+      const fn = fns[i];
+      dummyTensor = processAndDisposeOfTensor(dummyTensor, fn);
       yield [dummyTensor,];
     }
     dummyTensor.dispose();
