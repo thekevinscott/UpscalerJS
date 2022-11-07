@@ -81,8 +81,9 @@ describe('processAndDisposeOfTensor', () => {
     const mockTensor = jest.fn().mockImplementation(() => {
       return { dispose: mockDispose } as any as tf.Tensor3D;
     });
-    const value = processAndDisposeOfTensor(mockTensor());
-    expect(value).toEqual(mockTensor);
+    const mockedTensor = mockTensor();
+    const value = processAndDisposeOfTensor(mockedTensor);
+    expect(value).toEqual(mockedTensor);
     expect(mockDispose).not.toHaveBeenCalled();
   });
 
@@ -101,7 +102,7 @@ describe('processAndDisposeOfTensor', () => {
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
     const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
+      return { dispose: mockDispose, isDisposed: () => true } as any as tf.Tensor3D;
     });
     const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
       t.dispose();
@@ -1251,8 +1252,10 @@ describe('predict', () => {
         progress,
       }, modelPackage)
     );
-    expect(progress).toHaveBeenCalledWith(0.5, mockResponse);
-    expect(progress).toHaveBeenCalledWith(1, mockResponse);
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
     expect(console.warn).not.toHaveBeenCalled();
   });
 
@@ -1304,11 +1307,15 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(console.warn).not.toHaveBeenCalled();
   });
@@ -1339,11 +1346,15 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(console.warn).not.toHaveBeenCalled();
   });
@@ -1375,11 +1386,15 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
+      expect.any(Number),
+      expect.any(Number),
     );
     expect(console.warn).not.toHaveBeenCalled();
   });
@@ -1438,7 +1453,7 @@ describe('predict', () => {
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
-    it.only('should clear up all memory while running predict with patch size', async () => {
+    it('should clear up all memory while running predict with patch size', async () => {
       console.warn = jest.fn();
       const IMG_SIZE = 4;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
