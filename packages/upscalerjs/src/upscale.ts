@@ -1,7 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
   UpscaleArgs, 
-  ProcessFn, 
   ResultFormat, 
   UpscaleResponse, 
   Progress, 
