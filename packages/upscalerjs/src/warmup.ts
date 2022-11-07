@@ -12,13 +12,6 @@ export const getInvalidValueError = (size: unknown): Error => new Error(
   `Invalid value passed to warmup in warmupSizes. Expected two numbers, got ${JSON.stringify(size)}`
 );
 
-const warmupModel = async (model: ModelPackage['model'], [width, height,]: NumericWarmupSizes) => {
-  const pred = tf.tidy(() => model.predict(tf.zeros([1, height, width, 3,])) as tf.Tensor4D);
-  await tf.nextFrame();
-  pred.dataSync();
-  pred.dispose();
-};
-
 const getWidthAndHeight = (size: WarmupSizes): [number, number] => {
   if (isWarmupSizeByPatchSize(size)) {
     const { patchSize, padding = 0, } = size;
@@ -32,13 +25,33 @@ export async function* warmup(
   modelPackage: Promise<ModelPackage>,
   sizes: (WarmupSizes | unknown)[],
 ): AsyncGenerator<YieldedIntermediaryValue> {
-  const { model, } = await modelPackage;
-  yield;
+  const { model, modelDefinition, } = await modelPackage;
   for (const size of sizes) {
     if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
       throw getInvalidValueError(size);
     }
-    await warmupModel(model, getWidthAndHeight(size));
+    const [ width, height, ] = getWidthAndHeight(size);
+
+    let dummyTensor = tf.zeros([1, height, width, 3,]) as tf.Tensor4D;
+    yield [dummyTensor,];
+    if (modelDefinition.preprocess) {
+      const oldDummyTensor = dummyTensor;
+      dummyTensor = modelDefinition.preprocess(oldDummyTensor);
+      oldDummyTensor.dispose();
+      yield [dummyTensor,];
+    }
+    const oldDummyTensor = dummyTensor;
+    dummyTensor = model.predict(oldDummyTensor) as tf.Tensor4D;
+    oldDummyTensor.dispose();
+    yield [dummyTensor,];
+    if (modelDefinition.postprocess) {
+      const oldDummyTensor = dummyTensor;
+      dummyTensor = modelDefinition.postprocess(oldDummyTensor);
+      oldDummyTensor.dispose();
+      yield [dummyTensor,];
+    }
+    dummyTensor.dispose();
+
     yield;
   }
 }
@@ -57,5 +70,4 @@ export const cancellableWarmup = async (
     modelPackage,
     sizes,
   ), tick);
-  await tick();
 };
