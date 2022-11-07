@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
-import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -121,4 +121,19 @@ export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultF
     output: parseUpscaleOutput('output', opts.output) as O,
     progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
   };
+}
+
+// this function disposes of any input tensors
+export function processAndDisposeOfTensor<T extends tf.Tensor>(
+  tensor: T,
+  processFn?: ProcessFn<T>,
+): T {
+  if (processFn) {
+    const processedTensor = tf.tidy(() => processFn(tensor));
+    if (!tensor.isDisposed) {
+      tensor.dispose();
+    }
+    return processedTensor;
+  }
+  return tensor;
 }

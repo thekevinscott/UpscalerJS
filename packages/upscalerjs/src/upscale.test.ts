@@ -4,7 +4,6 @@ import {
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
-  processAndDisposeOfTensor,
   concatTensors,
   upscale,
   cancellableUpscale,
@@ -72,46 +71,6 @@ describe('concatTensors', () => {
 
   it('throws if given no tensors', () => {
     expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR());
-  });
-});
-
-describe('processAndDisposeOfTensor', () => {
-  it('returns a tensor as is if given no process function', () => {
-    const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
-    });
-    const mockedTensor = mockTensor();
-    const value = processAndDisposeOfTensor(mockedTensor);
-    expect(value).toEqual(mockedTensor);
-    expect(mockDispose).not.toHaveBeenCalled();
-  });
-
-  it('processes a tensor and disposes of it if given a process function', () => {
-    const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
-    });
-    const process = jest.fn().mockImplementation(() => 'foo');
-    const value = processAndDisposeOfTensor(mockTensor(), process);
-    expect(value).toEqual('foo');
-    expect(process).toHaveBeenCalledTimes(1);
-    expect(mockDispose).toHaveBeenCalledTimes(1);
-  });
-
-  it('processes a tensor and does not dispose of it if it is already disposed', () => {
-    const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose, isDisposed: () => true } as any as tf.Tensor3D;
-    });
-    const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
-      t.dispose();
-      return 'foo';
-    });
-    const value = processAndDisposeOfTensor(mockTensor(), process);
-    expect(value).toEqual('foo');
-    expect(process).toHaveBeenCalledTimes(1);
-    expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 });
 

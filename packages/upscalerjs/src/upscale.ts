@@ -1,7 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
   UpscaleArgs, 
-  ProcessFn, 
   ResultFormat, 
   UpscaleResponse, 
   Progress, 
@@ -20,6 +19,7 @@ import {
   isMultiArgTensorProgress, 
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  processAndDisposeOfTensor,
  } from './utils';
 import { makeTick, } from './makeTick';
 
@@ -260,21 +260,6 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   const concatenatedTensor = tf.concat(definedTensors, axis);
   tensors.forEach(tensor => tensor?.dispose());
   return concatenatedTensor as T;
-}
-
-// this function disposes of any input tensors
-export function processAndDisposeOfTensor<T extends tf.Tensor>(
-  tensor: T,
-  processFn?: ProcessFn<T>,
-): T {
-  if (processFn) {
-    const processedTensor = tf.tidy(() => processFn(tensor));
-    if (!tensor.isDisposed) {
-      tensor.dispose();
-    }
-    return processedTensor;
-  }
-  return tensor;
 }
 
 /* eslint-disable @typescript-eslint/require-await */
