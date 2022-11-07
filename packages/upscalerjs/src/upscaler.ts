@@ -44,11 +44,9 @@ export class Upscaler {
   };
 
   getModel = (): Promise<ModelPackage> => this._model;
-  warmup = async (warmupSizes: WarmupSizes[], options?: WarmupArgs): Promise<void> => {
-    await cancellableWarmup(this._model, warmupSizes, options, {
-      signal: this.abortController.signal,
-    });
-  };
+  warmup = async (warmupSizes: WarmupSizes[], options?: WarmupArgs): Promise<void> => cancellableWarmup(this._model, warmupSizes, options, {
+    signal: this.abortController.signal,
+  });
 
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
@@ -56,7 +54,7 @@ export class Upscaler {
   ): Promise<UpscaleResponse<O>> => {
     const { model, modelDefinition, } = await this._model;
     const parsedOptions: UpscaleArgs<P, O, PO> = parseUpscaleOptions<P, O, PO>(options);
-    return await cancellableUpscale(image, parsedOptions, {
+    return cancellableUpscale(image, parsedOptions, {
       model,
       modelDefinition,
       signal: this.abortController.signal,
