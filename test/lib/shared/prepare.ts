@@ -130,7 +130,7 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
   writePackageJSON(dest, packageJSON)
 }
 
-const npmPack = async (src: string, target: string): Promise<string> => {
+const npmPack = async (src: string): Promise<string> => {
   let outputName = '';
   await callExec('npm pack --quiet', {
     cwd: src,
@@ -257,12 +257,7 @@ const packAndTar = async (src: string, target: string, {
   verbose?: boolean;
 } = {}, attempts = 0): Promise<string> => {
   try {
-<<<<<<< HEAD
     const pathToPackedFile = await npmPack(src);
-=======
-    const pathToPackedFile = await npmPack(src, target);
-    await new Promise(resolve => setTimeout(resolve, 1));
->>>>>>> e24ceb6 (Move more logic into packing and untarring function)
     return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
     if (attempts >= MAX_ATTEMPTS - 1) {
