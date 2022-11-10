@@ -1,6 +1,5 @@
 import { Dependency } from '@schemastore/package';
-import fs from 'fs';
-import { mkdirpSync, writeFileSync } from 'fs-extra';
+import { renameSync, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -145,7 +144,11 @@ const npmPack = async (src: string): Promise<string> => {
     throw new Error(`Unexpected output name: ${outputName}`)
   }
 
-  return path.resolve(src, outputName);
+  const packedFile = path.resolve(src, outputName);
+  if (!existsSync(packedFile)) {
+    throw new Error(`npm pack failed for ${src}`)
+  }
+  return packedFile;
 };
 
 const pnpmPack = async (src: string, target: string, {
@@ -236,16 +239,13 @@ const packAndTar = async (src: string, target: string, {
 } = {}, attempts = 0): Promise<string> => {
   try {
     const packedFile = await npmPack(src);
-    if (!fs.existsSync(packedFile)) {
-      throw new Error(`npm pack failed for ${src}`)
-    }
     const tmpPackedFile = path.resolve(target, packedFile);
-    fs.renameSync(packedFile, tmpPackedFile);
+    renameSync(packedFile, tmpPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
     await unTar(target, packedFile);
     const unpackedFolder = path.resolve(target, 'package');
     // ensure the unpacked folder exists
-    if (!fs.existsSync(unpackedFolder)) {
+    if (!existsSync(unpackedFolder)) {
       throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
     }
     return unpackedFolder;
