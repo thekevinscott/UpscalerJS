@@ -174,7 +174,7 @@ const pnpmPack = async (src: string, target: string, {
   }
 
   const packedFile = path.resolve(src, outputName);
-  if (!fs.existsSync(packedFile)) {		
+  if (!existsSync(packedFile)) {		
     throw new Error(`pnpm pack failed for ${src}`)		
   }
 
