@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from './sequelize';
 
-export class Result extends Model {
+export class PerformanceMeasurement extends Model {
   declare id: number;
   declare value: number;
   declare metricId: number;
@@ -9,7 +9,7 @@ export class Result extends Model {
   declare modelId: number;
 }
 
-Result.init({
+PerformanceMeasurement.init({
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -21,5 +21,5 @@ Result.init({
   },
 }, {
   sequelize,
-  modelName: 'Result'
+  modelName: 'PerformanceMeasurement',
 });
