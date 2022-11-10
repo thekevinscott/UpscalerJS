@@ -214,7 +214,7 @@ const collectAllDependencies = (src: string) => {
 
 // sometimes npm pack fails with a 'package/models/group1-shard1of1.bin: truncated gzip input' error. Try a few times before failing
 const MAX_ATTEMPTS = 2;
-const packAndTar = async (src: string, tmp: string, {
+const packAndTar = async (src: string, target: string, {
   verbose = false,
 }: {
   verbose?: boolean;
@@ -224,11 +224,11 @@ const packAndTar = async (src: string, tmp: string, {
     if (!fs.existsSync(packedFile)) {
       throw new Error(`npm pack failed for ${src}`)
     }
-    const tmpPackedFile = path.resolve(tmp, packedFile);
+    const tmpPackedFile = path.resolve(target, packedFile);
     fs.renameSync(packedFile, tmpPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
-    await unTar(tmp, packedFile);
-    const unpackedFolder = path.resolve(tmp, 'package');
+    await unTar(target, packedFile);
+    const unpackedFolder = path.resolve(target, 'package');
     // ensure the unpacked folder exists
     if (!fs.existsSync(unpackedFolder)) {
       throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
@@ -244,7 +244,7 @@ const packAndTar = async (src: string, tmp: string, {
       console.log(`Failed to pack and tar, attempts: ${attempts + 1}, remaining attempts: ${remainingAttempts}`);
     }
 
-    return packAndTar(src, tmp, { verbose }, attempts + 1);
+    return packAndTar(src, target, { verbose }, attempts + 1);
   }
 }
 
