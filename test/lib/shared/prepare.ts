@@ -133,6 +133,27 @@ const npmPack = async (src: string): Promise<string> => {
   return path.resolve(src, outputName);
 };
 
+const pnpmPack = async (src: string, target: string, {
+  verbose = false,
+}: {
+  verbose?: boolean;
+} = {}): Promise<string> => {
+  let outputName = '';
+  await callExec(`pnpm pack --pack-destination ${target} ${verbose === false ? '--silent' : ''}`, {
+    cwd: src,
+  }, chunk => {
+    outputName = chunk;
+  });
+
+  outputName = outputName.trim();
+
+  if (!outputName.endsWith('.tgz')) {
+    throw new Error(`Unexpected output name: ${outputName}`)
+  }
+
+  return path.resolve(src, outputName);
+};
+
 const unTar = (cwd: string, fileName: string) => tar.extract({
   file: fileName,
   cwd,
