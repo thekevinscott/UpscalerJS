@@ -57,7 +57,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
 
   const NODE_MODULES = path.resolve(dest, 'node_modules');
 
-  const progress = (i: number) => {
+  const progress = async (i: number) => {
     const { src, name } = dependencies[i];
 
     if (verbose) {
