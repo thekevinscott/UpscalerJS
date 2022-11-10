@@ -145,9 +145,13 @@ const npmPack = async (src: string): Promise<string> => {
   }
 
   const pathToPackedFile = path.resolve(src, outputName);
+
   if (!existsSync(pathToPackedFile)) {
     throw new Error(`npm pack failed for ${src}`)
   }
+
+  await new Promise(resolve => setTimeout(resolve, 1));
+
   return pathToPackedFile;
 };
 
@@ -249,7 +253,6 @@ const packAndTar = async (src: string, target: string, {
 } = {}, attempts = 0): Promise<string> => {
   try {
     const pathToPackedFile = await npmPack(src);
-    await new Promise(resolve => setTimeout(resolve, 1));
     return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
     if (attempts >= MAX_ATTEMPTS - 1) {
