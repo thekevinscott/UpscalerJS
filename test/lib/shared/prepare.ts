@@ -64,7 +64,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
       console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length}`);
     }
     const moduleFolder = path.resolve(NODE_MODULES, name);
-    await installLocalPackageWithNewName(src, moduleFolder, name);
+    await installLocalPackageWithNewName(src, moduleFolder, name, { verbose });
   };
 
   for await (const _ of asyncPool(CONCURRENT_ASYNC_THREADS, Array(dependencies.length).fill('').map((_, i) => i), progress)) { }
@@ -113,7 +113,7 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
   if (verbose) {
     console.log('Installing local dependencies');
   }
-  await installLocalDependencies(dest, dependencies, localDependencies);
+  await installLocalDependencies(dest, dependencies, localDependencies, { verbose });
 }
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string) => {
