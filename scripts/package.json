@@ -37,13 +37,11 @@
     "@types/sequelize": "^4.28.14",
     "@types/sharp": "^0.30.5",
     "@types/sqlite3": "^3.1.8",
-    "@types/tiny-async-pool": "^2.0.0",
     "@types/yargs": "^17.0.10",
     "crimson-progressbar": "^1.3.0",
     "image-size": "^1.0.2",
     "inquirer": "^8.2.4",
     "sharp": "^0.31.0",
-    "tiny-async-pool": "^2.1.0",
     "yargs": "^17.5.1"
   }
 }
