@@ -1,5 +1,5 @@
 import { Dependency } from '@schemastore/package';
-import { renameSync, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
+import { remove, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -176,7 +176,13 @@ const pnpmPack = async (src: string, target: string, {
   return path.resolve(src, outputName);
 };
 
-const unTar = async (target: string, fileName: string, expectedFolderName = 'package') => {
+const unTar = async (target: string, fileName: string, {
+  expectedFolderName = 'package',
+  removeTarFile = true,
+}: {
+  expectedFolderName?: string;
+  removeTarFile?: boolean;
+} = {}) => {
   await tar.extract({
     file: fileName,
     cwd: target,
@@ -186,6 +192,10 @@ const unTar = async (target: string, fileName: string, expectedFolderName = 'pac
   // ensure the unpacked folder exists
   if (!existsSync(unpackedFolder)) {
     throw new Error(`Tried to unpack tar file ${fileName} but the output is not present.`)
+  }
+
+  if (removeTarFile) {
+    await remove(fileName);
   }
 
   return unpackedFolder;
