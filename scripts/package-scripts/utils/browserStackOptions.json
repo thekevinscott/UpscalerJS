@@ -51,8 +51,15 @@
     "localhost": "bs-local.com"
   },
   {
-    "os_version": "15",
-    "device": "iPhone XS",
+    "os_version": "16",
+    "device": "iPhone 12 Pro Max",
+    "real_mobile": "true",
+    "browserName": "iPhone",
+    "localhost": "bs-local.com"
+  },
+  {
+    "os_version": "16",
+    "device": "iPhone 14 Pro Max",
     "real_mobile": "true",
     "browserName": "iPhone",
     "localhost": "bs-local.com"
