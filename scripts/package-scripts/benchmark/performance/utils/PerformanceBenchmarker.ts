@@ -67,7 +67,7 @@ export class PerformanceBenchmarker {
         r.UpscalerModelId, 
         i.cropSize
 
-        FROM Results r
+        FROM PerformanceMeasurements r
 
         LEFT JOIN Metrics m ON m.id = r.MetricId
 
@@ -112,7 +112,7 @@ export class PerformanceBenchmarker {
   async queryForExistingResults(metrics: Metric[], modelIds: number[], cropSize?: number) {
     const cropKey = Image.getCropKey(cropSize);
     const queryResults = await sequelize.query<ExistingResult>(`
-    SELECT MetricId, UpscalerModelId, ImageId FROM results r
+    SELECT MetricId, UpscalerModelId, ImageId FROM PerformanceMeasurements r
       LEFT JOIN images i ON i.id = r.ImageId
       LEFT JOIN files f ON f.id = i.FileId
       LEFT JOIN datasets d ON d.id = f.DatasetId
