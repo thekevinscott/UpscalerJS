@@ -36,6 +36,7 @@ importers:
       '@types/selenium-webdriver': ^4.1.1
       '@types/serve-handler': ^6.1.1
       '@types/tar': ^6.1.1
+      '@types/tiny-async-pool': ^2.0.0
       '@types/yargs': ^17.0.10
       babel-plugin-add-module-exports: ^1.0.4
       browserstack-local: ^1.5.1
@@ -66,6 +67,7 @@ importers:
       serve-handler: ^6.1.3
       tape: ^5.5.3
       tar: ^6.1.11
+      tiny-async-pool: ^2.1.0
       tree-kill: ^1.2.2
       ts-jest: ^28.0.5
       ts-node: ^10.9.1
@@ -102,6 +104,7 @@ importers:
       '@types/selenium-webdriver': 4.1.1
       '@types/serve-handler': 6.1.1
       '@types/tar': 6.1.1
+      '@types/tiny-async-pool': 2.0.0
       '@types/yargs': 17.0.10
       babel-plugin-add-module-exports: 1.0.4
       browserstack-local: 1.5.1
@@ -115,7 +118,7 @@ importers:
       heapdump: 0.3.15
       html-webpack-plugin: 5.5.0_webpack@5.73.0
       inquirer: 8.2.4
-      jest: 28.1.2_ts-node@10.9.1
+      jest: 28.1.2_n3xoy7qirjmlijzezdtlwczclm
       jest-canvas-mock: 2.4.0
       jsdom: 20.0.0
       mocha: 10.0.0
@@ -132,9 +135,10 @@ importers:
       serve-handler: 6.1.3
       tape: 5.5.3
       tar: 6.1.11
+      tiny-async-pool: 2.1.0
       tree-kill: 1.2.2
       ts-jest: 28.0.5_pc5avwym4hydoyuia64coijfoa
-      ts-node: 10.9.1_typescript@4.8.3
+      ts-node: 10.9.1_qfqzs7yh73wls4vundes7z5jam
       typescript: 4.8.3
       uglify-js: 3.16.2
       upscaler: link:packages/upscalerjs
@@ -9278,7 +9282,7 @@ packages:
       - supports-color
     dev: true
 
-  /jest-cli/28.1.2_ts-node@10.9.1:
+  /jest-cli/28.1.2_n3xoy7qirjmlijzezdtlwczclm:
     resolution: {integrity: sha512-l6eoi5Do/IJUXAFL9qRmDiFpBeEJAnjJb1dcd9i/VWfVWbp3mJhuH50dNtX67Ali4Ecvt4eBkWb4hXhPHkAZTw==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
@@ -9295,7 +9299,7 @@ packages:
       exit: 0.1.2
       graceful-fs: 4.2.10
       import-local: 3.1.0
-      jest-config: 28.1.2_ts-node@10.9.1
+      jest-config: 28.1.2_n3xoy7qirjmlijzezdtlwczclm
       jest-util: 28.1.1
       jest-validate: 28.1.1
       prompts: 2.4.2
@@ -9341,46 +9345,7 @@ packages:
       pretty-format: 28.1.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.1_typescript@4.8.3
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /jest-config/28.1.2_ts-node@10.9.1:
-    resolution: {integrity: sha512-g6EfeRqddVbjPVBVY4JWpUY4IvQoFRIZcv4V36QkqzE0IGhEC/VkugFeBMAeUE7PRgC8KJF0yvJNDeQRbamEVA==}
-    engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
-    peerDependencies:
-      '@types/node': '*'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      ts-node:
-        optional: true
-    dependencies:
-      '@babel/core': 7.18.6
-      '@jest/test-sequencer': 28.1.1
-      '@jest/types': 28.1.1
-      babel-jest: 28.1.2_@babel+core@7.18.6
-      chalk: 4.1.2
-      ci-info: 3.3.2
-      deepmerge: 4.2.2
-      glob: 7.2.3
-      graceful-fs: 4.2.10
-      jest-circus: 28.1.2
-      jest-environment-node: 28.1.2
-      jest-get-type: 28.0.2
-      jest-regex-util: 28.0.2
-      jest-resolve: 28.1.1
-      jest-runner: 28.1.2
-      jest-util: 28.1.1
-      jest-validate: 28.1.1
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 28.1.1
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
-      ts-node: 10.9.1_typescript@4.8.3
+      ts-node: 10.9.1_qfqzs7yh73wls4vundes7z5jam
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -9729,7 +9694,7 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /jest/28.1.2_ts-node@10.9.1:
+  /jest/28.1.2_n3xoy7qirjmlijzezdtlwczclm:
     resolution: {integrity: sha512-Tuf05DwLeCh2cfWCQbcz9UxldoDyiR1E9Igaei5khjonKncYdc6LDfynKCEWozK0oLE3GD+xKAo2u8x/0s6GOg==}
     engines: {node: ^12.13.0 || ^14.15.0 || ^16.10.0 || >=17.0.0}
     hasBin: true
@@ -9742,7 +9707,7 @@ packages:
       '@jest/core': 28.1.2_ts-node@10.9.1
       '@jest/types': 28.1.1
       import-local: 3.1.0
-      jest-cli: 28.1.2_ts-node@10.9.1
+      jest-cli: 28.1.2_n3xoy7qirjmlijzezdtlwczclm
     transitivePeerDependencies:
       - '@types/node'
       - supports-color
@@ -13684,7 +13649,7 @@ packages:
       bs-logger: 0.2.6
       esbuild: 0.11.23
       fast-json-stable-stringify: 2.1.0
-      jest: 28.1.2_ts-node@10.9.1
+      jest: 28.1.2_n3xoy7qirjmlijzezdtlwczclm
       jest-util: 28.1.1
       json5: 2.2.1
       lodash.memoize: 4.1.2
@@ -13725,7 +13690,7 @@ packages:
       yargs-parser: 21.0.1
     dev: true
 
-  /ts-node/10.9.1_typescript@4.8.3:
+  /ts-node/10.9.1_qfqzs7yh73wls4vundes7z5jam:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -13744,6 +13709,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
+      '@types/node': 18.7.3
       acorn: 8.7.1
       acorn-walk: 8.2.0
       arg: 4.1.3
