@@ -172,10 +172,13 @@ const pnpmPack = async (src: string, target: string, {
   return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => tar.extract({
-  file: fileName,
-  cwd,
-});
+const unTar = (cwd: string, pathToFile: string) => {
+  const fileName = pathToFile.split('/').pop();
+  return tar.extract({
+    file: fileName,
+    cwd,
+  });
+};
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
