@@ -173,7 +173,12 @@ const pnpmPack = async (src: string, target: string, {
     throw new Error(`Unexpected output name: ${outputName}`)
   }
 
-  return path.resolve(src, outputName);
+  const packedFile = path.resolve(src, outputName);
+  if (!existsSync(packedFile)) {		
+    throw new Error(`pnpm pack failed for ${src}`)		
+  }
+
+  return packedFile;
 };
 
 const unTar = async (target: string, fileName: string, {
