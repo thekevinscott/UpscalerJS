@@ -174,6 +174,7 @@ const pnpmPack = async (src: string, target: string, {
 
 const unTar = (cwd: string, pathToFile: string) => {
   const fileName = pathToFile.split('/').pop();
+  console.log(cwd, pathToFile);
   return tar.extract({
     file: fileName,
     cwd,
@@ -245,7 +246,7 @@ const packAndTar = async (src: string, target: string, {
     const tmpPackedFile = path.resolve(target, packedFile);
     renameSync(packedFile, tmpPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
-    await unTar(target, packedFile);
+    await unTar(target, tmpPackedFile);
     const unpackedFolder = path.resolve(target, 'package');
     // ensure the unpacked folder exists
     if (!existsSync(unpackedFolder)) {
