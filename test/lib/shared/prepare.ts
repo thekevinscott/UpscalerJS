@@ -144,11 +144,11 @@ const npmPack = async (src: string): Promise<string> => {
     throw new Error(`Unexpected output name: ${outputName}`)
   }
 
-  const packedFile = path.resolve(src, outputName);
-  if (!existsSync(packedFile)) {
+  const pathToPackedFile = path.resolve(src, outputName);
+  if (!existsSync(pathToPackedFile)) {
     throw new Error(`npm pack failed for ${src}`)
   }
-  return packedFile;
+  return pathToPackedFile;
 };
 
 const pnpmPack = async (src: string, target: string, {
@@ -172,10 +172,12 @@ const pnpmPack = async (src: string, target: string, {
   return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => tar.extract({
-  file: fileName,
-  cwd,
-});
+const unTar = (cwd: string, fileName: string) => {
+  return tar.extract({
+    file: fileName,
+    cwd,
+  });
+};
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
@@ -238,15 +240,17 @@ const packAndTar = async (src: string, target: string, {
   verbose?: boolean;
 } = {}, attempts = 0): Promise<string> => {
   try {
-    const packedFile = await npmPack(src);
-    const tmpPackedFile = path.resolve(target, packedFile);
-    renameSync(packedFile, tmpPackedFile);
+    const pathToPackedFile = await npmPack(src);
+    console.log('pathToPackedFile', pathToPackedFile);
+    const tmpPackedFile = path.resolve(target, pathToPackedFile);
+    console.log('tmpPackedFile', tmpPackedFile);
+    renameSync(pathToPackedFile, tmpPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
-    await unTar(target, packedFile);
+    await unTar(target, pathToPackedFile);
     const unpackedFolder = path.resolve(target, 'package');
     // ensure the unpacked folder exists
     if (!existsSync(unpackedFolder)) {
-      throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
+      throw new Error(`Tried to unpack tar file in src ${pathToPackedFile} but the output is not present.`)
     }
     return unpackedFolder;
   } catch (err: unknown) {
