@@ -173,6 +173,7 @@ const pnpmPack = async (src: string, target: string, {
 };
 
 const unTar = (cwd: string, fileName: string) => {
+  console.log('untar', cwd, fileName);
   return tar.extract({
     file: fileName,
     cwd,
@@ -242,9 +243,6 @@ const packAndTar = async (src: string, target: string, {
   try {
     const pathToPackedFile = await npmPack(src);
     console.log('pathToPackedFile', pathToPackedFile);
-    const tmpPackedFile = path.resolve(target, pathToPackedFile);
-    console.log('tmpPackedFile', tmpPackedFile);
-    renameSync(pathToPackedFile, tmpPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
     await unTar(target, pathToPackedFile);
     const unpackedFolder = path.resolve(target, 'package');
