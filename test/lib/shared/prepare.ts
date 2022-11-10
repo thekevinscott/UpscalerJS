@@ -256,7 +256,7 @@ export const installLocalPackage = async (src: string, dest: string, {
   rimraf.sync(dest);
   await withTmpDir(async tmp => {
     try {
-      const unpackedFolder = await packAndTar(src, tmp);
+      const unpackedFolder = await packAndTar(src, tmp, { verbose });
 
       const destParent = path.resolve(dest, '..');
       mkdirpSync(destParent);
