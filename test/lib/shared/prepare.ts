@@ -95,13 +95,24 @@ type DependencyDefinition = {
   src: string;
   name: string;
 }
-export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[]) => {
+export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[], {
+  verbose = false,
+}: {
+  verbose?: boolean;
+} = {}) => {
   if (dest.endsWith('node_modules')) {
     throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
   }
   const { localDependencies, remoteDependencies } = buildDependencyTree(dependencies);
 
+  if (verbose) {
+    console.log('Installing remote dependencies');
+  }
   await installRemoteDependencies(dest, remoteDependencies);
+
+  if (verbose) {
+    console.log('Installing local dependencies');
+  }
   await installLocalDependencies(dest, dependencies, localDependencies);
 }
 
