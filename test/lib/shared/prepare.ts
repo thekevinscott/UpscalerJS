@@ -205,17 +205,25 @@ const packAndTar = async (src: string, tmp: string, attempts = 0): Promise<strin
   }
 }
 
-export const installLocalPackage = async (src: string, dest: string) => {
+export const installLocalPackage = async (src: string, dest: string, {
+  verbose = false,
+}: {
+  verbose?: boolean;
+} = {}) => {
   rimraf.sync(dest);
   await withTmpDir(async tmp => {
-    const unpackedFolder = await packAndTar(src, tmp);
+    try {
+      const unpackedFolder = await packAndTar(src, tmp);
 
-    const destParent = path.resolve(dest, '..');
-    mkdirpSync(destParent);
+      const destParent = path.resolve(dest, '..');
+      mkdirpSync(destParent);
 
-    await callExec(`mv ${unpackedFolder} ${dest}`, {
-      cwd: tmp,
-    });
+      await callExec(`mv ${unpackedFolder} ${dest}`, {
+        cwd: tmp,
+      });
+    } catch (err: unknown) {
+      throw new Error(`Failed to pack local package ${src}. ${err instanceof Error ? `Error was: ${err.message}` : ''}`);
+    }
   })
 };
 
