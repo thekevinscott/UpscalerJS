@@ -35,22 +35,52 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-export const bundle = async () => {
+interface BundleOpts {
+  verbose?: boolean;
+  skipInstallNodeModules?: boolean;
+  skipInstallLocalPackages?: boolean;
+  skipCopyFixtures?: boolean;
+}
+
+export const bundle = async ({ 
+  verbose = false, 
+  skipInstallNodeModules = false, 
+  skipInstallLocalPackages = false,
+  skipCopyFixtures = false,
+}: BundleOpts = {}) => {
   const entryFile = path.join(ROOT, 'src/index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
-  await installNodeModules(ROOT);
-  await installLocalPackages(ROOT, [
-    {
-      src: UPSCALER_PATH,
-      name: LOCAL_UPSCALER_NAME,
-    },
-    ...PACKAGES.map(({ packageName }) => ({
-      src: path.resolve(MODELS_PATH, packageName),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
-    })),
-  ]);
-  copyFixtures(DIST, false);
+  if (skipInstallLocalPackages !== true) {
+    if (verbose) {
+      console.log('installing node modules');
+    }
+    await installNodeModules(ROOT);
+  }
+  if (skipInstallNodeModules !== true) {
+    if (verbose) {
+      console.log('installing local packages');
+    }
+    await installLocalPackages(ROOT, [
+      {
+        src: UPSCALER_PATH,
+        name: LOCAL_UPSCALER_NAME,
+      },
+      ...PACKAGES.map(({ packageName }) => ({
+        src: path.resolve(MODELS_PATH, packageName),
+        name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+      })),
+    ]);
+  }
+  if (skipCopyFixtures !== true) {
+    if (verbose) {
+      console.log('copying local fixtures');
+    }
+    copyFixtures(DIST, false);
+  }
 
+  if (verbose) {
+    console.log('bundle');
+  }
   const buildResult = await build({
     entryPoints: [entryFile],
     bundle: true,
