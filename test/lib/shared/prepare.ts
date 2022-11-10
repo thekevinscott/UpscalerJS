@@ -144,11 +144,11 @@ const npmPack = async (src: string): Promise<string> => {
     throw new Error(`Unexpected output name: ${outputName}`)
   }
 
-  const packedFile = path.resolve(src, outputName);
-  if (!existsSync(packedFile)) {
+  const pathToPackedFile = path.resolve(src, outputName);
+  if (!existsSync(pathToPackedFile)) {
     throw new Error(`npm pack failed for ${src}`)
   }
-  return packedFile;
+  return pathToPackedFile;
 };
 
 const pnpmPack = async (src: string, target: string, {
@@ -172,10 +172,20 @@ const pnpmPack = async (src: string, target: string, {
   return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => tar.extract({
-  file: fileName,
-  cwd,
-});
+const unTar = async (target: string, fileName: string, expectedFolderName = 'package') => {
+  await tar.extract({
+    file: fileName,
+    cwd: target,
+  });
+  const unpackedFolder = path.resolve(target, expectedFolderName);
+
+  // ensure the unpacked folder exists
+  if (!existsSync(unpackedFolder)) {
+    throw new Error(`Tried to unpack tar file ${fileName} but the output is not present.`)
+  }
+
+  return unpackedFolder;
+};
 
 const getLocalAndRemoteDependencies = (dir: string) => {
   const { dependencies = {} as Dependency } = getPackageJSON(dir);
@@ -238,17 +248,9 @@ const packAndTar = async (src: string, target: string, {
   verbose?: boolean;
 } = {}, attempts = 0): Promise<string> => {
   try {
-    const packedFile = await npmPack(src);
-    const tmpPackedFile = path.resolve(target, packedFile);
-    renameSync(packedFile, tmpPackedFile);
+    const pathToPackedFile = await npmPack(src);
     await new Promise(resolve => setTimeout(resolve, 1));
-    await unTar(target, packedFile);
-    const unpackedFolder = path.resolve(target, 'package');
-    // ensure the unpacked folder exists
-    if (!existsSync(unpackedFolder)) {
-      throw new Error(`Tried to unpack tar file in src ${packedFile} but the output is not present.`)
-    }
-    return unpackedFolder;
+    return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
     if (attempts >= MAX_ATTEMPTS - 1) {
       throw new Error(`Failed to pack and tar after ${attempts} attempts ${err instanceof Error ? `Error message: ${err.message}` : ''}`);
