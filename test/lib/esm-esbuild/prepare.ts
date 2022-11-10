@@ -75,7 +75,10 @@ export const bundle = async ({
     if (verbose) {
       console.log('copying local fixtures');
     }
-    copyFixtures(DIST, false);
+    copyFixtures(DIST, {
+      includeFixtures: false,
+      includeModels: true,
+    });
   }
 
   if (verbose) {
