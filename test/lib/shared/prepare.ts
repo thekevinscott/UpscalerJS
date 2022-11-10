@@ -172,12 +172,19 @@ const pnpmPack = async (src: string, target: string, {
   return path.resolve(src, outputName);
 };
 
-const unTar = (cwd: string, fileName: string) => {
-  console.log('untar', cwd, fileName);
-  return tar.extract({
+const unTar = async (target: string, fileName: string, expectedFolderName = 'package') => {
+  await tar.extract({
     file: fileName,
-    cwd,
+    cwd: target,
   });
+  const unpackedFolder = path.resolve(target, expectedFolderName);
+
+  // ensure the unpacked folder exists
+  if (!existsSync(unpackedFolder)) {
+    throw new Error(`Tried to unpack tar file ${fileName} but the output is not present.`)
+  }
+
+  return unpackedFolder;
 };
 
 const getLocalAndRemoteDependencies = (dir: string) => {
@@ -242,15 +249,8 @@ const packAndTar = async (src: string, target: string, {
 } = {}, attempts = 0): Promise<string> => {
   try {
     const pathToPackedFile = await npmPack(src);
-    console.log('pathToPackedFile', pathToPackedFile);
     await new Promise(resolve => setTimeout(resolve, 1));
-    await unTar(target, pathToPackedFile);
-    const unpackedFolder = path.resolve(target, 'package');
-    // ensure the unpacked folder exists
-    if (!existsSync(unpackedFolder)) {
-      throw new Error(`Tried to unpack tar file in src ${pathToPackedFile} but the output is not present.`)
-    }
-    return unpackedFolder;
+    return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
     if (attempts >= MAX_ATTEMPTS - 1) {
       throw new Error(`Failed to pack and tar after ${attempts} attempts ${err instanceof Error ? `Error message: ${err.message}` : ''}`);
