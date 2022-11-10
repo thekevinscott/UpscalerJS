@@ -9,8 +9,11 @@ import callExec from "../utils/callExec";
 import tar from 'tar';
 import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
+import asyncPool from "tiny-async-pool";
 
 const ROOT = path.join(__dirname, '../../..');
+
+const CONCURRENT_ASYNC_THREADS = 1;
 
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
@@ -37,7 +40,11 @@ const installRemoteDependencies = async (dest: string, remoteDependencies: Depen
   }
 };
 
-const installLocalDependencies = async (dest: string, dependencies: DependencyDefinition[], localDependencies: Dependency) => {
+const installLocalDependencies = async (dest: string, dependencies: DependencyDefinition[], localDependencies: Dependency, {
+  verbose = false,
+}: {
+  verbose?: boolean;
+} = {}) => {
   const localDependenciesKeys = Object.keys(localDependencies);
   for (let i = 0; i < localDependenciesKeys.length; i++) {
     const localDependency = localDependenciesKeys[i];
@@ -45,15 +52,22 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
     dependencies.push({
       src: localDependencyFolder,
       name: localDependency,
-    })
+    });
   }
 
   const NODE_MODULES = path.resolve(dest, 'node_modules');
 
-  await Promise.all(dependencies.map(async ({ src, name }) => {
+  const progress = (i: number) => {
+    const { src, name } = dependencies[i];
+
+    if (verbose) {
+      console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length}`);
+    }
     const moduleFolder = path.resolve(NODE_MODULES, name);
     await installLocalPackageWithNewName(src, moduleFolder, name);
-  }))
+  };
+
+  for await (const _ of asyncPool(CONCURRENT_ASYNC_THREADS, Array(dependencies.length).fill('').map((_, i) => i), progress)) { }
 };
 
 const buildDependencyTree = (dependencies: DependencyDefinition[]): {
