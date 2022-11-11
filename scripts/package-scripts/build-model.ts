@@ -14,12 +14,7 @@ import { compileTypescript } from './utils/compile';
 import { DEFAULT_OUTPUT_FORMATS, getOutputFormats } from './prompt/getOutputFormats';
 import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
 import { babelTransform } from './utils/babelTransform';
-
-/****
- * Constants
- */
-const ROOT_DIR = path.resolve(__dirname, '../..');
-const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
+import { MODELS_DIR } from './utils/constants';
 
 /****
  * ESM build function
@@ -85,7 +80,6 @@ const buildCJS = async (modelFolder: string) => {
 
 const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => {
   const start = new Date().getTime();
-
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
   const DIST = path.resolve(MODEL_ROOT, 'dist')
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);

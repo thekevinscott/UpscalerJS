@@ -9,15 +9,15 @@ import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import Table from 'cli-table';
 import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';
+import { DOCS_DIR, TMP_DIR } from '../../utils/constants';
 
 /****
  * Constants
  */
 const DEFAULT_METRICS = ['PSNR', 'SSIM'];
-const ROOT_DIR = path.resolve(__dirname, '../../..');
-const CACHE_DIR = path.resolve(ROOT_DIR, './tmp/datasets');
+const CACHE_DIR = path.resolve(TMP_DIR, 'datasets');
 const DELAY = 1;
-const PERFORMANCE_DATABASE_FILE = path.resolve(ROOT_DIR, 'docs/assets/performance.sql');
+const PERFORMANCE_DATABASE_FILE = path.resolve(DOCS_DIR, 'assets/performance.sql');
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: PERFORMANCE_DATABASE_FILE,

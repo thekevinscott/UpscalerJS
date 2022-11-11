@@ -3,6 +3,7 @@ import browserstack from 'browserstack-local';
 import webdriver, { Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
 import { existsSync, readFileSync } from 'fs-extra';
+import { ROOT_DIR } from './constants';
 
 /****
  * Types
@@ -26,7 +27,6 @@ export type FilterBrowserOption = (option: BrowserOption) => boolean;
  * Constants
  */
 
-const ROOT_DIR = path.resolve(__dirname, '../../..');
 const env = getEnv();
 
 const browserOptions: Array<BrowserOption> = JSON.parse(readFileSync(path.resolve(__dirname, './browserStackOptions.json'), 'utf8'));

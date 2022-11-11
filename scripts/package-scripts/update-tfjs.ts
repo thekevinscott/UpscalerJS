@@ -7,12 +7,11 @@ import {
   Package,
 } from './utils/packages';
 import updateDependency, { getMatchingDependency } from './update-dependency';
+import { ROOT_DIR } from './utils/constants';
 
 /****
  * Constants
  */
-const ROOT_DIR = path.resolve(__dirname, '../..');
-
 const TFJS_PACKAGES = [
   '@tensorflow/tfjs',
   '@tensorflow/tfjs-node',
@@ -32,7 +31,7 @@ export default updateTFJS;
 /****
  * Functions to expose the main function as a CLI tool
  */
-const getTFJSVersion = (dir: string): string => {
+const getTFJSVersion = (dir: string = ROOT_DIR): string => {
   const packageJSON = getPackageJSON(dir);
   const deps = packageJSON.peerDependencies;
   const gen = getMatchingDependency(TFJS_PACKAGES, deps);
@@ -53,7 +52,7 @@ const isVersion = (version?: unknown): version is string => typeof version === '
 const getVersion = getArg(isVersion, {
   name: 'value',
   message: `Specify the version to update to`,
-  default: getTFJSVersion(ROOT_DIR),
+  default: getTFJSVersion(),
 });
 
 const isPackages = (packages?: unknown): packages is Package[] => {

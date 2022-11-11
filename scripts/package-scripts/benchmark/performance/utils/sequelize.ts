@@ -1,8 +1,8 @@
 import path from 'path';
 import { Sequelize } from 'sequelize';
+import { TMP_DIR } from '../../../utils/constants';
 
-const ROOT_DIR = path.resolve(__dirname, '../../../../..');
-const DATABASE_FILE = path.resolve(ROOT_DIR, 'tmp/performance.sql');
+const DATABASE_FILE = path.resolve(TMP_DIR, 'performance.sql');
 export const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: DATABASE_FILE,

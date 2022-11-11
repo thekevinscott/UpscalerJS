@@ -11,13 +11,7 @@ import { OutputFormat } from './package-scripts/prompt/types';
 import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
-
-/****
- * Constants
- */
-
-const ROOT_DIR = path.resolve(__dirname, '..');
-
+import { TEST_DIR } from './package-scripts/utils/constants';
 /****
  * Types
  */
@@ -87,7 +81,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     'pnpm',
     'jest',
     '--config',
-    path.resolve(ROOT_DIR, `test/jestconfig.${platform}.${runner}.js`),
+    path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`),
     '--detectOpenHandles',
     // argv.watch ? '--watch' : undefined,
     ...positionalArgs,

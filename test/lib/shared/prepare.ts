@@ -9,8 +9,7 @@ import tar from 'tar';
 import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
-
-const ROOT = path.join(__dirname, '../../..');
+import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const CONCURRENT_ASYNC_THREADS = 1;
 
@@ -227,10 +226,10 @@ const getLocalAndRemoteDependencies = (dir: string) => {
 };
 
 const findMatchingFolder = (dependency: string): string => {
-  const packagePaths = findAllPackages(ROOT);
+  const packagePaths = findAllPackages(ROOT_DIR);
 
   for (let i = 0; i < packagePaths.length; i++) {
-    const packagePath = path.resolve(ROOT, packagePaths[i]);
+    const packagePath = path.resolve(ROOT_DIR, packagePaths[i]);
     const { name } = getPackageJSON(packagePath);
     if (name === dependency) {
       return path.join(packagePath, '..');
