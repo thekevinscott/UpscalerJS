@@ -40,6 +40,7 @@ interface BundleOpts {
   skipInstallNodeModules?: boolean;
   skipInstallLocalPackages?: boolean;
   skipCopyFixtures?: boolean;
+  usePNPM?: boolean;
 }
 
 export const bundle = async ({ 
@@ -47,6 +48,7 @@ export const bundle = async ({
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,
   skipCopyFixtures = false,
+  usePNPM = false,
 }: BundleOpts = {}) => {
   const entryFile = path.join(ROOT, 'src/index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
@@ -54,7 +56,7 @@ export const bundle = async ({
     if (verbose) {
       console.log('installing node modules');
     }
-    await installNodeModules(ROOT);
+    await installNodeModules(ROOT, { verbose });
   }
   if (skipInstallNodeModules !== true) {
     if (verbose) {
@@ -69,7 +71,10 @@ export const bundle = async ({
         src: path.resolve(MODELS_PATH, packageName),
         name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
       })),
-    ]);
+    ], {
+      verbose,
+      usePNPM,
+    });
   }
   if (skipCopyFixtures !== true) {
     if (verbose) {
