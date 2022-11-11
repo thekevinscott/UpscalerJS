@@ -2,6 +2,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
+import { ROOT_DIR } from './utils/constants';
 
 /****
  * Type Definitions
@@ -11,8 +12,6 @@ type Answers = { packages: Array<Package>, version: string, updateDependencies?:
 /****
  * Constants
  */
-const ROOT_DIR = path.resolve(__dirname, '../..');
-
 const logger: PackageUpdaterLogger = (file: string) => {
   return `- Updated ${getPreparedFolderName(getPackageJSONPath(file))}`;
 }

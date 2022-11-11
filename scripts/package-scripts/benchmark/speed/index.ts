@@ -1,11 +1,7 @@
 import Upscaler from 'upscaler';
-import fs from 'fs';
-import path from 'path';
-import webdriver, { Capabilities, logging } from 'selenium-webdriver';
-import { checkImage } from '../../../../test/lib/utils/checkImage';
-import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../../../test/lib/esm-esbuild/prepare';
+import webdriver from 'selenium-webdriver';
+import { bundle, DIST } from '../../../../test/lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../../../../test/integration/utils/BrowserTestRunner';
 import yargs from 'yargs';
 import { startServer } from '../../../../test/lib/shared/server';
 import http from 'http';

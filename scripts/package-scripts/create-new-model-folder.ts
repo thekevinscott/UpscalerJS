@@ -5,6 +5,7 @@ import callExec from '../../test/lib/utils/callExec';
 import fs, { mkdirp, mkdirpSync } from 'fs-extra';
 import { getString } from './prompt/getString';
 import { getNumber } from './prompt/getNumber';
+import { MODELS_DIR } from './utils/constants';
 
 /****
  * Type Definitions
@@ -13,7 +14,6 @@ import { getNumber } from './prompt/getNumber';
 /****
  * Constants
  */
-const ROOT_DIR = path.resolve(__dirname, '../..');
 
 const DEFAULT_KEYWORDS = [
   "image super resolution",
@@ -180,7 +180,7 @@ export default modelDefinition;
  * Main function
  */
 const createNewModelFolder = async (name: string, description: string, UMDName: string, scale: number): Promise<void> => {
-  const base = path.resolve(ROOT_DIR, 'models', name);
+  const base = path.resolve(MODELS_DIR, name);
   await mkdirp(base);
   await Promise.all([
     mkdirp(path.resolve(base, 'models')),

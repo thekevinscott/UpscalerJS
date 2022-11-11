@@ -12,6 +12,7 @@ import { compileTypescript } from './utils/compile';
 import { getOutputFormats } from './prompt/getOutputFormats';
 import { getPlatform } from './prompt/getPlatform';
 import { withTmpDir } from './utils/withTmpDir';
+import { UPSCALER_DIR } from './utils/constants';
 
 /****
  * Types
@@ -24,8 +25,6 @@ type BuildFn = (platform: Platform, opts?: BuildFnOptions) => Promise<void>;
 /****
  * Constants
  */
-const ROOT_DIR = path.resolve(__dirname, '../..');
-const UPSCALER_DIR = path.resolve(ROOT_DIR, 'packages/upscalerjs');
 const DIST = path.resolve(UPSCALER_DIR, 'dist');
 
 /****

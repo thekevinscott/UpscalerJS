@@ -7,16 +7,7 @@ import { getString } from './prompt/getString';
 import { ifDefined } from './prompt/ifDefined';
 import { ProgressBar } from './utils/ProgressBar';
 import { getHashedFilepath } from './benchmark/performance/utils/utils';
-
-/****
- * Type Definitions
- */
-
-/****
- * Constants
- */
-const ROOT_DIR = path.resolve(__dirname, '../..');
-const MODELS_FOLDER = path.resolve(ROOT_DIR, 'models');
+import { MODELS_DIR } from './utils/constants';
 
 /****
  * Utility Functions
@@ -178,7 +169,7 @@ const convertPythonModelFolder = async (folder: string, outputModel: string, con
   }
 
   const progressBar = new ProgressBar(files.length)
-  const outputModelFolder = path.resolve(MODELS_FOLDER, outputModel);
+  const outputModelFolder = path.resolve(MODELS_DIR, outputModel);
   for (const file of files) {
     const fullfilepath = path.resolve(folder, file);
     const fileWithoutModel = file.split('/').slice(0, -1).join('/')

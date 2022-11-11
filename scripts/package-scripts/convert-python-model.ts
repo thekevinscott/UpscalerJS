@@ -12,7 +12,6 @@ type Callback = (modelPath: string) => void;
 /****
  * Constants
  */
-const ROOT_DIR = path.resolve(__dirname, '../..');
 
 /****
  * Main function
@@ -32,7 +31,6 @@ const convertPythonModel = async (_modelPath: string | string[], outputDirectory
     if (callback) {
       callback(modelPath);
     }
-    // const outputDirectory = path.resolve(ROOT_DIR, 'models', _outputDirectory, 'models');
     await mkdirp(outputDirectory);
     const inputFolder = path.resolve(path.dirname(modelPath));
     const modelName = modelPath.split('/').pop();

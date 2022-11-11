@@ -9,15 +9,7 @@ import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
 import buildUpscaler from './package-scripts/build-upscaler';
 import { Platform } from './package-scripts/prompt/types';
-
-/****
- * Type Definitions
- */
-
-/****
- * Constants
- */
-const ROOT_DIR = path.resolve(__dirname, '..');
+import { EXAMPLES_DIR } from './package-scripts/utils/constants';
 
 /****
  * Utility functions
@@ -62,7 +54,7 @@ const getProcessCommand = (platform: Platform, exampleName: string, skipBuild?: 
 };
 
 const startExample = async (example: string, skipBuild?: boolean) => {
-  const examplePath = path.resolve(ROOT_DIR, 'examples', example);
+  const examplePath = path.resolve(EXAMPLES_DIR, example);
   try {
     fs.accessSync(examplePath);
   } catch(err) {

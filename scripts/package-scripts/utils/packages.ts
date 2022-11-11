@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import findAllPackages from '../find-all-packages';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
+import { CORE_DIR, DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants';
 
 interface FakeExports {
   [index: string]: string | FakeExports;
@@ -29,19 +30,16 @@ export const DOCS = 'Docs';
 
 export const AVAILABLE_PACKAGES = [ ROOT, UPSCALER_JS, CORE, MODELS, EXAMPLES, TEST, WRAPPER, DEV, DOCS ];
 
-const ROOT_DIR = path.resolve(DIRNAME, '../../..');
-const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
-
 export const DIRECTORIES: Record<string, { directory: string, multiple?: boolean }> = {
   [ROOT]: { directory: ROOT_DIR },
-  [UPSCALER_JS]: { directory: path.resolve(PACKAGES_DIR, 'upscalerjs') },
-  [CORE]: { directory: path.resolve(PACKAGES_DIR, 'core') },
-  [MODELS]: { directory: path.resolve(ROOT_DIR, 'models'), multiple: true },
-  [EXAMPLES]: { directory: path.resolve(ROOT_DIR, 'examples'), multiple: true },
-  [TEST]: { directory: path.resolve(ROOT_DIR, 'test/lib'), multiple: true },
-  [WRAPPER]: { directory: path.resolve(PACKAGES_DIR, 'upscalerjs-wrapper') },
-  [DEV]: { directory: path.resolve(ROOT_DIR, 'dev') },
-  [DOCS]: { directory: path.resolve(ROOT_DIR, 'docs'), multiple: true },
+  [UPSCALER_JS]: { directory: UPSCALER_DIR },
+  [CORE]: { directory: CORE_DIR },
+  [MODELS]: { directory: MODELS_DIR, multiple: true },
+  [EXAMPLES]: { directory: EXAMPLES_DIR, multiple: true },
+  [TEST]: { directory: path.resolve(TEST_DIR, 'test/lib'), multiple: true },
+  [WRAPPER]: { directory: WRAPPER_DIR },
+  [DEV]: { directory: DEV_DIR },
+  [DOCS]: { directory: DOCS_DIR, multiple: true },
 }
 
 export const getPreparedFolderName = (file: string) => {
