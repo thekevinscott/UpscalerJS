@@ -40,6 +40,7 @@ interface BundleOpts {
   skipInstallNodeModules?: boolean;
   skipInstallLocalPackages?: boolean;
   skipCopyFixtures?: boolean;
+  usePNPM?: boolean;
 }
 
 export const bundle = async ({ 
