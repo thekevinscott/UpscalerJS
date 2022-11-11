@@ -190,4 +190,4 @@ Dataset.init({
     allowNull: false,
     unique: true,
   },
-}, { sequelize, modelName: 'Datasets' });
+}, { sequelize, modelName: 'Dataset' });

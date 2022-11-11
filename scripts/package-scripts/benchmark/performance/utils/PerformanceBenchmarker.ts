@@ -51,17 +51,16 @@ export class PerformanceBenchmarker extends Benchmarker {
   }
 
   async initialize(metrics: string[]) {
-    this.database.initialize((async (sequelize) => {
+    await this.database.initialize((async (sequelize) => {
+      await Promise.all(metrics.map(name =>
+        Metric.upsert({
+          name,
+        })
+      ));
 
-    await Promise.all(metrics.map(name =>
-      Metric.upsert({
-        name,
-      })
-    ));
-
-    await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
-    await sequelize.query(`DROP VIEW IF EXISTS ${AGGREGATED_RESULTS_NAME}`);
-    await sequelize.query(`
+      await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
+      await sequelize.query(`DROP VIEW IF EXISTS ${AGGREGATED_RESULTS_NAME}`);
+      await sequelize.query(`
         CREATE VIEW ${AGGREGATED_RESULTS_NAME}
         AS
         SELECT 
