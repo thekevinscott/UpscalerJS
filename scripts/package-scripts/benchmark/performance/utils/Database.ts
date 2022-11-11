@@ -1,20 +1,18 @@
 import { Dataset } from "./Dataset";
-import { DatasetDefinition, TF } from "./types";
+import { DatasetDefinition } from "./types";
 import sequelize from './sequelize';
 import { UpscalerModel } from "./UpscalerModel";
 import { Package } from "./Package";
 import { Metric } from "./Metric";
 import { File } from "./File";
 import { Image } from "./Image";
-import { Result } from "./Result";
+import { Device } from './Device';
+import { PerformanceMeasurement } from "./PerformanceMeasurement";
+import { CreationAttributes } from "sequelize";
+import { SpeedMeasurement } from "./SpeedMeasurement";
 
 type CB = (seq: typeof sequelize) => Promise<void>;
 export class Database {
-  ready: Promise<void>;
-  constructor(cb?: CB) {
-    this.ready = this.initialize(cb);
-  }
-
   async initialize(cb?: CB) {
     await sequelize.sync();
     if (cb) {
@@ -23,7 +21,6 @@ export class Database {
   }
 
   async addDataset(cacheDir: string, { datasetName, datasetPath }: DatasetDefinition, writeFiles = true, cropSize?: number, n = Infinity) {
-    await this.ready;
     const [dataset] = await Dataset.upsert({
       name: datasetName,
     });
@@ -33,20 +30,33 @@ export class Database {
     return dataset;
   }
 
-  async addModelPackage(tf: TF, packageName: string, resultsOnly?: boolean, useGPU = false, models?: string[]) {
-    await this.ready;
+  async addModelPackage(packageName: string, models?: string[], resultsOnly?: boolean, useGPU = false, callback?: (modelPackage: Package) => void) {
     const modelPackage = await Package.returnUpsert({
       name: packageName,
     });
 
     modelPackage.useGPU = useGPU;
-    modelPackage.tf = tf;
+
+    if (callback) {
+      callback(modelPackage);
+    }
 
     if (resultsOnly !== true) {
       await modelPackage.addModels(models);
     }
 
     return modelPackage;
+  }
+
+  async addDevice(options: CreationAttributes<Device>) {
+    const whereOptions = Device.getCapabilitiesForQuery(options);
+    let device = await Device.findOne({
+      where: whereOptions,
+    });
+    if (!device) {
+      device = await Device.create(options);
+    }
+    return device;
   }
 }
 
@@ -55,13 +65,14 @@ Dataset.hasMany(File);
 File.belongsTo(Dataset);
 File.hasMany(Image);
 Image.belongsTo(File);
-Image.hasMany(Result);
-Metric.hasMany(Result);
+Image.hasMany(PerformanceMeasurement);
+Metric.hasMany(PerformanceMeasurement);
 UpscalerModel.belongsTo(Package);
-UpscalerModel.hasMany(Result);
+UpscalerModel.hasMany(PerformanceMeasurement);
 Package.hasMany(UpscalerModel);
-Result.belongsTo(UpscalerModel);
-Result.belongsTo(Metric);
-Result.belongsTo(Image);
-// Result.belongsTo(File, { })
-
+PerformanceMeasurement.belongsTo(UpscalerModel);
+PerformanceMeasurement.belongsTo(Metric);
+PerformanceMeasurement.belongsTo(Image);
+UpscalerModel.hasMany(SpeedMeasurement);
+SpeedMeasurement.belongsTo(Device);
+SpeedMeasurement.belongsTo(UpscalerModel);

@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { Result } from "./Result";
+import { PerformanceMeasurement } from "./PerformanceMeasurement";
 import sequelize from './sequelize';
 
 export class Metric extends Model {
