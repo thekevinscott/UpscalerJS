@@ -11,15 +11,41 @@ import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
 import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 
+/***
+ * Types
+ */
+
+interface Opts {
+  verbose?: boolean;
+  usePNPM?: boolean;
+}
+
+type DependencyDefinition = {
+  src: string;
+  name: string;
+}
+
+export interface Import {
+  packageName: string;
+  paths: { name: string; path: string; }[];
+}
+
+/***
+ * Constants
+ */
+
 const CONCURRENT_ASYNC_THREADS = 1;
 
+/***
+ * Functions
+ */
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
-export const installNodeModules = (cwd: string, silent = true) => callExec(`npm install ${silent ? '--silent' : ''} --no-audit`, {
+export const installNodeModules = (cwd: string, { verbose = false}: Opts = {}) => callExec(`npm install ${verbose ? '' : '--silent'} --no-audit`, {
   cwd,
 });
 
-const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, verbose = false) => {
+const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, { verbose = false }: Opts = {}) => {
   if (Object.keys(remoteDependencies).length) {
     const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
       return `${dependency}@${version}`;
@@ -38,11 +64,7 @@ const installRemoteDependencies = async (dest: string, remoteDependencies: Depen
   }
 };
 
-const installLocalDependencies = async (dest: string, dependencies: DependencyDefinition[], localDependencies: Dependency, {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}) => {
+const installLocalDependencies = async (dest: string, dependencies: DependencyDefinition[], localDependencies: Dependency, opts: Opts = {}) => {
   const localDependenciesKeys = Object.keys(localDependencies);
   for (let i = 0; i < localDependenciesKeys.length; i++) {
     const localDependency = localDependenciesKeys[i];
@@ -58,11 +80,11 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   const progress = async (i: number) => {
     const { src, name } = dependencies[i];
 
-    if (verbose) {
+    if (opts.verbose) {
       console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length}`);
     }
     const moduleFolder = path.resolve(NODE_MODULES, name);
-    await installLocalPackageWithNewName(src, moduleFolder, name, { verbose });
+    await installLocalPackageWithNewName(src, moduleFolder, name, opts);
   };
 
   for await (const _ of asyncPool(CONCURRENT_ASYNC_THREADS, Array(dependencies.length).fill('').map((_, i) => i), progress)) { }
@@ -89,49 +111,37 @@ const buildDependencyTree = (dependencies: DependencyDefinition[]): {
   remoteDependencies: {},
 });
 
-type DependencyDefinition = {
-  src: string;
-  name: string;
-}
-export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[], {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}) => {
+export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[], opts: Opts = {}) => {
   if (dest.endsWith('node_modules')) {
     throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
   }
   const { localDependencies, remoteDependencies } = buildDependencyTree(dependencies);
 
-  if (verbose) {
+  if (opts.verbose) {
     console.log('Installing remote dependencies');
   }
-  await installRemoteDependencies(dest, remoteDependencies);
+  await installRemoteDependencies(dest, remoteDependencies, opts);
 
-  if (verbose) {
+  if (opts.verbose) {
     console.log('Installing local dependencies');
   }
-  await installLocalDependencies(dest, dependencies, localDependencies, { verbose });
+  await installLocalDependencies(dest, dependencies, localDependencies, opts);
 }
 
-const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}) => {
+const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, opts: Opts = {}) => {
   const timer = setTimeout(() => {
     console.log(`It is taking a long time to install the local package ${localNameForPackage}`);
   }, 10000);
-  await installLocalPackage(src, dest, { verbose });
+  await installLocalPackage(src, dest, opts);
   clearTimeout(timer);
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)
 }
 
-const npmPack = async (src: string): Promise<string> => {
+const npmPack = async (src: string, { verbose }: Opts = {}): Promise<string> => {
   let outputName = '';
-  await callExec('npm pack --quiet', {
+  await callExec(`npm pack ${verbose ? '' : '--quiet'}`, {
     cwd: src,
   }, chunk => {
     outputName = chunk;
@@ -154,11 +164,7 @@ const npmPack = async (src: string): Promise<string> => {
   return pathToPackedFile;
 };
 
-const pnpmPack = async (src: string, target: string, {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}): Promise<string> => {
+const pnpmPack = async (src: string, target: string, { verbose, }: Opts = {}): Promise<string> => {
   let outputName = '';
   await callExec(`pnpm pack --pack-destination ${target} ${verbose === false ? '--silent' : ''}`, {
     cwd: src,
@@ -260,13 +266,10 @@ const collectAllDependencies = (src: string) => {
 
 // sometimes npm pack fails with a 'package/models/group1-shard1of1.bin: truncated gzip input' error. Try a few times before failing
 const MAX_ATTEMPTS = 2;
-const packAndTar = async (src: string, target: string, {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}, attempts = 0): Promise<string> => {
+const packAndTar = async (src: string, target: string, opts: Opts & { attempts?: number; }= {}): Promise<string> => {
+  const { verbose, usePNPM, attempts = 0 } = opts;
   try {
-    const pathToPackedFile = await npmPack(src);
+    const pathToPackedFile = await (usePNPM ? pnpmPack(src, target, opts) : npmPack(src, opts));
     return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
     if (attempts >= MAX_ATTEMPTS - 1) {
@@ -278,19 +281,15 @@ const packAndTar = async (src: string, target: string, {
       console.log(`Failed to pack and tar, attempts: ${attempts + 1}, remaining attempts: ${remainingAttempts}`);
     }
 
-    return packAndTar(src, target, { verbose }, attempts + 1);
+    return packAndTar(src, target, { ...opts, attempts: attempts + 1 });
   }
 }
 
-export const installLocalPackage = async (src: string, dest: string, {
-  verbose = false,
-}: {
-  verbose?: boolean;
-} = {}) => {
+export const installLocalPackage = async (src: string, dest: string, opts: Opts = {}) => {
   rimraf.sync(dest);
   await withTmpDir(async tmp => {
     try {
-      const unpackedFolder = await packAndTar(src, tmp, { verbose });
+      const unpackedFolder = await packAndTar(src, tmp, opts);
 
       const destParent = path.resolve(dest, '..');
       mkdirpSync(destParent);
@@ -303,11 +302,6 @@ export const installLocalPackage = async (src: string, dest: string, {
     }
   })
 };
-
-export interface Import {
-  packageName: string;
-  paths: { name: string; path: string; }[];
-}
 
 export const writeIndex = (target: string, upscalerName: string, imports: Import[] = []) => {
   const importCommands = imports.map(({ paths }) => paths.map(({ path }) => {
