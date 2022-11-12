@@ -112,6 +112,7 @@ const buildDependencyTree = (dependencies: DependencyDefinition[]): {
 });
 
 export const installLocalPackages = async (dest: string, dependencies: DependencyDefinition[], opts: Opts = {}) => {
+  console.log('install local')
   if (dest.endsWith('node_modules')) {
     throw new Error(`Your destination ends with "node_modules", but it should be the root folder (without ending in node_modules). ${dest}`)
   }
