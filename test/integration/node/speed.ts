@@ -5,7 +5,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
-const THRESHOLD = 15; // in milliseconds
+const THRESHOLD = 10; // in milliseconds
 
 const main: Main = async (deps) => {
   const FLOWER_SIZE = 16;
@@ -76,7 +76,7 @@ describe('Node Speed Integration Tests', () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   }, 1000 * 120);
 
-  if (new Date().getTime() > 1668180364086) {
+  if (new Date().getTime() > 1670772364086) {
     [
       {
         label: 'Simple Model',
