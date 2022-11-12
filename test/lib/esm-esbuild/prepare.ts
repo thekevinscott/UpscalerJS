@@ -58,13 +58,10 @@ export const bundle = async ({
     }
     await installNodeModules(ROOT, { verbose });
   }
-  console.log('what happens here???', skipInstallLocalPackages)
   if (skipInstallLocalPackages !== true) {
-    console.log('in it')
     if (verbose) {
       console.log('installing local packages');
     }
-    console.log('now')
     await installLocalPackages(ROOT, [
       {
         src: UPSCALER_PATH,
