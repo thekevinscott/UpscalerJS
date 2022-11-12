@@ -38,6 +38,13 @@ declare global {
   }
 }
 
+interface SetupSpeedBenchmarkingOpts {
+  skipBundle?: boolean;
+  skipInstallNodeModules?: boolean;
+  verbose?: boolean;
+  useNPM?: boolean;
+}
+
 /****
  * Utility Functions & Classes
  */
@@ -62,20 +69,26 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { skipBundle }: { skipBundle?: boolean }) => {
-  if (skipBundle !== true) {
-    console.log('bundling')
+const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts) => {
+  if (opts.skipBundle !== true) {
+    if (opts.verbose) {
+      console.log('bundling')
+    }
     await bundle({
-      verbose: true,
-      skipInstallNodeModules: true,
+      ...opts,
+      usePNPM: useNPM !== true,
     });
   }
-  console.log('Starting local browserstack and local server');
+  if (opts.verbose) {
+    console.log('Starting local browserstack and local server');
+  }
   const [bsLocal, server] = await Promise.all([
     startBrowserstack(),
     startServer(PORT, DIST),
   ]);
-  console.log('Successfully started local browserstack and local server')
+  if (opts.verbose) {
+    console.log('Successfully started local browserstack and local server')
+  }
 
   const closeAll = async () => await Promise.all([
     bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
@@ -91,9 +104,13 @@ const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) 
     err = error;
   }
 
-  console.log('Closing local browserstack and local server');
+  if (opts.verbose) {
+    console.log('Closing local browserstack and local server');
+  }
   await closeAll();
-  console.log('Successfully closed local browserstack and local server');
+  if (opts.verbose) {
+    console.log('Successfully closed local browserstack and local server');
+  }
   if (err !== undefined) {
     console.error(err);
     process.exit(1);
@@ -430,14 +447,13 @@ const benchmarkSpeed = async (
   outputCSV,
   times = 10,
   skipDisplayResults,
-  skipBundle,
-}: {
+  ...opts
+}: SetupSpeedBenchmarkingOpts & {
   times?: number;
   models?: string[]
   outputCSV?: string;
   resultsOnly?: boolean;
   skipDisplayResults?: boolean;
-  skipBundle?: boolean,
 }) => setupSpeedBenchmarking(async (bsLocal, server) => {
   const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
   await benchmarker.initialize();
@@ -480,19 +496,18 @@ const benchmarkSpeed = async (
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
   }
-}, { skipBundle });
+}, opts);
 
 /****
  * Functions to expose the main function as a CLI tool
  */
-interface Args {
+interface Args extends SetupSpeedBenchmarkingOpts {
   models?: Array<string>;
   packages: Array<string>;
   times?: number;
   resultsOnly?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
-  skipBundle?: boolean;
 }
 
 const getModels = (model?: unknown): undefined | string[] => {
@@ -530,6 +545,9 @@ const getArgs = async (): Promise<Args> => {
       outputCSV: { type: 'string' },
       skipDisplayResults: { type: 'boolean' },
       skipBundle: { type: 'boolean' },
+      skipInstallNodeModules: { type: 'boolean' },
+      verbose: { type: 'boolean' },
+      useNPM: { type: 'boolean' },
     });
   })
   .help()
@@ -548,6 +566,9 @@ const getArgs = async (): Promise<Args> => {
     outputCSV: ifDefined('outputCSV', 'string'),
     skipDisplayResults: ifDefined('skipDisplayResults', 'boolean'),
     skipBundle: ifDefined('skipBundle', 'boolean'),
+    skipInstallNodeModules: ifDefined('skipInstallNodeModules', 'boolean'),
+    verbose: ifDefined('verbose', 'boolean'),
+    useNPM: ifDefined('useNPM', 'boolean'),
   }
 }
 
@@ -561,6 +582,9 @@ if (require.main === module) {
       outputCSV: args.outputCSV,
       skipDisplayResults: args.skipDisplayResults,
       skipBundle: args.skipBundle,
+      skipInstallNodeModules: args.skipInstallNodeModules,
+      verbose: args.verbose,
+      useNPM: args.useNPM,
     });
   })();
 }

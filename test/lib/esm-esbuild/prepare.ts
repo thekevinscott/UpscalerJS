@@ -52,13 +52,13 @@ export const bundle = async ({
 }: BundleOpts = {}) => {
   const entryFile = path.join(ROOT, 'src/index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
-  if (skipInstallLocalPackages !== true) {
+  if (skipInstallNodeModules !== true) {
     if (verbose) {
       console.log('installing node modules');
     }
     await installNodeModules(ROOT, { verbose });
   }
-  if (skipInstallNodeModules !== true) {
+  if (skipInstallLocalPackages !== true) {
     if (verbose) {
       console.log('installing local packages');
     }

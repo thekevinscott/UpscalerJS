@@ -56,7 +56,7 @@ const installRemoteDependencies = async (dest: string, remoteDependencies: Depen
       dependenciesToInstall,
     ].filter(Boolean).join(' ')
     if (verbose) {
-      console.log(cmd);
+      console.log('NPM INSTALL CMD:', cmd);
     }
     await callExec(cmd, {
       cwd: dest,
