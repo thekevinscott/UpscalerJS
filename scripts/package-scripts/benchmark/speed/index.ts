@@ -42,6 +42,7 @@ interface SetupSpeedBenchmarkingOpts {
   skipBundle?: boolean;
   skipInstallNodeModules?: boolean;
   verbose?: boolean;
+  useNPM?: boolean;
 }
 
 /****
@@ -68,12 +69,15 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, opts: SetupSpeedBenchmarkingOpts) => {
+const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts) => {
   if (opts.skipBundle !== true) {
     if (opts.verbose) {
       console.log('bundling')
     }
-    await bundle(opts);
+    await bundle({
+      ...opts,
+      usePNPM: useNPM !== true,
+    });
   }
   if (opts.verbose) {
     console.log('Starting local browserstack and local server');
@@ -497,16 +501,13 @@ const benchmarkSpeed = async (
 /****
  * Functions to expose the main function as a CLI tool
  */
-interface Args {
+interface Args extends SetupSpeedBenchmarkingOpts {
   models?: Array<string>;
   packages: Array<string>;
   times?: number;
   resultsOnly?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
-  skipBundle?: boolean;
-  skipInstallNodeModules?: boolean;
-  verbose?: boolean;
 }
 
 const getModels = (model?: unknown): undefined | string[] => {
@@ -546,6 +547,7 @@ const getArgs = async (): Promise<Args> => {
       skipBundle: { type: 'boolean' },
       skipInstallNodeModules: { type: 'boolean' },
       verbose: { type: 'boolean' },
+      useNPM: { type: 'boolean' },
     });
   })
   .help()
@@ -566,6 +568,7 @@ const getArgs = async (): Promise<Args> => {
     skipBundle: ifDefined('skipBundle', 'boolean'),
     skipInstallNodeModules: ifDefined('skipInstallNodeModules', 'boolean'),
     verbose: ifDefined('verbose', 'boolean'),
+    useNPM: ifDefined('useNPM', 'boolean'),
   }
 }
 
@@ -581,6 +584,7 @@ if (require.main === module) {
       skipBundle: args.skipBundle,
       skipInstallNodeModules: args.skipInstallNodeModules,
       verbose: args.verbose,
+      useNPM: args.useNPM,
     });
   })();
 }
