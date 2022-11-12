@@ -5,7 +5,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
-const THRESHOLD = 10; // in milliseconds
+const THRESHOLD = 15; // in milliseconds
 
 const main: Main = async (deps) => {
   const FLOWER_SIZE = 16;
