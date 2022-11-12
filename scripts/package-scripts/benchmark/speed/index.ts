@@ -69,7 +69,7 @@ const startBrowserstack = async () => {
 }
 
 const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, opts: SetupSpeedBenchmarkingOpts) => {
-  if (skipBundle !== true) {
+  if (opts.skipBundle !== true) {
     if (opts.verbose) {
       console.log('bundling')
     }
