@@ -3,7 +3,6 @@ import { nodeResolve, } from '@rollup/plugin-node-resolve';
 import type { InputOptions, OutputOptions, } from 'rollup';
 import DefaultUpscalerModel from '../../models/default-model/umd-names.json';
 
-
 const isValidUMDNameFile = (contents: unknown): contents is {
    '.': string
 } => typeof contents === 'object' && contents !== undefined && contents !== null && '.' in contents;
