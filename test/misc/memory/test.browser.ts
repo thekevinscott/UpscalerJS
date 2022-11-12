@@ -292,7 +292,7 @@ describe('Memory Leaks', () => {
       const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
-      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+      expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
     });
 
     it('should upscale with a pre and no post processing functions', async () => {
@@ -320,7 +320,7 @@ describe('Memory Leaks', () => {
       const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
-      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+      expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
     });
     
     it('should upscale with no pre and a post processing functions', async () => {
@@ -348,7 +348,7 @@ describe('Memory Leaks', () => {
       const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
-      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+      expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
     });
 
     it('should upscale with a pre and a post processing functions', async () => {
@@ -377,7 +377,7 @@ describe('Memory Leaks', () => {
       const endingMemory = await getMemory(testRunner.page);
       const names = prototypes.map(p => p.name);
       checkMemory(names, startingMemory, endingMemory);
-      expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+      expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
     });
   });
 
@@ -436,11 +436,11 @@ describe('Memory Leaks', () => {
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        output = await upscaler.upscale(window['src']);
+        output = await upscaler.upscale(window['src']!);
 
         await upscaler.dispose();
       }
-      return output;
+      return output!;
     }, TIMES_TO_CHECK);
 
     await tick(testRunner.page);
@@ -448,7 +448,7 @@ describe('Memory Leaks', () => {
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
     expect(image.substring(0,22)).toEqual('data:image/png;base64,');
-    const isDisposed = await testRunner.page.evaluate(async () => window['src'].isDisposed);
+    const isDisposed = await testRunner.page.evaluate(async () => window['src']!.isDisposed);
     expect(isDisposed).toEqual(false);
   });
 
@@ -480,7 +480,7 @@ describe('Memory Leaks', () => {
     const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should upscale with the idealo model', async () => {
@@ -504,7 +504,7 @@ describe('Memory Leaks', () => {
     const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0,22)).toEqual('data:image/png;base64,');
+    expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a src', async () => {
@@ -536,7 +536,7 @@ describe('Memory Leaks', () => {
     const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);
     checkMemory(names, startingMemory, endingMemory);
-    expect((image as string).substring(0,22)).toEqual('data:image/png;base64,');
+    expect((image! as string).substring(0,22)).toEqual('data:image/png;base64,');
   });
 
   it('should callback to progress with a tensor', async () => {
@@ -565,14 +565,14 @@ describe('Memory Leaks', () => {
 
         await upscaler.dispose();
       }
-      window['output'] = output;
-      return output;
+      window['output'] = output!;
+      return output!;
     }, TIMES_TO_CHECK);
 
     await tick(testRunner.page);
     expect(image.shape).toEqual([8, 8, 3]);
     await testRunner.page.evaluate(() => {
-      window['output'].dispose();
+      window['output']!.dispose();
     })
     const endingMemory = await getMemory(testRunner.page);
     const names = prototypes.map(p => p.name);

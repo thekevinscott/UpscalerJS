@@ -2,15 +2,8 @@
   "testRunner": "jest-circus/runner",
   "preset": "ts-jest",
   "transform": {
-     "^.+\\.(ts|tsx)?$": "ts-jest",
-     "^.+\\.(js|jsx)$": "babel-jest"
-  },
-  "setupFilesAfterEnv": ["./jest.setup.ts"],
-  "collectCoverage": false,
-  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
-  "globals": {
-    "ts-jest": {
+     "^.+\\.(ts|tsx)?$": [
+      "ts-jest", {
       "tsconfig": {
         "importHelpers": false,
         "target": "es5",
@@ -26,5 +19,11 @@
         "strictNullChecks": false
       }
     }
-  }
+    ],
+     "^.+\\.(js|jsx)$": "babel-jest"
+  },
+  "setupFilesAfterEnv": ["./jest.setup.ts"],
+  "collectCoverage": false,
+  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
 }

@@ -356,12 +356,12 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
         (
           SELECT id FROM devices d 
           WHERE 1=1 
-          AND d.os = :os
-          AND d.os_version = :os_version
-          AND d.browserName = :browserName
-          AND d.browser_version = :browser_version
-          AND d.device = :device
-          AND d.real_mobile = :real_mobile
+          ${deviceOs ? 'AND d.os = :os' : ''}
+          ${deviceOsVersion ? 'AND d.os_version = :os_version' : ''}
+          ${deviceBrowserName ? 'AND d.browserName = :browserName' : ''}
+          ${deviceBrowserVersion ? 'AND d.browser_version = :browser_version' : ''}
+          ${device ? 'AND d.device = :device' : ''}
+          ${deviceIsRealMobile ? 'AND d.real_mobile = :real_mobile' : ''}
         )
       )
       `, {
