@@ -2,7 +2,7 @@ import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
-const modelDefinition: ModelDefinitionFn = tf => {
+const modelDefinition: ModelDefinitionFn = (tf) => {
   const Layer = tf.layers.Layer;
   const SCALE = 4;
   const BETA = 0.2;
@@ -19,7 +19,6 @@ const modelDefinition: ModelDefinitionFn = tf => {
     }
     return inputs;
   };
-
   class MultiplyBeta extends Layer {
     beta: number;
 
