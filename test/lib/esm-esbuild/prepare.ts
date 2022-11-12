@@ -86,8 +86,6 @@ export const bundle = async ({
     });
   }
 
-  throw new Error('stop')
-
   if (verbose) {
     console.log('bundle');
   }
