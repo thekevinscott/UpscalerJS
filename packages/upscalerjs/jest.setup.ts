@@ -5,13 +5,13 @@
 // import buildModels from "../../scripts/package-scripts/build-model";
 
 // // const setup = async () => {
-// //   await buildModels(['esrgan-slim',]);
+// //   await buildModels(['default',]);
 // // };
 
 // // export default setup;
 
 // const globalSetup = async function () {
-//   await buildModels(['esrgan-slim',]);
+//   await buildModels(['default',]);
 // };
 
 // export default globalSetup;

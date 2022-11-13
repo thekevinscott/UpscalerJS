@@ -40,7 +40,7 @@
     "build:browser:umd": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o umd",
     "build:node": "pnpm --filter @upscalerjs/scripts build:upscaler node -o cjs",
     "build:node-gpu": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs",
-    "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/esrgan-slim build",
+    "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build",
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
-    "@upscalerjs/esrgan-slim": "workspace:*"
+    "@upscalerjs/default-model": "workspace:*"
   },
   "devDependencies": {
     "@tensorflow/tfjs": "^4.0.0",

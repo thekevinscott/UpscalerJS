@@ -1,5 +1,5 @@
 {
-  "name": "@upscalerjs/esrgan-slim",
+  "name": "@upscalerjs/default-model",
   "version": "1.0.0-beta.6",
   "description": "ESRGAN Default Model for Upscaler.js",
   "exports": {
@@ -9,12 +9,12 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts",
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd"
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",

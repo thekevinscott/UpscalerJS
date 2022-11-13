@@ -5,7 +5,7 @@
     "seedrandom": "3.0.5",
     "@cloudflare/workers-types": "^3.14.1",
     "@types/node": "^17.0.39",
-    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/workers.shared": "workspace:*",
     "typescript": "^4.7.4",
     "upscaler": "workspace:*",
