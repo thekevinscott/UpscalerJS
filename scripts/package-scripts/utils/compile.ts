@@ -35,14 +35,11 @@ type CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, opts?
 
 export const compileTypescript: CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, {
   outDir,
-} = {}) => {
-  const cmd = [
-    `tsc`,
-    `-p`,
-    path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
-    outDir ? `--outDir ${outDir}` : undefined,
-  ].filter(Boolean).join(' ');
-  return callExec(cmd, {
-    cwd: modelFolder,
-  });
-};
+} = {}) => callExec([
+  `tsc`,
+  `-p`,
+  path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
+  outDir ? `--outDir ${outDir}` : undefined,
+].filter(Boolean).join(' '), {
+  cwd: modelFolder,
+});

@@ -9,12 +9,12 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default --config models/scaffolder.ts",
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts default -o cjs -o esm -o umd"
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",
