@@ -35,7 +35,6 @@ const modelDefinition: ModelDefinitionFn = tf => {
     static className = 'MultiplyBeta';
   }
 
-  // skipcq: js-0108
   class PixelShuffle extends Layer {
     scale: number;
 
