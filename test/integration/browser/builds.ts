@@ -9,12 +9,16 @@ import Upscaler, { ModelDefinition } from 'upscaler';
 import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
 
 const JEST_TIMEOUT_IN_SECONDS = 120;
+const VERBOSE = false;
+const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(0);
 
 describe('Build Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     showWarnings: true,
+    verbose: VERBOSE,
+    usePNPM: USE_PNPM,
   });
 
   beforeAll(async () => {

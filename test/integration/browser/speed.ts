@@ -9,6 +9,8 @@ import puppeteer from 'puppeteer';
 
 const TRACK_TIME = false;
 const LOG = true;
+const VERBOSE = false;
+const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const THRESHOLD = 20; // in milliseconds
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
@@ -21,6 +23,8 @@ describe('Speed Integration Tests', () => {
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     log: LOG,
+    verbose: VERBOSE,
+    usePNPM: USE_PNPM,
   });
 
   let pages: puppeteer.Page[] = [];

@@ -14,9 +14,7 @@ import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
-const USE_PNPM = process.env.USE_PNPM || false;
-console.log('USE_PNPM', USE_PNPM);
-throw new Error("stop")
+const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
