@@ -9,6 +9,7 @@ const jsonParse = (fileName: string) => JSON.parse(readFileSync(fileName, 'utf-8
 
 export const getAllAvailableModelPackages = (): Array<string> => readdirSync(MODELS_DIR).filter(file => {
   const modelDir = path.resolve(MODELS_DIR, file);
+
   return !['dist', 'types', 'node_modules'].includes(file) && lstatSync(modelDir).isDirectory() && existsSync(path.resolve(modelDir, 'package.json'));
 });
 
