@@ -23,6 +23,8 @@ export class BrowserTestRunner {
   private _page: puppeteer.Page | undefined;
   private _context: puppeteer.BrowserContext | undefined;
   private _name?: string;
+  private _verbose?: boolean;
+  private _usePNPM?: boolean;
 
   constructor({
     name,
@@ -32,6 +34,8 @@ export class BrowserTestRunner {
     trackTime = false,
     log = true,
     showWarnings = false,
+    verbose = false,
+    usePNPM = false,
   }: {
     name?: string;
     mockCDN?: MockCDN;
@@ -40,6 +44,8 @@ export class BrowserTestRunner {
     trackTime?: boolean;
     log?: boolean;
     showWarnings?: boolean;
+    verbose?: boolean;
+    usePNPM?: boolean;
   } = {}) {
     this._name = name;
     this.mockCDN = mockCDN;
@@ -48,6 +54,8 @@ export class BrowserTestRunner {
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
+    this._verbose = verbose;
+    this.usePNPM = usePNPM;
   }
 
   /****
@@ -231,14 +239,22 @@ export class BrowserTestRunner {
     }
   }
 
+  private _makeOpts(): BundleOpts {
+    return {
+      verbose: this._verbose,
+      usePNPM: this._usePNPM,
+    }
+  }
+
   /****
    * Jest lifecycle methods
    */
 
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
+    const opts = this._makeOpts();
     await Promise.all([
-      bundle().then(() => this.startServer()),
+      bundle(opts).then(() => this.startServer()),
       this.startBrowser(),
     ]);
   }
