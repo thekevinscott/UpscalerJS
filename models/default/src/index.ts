@@ -2,7 +2,6 @@ import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
-// skipcq: js-0108
 const modelDefinition: ModelDefinitionFn = tf => {
   const Layer = tf.layers.Layer;
   const SCALE = 4;
@@ -20,6 +19,7 @@ const modelDefinition: ModelDefinitionFn = tf => {
     }
     return inputs;
   };
+
   class MultiplyBeta extends Layer {
     beta: number;
 
@@ -35,6 +35,7 @@ const modelDefinition: ModelDefinitionFn = tf => {
     static className = 'MultiplyBeta';
   }
 
+  // skipcq: js-0108
   class PixelShuffle extends Layer {
     scale: number;
 
