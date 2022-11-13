@@ -1,6 +1,7 @@
 import http from 'http';
 import puppeteer from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
+import { BundleOpts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
 
