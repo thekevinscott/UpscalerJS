@@ -13,7 +13,8 @@ export interface PackageInformation {
 
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
-type Meta = { [key: string]: string | number | Meta | null | undefined };
+type MetaValue = string | number | Meta | null | undefined | boolean;
+export type Meta = { [key: string]: MetaValue };
 
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
