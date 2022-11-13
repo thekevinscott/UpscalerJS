@@ -9,6 +9,8 @@ import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
+const VERBOSE = false;
+const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
@@ -17,6 +19,8 @@ describe('Upscale Integration Tests', () => {
     mockCDN: esbuildMockCDN,
     dist: DIST,
     trackTime: TRACK_TIME,
+    verbose: VERBOSE,
+    usePNPM: USE_PNPM,
   });
   const page = () => testRunner.page;
 

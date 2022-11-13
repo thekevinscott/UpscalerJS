@@ -6,11 +6,24 @@ import { Import, installLocalPackages, installNodeModules, writeIndex } from '..
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
 
+/***
+ * Types
+ */
+export interface BundleOpts {
+  verbose?: boolean;
+  skipInstallNodeModules?: boolean;
+  skipInstallLocalPackages?: boolean;
+  skipCopyFixtures?: boolean;
+  usePNPM?: boolean;
+}
+
+/***
+ * Constants
+ */
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
-const MODELS_PATH = path.join(ROOT, '../../../models')
 
 const PACKAGES = [
   ...getAllAvailableModelPackages().map(packageName => ({
@@ -35,14 +48,6 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-interface BundleOpts {
-  verbose?: boolean;
-  skipInstallNodeModules?: boolean;
-  skipInstallLocalPackages?: boolean;
-  skipCopyFixtures?: boolean;
-  usePNPM?: boolean;
-}
-
 export const bundle = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
@@ -64,11 +69,11 @@ export const bundle = async ({
     }
     await installLocalPackages(ROOT, [
       {
-        src: UPSCALER_PATH,
+        src: UPSCALER_DIR,
         name: LOCAL_UPSCALER_NAME,
       },
       ...PACKAGES.map(({ packageName }) => ({
-        src: path.resolve(MODELS_PATH, packageName),
+        src: path.resolve(MODELS_DIR, packageName),
         name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
       })),
     ], {

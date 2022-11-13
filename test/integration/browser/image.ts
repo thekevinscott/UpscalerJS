@@ -13,6 +13,8 @@ import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
 
 const TRACK_TIME = false;
+const VERBOSE = false;
+const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
@@ -22,6 +24,8 @@ describe('Image Format Integration Tests', () => {
     mockCDN: esbuildMockCDN,
     dist: DIST,
     trackTime: TRACK_TIME,
+    verbose: VERBOSE,
+    usePNPM: USE_PNPM,
   });
   const page = (): puppeteer.Page => testRunner.page;
 
