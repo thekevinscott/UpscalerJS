@@ -1,7 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
 import type { InputOptions, OutputOptions, } from 'rollup';
-import ESRGANSlim from '../../models/default/umd-names.json';
+import ESRGANSlim from '../../models/default-model/umd-names.json';
+
 
 const isValidUMDNameFile = (contents: unknown): contents is {
    '.': string
