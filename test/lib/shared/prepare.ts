@@ -15,7 +15,7 @@ import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
  * Types
  */
 
-interface Opts {
+export interface Opts {
   verbose?: boolean;
   usePNPM?: boolean;
 }

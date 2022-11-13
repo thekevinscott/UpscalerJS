@@ -1,11 +1,12 @@
 import http from 'http';
 import puppeteer from 'puppeteer';
+import { BundleOpts, } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
-import { BundleOpts } from '../../lib/shared/prepare';
+import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
 
-type Bundle = () => Promise<void>;
+type Bundle = (opts?: Opts) => Promise<void>;
 
 const DEFAULT_PORT = 8098;
 
@@ -240,7 +241,7 @@ export class BrowserTestRunner {
     }
   }
 
-  private _makeOpts(): BundleOpts {
+  private _makeOpts(): Opts {
     return {
       verbose: this._verbose,
       usePNPM: this._usePNPM,
