@@ -2,6 +2,7 @@ import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
+// skipcq: js-0108
 const modelDefinition: ModelDefinitionFn = tf => {
   const Layer = tf.layers.Layer;
   const SCALE = 4;

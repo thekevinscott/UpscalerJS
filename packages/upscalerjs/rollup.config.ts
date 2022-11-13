@@ -24,7 +24,7 @@ export const inputOptions: InputOptions = {
     nodeResolve({
       preferBuiltins: true,
       resolveOnly: [
-        /^(?!.*(@tensorflow\/tfjs))/,
+        /^(?!.*(@tensorflow\/tfjs))/, //skipcq: js-0113
       ],
     }),
     commonjs(),
