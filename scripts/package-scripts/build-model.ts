@@ -1,4 +1,4 @@
-import fs, { existsSync, mkdirp } from 'fs-extra';
+import fs, { mkdirp, existsSync } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
