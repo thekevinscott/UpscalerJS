@@ -21,7 +21,7 @@
     "@docusaurus/theme-common": "^2.1.0",
     "@mdx-js/react": "^1.6.22",
     "@shoelace-style/shoelace": "2.0.0-beta.80",
-    "@upscalerjs/default": "workspace:*",
+    "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "classnames": "^2.3.1",

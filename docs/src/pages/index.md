@@ -111,7 +111,7 @@ You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJ
 
 ### Instantiation
 
-By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default`](https://npmjs.com/package/@upscalerjs/default).
+By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default-model`](https://npmjs.com/package/@upscalerjs/default-model).
 
 You can install alternative models by installing them and providing them as an argument. For instance, to use `@upscalerjs/esrgan-legacy`, you'd first install it:
 
@@ -131,7 +131,7 @@ const upscaler = new Upscaler({
 
 Currently, the list of models includes:
 
-* `@upscalerjs/default`
+* `@upscalerjs/default-model`
 * `@upscalerjs/esrgan-legacy`
 
 Alternatively, you can provide a path to a pre-trained model of your own:

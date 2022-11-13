@@ -11,14 +11,14 @@ const getESRGANUmdName = () => {
   if (isValidUMDNameFile(ESRGANSlim)) {
     return ESRGANSlim['.'];
   }
-  throw new Error('Bad umd-names.json file for @upscalerjs/default');
+  throw new Error('Bad umd-names.json file for @upscalerjs/default-model');
 };
 
 export const inputOptions: InputOptions = {
   context: 'window',
   external: [
     '@tensorflow/tfjs',
-    '@upscalerjs/default',
+    '@upscalerjs/default-model',
   ],
   plugins: [
     nodeResolve({
@@ -35,6 +35,6 @@ export const outputOptions: OutputOptions = {
   format: 'umd',
   globals: {
     '@tensorflow/tfjs': 'tf',
-    '@upscalerjs/default': getESRGANUmdName(),
+    '@upscalerjs/default-model': getESRGANUmdName(),
   },
 };
