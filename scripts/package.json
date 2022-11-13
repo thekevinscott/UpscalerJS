@@ -24,7 +24,7 @@
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
-    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/default": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "cli-table": "^0.3.11",
     "sequelize": "^6.23.1",

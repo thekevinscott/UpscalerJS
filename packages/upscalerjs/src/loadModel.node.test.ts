@@ -66,13 +66,13 @@ describe('loadModel.node', () => {
     });
 
     it('returns the path to the module', () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
-      expect(getModuleFolder('baz')).toEqual('./node_modules/@upscalerjs/esrgan-slim/');
+      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default/dist/foo/foo.ts'));
+      expect(getModuleFolder('baz')).toEqual('./node_modules/@upscalerjs/default/');
     });
 
     it('returns the path to the module even if it is local', () => {
-      resolver.mockImplementation(getResolver(() => '/Users/foo/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
-      expect(getModuleFolder('baz')).toEqual('/Users/foo/@upscalerjs/esrgan-slim/');
+      resolver.mockImplementation(getResolver(() => '/Users/foo/@upscalerjs/default/dist/foo/foo.ts'));
+      expect(getModuleFolder('baz')).toEqual('/Users/foo/@upscalerjs/default/');
     });
 
     it('returns the path to the module even if the name is different', () => {
@@ -88,13 +88,13 @@ describe('loadModel.node', () => {
     });
 
     it('returns model path if given package information', () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/esrgan-slim/dist/foo/foo.ts'));
+      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default/dist/foo/foo.ts'));
       expect(getModelPath({
         packageInformation: {
           name: 'baz',
           version: '1.0.0',
         }, path: 'some-model', scale: 2
-      })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/esrgan-slim', 'some-model')}`);
+      })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/default', 'some-model')}`);
     });
   });
 

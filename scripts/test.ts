@@ -24,7 +24,7 @@ type Runner = 'local' | 'browserstack';
 
 const getOutputFormats = (target: Platform): Array<OutputFormat> => {
   if (target === 'browser') {
-    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find esrgan-slim
+    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find default
     return DEFAULT_OUTPUT_FORMATS;
   }
   return ['cjs'];
