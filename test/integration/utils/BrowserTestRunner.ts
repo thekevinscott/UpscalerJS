@@ -57,7 +57,7 @@ export class BrowserTestRunner {
     this.port = port;
     this.log = log;
     this._verbose = verbose;
-    this.usePNPM = usePNPM;
+    this._usePNPM = usePNPM;
   }
 
   /****

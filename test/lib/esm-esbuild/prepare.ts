@@ -6,7 +6,7 @@ import { Import, installLocalPackages, installNodeModules, writeIndex } from '..
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { UPSCALER_DIR, MODELS_DIR } from '../../../scripts/package-scripts/utils';
+import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 /***
  * Types
