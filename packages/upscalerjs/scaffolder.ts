@@ -7,7 +7,7 @@ const config: ScaffoldDependenciesConfig = {
       name: 'dependencies',
       contents: [
         writeTFJSDependency,
-        () => `export { default as ESRGANSlim } from '@upscalerjs/default-model';`,
+        () => `export { default as DefaultUpscalerModel } from '@upscalerjs/default-model';`,
       ],
     },
   ],

@@ -1,4 +1,4 @@
-import { ESRGANSlim, } from './dependencies.generated';
+import { DefaultUpscalerModel, } from './dependencies.generated';
 import type {
   UpscalerOptions,
   TempUpscaleArgs,
@@ -21,7 +21,7 @@ import { getModel, parseUpscaleOptions, } from './utils';
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-const DEFAULT_MODEL: ModelDefinitionObjectOrFn = ESRGANSlim;
+const DEFAULT_MODEL: ModelDefinitionObjectOrFn = DefaultUpscalerModel;
 
 export class Upscaler {
   _opts: UpscalerOptions;
