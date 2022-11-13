@@ -1,4 +1,4 @@
-import fs, { mkdirp } from 'fs-extra';
+import fs, { mkdirp, existsSync } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
@@ -44,6 +44,11 @@ const buildUMD = async (modelFolder: string) => {
     const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
     const input = path.resolve(TMP, filename);
+
+    if (!existsSync(input)) {
+      throw new Error(`The file ${input} does not exist; cannot call roll up`);
+    }
+
     const file = path.basename(filename);
 
     mkdirpSync(FILE_DIST);
@@ -86,16 +91,17 @@ const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => 
 
   rimraf.sync(DIST);
   await mkdirp(DIST);
+
+  if (outputFormats.includes('umd')) {
+    await buildUMD(MODEL_ROOT);
+  }
+
   if (outputFormats.includes('cjs')) {
     await buildCJS(MODEL_ROOT);
   }
 
   if (outputFormats.includes('esm')) {
     await buildESM(MODEL_ROOT);
-  }
-
-  if (outputFormats.includes('umd')) {
-    await buildUMD(MODEL_ROOT);
   }
 
   const duration = new Date().getTime() - start;
