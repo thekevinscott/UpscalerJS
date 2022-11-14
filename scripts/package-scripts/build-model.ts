@@ -9,6 +9,7 @@ import yargs from 'yargs';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import { inputOptions, } from '../../models/rollup.config';
 import scaffoldDependenciesConfig from '../../models/scaffolder';
+import { ifDefined as _ifDefined } from './prompt/ifDefined';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { DEFAULT_OUTPUT_FORMATS, getOutputFormats } from './prompt/getOutputFormats';
@@ -16,10 +17,23 @@ import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
 import { babelTransform } from './utils/babelTransform';
 import { MODELS_DIR } from './utils/constants';
 
+/***
+ * Types
+ */
+
+interface Opts {
+  verbose?: boolean;
+}
+
 /****
  * ESM build function
  */
-const buildESM = (modelFolder: string) => compileTypescript(modelFolder, 'esm');
+const buildESM = async (modelFolder: string, opts: Opts = {}) => {
+  if (opts.verbose) {
+    console.log('Compiling typescript for ESM')
+  }
+  await compileTypescript(modelFolder, 'esm');
+};
 
 /****
  * UMD build function
@@ -28,10 +42,14 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
-const buildUMD = async (modelFolder: string) => {
+const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
   await mkdirp(DIST);
+
+  if (opts.verbose) {
+    console.log('Compiling typescript for UMD')
+  }
   await compileTypescript(modelFolder, 'umd');
 
   const files = getPackageJSONExports(modelFolder);
@@ -52,6 +70,9 @@ const buildUMD = async (modelFolder: string) => {
     const file = path.basename(filename);
 
     mkdirpSync(FILE_DIST);
+    if (opts.verbose) {
+      console.log(`Rollup building ${filename} for UMD`)
+    }
     await rollupBuild({
       ...inputOptions,
       input,
@@ -72,10 +93,16 @@ const buildUMD = async (modelFolder: string) => {
 /****
  * CJS build function
  */
-const buildCJS = async (modelFolder: string) => {
+const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   const dist = path.resolve(modelFolder, 'dist/cjs');
   await mkdirp(dist);
+  if (opts.verbose) {
+    console.log('Compiling typescript for CJS');
+  }
   await compileTypescript(modelFolder, 'cjs');
+  if (opts.verbose) {
+    console.log('Babel transforming for CJS');
+  }
   await babelTransform(dist);
 };
 
@@ -83,32 +110,36 @@ const buildCJS = async (modelFolder: string) => {
  * Main function
  */
 
-const buildModel = async (model: string, outputFormats: Array<OutputFormat>) => {
-  const start = new Date().getTime();
+const buildModel = async (
+  model: string, 
+  outputFormats: Array<OutputFormat>,
+  opts: Opts = {},
+) => {
+  const start = performance.now();
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
   const DIST = path.resolve(MODEL_ROOT, 'dist')
+  if (opts.verbose) {
+    console.log('Scaffolding dependencies');
+  }
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
   rimraf.sync(DIST);
   await mkdirp(DIST);
 
-  if (outputFormats.includes('umd')) {
-    await buildUMD(MODEL_ROOT);
-  }
+  await Promise.all([
+    outputFormats.includes('umd') ? buildUMD(MODEL_ROOT, opts) : undefined,
+    outputFormats.includes('cjs') ? buildCJS(MODEL_ROOT, opts) : undefined,
+    outputFormats.includes('esm') ? buildESM(MODEL_ROOT, opts) : undefined,
+  ])
 
-  if (outputFormats.includes('cjs')) {
-    await buildCJS(MODEL_ROOT);
-  }
-
-  if (outputFormats.includes('esm')) {
-    await buildESM(MODEL_ROOT);
-  }
-
-  const duration = new Date().getTime() - start;
-  return duration;
+  return performance.now() - start;
 }
 
-const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS) => {
+const buildModels = async (
+  models: Array<string> = AVAILABLE_MODELS, 
+  outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS, 
+  opts: Opts = {}
+) => {
   if (models.length === 0) {
     console.log('No models selected, nothing to do.')
     return;
@@ -119,7 +150,11 @@ const buildModels = async (models: Array<string> = AVAILABLE_MODELS, outputForma
     return;
   }
 
-  return await Promise.all(models.map(model => buildModel(model, outputFormats)))
+  const start = performance.now();
+  await Promise.all(models.map(model => buildModel(model, outputFormats, opts)))
+  if (opts.verbose) {
+    console.log(`Built models in ${performance.now() - start}`)
+  }
 }
 
 export default buildModels;
@@ -128,7 +163,11 @@ export default buildModels;
  * Functions to expose the main function as a CLI tool
  */
 
-type Answers = { models: Array<string>, outputFormats: Array<OutputFormat> }
+interface Answers { 
+  models: Array<string>;
+  outputFormats: Array<OutputFormat>;
+  verbose?: boolean;
+}
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('build models', 'build models', yargs => {
@@ -140,6 +179,9 @@ const getArgs = async (): Promise<Answers> => {
     }).option('a', {
       alias: 'all',
       type: 'boolean',
+    }).option('v', {
+      alias: 'verbose',
+      type: 'boolean',
     });
   })
     .help()
@@ -148,15 +190,20 @@ const getArgs = async (): Promise<Answers> => {
   const models = await getModel(argv._[0], argv.a);
   const outputFormats = await getOutputFormats(argv.o);
 
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
+
   return {
     models,
     outputFormats,
+    verbose: ifDefined('v', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
-    const { models, outputFormats } = await getArgs();
-    await buildModels(models, outputFormats);
+    const { models, outputFormats, verbose } = await getArgs();
+    await buildModels(models, outputFormats, {
+      verbose,
+    });
   })();
 }
