@@ -151,7 +151,7 @@ const getArgs = async (): Promise<Args> => {
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
-    kind: { type: 'string' }
+    kind: { type: 'string' },
     verbose: { type: 'boolean' },
   }).argv;
   const platform = getPlatform(argv.platform);
