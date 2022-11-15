@@ -170,7 +170,7 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(window['flower']);
           }, [packageName, esmName]);
-          checkImage(result, path.resolve(MODELS_DIR, packageName, esmName, "result.png"), 'diff.png');
+          checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
         });
       });
     });
@@ -209,7 +209,7 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
           }, [umdName]);
-          checkImage(result, path.resolve(MODELS_DIR, packageName, esmName, "result.png"), 'diff.png');
+          checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
         });
       });
     });
