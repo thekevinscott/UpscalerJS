@@ -4,6 +4,7 @@ export const ROOT_DIR = path.resolve(__dirname, '../../../');
 export const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 export const EXAMPLES_DIR = path.resolve(ROOT_DIR, 'examples');
 export const TEST_DIR = path.resolve(ROOT_DIR, 'test');
+export const FIXTURES_DIR = path.resolve(TEST_DIR, '__fixtures__');
 export const DOCS_DIR = path.resolve(ROOT_DIR, 'docs');
 export const TMP_DIR = path.resolve(ROOT_DIR, 'tmp');
 export const DEV_DIR = path.resolve(ROOT_DIR, 'dev');

@@ -9,6 +9,9 @@ import fs from 'fs';
 import path from 'path';
 import type puppeteer from 'puppeteer';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
 
@@ -56,7 +59,7 @@ describe('Image Format Integration Tests', () => {
         });
         return upscaler.upscale(window['flower']);
       });
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image", async () => {
@@ -73,7 +76,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(img).then(resolve);
         }
       }), []);
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image from the page", async () => {
@@ -92,7 +95,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from an HTML image", async () => {
@@ -111,7 +114,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(tensor).then(resolve);
         }
       }));
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
@@ -126,7 +129,7 @@ describe('Image Format Integration Tests', () => {
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.upscale(tensor).then(resolve);
       }), flowerPixels);
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales a rank 4 tensor", async () => {
@@ -145,7 +148,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
         }
       }));
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
@@ -160,7 +163,7 @@ describe('Image Format Integration Tests', () => {
         });
         return upscaler.upscale(src);
       }, originalImage);
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
 
@@ -178,7 +181,7 @@ describe('Image Format Integration Tests', () => {
           padding: 2,
         });
       });
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
 });

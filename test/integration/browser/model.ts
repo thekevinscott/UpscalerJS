@@ -10,6 +10,11 @@ import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import path from 'path';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -60,7 +65,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "esrgan-legacy/gans/result.png", 'diff.png');
+    checkImage(result, path.resolve(ESRGAN_LEGACY_DIR, "gans/result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
@@ -70,7 +75,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {
@@ -83,7 +88,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
@@ -96,7 +101,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   it('clips a model that returns out of bound numbers when returning a base64 string src', async () => {
@@ -165,7 +170,7 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(window['flower']);
           }, [packageName, esmName]);
-          checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          checkImage(result, path.resolve(MODELS_DIR, packageName, esmName, "result.png"), 'diff.png');
         });
       });
     });
@@ -204,7 +209,7 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
           }, [umdName]);
-          checkImage(result, `${packageName}/${esmName}/result.png`, 'diff.png');
+          checkImage(result, path.resolve(MODELS_DIR, packageName, esmName, "result.png"), 'diff.png');
         });
       });
     });

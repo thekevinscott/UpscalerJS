@@ -71,6 +71,19 @@ const TS_CONFIG_UMD = {
  */
 const writeFile = (name: string, data: string) => fs.writeFile(name, data);
 
+const createNpmIgnore = () => [
+  'src',
+  'yarn-error.log',
+  'node_modules',
+  'test',
+].join('\n');
+
+const createGitIgnore = () => [
+  'dist',
+  'node_modules',
+  '*.generated.ts',
+].join('\n');
+
 const createLicense = () => `
 MIT License
 
@@ -188,6 +201,8 @@ const createNewModelFolder = async (name: string, description: string, UMDName: 
   ]);
   await Promise.all([
     ['LICENSE', createLicense()],
+    ['.npmignore', createNpmIgnore()],
+    ['.gitignore', createGitIgnore()],
     ['package.json', createPackageJSON(name, description)],
     ['tsconfig.cjs.json', JSON.stringify(TS_CONFIG_CJS, null, 2)],
     ['tsconfig.esm.json', JSON.stringify(TS_CONFIG_ESM, null, 2)],

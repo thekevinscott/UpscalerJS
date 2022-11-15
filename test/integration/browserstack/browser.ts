@@ -10,7 +10,10 @@ import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { BrowserOption, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = true;
 const PORT = 8099;
@@ -84,7 +87,7 @@ describe('Browser Integration Tests', () => {
       });
 
       printLogs(driver, capabilities);
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
 });

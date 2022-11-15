@@ -6,12 +6,15 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-const FIXTURES_PATH = path.resolve(__dirname, '../../__fixtures__');
-const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small-15.jpg');
-const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_PATH, 'flower-small.png');
-const MODEL_PATH = 'file://' + path.join(FIXTURES_PATH, 'pixelator/pixelator.json');
-const EXPECTED_UPSCALED_IMAGE_15 = 'pixel-upsampler/4x/result-15.png';
-const EXPECTED_UPSCALED_IMAGE_16 = 'pixel-upsampler/4x/result.png';
+import { FIXTURES_DIR, MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small-15.jpg');
+const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small.png');
+const MODEL_PATH = 'file://' + path.join(FIXTURES_DIR, 'pixelator/pixelator.json');
+
+const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result-15.png');
+const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.png');
 const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 // TODO: How to import this, instead of copying it?
@@ -178,7 +181,7 @@ describe('Node Image Loading Integration Tests', () => {
     it("throws if string provided is an invalid image", async () => {
       await expect(() => testRunner.run({
         globals: {
-          image: JSON.stringify(path.resolve(FIXTURES_PATH, 'bad-image.png')),
+          image: JSON.stringify(path.resolve(FIXTURES_DIR, 'bad-image.png')),
         },
       })).rejects.toThrow();
     });

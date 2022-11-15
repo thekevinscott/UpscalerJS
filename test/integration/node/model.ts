@@ -4,6 +4,10 @@ import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'esrgan-legacy/test/__fixtures__');
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -59,7 +63,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "esrgan-legacy/gans/result.png", 'diff.png');
+    checkImage(formattedResult, path.resolve(ESRGAN_LEGACY_DIR, "gans/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via file:// path", async () => {
@@ -73,7 +77,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   describe('Test specific model implementations', () => {
@@ -97,7 +101,7 @@ describe('Node Model Loading Integration Tests', () => {
 
             expect(result).not.toEqual('');
             const formattedResult = `data:image/png;base64,${result}`;
-            checkImage(formattedResult, `${packageName}/${cjsName}/result.png`, `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
+            checkImage(formattedResult, path.resolve(MODELS_DIR, packageName, cjsName, "result.png"), `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
           });
         });
       });

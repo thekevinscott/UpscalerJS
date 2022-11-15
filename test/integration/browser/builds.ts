@@ -4,10 +4,13 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import { prepareScriptBundleForESM, bundleWebpack, DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-webpack/prepare';
+import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const JEST_TIMEOUT_IN_SECONDS = 120;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
@@ -59,7 +62,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   it("upscales using a UMD build with a specified model", async () => {
@@ -72,7 +75,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   it("upscales using an ESM build using Webpack", async () => {
@@ -90,7 +93,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 });
 
