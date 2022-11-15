@@ -141,7 +141,7 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
 
 const npmPack = async (src: string, { verbose }: Opts = {}): Promise<string> => {
   let outputName = '';
-  await callExec(`npm pack ${verbose ? '' : '--quiet'}`, {
+  await callExec(`npm pack --ignore-scripts ${verbose ? '' : '--quiet'}`, {
     cwd: src,
   }, chunk => {
     outputName = chunk;
