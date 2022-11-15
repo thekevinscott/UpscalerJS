@@ -81,6 +81,7 @@ importers:
       typescript: ^4.8.3
       uglify-js: ^3.16.2
       upscaler: workspace:*
+      vite: ^3.1.5
       webpack: ^5.73.0
       yargs: ^17.5.1
     devDependencies:
@@ -156,6 +157,7 @@ importers:
       typescript: 4.8.3
       uglify-js: 3.16.2
       upscaler: link:packages/upscalerjs
+      vite: 3.1.5
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
       yargs: 17.5.1
 
