@@ -3,6 +3,9 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForNodeCJS, GetScriptContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -66,7 +69,7 @@ describe('Node Platforms Integration Tests', () => {
         },
       });
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
 });

@@ -2,14 +2,18 @@ import path from 'path';
 import fs from 'fs-extra';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
+import { TMP_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { PNG } from 'pngjs';
 
-const ROOT = path.resolve(__dirname, '../../../');
+const TEST_OUTPUT_DIR = path.resolve(TMP_DIR, 'test-output');
 
 // 0.10 works for browser; 0.12 for node.
 const THRESHOLD = 0.12;
 
 export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: string, upscaledSrc?: string) => {
+  if (!fixtureSrc.startsWith('/')) {
+    throw new Error('Fixture src paths must now be absolute');
+  }
   if (typeof(src) !== 'string') {
     throw new Error(`Type of src is not string. src: ${JSON.stringify(src)}`)
   }
@@ -54,7 +58,7 @@ export const checkImage = (src: string | any, fixtureSrc: string, diffSrc: strin
 }
 
 const writeImage = (pathToImage: string, contents: PNG) => {
-  const fullPathToImage = path.resolve(ROOT, 'test-output', pathToImage);
-  fs.mkdirpSync(path.resolve(ROOT, fullPathToImage, '..'));
+  const fullPathToImage = path.resolve(TEST_OUTPUT_DIR, pathToImage);
+  fs.mkdirpSync(path.resolve(ROOT_DIR, fullPathToImage, '..'));
   fs.writeFileSync(fullPathToImage, PNG.sync.write(contents));
 }

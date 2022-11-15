@@ -6,6 +6,10 @@ import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/p
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { BASE64, Progress } from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import path from 'path';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = false;
 const JEST_TIMEOUT = 60 * 1000;
@@ -50,7 +54,7 @@ describe('Upscale Integration Tests', () => {
       });
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
   describe('Cancel', () => {
@@ -203,7 +207,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate(() => {
         return window['upscaler'].upscale(window['flower']);
       });
-      checkImage(result, "pixel-upsampler/4x/result.png", 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
 
@@ -250,7 +254,7 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(typeof rate).toEqual('number');
-      checkImage(slice, "pixel-upsampler/4x/slice-patchsize-12-padding-2.png", 'diff.png');
+      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/slice-patchsize-12-padding-2.png"), 'diff.png');
     });
 
     it("calls back to progress with a tensor", async () => {
