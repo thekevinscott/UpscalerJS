@@ -80,9 +80,9 @@ describe('Node Model Loading Integration Tests', () => {
     checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
-  describe.only('Test specific model implementations', () => {
-    const SPECIFIC_PACKAGE: string | undefined = 'esrgan-medium';
-    const SPECIFIC_MODEL: string | undefined = '2x';
+  describe('Test specific model implementations', () => {
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
     getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
@@ -90,7 +90,6 @@ describe('Node Model Loading Integration Tests', () => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
             const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
-            console.log(importPath);
             const result = await testRunner.run({
               dependencies: {
                 customModel: importPath,
@@ -99,7 +98,6 @@ describe('Node Model Loading Integration Tests', () => {
                 model: 'customModel',
               }
             });
-            console.log(result);
 
             expect(result).not.toEqual('');
             const formattedResult = `data:image/png;base64,${result}`;

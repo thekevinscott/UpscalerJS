@@ -129,9 +129,10 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
 }
 
 const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, opts: Opts = {}) => {
+  const timeoutTime = 12000;
   const timer = setTimeout(() => {
-    console.log(`It is taking a long time to install the local package ${localNameForPackage}`);
-  }, 10000);
+    console.log(`It is taking over ${timeoutTime}ms to install the local package ${localNameForPackage}`);
+  }, timeoutTime);
   await installLocalPackage(src, dest, opts);
   clearTimeout(timer);
   const packageJSON = getPackageJSON(dest)
