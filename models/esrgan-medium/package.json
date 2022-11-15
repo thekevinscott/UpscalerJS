@@ -4,20 +4,20 @@
   "description": "ESRGAN Medium Model for Upscaler.js",
   "exports": {
     "./2x": {
-      "require": "./dist/cjs/models/2x.js",
-      "import": "./dist/esm/models/2x.js"
+      "require": "./dist/cjs/2x.js",
+      "import": "./dist/esm/2x.js"
     },
     "./3x": {
-      "require": "./dist/cjs/models/3x.js",
-      "import": "./dist/esm/models/3x.js"
+      "require": "./dist/cjs/3x.js",
+      "import": "./dist/esm/3x.js"
     },
     "./4x": {
-      "require": "./dist/cjs/models/4x.js",
-      "import": "./dist/esm/models/4x.js"
+      "require": "./dist/cjs/4x.js",
+      "import": "./dist/esm/4x.js"
     },
     "./8x": {
-      "require": "./dist/cjs/models/8x.js",
-      "import": "./dist/esm/models/8x.js"
+      "require": "./dist/cjs/8x.js",
+      "import": "./dist/esm/8x.js"
     },
     ".": {
       "require": "./dist/cjs/index.js",
