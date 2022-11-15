@@ -1,6 +1,6 @@
 import Upscaler from '../../packages/upscalerjs/src/index';
 import model from '../../models/esrgan-thick/src/8x';
-import flower from './flower.png';
+import flower from './flower-small.png';
 import * as tf from '@tensorflow/tfjs';
 const MODEL = '/models/esrgan-thick/models/8x/model.json';
 
