@@ -101,7 +101,7 @@ describe('Node Model Loading Integration Tests', () => {
 
             expect(result).not.toEqual('');
             const formattedResult = `data:image/png;base64,${result}`;
-            checkImage(formattedResult, path.resolve(MODELS_DIR, packageName, cjsName, "result.png"), `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
+            checkImage(formattedResult, path.resolve(MODELS_DIR, packageName, cjsName, "test/__fixtures__/result.png"), `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
           });
         });
       });
