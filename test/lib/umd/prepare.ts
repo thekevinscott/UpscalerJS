@@ -1,10 +1,9 @@
-import fs from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { mkdirpSync } from 'fs-extra';
+import { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } from 'fs-extra';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const UMD_ROOT = path.join(__dirname);
@@ -22,7 +21,7 @@ const getContent = (scriptsToInclude: string[]) => `
   <body>
     <div id="output">Bootstrapping elements...</div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@${getTFJSVersion()}/dist/tf.min.js"></script>
-    ${scriptsToInclude.map(script => `<script src="/${script}"></script>`)}
+    ${scriptsToInclude.map(script => `<script src="${script}"></script>`)}
     <script src="/upscaler.min.js"></script>
     <img src="./flower-small.png" id="flower"/>
   </body>
@@ -31,7 +30,7 @@ const getContent = (scriptsToInclude: string[]) => `
 
 const copyFile = (source: string, dest: string) => {
   mkdirpSync(path.dirname(dest));
-  fs.writeFileSync(dest, fs.readFileSync(source, 'utf-8'));
+  writeFileSync(dest, readFileSync(source, 'utf-8'));
 };
 
 const getMinifiedFileName = (fileName: string) => {
@@ -47,7 +46,7 @@ const copyAllModels = () => {
     models.forEach(({ export: fileName }) => {
       const modelPath = path.resolve(MODELS_PATH, packageName, 'models', fileName);
       const destPath = path.resolve(DIST, 'models', packageName, 'models', fileName);
-      fs.copySync(modelPath, destPath);
+      copySync(modelPath, destPath);
     });
   });
 };
@@ -62,8 +61,9 @@ const getMinifiedScripts = () => {
       if (minifiedFileName === '..min.js') {
         throw new Error(`Bad minified file name: ${JSON.stringify(model)}`);
       }
-      copyFile(path.join(UMD_PATH, minifiedFileName), path.join(DIST, minifiedFileName));
-      return minifiedFileName;
+      const destPath = path.resolve(DIST, 'models', packageName, 'dist', minifiedFileName);
+      copyFile(path.join(UMD_PATH, minifiedFileName), destPath);
+      return `/models/${packageName}/dist/${minifiedFileName}`;
     }))
   }, [] as string[]);
 };
@@ -71,14 +71,14 @@ const getMinifiedScripts = () => {
 export const prepareScriptBundleForUMD = async () => {
   rimraf.sync(DIST);
   mkdirpSync(DIST);
-  fs.copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
+  copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
 
   copyAllModels();
 
   const scriptsToInclude = getMinifiedScripts();
 
   copyFixtures(DIST);
-  fs.writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude));
+  writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude));
 };
 
 export const mockCDN: MockCDN = (port, model, pathToModel) => [

@@ -86,7 +86,15 @@ describe('Node Model Loading Integration Tests', () => {
     getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
       describe(packageName, () => {
         const models = getAllAvailableModels(packageName);
-        models.filter(m => SPECIFIC_MODEL === undefined || m.esm === SPECIFIC_MODEL).forEach(({ cjs }) => {
+        models.filter(m => {
+          if (SPECIFIC_MODEL !== undefined) {
+            return m.esm === SPECIFIC_MODEL;
+          }
+          if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && m.cjs === "8x") {
+            return false;
+          }
+          return true;
+        }).forEach(({ cjs }) => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
             const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;

@@ -81,6 +81,7 @@ importers:
       typescript: ^4.8.3
       uglify-js: ^3.16.2
       upscaler: workspace:*
+      vite: ^3.1.5
       webpack: ^5.73.0
       yargs: ^17.5.1
     devDependencies:
@@ -156,6 +157,7 @@ importers:
       typescript: 4.8.3
       uglify-js: 3.16.2
       upscaler: link:packages/upscalerjs
+      vite: 3.1.5
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
       yargs: 17.5.1
 
@@ -214,6 +216,63 @@ importers:
       seedrandom: 3.0.5
 
   dev/public/models/esrgan-legacy:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-medium:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-slim:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-thick:
     specifiers:
       '@tensorflow/tfjs': ^4.0.0
       '@tensorflow/tfjs-core': ^4.0.0
@@ -419,6 +478,63 @@ importers:
       seedrandom: 3.0.5
 
   models/esrgan-legacy:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  models/esrgan-medium:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  models/esrgan-slim:
+    specifiers:
+      '@tensorflow/tfjs': ^4.0.0
+      '@tensorflow/tfjs-core': ^4.0.0
+      '@tensorflow/tfjs-layers': ^4.0.0
+      '@tensorflow/tfjs-node': ^4.0.0
+      '@tensorflow/tfjs-node-gpu': ^4.0.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.0.0
+      '@tensorflow/tfjs-layers': 4.0.0_hdmpc5coifabqk2ogondqkcwg4
+      '@tensorflow/tfjs-node': 4.0.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.0.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  models/esrgan-thick:
     specifiers:
       '@tensorflow/tfjs': ^4.0.0
       '@tensorflow/tfjs-core': ^4.0.0

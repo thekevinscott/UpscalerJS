@@ -151,10 +151,11 @@ const buildModels = async (
   }
 
   const start = performance.now();
-  await Promise.all(models.map(model => buildModel(model, outputFormats, opts)))
+  const durations = await Promise.all(models.map(model => buildModel(model, outputFormats, opts)))
   if (opts.verbose) {
     console.log(`Built models in ${performance.now() - start}`)
   }
+  return durations;
 }
 
 export default buildModels;
