@@ -8,6 +8,7 @@ import yargs from 'yargs';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
+import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
@@ -45,10 +46,12 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   browserstackAccessKey,
   skipBuild,
   skipModelBuild,
+  verbose,
 }: {
   browserstackAccessKey?: string;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
+  verbose?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
@@ -62,11 +65,15 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 
   if (skipModelBuild !== true) {
     const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, getOutputFormats(platform));
-    console.log([
-      `** built models: ${getOutputFormats(platform)}`,
-      ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-    ].join('\n'));
+    const durations = await buildModels(modelPackages, getOutputFormats(platform), {
+      verbose,
+    });
+    if (verbose) {
+      console.log([
+        `** built models: ${getOutputFormats(platform)}`,
+        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
+      ].join('\n'));
+    }
   }
   if (skipBuild !== true) {
     if (platform === 'browser') {
@@ -107,6 +114,7 @@ interface Args {
   kind?: string;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
+  verbose?: boolean;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -143,7 +151,8 @@ const getArgs = async (): Promise<Args> => {
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
-    kind: { type: 'string' }
+    kind: { type: 'string' },
+    verbose: { type: 'boolean' },
   }).argv;
   const platform = getPlatform(argv.platform);
   const runner = getRunner(argv.kind);
@@ -151,12 +160,16 @@ const getArgs = async (): Promise<Args> => {
   if (!Array.isArray(positionalArgs)) {
     positionalArgs = [positionalArgs];
   }
+
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
+
   return {
     ...argv,
     browserstackAccessKey: BROWSERSTACK_ACCESS_KEY,
     platform,
     runner,
     positionalArgs,
+    verbose: ifDefined('verbose', 'boolean'),
   }
 };
 
@@ -169,11 +182,13 @@ if (require.main === module) {
       skipModelBuild,
       positionalArgs,
       browserstackAccessKey,
+      verbose,
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
       browserstackAccessKey,
       skipBuild,
       skipModelBuild,
+      verbose,
     });
   })();
 }
