@@ -2,6 +2,7 @@ import Upscaler from '../../packages/upscalerjs/src/index';
 import model from '../../models/esrgan-thick/src/8x';
 import flower from './flower.png';
 import * as tf from '@tensorflow/tfjs';
+const MODEL = '/models/esrgan-thick/models/8x/model.json';
 
 const status = document.getElementById('status')!;
 
@@ -36,7 +37,7 @@ const makeImg = (path: string, label: string) => {
 
 (async () => {
   makeImg(flower, 'Original');
-  const model = getModel('/models/esrgan-thick/models/8x/model.json');
+  const model = getModel(MODEL);
   status.innerHTML = 'Starting';
   const upscaler = new Upscaler({
     model,
