@@ -88,6 +88,11 @@ const config = {
             position: 'left',
             label: 'Demo',
           },
+          {
+            to: '/models',
+            position: 'left',
+            label: 'Models',
+          },
           // {
           //   to: '/models',
           //   position: 'left',
