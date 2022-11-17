@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/docs",
-  "version": "0.12.0",
+  "version": "1.0.0-beta.8",
   "private": true,
   "scripts": {
     "build:dependencies": "pnpm --filter @upscalerjs/scripts build:model -a -o cjs -o esm -o umd && pnpm --filter upscaler build",

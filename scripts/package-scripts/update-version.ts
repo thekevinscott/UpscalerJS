@@ -75,15 +75,17 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
 
     const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
 
-    await Promise.all(packages.map(async packageKey => {
+    for (let i = 0; i < packages.length; i++) {
+      const packageKey = packages[i];
       const pkg = DIRECTORIES[packageKey];
       if (pkg === undefined) {
         throw new Error(`Package ${packageKey} is not defined.`);
       }
       const { multiple, directory } = pkg;
       const fn = multiple ? updateMultiplePackages : updateSinglePackage;
-      return await fn(directory, setVersionForPackageJSON, logger);
-    }));
+
+      await fn(directory, setVersionForPackageJSON, logger);
+    }
     if (updateDependencies) {
       const dependencyDirectories = [DIRECTORIES[EXAMPLES], DIRECTORIES[WRAPPER]];
       const dependencyUpdater: TransformPackageJsonFn = packageJSON => {
