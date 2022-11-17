@@ -54,7 +54,8 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
-  await Promise.all(files.map(async exportName => {
+  for (let i = 0; i < files.length; i++) {
+    const exportName = files[i];
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`);
@@ -86,7 +87,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     }], FILE_DIST);
 
     uglify(FILE_DIST, file);
-  }));
+  }
   rimraf.sync(TMP);
 };
 
@@ -126,11 +127,18 @@ const buildModel = async (
   rimraf.sync(DIST);
   await mkdirp(DIST);
 
-  await Promise.all([
-    outputFormats.includes('umd') ? buildUMD(MODEL_ROOT, opts) : undefined,
-    outputFormats.includes('cjs') ? buildCJS(MODEL_ROOT, opts) : undefined,
-    outputFormats.includes('esm') ? buildESM(MODEL_ROOT, opts) : undefined,
-  ])
+  const outputFormatFns = [
+    outputFormats.includes('umd') ? () => buildUMD(MODEL_ROOT, opts) : undefined,
+    outputFormats.includes('cjs') ? () => buildCJS(MODEL_ROOT, opts) : undefined,
+    outputFormats.includes('esm') ? () => buildESM(MODEL_ROOT, opts) : undefined,
+  ]
+
+  for (let i = 0; i < outputFormatFns.length; i++) {
+    const outputFormatFn = outputFormatFns[i];
+    if (outputFormatFn) {
+      await outputFormatFn();
+    }
+  }
 
   return performance.now() - start;
 }
