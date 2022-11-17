@@ -1,6 +1,5 @@
 import puppeteer, { Page } from 'puppeteer';
 import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
-import http from 'http';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
@@ -11,15 +10,6 @@ jest.retryTimes(0);
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
-
-// const stopServer = (server?: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
-//   if (server) {
-//     server.close(resolve);
-//   } else {
-//     console.warn('No server found')
-//     resolve();
-//   }
-// });
 
 // https://puppeteer.github.io/puppeteer/docs/10.0.0/puppeteer.page.queryobjects/#example
 const countObjects = async (page: Page, prototype: puppeteer.JSHandle): Promise<number> => {
