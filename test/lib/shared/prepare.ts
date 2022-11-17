@@ -81,7 +81,7 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
     const { src, name } = dependencies[i];
 
     if (opts.verbose) {
-      console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length}`);
+      console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length} total dependenc${dependencies.length === 1 ? 'y' : 'ies'}`);
     }
     const moduleFolder = path.resolve(NODE_MODULES, name);
     await installLocalPackageWithNewName(src, moduleFolder, name, opts);
@@ -167,7 +167,7 @@ const npmPack = async (src: string, { verbose }: Opts = {}): Promise<string> => 
 
 const pnpmPack = async (src: string, target: string, { verbose, }: Opts = {}): Promise<string> => {
   let outputName = '';
-  await callExec(`pnpm pack --ignore-scripts --pack-destination ${target} ${verbose === false ? '--silent' : ''}`, {
+  await callExec(`pnpm pack --pack-destination ${target} ${verbose === false ? '--silent' : ''}`, {
     cwd: src,
   }, chunk => {
     outputName = chunk;
@@ -273,7 +273,7 @@ const packAndTar = async (src: string, target: string, opts: Opts & { attempts?:
     const pathToPackedFile = await (usePNPM ? pnpmPack(src, target, opts) : npmPack(src, opts));
     return unTar(target, pathToPackedFile);
   } catch (err: unknown) {
-    if (attempts >= MAX_ATTEMPTS - 1) {
+    if (attempts >= MAX_ATTEMPTS) {
       throw new Error(`Failed to pack and tar after ${attempts} attempts ${err instanceof Error ? `Error message: ${err.message}` : ''}`);
     }
 
