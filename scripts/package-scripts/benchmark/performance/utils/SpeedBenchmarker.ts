@@ -98,14 +98,32 @@ export class SpeedBenchmarker extends Benchmarker {
         const models = await modelPackage.getModels(modelNames);
         for (const model of models) {
           let toShow: undefined | [Device, number][] = undefined;
+          if (model.name === './8x') {
+            continue;
+          }
           for (const device of this.devices) {
-            const measurements = await SpeedMeasurement.findAll({
-              where: {
+            const results = await sequelize.query<{ cnt: number }>(`
+              SELECT COUNT(1) as cnt
+              FROM SpeedMeasurements m 
+              LEFT JOIN UpscalerModels um ON um.id = m.UpscalerModelId 
+              LEFT JOIN Devices d ON d.id = m.DeviceId
+              WHERE 1=1
+              AND d.id = :DeviceId
+              AND um.id = :UpscalerModelId
+              GROUP BY um.id, d.id
+              ;
+          `, {
+              type: QueryTypes.SELECT,
+              replacements: Device.getCapabilitiesForQuery({
                 DeviceId: device.id,
                 UpscalerModelId: model.id,
-              },
+              }),
             });
-            const measurementsLength = measurements?.length || 0;
+            if (results.length > 1) {
+              throw new Error('Invalid results, should not be more than one')
+            }
+
+            const { cnt: measurementsLength = 0 } = results[0] || {};
             if (measurementsLength < times) {
               if (firstSeen === false) {
                 firstSeen = true;
@@ -116,6 +134,7 @@ export class SpeedBenchmarker extends Benchmarker {
               }
               const iterationsToAdd = times - measurementsLength;
               toShow.push([device, iterationsToAdd]);
+              // console.log('Missing iterations for', model.name, measurementsLength, 'exist', 'need', times, 'adding', iterationsToAdd);
               for (let i = 0; i < iterationsToAdd; i++) {
                 iterations.push({ device, modelPackage, model });
               }
@@ -141,6 +160,9 @@ export class SpeedBenchmarker extends Benchmarker {
         }
       }
     }
+    // iterations.forEach(i => {
+    //   console.log(i.modelPackage.name, i.model.name)
+    // })
     const bar = new ProgressBar(iterations.length);
     const ATTEMPTS = 3;
     const setupAndGetDriver = async (capabilities: BrowserOption, attempts = 0): Promise<webdriver.ThenableWebDriver> => {
@@ -157,12 +179,13 @@ export class SpeedBenchmarker extends Benchmarker {
           console.error('Could not set up device with capabilities, and bsLocal is no longer running', capabilities, err);
         }
         const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
-        await startBrowserstack(BROWSERSTACK_ACCESS_KEY);
+        console.log('attempt to start browser stack')
+        await startBrowserstack(BROWSERSTACK_ACCESS_KEY, this.bsLocal);
+        console.log('started browserstack')
         return await setupAndGetDriver(capabilities, attempts + 1);
       }
     }
-    const progress = async (_i: number) => {
-      const i = Math.floor(_i / times);
+    const progress = async (i: number) => {
       const {
         device,
         modelPackage,
@@ -179,13 +202,34 @@ export class SpeedBenchmarker extends Benchmarker {
           const { upscaleDurations: durations } = await benchmarkDevice(driver, capabilities, { packageName: modelPackage.name, modelName }, times);
           bar.update();
           if (durations && Array.isArray(durations)) {
+            console.log('\nINSERT', durations.length, 'entries for', device.device, 'and', model.name, 'and', modelPackage.name)
             for (const duration of durations) {
-              await SpeedMeasurement.create({
-                value: duration,
-                size: SIZE,
-                UpscalerModelId: model.id,
-                DeviceId: device.id,
-              });
+              await sequelize.query(`
+                INSERT INTO SpeedMeasurements
+                (value, size, UpscalerModelId, DeviceId, createdAt, updatedAt)
+                values
+                (
+                  :value,
+                  :size,
+                  :UpscalerModelId,
+                  :DeviceId,
+                  DateTime('now'),
+                  DateTime('now')
+                )
+              `, {
+                replacements: {
+                  value: duration,
+                  size: SIZE,
+                  UpscalerModelId: model.id,
+                  DeviceId: device.id,
+                }
+              })
+              // await SpeedMeasurement.create({
+              //   value: duration,
+              //   size: SIZE,
+              //   UpscalerModelId: model.id,
+              //   DeviceId: device.id,
+              // });
             }
           } else {
             console.error('Durations returned was not an array', durations, capabilities, modelPackage.name, modelName,);

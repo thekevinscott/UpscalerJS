@@ -93,7 +93,10 @@ export const startBrowserstack = async (key?: string, bs?: browserstack.Local): 
     throw new Error('A key must be passed to start up the local browserstack service');
   }
   if (!bs) {
+    console.log('Start browserstack with a branch new object')
     bs = new browserstack.Local();
+  } else {
+    console.log('Start browserstack with an existing object')
   }
   bs.start({
     key,
@@ -107,6 +110,7 @@ export const startBrowserstack = async (key?: string, bs?: browserstack.Local): 
     if (!bs || bs.isRunning() !== true) {
       throw new Error('Browserstack failed to start');
     }
+    console.log('Browserstack started');
     resolve(bs);
   });
 });

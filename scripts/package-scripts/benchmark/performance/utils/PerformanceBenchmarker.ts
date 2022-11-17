@@ -14,6 +14,7 @@ import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
 import { Benchmarker } from "./Benchmarker";
+import { Package } from './Package';
 
 const AGGREGATED_RESULTS_NAME = 'performance_aggregated_results';
 
@@ -383,7 +384,24 @@ export class PerformanceBenchmarker extends Benchmarker {
   }
 
   async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[]): Promise<BenchmarkedResult[]> {
-    const packages = this.modelPackages;
+    const modelResults: {
+      name: string;
+      packageName: string;
+    }[] = await sequelize.query(`
+      SELECT 
+      um.name as name,
+      p.name as packageName
+      FROM UpscalerModels um
+      LEFT JOIN packages p ON p.id = um.PackageId
+    `, {
+      type: QueryTypes.SELECT,
+    });
+    const packagesSet = new Set();
+    const modelsSet = new Set();
+    modelResults.forEach(({ name, packageName }) => {
+      packagesSet.add(packageName);
+      modelsSet.add(name);
+    });
 
     const tableDivider = '___';
     const getTableName = (datasetName: string, metricName: string) => [metricName, datasetName].join(tableDivider);
@@ -428,19 +446,15 @@ export class PerformanceBenchmarker extends Benchmarker {
                     
           GROUP BY r.UpscalerModelId;
       `;
-    let queryModelNames: string[] = [];
-    for (const pkg of packages) {
-      const models = await pkg.getModels(modelNames);
-      queryModelNames = queryModelNames.concat(models.map(m => m.name));
-    }
     const results: Record<string, string | number>[] = await sequelize.query(query, {
       replacements: {
         cropKey,
-        packageNames: packages.map(p => p.name),
-        modelNames: queryModelNames,
+        packageNames: Array.from(packagesSet),
+        modelNames: Array.from(modelsSet),
       },
       type: QueryTypes.SELECT,
     });
+
 
     return results.map(({
       packageName,
