@@ -601,7 +601,7 @@ importers:
 
   packages/upscalerjs-wrapper:
     specifiers:
-      upscaler: 1.0.0-beta.7
+      upscaler: 1.0.0-beta.8
     dependencies:
       upscaler: link:../upscalerjs
 

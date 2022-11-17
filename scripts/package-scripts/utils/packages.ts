@@ -36,7 +36,7 @@ export const DIRECTORIES: Record<string, { directory: string, multiple?: boolean
   [CORE]: { directory: CORE_DIR },
   [MODELS]: { directory: MODELS_DIR, multiple: true },
   [EXAMPLES]: { directory: EXAMPLES_DIR, multiple: true },
-  [TEST]: { directory: path.resolve(TEST_DIR, 'test/lib'), multiple: true },
+  [TEST]: { directory: TEST_DIR, multiple: true },
   [WRAPPER]: { directory: WRAPPER_DIR },
   [DEV]: { directory: DEV_DIR },
   [DOCS]: { directory: DOCS_DIR, multiple: true },
