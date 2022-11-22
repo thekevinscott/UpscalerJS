@@ -53,16 +53,18 @@ export interface BenchmarkedSpeedResult {
 
 export class SpeedBenchmarker extends Benchmarker {
   modelPackages: Package[] = [];
-  bsLocal: Local;
-  server: http.Server;
-  screenshotDir: string;
+  bsLocal?: Local;
+  server?: http.Server;
+  screenshotDir?: string;
 
-  constructor(bsLocal: Local, server: http.Server, screenshotDir: string) {
+  constructor(bsLocal?: Local, server?: http.Server, screenshotDir?: string) {
     super();
     this.bsLocal = bsLocal;
     this.server = server;
     this.screenshotDir = screenshotDir;
-    mkdirpSync(screenshotDir);
+    if (screenshotDir) {
+      mkdirpSync(screenshotDir);
+    }
   }
 
   async initialize() {
@@ -166,6 +168,9 @@ export class SpeedBenchmarker extends Benchmarker {
     const bar = new ProgressBar(iterations.length);
     const ATTEMPTS = 3;
     const setupAndGetDriver = async (capabilities: BrowserOption, attempts = 0): Promise<webdriver.ThenableWebDriver> => {
+      if (!this.bsLocal) {
+        throw new Error('No bs local was set');
+      }
       if (attempts > ATTEMPTS) {
         throw new Error(`Could not get driver after ${ATTEMPTS} attempts`);
       }
@@ -304,7 +309,7 @@ export class SpeedBenchmarker extends Benchmarker {
   }
 }
 
-const setupDriver = async (capabilities: BrowserOption, screenshotDir: string) => {
+const setupDriver = async (capabilities: BrowserOption, screenshotDir?: string) => {
   const driver = getDriver(capabilities);
   const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
   await driver.get(ROOT_URL);
@@ -317,7 +322,9 @@ const setupDriver = async (capabilities: BrowserOption, screenshotDir: string) =
     }, 3000);
   } catch (err) {
     const deviceName = [capabilities.browserName, capabilities.device, capabilities.os_version, capabilities.browser_version].filter(Boolean).join('-').split(' ').join('-').toLowerCase();
-    await takeScreenshot(driver, path.resolve(screenshotDir, `${deviceName}.png`));
+    if (screenshotDir) {
+      await takeScreenshot(driver, path.resolve(screenshotDir, `${deviceName}.png`));
+    }
     throw new Error(`Could not find title that ends with "| Loaded". Title found was ${title} for url ${ROOT_URL}`);
   }
   return driver;

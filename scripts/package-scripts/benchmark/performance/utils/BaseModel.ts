@@ -10,18 +10,23 @@ export class BaseModel extends Model {
       if (verbose) {
         console.log('row', row)
       }
-      const fetchedIds = await sequelize.query<{ id: number }>(query, {
-        replacements: replacements(options),
-        type: QueryTypes.SELECT,
-      });
-      if (verbose) {
-        console.log('fetched ids', fetchedIds)
+      try {
+        const fetchedIds = await sequelize.query<{ id: number }>(query, {
+          replacements: replacements(options),
+          type: QueryTypes.SELECT,
+        });
+        if (verbose) {
+          console.log('fetched ids', fetchedIds)
+        }
+        if (fetchedIds.length === 0) {
+          throw new Error(`No rows found for query ${query} with parameters ${replacements}`)
+        }
+        row.setId(fetchedIds[0].id);
+        return row as T;
+      } catch (err) {
+        console.log(query, replacements(options));
+        throw err;
       }
-      if (fetchedIds.length === 0) {
-        throw new Error(`No rows found for query ${query} with parameters ${replacements}`)
-      }
-      row.setId(fetchedIds[0].id);
-      return row as T;
     }
   }
 

@@ -75,51 +75,55 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts) => {
-  if (opts.skipBundle !== true) {
-    if (opts.verbose) {
-      console.log('bundling')
+const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, resultsOnly?: boolean) => {
+  if (resultsOnly === true) {
+      await fn();
+  } else {
+    if (opts.skipBundle !== true) {
+      if (opts.verbose) {
+        console.log('bundling')
+      }
+      await bundle({
+        ...opts,
+        usePNPM: useNPM !== true,
+      });
     }
-    await bundle({
-      ...opts,
-      usePNPM: useNPM !== true,
-    });
-  }
-  if (opts.verbose) {
-    console.log('Starting local browserstack and local server');
-  }
-  const [bsLocal, server] = await Promise.all([
-    startBrowserstack(),
-    startServer(PORT, DIST),
-  ]);
-  if (opts.verbose) {
-    console.log('Successfully started local browserstack and local server')
-  }
+    if (opts.verbose) {
+      console.log('Starting local browserstack and local server');
+    }
+    const [bsLocal, server] = await Promise.all([
+      startBrowserstack(),
+      startServer(PORT, DIST),
+    ]);
+    if (opts.verbose) {
+      console.log('Successfully started local browserstack and local server')
+    }
 
-  const closeAll = async () => await Promise.all([
-    bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
-    closeServer(server),
-  ])
+    const closeAll = async () => await Promise.all([
+      bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
+      closeServer(server),
+    ])
 
-  process.on('exit', closeAll);
+    process.on('exit', closeAll);
 
-  let err: unknown;
-  try {
-    await fn(bsLocal, server);
-  } catch(error: unknown) {
-    err = error;
-  }
+    let err: unknown;
+    try {
+      await fn(bsLocal, server);
+    } catch (error: unknown) {
+      err = error;
+    }
 
-  if (opts.verbose) {
-    console.log('Closing local browserstack and local server');
-  }
-  await closeAll();
-  if (opts.verbose) {
-    console.log('Successfully closed local browserstack and local server');
-  }
-  if (err !== undefined) {
-    console.error(err);
-    process.exit(1);
+    if (opts.verbose) {
+      console.log('Closing local browserstack and local server');
+    }
+    await closeAll();
+    if (opts.verbose) {
+      console.log('Successfully closed local browserstack and local server');
+    }
+    if (err !== undefined) {
+      console.error(err);
+      process.exit(1);
+    }
   }
 };
 
@@ -176,15 +180,11 @@ const display = (results: BenchmarkedSpeedResult[]) => {
   console.log(table.toString());
 }
 
-const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
-  if (_results.length === 0) {
+const saveResults = async (results: BenchmarkedSpeedResult[]) => {
+  if (results.length === 0) {
     throw new Error('No results found');
   }
 
-  const results = _results.map(result => ({
-    ...result,
-    deviceIsRealMobile: result.deviceIsRealMobile ? '1' : '0',
-  }));
 
   const queries = [
     ...[
@@ -193,11 +193,11 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
       'devices',
       'results',
     ].map(table => `DROP TABLE IF EXISTS ${table}`),
-    `CREATE TABLE IF NOT EXISTS packages (
+    `CREATE TABLE packages (
       id INTEGER PRIMARY KEY,
       name TEXT NOT NULL UNIQUE
     )`,
-    `CREATE TABLE IF NOT EXISTS models (
+    `CREATE TABLE models (
       id INTEGER PRIMARY KEY,
       packageId INTEGER NOT NULL,
       name TEXT NOT NULL,
@@ -205,16 +205,16 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
       meta JSON NOT NULL,
       UNIQUE(packageId, name)
     )`,
-    `CREATE TABLE IF NOT EXISTS devices (
+    `CREATE TABLE devices (
       id INTEGER PRIMARY KEY,
       os TEXT,
       os_version TEXT,
       browserName TEXT,
       browser_version TEXT,
       device TEXT,
-      real_mobile BOOLEAN
+      real_mobile TEXT
     )`,
-    `CREATE TABLE IF NOT EXISTS results (
+    `CREATE TABLE results (
       id INTEGER PRIMARY KEY,
       value REAL NOT NULL,
       times REAL NOT NULL,
@@ -282,6 +282,15 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
   for (const [_, {
     device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
   }] of devices) {
+    const replacements = Device.getCapabilitiesForQuery({
+      os: deviceOs,
+      os_version: deviceOsVersion,
+      browserName: deviceBrowserName,
+      browser_version: deviceBrowserVersion,
+      device,
+      real_mobile: deviceIsRealMobile,
+    });
+    replacements.real_mobile = replacements.real_mobile ? 'y' : 'n;'
     await sequelize.query(`
       INSERT INTO devices
       (
@@ -302,14 +311,7 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
         :real_mobile
       )
       `, {
-        replacements: Device.getCapabilitiesForQuery({
-          os: deviceOs,
-          os_version: deviceOsVersion,
-          browserName: deviceBrowserName,
-          browser_version: deviceBrowserVersion,
-          device,
-          real_mobile: deviceIsRealMobile,
-        }),
+        replacements,
         type: QueryTypes.INSERT,
     });
   }
@@ -346,10 +348,10 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
           ${deviceBrowserName ? 'AND d.browserName = :browserName' : ''}
           ${deviceBrowserVersion ? 'AND d.browser_version = :browser_version' : ''}
           ${device ? 'AND d.device = :device' : ''}
-          ${deviceIsRealMobile ? 'AND d.real_mobile = :real_mobile' : ''}
         )
       )
       `, {
+          // ${deviceIsRealMobile ? 'AND d.real_mobile = :real_mobile' : ''}
       replacements: {
         value: duration,
         times,
@@ -361,7 +363,7 @@ const saveResults = async (_results: BenchmarkedSpeedResult[]) => {
         os_version: deviceOsVersion, 
         browserName: deviceBrowserName, 
         browser_version: deviceBrowserVersion, 
-        real_mobile: deviceIsRealMobile,
+        // real_mobile: deviceIsRealMobile,
       },
       type: QueryTypes.INSERT,
     });
@@ -482,7 +484,7 @@ const benchmarkSpeed = async (
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
   }
-}, opts);
+}, opts, resultsOnly);
 
 /****
  * Functions to expose the main function as a CLI tool

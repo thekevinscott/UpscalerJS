@@ -14,9 +14,9 @@ export class UpscalerModel extends Model {
   declare name: string;
   declare scale: number;
   declare meta: Record<string, any>;
-  declare packageId: number;
+  declare packageId?: number;
 
-  _upscaler?: _Upscaler;
+  // _upscaler?: _Upscaler;
   _modelDefinition?: ModelDefinition;
   _package?: Package;
 
@@ -28,17 +28,17 @@ export class UpscalerModel extends Model {
     return this._modelDefinition;
   }
 
-  get upscaler(): _Upscaler {
-    if (!this._upscaler) {
-      throw new Error(`No upscaler set for model ${this.name}, ${JSON.stringify(this.meta)}`);
-    }
+  // get upscaler(): _Upscaler {
+  //   if (!this._upscaler) {
+  //     throw new Error(`No upscaler set for model ${this.name}, ${JSON.stringify(this.meta)}`);
+  //   }
 
-    return this._upscaler;
-  }
+  //   return this._upscaler;
+  // }
 
-  set upscaler(upscaler: _Upscaler) {
-    this._upscaler = upscaler;
-  }
+  // set upscaler(upscaler: _Upscaler) {
+  //   this._upscaler = upscaler;
+  // }
   set modelDefinition(modelDefinition: ModelDefinition) {
     this._modelDefinition = modelDefinition;
   }
@@ -47,9 +47,12 @@ export class UpscalerModel extends Model {
     return new Promise<Package>(async (resolve) => {
       if (!this._package) {
         const packageId = this.packageId;
+        if (!packageId) {
+          throw new Error(`No package id set for model ${this.name}`);
+        }
         const pkg = await Package.findOne({
           where: {
-            packageId,
+            id: packageId,
           },
         });
         if (pkg === null) {
@@ -61,6 +64,12 @@ export class UpscalerModel extends Model {
     });
   }
 
+  async getUpscaler(tf: TF, useGPU = false) {
+    const pkg = await this.package;
+    const packageName = pkg.name;
+    return UpscalerModel.getUpscaler(tf, packageName, this.name, useGPU);
+  }
+
   static async getUpscaler(tf: TF, modelPackageName: string, modelName: string, useGPU = false): Promise<[_Upscaler, ModelDefinition]> {
     if (!modelPackageName) {
       throw new Error('Model package name must be provided')
@@ -69,8 +78,7 @@ export class UpscalerModel extends Model {
       throw new Error('Model name must be provided')
     }
     const modelPackageFolder = path.resolve(MODELS_DIR, modelPackageName);
-    const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
-    const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, exports, useGPU);
+    const upscaler = await getUpscalerFromExports(tf, modelPackageFolder, modelName, useGPU);
     if (!upscaler) {
       throw new Error();
     }
@@ -122,7 +130,8 @@ const getGlobalUpscaler = (useGPU?: boolean): typeof _Upscaler => {
   return LocalUpscaler;
 }
 
-const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: string, exports: Record<string, any>, useGPU = false) => {
+export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: string, useGPU = false) => {
+  const { exports } = JSON.parse(readFileSync(path.resolve(modelPackageFolder, 'package.json'), 'utf-8'));
   const Upscaler = getGlobalUpscaler(useGPU);
   const value = exports[key];
   if (typeof value === 'object') {
@@ -130,6 +139,7 @@ const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string, key: s
     const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
     const modelDefinitionFn = (await import(pathToModel)).default;
     const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
+
     const model = {
       // provide the explicit path to avoid going through the package discovery process (which
       // won't work because of pnpm's local linking)

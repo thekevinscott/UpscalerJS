@@ -3,7 +3,7 @@ import path from 'path';
 import { DatasetDefinition } from "./types";
 import { mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
 import { TF } from "./types";
-import { UpscalerModel } from "./UpscalerModel";
+import { getUpscalerFromExports, UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
 import { Image } from "./Image";
@@ -14,7 +14,7 @@ import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
 import { Benchmarker } from "./Benchmarker";
-import { Package } from './Package';
+import { MODELS_DIR } from '../../../utils/constants';
 
 const AGGREGATED_RESULTS_NAME = 'performance_aggregated_results';
 
@@ -59,7 +59,6 @@ export class PerformanceBenchmarker extends Benchmarker {
         })
       ));
 
-      await sequelize.query(`DROP VIEW IF EXISTS aggregated_results`);
       await sequelize.query(`DROP VIEW IF EXISTS ${AGGREGATED_RESULTS_NAME}`);
       await sequelize.query(`
         CREATE VIEW ${AGGREGATED_RESULTS_NAME}
@@ -86,9 +85,10 @@ export class PerformanceBenchmarker extends Benchmarker {
         WHERE 1=1
 
         GROUP BY 
-        m.name, 
-        d.name,
-        um.name,
+        m.id, 
+        d.id,
+        p.id,
+        um.id,
         i.cropSize
       `);
     }));
@@ -355,7 +355,7 @@ export class PerformanceBenchmarker extends Benchmarker {
   }
 
   private async upscale(tf: TF, model: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
-    const { upscaler } = model;
+    const [ upscaler ] = await model.getUpscaler(tf);
     const upscaledData = await upscaler.upscale(downscaled, {
       output: 'tensor',
       patchSize: 64,
@@ -383,7 +383,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     }
   }
 
-  async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[]): Promise<BenchmarkedResult[]> {
+  async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[], packageNames?: string[]): Promise<BenchmarkedResult[]> {
     const modelResults: {
       name: string;
       packageName: string;
@@ -393,8 +393,19 @@ export class PerformanceBenchmarker extends Benchmarker {
       p.name as packageName
       FROM UpscalerModels um
       LEFT JOIN packages p ON p.id = um.PackageId
+      WHERE 1=1
+      ${modelNames && modelNames.length ? `
+          AND um.name IN (:modelNames)
+` : ''}
+      ${packageNames && packageNames.length ? `
+          AND p.name IN (:packageNames)
+` : ''}
     `, {
       type: QueryTypes.SELECT,
+      replacements: {
+        packageNames,
+        modelNames,
+      },
     });
     const packagesSet = new Set();
     const modelsSet = new Set();

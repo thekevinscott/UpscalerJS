@@ -4,3 +4,4 @@ packages:
   - 'models/**'
   - 'scripts/**'
   - 'docs/**'
+  - 'scratch/**'

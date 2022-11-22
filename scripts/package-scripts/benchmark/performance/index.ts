@@ -331,8 +331,11 @@ const benchmarkPerformance = async (
     await benchmarker.benchmark(tf, packages, cropSize, n, models, DELAY);
   }
   mark('Results');
-  const results = await benchmarker.retrieveResults(metrics, cropSize, models);
-  console.log(results);
+  const results = await benchmarker.retrieveResults(metrics, cropSize, models, packages);
+  results.forEach(({ values, ...result }) => {
+    console.log(result)
+    console.log(values);
+  })
   if (skipDisplayResults !== true) {
     display(results);
   }
