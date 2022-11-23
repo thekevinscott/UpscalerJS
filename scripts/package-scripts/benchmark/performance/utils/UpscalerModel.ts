@@ -16,7 +16,7 @@ export class UpscalerModel extends Model {
   declare meta: Record<string, any>;
   declare packageId?: number;
 
-  // _upscaler?: _Upscaler;
+  _upscaler?: _Upscaler;
   _modelDefinition?: ModelDefinition;
   _package?: Package;
 
@@ -28,17 +28,17 @@ export class UpscalerModel extends Model {
     return this._modelDefinition;
   }
 
-  // get upscaler(): _Upscaler {
-  //   if (!this._upscaler) {
-  //     throw new Error(`No upscaler set for model ${this.name}, ${JSON.stringify(this.meta)}`);
-  //   }
+  get upscaler(): _Upscaler {
+    if (!this._upscaler) {
+      throw new Error(`No upscaler set for model ${this.name}, ${JSON.stringify(this.meta)}`);
+    }
 
-  //   return this._upscaler;
-  // }
+    return this._upscaler;
+  }
 
-  // set upscaler(upscaler: _Upscaler) {
-  //   this._upscaler = upscaler;
-  // }
+  set upscaler(upscaler: _Upscaler) {
+    this._upscaler = upscaler;
+  }
   set modelDefinition(modelDefinition: ModelDefinition) {
     this._modelDefinition = modelDefinition;
   }
