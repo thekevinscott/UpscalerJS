@@ -1,6 +1,5 @@
 import http from 'http';
 import puppeteer from 'puppeteer';
-import { BundleOpts, } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
@@ -12,6 +11,8 @@ const DEFAULT_PORT = 8098;
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
+
+const cachedBundles = new Set();
 
 export class BrowserTestRunner {
   trackTime: boolean;
@@ -27,6 +28,7 @@ export class BrowserTestRunner {
   private _name?: string;
   private _verbose?: boolean;
   private _usePNPM?: boolean;
+  private _cacheBundling?: boolean;
 
   constructor({
     name,
@@ -38,6 +40,7 @@ export class BrowserTestRunner {
     showWarnings = false,
     verbose = false,
     usePNPM = false,
+    cacheBundling = true,
   }: {
     name?: string;
     mockCDN?: MockCDN;
@@ -48,6 +51,7 @@ export class BrowserTestRunner {
     showWarnings?: boolean;
     verbose?: boolean;
     usePNPM?: boolean;
+    cacheBundling?: boolean;
   } = {}) {
     this._name = name;
     this.mockCDN = mockCDN;
@@ -58,6 +62,7 @@ export class BrowserTestRunner {
     this.log = log;
     this._verbose = verbose;
     this._usePNPM = usePNPM;
+    this._cacheBundling = cacheBundling;
   }
 
   /****
@@ -179,13 +184,21 @@ export class BrowserTestRunner {
   private _attachLogger() {
     if (this.log) {
       this.page.on('console', message => {
-        const text = message.text().trim();
-        if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          console.log('[404]', text);
-        } else if (!isIgnoredMessage(text)) {
-          console.log('[PAGE]', text);
+        const type = message.type();
+        const text = message.text();
+        if (!isIgnoredMessage(text)) {
+          console.log(`${type} ${text}`);
         }
-      });
+      })
+        .on('pageerror', ({ message }) => console.log(message))
+        .on('response', response => {
+          const status = response.status();
+          if (`${status}` !== `${200}`) {
+            console.log(`${status} ${response.url()}`);
+          }
+        })
+        .on('requestfailed', request =>
+          console.log(`${request.failure().errorText} ${request.url()}`))
     }
   }
 
@@ -255,10 +268,20 @@ export class BrowserTestRunner {
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     const opts = this._makeOpts();
+    const bundleIfNotCached = async () => {
+      if (
+        this._cacheBundling === false ||
+        (this._cacheBundling === true && cachedBundles.has(bundle.name) !== true)
+      ) {
+        await bundle(opts);
+      }
+      return this.startServer();
+    };
     await Promise.all([
-      bundle(opts).then(() => this.startServer()),
+      bundleIfNotCached(),
       this.startBrowser(),
     ]);
+    cachedBundles.add(bundle.name);
   }
 
   @timeit('afterAll clean up')

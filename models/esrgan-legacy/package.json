@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/esrgan-legacy",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.9",
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
     "./div2k/2x": {
@@ -34,7 +34,8 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-legacy",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd",
+    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-legacy"
   },
   "keywords": [
     "image super resolution",
@@ -45,6 +46,7 @@
     "esrgan"
   ],
   "files": [
+    "assets/**/*",
     "license",
     "models/**/*",
     "dist/**/*"

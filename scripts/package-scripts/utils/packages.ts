@@ -65,7 +65,7 @@ const defaultTransform: TransformPackageJsonFn = (packageJSON) => packageJSON;
 const defaultLogger: PackageUpdaterLogger = (file: string) => undefined;
 
 export const updateMultiplePackages = async (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
-  const packages = findAllPackages(dir);
+  const packages = findAllPackages(dir, [path.resolve(DOCS_DIR, 'assets')]);
   for (let i = 0; i < packages.length; i++) {
     const pkg = path.resolve(ROOT_DIR, packages[i]);
     await updateSinglePackage(pkg, transform, logger);

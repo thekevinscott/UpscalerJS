@@ -1,6 +1,6 @@
 import Upscaler from 'upscaler';
 import webdriver from 'selenium-webdriver';
-import { bundle, DIST } from '../../../../test/lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST } from '../../../../test/lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
@@ -83,7 +83,7 @@ const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server
       if (opts.verbose) {
         console.log('bundling')
       }
-      await bundle({
+      await bundleEsbuild({
         ...opts,
         usePNPM: useNPM !== true,
       });

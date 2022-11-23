@@ -1,7 +1,7 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { bundle, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -30,7 +30,7 @@ describe('Speed Integration Tests', () => {
   let pages: puppeteer.Page[] = [];
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundleEsbuild);
   }, 60000);
 
   afterAll(async function modelAfterAll() {

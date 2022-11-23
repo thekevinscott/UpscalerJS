@@ -9,7 +9,7 @@ import tar from 'tar';
 import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
-import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 /***
  * Types
@@ -35,6 +35,14 @@ export interface Import {
  */
 
 const CONCURRENT_ASYNC_THREADS = 1;
+
+const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, EXAMPLES_DIR]).map(packagePath => path.resolve(ROOT_DIR, packagePath)).reduce((map, packagePath) => {
+  const { name } = getPackageJSON(packagePath);
+  if (name) {
+    map.set(name, path.resolve(packagePath, '..'));
+  }
+  return map;
+}, new Map<string, string>());
 
 /***
  * Functions
@@ -118,12 +126,12 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
   const { localDependencies, remoteDependencies } = buildDependencyTree(dependencies);
 
   if (opts.verbose) {
-    console.log('Installing remote dependencies');
+    console.log('Installing remote dependencies', remoteDependencies);
   }
   await installRemoteDependencies(dest, remoteDependencies, opts);
 
   if (opts.verbose) {
-    console.log('Installing local dependencies');
+    console.log('Installing local dependencies', localDependencies);
   }
   await installLocalDependencies(dest, dependencies, localDependencies, opts);
 }
@@ -233,14 +241,9 @@ const getLocalAndRemoteDependencies = (dir: string) => {
 };
 
 const findMatchingFolder = (dependency: string): string => {
-  const packagePaths = findAllPackages(ROOT_DIR);
-
-  for (let i = 0; i < packagePaths.length; i++) {
-    const packagePath = path.resolve(ROOT_DIR, packagePaths[i]);
-    const { name } = getPackageJSON(packagePath);
-    if (name === dependency) {
-      return path.join(packagePath, '..');
-    }
+  const packagePath = PACKAGE_PATHS.get(dependency);
+  if (packagePath) {
+    return packagePath;
   }
 
   throw new Error(`Could not find local dependency ${dependency}`);

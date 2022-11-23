@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { BASE64, Progress } from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -29,7 +29,7 @@ describe('Upscale Integration Tests', () => {
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundleEsbuild);
   }, 60000);
 
   afterAll(async function modelAfterAll() {
@@ -48,7 +48,7 @@ describe('Upscale Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });
@@ -63,7 +63,7 @@ describe('Upscale Integration Tests', () => {
         const abortController = new AbortController();
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
           warmupSizes: [{
@@ -117,7 +117,7 @@ describe('Upscale Integration Tests', () => {
       const errMessage = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
           warmupSizes: [{
@@ -176,7 +176,7 @@ describe('Upscale Integration Tests', () => {
       const errMessage = await page().evaluate(() => new Promise(resolve => {
         window['upscaler'] = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
           warmupSizes: [{
@@ -216,7 +216,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -239,7 +239,7 @@ describe('Upscale Integration Tests', () => {
       const [rate, slice] = await page().evaluate((): Promise<[number, string]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -261,7 +261,7 @@ describe('Upscale Integration Tests', () => {
       const [rate, slice] = await page().evaluate((): Promise<[number, tf.Tensor]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -284,7 +284,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });

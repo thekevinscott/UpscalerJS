@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/default-model",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "ESRGAN Default Model for Upscaler.js",
   "exports": {
     ".": {
@@ -14,7 +14,8 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd"
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd",
+    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
   },
   "keywords": [
     "image super resolution",
@@ -25,6 +26,7 @@
     "esrgan"
   ],
   "files": [
+    "assets/**/*",
     "license",
     "src/**/*",
     "models/**/*",

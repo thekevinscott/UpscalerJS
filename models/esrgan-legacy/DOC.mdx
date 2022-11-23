@@ -1,0 +1,123 @@
+---
+title: ESRGAN Legacy
+description: Overview of @upscalerjs/esrgan-legacy model
+sidebar_position: 4
+sidebar_label: esrgan-legacy
+---
+
+# ESRGAN Legacy
+
+[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-legacy/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-legacy)
+
+ESRGAN Legacy is a package of Tensorflow.js models for upscaling images with UpscalerJS.
+
+This package contains the five models available in pre-`1.0.0` versions of UpscalerJS.
+
+## Samples + Demo
+
+Here are some examples of upscaled images using these models.
+
+import SampleTable from '@site/src/components/sampleTable/sampleTable';
+
+<SampleTable
+  packageName="esrgan-legacy"
+  models={[
+    'psnr-small',
+    'gans',
+    'div2k/2x',
+    'div2k/3x',
+    'div2k/4x',
+  ]}
+  scales={[
+    2,
+    4,
+    2,
+    3,
+    4,
+  ]}
+/>
+
+<iframe height="400" width="100%" src="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/models/esrgan-legacy/demo?file=index.js&title=@upscalerjs/esrgan-legacy"></iframe>
+
+
+## Installation
+
+```
+npm install @upscalerjs/esrgan-legacy
+```
+
+## Usage
+
+Import a model:
+
+```
+import Upscaler from 'upscaler';
+import gans from '@upscalerjs/esrgan-legacy/gans';
+
+const upscaler = new Upscaler({
+  model: gans,
+})
+```
+
+## Available Models
+
+ESRGAN Legacy ships with five models:
+
+- `GANS`: `@upscalerjs/esrgan-legacy/gans`
+- `psnr-small`: `@upscalerjs/esrgan-legacy/psnr-small`
+- `div2k/2x`: `@upscalerjs/esrgan-legacy/div2k/2x`
+- `div2k/3x`: `@upscalerjs/esrgan-legacy/div2k/3x`
+- `div2k/4x`: `@upscalerjs/esrgan-legacy/div2k/4x`
+
+All models are also exported via the root export:
+
+```
+import Upscaler from 'upscaler';
+import models from '@upscalerjs/esrgan-legacy';
+
+const upscaler = new Upscaler({
+  model: models.GANS,
+  // model: models.PSNRSmall,
+  // model: models.div2K2x,
+  // model: models.div2K3x,
+  // model: models.div2K4x,
+})
+```
+
+### GANS
+
+The `gans` model uses the [pretrained `gans` weights made available via the original Python repo](https://github.com/idealo/image-super-resolution#pre-trained-networks).
+
+### PSNR Small
+
+The `psnr-small` model uses the [pretrained `psnr-small` weights made available via the original Python repo](https://github.com/idealo/image-super-resolution#pre-trained-networks).
+
+### Div2k Models
+
+There are three Div2K models available in 2x, 3x, and 4x scales.
+
+These models were an initial attempt at training from scratch on the Div2K dataset. They've been surpassed in performance and speed by the other available models, and should be avoided if possible.
+
+## Performance + Speed Measurements
+
+import PerformanceChart from '@site/src/components/chart/performanceChart/performanceChart';
+import SpeedChart from '@site/src/components/chart/speedChart/speedChart';
+
+<PerformanceChart package="esrgan-legacy" databasePath="/assets/performance.sql"></PerformanceChart>
+
+<SpeedChart package="esrgan-legacy" databasePath="/assets/speed.sql"></SpeedChart>
+
+## Architecture
+This model is trained via a Python implementation of the ESRGAN architecture.
+
+- Paper: https://arxiv.org/abs/1809.00219
+- Python Repo: https://github.com/idealo/image-super-resolution
+
+The Python repo has instructions on training from scratch if you are so inclined.
+
+## Goals for the model
+ESRGAN Legacy will not see future updates. If possible, switch to one of the other available model packages.
+
+## License
+
+[MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)

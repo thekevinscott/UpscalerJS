@@ -1,0 +1,54 @@
+<html>
+<head>
+  <title>@upscalerjs/esrgan-thick</title>
+  <style>
+    body {
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button {
+      margin-top: 20px;
+      display: block;
+      padding: 10px 40px;
+    }
+    #target {
+      background: #EEE;
+      border: 1px solid #DDD;
+      display: inline-block;
+      width: 256px;
+      height: 256px;
+    }
+    #flower {
+      border: 1px solid #DDD;
+    }
+    pre {
+      padding: 10px;
+      background: #EEE;
+      border: 1px solid #DDD;
+      border-radius: 5px;
+    }
+    table td {
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr><td>Original</td><td>Upscaled</td></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+      <img src="./flower.png" id="flower" />
+        </td>
+      <td>
+        <div id="target">
+
+        </div>
+      </td>
+    </tr>
+      </tbody>
+    </table>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>

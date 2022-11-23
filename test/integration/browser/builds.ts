@@ -56,7 +56,7 @@ describe('Build Integration Tests', () => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });
@@ -83,11 +83,12 @@ describe('Build Integration Tests', () => {
       await prepareScriptBundleForESM();
       await bundleWebpack();
     }, WEBPACK_DIST, webpackMockCDN, '| Loaded');
+    await new Promise(r => setTimeout(r, 60000));
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });

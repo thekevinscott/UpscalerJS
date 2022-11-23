@@ -176,6 +176,215 @@ importers:
       seedrandom: 3.0.5
       vite: 3.1.5
 
+  dev/public/models:
+    specifiers:
+      '@types/fs-extra': ^9.0.13
+      '@types/mkdirp': ^1.0.2
+      '@types/node': ^17.0.39
+      '@types/uglify-js': ^3.13.1
+      fs-extra: ^10.0.1
+      mkdirp: ^1.0.4
+      typescript: ^4.8.3
+      uglify-js: ^3.15.3
+    devDependencies:
+      '@types/fs-extra': 9.0.13
+      '@types/mkdirp': 1.0.2
+      '@types/node': 17.0.45
+      '@types/uglify-js': 3.16.0
+      fs-extra: 10.1.0
+      mkdirp: 1.0.4
+      typescript: 4.8.3
+      uglify-js: 3.16.2
+
+  dev/public/models/default-model:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/default-model/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/default-model': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/default-model': link:../../../../../models/default-model
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  dev/public/models/esrgan-legacy:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-legacy/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-legacy': 1.0.0-beta.9
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-legacy': link:../../../../../models/esrgan-legacy
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  dev/public/models/esrgan-medium:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-medium/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-medium': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-medium': link:../../../../../models/esrgan-medium
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  dev/public/models/esrgan-slim:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-slim/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-slim': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-slim': link:../../../../../models/esrgan-slim
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  dev/public/models/esrgan-thick:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  dev/public/models/esrgan-thick/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-thick': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  dev/public/models/pixel-upsampler:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@upscalerjs/core': link:../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
   docs:
     specifiers:
       '@algolia/client-search': ^4.14.2
@@ -187,19 +396,27 @@ importers:
       '@mdx-js/react': ^1.6.22
       '@shoelace-style/shoelace': 2.0.0-beta.80
       '@tsconfig/docusaurus': ^1.0.5
+      '@types/chart.js': ^2.9.37
       '@types/react': ^18.0.17
-      '@upscalerjs/default-model': workspace:*
-      '@upscalerjs/esrgan-legacy': workspace:*
-      '@upscalerjs/pixel-upsampler': workspace:*
+      '@types/react-dom': ^18.0.9
+      '@types/react-icons': ^3.0.0
+      '@types/sql.js': ^1.4.4
+      '@upscalerjs/core': workspace:*
+      chart.js: ^4.0.1
       classnames: ^2.3.1
       clsx: ^1.2.1
       concurrently: ^7.3.0
+      crypto-browserify: ^3.12.0
       docusaurus-plugin-sass: ^0.2.2
       docusaurus-plugin-typedoc: ^0.17.5
+      google-palette: ^1.1.0
       image-comparison-viewer: ^0.4.2
+      nodemon: ^2.0.20
+      path-browserify: ^1.0.1
       prism-react-renderer: ^1.3.5
       prop-types: ^15.8.1
       react: ^17.0.2
+      react-chartjs-2: ^5.0.1
       react-dom: ^17.0.2
       react-dropzone: ^11.0.2
       react-github-btn: ^1.3.0
@@ -207,6 +424,9 @@ importers:
       react-loading: ^2.0.3
       sass: ^1.56.1
       sass-loader: ^13.0.2
+      sql-wasm: ^1.1.4
+      sql.js: ^1.8.0
+      stream-browserify: ^3.0.0
       tensor-as-base64: ^0.3.0
       typedoc: ^0.23.20
       typedoc-plugin-markdown: ^3.13.4
@@ -219,30 +439,41 @@ importers:
       '@docusaurus/theme-common': 2.2.0_sn43cijtcgxyc5b5v6ryys2jba
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
-      '@upscalerjs/default-model': link:../models/default-model
-      '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
-      '@upscalerjs/pixel-upsampler': link:../models/pixel-upsampler
+      '@upscalerjs/core': link:../packages/core
+      chart.js: 4.0.1
       classnames: 2.3.1
       clsx: 1.2.1
+      crypto-browserify: 3.12.0
+      google-palette: 1.1.0
       image-comparison-viewer: 0.4.2
+      path-browserify: 1.0.1
       prism-react-renderer: 1.3.5_react@17.0.2
       react: 17.0.2
+      react-chartjs-2: 5.0.1_7cjotl24c372l6xfms2n6bssfq
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.7.1_react@17.0.2
       react-github-btn: 1.3.0_react@17.0.2
       react-icons: 4.4.0_react@17.0.2
       react-loading: 2.0.3_at7mkepldmzoo6silmqc5bca74
-      tensor-as-base64: 0.3.0
+      sql-wasm: 1.1.4
+      sql.js: 1.8.0
+      stream-browserify: 3.0.0
+      tensor-as-base64: 0.3.0_@tensorflow+tfjs@3.21.0
       upscaler: link:../packages/upscalerjs
     devDependencies:
       '@algolia/client-search': 4.14.2
       '@docusaurus/module-type-aliases': 2.2.0_sfoxds7t5ydpegc3knd667wn6m
       '@docusaurus/types': 2.2.0_sfoxds7t5ydpegc3knd667wn6m
       '@tsconfig/docusaurus': 1.0.6
+      '@types/chart.js': 2.9.37
       '@types/react': 18.0.17
+      '@types/react-dom': 18.0.9
+      '@types/react-icons': 3.0.0_react@17.0.2
+      '@types/sql.js': 1.4.4
       concurrently: 7.3.0
       docusaurus-plugin-sass: 0.2.2_nzvutf6e3d4v3g5yyupdi6e3by
       docusaurus-plugin-typedoc: 0.17.5_o32wedls3zxzxenv7ax5iov2jm
+      nodemon: 2.0.20
       prop-types: 15.8.1
       sass: 1.56.1
       sass-loader: 13.0.2_sass@1.56.1+webpack@5.73.0
@@ -250,6 +481,215 @@ importers:
       typedoc-plugin-markdown: 3.13.4_typedoc@0.23.20
       typescript: 4.8.3
       webpack: 5.73.0
+
+  docs/assets/assets/models:
+    specifiers:
+      '@types/fs-extra': ^9.0.13
+      '@types/mkdirp': ^1.0.2
+      '@types/node': ^17.0.39
+      '@types/uglify-js': ^3.13.1
+      fs-extra: ^10.0.1
+      mkdirp: ^1.0.4
+      typescript: ^4.8.3
+      uglify-js: ^3.15.3
+    devDependencies:
+      '@types/fs-extra': 9.0.13
+      '@types/mkdirp': 1.0.2
+      '@types/node': 17.0.45
+      '@types/uglify-js': 3.16.0
+      fs-extra: 10.1.0
+      mkdirp: 1.0.4
+      typescript: 4.8.3
+      uglify-js: 3.16.2
+
+  docs/assets/assets/models/default-model:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  docs/assets/assets/models/default-model/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/default-model': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/default-model': link:../../../../../../models/default-model
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  docs/assets/assets/models/esrgan-legacy:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  docs/assets/assets/models/esrgan-legacy/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-legacy': 1.0.0-beta.9
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-legacy': link:../../../../../../models/esrgan-legacy
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  docs/assets/assets/models/esrgan-medium:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  docs/assets/assets/models/esrgan-medium/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-medium': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-medium': link:../../../../../../models/esrgan-medium
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  docs/assets/assets/models/esrgan-slim:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  docs/assets/assets/models/esrgan-slim/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-slim': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-slim': link:../../../../../../models/esrgan-slim
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  docs/assets/assets/models/esrgan-thick:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
+
+  docs/assets/assets/models/esrgan-thick/demo:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-thick': 1.0.0-beta.7
+      seedrandom: ^3.0.5
+      upscaler: 1.0.0-beta.8
+      vite: '*'
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-thick': link:../../../../../../models/esrgan-thick
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../../packages/upscalerjs
+    devDependencies:
+      vite: 3.1.5
+
+  docs/assets/assets/models/pixel-upsampler:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-node': ^4.1.0
+      '@tensorflow/tfjs-node-gpu': ^4.1.0
+      '@upscalerjs/core': workspace:*
+      seedrandom: 3.0.5
+    dependencies:
+      '@tensorflow/tfjs-core': 4.1.0
+      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@upscalerjs/core': link:../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
+      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      seedrandom: 3.0.5
 
   docs/workers/image-search:
     specifiers:
@@ -3555,6 +3995,17 @@ packages:
     dependencies:
       defer-to-connect: 1.1.3
 
+  /@tensorflow/tfjs-backend-cpu/3.21.0_aipmo6igpprgzt4umpaa3m6sn4:
+    resolution: {integrity: sha512-88S21UAdzyK0CsLUrH17GPTD+26E85OP9CqmLZslaWjWUmBkeTQ5Zqyp6iK+gELnLxPx6q7JsNEeFuPv4254lQ==}
+    engines: {yarn: '>= 1.3.2'}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+      '@types/seedrandom': 2.4.30
+      seedrandom: 3.0.5
+    dev: false
+
   /@tensorflow/tfjs-backend-cpu/4.1.0_npjwttp6o2hhjgfcmiedqvkgoa:
     resolution: {integrity: sha512-NqxrwpYa/hXGaBa1RzxfHsLAsaniIZryhF5CxQM9uSp1ny8wUJMH+Mda/Y8+llS3weHug8JDAbAW2cabn8l84A==}
     engines: {yarn: '>= 1.3.2'}
@@ -3564,6 +4015,21 @@ packages:
       '@tensorflow/tfjs-core': 4.1.0
       '@types/seedrandom': 2.4.30
       seedrandom: 3.0.5
+
+  /@tensorflow/tfjs-backend-webgl/3.21.0_aipmo6igpprgzt4umpaa3m6sn4:
+    resolution: {integrity: sha512-N4zitIAT9IX8B8oe489qM3f3VcESxGZIZvHmVP8varOQakTvTX859aaPo1s8hK1qCy4BjSGbweooZe4U8D4kTQ==}
+    engines: {yarn: '>= 1.3.2'}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 3.21.0_aipmo6igpprgzt4umpaa3m6sn4
+      '@tensorflow/tfjs-core': 3.21.0
+      '@types/offscreencanvas': 2019.3.0
+      '@types/seedrandom': 2.4.30
+      '@types/webgl-ext': 0.0.30
+      '@types/webgl2': 0.0.6
+      seedrandom: 3.0.5
+    dev: false
 
   /@tensorflow/tfjs-backend-webgl/4.1.0_npjwttp6o2hhjgfcmiedqvkgoa:
     resolution: {integrity: sha512-RDjwbFCPESjh+QTrTvKC623MO58gIqxQvtX3DfJLhlsSbnsvIpA5s1CXNJYzNVmFDia35mPYKmQQWvEvhl9weA==}
@@ -3578,12 +4044,36 @@ packages:
       '@types/webgl-ext': 0.0.30
       seedrandom: 3.0.5
 
+  /@tensorflow/tfjs-converter/3.21.0_aipmo6igpprgzt4umpaa3m6sn4:
+    resolution: {integrity: sha512-12Y4zVDq3yW+wSjSDpSv4HnpL2sDZrNiGSg8XNiDE4HQBdjdA+a+Q3sZF/8NV9y2yoBhL5L7V4mMLDdbZBd9/Q==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dev: false
+
   /@tensorflow/tfjs-converter/4.1.0_npjwttp6o2hhjgfcmiedqvkgoa:
     resolution: {integrity: sha512-pR4TSUI949a/5uUWjHga8xzxD7Y9AbobHJtCmg86Bldfl2GV8aibz87cNjpoO+iUhH8WZo1TOJy8GpM+MPT2DA==}
     peerDependencies:
       '@tensorflow/tfjs-core': 4.1.0
     dependencies:
       '@tensorflow/tfjs-core': 4.1.0
+
+  /@tensorflow/tfjs-core/3.21.0:
+    resolution: {integrity: sha512-YSfsswOqWfd+M4bXIhT3hwtAb+IV8+ODwIxwdFR/7jTAPZP1wMVnSlpKnXHAN64HFOiP+Tm3HmKusEZ0+09A0w==}
+    engines: {yarn: '>= 1.3.2'}
+    dependencies:
+      '@types/long': 4.0.2
+      '@types/offscreencanvas': 2019.3.0
+      '@types/seedrandom': 2.4.30
+      '@types/webgl-ext': 0.0.30
+      '@webgpu/types': 0.1.16
+      long: 4.0.0
+      node-fetch: 2.6.7
+      seedrandom: 3.0.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@tensorflow/tfjs-core/4.1.0:
     resolution: {integrity: sha512-zERD4xtxNq3dV3+wPEMi2HWSV68FA8WucSAogzErp38/q98Byv9G1x8DhxQ+jowTcqN4srGWcBfK59jYwjlAvA==}
@@ -3600,6 +4090,21 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /@tensorflow/tfjs-data/3.21.0_5g5qgh2bedza5bmf2zfn7wcrmu:
+    resolution: {integrity: sha512-eFLfw2wIcFNxnP2Iv/SnVlihehzKMumk1b5Prcx1ixk/SbkCo5u0Lt7OVOWaEOKVqvB2sT+dJcTjAh6lrCC/QA==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+      seedrandom: ^3.0.5
+    dependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+      '@types/node-fetch': 2.6.2
+      node-fetch: 2.6.7
+      seedrandom: 3.0.5
+      string_decoder: 1.3.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@tensorflow/tfjs-data/4.1.0_x6uqorr55fevqojbxncmwlp444:
     resolution: {integrity: sha512-H6ef6NXPwi2xKYB6tVNZi5RqniMFpfUSlxG3q0BNxnyuyeCUSjJvHJFpah9hT/ysYjVdwspzh/I6B67h+lBchg==}
     peerDependencies:
@@ -3613,6 +4118,14 @@ packages:
       string_decoder: 1.3.0
     transitivePeerDependencies:
       - encoding
+
+  /@tensorflow/tfjs-layers/3.21.0_aipmo6igpprgzt4umpaa3m6sn4:
+    resolution: {integrity: sha512-CMVXsraakXgnXEnqD9QbtResA7nvV7Jz20pGmjFIodcQkClgmFFhdCG5N+zlVRHEz7VKG2OyfhltZ0dBq/OAhA==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dependencies:
+      '@tensorflow/tfjs-core': 3.21.0
+    dev: false
 
   /@tensorflow/tfjs-layers/4.1.0_npjwttp6o2hhjgfcmiedqvkgoa:
     resolution: {integrity: sha512-lzHNTZu1GwKl7hW5tt2COSpflE0m7xrsOf8AzRzpTDVJYYRx/x5ScMt/y//5jbRuaDOnb3EjT1FxWxwkD44/sg==}
@@ -3658,6 +4171,26 @@ packages:
       - seedrandom
       - supports-color
     dev: true
+
+  /@tensorflow/tfjs/3.21.0_seedrandom@3.0.5:
+    resolution: {integrity: sha512-khcARd3/872llL/oF4ouR40qlT71mylU66PGT8kHP/GJ5YKj44sv8lDRjU7lOVlJK7jsJFWEsNVHI3eMc/GWNQ==}
+    hasBin: true
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 3.21.0_aipmo6igpprgzt4umpaa3m6sn4
+      '@tensorflow/tfjs-backend-webgl': 3.21.0_aipmo6igpprgzt4umpaa3m6sn4
+      '@tensorflow/tfjs-converter': 3.21.0_aipmo6igpprgzt4umpaa3m6sn4
+      '@tensorflow/tfjs-core': 3.21.0
+      '@tensorflow/tfjs-data': 3.21.0_5g5qgh2bedza5bmf2zfn7wcrmu
+      '@tensorflow/tfjs-layers': 3.21.0_aipmo6igpprgzt4umpaa3m6sn4
+      argparse: 1.0.10
+      chalk: 4.1.2
+      core-js: 3.23.3
+      regenerator-runtime: 0.13.9
+      yargs: 16.2.0
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+    dev: false
 
   /@tensorflow/tfjs/4.1.0_seedrandom@3.0.5:
     resolution: {integrity: sha512-jlrJ6MIBos8NkmF+NHIWBnKVBGYJTG06QmW/A0vgyXwkp+3PgzX8TJ4MWIv/7oZr7g27zfY6dXA1OFzrrgvklA==}
@@ -3767,6 +4300,12 @@ packages:
     resolution: {integrity: sha512-/zPMqDkzSZ8t3VtxOa4KPq7uzzW978M9Tvh+j7GHKuo6k6GTLxPJ4J5gE5cjfJ26pnXst0N5Hax8Sr0T2Mi9zQ==}
     dev: true
 
+  /@types/chart.js/2.9.37:
+    resolution: {integrity: sha512-9bosRfHhkXxKYfrw94EmyDQcdjMaQPkU1fH2tDxu8DWXxf1mjzWQAV4laJF51ZbC2ycYwNDvIm1rGez8Bug0vg==}
+    dependencies:
+      moment: 2.29.4
+    dev: true
+
   /@types/cli-table/0.3.0:
     resolution: {integrity: sha512-QnZUISJJXyhyD6L1e5QwXDV/A5i2W1/gl6D6YMc8u0ncPepbv/B4w3S+izVvtAg60m6h+JP09+Y/0zF2mojlFQ==}
     dev: true
@@ -3793,6 +4332,10 @@ packages:
     dependencies:
       '@types/ms': 0.7.31
     dev: false
+
+  /@types/emscripten/1.39.6:
+    resolution: {integrity: sha512-H90aoynNhhkQP6DRweEjJp5vfUVdIj7tdPLsu7pq89vODD/lcugKfZOsfgwpvM6XUewEp2N5dCg1Uf3Qe55Dcg==}
+    dev: true
 
   /@types/eslint-scope/3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
@@ -4017,6 +4560,21 @@ packages:
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
 
+  /@types/react-dom/18.0.9:
+    resolution: {integrity: sha512-qnVvHxASt/H7i+XG1U1xMiY5t+IHcPGUK7TDMDzom08xa7e86eCeKOiLZezwCKVxJn6NEiiy2ekgX8aQssjIKg==}
+    dependencies:
+      '@types/react': 18.0.17
+    dev: true
+
+  /@types/react-icons/3.0.0_react@17.0.2:
+    resolution: {integrity: sha512-Vefs6LkLqF61vfV7AiAqls+vpR94q67gunhMueDznG+msAkrYgRxl7gYjNem/kZ+as2l2mNChmF1jRZzzQQtMg==}
+    deprecated: This is a stub types definition. react-icons provides its own type definitions, so you do not need this installed.
+    dependencies:
+      react-icons: 4.4.0_react@17.0.2
+    transitivePeerDependencies:
+      - react
+    dev: true
+
   /@types/react-router-config/5.0.6:
     resolution: {integrity: sha512-db1mx37a1EJDf1XeX8jJN7R3PZABmJQXR8r28yUjVMFSjkmnQo6X6pOEEmNl+Tp2gYQOGPdYbFIipBtdElZ3Yg==}
     dependencies:
@@ -4120,6 +4678,13 @@ packages:
     dependencies:
       '@types/node': 18.11.9
 
+  /@types/sql.js/1.4.4:
+    resolution: {integrity: sha512-6EWU2wfiBtzgTy18WQoXZAGTreBjhZcBCfD8CDvyI1Nj0a4KNDDt41IYeAZ40cRUdfqWHb7VGx7t6nK0yBOI5A==}
+    dependencies:
+      '@types/emscripten': 1.39.6
+      '@types/node': 18.11.9
+    dev: true
+
   /@types/sqlite3/3.1.8:
     resolution: {integrity: sha512-sQMt/qnyUWnqiTcJXm5ZfNPIBeJ/DVvJDwxw+0tAxPJvadzfiP1QhryO1JOR6t1yfb8NpzQb/Rud06mob5laIA==}
     dependencies:
@@ -4177,6 +4742,10 @@ packages:
 
   /@types/webgl-ext/0.0.30:
     resolution: {integrity: sha512-LKVgNmBxN0BbljJrVUwkxwRYqzsAEPcZOe6S2T6ZaBDIrFp0qu4FNlpc5sM1tGbXUYFgdVQIoeLk1Y1UoblyEg==}
+
+  /@types/webgl2/0.0.6:
+    resolution: {integrity: sha512-50GQhDVTq/herLMiqSQkdtRu+d5q/cWHn4VvKJtrj4DJAjo1MNkWYa2MA41BaBO1q1HgsUjuQvEOk0QHvlnAaQ==}
+    dev: false
 
   /@types/ws/8.5.3:
     resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
@@ -4464,6 +5033,10 @@ packages:
       '@webassemblyjs/ast': 1.11.1
       '@xtuc/long': 4.2.2
 
+  /@webgpu/types/0.1.16:
+    resolution: {integrity: sha512-9E61voMP4+Rze02jlTXud++Htpjyyk8vw5Hyw9FGRrmhHQg2GqbuOfwf5Klrb8vTxc2XWI3EfO7RUHMpxTj26A==}
+    dev: false
+
   /@webgpu/types/0.1.21:
     resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
 
@@ -4584,8 +5157,10 @@ packages:
       indent-string: 5.0.0
     dev: true
 
-  /ajv-formats/2.1.1:
+  /ajv-formats/2.1.1_ajv@8.11.0:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -4794,6 +5369,15 @@ packages:
 
   /asap/2.0.6:
     resolution: {integrity: sha512-BSHWgDSAiKs50o2Re8ppvp3seVHXSRM44cdSsT9FfNEUUZLOGWVCsiWaRPWM1Znn+mqZ1OfVZ3z3DWEzSp7hRA==}
+    dev: false
+
+  /asn1.js/5.4.1:
+    resolution: {integrity: sha512-+I//4cYPccV8LdmBLiX8CYvf9Sp3vQsrqu2QNXRcrbiWvcx/UdlFiqUJJzxRQxgsZmvhXhn4cSKeSmoFjVdupA==}
+    dependencies:
+      bn.js: 4.12.0
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+      safer-buffer: 2.1.2
     dev: false
 
   /assertion-error/1.1.0:
@@ -5053,6 +5637,14 @@ packages:
     resolution: {integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==}
     dev: false
 
+  /bn.js/4.12.0:
+    resolution: {integrity: sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==}
+    dev: false
+
+  /bn.js/5.2.1:
+    resolution: {integrity: sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==}
+    dev: false
+
   /body-parser/1.20.0:
     resolution: {integrity: sha512-DfJ+q6EPcGKZD1QWUjSpqp+Q7bDQTsQIF4zfUAtZ6qk+H/3/QRhg9CEp39ss+/T2vw0+HaidC0ecJj/DRLIaKg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -5141,6 +5733,10 @@ packages:
     dependencies:
       fill-range: 7.0.1
 
+  /brorand/1.1.0:
+    resolution: {integrity: sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==}
+    dev: false
+
   /browser-process-hrtime/1.0.0:
     resolution: {integrity: sha512-9o5UecI3GhkpM6DrXr69PblIuWxPKk9Y0jHBRhdocZ2y7YECBFCsHm79Pr3OyR2AvjhDkabFJaDJMYRazHgsow==}
     dev: true
@@ -5148,6 +5744,55 @@ packages:
   /browser-stdout/1.3.1:
     resolution: {integrity: sha512-qhAVI1+Av2X7qelOfAIYwXONood6XlZE/fXaBSmW/T5SzLAmCgzi+eiWE7fUvbHaeNBQH13UftjpXxsfLkMpgw==}
     dev: true
+
+  /browserify-aes/1.2.0:
+    resolution: {integrity: sha512-+7CHXqGuspUn/Sl5aO7Ea0xWGAtETPXNSAjHo48JfLdPWcMng33Xe4znFvQweqc/uzk5zSOI3H52CYnjCfb5hA==}
+    dependencies:
+      buffer-xor: 1.0.3
+      cipher-base: 1.0.4
+      create-hash: 1.2.0
+      evp_bytestokey: 1.0.3
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+    dev: false
+
+  /browserify-cipher/1.0.1:
+    resolution: {integrity: sha512-sPhkz0ARKbf4rRQt2hTpAHqn47X3llLkUGn+xEJzLjwY8LRs2p0v7ljvI5EyoRO/mexrNunNECisZs+gw2zz1w==}
+    dependencies:
+      browserify-aes: 1.2.0
+      browserify-des: 1.0.2
+      evp_bytestokey: 1.0.3
+    dev: false
+
+  /browserify-des/1.0.2:
+    resolution: {integrity: sha512-BioO1xf3hFwz4kc6iBhI3ieDFompMhrMlnDFC4/0/vd5MokpuAc3R+LYbwTA9A5Yc9pq9UYPqffKpW2ObuwX5A==}
+    dependencies:
+      cipher-base: 1.0.4
+      des.js: 1.0.1
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+    dev: false
+
+  /browserify-rsa/4.1.0:
+    resolution: {integrity: sha512-AdEER0Hkspgno2aR97SAf6vi0y0k8NuOpGnVH3O99rcA5Q6sh8QxcngtHuJ6uXwnfAXNM4Gn1Gb7/MV1+Ymbog==}
+    dependencies:
+      bn.js: 5.2.1
+      randombytes: 2.1.0
+    dev: false
+
+  /browserify-sign/4.2.1:
+    resolution: {integrity: sha512-/vrA5fguVAKKAVTNJjgSm1tRQDHUU6DbwO9IROu/0WAzC8PKhucDSh18J0RMvVeHAn5puMd+QHC2erPRNf8lmg==}
+    dependencies:
+      bn.js: 5.2.1
+      browserify-rsa: 4.1.0
+      create-hash: 1.2.0
+      create-hmac: 1.1.7
+      elliptic: 6.5.4
+      inherits: 2.0.4
+      parse-asn1: 5.1.6
+      readable-stream: 3.6.0
+      safe-buffer: 5.2.1
+    dev: false
 
   /browserslist/4.21.1:
     resolution: {integrity: sha512-Nq8MFCSrnJXSc88yliwlzQe3qNe3VntIjhsArW9IJOEPSHNx23FalwApUVbzAWABLhYJJ7y8AynWI/XM8OdfjQ==}
@@ -5190,6 +5835,10 @@ packages:
 
   /buffer-from/1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
+
+  /buffer-xor/1.0.3:
+    resolution: {integrity: sha512-571s0T7nZWK6vB67HI5dyUF7wXiNcfaPPPTl6zYCNApANjIvYJTg7hlud/+cJpdAhS7dVzqMLmfhfHR3rAcOjQ==}
+    dev: false
 
   /buffer/4.9.2:
     resolution: {integrity: sha512-xq+q3SRMOxGivLhBNaUdC64hDTQwejJ+H0T/NB1XMtTVEwNTrfFF3gAxiyW0Bu/xWEGhjVKgUcMhCrUy2+uCWg==}
@@ -5403,6 +6052,11 @@ packages:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
     dev: true
 
+  /chart.js/4.0.1:
+    resolution: {integrity: sha512-5/8/9eBivwBZK81mKvmIwTb2Pmw4D/5h1RK9fBWZLLZ8mCJ+kfYNmV9rMrGoa5Hgy2/wVDBMLSUDudul2/9ihA==}
+    engines: {pnpm: ^7.0.0}
+    dev: false
+
   /check-error/1.0.2:
     resolution: {integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA==}
     dev: true
@@ -5463,6 +6117,13 @@ packages:
   /ci-info/3.3.2:
     resolution: {integrity: sha512-xmDt/QIAdeZ9+nfdPsaBCpMvHNLFiLdjj59qjqn+6iPe6YmHGQ35sBnQ8uslRBXFmXkiZQOJRjvQeoGppoTjjg==}
     dev: true
+
+  /cipher-base/1.0.4:
+    resolution: {integrity: sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==}
+    dependencies:
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+    dev: false
 
   /cjs-module-lexer/1.2.2:
     resolution: {integrity: sha512-cOU9usZw8/dXIXKtwa8pM0OTJQuJkxMN6w30csNRUerHfeQ5R6U3kkU/FtJeIf3M202OHfY2U8ccInBG7/xogA==}
@@ -5722,7 +6383,7 @@ packages:
       - supports-color
 
   /concat-map/0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
 
   /concurrently/7.3.0:
     resolution: {integrity: sha512-IiDwm+8DOcFEInca494A8V402tNTQlJaYq78RF2rijOrKEk/AOHTxhN4U1cp7GYKYX5Q6Ymh1dLTBlzIMN0ikA==}
@@ -5908,6 +6569,34 @@ packages:
       p-map: 5.5.0
     dev: true
 
+  /create-ecdh/4.0.4:
+    resolution: {integrity: sha512-mf+TCx8wWc9VpuxfP2ht0iSISLZnt0JgWlrOKZiNqyUZWnjIaCIVNQArMHnCZKfEYRg6IM7A+NeJoN8gf/Ws0A==}
+    dependencies:
+      bn.js: 4.12.0
+      elliptic: 6.5.4
+    dev: false
+
+  /create-hash/1.2.0:
+    resolution: {integrity: sha512-z00bCGNHDG8mHAkP7CtT1qVu+bFQUPjYq/4Iv3C3kWjTFV10zIjfSoeqXo9Asws8gwSHDGj/hl2u4OGIjapeCg==}
+    dependencies:
+      cipher-base: 1.0.4
+      inherits: 2.0.4
+      md5.js: 1.3.5
+      ripemd160: 2.0.2
+      sha.js: 2.4.11
+    dev: false
+
+  /create-hmac/1.1.7:
+    resolution: {integrity: sha512-MJG9liiZ+ogc4TzUwuvbER1JRdgvUFSB5+VR/g5h82fGaIRWMWddtKBHi7/sVhfjQZ6SehlyhvQYrcYkaUIpLg==}
+    dependencies:
+      cipher-base: 1.0.4
+      create-hash: 1.2.0
+      inherits: 2.0.4
+      ripemd160: 2.0.2
+      safe-buffer: 5.2.1
+      sha.js: 2.4.11
+    dev: false
+
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
@@ -5947,6 +6636,22 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /crypto-browserify/3.12.0:
+    resolution: {integrity: sha512-fz4spIh+znjO2VjL+IdhEpRJ3YN6sMzITSBijk6FK2UvTqruSQW+/cCZTSNsMiZNvUeq0CqurF+dAbyiGOY6Wg==}
+    dependencies:
+      browserify-cipher: 1.0.1
+      browserify-sign: 4.2.1
+      create-ecdh: 4.0.4
+      create-hash: 1.2.0
+      create-hmac: 1.1.7
+      diffie-hellman: 5.0.3
+      inherits: 2.0.4
+      pbkdf2: 3.1.2
+      public-encrypt: 4.0.3
+      randombytes: 2.1.0
+      randomfill: 1.0.4
+    dev: false
 
   /crypto-random-string/2.0.0:
     resolution: {integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==}
@@ -6179,6 +6884,18 @@ packages:
       ms: 2.1.3
     dev: true
 
+  /debug/3.2.7_supports-color@5.5.0:
+    resolution: {integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+      supports-color: 5.5.0
+    dev: true
+
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -6331,6 +7048,13 @@ packages:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
 
+  /des.js/1.0.1:
+    resolution: {integrity: sha512-Q0I4pfFrv2VPd34/vfLrFOoRmlYj3OV50i7fskps1jZWK1kApMWWT9G6RRUeYedLcBDIhnSDaUvJMb3AhUlaEA==}
+    dependencies:
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+    dev: false
+
   /destroy/1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
@@ -6395,6 +7119,14 @@ packages:
     resolution: {integrity: sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==}
     engines: {node: '>=0.3.1'}
     dev: true
+
+  /diffie-hellman/5.0.3:
+    resolution: {integrity: sha512-kqag/Nl+f3GwyK25fhUMYj81BUOrZ9IuJsjIcDE5icNM9FJHAVm3VcUDxdLPoQtTuUylWm6ZIknYJwwaPxsUzg==}
+    dependencies:
+      bn.js: 4.12.0
+      miller-rabin: 4.0.1
+      randombytes: 2.1.0
+    dev: false
 
   /dir-glob/3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
@@ -6608,6 +7340,18 @@ packages:
 
   /electron-to-chromium/1.4.177:
     resolution: {integrity: sha512-FYPir3NSBEGexSZUEeht81oVhHfLFl6mhUKSkjHN/iB/TwEIt/WHQrqVGfTLN5gQxwJCQkIJBe05eOXjI7omgg==}
+
+  /elliptic/6.5.4:
+    resolution: {integrity: sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==}
+    dependencies:
+      bn.js: 4.12.0
+      brorand: 1.1.0
+      hash.js: 1.1.7
+      hmac-drbg: 1.0.1
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+      minimalistic-crypto-utils: 1.0.1
+    dev: false
 
   /emittery/0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -7620,6 +8364,13 @@ packages:
     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
     engines: {node: '>=0.8.x'}
 
+  /evp_bytestokey/1.0.3:
+    resolution: {integrity: sha512-/f2Go4TognH/KvCISP7OUsHn85hT9nUkxxA9BEWxFn+Oj9o8ZNLm/40hdlgSLyuOimsrTKLUMEorQexp/aPQeA==}
+    dependencies:
+      md5.js: 1.3.5
+      safe-buffer: 5.2.1
+    dev: false
+
   /execa/1.0.0:
     resolution: {integrity: sha512-adbxcyWV46qiHyvSp50TKt05tB4tK3HcmF7/nxfAdhnox83seTDbwnaqKO4sXRy7roHAIFqJP/Rw/AuEbX61LA==}
     engines: {node: '>=6'}
@@ -8315,6 +9066,10 @@ packages:
       merge2: 1.4.1
       slash: 4.0.0
 
+  /google-palette/1.1.0:
+    resolution: {integrity: sha512-rg4XQMVYQ83fQUylt2qrzCQ0C06ZrGl3+gh0XIXanyX+7SOkDCtFIn7gV3UMumg/R9HUL1zHtz5Myw3Z5BHCPg==}
+    dev: false
+
   /google-protobuf/3.20.1:
     resolution: {integrity: sha512-XMf1+O32FjYIV3CYu6Tuh5PNbfNEU5Xu22X+Xkdb/DUexFlCzhvv7d5Iirm4AOwn8lv4al1YvIhzGrg2j9Zfzw==}
     dev: true
@@ -8429,6 +9184,22 @@ packages:
     dependencies:
       function-bind: 1.1.1
 
+  /hash-base/3.1.0:
+    resolution: {integrity: sha512-1nmYp/rhMDiE7AYkDw+lLwlAzz0AntGIe51F3RfFfEqyQ3feY2eI/NcwC6umIQVOASPMsWJLJScWKSSvzL9IVA==}
+    engines: {node: '>=4'}
+    dependencies:
+      inherits: 2.0.4
+      readable-stream: 3.6.0
+      safe-buffer: 5.2.1
+    dev: false
+
+  /hash.js/1.1.7:
+    resolution: {integrity: sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==}
+    dependencies:
+      inherits: 2.0.4
+      minimalistic-assert: 1.0.1
+    dev: false
+
   /hast-to-hyperscript/9.0.1:
     resolution: {integrity: sha512-zQgLKqF+O2F72S1aa4y2ivxzSlko3MAvxkwG8ehGmNiqd98BIN3JM1rAJPmplEyLmGLO2QZYJtIneOSZ2YbJuA==}
     dependencies:
@@ -8506,6 +9277,14 @@ packages:
       tiny-invariant: 1.2.0
       tiny-warning: 1.0.3
       value-equal: 1.0.1
+
+  /hmac-drbg/1.0.1:
+    resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
+    dependencies:
+      hash.js: 1.1.7
+      minimalistic-assert: 1.0.1
+      minimalistic-crypto-utils: 1.0.1
+    dev: false
 
   /hoist-non-react-statics/3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
@@ -8723,6 +9502,10 @@ packages:
 
   /ieee754/1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
+
+  /ignore-by-default/1.0.1:
+    resolution: {integrity: sha512-Ius2VYcGNk7T90CppJqcIkS5ooHUZyIQK+ClZfMfMNFEF9VSE73Fq+906u/CWu92x4gzZMWOwfFYckPObzdEbA==}
+    dev: true
 
   /ignore/5.2.0:
     resolution: {integrity: sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==}
@@ -10179,6 +10962,14 @@ packages:
       '@arr/every': 1.0.1
     dev: true
 
+  /md5.js/1.3.5:
+    resolution: {integrity: sha512-xitP+WxNPcTTOgnTJcrhM0xvdPepipPSf3I8EIpGKeFLjt3PlJLIDG3u8EX53ZIubkb+5U2+3rELYpEhHhzdkg==}
+    dependencies:
+      hash-base: 3.1.0
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+    dev: false
+
   /mdast-squeeze-paragraphs/4.0.0:
     resolution: {integrity: sha512-zxdPn69hkQ1rm4J+2Cs2j6wDEv7O17TfXTJ33tl/+JPIoEmtV9t2ZzBM5LPHE8QlHsmVD8t3vPKCyY3oH+H8MQ==}
     dependencies:
@@ -10251,6 +11042,14 @@ packages:
     dependencies:
       braces: 3.0.2
       picomatch: 2.3.1
+
+  /miller-rabin/4.0.1:
+    resolution: {integrity: sha512-115fLhvZVqWwHPbClyntxEVfVDfl9DLLTuJvq3g2O/Oxi8AiNouAHvDSzHS0viUJc+V5vm3eq91Xwqn9dp4jRA==}
+    hasBin: true
+    dependencies:
+      bn.js: 4.12.0
+      brorand: 1.1.0
+    dev: false
 
   /mime-db/1.33.0:
     resolution: {integrity: sha512-BHJ/EKruNIqJf/QahvxwQZXKygOQ256myeN/Ew+THcAa5q+PjyTTMMeNQC4DZw5AwfvelsUrA6B67NKMqXDbzQ==}
@@ -10364,6 +11163,10 @@ packages:
 
   /minimalistic-assert/1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
+
+  /minimalistic-crypto-utils/1.0.1:
+    resolution: {integrity: sha512-JIYlbt6g8i5jKfJ3xz7rF0LXmv2TkDxBLUkiBeZ7bAx4GnnNMr8xFpGnOxn6GhTEHx3SjRrZEoU+j04prX1ktg==}
+    dev: false
 
   /minimatch/3.0.4:
     resolution: {integrity: sha512-yJHVQEhyqPLUTgt9B83PXu6W3rx4MvvHvSUvToogpwoGDOUQ+yDrR0HRot+yOCdCO7u4hX3pWft6kWBBcqh0UA==}
@@ -10524,7 +11327,6 @@ packages:
 
   /moment/2.29.4:
     resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
-    dev: false
 
   /moo-color/1.0.3:
     resolution: {integrity: sha512-i/+ZKXMDf6aqYtBhuOcej71YSlbjT3wCO/4H1j8rPvxDJEifdwgg5MaFyu6iYAT8GBZJg2z0dkgK4YMzvURALQ==}
@@ -10685,6 +11487,30 @@ packages:
 
   /node-releases/2.0.5:
     resolution: {integrity: sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==}
+
+  /nodemon/2.0.20:
+    resolution: {integrity: sha512-Km2mWHKKY5GzRg6i1j5OxOHQtuvVsgskLfigG25yTtbyfRGn/GNvIbRyOf1PSCKJ2aT/58TiuUsuOU5UToVViw==}
+    engines: {node: '>=8.10.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      debug: 3.2.7_supports-color@5.5.0
+      ignore-by-default: 1.0.1
+      minimatch: 3.1.2
+      pstree.remy: 1.1.8
+      semver: 5.7.1
+      simple-update-notifier: 1.1.0
+      supports-color: 5.5.0
+      touch: 3.1.0
+      undefsafe: 2.0.5
+    dev: true
+
+  /nopt/1.0.10:
+    resolution: {integrity: sha512-NWmpvLSqUrgrAC9HCuxEvb+PSloHpqVu+FqcO4eeF2h5qYRhA7ev6KvelyQAKtegUbC6RypJnlEOhd8vloNKYg==}
+    hasBin: true
+    dependencies:
+      abbrev: 1.1.1
+    dev: true
 
   /nopt/5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
@@ -11026,6 +11852,16 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: true
 
+  /parse-asn1/5.1.6:
+    resolution: {integrity: sha512-RnZRo1EPU6JBnra2vGHj0yhp6ebyjBZpmUCLHWiFhxlzvBCCpAuZ7elsBp1PVAbQN0/04VD/19rfzlBSwLstMw==}
+    dependencies:
+      asn1.js: 5.4.1
+      browserify-aes: 1.2.0
+      evp_bytestokey: 1.0.3
+      pbkdf2: 3.1.2
+      safe-buffer: 5.2.1
+    dev: false
+
   /parse-entities/2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
     dependencies:
@@ -11076,7 +11912,6 @@ packages:
 
   /path-browserify/1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
-    dev: true
 
   /path-exists/3.0.0:
     resolution: {integrity: sha512-bpC7GYwiDYQ4wYLe+FA8lhRjhQCMcQGuSgGGqDkg/QerRWw9CmGRT0iSOVRSZJ29NMLZgIzqaljJ63oaL4NIJQ==}
@@ -11133,6 +11968,17 @@ packages:
     dependencies:
       through: 2.3.8
     dev: true
+
+  /pbkdf2/3.1.2:
+    resolution: {integrity: sha512-iuh7L6jA7JEGu2WxDwtQP1ddOpaJNC4KlDEFfdQajSGgGPNi4OyDc2R7QnbY2bR9QjBVGwgvTdNJZoE7RaxUMA==}
+    engines: {node: '>=0.12'}
+    dependencies:
+      create-hash: 1.2.0
+      create-hmac: 1.1.7
+      ripemd160: 2.0.2
+      safe-buffer: 5.2.1
+      sha.js: 2.4.11
+    dev: false
 
   /pend/1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
@@ -11779,6 +12625,21 @@ packages:
     resolution: {integrity: sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==}
     dev: true
 
+  /pstree.remy/1.1.8:
+    resolution: {integrity: sha512-77DZwxQmxKnu3aR542U+X8FypNzbfJ+C5XQDk3uWjWxn6151aIMGthWYRXTqT1E5oJvg+ljaa2OJi+VfvCOQ8w==}
+    dev: true
+
+  /public-encrypt/4.0.3:
+    resolution: {integrity: sha512-zVpa8oKZSz5bTMTFClc1fQOnyyEzpl5ozpi1B5YcvBrdohMjH2rfsBtyXcuNuwjsDIXmBYlF2N5FlJYhR29t8Q==}
+    dependencies:
+      bn.js: 4.12.0
+      browserify-rsa: 4.1.0
+      create-hash: 1.2.0
+      parse-asn1: 5.1.6
+      randombytes: 2.1.0
+      safe-buffer: 5.2.1
+    dev: false
+
   /pump/3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
     dependencies:
@@ -11859,6 +12720,13 @@ packages:
     dependencies:
       safe-buffer: 5.2.1
 
+  /randomfill/1.0.4:
+    resolution: {integrity: sha512-87lcbR8+MhcWcUiQ+9e+Rwx8MyR2P7qnt15ynUlbm3TU/fjbgz4GsvfSUDTemtCCtVCqb4ZcEFlyPNTh9bBTLw==}
+    dependencies:
+      randombytes: 2.1.0
+      safe-buffer: 5.2.1
+    dev: false
+
   /range-parser/1.2.0:
     resolution: {integrity: sha512-kA5WQoNVo4t9lNx2kQNFCxKeBl5IbbSNBl1M/tLkw9WCn+hxNBAW5Qh8gdhs63CJnhjJ2zQWFoqPJP2sK1AV5A==}
     engines: {node: '>= 0.6'}
@@ -11892,6 +12760,16 @@ packages:
       lodash.curry: 4.1.1
       lodash.flow: 3.5.0
       pure-color: 1.3.0
+    dev: false
+
+  /react-chartjs-2/5.0.1_7cjotl24c372l6xfms2n6bssfq:
+    resolution: {integrity: sha512-u38C9OxynlNCBp+79grgXRs7DSJ9w8FuQ5/HO5FbYBbri8HSZW+9SWgjVshLkbXBfXnMGWakbHEtvN0nL2UG7Q==}
+    peerDependencies:
+      chart.js: ^4.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      chart.js: 4.0.1
+      react: 17.0.2
     dev: false
 
   /react-dev-utils/12.0.1_4bz3etpdgsvghw6bzhdz5wqrfu:
@@ -11992,7 +12870,6 @@ packages:
       react: '*'
     dependencies:
       react: 17.0.2
-    dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -12412,6 +13289,13 @@ packages:
     dependencies:
       glob: 7.2.3
 
+  /ripemd160/2.0.2:
+    resolution: {integrity: sha512-ii4iagi25WusVoiC4B4lq7pbXfAp3D9v5CwfkY33vffw2+pkDjY1D8GaN7spsxvCSx8dkPqOZCEZyfxcmJG2IA==}
+    dependencies:
+      hash-base: 3.1.0
+      inherits: 2.0.4
+    dev: false
+
   /rollup-plugin-inject/3.0.2:
     resolution: {integrity: sha512-ptg9PQwzs3orn4jkgXJ74bfs5vYz1NCZlSQMBUA0wKcGp5i5pA1AO3fOUEte8enhGUC+iapTCzEWw2jEFFUO/w==}
     deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-inject.
@@ -12604,7 +13488,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       ajv-keywords: 5.1.0_ajv@8.11.0
 
   /section-matter/1.0.0:
@@ -12829,6 +13713,14 @@ packages:
   /setprototypeof/1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
+  /sha.js/2.4.11:
+    resolution: {integrity: sha512-QMEp5B7cftE7APOjk5Y6xgrbWu+WkLVQwk8JNjZ8nKRciZaByEW6MubieAiToS7+dwvrjGhH8jRXz3MVd0AYqQ==}
+    hasBin: true
+    dependencies:
+      inherits: 2.0.4
+      safe-buffer: 5.2.1
+    dev: false
+
   /shallow-clone/3.0.1:
     resolution: {integrity: sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==}
     engines: {node: '>=8'}
@@ -12921,6 +13813,13 @@ packages:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
     dependencies:
       is-arrayish: 0.3.2
+
+  /simple-update-notifier/1.1.0:
+    resolution: {integrity: sha512-VpsrsJSUcJEseSbMHkrsrAVSdvVS5I96Qo1QAQ4FxQ9wXFcB+pjj7FB7/us9+GcgfW4ziHtYMc1J0PLczb55mg==}
+    engines: {node: '>=8.10.0'}
+    dependencies:
+      semver: 7.0.0
+    dev: true
 
   /sirv/1.0.19:
     resolution: {integrity: sha512-JuLThK3TnZG1TAKDwNIqNq6QA2afLOCcm+iE8D1Kj3GA40pSPsxQjjJl0J8X3tsR7T+CP1GavpzLwYkgVLWrZQ==}
@@ -13093,6 +13992,14 @@ packages:
   /sprintf-js/1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
+  /sql-wasm/1.1.4:
+    resolution: {integrity: sha512-QRaphdrD4fGhQuHWX1NdRK7+L89sp0heD3dl9a687DqRJnYGudHEE05lzaP0YNzRre8NMtIPY6XTyEJ/DA0vLA==}
+    dev: false
+
+  /sql.js/1.8.0:
+    resolution: {integrity: sha512-3HD8pSkZL+5YvYUI8nlvNILs61ALqq34xgmF+BHpqxe68yZIJ1H+sIVIODvni25+CcxHUxDyrTJUL0lE/m7afw==}
+    dev: false
+
   /sqlite3/5.1.1:
     resolution: {integrity: sha512-mMinkrQr/LKJqFiFF+AF7imPSzRCCpTCreusZO3D/ssJHVjZOrbu2Caz+zPH5KTmGGXBxXMGSRDssL+44CLxvg==}
     requiresBuild: true
@@ -13157,7 +14064,6 @@ packages:
     dependencies:
       inherits: 2.0.4
       readable-stream: 3.6.0
-    dev: true
 
   /stream-combiner/0.0.4:
     resolution: {integrity: sha512-rT00SPnTVyRsaSz5zgSPma/aHSOic5U1prhYdRy5HS2kTZviFpmDgzilbtsJsxiroqACmayynDN/9VzIbX5DOw==}
@@ -13450,10 +14356,12 @@ packages:
       unique-string: 3.0.0
     dev: true
 
-  /tensor-as-base64/0.3.0:
+  /tensor-as-base64/0.3.0_@tensorflow+tfjs@3.21.0:
     resolution: {integrity: sha512-HxBzss8EijZmPzStCWNd4+KaSf5g5fpc2wWAKuunCoZ24XJmTuigSKZZolt9yY6eICduE2UPOII9o8JFSn8YlA==}
     peerDependencies:
       '@tensorflow/tfjs': ^3.18.0
+    dependencies:
+      '@tensorflow/tfjs': 3.21.0_seedrandom@3.0.5
     dev: false
 
   /term-size/2.2.1:
@@ -13600,6 +14508,13 @@ packages:
   /totalist/3.0.0:
     resolution: {integrity: sha512-eM+pCBxXO/njtF7vdFsHuqb+ElbxqtI4r5EAvk6grfAFyJ6IvWlSkfZ5T9ozC6xWw3Fj1fGoSmrl0gUs46JVIw==}
     engines: {node: '>=6'}
+    dev: true
+
+  /touch/3.1.0:
+    resolution: {integrity: sha512-WBx8Uy5TLtOSRtIq+M03/sKDrXCLHxwDcquSP2c43Le03/9serjQBIztjRz6FkJez9D/hleyAXTBGLwwZUw9lA==}
+    hasBin: true
+    dependencies:
+      nopt: 1.0.10
     dev: true
 
   /tough-cookie/4.0.0:
@@ -13852,6 +14767,10 @@ packages:
     dependencies:
       buffer: 5.7.1
       through: 2.3.8
+    dev: true
+
+  /undefsafe/2.0.5:
+    resolution: {integrity: sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==}
     dev: true
 
   /underscore/1.12.1:

@@ -3,7 +3,7 @@ $width: 200px;
   position: absolute;
   left: 50%;
   width: $width;
-  margin-left: ($width / -2);
+  margin-left: calc($width / -2);
   z-index: 2;
   top: 10px;
   user-select: none;
