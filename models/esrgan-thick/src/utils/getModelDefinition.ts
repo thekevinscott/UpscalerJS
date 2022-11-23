@@ -34,6 +34,7 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
         super({});
       }
 
+      // skipcq: js-0105
       computeOutputShape(inputShape: number[]) {
         return [inputShape[0], inputShape[1], inputShape[2], 3,];
       }
@@ -42,11 +43,11 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
         return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
       }
 
-      static className = 'PixelShuffle';
+      static className = `PixelShuffle${scale}x`;
     }
 
     return PixelShuffle;
-  }
+  };
 
   return {
     preprocess: (image: Tensor) => tf.mul(image, 1 / 255),

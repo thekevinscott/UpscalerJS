@@ -20,8 +20,8 @@
       "import": "./dist/esm/8x.js"
     },
     ".": {
-      "require": "./src/index.ts",
-      "import": "./src/index.ts"
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
     }
   },
   "scripts": {

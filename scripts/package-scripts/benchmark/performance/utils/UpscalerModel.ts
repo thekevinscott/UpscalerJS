@@ -64,12 +64,6 @@ export class UpscalerModel extends Model {
     });
   }
 
-  async getUpscaler(tf: TF, useGPU = false) {
-    const pkg = await this.package;
-    const packageName = pkg.name;
-    return UpscalerModel.getUpscaler(tf, packageName, this.name, useGPU);
-  }
-
   static async getUpscaler(tf: TF, modelPackageName: string, modelName: string, useGPU = false): Promise<[_Upscaler, ModelDefinition]> {
     if (!modelPackageName) {
       throw new Error('Model package name must be provided')

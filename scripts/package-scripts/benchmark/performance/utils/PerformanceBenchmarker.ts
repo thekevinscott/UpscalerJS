@@ -354,8 +354,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     console.log('processed', total, 'files');
   }
 
-  private async upscale(tf: TF, model: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
-    const [ upscaler ] = await model.getUpscaler(tf);
+  private async upscale(tf: TF, { upscaler }: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
     const upscaledData = await upscaler.upscale(downscaled, {
       output: 'tensor',
       patchSize: 64,
