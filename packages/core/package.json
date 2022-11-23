@@ -15,6 +15,6 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@tensorflow/tfjs-core": "^4.0.0"
+    "@tensorflow/tfjs-core": "^4.1.0"
   }
 }
