@@ -9,15 +9,15 @@ import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
 import Table from 'cli-table';
 import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';
-import { DOCS_DIR, TMP_DIR } from '../../utils/constants';
+import { ASSETS_DIR, TMP_DIR } from '../../utils/constants';
 
 /****
  * Constants
  */
 const DEFAULT_METRICS = ['PSNR', 'SSIM'];
 const CACHE_DIR = path.resolve(TMP_DIR, 'datasets');
+const PERFORMANCE_DATABASE_FILE = path.resolve(ASSETS_DIR, 'performance.sql');
 const DELAY = 1;
-const PERFORMANCE_DATABASE_FILE = path.resolve(DOCS_DIR, 'assets/performance.sql');
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: PERFORMANCE_DATABASE_FILE,
@@ -54,37 +54,48 @@ const saveResults = async (results: BenchmarkedResult[]) => {
     throw new Error('No results found');
   }
 
-  await Promise.all([
+  const queries = [
+    ...[
+      'packages',
+      'models',
+      'datasets',
+      'metrics',
+      'results',
+    ].map(table => `DROP TABLE IF EXISTS ${table}`),
     `CREATE TABLE IF NOT EXISTS packages (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE
-  )`,
-  `CREATE TABLE IF NOT EXISTS models (
-    id INTEGER PRIMARY KEY,
-    packageId INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    scale INTEGER NOT NULL,
-    meta JSON NOT NULL,
-    UNIQUE(packageId, name)
-  )`,
-  `
-  CREATE TABLE IF NOT EXISTS datasets (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE
-  )`,
-  `CREATE TABLE IF NOT EXISTS metrics (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE
-  )`,
-  `CREATE TABLE IF NOT EXISTS results (
-    id INTEGER PRIMARY KEY,
-    value REAL NOT NULL,
-    datasetId INTEGER NOT NULL,
-    modelId INTEGER NOT NULL,
-    metricId INTEGER NOT NULL,
-    UNIQUE(datasetid,modelId,metricId)
-  )
-  `].map(query => sequelize.query(query)));
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE
+    )`,
+    `CREATE TABLE IF NOT EXISTS models (
+      id INTEGER PRIMARY KEY,
+      packageId INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      scale INTEGER NOT NULL,
+      meta JSON NOT NULL,
+      UNIQUE(packageId, name)
+    )`,
+    `
+    CREATE TABLE IF NOT EXISTS datasets (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE
+    )`,
+    `CREATE TABLE IF NOT EXISTS metrics (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE
+    )`,
+    `CREATE TABLE IF NOT EXISTS results (
+      id INTEGER PRIMARY KEY,
+      value REAL NOT NULL,
+      datasetId INTEGER NOT NULL,
+      modelId INTEGER NOT NULL,
+      metricId INTEGER NOT NULL,
+      UNIQUE(datasetid,modelId,metricId)
+    )
+  `];
+  for (let i = 0; i < queries.length; i++) {
+    const query = queries[i];
+    await sequelize.query(query);
+  }
   const { values } = results[0];
   for (const [datasetName, metrics] of Object.entries(values)) {
     await sequelize.query(`
@@ -135,13 +146,18 @@ const saveResults = async (results: BenchmarkedResult[]) => {
       for (const [metricName, value] of Object.entries(metrics)) {
         await sequelize.query(`
           INSERT OR IGNORE INTO results 
-          (value, datasetId, modelId, metricId) 
+          (
+            value, 
+            datasetId, 
+            modelId, 
+            metricId
+          )
           VALUES 
           (
             :value,
             (SELECT id FROM datasets WHERE datasets.name = :datasetName),
-            (SELECT id FROM metrics WHERE metrics.name = :metricName),
-            (SELECT id FROM models WHERE models.name = :modelName AND models.packageId = (SELECT id FROM packages WHERE packages.name = :packageName))
+            (SELECT id FROM models WHERE models.name = :modelName AND models.packageId = (SELECT id FROM packages WHERE packages.name = :packageName)),
+            (SELECT id FROM metrics WHERE metrics.name = :metricName)
           )
           `, {
           replacements: {
@@ -315,7 +331,11 @@ const benchmarkPerformance = async (
     await benchmarker.benchmark(tf, packages, cropSize, n, models, DELAY);
   }
   mark('Results');
-  const results = await benchmarker.retrieveResults(metrics, cropSize, models);
+  const results = await benchmarker.retrieveResults(metrics, cropSize, models, packages);
+  results.forEach(({ values, ...result }) => {
+    console.log(result)
+    console.log(values);
+  })
   if (skipDisplayResults !== true) {
     display(results);
   }

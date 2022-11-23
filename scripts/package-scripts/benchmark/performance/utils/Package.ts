@@ -110,17 +110,21 @@ export class Package extends BaseModel {
 
   async getUpscaler(modelName: string): Promise<[typeof Upscaler, ModelDefinition]> {
     const useGPU = this.useGPU;
-    const modelPath = UpscalerModel.buildModelPath(this.name, modelName);
-    const upscaler = this.upscalers.get(modelPath);
-    if (!upscaler) {
-      if (!this.tf) {
-        throw new Error('No tensorflow defined');
-      }
-      const _upscaler = await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
-      this.upscalers.set(modelPath, _upscaler);
-      return _upscaler;
+    // const modelPath = UpscalerModel.buildModelPath(this.name, modelName);
+    if (!this.tf) {
+      throw new Error('No tensorflow defined');
     }
-    return upscaler;
+    return await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
+    // const upscaler = this.upscalers.get(modelPath);
+    // if (!upscaler) {
+    //   if (!this.tf) {
+    //     throw new Error('No tensorflow defined');
+    //   }
+    //   const _upscaler = await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
+    //   this.upscalers.set(modelPath, _upscaler);
+    //   return _upscaler;
+    // }
+    // return upscaler;
   }
 
   getModelKeysAndPaths() {
@@ -205,9 +209,13 @@ export class Package extends BaseModel {
     });
     await Promise.all(filteredModels.map(async model => {
       try {
-        const [upscaler, modelDefinition] = await this.getUpscaler(model.name);
-        model.upscaler = upscaler;
-        model.modelDefinition = modelDefinition;
+        if (!this._id) {
+          throw new Error(`No id set for package ${this.name}`);
+        }
+        model.packageId = this._id;
+        // const [upscaler, modelDefinition] = await this.getUpscaler(model.name);
+        // model.upscaler = upscaler;
+        // model.modelDefinition = modelDefinition;
         return model;
       } catch (err) {
         return undefined;

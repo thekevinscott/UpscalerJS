@@ -12,11 +12,11 @@ import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrow
 import { BenchmarkedSpeedResult, SpeedBenchmarker } from '../performance/utils/SpeedBenchmarker';
 import { TF } from "../performance/utils/types";
 import Table from 'cli-table';
-import sequelize from '../performance/utils/sequelize';
-import { QueryTypes } from 'sequelize';
 import { writeFileSync } from 'fs-extra';
 import { Device } from '../performance/utils/Device';
 import { Local } from 'browserstack-local';
+import { QueryTypes, Sequelize } from 'sequelize';
+import { ASSETS_DIR } from '../../utils/constants';
 
 /****
  * Constants
@@ -25,6 +25,12 @@ const PORT = 8099;
 const SHOW_DEVICES = false;
 const ROOT_DIR = path.resolve(__dirname, '../../../..');
 const SCREENSHOT_DIR = path.resolve(ROOT_DIR, './tmp/screenshots');
+const SPEED_DATABASE_FILE = path.resolve(ASSETS_DIR, 'speed.sql');
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: SPEED_DATABASE_FILE,
+  logging: false,
+});
 
 /****
  * Types
@@ -69,51 +75,55 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal: Local, server: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts) => {
-  if (opts.skipBundle !== true) {
-    if (opts.verbose) {
-      console.log('bundling')
+const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, resultsOnly?: boolean) => {
+  if (resultsOnly === true) {
+      await fn();
+  } else {
+    if (opts.skipBundle !== true) {
+      if (opts.verbose) {
+        console.log('bundling')
+      }
+      await bundle({
+        ...opts,
+        usePNPM: useNPM !== true,
+      });
     }
-    await bundle({
-      ...opts,
-      usePNPM: useNPM !== true,
-    });
-  }
-  if (opts.verbose) {
-    console.log('Starting local browserstack and local server');
-  }
-  const [bsLocal, server] = await Promise.all([
-    startBrowserstack(),
-    startServer(PORT, DIST),
-  ]);
-  if (opts.verbose) {
-    console.log('Successfully started local browserstack and local server')
-  }
+    if (opts.verbose) {
+      console.log('Starting local browserstack and local server');
+    }
+    const [bsLocal, server] = await Promise.all([
+      startBrowserstack(),
+      startServer(PORT, DIST),
+    ]);
+    if (opts.verbose) {
+      console.log('Successfully started local browserstack and local server')
+    }
 
-  const closeAll = async () => await Promise.all([
-    bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
-    closeServer(server),
-  ])
+    const closeAll = async () => await Promise.all([
+      bsLocal !== undefined && bsLocal.isRunning() ? stopBrowserstack(bsLocal) : () => { },
+      closeServer(server),
+    ])
 
-  process.on('exit', closeAll);
+    process.on('exit', closeAll);
 
-  let err: unknown;
-  try {
-    await fn(bsLocal, server);
-  } catch(error: unknown) {
-    err = error;
-  }
+    let err: unknown;
+    try {
+      await fn(bsLocal, server);
+    } catch (error: unknown) {
+      err = error;
+    }
 
-  if (opts.verbose) {
-    console.log('Closing local browserstack and local server');
-  }
-  await closeAll();
-  if (opts.verbose) {
-    console.log('Successfully closed local browserstack and local server');
-  }
-  if (err !== undefined) {
-    console.error(err);
-    process.exit(1);
+    if (opts.verbose) {
+      console.log('Closing local browserstack and local server');
+    }
+    await closeAll();
+    if (opts.verbose) {
+      console.log('Successfully closed local browserstack and local server');
+    }
+    if (err !== undefined) {
+      console.error(err);
+      process.exit(1);
+    }
   }
 };
 
@@ -175,45 +185,56 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     throw new Error('No results found');
   }
 
-  await Promise.all([
-    `CREATE TABLE IF NOT EXISTS packages (
-    id INTEGER PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE
-  )`,
-  `CREATE TABLE IF NOT EXISTS models (
-    id INTEGER PRIMARY KEY,
-    packageId INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    scale INTEGER NOT NULL,
-    meta JSON NOT NULL,
-    UNIQUE(packageId, name)
-  )`,
-  `CREATE TABLE IF NOT EXISTS devices (
-    id INTEGER PRIMARY KEY,
-    os TEXT,
-    os_version TEXT,
-    browserName TEXT,
-    browser_version TEXT,
-    device TEXT,
-    real_mobile BOOLEAN
-  )`,
-  `CREATE TABLE IF NOT EXISTS results (
-    id INTEGER PRIMARY KEY,
-    value REAL NOT NULL,
-    times REAL NOT NULL,
-    size INTEGER NOT NULL,
-    deviceId INTEGER NOT NULL,
-    modelId INTEGER NOT NULL,
-    UNIQUE(deviceId,modelId)
-  )
-  `].map(query => sequelize.query(query)));
-  const packages = new Map<string, { packageName: string }>();
+
+  const queries = [
+    ...[
+      'packages',
+      'models',
+      'devices',
+      'results',
+    ].map(table => `DROP TABLE IF EXISTS ${table}`),
+    `CREATE TABLE packages (
+      id INTEGER PRIMARY KEY,
+      name TEXT NOT NULL UNIQUE
+    )`,
+    `CREATE TABLE models (
+      id INTEGER PRIMARY KEY,
+      packageId INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      scale INTEGER NOT NULL,
+      meta JSON NOT NULL,
+      UNIQUE(packageId, name)
+    )`,
+    `CREATE TABLE devices (
+      id INTEGER PRIMARY KEY,
+      os TEXT,
+      os_version TEXT,
+      browserName TEXT,
+      browser_version TEXT,
+      device TEXT,
+      real_mobile TEXT
+    )`,
+    `CREATE TABLE results (
+      id INTEGER PRIMARY KEY,
+      value REAL NOT NULL,
+      times REAL NOT NULL,
+      size INTEGER NOT NULL,
+      deviceId INTEGER NOT NULL,
+      modelId INTEGER NOT NULL,
+      UNIQUE(deviceId,modelId)
+    )
+  `];
+  for (let i = 0; i < queries.length; i++) {
+    const query = queries[i];
+    await sequelize.query(query);
+  }
+  const packages = new Set<string>();
   const models = new Map<string, { packageName: string; modelName: string; scale: number; meta: Record<string, string | number>}>();
   const devices = new Map<string, {
     device?: string; deviceOs?: string; deviceOsVersion?: string; deviceBrowserName?: string; deviceBrowserVersion?: string; deviceIsRealMobile?: boolean;
   }>();
   for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
-    packages.set(packageName, { packageName });
+    packages.add(packageName);
     models.set(`${packageName}-${modelName}`, {
       packageName,
       modelName,
@@ -226,46 +247,28 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
       device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
     });
   }
-
-  type QueryFn <Args extends any[]> = (...args: Args) => Promise<undefined | Array<any>>;
-  function createIfNotExists<Args extends any[]>(selectQuery: QueryFn<Args>, createQuery: QueryFn<Args>) {
-    return async (...args: Args) => {
-      const results = await selectQuery(...args);
-      if (results === undefined || results.length === 0) {
-        await createQuery(...args);
-      }
-    }
-  }
-
-  const createPackageIfNotExists = createIfNotExists<[string]>((packageName) => sequelize.query(`SELECT 1 FROM packages WHERE name = :name`, {
-    type: QueryTypes.SELECT,
-    replacements: {
-      name: packageName,
-    }
-  }), async (packageName) => sequelize.query(`
-      INSERT OR IGNORE INTO packages (name) VALUES (:name)
+  
+  for (const packageName of Array.from(packages)) {
+    await sequelize.query(`
+      INSERT INTO packages (name) VALUES (:name)
     `, {
-    replacements: {
-      name: packageName,
-    },
-    type: QueryTypes.INSERT,
-  }));
-
-  const createModelIfNotExists = createIfNotExists<[string, string, number, Record<string, string | number>]>((modelName, packageName) => sequelize.query(`
-      SELECT 1 FROM models 
-      WHERE name = :name
-      AND packageId = (SELECT id FROM packages WHERE packages.name = :packageName)
-  `, {
-    type: QueryTypes.SELECT,
-    replacements: {
-      name: modelName,
-      packageName,
-    }
-  }), async (modelName, packageName, scale, meta) => sequelize.query(`
-    INSERT OR IGNORE INTO models
-    (name, scale, meta, packageId) 
-       VALUES
-      (:name, :scale, :meta, (SELECT id FROM packages WHERE packages.name = :packageName))
+      replacements: {
+        name: packageName,
+      },
+      type: QueryTypes.INSERT,
+    });
+  }
+  for (const [_, { modelName, packageName, scale, meta }] of models) {
+    await sequelize.query(`
+      INSERT INTO models
+      (name, scale, meta, packageId) 
+        VALUES
+        (
+          :name, 
+          :scale, 
+          :meta, 
+          (SELECT id FROM packages WHERE packages.name = :packageName)
+        )
        `, {
     replacements: {
       name: modelName,
@@ -274,33 +277,22 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
       packageName,
     },
     type: QueryTypes.INSERT,
-  }));
-
-  const createDeviceIfNotExists = createIfNotExists<[string | undefined, string | undefined, string | undefined, string | undefined, string | undefined, boolean | undefined]>((
+    });
+  }
+  for (const [_, {
     device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
-    ) => sequelize.query(`
-    SELECT 1 FROM devices
-    WHERE 1=1
-    AND os = :os
-    AND os_version = :os_version
-    AND browserName = :browserName
-    AND browser_version = :browser_version
-    AND device = :device
-    AND real_mobile = :real_mobile
-  `, {
-    type: QueryTypes.SELECT,
-        replacements: Device.getCapabilitiesForQuery({
-          os: deviceOs,
-          os_version: deviceOsVersion,
-          browserName: deviceBrowserName,
-          browser_version: deviceBrowserVersion,
-          device,
-          real_mobile: deviceIsRealMobile,
-        }),
-  }), async (
-        device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
-    ) => sequelize.query(`
-      INSERT OR IGNORE INTO devices
+  }] of devices) {
+    const replacements = Device.getCapabilitiesForQuery({
+      os: deviceOs,
+      os_version: deviceOsVersion,
+      browserName: deviceBrowserName,
+      browser_version: deviceBrowserVersion,
+      device,
+      real_mobile: deviceIsRealMobile,
+    });
+    replacements.real_mobile = replacements.real_mobile ? 'y' : 'n;'
+    await sequelize.query(`
+      INSERT INTO devices
       (
         os,
         os_version,
@@ -319,40 +311,35 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
         :real_mobile
       )
       `, {
-        replacements: Device.getCapabilitiesForQuery({
-          os: deviceOs,
-          os_version: deviceOsVersion,
-          browserName: deviceBrowserName,
-          browser_version: deviceBrowserVersion,
-          device,
-          real_mobile: deviceIsRealMobile,
-        }),
+        replacements,
         type: QueryTypes.INSERT,
-  }));
-  
-  for (const packageName in packages) {
-    await createPackageIfNotExists(packageName);
-  }
-  for (const [_, { modelName, packageName, scale, meta }] of models) {
-    await createModelIfNotExists(modelName, packageName, scale, meta)
-  }
-  for (const [_, {
-    device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
-  }] of devices) {
-    await createDeviceIfNotExists(
-    device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
-    )
+    });
   }
   for (const { size, packageName, modelName, duration, times, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
     await sequelize.query(`
-      INSERT OR IGNORE INTO results 
-      (value, times, modelId, deviceId) 
+      INSERT INTO results 
+      (
+        value,
+        times,
+        size,
+        modelId,
+        deviceId
+      )
       VALUES 
       (
         :value,
         :times,
         :size,
-        (SELECT id FROM models WHERE models.name = :modelName AND models.packageId = (SELECT id FROM packages WHERE packages.name = :packageName))
+        (
+          SELECT id FROM models 
+          WHERE 1=1
+          AND models.name = :modelName 
+          AND models.packageId = (
+            SELECT id FROM packages 
+            WHERE 1=1
+            AND packages.name = :packageName
+          )
+        ),
         (
           SELECT id FROM devices d 
           WHERE 1=1 
@@ -361,10 +348,10 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
           ${deviceBrowserName ? 'AND d.browserName = :browserName' : ''}
           ${deviceBrowserVersion ? 'AND d.browser_version = :browser_version' : ''}
           ${device ? 'AND d.device = :device' : ''}
-          ${deviceIsRealMobile ? 'AND d.real_mobile = :real_mobile' : ''}
         )
       )
       `, {
+          // ${deviceIsRealMobile ? 'AND d.real_mobile = :real_mobile' : ''}
       replacements: {
         value: duration,
         times,
@@ -376,7 +363,7 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
         os_version: deviceOsVersion, 
         browserName: deviceBrowserName, 
         browser_version: deviceBrowserVersion, 
-        real_mobile: deviceIsRealMobile,
+        // real_mobile: deviceIsRealMobile,
       },
       type: QueryTypes.INSERT,
     });
@@ -471,6 +458,7 @@ const benchmarkSpeed = async (
     // return o.real_mobile === 'true' && (o.device?.toLowerCase().includes('iphone') || o.device?.toLowerCase().includes('ipad'));
     // return o.real_mobile === 'true';
     // return true;
+    // return o.device === 'Samsung Galaxy S22 Ultra';
     return o.device !== "iPad Air 4";
   });
 
@@ -496,7 +484,7 @@ const benchmarkSpeed = async (
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
   }
-}, opts);
+}, opts, resultsOnly);
 
 /****
  * Functions to expose the main function as a CLI tool

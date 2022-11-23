@@ -7,9 +7,8 @@ import { getInput, } from './getInput';
 
 
 // skipcq: js-0108
-const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => tf => {
+const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => (tf): ModelDefinition => {
   const Layer = tf.layers.Layer;
-  const SCALE = scale;
   const BETA = 0.2;
 
   class MultiplyBeta extends Layer {
@@ -27,29 +26,33 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
     static className = 'MultiplyBeta';
   }
 
-  class PixelShuffle extends Layer {
-    scale: number;
+  const getPixelShuffle = (_scale: number) => {
+    class PixelShuffle extends Layer {
+      scale: number = _scale;
 
-    constructor() {
-      super({});
-      this.scale = SCALE;
+      constructor() {
+        super({});
+      }
+
+      // skipcq: js-0105
+      computeOutputShape(inputShape: number[]) {
+        return [inputShape[0], inputShape[1], inputShape[2], 3,];
+      }
+
+      call(inputs: Inputs) {
+        return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
+      }
+
+      static className = `PixelShuffle${scale}x`;
     }
 
-    computeOutputShape(inputShape: number[]) {
-      return [inputShape[0], inputShape[1], inputShape[2], 3,];
-    }
+    return PixelShuffle;
+  };
 
-    call(inputs: Inputs) {
-      return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
-    }
-
-    static className = 'PixelShuffle';
-  }
-
-  const modelDefinition: ModelDefinition = {
+  return {
     preprocess: (image: Tensor) => tf.mul(image, 1 / 255),
     postprocess: clipOutput(tf),
-    customLayers: [MultiplyBeta, PixelShuffle,],
+    customLayers: [MultiplyBeta, getPixelShuffle(scale),],
     scale,
     channels: 3,
     path: `models/${scale}x/model.json`,
@@ -72,8 +75,6 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
       modelFileName,
     },
   };
-
-  return modelDefinition;
 };
 
 export default getModelDefinition;
