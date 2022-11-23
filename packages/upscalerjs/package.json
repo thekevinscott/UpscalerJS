@@ -77,16 +77,16 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^4.0.0"
+    "@tensorflow/tfjs": "^4.1.0"
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*"
   },
   "devDependencies": {
-    "@tensorflow/tfjs": "^4.0.0",
-    "@tensorflow/tfjs-node": "^4.0.0",
-    "@tensorflow/tfjs-node-gpu": "^4.0.0",
+    "@tensorflow/tfjs": "^4.1.0",
+    "@tensorflow/tfjs-node": "^4.1.0",
+    "@tensorflow/tfjs-node-gpu": "^4.1.0",
     "@types/jest": "^29.0.3",
     "chokidar": "^3.5.3",
     "seedrandom": "3.0.5"
