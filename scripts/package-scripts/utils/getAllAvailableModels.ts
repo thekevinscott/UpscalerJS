@@ -4,13 +4,14 @@ import { getPackageJSONExports } from './getPackageJSONExports';
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');
+const EXCLUDED = ['dist', 'types', 'node_modules', 'docs'];
 
 const jsonParse = (fileName: string) => JSON.parse(readFileSync(fileName, 'utf-8'))
 
 export const getAllAvailableModelPackages = (): Array<string> => readdirSync(MODELS_DIR).filter(file => {
   const modelDir = path.resolve(MODELS_DIR, file);
 
-  return !['dist', 'types', 'node_modules'].includes(file) && lstatSync(modelDir).isDirectory() && existsSync(path.resolve(modelDir, 'package.json'));
+  return !EXCLUDED.includes(file) && lstatSync(modelDir).isDirectory() && existsSync(path.resolve(modelDir, 'package.json'));
 });
 
 export const getAllAvailableModels = (packageName: string) => {
