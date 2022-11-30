@@ -36,6 +36,14 @@ export interface Import {
 
 const CONCURRENT_ASYNC_THREADS = 1;
 
+const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR).map(packagePath => path.resolve(ROOT_DIR, packagePath)).reduce((map, packagePath) => {
+  const { name } = getPackageJSON(packagePath);
+  if (name) {
+    map.set(name, packagePath);
+  }
+  return map;
+}, new Map<string, string>());
+
 /***
  * Functions
  */
@@ -233,14 +241,9 @@ const getLocalAndRemoteDependencies = (dir: string) => {
 };
 
 const findMatchingFolder = (dependency: string): string => {
-  const packagePaths = findAllPackages(ROOT_DIR);
-
-  for (let i = 0; i < packagePaths.length; i++) {
-    const packagePath = path.resolve(ROOT_DIR, packagePaths[i]);
-    const { name } = getPackageJSON(packagePath);
-    if (name === dependency) {
-      return path.join(packagePath, '..');
-    }
+  const packagePath = PACKAGE_PATHS.get(dependency);
+  if (packagePath) {
+    return packagePath;
   }
 
   throw new Error(`Could not find local dependency ${dependency}`);
