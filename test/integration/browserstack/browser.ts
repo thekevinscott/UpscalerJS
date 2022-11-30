@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { BrowserOption, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { executeAsyncScript } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
@@ -74,19 +75,22 @@ describe('Browser Integration Tests', () => {
         const title = await driver.getTitle();
         return title.endsWith('| Loaded');
       }, 3000);
-      const result = await driver.executeScript(() => {
+
+      const result = await executeAsyncScript(driver, async () => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/2x/2x.json',
             scale: 4,
           },
         });
         const data = upscaler.upscale(window['flower']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
+      }, {}, {
+        timeout: 30000, // 30 seconds max
       });
+      await printLogs(driver, capabilities);
 
-      printLogs(driver, capabilities);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
   });
