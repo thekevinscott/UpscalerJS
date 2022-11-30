@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { copySync } from 'fs-extra';
+import { copySync, mkdirp, mkdirpSync } from 'fs-extra';
 import path from 'path';
 import { getAllAvailableModelPackages } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 
@@ -12,9 +12,7 @@ interface CopyFixtureOpts {
 }
 
 export const copyFixtures = (dist: string, { includeFixtures = true, includeModels = false }: CopyFixtureOpts = {} ) => {
-  fs.mkdirSync(path.join(dist, 'pixelator'), { recursive: true });
-  fs.copyFileSync(path.join(FIXTURES, 'pixelator/pixelator.json'), path.join(dist, 'pixelator/pixelator.json'))
-  fs.copyFileSync(path.join(FIXTURES, 'pixelator/pixelator.weights.bin'), path.join(dist, 'pixelator/pixelator.weights.bin'))
+  mkdirpSync(dist);
   if (includeFixtures) {
     fs.copyFileSync(path.join(FIXTURES, 'flower-small.png'), path.join(dist, 'flower-small.png'))
   }

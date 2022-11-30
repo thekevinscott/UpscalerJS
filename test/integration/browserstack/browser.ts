@@ -77,7 +77,7 @@ describe('Browser Integration Tests', () => {
       const result = await driver.executeScript(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });

@@ -175,7 +175,7 @@ describe('Memory Leaks', () => {
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
   // //   //     for (let i = 0; i < times; i++) {
-  // //   //       const t = await window['tf'].loadLayersModel('/pixelator/pixelator.json');
+  // //   //       const t = await window['tf'].loadLayersModel('/models/pixel-upsampler/models/4x/4x.json');
   // //   //       foo.push(t)
   // //   //     }
   // //   //     setInterval(() => {
