@@ -1,5 +1,4 @@
 import path from 'path';
-import http from 'http';
 import fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';

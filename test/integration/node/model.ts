@@ -70,7 +70,7 @@ describe('Node Model Loading Integration Tests', () => {
     const result = await testRunner.run({
       globals: {
         model: JSON.stringify({
-          path: 'file://' + path.join(__dirname, '../../__fixtures__', '/models/pixel-upsampler/models/4x/4x.json'),
+          path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/4x/4x.json'),
           scale: 4,
         }),
       },
