@@ -87,7 +87,7 @@ describe('Model Loading Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });
@@ -100,7 +100,7 @@ describe('Model Loading Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: `${window.location.origin}/pixelator/pixelator.json`,
+          path: `${window.location.origin}/models/pixel-upsampler/models/4x/4x.json`,
           scale: 4,
         },
       });

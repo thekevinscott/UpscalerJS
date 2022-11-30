@@ -80,7 +80,7 @@ describe('Browser Integration Tests', () => {
       const result = await executeAsyncScript(driver, async () => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/2x/2x.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
