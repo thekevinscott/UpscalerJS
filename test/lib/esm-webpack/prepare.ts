@@ -4,12 +4,31 @@ import { copyFixtures } from '../utils/copyFixtures';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
-import { LOCAL_UPSCALER_NAME } from './constants';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+
+const PACKAGES = [
+  ...getAllAvailableModelPackages().filter((packageName) => {
+    return packageName === 'pixel-upsampler';
+  }).map(packageName => ({
+    packageName,
+    models: getAllAvailableModels(packageName).map(({ esm }) => {
+      return esm === '' ? {
+        path: '',
+        name: 'index',
+      } : {
+        path: esm,
+        name: esm,
+      };
+    }),
+  })),
+];
 
 export const prepareScriptBundleForESM = async () => {
   await installNodeModules(ROOT);
@@ -18,6 +37,10 @@ export const prepareScriptBundleForESM = async () => {
       src: UPSCALER_PATH,
       name: LOCAL_UPSCALER_NAME,
     },
+      ...PACKAGES.map(({ packageName }) => ({
+        src: path.resolve(MODELS_DIR, packageName),
+        name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+      })),
   ]);
 };
 
