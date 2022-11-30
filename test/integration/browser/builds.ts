@@ -56,7 +56,7 @@ describe('Build Integration Tests', () => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });
@@ -87,7 +87,7 @@ describe('Build Integration Tests', () => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/pixelator/pixelator.json',
+          path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
         },
       });

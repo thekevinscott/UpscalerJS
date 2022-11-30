@@ -11,7 +11,7 @@ import { FIXTURES_DIR, MODELS_DIR } from '../../../scripts/package-scripts/utils
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small-15.jpg');
 const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small.png');
-const MODEL_PATH = 'file://' + path.join(FIXTURES_DIR, 'pixelator/pixelator.json');
+const MODEL_PATH = 'file://' + path.join(FIXTURES_DIR, '/models/pixel-upsampler/models/4x/4x.json');
 
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.png');

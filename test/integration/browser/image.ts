@@ -53,7 +53,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -66,7 +66,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -83,7 +83,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -102,7 +102,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -121,7 +121,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate((pixels) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -136,7 +136,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -157,7 +157,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
@@ -172,7 +172,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/pixelator/pixelator.json',
+            path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
           },
         });
