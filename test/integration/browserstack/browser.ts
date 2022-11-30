@@ -41,7 +41,8 @@ jest.retryTimes(5);
 const browserOptions = getBrowserOptions(option => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.os === 'OS X';
-  return !option.browserName?.toLowerCase().includes('iphone');
+  // return !option.browserName?.toLowerCase().includes('iphone');
+  return true;
 });
 
 describe('Browser Integration Tests', () => {
