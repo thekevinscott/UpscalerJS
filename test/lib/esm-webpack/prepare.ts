@@ -46,7 +46,9 @@ export const prepareScriptBundleForESM = async () => {
 
 export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
   rimraf.sync(DIST);
-  copyFixtures(DIST);
+  copyFixtures(DIST, {
+    includeModels: true,
+  });
 
   const entryFile = path.join(ROOT, 'src/index.js');
   await writeIndex(entryFile, LOCAL_UPSCALER_NAME);
