@@ -1,5 +1,5 @@
 {
-  "name": "webcam",
+  "name": "@upscalerjs/examples.webcam",
   "version": "1.0.0-beta.8",
   "description": "Demonstration of webcam usage of UpscalerJS",
   "main": "index.js",
