@@ -11,7 +11,6 @@ import { UpscalerOptions } from 'upscaler/dist/browser/esm/types';
 import type webdriver from 'selenium-webdriver';
 import { Benchmarker } from "./Benchmarker";
 import { UpscalerModel } from "./UpscalerModel";
-import { SpeedMeasurement } from "./SpeedMeasurement";
 import sequelize from "./sequelize";
 import { executeAsyncScript } from "./utils";
 import { Local } from "browserstack-local";

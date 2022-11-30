@@ -1,6 +1,5 @@
 import http from 'http';
 import puppeteer from 'puppeteer';
-import { BundleOpts, } from '../../lib/esm-esbuild/prepare';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
