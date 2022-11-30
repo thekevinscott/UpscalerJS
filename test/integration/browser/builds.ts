@@ -11,7 +11,7 @@ import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const JEST_TIMEOUT_IN_SECONDS = 60;
+const JEST_TIMEOUT_IN_SECONDS = 120;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -78,7 +78,7 @@ describe('Build Integration Tests', () => {
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
 
-  it.only("upscales using an ESM build using Webpack", async () => {
+  it("upscales using an ESM build using Webpack", async () => {
     const { page } = await start(async () => {
       await prepareScriptBundleForESM();
       await bundleWebpack();
