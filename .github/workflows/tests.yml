@@ -314,4 +314,4 @@ jobs:
         run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks
+        run: pnpm test:memory-leaks --skipBuild --skipModelBuild
