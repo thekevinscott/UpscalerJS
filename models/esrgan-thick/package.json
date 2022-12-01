@@ -30,7 +30,8 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-thick",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o cjs -o esm -o umd"
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o cjs -o esm -o umd",
+    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-thick"
   },
   "keywords": [
     "image super resolution",
