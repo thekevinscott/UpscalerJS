@@ -12,7 +12,6 @@ const DEFAULT_PORT = 8098;
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
 
-let initialized = false;
 const cachedBundles = new Set();
 
 export class BrowserTestRunner {
@@ -54,8 +53,6 @@ export class BrowserTestRunner {
     usePNPM?: boolean;
     cacheBundling?: boolean;
   } = {}) {
-    console.log('Browser Test Runner, has this been initialized before?', initialized);
-    initialized = true;
     this._name = name;
     this.mockCDN = mockCDN;
     this.dist = dist;

@@ -65,10 +65,6 @@ describe('Model Loading Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  it.only('foo', () => {
-    expect(1).toEqual(2);
-  })
-
   it("loads the default model", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']();
