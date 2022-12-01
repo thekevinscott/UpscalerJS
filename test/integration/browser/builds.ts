@@ -42,6 +42,10 @@ describe('Build Integration Tests', () => {
     });
   }, 5000);
 
+  it.only('foo', () => {
+    expect(1).toEqual(2);
+  })
+
   const start = async (bundle: () => Promise<void>, dist: string, mockCDN: MockCDN, pageTitle: string | null = null) => {
     await bundle();
     testRunner.mockCDN = mockCDN;
