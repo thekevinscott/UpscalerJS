@@ -12,6 +12,8 @@ const DEFAULT_PORT = 8098;
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
 
+const cache = new Map();
+
 export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
@@ -26,6 +28,7 @@ export class BrowserTestRunner {
   private _name?: string;
   private _verbose?: boolean;
   private _usePNPM?: boolean;
+  private _cache?: boolean;
 
   constructor({
     name,
@@ -37,6 +40,7 @@ export class BrowserTestRunner {
     showWarnings = false,
     verbose = false,
     usePNPM = false,
+    cache = true,
   }: {
     name?: string;
     mockCDN?: MockCDN;
@@ -47,6 +51,7 @@ export class BrowserTestRunner {
     showWarnings?: boolean;
     verbose?: boolean;
     usePNPM?: boolean;
+    cache?: boolean;
   } = {}) {
     this._name = name;
     this.mockCDN = mockCDN;
@@ -57,6 +62,7 @@ export class BrowserTestRunner {
     this.log = log;
     this._verbose = verbose;
     this._usePNPM = usePNPM;
+    this._cache = cache;
   }
 
   /****
@@ -254,10 +260,20 @@ export class BrowserTestRunner {
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     const opts = this._makeOpts();
+    const bundleIfNotCached = async () => {
+      if (
+        this._cache === false ||
+        (this._cache === true && cache.get(bundle) !== true)
+      ) {
+        await bundle(opts);
+      }
+      return this.startServer();
+    };
     await Promise.all([
-      bundle(opts).then(() => this.startServer()),
+      bundleIfNotCached(),
       this.startBrowser(),
     ]);
+    cache.set(bundle, true);
   }
 
   @timeit('afterAll clean up')
