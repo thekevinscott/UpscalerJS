@@ -4,3 +4,5 @@ packages:
   - 'models/**'
   - 'scripts/**'
   - 'docs/**'
+  # exclude packages that are inside demo directories
+  - '!models/**/demo/**'
