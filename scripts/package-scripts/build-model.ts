@@ -41,7 +41,7 @@ const buildESM = async (modelFolder: string, opts: Opts = {}) => {
   const DIST = path.resolve(modelFolder, 'dist/esm');
   if (opts.forceRebuild !== true && existsSync(DIST)) {
     if (opts.verbose) {
-      console.log(`dist folder "${DIST}" already exists, skipping.`)
+      console.log(`dist folder "${DIST}" already exists for esm, skipping.`)
     }
     return;
   }
@@ -63,7 +63,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const DIST = path.resolve(modelFolder, 'dist/umd');
   if (opts.forceRebuild !== true && existsSync(DIST)) {
     if (opts.verbose) {
-      console.log(`dist folder "${DIST}" already exists, skipping.`)
+      console.log(`dist folder "${DIST}" already exists for umd, skipping.`)
     }
     return;
   }
@@ -120,7 +120,7 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   const DIST = path.resolve(modelFolder, 'dist/cjs');
   if (opts.forceRebuild !== true && existsSync(DIST)) {
     if (opts.verbose) {
-      console.log(`dist folder "${DIST}" already exists, skipping.`)
+      console.log(`dist folder "${DIST}" already exists for cjs, skipping.`)
     }
     return;
   }
