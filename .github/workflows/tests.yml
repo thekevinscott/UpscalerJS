@@ -251,7 +251,7 @@ jobs:
         run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --skipBuild --skipModelBuild --ci
+        run: pnpm test:integration:browser --skipBuild --skipModelBuild --verbose --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 

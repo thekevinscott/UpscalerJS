@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
@@ -33,7 +33,7 @@ describe('Image Format Integration Tests', () => {
   const page = (): puppeteer.Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundleEsbuild);
   }, 20000);
 
   afterAll(async function imageAfterAll() {
