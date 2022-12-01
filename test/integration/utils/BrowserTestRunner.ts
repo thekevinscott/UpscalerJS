@@ -193,7 +193,7 @@ export class BrowserTestRunner {
         .on('pageerror', ({ message }) => console.log(message))
         .on('response', response => {
           const status = response.status();
-          if (status !== 200) {
+          if (`${status}` !== `${200}`) {
             console.log(`${status} ${response.url()}`);
           }
         })
