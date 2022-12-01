@@ -24,7 +24,6 @@
   },
   "scripts": {
     "build": "pnpm build",
-    "build:model": "pnpm --filter @upscalerjs/scripts build:model",
     "dev": "vite --config ./dev/vite.config.ts",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
@@ -40,6 +39,8 @@
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "model:benchmark:performance": "pnpm --filter @upscalerjs/scripts model:benchmark:performance",
     "model:benchmark:speed": "pnpm --filter @upscalerjs/scripts model:benchmark:speed",
+    "model:build": "pnpm --filter @upscalerjs/scripts model:build",
+    "model:clean": "pnpm --filter @upscalerjs/scripts model:clean",
     "model:convert-python-model": "pnpm --filter @upscalerjs/scripts model:convert-python-model",
     "model:convert-python-model-folder": "pnpm --filter @upscalerjs/scripts model:convert-python-model-folder",
     "model:create": "pnpm --filter @upscalerjs/scripts model:create",
