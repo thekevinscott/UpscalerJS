@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -55,7 +55,7 @@ describe('Browser Integration Tests', () => {
   });
 
   beforeAll(async function browserBeforeAll() {
-    testRunner.beforeAll(bundle);
+    testRunner.beforeAll(bundleEsbuild);
   }, 20000);
 
   afterAll(async function browserAfterAll() {

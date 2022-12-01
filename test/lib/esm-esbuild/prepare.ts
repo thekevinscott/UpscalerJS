@@ -48,7 +48,7 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-export const bundle = async ({ 
+export const bundleEsbuild = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,

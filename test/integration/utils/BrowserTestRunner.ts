@@ -263,9 +263,9 @@ export class BrowserTestRunner {
     const bundleIfNotCached = async () => {
       if (
         this._cacheBundling === false ||
-        (this._cacheBundling === true && cachedBundles.has(bundle) !== true)
+        (this._cacheBundling === true && cachedBundles.has(bundle.name) !== true)
       ) {
-        console.log('Bundle not yet in cache, bundling', bundle)
+        console.log('Bundle not yet in cache, bundling', bundle.name)
         await bundle(opts);
       } else {
         console.log('Bundle already in cache, skipping', cachedBundles)
@@ -276,7 +276,7 @@ export class BrowserTestRunner {
       bundleIfNotCached(),
       this.startBrowser(),
     ]);
-    cachedBundles.add(bundle);
+    cachedBundles.add(bundle.name);
   }
 
   @timeit('afterAll clean up')
