@@ -1,4 +1,4 @@
-import fs, { mkdirp, existsSync, chmod } from 'fs-extra';
+import fs, { mkdirp, existsSync, chmod, exists } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
@@ -23,6 +23,7 @@ import { MODELS_DIR } from './utils/constants';
 
 interface Opts {
   verbose?: boolean;
+  forceRebuild?: boolean;
 }
 
 /****
@@ -37,6 +38,13 @@ const mkDistFolder = async (dist: string) => {
  * ESM build function
  */
 const buildESM = async (modelFolder: string, opts: Opts = {}) => {
+  const DIST = path.resolve(modelFolder, 'dist/esm');
+  if (opts.forceRebuild !== true && existsSync(DIST)) {
+    if (opts.verbose) {
+      console.log(`dist folder "${DIST}" already exists for esm, skipping.`)
+    }
+    return;
+  }
   if (opts.verbose) {
     console.log('Compiling typescript for ESM')
   }
@@ -53,6 +61,12 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
+  if (opts.forceRebuild !== true && existsSync(DIST)) {
+    if (opts.verbose) {
+      console.log(`dist folder "${DIST}" already exists for umd, skipping.`)
+    }
+    return;
+  }
   await mkDistFolder(DIST);
 
   if (opts.verbose) {
@@ -103,8 +117,14 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
  * CJS build function
  */
 const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
-  const dist = path.resolve(modelFolder, 'dist/cjs');
-  await mkDistFolder(dist);
+  const DIST = path.resolve(modelFolder, 'dist/cjs');
+  if (opts.forceRebuild !== true && existsSync(DIST)) {
+    if (opts.verbose) {
+      console.log(`dist folder "${DIST}" already exists for cjs, skipping.`)
+    }
+    return;
+  }
+  await mkDistFolder(DIST);
   if (opts.verbose) {
     console.log('Compiling typescript for CJS');
   }
@@ -112,7 +132,7 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   if (opts.verbose) {
     console.log('Babel transforming for CJS');
   }
-  await babelTransform(dist);
+  await babelTransform(DIST);
 };
 
 /****
@@ -132,8 +152,8 @@ const buildModel = async (
   }
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
-  rimraf.sync(DIST);
-  await mkDistFolder(DIST);
+  // rimraf.sync(DIST);
+  // await mkDistFolder(DIST);
 
   const outputFormatFns = [
     outputFormats.includes('umd') ? () => buildUMD(MODEL_ROOT, opts) : undefined,
