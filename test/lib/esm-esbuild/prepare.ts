@@ -17,7 +17,6 @@ export interface BundleOpts {
   skipInstallLocalPackages?: boolean;
   skipCopyFixtures?: boolean;
   usePNPM?: boolean;
-  cache?: boolean;
 }
 
 /***
@@ -49,82 +48,74 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-let cached = false;
-
 export const bundle = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,
   skipCopyFixtures = false,
   usePNPM = false,
-  cache = true,
 }: BundleOpts = {}) => {
-  if (cached === false) {
-    const entryFile = path.join(ROOT, 'src/index.js');
-    writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
-    if (skipInstallNodeModules !== true) {
-      if (verbose) {
-        console.log('installing node modules');
-      }
-      await installNodeModules(ROOT, { verbose });
-    }
-    if (skipInstallLocalPackages !== true) {
-      if (verbose) {
-        console.log('installing local packages');
-      }
-      await installLocalPackages(ROOT, [
-        {
-          src: UPSCALER_DIR,
-          name: LOCAL_UPSCALER_NAME,
-        },
-        ...PACKAGES.map(({ packageName }) => ({
-          src: path.resolve(MODELS_DIR, packageName),
-          name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
-        })),
-      ], {
-        verbose,
-        usePNPM,
-      });
-    }
-    if (skipCopyFixtures !== true) {
-      if (verbose) {
-        console.log('copying local fixtures');
-      }
-      copyFixtures(DIST, {
-        includeFixtures: false,
-        includeModels: true,
-      });
-    }
-
+  const entryFile = path.join(ROOT, 'src/index.js');
+  writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
+  if (skipInstallNodeModules !== true) {
     if (verbose) {
-      console.log('bundle');
+      console.log('installing node modules');
     }
-    const buildResult = await build({
-      entryPoints: [entryFile],
-      bundle: true,
-      loader: {
-        '.png': 'file',
-      },
-      outdir: DIST,
-      // watch: {
-      //   onRebuild(error, result) {
-      //     if (error) {
-      //       console.error('watch build failed:', error);
-      //     } else {
-      //       console.log('watch build succeeded:', result);
-      //     }
-      //   },
-      // },
-    });
-    // buildResult.stop();
-    fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
-    try {
-      fs.symlinkSync(path.resolve(ROOT, 'node_modules'), path.join(DIST, 'node_modules'));
-    } catch (err) { }
-    if (cache) {
-      cached = true;
-    }
+    await installNodeModules(ROOT, { verbose });
   }
+  if (skipInstallLocalPackages !== true) {
+    if (verbose) {
+      console.log('installing local packages');
+    }
+    await installLocalPackages(ROOT, [
+      {
+        src: UPSCALER_DIR,
+        name: LOCAL_UPSCALER_NAME,
+      },
+      ...PACKAGES.map(({ packageName }) => ({
+        src: path.resolve(MODELS_DIR, packageName),
+        name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+      })),
+    ], {
+      verbose,
+      usePNPM,
+    });
+  }
+  if (skipCopyFixtures !== true) {
+    if (verbose) {
+      console.log('copying local fixtures');
+    }
+    copyFixtures(DIST, {
+      includeFixtures: false,
+      includeModels: true,
+    });
+  }
+
+  if (verbose) {
+    console.log('bundle');
+  }
+  const buildResult = await build({
+    entryPoints: [entryFile],
+    bundle: true,
+    loader: {
+      '.png': 'file',
+    },
+    outdir: DIST,
+    // watch: {
+    //   onRebuild(error, result) {
+    //     if (error) {
+    //       console.error('watch build failed:', error);
+    //     } else {
+    //       console.log('watch build succeeded:', result);
+    //     }
+    //   },
+    // },
+  });
+  // buildResult.stop();
+  fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
+  try {
+    fs.symlinkSync(path.resolve(ROOT, 'node_modules'), path.join(DIST, 'node_modules'));
+  } catch(err) {}
 };
 
 export const mockCDN: MockCDN = (port, model, pathToModel) => {
