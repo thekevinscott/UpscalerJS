@@ -1,0 +1,55 @@
+.options {
+  display: flex;
+
+  .option {
+    margin-right: 20px;
+    display: flex;
+
+    label {
+      font-weight: bold;
+      padding: 0;
+      margin: 0;
+      display: block;
+      text-transform: uppercase;
+      opacity: 0.8;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 5px;
+
+      :after {
+        content: ":";
+      }
+    }
+
+    input {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.container {
+  overflow-x: scroll;
+}
+
+.sampleTable {
+  border-collapse: collapse;
+
+  tr {
+    border-bottom: none;
+  }
+
+  th {
+    border: none;
+  }
+
+  td {
+    padding: 0;
+    margin: 0;
+    border: none;
+
+    img {
+      display: block;
+    }
+  }
+}

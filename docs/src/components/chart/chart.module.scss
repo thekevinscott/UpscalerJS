@@ -1,0 +1,49 @@
+.container {
+  margin-bottom: 20px;
+
+  small {
+    display: block;
+    opacity: 0.6;
+    font-size: 11px;
+    line-height: 1.4;
+    margin: 10px;
+  }
+}
+
+.row {
+  display: flex;
+}
+
+.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.left {
+  flex: 1;
+}
+
+.right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.chart {
+  position: relative;
+  padding-left: 10px;
+}
+
+.optionLink {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 25px;
+  right: 0px;
+
+  &:hover {
+    color: white;
+  }
+}
