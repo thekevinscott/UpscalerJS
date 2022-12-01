@@ -1,6 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
 
@@ -8,6 +9,7 @@ const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
+  staticDirectories: ['assets', 'node_modules'],
   title: 'UpscalerJS',
   tagline: 'Upscale images in your browser with Tensorflow.js',
   url: 'https://upscalerjs.com',
@@ -24,7 +26,26 @@ const config = {
     locales: ['en'],
   },
 
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: [
+    function (context, options) {
+      return {
+        name: 'webpack-configuration-plugin',
+        configureWebpack() {
+          return {
+            resolve: {
+              fallback: {
+                fs: false,
+                "crypto": require.resolve("crypto-browserify"),
+                "path": require.resolve("path-browserify"),
+                "stream": require.resolve("stream-browserify"),
+              },
+            },
+          };
+        }
+      };
+    },
+    'docusaurus-plugin-sass',
+  ],
 
   presets: [
     [
@@ -32,11 +53,9 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-        //   sidebarPath: require.resolve('./sidebars.js'),
-        //   // // Please change this to your repo.
-        //   // // Remove this to remove the "edit this page" links.
-        //   // editUrl:
-        //   //   `${GITHUB_ROOT}/tree/main/packages/create-docusaurus/templates/shared/`,
+          routeBasePath: '/', // Serve the docs at the site's root
+          sidebarPath: require.resolve('./sidebars.cjs'),
+          breadcrumbs: false,
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
@@ -48,6 +67,10 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: true,
+      },
       colorMode: {
         defaultMode: 'dark',
         disableSwitch: false,
@@ -64,6 +87,11 @@ const config = {
             to: '/demo',
             position: 'left',
             label: 'Demo',
+          },
+          {
+            to: '/models',
+            position: 'left',
+            label: 'Models',
           },
           // {
           //   type: 'doc',
