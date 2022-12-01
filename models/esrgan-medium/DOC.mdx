@@ -1,0 +1,122 @@
+---
+title: ESRGAN Medium
+description: Overview of @upscalerjs/esrgan-medium model
+sidebar_position: 2
+sidebar_label: esrgan-medium
+---
+
+# ESRGAN Medium
+
+[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-medium/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-medium)
+
+These models strike a balance between latency and image quality. They aim to be in the middle of speed and performance measurements between `@upscalerjs/esrgan-slim` and `@upscalerjs/esrgan-thick`.
+
+## Samples + Demo
+
+Here are some examples of upscaled images using these models.
+
+import SampleTable from '@site/src/components/sampleTable/sampleTable';
+
+<SampleTable
+  packageName="esrgan-medium"
+  models={[
+    '2x',
+    '3x',
+    '4x',
+  ]}
+  scales={[
+    2,
+    3,
+    4,
+  ]}
+/>
+
+<iframe height="400" width="100%" src="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/models/esrgan-medium/demo?file=index.js&title=@upscalerjs/esrgan-medium"></iframe>
+
+
+## Installation
+
+```
+npm install @upscalerjs/esrgan-medium
+```
+
+## Usage
+
+Import a model, specified by its scale:
+
+```
+import Upscaler from 'upscaler';
+import x2 from '@upscalerjs/esrgan-medium/2x';
+
+const upscaler = new Upscaler({
+  model: x2,
+})
+```
+
+## Available Models
+
+ESRGAN Medium ships with four models corresponding to the desired scale of the upscaled image:
+
+- 2x: `@upscalerjs/esrgan-medium/2x`
+- 3x: `@upscalerjs/esrgan-medium/3x`
+- 4x: `@upscalerjs/esrgan-medium/4x`
+- 8x: `@upscalerjs/esrgan-medium/8x` (_note: the 8x model runs only in Node_)
+
+All models are also exported via the root export:
+
+```
+import Upscaler from 'upscaler';
+import models from '@upscalerjs/esrgan-medium';
+
+const upscaler = new Upscaler({
+  model: models.x2,
+  // model: models.x3,
+  // model: models.x4,
+  // model: models.x8,
+})
+```
+
+## Performance + Speed Measurements
+
+import PerformanceChart from '@site/src/components/chart/performanceChart/performanceChart';
+import SpeedChart from '@site/src/components/chart/speedChart/speedChart';
+
+<PerformanceChart package="esrgan-medium" databasePath="/assets/performance.sql"></PerformanceChart>
+
+<SpeedChart package="esrgan-medium" databasePath="/assets/speed.sql"></SpeedChart>
+
+## Architecture
+This model is trained via a Python implementation of the ESRGAN architecture.
+
+- Paper: https://arxiv.org/abs/1809.00219
+- Python Repo: https://github.com/idealo/image-super-resolution
+
+The Python repo has instructions on training from scratch if you are so inclined.
+
+## Training Details
+
+The model is trained on 4 scales.
+
+The model is trained on the [Div2k dataset](https://data.vision.ee.ethz.ch/cvl/DIV2K/).
+
+It was trained for 500 epochs, with the following hyperparameters:
+
+- **architecture**: `rdn`
+- **C**: `1`
+- **D**: `10`
+- **G**: `64`
+- **G0**: `64`
+
+The batch size was 12, and the batches per epoch was 20. The learning rate was set to `0.0004`. The HR patch size was set to `128` or `129` depending on the scale (ensuring it is divisible by the scale) with the LR patch size being the resultant scale `HR_patch_size / scale`.
+
+## Goals for the model
+ESRGAN Medium is meant to strike a balance between latency and performance, and aims to be the midpoint between `@upscalerjs/esrgan-slim` and `@upscalerjs/esrgan-thick`.
+
+Future experimentation may result in additional hyperparameter explorations, along with pruning of the neural network. This may result in a slight decrease in performance, but only if accompanied by a substantial reduction in latency.
+
+## License
+
+[MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
+
+
+
