@@ -323,7 +323,6 @@ importers:
       '@tsconfig/docusaurus': ^1.0.5
       '@types/chart.js': ^2.9.37
       '@types/react': ^18.0.17
-      '@types/react-chartjs-2': ^2.5.7
       '@types/sql.js': ^1.4.4
       '@upscalerjs/default-model': workspace:*
       '@upscalerjs/esrgan-legacy': workspace:*
@@ -386,7 +385,6 @@ importers:
       '@tsconfig/docusaurus': 1.0.6
       '@types/chart.js': 2.9.37
       '@types/react': 18.0.17
-      '@types/react-chartjs-2': 2.5.7_7cjotl24c372l6xfms2n6bssfq
       '@types/sql.js': 1.4.4
       concurrently: 7.3.0
       docusaurus-plugin-sass: 0.2.2_nzvutf6e3d4v3g5yyupdi6e3by
@@ -4268,16 +4266,6 @@ packages:
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
 
-  /@types/react-chartjs-2/2.5.7_7cjotl24c372l6xfms2n6bssfq:
-    resolution: {integrity: sha512-waqYqiNULIVUqaKO7MGUpFmWrVtH7gVPOzqwV4y4zgUyu/JiDwC005PpveO442HKnby9kLgp3t1SB2sld+ACLw==}
-    deprecated: This is a stub types definition for react-chartjs-2 (https://github.com/gor181/react-chartjs-2). react-chartjs-2 provides its own type definitions, so you don't need @types/react-chartjs-2 installed!
-    dependencies:
-      react-chartjs-2: 5.0.1_7cjotl24c372l6xfms2n6bssfq
-    transitivePeerDependencies:
-      - chart.js
-      - react
-    dev: true
-
   /@types/react-router-config/5.0.6:
     resolution: {integrity: sha512-db1mx37a1EJDf1XeX8jJN7R3PZABmJQXR8r28yUjVMFSjkmnQo6X6pOEEmNl+Tp2gYQOGPdYbFIipBtdElZ3Yg==}
     dependencies:
@@ -5684,6 +5672,7 @@ packages:
   /chart.js/4.0.1:
     resolution: {integrity: sha512-5/8/9eBivwBZK81mKvmIwTb2Pmw4D/5h1RK9fBWZLLZ8mCJ+kfYNmV9rMrGoa5Hgy2/wVDBMLSUDudul2/9ihA==}
     engines: {pnpm: ^7.0.0}
+    dev: false
 
   /check-error/1.0.2:
     resolution: {integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA==}
@@ -7569,7 +7558,6 @@ packages:
     resolution: {integrity: sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /esbuild/0.14.39:
     resolution: {integrity: sha512-2kKujuzvRWYtwvNjYDY444LQIA3TyJhJIX3Yo4+qkFlDDtGlSicWgeHVJqMUP/2sSfH10PGwfsj+O2ro1m10xQ==}
@@ -8856,7 +8844,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.73.0
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   /htmlparser2/6.1.0:
     resolution: {integrity: sha512-gyyPk6rgonLFEDGoeRgQNaEUvdJ4ktTmmUh/h2t7s+M8oPpIPxgNACWa+6ESR57kXstwqPiCut0V8NRpcwgU7A==}
@@ -12188,6 +12176,7 @@ packages:
     dependencies:
       chart.js: 4.0.1
       react: 17.0.2
+    dev: false
 
   /react-dev-utils/12.0.1_4bz3etpdgsvghw6bzhdz5wqrfu:
     resolution: {integrity: sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==}
@@ -13786,7 +13775,6 @@ packages:
       terser: 5.14.1
       uglify-js: 3.16.2
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
-    dev: true
 
   /terser-webpack-plugin/5.3.3_webpack@5.73.0:
     resolution: {integrity: sha512-Fx60G5HNYknNTNQnzQ1VePRuu89ZVYWfjRAeT5rITuCY/1b08s49e5kSQwHDirKZWuoKOBRFS98EUUoZ9kLEwQ==}
@@ -14140,7 +14128,6 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -14762,7 +14749,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: true
 
   /webpackbar/5.0.2_webpack@5.73.0:
     resolution: {integrity: sha512-BmFJo7veBDgQzfWXl/wwYXr/VFus0614qZ8i9znqcl9fnEdiVkdbi0TedLQ6xAK92HZHDJ0QmyQ0fmuZPAgCYQ==}
