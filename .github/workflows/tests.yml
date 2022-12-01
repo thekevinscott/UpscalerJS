@@ -84,7 +84,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -118,7 +118,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -153,7 +153,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -205,7 +205,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Integration Tests'
         run: pnpm test:integration:browserstack --ci
@@ -239,7 +239,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Build models'
         run: pnpm --filter './models/*' build
@@ -276,7 +276,7 @@ jobs:
           cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
 
       - name: 'Integration Tests'
         run: pnpm test:integration:node --ci
@@ -302,7 +302,16 @@ jobs:
           # cache: 'pnpm'
 
       - name: 'Install dependencies'
-        run: pnpm install --filter=!"@upscalerjs/examples.*"
+        run: pnpm liteinstall
+
+      - name: 'Build models'
+        run: pnpm --filter './models/*' build
+
+      - name: 'Build Upscaler dependencies'
+        run: 'pnpm --filter="upscaler" build:dependencies'
+
+      - name: 'Build'
+        run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Memory Leak Tests'
         run: pnpm test:memory-leaks
