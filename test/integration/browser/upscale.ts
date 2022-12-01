@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundle, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { BASE64, Progress } from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -29,7 +29,7 @@ describe('Upscale Integration Tests', () => {
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundleEsbuild);
   }, 60000);
 
   afterAll(async function modelAfterAll() {

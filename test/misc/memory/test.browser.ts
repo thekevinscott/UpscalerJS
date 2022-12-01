@@ -1,5 +1,5 @@
 import puppeteer, { Page } from 'puppeteer';
-import { bundle, DIST } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
@@ -91,7 +91,7 @@ describe('Memory Leaks', () => {
   });
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundle);
+    await testRunner.beforeAll(bundleEsbuild);
   }, 120000);
 
   afterAll(async function modelAfterAll() {
