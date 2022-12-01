@@ -1,0 +1,23 @@
+{
+  "name": "@upscalerjs/demo.default-model",
+  "private": true,
+  "version": "1.0.0-beta.7",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "*"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.1.0",
+    "seedrandom": "^3.0.5",
+    "@upscalerjs/default-model": "1.0.0-beta.7",
+    "upscaler": "1.0.0-beta.8"
+  },
+  "engines": {
+    "npm": ">8.0.0"
+  }
+}
