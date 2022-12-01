@@ -47,11 +47,13 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   skipBuild,
   skipModelBuild,
   verbose,
+  forceModelRebuild,
 }: {
   browserstackAccessKey?: string;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
   verbose?: boolean;
+  forceModelRebuild?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
@@ -67,6 +69,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     const modelPackages = getAllAvailableModelPackages();
     const durations = await buildModels(modelPackages, getOutputFormats(platform), {
       verbose,
+      forceRebuild: forceModelRebuild,
     });
     if (verbose) {
       console.log([
@@ -111,6 +114,7 @@ interface Args {
   runner: Runner;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
+  forceModelRebuild?: boolean;
   kind?: string;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
@@ -153,6 +157,7 @@ const getArgs = async (): Promise<Args> => {
     skipModelBuild: { type: 'boolean' },
     kind: { type: 'string' },
     verbose: { type: 'boolean' },
+    forceModelRebuild: { type: 'boolean' },
   }).argv;
   const platform = getPlatform(argv.platform);
   const runner = getRunner(argv.kind);
@@ -170,6 +175,7 @@ const getArgs = async (): Promise<Args> => {
     runner,
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
+    forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
   }
 };
 
@@ -183,12 +189,14 @@ if (require.main === module) {
       positionalArgs,
       browserstackAccessKey,
       verbose,
+      forceModelRebuild,
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
       browserstackAccessKey,
       skipBuild,
       skipModelBuild,
       verbose,
+      forceModelRebuild,
     });
   })();
 }
