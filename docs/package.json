@@ -3,7 +3,7 @@
   "version": "1.0.0-beta.8",
   "private": true,
   "scripts": {
-    "build:dependencies": "pnpm --filter @upscalerjs/scripts build:model -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
+    "build:dependencies": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
     "docusaurus": "docusaurus",
     "start": "pnpm build:dependencies && docusaurus start --host 0.0.0.0",
     "build": "pnpm build:dependencies && docusaurus build",

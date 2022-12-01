@@ -265,10 +265,10 @@ export class BrowserTestRunner {
         this._cache === false ||
         (this._cache === true && cache.get(bundle) !== true)
       ) {
-        console.log('Bundle not yet in cache, bundling')
+        console.log('Bundle not yet in cache, bundling', bundle.name)
         await bundle(opts);
       } else {
-        console.log('Bundle already in cache, skipping')
+        console.log('Bundle already in cache, skipping', bundle.name)
       }
       return this.startServer();
     };
