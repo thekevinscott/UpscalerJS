@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Pixel Upsampler Model for Upscaler.js",
   "scripts": {
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",

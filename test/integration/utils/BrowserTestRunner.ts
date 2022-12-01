@@ -184,13 +184,21 @@ export class BrowserTestRunner {
   private _attachLogger() {
     if (this.log) {
       this.page.on('console', message => {
-        const text = message.text().trim();
-        if (text.startsWith('Failed to load resource: the server responded with a status of 404')) {
-          console.log('[404]', text);
-        } else if (!isIgnoredMessage(text)) {
-          console.log('[PAGE]', text);
+        const type = message.type();
+        const text = message.text();
+        if (!isIgnoredMessage(text)) {
+          console.log(`${type} ${text}`);
         }
-      });
+      })
+        .on('pageerror', ({ message }) => console.log(message))
+        .on('response', response => {
+          const status = response.status();
+          if (`${status}` !== `${200}`) {
+            console.log(`${status} ${response.url()}`);
+          }
+        })
+        .on('requestfailed', request =>
+          console.log(`${request.failure().errorText} ${request.url()}`))
     }
   }
 

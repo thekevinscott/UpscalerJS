@@ -224,7 +224,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/default-model': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/default-model': link:../../../../../models/default-model
       seedrandom: 3.0.5
       upscaler: link:../../../../../packages/upscalerjs
     devDependencies:
@@ -258,7 +258,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-legacy': 1.0.0-beta.9_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-legacy': link:../../../../../models/esrgan-legacy
       seedrandom: 3.0.5
       upscaler: link:../../../../../packages/upscalerjs
     devDependencies:
@@ -292,7 +292,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-medium': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-medium': link:../../../../../models/esrgan-medium
       seedrandom: 3.0.5
       upscaler: link:../../../../../packages/upscalerjs
     devDependencies:
@@ -326,7 +326,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-slim': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-slim': link:../../../../../models/esrgan-slim
       seedrandom: 3.0.5
       upscaler: link:../../../../../packages/upscalerjs
     devDependencies:
@@ -360,7 +360,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-thick': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
       seedrandom: 3.0.5
       upscaler: link:../../../../../packages/upscalerjs
     devDependencies:
@@ -4714,69 +4714,6 @@ packages:
     resolution: {integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==}
     dev: true
 
-  /@upscalerjs/core/1.0.0-beta.8:
-    resolution: {integrity: sha512-yfqzoiBvEsWgQPIPt4cg/s22eRjNDLIez84D27e2vZLTgc1hMJOmFs8Ct1BcPEMPfuGXhwRdoBsBLZuDV7mEuQ==}
-    dependencies:
-      '@tensorflow/tfjs-core': 4.1.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/default-model/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-9QQfeLUwrSaThChi0V0sWzE31EUNkViSPI5hRV2wqcjKlD1L3LSRGlFqXefM7QUi3QtpxNDM3Tx79z9ozT3Sxg==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-legacy/1.0.0-beta.9_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-0i0n3IrxW3JvRSUGgsC8VQb64im27BYL1duOwmd8YWVvsBmSH5fqOSj4DHXtAHB5E48wnVnTfS0BXaJziGWkZQ==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-medium/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-ORBZS+8c2iLFwE/WnVsXNp+YiJsbHxmSOS6oDV7f8V6b7noqiXtx7uH7yA6jkavi66Ci7wRtXQ9xT8mvBH5G7Q==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-slim/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-uCuuGXdFNN/hx2Lm4uCEzGARFbFWsT+FDl+b5EH5q3Sfy+x2l+CQ5a/9FvMKpbScJKbj6d/bU6gyyxvFVoA3zw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-thick/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-OtbVQE81GWab6V5m1cdej9FCd9hxFCkzGiiUblTwF60Bap3r9NSxkFXD150Er1NH3b9bjTkP0ETtiGN9lWrsMA==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@webassemblyjs/ast/1.11.1:
     resolution: {integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==}
     dependencies:
@@ -7854,7 +7791,6 @@ packages:
     resolution: {integrity: sha512-iaiZZ9vUF5wJV8ob1tl+5aJTrwDczlvGP0JoMmnpC2B0ppiMCu8n8gmy5ZTGl5bcG081XBVn+U+jP+mPFm5T5Q==}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /esbuild/0.14.39:
     resolution: {integrity: sha512-2kKujuzvRWYtwvNjYDY444LQIA3TyJhJIX3Yo4+qkFlDDtGlSicWgeHVJqMUP/2sSfH10PGwfsj+O2ro1m10xQ==}
@@ -9172,7 +9108,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.73.0
+      webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
 
   /htmlparser2/6.1.0:
     resolution: {integrity: sha512-gyyPk6rgonLFEDGoeRgQNaEUvdJ4ktTmmUh/h2t7s+M8oPpIPxgNACWa+6ESR57kXstwqPiCut0V8NRpcwgU7A==}
@@ -14175,7 +14111,6 @@ packages:
       terser: 5.14.1
       uglify-js: 3.16.2
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
-    dev: true
 
   /terser-webpack-plugin/5.3.3_webpack@5.73.0:
     resolution: {integrity: sha512-Fx60G5HNYknNTNQnzQ1VePRuu89ZVYWfjRAeT5rITuCY/1b08s49e5kSQwHDirKZWuoKOBRFS98EUUoZ9kLEwQ==}
@@ -14529,7 +14464,6 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
-    dev: true
 
   /unbox-primitive/1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -15151,7 +15085,6 @@ packages:
       - '@swc/core'
       - esbuild
       - uglify-js
-    dev: true
 
   /webpackbar/5.0.2_webpack@5.73.0:
     resolution: {integrity: sha512-BmFJo7veBDgQzfWXl/wwYXr/VFus0614qZ8i9znqcl9fnEdiVkdbi0TedLQ6xAK92HZHDJ0QmyQ0fmuZPAgCYQ==}
