@@ -183,8 +183,13 @@ export class BrowserTestRunner {
 
   private _attachLogger() {
     if (this.log) {
-      this.page.on('console', message =>
-        console.log(`${message.type().substr(0, 3).toUpperCase()} ${message.text()}`))
+      this.page.on('console', message => {
+        const type = message.type();
+        const text = message.text();
+        if (!isIgnoredMessage(text)) {
+          console.log(`${type} ${text}`);
+        }
+      })
         .on('pageerror', ({ message }) => console.log(message))
         .on('response', response =>
           console.log(`${response.status()} ${response.url()}`))
