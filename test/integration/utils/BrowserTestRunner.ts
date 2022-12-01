@@ -259,8 +259,11 @@ export class BrowserTestRunner {
 
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
+    console.log('beforeAll', bundle.name);
+    console.log('existing cache', cachedBundles);
     const opts = this._makeOpts();
     const bundleIfNotCached = async () => {
+      console.log('existing cache within bundleIfNotCached', cachedBundles);
       if (
         this._cacheBundling === false ||
         (this._cacheBundling === true && cachedBundles.has(bundle.name) !== true)
