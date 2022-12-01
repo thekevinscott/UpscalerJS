@@ -1,0 +1,40 @@
+.modelTooltip {
+  background: white;
+  width: 442px;
+  height: 442px;
+  overflow: hidden;
+  position: relative;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      border: none;
+    }
+
+    td {
+      vertical-align: top;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  h1:first-child {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+
+    a {
+      color: rgba(0,0,0,0.9);
+    }
+    .packageName {
+      color: rgba(0,0,0,0.6);
+    }
+  }
+
+  p {
+    margin: 0;
+  }
+
+}

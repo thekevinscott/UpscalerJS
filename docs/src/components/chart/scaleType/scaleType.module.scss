@@ -1,0 +1,21 @@
+.scaleType {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  left: -17px;
+  height: calc(100% - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .scaleTypeInner {
+    transform: rotate(-90deg);
+    white-space: nowrap;
+    font-size: 14px;
+
+    label {
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}

@@ -6,7 +6,6 @@ import UploadDialogue from './components/uploadDialogue/uploadDialogue';
 import { State } from './types';
 import { UploadContext } from './context/uploadContext';
 import Warning from './components/warning/warning';
-import { useShoelaceColorTheme } from './hooks/useShoelaceColorTheme';
 import { useDemoLifecycleState } from './hooks/useDemoLifecycleState';
 import { useImages } from './hooks/useImages';
 import { ProgressBar } from './components/progressBar/progressBar';
@@ -24,7 +23,6 @@ body {
 `;
 
 export function Demo() {
-  useShoelaceColorTheme();
   const [started, setStarted] = useState(false);
   useEffect(() => {
     const head = document.getElementsByTagName('head')[0];
