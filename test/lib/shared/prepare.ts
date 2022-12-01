@@ -9,7 +9,7 @@ import tar from 'tar';
 import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
-import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 /***
  * Types
@@ -36,7 +36,7 @@ export interface Import {
 
 const CONCURRENT_ASYNC_THREADS = 1;
 
-const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR).map(packagePath => path.resolve(ROOT_DIR, packagePath)).reduce((map, packagePath) => {
+const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, EXAMPLES_DIR]).map(packagePath => path.resolve(ROOT_DIR, packagePath)).reduce((map, packagePath) => {
   const { name } = getPackageJSON(packagePath);
   if (name) {
     map.set(name, path.resolve(packagePath, '..'));
