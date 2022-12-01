@@ -1,4 +1,4 @@
-import fs, { mkdirp, existsSync } from 'fs-extra';
+import fs, { mkdirp, existsSync, chmod } from 'fs-extra';
 import rimraf from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
@@ -26,6 +26,14 @@ interface Opts {
 }
 
 /****
+ * Utility functions
+ */
+
+const mkDistFolder = async (dist: string) => {
+  await mkdirp(dist);
+};
+
+/****
  * ESM build function
  */
 const buildESM = async (modelFolder: string, opts: Opts = {}) => {
@@ -45,7 +53,7 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
-  await mkdirp(DIST);
+  await mkDistFolder(DIST);
 
   if (opts.verbose) {
     console.log('Compiling typescript for UMD')
@@ -96,7 +104,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
  */
 const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   const dist = path.resolve(modelFolder, 'dist/cjs');
-  await mkdirp(dist);
+  await mkDistFolder(dist);
   if (opts.verbose) {
     console.log('Compiling typescript for CJS');
   }
@@ -125,7 +133,7 @@ const buildModel = async (
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
   rimraf.sync(DIST);
-  await mkdirp(DIST);
+  await mkDistFolder(DIST);
 
   const outputFormatFns = [
     outputFormats.includes('umd') ? () => buildUMD(MODEL_ROOT, opts) : undefined,

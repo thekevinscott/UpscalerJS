@@ -13,12 +13,15 @@ const isValidOutputFormat = (outputFormat: string): outputFormat is OutputFormat
   return false;
 }
 
-export const getOutputFormats = async (outputFormat?: unknown) => {
+export const getOutputFormats = async (outputFormat?: unknown, defaultToAll?: boolean) => {
   if (typeof outputFormat === 'string' && isValidOutputFormat(outputFormat)) {
     return [outputFormat]
   }
   if (Array.isArray(outputFormat)) {
     return outputFormat;
+  }
+  if (defaultToAll) {
+    return DEFAULT_OUTPUT_FORMATS;
   }
   const { outputFormats } = await inquirer.prompt<{
     outputFormats: string[];
