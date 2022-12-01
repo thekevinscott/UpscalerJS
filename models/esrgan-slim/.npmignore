@@ -1,6 +1,7 @@
+assets
 src
 yarn-error.log
 node_modules
 test
-DOC.mdx
 demo
+DOC.mdx
