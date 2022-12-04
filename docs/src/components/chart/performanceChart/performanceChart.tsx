@@ -27,126 +27,123 @@ interface IProps {
 
 export default function PerformanceChart(props: IProps) {
   return (
-    <div>hi</div>
-  )
-  // return (
-  //   <BrowserOnly>
-  //     {() => <PerformanceChartInner {...props} />}
-  //   </BrowserOnly>
-  // );
+    <BrowserOnly>
+      {() => <PerformanceChartInner {...props} />}
+    </BrowserOnly>
+  );
 }
 
-// const PerformanceChartInner = ({ databasePath, package: packageName }: IProps) => {
-//   const params = useMemo(() => new URLSearchParams(window.location.search), []);
-//   const [metrics, setMetrics] = useState<Metric[]>(getDefaultMetrics(params));
-//   const [datasets, setDatasets] = useState<Dataset[]>(getDefaultDatasets(params));
+const PerformanceChartInner = ({ databasePath, package: packageName }: IProps) => {
+  const params = useMemo(() => new URLSearchParams(window.location.search), []);
+  const [metrics, setMetrics] = useState<Metric[]>(getDefaultMetrics(params));
+  const [datasets, setDatasets] = useState<Dataset[]>(getDefaultDatasets(params));
 
-//   const [activeDataset, setActiveDataset] = useState<ActiveDataset>(getDefaultActiveDataset(params, datasets));
-//   const [activeModel, setActiveModel] = useState<OnChangeOpts>();
-//   const data = usePerformanceQuery(databasePath, {
-//     metrics,
-//     datasets,
-//     activeModel,
-//   }, {
-//     packageName,
-//   });
+  const [activeDataset, setActiveDataset] = useState<ActiveDataset>(getDefaultActiveDataset(params, datasets));
+  const [activeModel, setActiveModel] = useState<OnChangeOpts>();
+  const data = usePerformanceQuery(databasePath, {
+    metrics,
+    datasets,
+    activeModel,
+  }, {
+    packageName,
+  });
 
-//   const setParams = useCallback((key: string, value: string) => {
-//     const params = new URLSearchParams(window.location.search);
-//     params.set(key, value);
-//     window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
-//   }, []);
+  const setParams = useCallback((key: string, value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+    window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
+  }, []);
 
-//   useEffect(() => {
-//     setParams('metrics', metrics.join(','));
-//   }, [setParams, metrics]);
+  useEffect(() => {
+    setParams('metrics', metrics.join(','));
+  }, [setParams, metrics]);
 
-//   useEffect(() => {
-//     setParams('datasets', datasets.join(','));
-//     if (!datasets.map(d => d.toLowerCase()).includes(activeDataset.dataset)) {
-//       const opts = {
-//         dataset: datasets[0].toLowerCase(),
-//         asc: false,
-//       };
-//       setParams('activeDataset', [opts.dataset, opts.asc].join(','));
-//       setActiveDataset(opts);
-//     }
-//   }, [setParams, datasets, activeDataset]);
+  useEffect(() => {
+    setParams('datasets', datasets.join(','));
+    if (!datasets.map(d => d.toLowerCase()).includes(activeDataset.dataset)) {
+      const opts = {
+        dataset: datasets[0].toLowerCase(),
+        asc: false,
+      };
+      setParams('activeDataset', [opts.dataset, opts.asc].join(','));
+      setActiveDataset(opts);
+    }
+  }, [setParams, datasets, activeDataset]);
 
-//   const translatedData = useMemo(() => translateResults(data, activeDataset), [data, activeDataset]);
-//   const options = useMemo(() => {
-//     return {
-//       plugins: {
-//         legend: {
-//           onClick: (_chart, { datasetIndex }) => {
-//             const dataset = datasets[datasetIndex].toLowerCase();
-//             setActiveDataset(prev => {
-//               const opts = (prev.dataset === dataset) ? {
-//                 dataset,
-//                 asc: !prev.asc,
-//               } : {
-//                 dataset,
-//                 asc: false,
-//               };
-//               setParams('activeDataset', [opts.dataset, opts.asc].join(','));
-//               return opts;
-//             });
-//           }
-//         },
-//       },
-//     }
-//   }, [datasets, translatedData]);
+  const translatedData = useMemo(() => translateResults(data, activeDataset), [data, activeDataset]);
+  const options = useMemo(() => {
+    return {
+      plugins: {
+        legend: {
+          onClick: (_chart, { datasetIndex }) => {
+            const dataset = datasets[datasetIndex].toLowerCase();
+            setActiveDataset(prev => {
+              const opts = (prev.dataset === dataset) ? {
+                dataset,
+                asc: !prev.asc,
+              } : {
+                dataset,
+                asc: false,
+              };
+              setParams('activeDataset', [opts.dataset, opts.asc].join(','));
+              return opts;
+            });
+          }
+        },
+      },
+    }
+  }, [datasets, translatedData]);
 
-//   const onDatasetChange = useCallback(values => {
-//     return setDatasets(values.sort());
-//   }, []);
+  const onDatasetChange = useCallback(values => {
+    return setDatasets(values.sort());
+  }, []);
 
-//   return (
-//     <div className={styles.container}>
-//       <div className={styles.row}>
-//         <div className={styles.left}>
-//           {packageName === undefined && <ModelFilter databasePath={databasePath} onChange={setActiveModel} />}
-//         </div>
-//         <div className={styles.right}>
-//           <DropdownMenu title="Datasets" placement="bottom-end" multi onChange={onDatasetChange} defaultValue={datasets} >
-//             {
-//               DATASETS.map(option => (
-//                 <SlMenuItem key={option} value={option} checked={datasets.includes(option)}>
-//                     {option}
-//                     <a 
-//                       className={styles.optionLink} 
-//                       target="_blank" 
-//                       href={getLinkForDataset(option)}
-//                     >
-//                       <BiLinkExternal />
-//                     </a>
-//                   </SlMenuItem>
-//               ))
-//             }
-//           </DropdownMenu>
-//         </div>
-//       </div>
-//       <Chart 
-//         type="bar" 
-//         title="Performance Benchmarks" 
-//         data={translatedData}
-//         options={options}
-//       >
-//         {packageName === undefined ? opts => (
-//           <ModelTooltip model={opts.label} />
-//         ) : undefined}
-//       </Chart>
-//       <small>Performance measurements are done for 100 images of a given dataset. Images are randomly cropped to 240px.</small>
-//       <div className={classNames({
-//         [styles.row]: true,
-//         [styles.center]: true,
-//       })}>
-//         <DropdownMenu title="Metrics" onChange={setMetrics} defaultValue={metrics} >
-//           {METRICS.map(option => (
-//             <SlMenuItem key={option} value={option} checked={metrics.includes(option)}>{option}</SlMenuItem>
-//           ))}
-//         </DropdownMenu>
-//       </div>
-//     </div>
-//   );
-// }
+  return (
+    <div className={styles.container}>
+      <div className={styles.row}>
+        <div className={styles.left}>
+          {packageName === undefined && <ModelFilter databasePath={databasePath} onChange={setActiveModel} />}
+        </div>
+        <div className={styles.right}>
+          <DropdownMenu title="Datasets" placement="bottom-end" multi onChange={onDatasetChange} defaultValue={datasets} >
+            {
+              DATASETS.map(option => (
+                <SlMenuItem key={option} value={option} checked={datasets.includes(option)}>
+                    {option}
+                    <a 
+                      className={styles.optionLink} 
+                      target="_blank" 
+                      href={getLinkForDataset(option)}
+                    >
+                      <BiLinkExternal />
+                    </a>
+                  </SlMenuItem>
+              ))
+            }
+          </DropdownMenu>
+        </div>
+      </div>
+      <Chart 
+        type="bar" 
+        title="Performance Benchmarks" 
+        data={translatedData}
+        options={options}
+      >
+        {packageName === undefined ? opts => (
+          <ModelTooltip model={opts.label} />
+        ) : undefined}
+      </Chart>
+      <small>Performance measurements are done for 100 images of a given dataset. Images are randomly cropped to 240px.</small>
+      <div className={classNames({
+        [styles.row]: true,
+        [styles.center]: true,
+      })}>
+        <DropdownMenu title="Metrics" onChange={setMetrics} defaultValue={metrics} >
+          {METRICS.map(option => (
+            <SlMenuItem key={option} value={option} checked={metrics.includes(option)}>{option}</SlMenuItem>
+          ))}
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+}
