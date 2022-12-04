@@ -7,6 +7,7 @@ import { ScaleType } from './scaleType/scaleType';
 import { ChildrenFn, Tooltip } from './tooltip/tooltip';
 import { useTooltip } from './tooltip/useTooltip';
 import styles from './chart.module.scss';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 interface Opts<T extends CHART_TYPE> {
   data: ChartData<T>;
@@ -140,7 +141,7 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
   return (
     <div className={styles.chart}>
       <ScaleType toggleScaleType={setRelativeScale} />
-    {hasTooltip && (<Tooltip tooltip={tooltip}>{children}</Tooltip>) }
+      {hasTooltip && (<Tooltip tooltip={tooltip}>{children}</Tooltip>)}
       <SoloChart
         {...opts}
         relativeScale={relativeScale}
@@ -154,5 +155,5 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
         } : {})}
       />
     </div>
-  )
+  );
 }

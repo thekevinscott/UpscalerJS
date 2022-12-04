@@ -23,8 +23,7 @@ function getDefaultParams<T extends string>(
   filter: (value?: unknown) => value is T, 
   defaultReturn: T[]
 ) {
-  return (): T[] => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
+  return (urlSearchParams: URLSearchParams): T[] => {
     const params: string[] = urlSearchParams.get(key)?.split(',') || [];
     const values: T[] = [];
     for (let i = 0; i < params.length; i++) {
@@ -42,8 +41,8 @@ function getDefaultParams<T extends string>(
 
 export const getDefaultMetrics = getDefaultParams('metrics', isValidMetric, ['PSNR'])
 export const getDefaultDatasets = getDefaultParams('datasets', isValidDataset, ['Div2K'])
-export const getDefaultActiveDataset = (datasets: Dataset[]): ActiveDataset => {
-  const [dataset, asc] = getActive('activeDataset');
+export const getDefaultActiveDataset = (params: URLSearchParams, datasets: Dataset[]): ActiveDataset => {
+  const [dataset, asc] = getActive(params, 'activeDataset');
   if (isValidDataset(dataset) && typeof asc === 'boolean') {
     return {
       dataset: datasetIdToKey(dataset),
