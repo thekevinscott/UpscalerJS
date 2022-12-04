@@ -10,7 +10,7 @@
     "start": "pnpm build:dependencies && pnpm run start:all",
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\"",
     "docusaurus:start": "docusaurus start --host 0.0.0.0",
-    "build:only": "NODE_OPTIONS=\"--max-old-space-size=8192\" docusaurus build --no-minify",
+    "build:only": "docusaurus build",
     "build": "pnpm build:dependencies && pnpm link-model-readmes && pnpm build:only",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
