@@ -9,7 +9,9 @@ const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  staticDirectories: ['assets', 'node_modules'],
+  staticDirectories: [
+    'assets', 
+  ],
   title: 'UpscalerJS',
   tagline: 'Upscale images in your browser with Tensorflow.js',
   url: 'https://upscalerjs.com',
@@ -46,8 +48,8 @@ const config = {
             resolve: {
               fallback: {
                 fs: false,
-                "crypto": require.resolve("crypto-browserify"),
                 "path": require.resolve("path-browserify"),
+                "crypto": require.resolve("crypto-browserify"),
                 "stream": require.resolve("stream-browserify"),
               },
             },
