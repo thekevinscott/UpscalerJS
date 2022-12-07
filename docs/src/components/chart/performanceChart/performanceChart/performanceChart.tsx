@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import Chart from '../../chart';
+import Chart, { useSetParams } from '../../chart';
 import { DropdownMenu } from '../../../dropdown/dropdown-menu';
 import styles from '../../chart.module.scss';
 import classNames from 'classnames';
@@ -26,6 +26,7 @@ export interface IProps {
 
 export function PerformanceChart({ databasePath, package: packageName }: IProps) {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
+  const setParams = useSetParams();
   const [metrics, setMetrics] = useState<Metric[]>(getDefaultMetrics(params));
   const [datasets, setDatasets] = useState<Dataset[]>(getDefaultDatasets(params));
 
@@ -38,12 +39,6 @@ export function PerformanceChart({ databasePath, package: packageName }: IProps)
   }, {
     packageName,
   });
-
-  const setParams = useCallback((key: string, value: string) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set(key, value);
-    window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
-  }, []);
 
   useEffect(() => {
     setParams('metrics', metrics.join(','));

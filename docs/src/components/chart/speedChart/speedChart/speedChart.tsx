@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import Chart from '../../chart';
+import React, { useEffect, useMemo, useState } from 'react';
+import Chart, { useSetParams } from '../../chart';
 import styles from '../../chart.module.scss';
 import { DropdownMenu } from '../../../dropdown/dropdown-menu';
 import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
@@ -27,12 +27,7 @@ export function SpeedChart({ databasePath, package: packageName }: IProps) {
   });
 
   const translatedData = useMemo(() => translateResults(data , activeDevice), [data, activeDevice]);
-
-  const setParams = useCallback((key: string, value: string) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set(key, value);
-    window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
-  }, []);
+  const setParams = useSetParams();
 
   const options = useMemo(() => {
     return {

@@ -1,13 +1,12 @@
 import { ColorMode, useColorMode } from '@docusaurus/theme-common';
 import { deepMerge } from '@site/src/utils/deepMerge';
 import type { ChartData, ChartOptions, PluginChartOptions } from 'chart.js';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Line, Bar } from './chartjs';
 import { ScaleType } from './scaleType/scaleType';
 import { ChildrenFn, Tooltip } from './tooltip/tooltip';
 import { useTooltip } from './tooltip/useTooltip';
 import styles from './chart.module.scss';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 
 interface Opts<T extends CHART_TYPE> {
   data: ChartData<T>;
@@ -20,6 +19,16 @@ interface Opts<T extends CHART_TYPE> {
 
 export type CHART_TYPE = 'line' | 'bar';
 const GRID_OPACITY = 0.1;
+
+export const useSetParams = () => {
+  const setParams = useCallback((key: string, value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+    window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
+  }, []);
+
+  return setParams;
+};
 
 function getMinMax<T extends CHART_TYPE>({ datasets }: ChartData<T>, padding = 0.02) {
   let min = Infinity;
