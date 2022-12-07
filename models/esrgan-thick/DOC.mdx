@@ -9,7 +9,9 @@ sidebar_label: esrgan-thick
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-thick/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-thick)
 
-These models are the best ESRGAN upscaling models. They are best suited to a Node.js environment with a GPU, although can be used in the browser with significant latency.
+These models are the best ESRGAN upscaling models, at the cost of slower inference. They are best suited to a Node.js environment with a GPU, although can be used in the browser with significant latency.
+
+The model weights were trained using the [`image-super-resolution` Python repo](https://github.com/idealo/image-super-resolution) and subsequently converted to Tensorflow.js models.
 
 ## Samples + Demo
 
@@ -109,11 +111,6 @@ It was trained for 500 epochs, with the following hyperparameters:
 - **T**: `10`
 
 The batch size was 12, and the batches per epoch was 20. The learning rate was set to `0.0004`. The HR patch size was set to `128` or `129` depending on the scale (ensuring it is divisible by the scale) with the LR patch size being the resultant scale `HR_patch_size / scale`.
-
-## Goals for the model
-ESRGAN thick is meant to be the best performancing ESRGAN model, at the cost of slower inference. While it can be used in a browser, it will have significant latency on most devices.
-
-Future experimentation may result in additional hyperparameter explorations. This may result in an increase in latency, but only if accompanied by an increase in performance.
 
 ## License
 

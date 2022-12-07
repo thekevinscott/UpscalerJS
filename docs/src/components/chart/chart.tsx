@@ -149,7 +149,9 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
   const [relativeScale, setRelativeScale] = useState(false);
   return (
     <div className={styles.chart}>
-      <ScaleType toggleScaleType={setRelativeScale} />
+      <ScaleType toggleScaleType={(e) => {
+        setRelativeScale(e);
+      }} />
       {hasTooltip && (<Tooltip tooltip={tooltip}>{children}</Tooltip>)}
       <SoloChart
         {...opts}

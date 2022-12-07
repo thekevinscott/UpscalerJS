@@ -15,8 +15,8 @@ There are a number of models available for use with UpscalerJS. In most cases, t
 
 You can see a comparison of performance and speed measurements for all models:
 
-- [Performance Benchmarks](benchmarks/performance)
-- [Speed Benchmarks](benchmarks/speed)
+- [Performance Benchmarks](Benchmarks/Performance)
+- [Speed Benchmarks](Benchmarks/Speed)
 
 ## Models
 
