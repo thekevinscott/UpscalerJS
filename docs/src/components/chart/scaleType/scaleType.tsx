@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './scaleType.module.scss';
 
 export const ScaleType = ({
@@ -6,13 +6,13 @@ export const ScaleType = ({
 }: {
   toggleScaleType: (relative: boolean) => void;
 }) => {
+  const id = useMemo(() => `scaleType-${Math.random()}`, []);
   return (
     <div className={styles.scaleType}>
-    <div className={styles.scaleTypeInner}>
-      <input type="checkbox" id="scaleType" onClick={e => toggleScaleType((e.target as HTMLInputElement).checked)} />
-      <label htmlFor="scaleType">Relative Scale</label>
-
-    </div>
+      <div className={styles.scaleTypeInner}>
+        <input type="checkbox" id={id} onClick={e => toggleScaleType((e.target as HTMLInputElement).checked)} />
+        <label htmlFor={id}>Relative Y</label>
+      </div>
     </div>
   )
 }

@@ -9,7 +9,7 @@ sidebar_label: esrgan-medium
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-medium/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-medium)
 
-These models strike a balance between latency and image quality. They aim to be in the middle of speed and performance measurements between `@upscalerjs/esrgan-slim` and `@upscalerjs/esrgan-thick`.
+These models strike a balance between latency and image quality. They aim to be in the middle of speed and performance measurements between [`@upscalerjs/esrgan-slim`](esrgan-slim) and [`@upscalerjs/esrgan-thick`](esrgan-thick).
 
 ## Samples + Demo
 
@@ -108,11 +108,6 @@ It was trained for 500 epochs, with the following hyperparameters:
 - **G0**: `64`
 
 The batch size was 12, and the batches per epoch was 20. The learning rate was set to `0.0004`. The HR patch size was set to `128` or `129` depending on the scale (ensuring it is divisible by the scale) with the LR patch size being the resultant scale `HR_patch_size / scale`.
-
-## Goals for the model
-ESRGAN Medium is meant to strike a balance between latency and performance, and aims to be the midpoint between `@upscalerjs/esrgan-slim` and `@upscalerjs/esrgan-thick`.
-
-Future experimentation may result in additional hyperparameter explorations, along with pruning of the neural network. This may result in a slight decrease in performance, but only if accompanied by a substantial reduction in latency.
 
 ## License
 

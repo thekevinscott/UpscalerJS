@@ -9,7 +9,7 @@ sidebar_label: esrgan-slim
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-slim/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-slim)
 
-These models are the fastest available ESRGAN models.
+These models are the fastest available ESRGAN models, and are intended to run in a browser.
 
 ## Samples + Demo
 
@@ -108,11 +108,6 @@ It was trained for 500 epochs, with the following hyperparameters:
 - **G0**: `64`
 
 The batch size was 12, and the batches per epoch was 20. The learning rate was set to `0.0004`. The HR patch size was set to `128` or `129` depending on the scale (ensuring it is divisible by the scale) with the LR patch size being the resultant scale `HR_patch_size / scale`.
-
-## Goals for the model
-ESRGAN Slim is meant to be the fastest available ESRGAN model, fast enough to run in a browser.
-
-Future experimentation may result in additional hyperparameter explorations, along with pruning of the neural network. This may result in a slight decrease in performance, but only if accompanied by a substantial reduction in latency.
 
 ## License
 
