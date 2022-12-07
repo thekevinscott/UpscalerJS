@@ -67,7 +67,7 @@ const config = {
       ({
         docs: {
           routeBasePath: '/', // Serve the docs at the site's root
-          sidebarPath: require.resolve('./sidebars.cjs'),
+          sidebarPath: require.resolve('./sidebars.js'),
           breadcrumbs: false,
         },
         theme: {
