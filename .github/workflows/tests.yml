@@ -315,3 +315,30 @@ jobs:
 
       - name: 'Memory Leak Tests'
         run: pnpm test:memory-leaks --skipBuild --skipModelBuild
+
+  build-docs:
+    name: 'Build Documentation'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Install dependencies'
+        working-directory: ./docs
+        run: pnpm install
+
+      - name: 'Build'
+        working-directory: ./docs
+        run: pnpm build

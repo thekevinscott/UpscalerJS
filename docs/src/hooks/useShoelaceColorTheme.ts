@@ -1,10 +1,6 @@
 import { useColorMode } from '@docusaurus/theme-common';
-import { setBasePath } from '@shoelace-style/shoelace';
 import { useEffect, useRef } from 'react';
-import '@shoelace-style/shoelace/dist/themes/light.css';
-import '@shoelace-style/shoelace/dist/themes/dark.css';
-
-setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.80/dist/');
+import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const SHOELACE_DARK_MODE = 'sl-theme-dark';
 
@@ -18,15 +14,18 @@ const getHTML = () => {
 };
 
 export const useShoelaceColorTheme = () => {
-  const {colorMode} = useColorMode();
-  const { current: html } = useRef(getHTML());
+  const { colorMode } = useColorMode();
+  const isBrowser = useIsBrowser();
+  const { current: html } = useRef(isBrowser ? getHTML() : null);
   useEffect(() => {
-    if (colorMode === 'dark') {
-      html.classList.add(SHOELACE_DARK_MODE);
-    } else {
-      html.classList.remove(SHOELACE_DARK_MODE);
+    if (html) {
+      // Adding / removing multiple times is fine
+      if (colorMode === 'dark') {
+        html.classList.add(SHOELACE_DARK_MODE);
+      } else {
+        html.classList.remove(SHOELACE_DARK_MODE);
+      }
     }
-
   }, [html, colorMode]);
 }
 

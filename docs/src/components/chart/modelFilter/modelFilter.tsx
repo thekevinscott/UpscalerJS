@@ -1,4 +1,4 @@
-import { SlMenuItem } from '@shoelace-style/shoelace/dist/react';
+import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 import { useDatabase } from '@site/src/utils/sqljs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';
@@ -117,7 +117,7 @@ export const ModelFilter = ({
   return (
     <div className={styles.modelFilter}>
     {availablePackages && (
-      <DropdownMenu title="Packages" allLabel="All Packages" multi onChange={setSelectedPackages} placeholder="Package" defaultValue={availablePackages.map(p => p.name)}>
+      <DropdownMenu title="Packages" allLabel="All Packages" multi onChange={setSelectedPackages} defaultValue={availablePackages.map(p => p.name)}>
         {
           availablePackages.map(({ name }) => (
             <SlMenuItem key={name} value={name} checked={selectedPackages?.includes(name)}>{name}</SlMenuItem>
@@ -126,7 +126,7 @@ export const ModelFilter = ({
       </DropdownMenu>
     )}
     {availableScales && (
-      <DropdownMenu title="Scales" allLabel="All Scales" multi onChange={setSelectedScales} placeholder="Scale" defaultValue={availableScales.map(({ scale }) => `${scale}`)}>
+      <DropdownMenu title="Scales" allLabel="All Scales" multi onChange={setSelectedScales} defaultValue={availableScales.map(({ scale }) => `${scale}`)}>
         {
           availableScales.map((availableScale) => {
             const scale = `${availableScale.scale}`;

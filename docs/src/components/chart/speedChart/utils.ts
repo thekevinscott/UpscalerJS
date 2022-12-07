@@ -28,8 +28,8 @@ const isValidDevice = (value?: unknown): value is Device => {
 };
 
 function getDefaultParams<T extends string>(key: string, filter: (value?: unknown) => value is T, defaultReturn: T[]) {
-  return (): T[] => {
-    const params: string[] = (new URLSearchParams(window.location.search)).get(key)?.split(',') || [];
+  return (_params: URLSearchParams): T[] => {
+    const params: string[] = _params.get(key)?.split(',') || [];
     const values: T[] = [];
     for (let i = 0; i < params.length; i++) {
       const param = params[i];
@@ -46,8 +46,8 @@ function getDefaultParams<T extends string>(key: string, filter: (value?: unknow
 
 export const getDefaultDevices = getDefaultParams('devices', isValidDevice, ['iPhone 14 Pro Max'])
 
-export const getDefaultActiveDevice = (): { device: Device; asc: boolean } => {
-  const [device, asc] = getActive('activeDevice');
+export const getDefaultActiveDevice = (params: URLSearchParams): { device: Device; asc: boolean } => {
+  const [device, asc] = getActive(params, 'activeDevice');
   if (isValidDevice(device) && typeof asc === 'boolean') {
     return {
       device,

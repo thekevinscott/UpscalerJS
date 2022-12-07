@@ -1,7 +1,6 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
 
@@ -9,7 +8,10 @@ const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  staticDirectories: ['assets', 'node_modules'],
+  staticDirectories: [
+    'assets', 
+    'node_modules/sql.js/dist',
+  ],
   title: 'UpscalerJS',
   tagline: 'Upscale images in your browser with Tensorflow.js',
   url: 'https://upscalerjs.com',
@@ -26,17 +28,6 @@ const config = {
     locales: ['en'],
   },
 
-  webpack: {
-    jsLoader: (isServer) => ({
-      loader: require.resolve('esbuild-loader'),
-      options: {
-        loader: 'tsx',
-        format: isServer ? 'cjs' : undefined,
-        target: isServer ? 'node12' : 'esnext',
-      },
-    }),
-  },
-
   plugins: [
     function (context, options) {
       return {
@@ -46,8 +37,8 @@ const config = {
             resolve: {
               fallback: {
                 fs: false,
-                "crypto": require.resolve("crypto-browserify"),
                 "path": require.resolve("path-browserify"),
+                "crypto": require.resolve("crypto-browserify"),
                 "stream": require.resolve("stream-browserify"),
               },
             },
@@ -65,7 +56,7 @@ const config = {
       ({
         docs: {
           routeBasePath: '/', // Serve the docs at the site's root
-          sidebarPath: require.resolve('./sidebars.cjs'),
+          sidebarPath: require.resolve('./sidebars.js'),
           breadcrumbs: false,
         },
         theme: {

@@ -2,16 +2,17 @@ import { useCallback, useState } from 'react';
 import initSqlJs, { Database } from 'sql.js';
 
 const getSQLjs = () => initSqlJs({
-  locateFile: file => `/sql.js/dist/${file}`,
+  locateFile: file => `/${file}`,
 });
 
-const _sql = getSQLjs();
+let _sql: Promise<initSqlJs.SqlJsStatic>;
 
 export const loadDatabase = async (path: string) => {
+  _sql = getSQLjs();
   const [SQL, buf] = await Promise.all([
     await _sql,
     fetch(path).then(res => res.arrayBuffer())
-  ])
+  ]);
   return new SQL.Database(new Uint8Array(buf));
 }
 

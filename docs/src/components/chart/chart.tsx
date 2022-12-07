@@ -1,7 +1,7 @@
 import { ColorMode, useColorMode } from '@docusaurus/theme-common';
 import { deepMerge } from '@site/src/utils/deepMerge';
 import type { ChartData, ChartOptions, PluginChartOptions } from 'chart.js';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Line, Bar } from './chartjs';
 import { ScaleType } from './scaleType/scaleType';
 import { ChildrenFn, Tooltip } from './tooltip/tooltip';
@@ -19,6 +19,16 @@ interface Opts<T extends CHART_TYPE> {
 
 export type CHART_TYPE = 'line' | 'bar';
 const GRID_OPACITY = 0.1;
+
+export const useSetParams = () => {
+  const setParams = useCallback((key: string, value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set(key, value);
+    window.history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
+  }, []);
+
+  return setParams;
+};
 
 function getMinMax<T extends CHART_TYPE>({ datasets }: ChartData<T>, padding = 0.02) {
   let min = Infinity;
@@ -140,7 +150,7 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
   return (
     <div className={styles.chart}>
       <ScaleType toggleScaleType={setRelativeScale} />
-    {hasTooltip && (<Tooltip tooltip={tooltip}>{children}</Tooltip>) }
+      {hasTooltip && (<Tooltip tooltip={tooltip}>{children}</Tooltip>)}
       <SoloChart
         {...opts}
         relativeScale={relativeScale}
@@ -154,5 +164,5 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
         } : {})}
       />
     </div>
-  )
+  );
 }

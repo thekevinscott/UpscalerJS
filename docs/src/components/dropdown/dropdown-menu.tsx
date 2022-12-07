@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { SlButton, SlMenu, SlMenuItem, SlDropdown } from '@shoelace-style/shoelace/dist/react';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
 import styles from './dropdown-menu.module.scss';
+import { SlMenuItem } from '@shoelace-style/shoelace';
+import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown';
+import SlMenu from '@shoelace-style/shoelace/dist/react/menu';
+import { Button } from '@site/src/components/button/button';
+import { useShoelaceColorTheme } from '@site/src/hooks/useShoelaceColorTheme';
 
 interface IProps <T> {
   defaultValue?: T[];
@@ -9,7 +13,7 @@ interface IProps <T> {
   multi?: boolean;
   children?: JSX.Element | JSX.Element[];
   allLabel?: string;
-  placement?: string;
+  placement?: React.ComponentProps<typeof SlDropdown>['placement'];
   title?: string;
 }
 
@@ -24,10 +28,11 @@ const getPlural = (value: Set<string>) => {
     [...values.slice(0, -1), ''].join(', '),
     values[values.length - 1],
   ].filter(Boolean).join(' and ');
-}
+};
 
-export function DropdownMenu<T extends string>({ title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
+export function DropdownMenu<T extends string>({title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
   const [value, _setValue] = useState<Set<T>>(new Set());
+  useShoelaceColorTheme();
 
   const setValue = useCallback((_value: T, toggle = false) => {
     if (!_value) {
@@ -59,7 +64,7 @@ export function DropdownMenu<T extends string>({ title, placement = 'bottom-star
     }
   }, []);
 
-  const ref = useShoelaceEventListener<SlMenuItem>(el => setValue(el.value, true), 'click', 'touch');
+  const ref = useShoelaceEventListener<SlMenuItem>(el => setValue(el.value as T, true), 'click', 'touch');
   const label = useMemo(() => {
     if (value.size === 0) {
       return defaultValue;
@@ -80,20 +85,20 @@ export function DropdownMenu<T extends string>({ title, placement = 'bottom-star
 
   return (
     <div>
-    {title && <label className={styles.title}>{title}</label>}
-    <SlDropdown
-      stayOpenOnSelect
-      placement={placement}
-      distance={20}
-      {...props}
-    >
-      <SlButton slot="trigger" caret>
-        {label}
-      </SlButton>
-      <SlMenu ref={ref}>
-        {children}
-      </SlMenu>
-    </SlDropdown>
+      {title && <label className={styles.title}>{title}</label>}
+      <SlDropdown
+        stayOpenOnSelect
+        placement={placement}
+        distance={20}
+        {...props}
+      >
+        <Button slot="trigger" caret>
+          {label}
+        </Button>
+        <SlMenu ref={ref}>
+          {children}
+        </SlMenu>
+      </SlDropdown>
     </div>
   );
 }
