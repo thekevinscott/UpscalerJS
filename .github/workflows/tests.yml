@@ -316,8 +316,8 @@ jobs:
       - name: 'Memory Leak Tests'
         run: pnpm test:memory-leaks --skipBuild --skipModelBuild
 
-  docs-build:
-    name: 'Documentation'
+  build-docs:
+    name: 'Build Documentation'
     runs-on: ubuntu-latest
     strategy:
       matrix:
