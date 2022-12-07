@@ -1,7 +1,6 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const path = require('path');
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
 
@@ -11,6 +10,7 @@ const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 const config = {
   staticDirectories: [
     'assets', 
+    'node_modules/sql.js/dist',
   ],
   title: 'UpscalerJS',
   tagline: 'Upscale images in your browser with Tensorflow.js',
@@ -26,17 +26,6 @@ const config = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
-  },
-
-  webpack: {
-    jsLoader: (isServer) => ({
-      loader: require.resolve('esbuild-loader'),
-      options: {
-        loader: 'tsx',
-        format: isServer ? 'cjs' : undefined,
-        target: isServer ? 'node12' : 'esnext',
-      },
-    }),
   },
 
   plugins: [

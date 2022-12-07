@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
-import type { default as _SlMenuItem } from '@shoelace-style/shoelace/dist/react/menu-item';
 import styles from './dropdown-menu.module.scss';
-import { useShoelace } from '@site/src/hooks/useShoelace';
+import { SlMenuItem } from '@shoelace-style/shoelace';
+import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown';
+import SlMenu from '@shoelace-style/shoelace/dist/react/menu';
+import { Button } from '@site/src/components/button/button';
 
 interface IProps <T> {
   defaultValue?: T[];
@@ -10,7 +12,7 @@ interface IProps <T> {
   multi?: boolean;
   children?: JSX.Element | JSX.Element[];
   allLabel?: string;
-  placement?: string;
+  placement?: React.ComponentProps<typeof SlDropdown>['placement'];
   title?: string;
 }
 
@@ -28,7 +30,6 @@ const getPlural = (value: Set<string>) => {
 };
 
 export function DropdownMenu<T extends string>({title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
-  const { SlDropdown, SlButton, SlMenu, } = useShoelace();
   const [value, _setValue] = useState<Set<T>>(new Set());
 
   const setValue = useCallback((_value: T, toggle = false) => {
@@ -61,7 +62,7 @@ export function DropdownMenu<T extends string>({title, placement = 'bottom-start
     }
   }, []);
 
-  const ref = useShoelaceEventListener<_SlMenuItem>(el => setValue(el.value, true), 'click', 'touch');
+  const ref = useShoelaceEventListener<SlMenuItem>(el => setValue(el.value as T, true), 'click', 'touch');
   const label = useMemo(() => {
     if (value.size === 0) {
       return defaultValue;
@@ -89,9 +90,9 @@ export function DropdownMenu<T extends string>({title, placement = 'bottom-start
         distance={20}
         {...props}
       >
-        <SlButton slot="trigger" caret>
+        <Button slot="trigger" caret>
           {label}
-        </SlButton>
+        </Button>
         <SlMenu ref={ref}>
           {children}
         </SlMenu>

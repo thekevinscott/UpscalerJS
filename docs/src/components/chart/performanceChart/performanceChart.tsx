@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Chart from '../chart';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';
-import { SlMenuItem } from '@shoelace-style/shoelace/dist/react';
 import styles from '../chart.module.scss';
 import classNames from 'classnames';
 import { ActiveDataset, Dataset, DATASETS, getDefaultActiveDataset, getDefaultDatasets, getDefaultMetrics, Metric, METRICS } from './utils';
@@ -10,7 +9,7 @@ import { translateResults } from './translateResults';
 import { ModelFilter, OnChangeOpts } from '../modelFilter/modelFilter';
 import { ModelTooltip } from '../modelTooltip/modelTooltip';
 import { BiLinkExternal } from 'react-icons/bi';
-import BrowserOnly from '@docusaurus/BrowserOnly';
+import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 
 const DATASET_LINKS: Record<Dataset, string> = {
   'Div2K': 'https://data.vision.ee.ethz.ch/cvl/DIV2K/',
@@ -25,15 +24,7 @@ interface IProps {
   databasePath: string;
 }
 
-export default function PerformanceChart(props: IProps) {
-  return (
-    <BrowserOnly>
-      {() => <PerformanceChartInner {...props} />}
-    </BrowserOnly>
-  );
-}
-
-const PerformanceChartInner = ({ databasePath, package: packageName }: IProps) => {
+export function PerformanceChart({ databasePath, package: packageName }: IProps) {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const [metrics, setMetrics] = useState<Metric[]>(getDefaultMetrics(params));
   const [datasets, setDatasets] = useState<Dataset[]>(getDefaultDatasets(params));

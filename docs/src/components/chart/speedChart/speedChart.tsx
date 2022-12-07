@@ -8,22 +8,13 @@ import { useSpeedQuery } from './useSpeedQuery';
 import { translateResults } from './translateResults';
 import { ModelFilter, OnChangeOpts } from '../modelFilter/modelFilter';
 import { ModelTooltip } from '../modelTooltip/modelTooltip';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 
 interface IProps {
   package?: string;
   databasePath: string;
 }
 
-export default function SpeedChart(props: IProps) {
-  return (
-    <BrowserOnly>
-      {() => <SpeedChartInner {...props} />}
-    </BrowserOnly>
-  );
-}
-
-const SpeedChartInner = ({ databasePath, package: packageName }: IProps) => {
+export default function SpeedChart({ databasePath, package: packageName }: IProps) {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const [devices, setDevices] = useState<Device[]>(getDefaultDevices(params));
   const [activeDevice, setActiveDevice] = useState<{ device: Device, asc: boolean }>(getDefaultActiveDevice(params));

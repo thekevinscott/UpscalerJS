@@ -1,4 +1,4 @@
-import { useShoelace } from '@site/src/hooks/useShoelace';
+import { SlMenuItem } from '@shoelace-style/shoelace/dist/react/menu-item';
 import { useDatabase } from '@site/src/utils/sqljs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';
@@ -113,8 +113,6 @@ export const ModelFilter = ({
       scales: selectedScales,
     });
   }, [selectedPackages, selectedScales])
-
-  const { SlMenuItem, } = useShoelace();
 
   return (
     <div className={styles.modelFilter}>

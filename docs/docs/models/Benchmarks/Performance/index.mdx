@@ -8,11 +8,15 @@ pagination_prev: null
 full_width: true
 ---
 
-import PerformanceChart from '@site/src/components/chart/performanceChart/performanceChart';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 # Performance Benchmarks
 
 Use this page to see performance benchmarks across all UpscalerJS models.
-
-<PerformanceChart databasePath="/assets/performance.sql"></PerformanceChart>
  
+<BrowserOnly>
+  {() => {
+    const { PerformanceChart } = require('@site/src/components/chart/performanceChart/performanceChart');
+    return (<PerformanceChart databasePath="/assets/performance.sql" />);
+  }}
+</BrowserOnly>
