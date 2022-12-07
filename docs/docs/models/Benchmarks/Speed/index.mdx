@@ -8,15 +8,10 @@ pagination_prev: null
 full_width: true
 ---
 
-import BrowserOnly from '@docusaurus/BrowserOnly';
+import SpeedChart from '@site/src/components/chart/speedChart/speedChart';
 
 # Speed Benchmarks
 
 Use this page to see speed benchmarks across all UpscalerJS models.
 
-<BrowserOnly>
-  {() => {
-    const { SpeedChart } = require('@site/src/components/chart/speedChart/speedChart');
-    return (<SpeedChart databasePath="/assets/speed.sql" />);
-  }}
-</BrowserOnly>
+<SpeedChart databasePath="/assets/speed.sql"></SpeedChart>
