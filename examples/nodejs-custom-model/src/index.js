@@ -2,15 +2,13 @@ const express = require("express");
 const path = require('path');
 const fs = require('fs');
 const Upscaler = require('upscaler/node');
+const x2 = require('@upscalerjs/esrgan-thick/node/2x');
 const tf = require('@tensorflow/tfjs-node');
 
 const app = express();
 
 const upscaler = new Upscaler({
-  model: {
-    path: tf.io.fileSystem(path.resolve(__dirname, '../node_modules/@upscalerjs/models/models/div2k/005-2x/model.json')),
-    scale: 2,
-  },
+  model: x2,
 });
 
 app.get("/", async (req, res) => {
