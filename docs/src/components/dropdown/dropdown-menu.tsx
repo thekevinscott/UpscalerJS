@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { SlButton, SlMenu, SlMenuItem, SlDropdown } from '@shoelace-style/shoelace/dist/react';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
+import type { default as _SlMenuItem } from '@shoelace-style/shoelace/dist/react/menu-item';
 import styles from './dropdown-menu.module.scss';
+import { useShoelace } from '@site/src/hooks/useShoelace';
 
 interface IProps <T> {
   defaultValue?: T[];
@@ -24,9 +25,10 @@ const getPlural = (value: Set<string>) => {
     [...values.slice(0, -1), ''].join(', '),
     values[values.length - 1],
   ].filter(Boolean).join(' and ');
-}
+};
 
-export function DropdownMenu<T extends string>({ title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
+export function DropdownMenu<T extends string>({title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
+  const { SlDropdown, SlButton, SlMenu, } = useShoelace();
   const [value, _setValue] = useState<Set<T>>(new Set());
 
   const setValue = useCallback((_value: T, toggle = false) => {
@@ -59,7 +61,7 @@ export function DropdownMenu<T extends string>({ title, placement = 'bottom-star
     }
   }, []);
 
-  const ref = useShoelaceEventListener<SlMenuItem>(el => setValue(el.value, true), 'click', 'touch');
+  const ref = useShoelaceEventListener<_SlMenuItem>(el => setValue(el.value, true), 'click', 'touch');
   const label = useMemo(() => {
     if (value.size === 0) {
       return defaultValue;
@@ -80,20 +82,20 @@ export function DropdownMenu<T extends string>({ title, placement = 'bottom-star
 
   return (
     <div>
-    {title && <label className={styles.title}>{title}</label>}
-    <SlDropdown
-      stayOpenOnSelect
-      placement={placement}
-      distance={20}
-      {...props}
-    >
-      <SlButton slot="trigger" caret>
-        {label}
-      </SlButton>
-      <SlMenu ref={ref}>
-        {children}
-      </SlMenu>
-    </SlDropdown>
+      {title && <label className={styles.title}>{title}</label>}
+      <SlDropdown
+        stayOpenOnSelect
+        placement={placement}
+        distance={20}
+        {...props}
+      >
+        <SlButton slot="trigger" caret>
+          {label}
+        </SlButton>
+        <SlMenu ref={ref}>
+          {children}
+        </SlMenu>
+      </SlDropdown>
     </div>
   );
 }
