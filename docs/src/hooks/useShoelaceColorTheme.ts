@@ -14,11 +14,12 @@ const getHTML = () => {
 };
 
 export const useShoelaceColorTheme = () => {
-  const {colorMode} = useColorMode();
+  const { colorMode } = useColorMode();
   const isBrowser = useIsBrowser();
   const { current: html } = useRef(isBrowser ? getHTML() : null);
   useEffect(() => {
     if (html) {
+      // Adding / removing multiple times is fine
       if (colorMode === 'dark') {
         html.classList.add(SHOELACE_DARK_MODE);
       } else {

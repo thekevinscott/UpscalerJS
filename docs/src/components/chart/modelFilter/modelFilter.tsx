@@ -1,4 +1,4 @@
-import { SlMenuItem } from '@shoelace-style/shoelace/dist/react/menu-item';
+import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 import { useDatabase } from '@site/src/utils/sqljs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';

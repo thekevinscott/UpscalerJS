@@ -5,6 +5,7 @@ import { SlMenuItem } from '@shoelace-style/shoelace';
 import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown';
 import SlMenu from '@shoelace-style/shoelace/dist/react/menu';
 import { Button } from '@site/src/components/button/button';
+import { useShoelaceColorTheme } from '@site/src/hooks/useShoelaceColorTheme';
 
 interface IProps <T> {
   defaultValue?: T[];
@@ -31,6 +32,7 @@ const getPlural = (value: Set<string>) => {
 
 export function DropdownMenu<T extends string>({title, placement = 'bottom-start', allLabel, children, multi = false, defaultValue, onChange, ...props }: IProps<T>) {
   const [value, _setValue] = useState<Set<T>>(new Set());
+  useShoelaceColorTheme();
 
   const setValue = useCallback((_value: T, toggle = false) => {
     if (!_value) {

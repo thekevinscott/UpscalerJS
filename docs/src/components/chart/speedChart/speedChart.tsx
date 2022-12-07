@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Chart from '../chart';
 import styles from '../chart.module.scss';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';
-import { SlMenuItem } from '@shoelace-style/shoelace/dist/react';
+import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 import { DEFAULT_ASC, Device, DEVICES, getDefaultActiveDevice, getDefaultDevices } from './utils';
 import { useSpeedQuery } from './useSpeedQuery';
 import { translateResults } from './translateResults';
@@ -14,7 +14,7 @@ interface IProps {
   databasePath: string;
 }
 
-export default function SpeedChart({ databasePath, package: packageName }: IProps) {
+export function SpeedChart({ databasePath, package: packageName }: IProps) {
   const params = useMemo(() => new URLSearchParams(window.location.search), []);
   const [devices, setDevices] = useState<Device[]>(getDefaultDevices(params));
   const [activeDevice, setActiveDevice] = useState<{ device: Device, asc: boolean }>(getDefaultActiveDevice(params));
