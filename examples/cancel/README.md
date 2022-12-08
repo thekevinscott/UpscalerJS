@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Cancel Example
 
 Demonstrates how to cancel an inflight `upscale` request.

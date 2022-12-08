@@ -1,3 +1,8 @@
+---
+sidebar_position: 2
+category: node
+---
+
 # Node Custom Model Example
 
 Shows how to use UpscalerJS in Node with a custom model loaded locally.

@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Basic Example
 
 Shows a basic use case of UpscalerJS.
