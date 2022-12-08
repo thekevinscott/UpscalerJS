@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build:dependencies": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
+    "build-api": "pnpm --filter @upscalerjs/scripts docs:build-api",
+    "copy-examples": "pnpm --filter @upscalerjs/scripts docs:copy-examples",
     "link-model-readmes": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes",
     "link-model-readmes:watch": "nodemon -e md -e mdx --watch '../models/**/*' -x \"pnpm run link-model-readmes\"",
     "docusaurus": "docusaurus",
