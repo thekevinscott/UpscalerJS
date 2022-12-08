@@ -1,5 +1,4 @@
 export enum State {
-  BENCHMARKING,
   UPLOAD,
   WARNING,
   PROCESSING,

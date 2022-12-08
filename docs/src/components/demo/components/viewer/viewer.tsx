@@ -1,5 +1,6 @@
 import React, { DOMAttributes, useEffect, useState } from 'react';
 import styles from './viewer.module.scss';
+import 'image-comparison-viewer';
 import { ImageComparisonViewer } from 'image-comparison-viewer';
 import { getHTMLImageElement } from '../../utils/getHTMLImageElement';
 import { resizeImage } from '../../utils/resizeImage';

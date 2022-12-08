@@ -10,7 +10,6 @@ import { useDemoLifecycleState } from './hooks/useDemoLifecycleState';
 import { useImages } from './hooks/useImages';
 import { ProgressBar } from './components/progressBar/progressBar';
 import { useDownload } from './hooks/useDownload';
-import Starting from './components/starting/starting';
 
 const globalStyle = document.createElement('style');
 globalStyle.type = 'text/css';
@@ -23,7 +22,6 @@ body {
 `;
 
 export function Demo() {
-  const [started, setStarted] = useState(false);
   useEffect(() => {
     const head = document.getElementsByTagName('head')[0];
     head.appendChild(globalStyle);
@@ -48,11 +46,7 @@ export function Demo() {
     progress,
     cancelUpscale,
     filename,
-    hasBeenBenchmarked,
-    benchmarks,
-    patchSize,
-    choosePatchSize,
-    endBenchmarking,
+
     scale,
   } = useImages();
 
@@ -63,7 +57,6 @@ export function Demo() {
     upscaledSrc,
     hasBeenRescaled, 
     img,
-    started,
   });
 
   const [zoom, setZoom] = useState(0.75);
@@ -73,20 +66,6 @@ export function Demo() {
   return (
     <UploadContext.Provider value={{ handleUpload: setUploadedImage }}>
       <div id={styles.page}>
-        {lifecycleState === State.BENCHMARKING && (
-          <Starting 
-            benchmarks={benchmarks} 
-            start={() => {
-              if (patchSize) {
-                endBenchmarking();
-                setStarted(true);
-              }
-            }} 
-            hasBeenBenchmarked={hasBeenBenchmarked}
-            patchSize={patchSize}
-            choosePatchSize={choosePatchSize}
-           />
-        )}
         {lifecycleState === State.UPLOAD && (
           <UploadDialogue />
         )}

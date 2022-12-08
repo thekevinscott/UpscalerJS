@@ -6,41 +6,19 @@ import { tensorAsBase64 } from 'tensor-as-base64';
 
 // TODO: This has to manually be set to the scale of the model loaded in the worker.
 const SCALE = 4;
-
-const PATCH_SIZES = [
-  4,
-  6,
-  8,
-  10,
-  12,
-  14,
-  16,
-  24,
-  32,
-  48,
-  64,
-  96,
-  128,
-  256,
-  512,
-  1024,
-];
+const PATCH_SIZE = 64;
 
 export const useUpscaler = (img?: HTMLImageElement) => {
   const [upscaling, setUpscaling] = useState(false);
   const [progress, setProgress] = useState<number>();
-  const [hasBeenBenchmarked, setHasBeenBenchmarked] = useState(false);
 
   const upscaledSrc = useRef<string>();
 
   const { drawImage, createCanvas } = useCanvas(SCALE);
-  const [benchmarks, setBenchmarks] = useState<Record<number, undefined | number>>();
 
   const setUpscaledSrc = useCallback((newSrc: string) => {
     upscaledSrc.current = newSrc;
   }, []);
-
-  const [patchSize, setPatchSize] = useState<number>();
 
   const worker = useRef<Worker>();
 
@@ -48,9 +26,6 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     worker.current = new Worker(new URL('worker.ts', import.meta.url));
     worker.current.postMessage({
       type: ReceiverWorkerState.INSTANTIATE,
-      data: {
-        patchSizes: PATCH_SIZES,
-      }
     });
 
     return () => {
@@ -69,44 +44,6 @@ export const useUpscaler = (img?: HTMLImageElement) => {
 
   useEffect(() => {
     worker.current.onmessage = async ({ data: { type, data } }) => {
-      if (type === SenderWorkerState.BENCHMARK_START_MEASUREMENT) {
-        const {
-          patchSize: _patchSize,
-        } = data;
-        setBenchmarks(prev => ({
-          ...prev,
-          [_patchSize]: undefined,
-        }));
-      }
-      if (type === SenderWorkerState.BENCHMARK_COMPLETE_MEASUREMENT) {
-        const {
-          patchSize: _patchSize,
-          duration,
-        } = data;
-        setBenchmarks(prev => ({
-          ...prev,
-          [_patchSize]: duration,
-        }));
-      }
-      if (type === SenderWorkerState.BENCHMARK_COMPLETE) {
-        const {
-          durations,
-        } = data;
-        const durationKeys = Object.keys(durations).map(k => parseInt(k, 10));
-        let maximumAllowedPatchSize = durationKeys[0];
-        for (let i = 0; i < durationKeys.length; i++) {
-          const key = durationKeys[i];
-          if (durations[key] < 100) {
-            maximumAllowedPatchSize = key;
-          } else {
-            break;
-          }
-        }
-        if (patchSize === undefined) {
-          setPatchSize(maximumAllowedPatchSize);
-        }
-        setHasBeenBenchmarked(true);
-      }
       if (type === SenderWorkerState.PROGRESS) {
         if (upscaling) {
           const {
@@ -122,7 +59,7 @@ export const useUpscaler = (img?: HTMLImageElement) => {
             const tensor = tf.tensor3d(slice, shape);
             const dataURL = await tensorAsBase64(tensor);
             tensor.dispose();
-            setUpscaledSrc(await drawImage(dataURL, patchSize * SCALE, col, row));
+            setUpscaledSrc(await drawImage(dataURL, PATCH_SIZE * SCALE, col, row));
             if (rate === 1) {
               setUpscaling(false);
             }
@@ -132,24 +69,24 @@ export const useUpscaler = (img?: HTMLImageElement) => {
         }
       }
     }
-  }, [upscaling, setBenchmarks, img, patchSize, setProgress, setUpscaledSrc,]);
+  }, [upscaling, img, setProgress, setUpscaledSrc,]);
 
-  const upscale = useCallback(async (img: HTMLImageElement) => {
-    setUpscaledSrc(createCanvas(img));
+  const upscale = useCallback(async (_img: HTMLImageElement) => {
+    setUpscaledSrc(createCanvas(_img));
     setProgress(0);
     setUpscaling(true);
-    const src = tf.browser.fromPixels(img);
+    const src = tf.browser.fromPixels(_img);
     await tf.nextFrame();
     worker.current.postMessage({
       type: ReceiverWorkerState.UPSCALE,
       data: {
         pixels: src.dataSync(),
         shape: src.shape,
-        patchSize,
+        patchSize: PATCH_SIZE,
         padding: 2,
       }
     });
-  }, [patchSize, createCanvas, setUpscaling, setProgress]);
+  }, [createCanvas, setUpscaling, setProgress]);
 
   const cancelUpscale = useCallback(() => {
     worker.current.postMessage({
@@ -167,21 +104,10 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     }
   }, [img, upscale]);
 
-  const endBenchmarking = useCallback(() => {
-    worker.current.postMessage({
-      type: ReceiverWorkerState.BENCHMARK_STOP,
-    });
-  }, []);
-
   return {
-    endBenchmarking,
     cancelUpscale,
     upscaledSrc: upscaledSrc.current,
     progress: upscaling ? progress : undefined,
-    hasBeenBenchmarked,
-    benchmarks,
-    patchSize,
-    choosePatchSize: setPatchSize,
     scale: SCALE,
   }
 }
