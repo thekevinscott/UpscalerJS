@@ -90,12 +90,11 @@ const config = {
             position: 'left',
             label: 'Demo',
           },
-          // {
-          //   type: 'doc',
-          //   docId: 'getting-started',
-          //   position: 'left',
-          //   label: 'Docs',
-          // },
+          {
+            to: '/documentation',
+            position: 'left',
+            label: 'Docs',
+          },
           {
             to: '/models',
             position: 'left',
