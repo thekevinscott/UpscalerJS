@@ -15,15 +15,15 @@ There are a number of models available for use with UpscalerJS. In most cases, t
 
 You can see a comparison of performance and speed measurements for all models:
 
-- [Performance Benchmarks](Benchmarks/Performance)
-- [Speed Benchmarks](Benchmarks/Speed)
+- [Performance Benchmarks](/models/Benchmarks/Performance)
+- [Speed Benchmarks](/models/Benchmarks/Speed)
 
 ## Models
 
 You can view additional information about each model at its documentation page:
 
-- [esrgan-slim](available/esrgan-slim)
-- [esrgan-medium](available/esrgan-medium)
-- [esrgan-thick](available/esrgan-thick)
-- [esrgan-legacy](available/esrgan-legacy)
-- [default-model](available/default-model)
+- [esrgan-slim](/models/available/esrgan-slim)
+- [esrgan-medium](/models/available/esrgan-medium)
+- [esrgan-thick](/models/available/esrgan-thick)
+- [esrgan-legacy](/models/available/esrgan-legacy)
+- [default-model](/models/available/default-model)
