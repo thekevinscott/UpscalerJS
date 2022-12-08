@@ -71,11 +71,11 @@ export const useUpscaler = (img?: HTMLImageElement) => {
     }
   }, [upscaling, img, setProgress, setUpscaledSrc,]);
 
-  const upscale = useCallback(async (img: HTMLImageElement) => {
-    setUpscaledSrc(createCanvas(img));
+  const upscale = useCallback(async (_img: HTMLImageElement) => {
+    setUpscaledSrc(createCanvas(_img));
     setProgress(0);
     setUpscaling(true);
-    const src = tf.browser.fromPixels(img);
+    const src = tf.browser.fromPixels(_img);
     await tf.nextFrame();
     worker.current.postMessage({
       type: ReceiverWorkerState.UPSCALE,
