@@ -42,7 +42,7 @@ export default function SampleTable ({ packageName, models, scales }: IProps) {
             <tr>
               <th>Original</th>
               {models.map(label => (
-                <th>{label} {bicubic ? 'Original' : 'Upscaled'}</th>))}
+                <th key={label}>{label} {bicubic ? 'Original' : 'Upscaled'}</th>))}
             </tr>
           </thead>
           <tbody>
@@ -53,7 +53,7 @@ export default function SampleTable ({ packageName, models, scales }: IProps) {
                 const imageWidth = (sameSize ? maxScale : scale) * IMAGE_WIDTH;
                 const src = bicubic ? flower : `/assets/sample-images/${packageName}/samples/${model}/flower.png`;
                 return (
-                  <td key={model}>
+                  <td key={model }>
                     <img
                       alt={`Upscaled image using ${packageName}/${model}`}
                       src={src}
