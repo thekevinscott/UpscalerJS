@@ -130,16 +130,22 @@ const useResize = (onResize: () => void) => {
 };
 
 const useRerenderOnResize = () => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [width, setWidth] = useState<number>();
+  const [height, setHeight] = useState<number>();
   const onResize = useCallback(() => {
-    setVisible(false);
+    if (width !== window.visualViewport.width || height !== window.visualViewport.height) {
+      setWidth(window.visualViewport.width);
+      setHeight(window.visualViewport.height);
+      setVisible(false);
+    }
   }, []);
   useResize(onResize);
   useEffect(() => {
     if (visible === false) {
       setVisible(true);
     }
-  }, [visible]);
+  }, [visible])
   return visible;
 }
 
