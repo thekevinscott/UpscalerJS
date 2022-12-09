@@ -10,13 +10,14 @@ export function Examples() {
   const EXAMPLE_SRC = useMemo(() => `${EXAMPLE_ROOT}?embed=1&file=index.js&hideExplorer=1&theme=${colorMode}`, [
     // colorMode, // switching reloads the whole iframe, which is not ideal.
   ]);
+
   return (
     <div className={clsx(`${styles.examples}`)}>
       <div className={styles.left}>
         <h2>Examples</h2>
       </div>
       <div className={styles.right}>
-        <iframe rc={EXAMPLE_SRC}></iframe>
+        <iframe src={EXAMPLE_SRC}></iframe> 
       </div>
     </div>
   );
