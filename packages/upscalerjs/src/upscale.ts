@@ -26,7 +26,7 @@ import { makeTick, } from './makeTick';
 type DEFAULT_OUTPUT = BASE64;
 
 const WARNING_UNDEFINED_PADDING_URL =
-  'https://thekevinscott.github.io/UpscalerJS/#/?id=padding-is-undefined';
+  'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
 
 export const WARNING_UNDEFINED_PADDING = [
   '"padding" is undefined, but "patchSize" is explicitly defined.',
@@ -36,7 +36,7 @@ export const WARNING_UNDEFINED_PADDING = [
 ].join('\n');
 
 const WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL =
-  'https://thekevinscott.github.io/UpscalerJS/#/?id=progress-specified-without-patch-size';
+  'https://upscalerjs.com/documentation/troubleshooting#progress-specified-without-patch-size';
 
 export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   'The "progress" callback was provided but "patchSize" was not defined.',

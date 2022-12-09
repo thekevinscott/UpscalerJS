@@ -5,6 +5,8 @@
     "__run_command": "ts-node --esm --project ./tsconfig.json",
     "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
     "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
+    "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
+    "docs:copy-examples": "pnpm __run_command ./package-scripts/docs/copy-examples.ts",
     "example:start": "pnpm __run_command ./start-example.ts",
     "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
     "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance/index.ts",
@@ -25,12 +27,13 @@
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
-    "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
+    "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "cli-table": "^0.3.11",
     "sequelize": "^6.23.1",
     "sqlite3": "^5.1.1",
+    "typedoc": "^0.23.20",
     "upscaler": "workspace:*"
   },
   "devDependencies": {

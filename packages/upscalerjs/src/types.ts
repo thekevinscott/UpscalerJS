@@ -8,6 +8,9 @@ export type WarmupSizesByPatchSize = {
 export type NumericWarmupSizes = [number, number];
 export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize;
 export interface UpscalerOptions {
+  /**
+   * Defaults to [`@upscalerjs/default-model`](/models/available/default-model)
+   */
   model?: ModelDefinitionObjectOrFn;
   warmupSizes?: WarmupSizes[];
 }
@@ -28,14 +31,24 @@ export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultF
 export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>, row: number, col: number) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
-export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>{
+
+interface SharedArgs {
+  /**
+   * [Provides a mechanism to abort the warmup process](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
+   */
+  signal?: AbortSignal;
+  /**
+   * If provided, upscaler will await `tf.nextFrame()` on each cycle. This can be helpful if you need to release for the UI thread or wish to be more responsive to abort signals.
+   */
+  awaitNextFrame?: boolean;
+}
+
+export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
   output?: O;
   patchSize?: number;
   padding?: number;
   progress?: P;
   progressOutput?: PO;
-  signal?: AbortSignal;
-  awaitNextFrame?: boolean;
 }
 
 export type Layer = tf.layers.Layer;
@@ -47,19 +60,7 @@ export interface ModelPackage {
   modelDefinition: ModelDefinition;
 }
 
-// TODO: Remove this in favor of UpscaleArgs. This is to deprecate the 'src' option for output.
-export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> {
-  output?: O | 'src';
-  progressOutput?: PO | 'src';
-  patchSize?: number;
-  padding?: number;
-  progress?: P;
-  signal?: AbortSignal;
-}
-
 export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
 
-export interface WarmupArgs {
-  signal?: AbortSignal;
-  awaitNextFrame?: boolean;
-}
+/* eslint-disable @typescript-eslint/no-empty-interface */
+export interface WarmupArgs extends SharedArgs {}

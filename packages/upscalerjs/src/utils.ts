@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, TempUpscaleArgs, UpscaleArgs, } from './types';
+import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
@@ -113,14 +113,6 @@ export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'ten
     return 'base64';
   }
   return option;
-}
-
-export function parseUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> (opts: TempUpscaleArgs<P, O, PO>): UpscaleArgs<P, O, PO> {
-  return {
-    ...opts,
-    output: parseUpscaleOutput('output', opts.output) as O,
-    progressOutput: parseUpscaleOutput('progressOutput', opts.progressOutput) as PO,
-  };
 }
 
 // this function disposes of any input tensors

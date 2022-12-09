@@ -1,3 +1,8 @@
+---
+sidebar_position: 1
+category: node
+---
+
 # Node Example
 
 Shows how to use UpscalerJS in Node.
