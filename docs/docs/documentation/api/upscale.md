@@ -42,4 +42,4 @@ upscaler.upscale(image, {
 
 ## Returns
 
-`Promise<UpscaleResponse>` - an upscaled image
+`Promise<UpscaleResponse>` - an upscaled image.

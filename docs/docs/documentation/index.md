@@ -8,19 +8,6 @@ sidebar_position: 1
 
 UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
-![Demo](assets/demo.gif)
-
-[A live demo is here](/demo).
-
-**Features**
-
-* 📷 Scale images at 2x, 3x, and 4x resolutions.
-* 🤖 Choose from a variety of pre-trained models, or provide your own
-* 🚀 Browser & Node Support
-* 🖼️ Images first class citizens
-* 📦 ESM, CJS, and UMD available.
-* 📋 Extensive documentation
-
 ## Motivation
 
 ### Why?

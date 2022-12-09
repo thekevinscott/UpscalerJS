@@ -130,7 +130,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     }
   }, {} as Record<string, Array<string>>);
 
-  const content = `# Examples\n${Object.entries(examplesByCategory).map(([category, examples]) => {
+  const content = `# Guides\n${Object.entries(examplesByCategory).map(([category, examples]) => {
     return `\n## ${category}\n\n${examples.map((example, i) => {
       const { title } = examplesByName[example];
       return `- [${title}](/documentation/guides/${category}/${example})`;

@@ -35,4 +35,4 @@ const upscaler = new Upscaler({
 
 ## Returns
 
-`Upscaler` - an instance of an UpscalerJS class
+`Upscaler` - an instance of an UpscalerJS class.

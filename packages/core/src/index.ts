@@ -30,10 +30,14 @@ export interface ModelDefinition {
   scale: number;
   /**
    * @hidden
+   * 
+   * Future option for specifying the number of channels; will enable grayscale and alpha transparency models. Current models only support 3 channels.
    */
   channels?: 3;
   /**
    * @hidden
+   * 
+   * Used internally by UpscalerJS models to encode information about package version and name.
    */
   packageInformation?: PackageInformation;
   /**

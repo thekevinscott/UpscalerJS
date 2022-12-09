@@ -60,17 +60,7 @@ export interface ModelPackage {
   modelDefinition: ModelDefinition;
 }
 
-// TODO: Remove this in favor of UpscaleArgs. This is to deprecate the 'src' option for output.
-export interface TempUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = 'base64', PO extends ResultFormat = undefined> {
-  output?: O | 'src';
-  progressOutput?: PO | 'src';
-  patchSize?: number;
-  padding?: number;
-  progress?: P;
-  signal?: AbortSignal;
-}
-
 export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
 
-export interface WarmupArgs extends SharedArgs {
-}
+/* eslint-disable @typescript-eslint/no-empty-interface */
+export interface WarmupArgs extends SharedArgs {}
