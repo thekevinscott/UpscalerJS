@@ -59,3 +59,12 @@ html {
 h1, h2, h3, h4, h5, h6 {
   color: var(--header-color);
 }
+
+@media screen and (max-width: 996px) {
+  :global {
+    .row {
+      margin-right: 0;
+      margin-left: 0;
+    }
+  }
+}

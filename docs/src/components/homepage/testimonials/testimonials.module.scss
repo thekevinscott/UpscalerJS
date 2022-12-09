@@ -20,6 +20,12 @@
           justify-content: center;
           width: 100%;
         }
+
+        &:nth-child(4n),
+        &:nth-child(5n),
+        &:nth-child(6n) {
+          display: none;
+        }
       }
     }
   }
