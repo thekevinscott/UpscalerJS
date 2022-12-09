@@ -1,11 +1,7 @@
 ---
-<<<<<<<< HEAD:docs/docs/documentation/api_backup.md
 title: API Backup
 description: API Backup
 sidebar_position: 4
----
-========
-title: Documentation
 ---
 
 # UpscalerJS
@@ -112,11 +108,6 @@ npm install upscaler
 If running in the browser, UpscalerJS expects `@tensorflow/tfjs` to be available as a peer dependency.
 
 If running in Node, UpscalerJS expects either `@tensorflow/tfjs-node` or `@tensorflow/tfjs-node-gpu` to be available as a peer dependency, depending on whether you import `upscaler/node` or `upscaler/node-gpu`.
-
-### Examples 
-
-You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
->>>>>>>> main:docs/src/pages/documentation.md
 
 ## Usage
 
@@ -348,8 +339,6 @@ Aborts all inflight `upscale` calls.
 ```javascript
 await upscaler.abort();
 ```
-<<<<<<<< HEAD:docs/docs/documentation/api_backup.md
-========
 
 ## Troubleshooting
 
@@ -403,5 +392,3 @@ upscaler.upscale('/path/to/img', {
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE) for details.
 
 Copyright (c) Kevin Scott ([@thekevinscott](https://thekevinscott.com))
-
->>>>>>>> main:docs/src/pages/documentation.md
