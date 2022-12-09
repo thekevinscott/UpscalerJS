@@ -42,7 +42,7 @@ export default function SampleTable ({ packageName, models, scales }: IProps) {
             <tr>
               <th>Original</th>
               {models.map(label => (
-                <th>{label} {bicubic ? 'Original' : 'Upscaled'}</th>))}
+                <th key={label}>{label} {bicubic ? 'Original' : 'Upscaled'}</th>))}
             </tr>
           </thead>
           <tbody>
