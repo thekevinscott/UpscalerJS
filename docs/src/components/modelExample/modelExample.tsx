@@ -10,7 +10,7 @@ export const ModelExample = ({ model }: { model: string }) => {
   ]);
 
   return (
-    <iframe height="400" width="100%" src={src}></iframe>
+    <iframe sandbox="" height="400" width="100%" src={src}></iframe>
   )
 }
 
