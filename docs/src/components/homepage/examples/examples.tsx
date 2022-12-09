@@ -11,7 +11,6 @@ export function Examples() {
     // colorMode, // switching reloads the whole iframe, which is not ideal.
   ]);
 
-  // skip-cq JS-D010
   return (
     <div className={clsx(`${styles.examples}`)}>
       <div className={styles.left}>
