@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn'

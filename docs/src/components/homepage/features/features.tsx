@@ -36,7 +36,6 @@ const FeatureList = [
       </>
     ),
   },
-  ,
   {
     title: 'Images First',
     img: images,
