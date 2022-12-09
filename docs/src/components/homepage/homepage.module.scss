@@ -1,0 +1,36 @@
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+$padding: 80px;
+
+#homePage {
+  width: 100%;
+
+  main {
+    section {
+      padding: 4rem 2rem;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background-color: rgba(83,146,249,0.2);
+
+      .innerSection {
+        margin: 0 auto;
+        width: calc(100% - ($padding * 2));
+        max-width: 1200px;
+      }
+
+      h2 {
+        font-size: 48px;
+      }
+
+      &.off {
+        background-color: var(--off-background-color);
+
+        color: rgb(227,227,227);
+      }
+    }
+  }
+}

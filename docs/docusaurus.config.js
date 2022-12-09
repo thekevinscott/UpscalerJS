@@ -120,51 +120,75 @@ const config = {
           },
         ],
       },
-      // footer: {
-      //   style: 'dark',
-      //   links: [
-      //     {
-      //       title: 'Docs',
-      //       items: [
-      //         {
-      //           label: 'Tutorial',
-      //           to: '/docs/intro',
-      //         },
-      //       ],
-      //     },
-      //     // {
-      //     //   title: 'Community',
-      //     //   items: [
-      //     //     {
-      //     //       label: 'Stack Overflow',
-      //     //       href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-      //     //     },
-      //     //     {
-      //     //       label: 'Discord',
-      //     //       href: 'https://discordapp.com/invite/docusaurus',
-      //     //     },
-      //     //     {
-      //     //       label: 'Twitter',
-      //     //       href: 'https://twitter.com/docusaurus',
-      //     //     },
-      //     //   ],
-      //     // },
-      //     // {
-      //     //   title: 'More',
-      //     //   items: [
-      //     //     {
-      //     //       label: 'Blog',
-      //     //       to: '/blog',
-      //     //     },
-      //     //     {
-      //     //       label: 'GitHub',
-      //     //       href: 'https://github.com/facebook/docusaurus',
-      //     //     },
-      //     //   ],
-      //     // },
-      //   ],
-      //   // copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-      // },
+      footer: {
+        style: 'dark',
+        links: [
+          {
+            title: 'Play',
+            items: [
+              {
+                label: 'Demo',
+                to: '/demo',
+              },
+              {
+                label: 'Examples',
+                to: 'https://github.com/thekevinscott/UpscalerJS/tree/main/examples',
+              },
+            ],
+          },
+          {
+            title: 'Documentation',
+            items: [
+              {
+                label: 'Introduction',
+                to: '/documentation#motivation',
+              },
+              {
+                label: 'Getting Started',
+                to: '/documentation#getting-started',
+              },
+              {
+                label: 'Usage',
+                to: '/documentation#usage',
+              },
+              {
+                label: 'API',
+                to: '/documentation#api',
+              },
+              {
+                label: 'Troubleshooting',
+                to: '/documentation#troubleshooting',
+              },
+              {
+                label: 'Support',
+                to: '/documentation#support',
+              },
+            ],
+          },
+          {
+            title: 'Models',
+            items: [
+              {
+                label: 'esrgan-slim',
+                to: '/models/available/esrgan-slim',
+              },
+              {
+                label: 'esrgan-medium',
+                to: '/models/available/esrgan-medium',
+              },
+              {
+                label: 'esrgan-thick',
+                to: '/models/available/esrgan-thick',
+              },
+              {
+                label: 'esrgan-legacy',
+                to: '/models/available/esrgan-legacy',
+              },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Kevin Scott (<a target="_blank" href="https://thekevinscott.com">@thekevinscott</a>) | <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE">This project is licensed under the MIT License</a>.`,
+      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
