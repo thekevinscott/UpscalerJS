@@ -1,6 +1,5 @@
 import path from 'path';
-import fs from 'fs';
-import { mkdirp, writeFile } from 'fs-extra';
+import { copyFile, mkdirp, readdirSync, readFileSync, statSync, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 
 /****
@@ -19,11 +18,11 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 /****
  * Utility functions
  */
-const isDirectory = (root: string) => (folder: string) => fs.statSync(path.resolve(root, folder)).isDirectory();
-const getExampleFolders = (root: string) => fs.readdirSync(root).filter(isDirectory(root));
+const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
+const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
 const getFrontmatter = (src: string): FrontMatter => {
-  const readmeContents = fs.readFileSync(src, 'utf-8').split('\n');
+  const readmeContents = readFileSync(src, 'utf-8').split('\n');
   let title: string = '';
   let seenFrontmatter = false;
   let isFrontmatter = false;
@@ -115,10 +114,9 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
         category = 'Browser',
       },
     } = example;
-    const categoryFolder = path.resolve(dest, category);
-    await mkdirp(categoryFolder.toLowerCase());
-
-    fs.copyFileSync(readmePath, path.resolve(categoryFolder, `${key}.md`))
+    const targetPath = path.resolve(dest, category, `${key}.md`);
+    await mkdirp(path.dirname(targetPath));
+    await copyFile(readmePath, targetPath)
   }));
 }
 const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
