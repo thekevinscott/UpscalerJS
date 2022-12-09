@@ -34,3 +34,15 @@ $padding: 80px;
     }
   }
 }
+
+@media screen and (max-width: 996px) {
+  #homePage {
+    main {
+      section {
+        .innerSection {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
