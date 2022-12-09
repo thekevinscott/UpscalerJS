@@ -460,7 +460,6 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `## Example`,
       codeSnippet,
     ] : []),
-    source,
     ...(parameters ? [
       `## Parameters`,
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
