@@ -159,15 +159,16 @@ const getTextSummary = ({ summary, blockTags }: Comment) => {
 };
 
 const getSource = ([source]: SourceReference[]) => {
-  const {
+  let {
     fileName,
     line,
     // character, 
     url,
   } = source;
-  if (!url) {
-    throw new Error(`No URL defined for source ${fileName} at line ${line}`);
-  }
+  url = `http://github.com/thekevinscott/UpscalerJS/tree/main/${fileName}#L{$line}`;
+  // if (!url) {
+  //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
+  // }
   const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
 };
