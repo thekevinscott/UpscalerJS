@@ -1,6 +1,6 @@
 import { mkdirp, writeFile } from 'fs-extra';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, SomeType, SourceReference, TSConfigReader, TypeDocReader, UnionType } from 'typedoc';
+import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { CORE_DIR, DOCS_DIR, ROOT_DIR, UPSCALER_DIR } from '../utils/constants';
 
 /****
@@ -31,6 +31,7 @@ const VALID_METHODS_FOR_WRITING_DOCS = [
 const INTRINSIC_TYPES = [
   'string',
   'number',
+  'boolean',
 ];
 
 /****
@@ -68,6 +69,13 @@ const getPackageAsTree = (src: string, tsconfig: string): ProjectReflection => {
   } else {
     throw new Error('No project was converted.')
   }
+}
+
+function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
+  return arr.reduce((obj, item) => ({
+    ...obj,
+    [getKey(item)]: item,
+  }), {} as Record<string, T>);
 }
 
 const getKindStringKey = (kindString: string = '') => {
@@ -114,18 +122,13 @@ const getChildren = (projectReflection: ProjectReflection): Definitions => {
     classes: [] as DeclarationReflection[],
   });
 
-  const getAsObj = (arr: DeclarationReflection[]) => arr.reduce((obj, item) => ({
-    ...obj,
-    [item.name]: item,
-  }), {} as Record<string, DeclarationReflection>);
-
   return {
-    methods: getAsObj(parsedChildren.methods),
-    constructors: getAsObj(parsedChildren.constructors),
-    functions: getAsObj(parsedChildren.functions),
-    types: getAsObj(parsedChildren.types),
-    interfaces: getAsObj(parsedChildren.interfaces),
-    classes: getAsObj(parsedChildren.classes),
+    methods: getAsObj<DeclarationReflection>(parsedChildren.methods, i => i.name),
+    constructors: getAsObj<DeclarationReflection>(parsedChildren.constructors, i => i.name),
+    functions: getAsObj<DeclarationReflection>(parsedChildren.functions, i => i.name),
+    types: getAsObj<DeclarationReflection>(parsedChildren.types, i => i.name),
+    interfaces: getAsObj<DeclarationReflection>(parsedChildren.interfaces, i => i.name),
+    classes: getAsObj<DeclarationReflection>(parsedChildren.classes, i => i.name),
   };
 };
 
@@ -198,9 +201,10 @@ const getLiteralTypeValue = (type: LiteralType): string => {
   throw new Error('Not yet implemented for literal');
 }
 
-const getTypeName = (_type?: SomeType): {
+const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions): {
   type: 'reference' | 'array' | 'literal' | 'intrinsic',
   name: string;
+  includeURL?: boolean;
 } => {
   if (!_type) {
     throw new Error('Define a type');
@@ -246,19 +250,73 @@ const getTypeName = (_type?: SomeType): {
   }
 
   if (isUnionType(_type)) {
+    let includeURL = true;
+    const name = _type.types.map(t => {
+      if (isReferenceType(t)) {
+        if (definitions === undefined) {
+          throw new Error('Union type was provided and a reference type was found in the union, but no definitions are present.')
+        }
+        const { interfaces, types } = definitions;
+        const matchingType = interfaces[t.name] || types[t.name];
+        if (!matchingType?.type) {
+          throw new Error(`No matching type found for literal ${t.name} in union`);
+        }
+        const matchingTypeType = matchingType.type;
+        if (isLiteralType(matchingTypeType)) {
+          // if any literal types are included, don't include the URL
+          includeURL = false;
+          return JSON.stringify(matchingTypeType.value);
+        }
+        if (matchingTypeType.type === 'reflection') {
+          // Ignore reflection types
+          return t.name;
+        }
+        console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
+
+        throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
+      } else if (isInstrinsicType(t)) {
+        if (t.name === 'undefined') {
+          // ignore an explicit undefined type; this should be better represented as an optional flag.
+          return undefined;
+        }
+        return t.name;
+      }
+      throw new Error(`Unsupported type in union type: ${t.type}`);
+    }).filter(Boolean).join(' | ');
     return {
       type: 'literal',
-      name: 'COMING SOON',
+      includeURL,
+      name: _type.types.map(t => {
+        if (isReferenceType(t)) {
+          if (definitions === undefined ) {
+            throw new Error('Union type was provided and a reference type was found in the union, but no definitions are present.')
+          }
+          const { interfaces, types } = definitions;
+          const matchingType = interfaces[t.name] || types[t.name];
+          if (!matchingType?.type) {
+            throw new Error(`No matching type found for literal ${t.name} in union`);
+          }
+          const matchingTypeType = matchingType.type;
+          if (isLiteralType(matchingTypeType)) {
+            return JSON.stringify(matchingTypeType.value);
+          }
+          if (matchingTypeType.type === 'reflection') {
+            // Ignore reflection types
+            return t.name;
+          }
+          console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
+
+          throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
+        } else if (isInstrinsicType(t)) {
+          if (t.name === 'undefined') {
+            // ignore an explicit undefined type; this should be better represented as an optional flag.
+            return undefined;
+          }
+          return t.name;
+        }
+        throw new Error(`Unsupported type in union type: ${t.type}`);
+      }).filter(Boolean).join(' | '),
     };
-    // const lastType = _type.types.pop();
-    // if (!lastType || !isLiteralType(lastType)) {
-    //   console.error(_type);
-    //   throw new Error('Unsupported');
-    // }
-    // return {
-    //   type: 'literal',
-    //   name: 'COMING SOON',
-    // };
   }
 
   console.error(_type)
@@ -289,10 +347,10 @@ function sortChildrenByLineNumber<T extends (DeclarationReflection | ParameterRe
   });
 }
 
-const writeParameter = (parameter: ParameterReflection | DeclarationReflection, matchingType?: DeclarationReflection) => {
+const writeParameter = (parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DeclarationReflection | TypeParameterReflection, definitions: Definitions) => {
   const comment = getSummary(parameter.comment);
-  const { type, name } = getTypeName(parameter.type);
-  const url = getURLFromSources(matchingType?.sources);
+  const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
+  const url = includeURL ? getURLFromSources(matchingType?.sources) : undefined;
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
   const linkedName = url ?  `[${parsedName}](${url})` : parsedName;
   return [
@@ -303,16 +361,25 @@ const writeParameter = (parameter: ParameterReflection | DeclarationReflection, 
   ].filter(Boolean).join(' ');
 };
 
-const getParameters = (parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, depth = 0): string => {
+const getParameters = (parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}, depth = 0): string => {
   if (depth > 5) {
     throw new Error('Too many levels of depth');
   }
   const { interfaces, types } = definitions;
   return parameters.map((parameter) => {
-    let { name: nameOfTypeDefinition } = getTypeName(parameter.type);
-    let matchingType;
+    let { name: nameOfTypeDefinition } = getReferenceTypeOfParameter(parameter.type);
+    let matchingType: undefined | DeclarationReflection | TypeParameterReflection = undefined;
     if (!INTRINSIC_TYPES.includes(nameOfTypeDefinition) && parameter.type !== undefined && !isLiteralType(parameter.type)) {
-      matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition] || undefined;
+      matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+      if (!matchingType) {
+        // it's possible that this type is a generic type; in which case, replace the generic with the actual type it's extending
+        matchingType = typeParameters[nameOfTypeDefinition];
+        if (matchingType) {
+          nameOfTypeDefinition = (matchingType as any).type.name;
+          matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+          parameter.type = matchingType.type;
+        }
+      }
       if (!matchingType) {
         // console.warn(parameter.type);
         // console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}.`);
@@ -320,8 +387,8 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
     }
     const { children = [] } = matchingType || {};
     return [
-      writeParameter(parameter, matchingType),
-      getParameters(sortChildrenByLineNumber(children), definitions, depth + 1),
+      writeParameter(parameter, matchingType, definitions),
+      getParameters(sortChildrenByLineNumber(children), definitions, typeParameters, depth + 1),
     ].filter(Boolean).map(line => Array(depth * 2).fill(' ').join('') + line).join('\n');
   }).filter(Boolean).join('\n');
 };
@@ -335,7 +402,7 @@ const getReturnType = (type?: SomeType, blockTags?: Record<string, CommentTag['c
     const { name, typeArguments } = type;
     let nameOfType = name;
     if (typeArguments?.length) {
-      nameOfType = `${nameOfType}<${typeArguments.map(getTypeName).map(({ name }) => name).join(', ')}>`;
+      nameOfType = `${nameOfType}<${typeArguments.map(t => getReferenceTypeOfParameter(t)).map(({ name }) => name).join(', ')}>`;
     }
     const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
     return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
@@ -364,7 +431,8 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   if (!signatures?.length) {
     throw new Error(`No signatures found in ${name}`);
   }
-  const { comment, parameters, type } = signatures[0];
+  const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
+  const { comment, parameters, type, typeParameter: typeParameters } = signature;
   if (!comment) {
     throw new Error(`No comment found in method ${name}`);
   }
@@ -390,7 +458,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     source,
     ...(parameters ? [
       `## Parameters`,
-      getParameters(parameters, definitions),
+      getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
     `## Returns`,
     getReturnType(type, blockTags),
@@ -405,7 +473,6 @@ async function main() {
   const projectReflection: ProjectReflection = getUpscalerAsTree();
   const definitions = getChildren(projectReflection);
   const exports = Object.values(definitions.classes);
-  // console.log(`Number of exports from index that we are considering: ${exports.length} items`)
   for (let i = 0; i < exports.length; i++) {
     const xport = exports[i];
     if (VALID_EXPORTS_FOR_WRITING_DOCS.includes(xport.name)) {
@@ -424,7 +491,7 @@ async function main() {
             writeFile(target, content.trim(), 'utf-8');
           }
         } else {
-          console.log(`Ignoring method ${method.name}`);
+          console.log(`** Ignoring method ${method.name}`);
         }
       }
     }

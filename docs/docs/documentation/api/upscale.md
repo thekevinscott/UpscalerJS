@@ -27,18 +27,19 @@ upscaler.upscale(image, {
 });
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L111">upscaler.ts:111</a></small>
+<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L110">upscaler.ts:110</a></small>
 
 ## Parameters
 
-- **`image`**: _GetImageAsTensorInput_  - the image to upscale.
-- **`options`**: _[TempUpscaleArgs](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L64)_  - a set of upscaling arguments
-  - **`output?`**: _COMING SOON_
-  - **`progressOutput?`**: _COMING SOON_
+- **`image`**: _GetImageAsTensorInput_  - the image to upscale. If in the browser, this can be a string to a file path, a tensor, or any element tf.fromPixels supports. If in Node, this can be a string to a file path, a Buffer, a Uint8Array, or a tensor.
+- **`options`**: _[UpscaleArgs](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L46)_  - a set of upscaling arguments
+  - **`signal?`**: _AbortSignal_  - [Provides a mechanism to abort the warmup process](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
+  - **`awaitNextFrame?`**: _boolean_  - If provided, upscaler will await `tf.nextFrame()` on each cycle. This can be helpful if you need to release for the UI thread or wish to be more responsive to abort signals.
+  - **`output?`**: _"base64" | "tensor"_
   - **`patchSize?`**: _number_
   - **`padding?`**: _number_
-  - **`progress?`**: _P_
-  - **`signal?`**: _AbortSignal_
+  - **`progress?`**: _[SingleArgProgress | MultiArgProgress](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L33)_
+  - **`progressOutput?`**: _"base64" | "tensor"_
 
 ## Returns
 

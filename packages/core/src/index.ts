@@ -49,7 +49,7 @@ export interface ModelDefinition {
    */
   postprocess?: PostProcess;
   /**
-   * Custom layers for the model.
+   * Custom layers for the model. You can learn more about custom layers [here](https://js.tensorflow.org/tutorials/custom-layers.html).
    */
   customLayers?: CustomLayer[];
 

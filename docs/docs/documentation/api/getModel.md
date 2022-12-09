@@ -21,4 +21,4 @@ upscaler.getModel().then(modelPackage => {
 
 ## Returns
 
-`Promise<ModelPackage>`
+`Promise<ModelPackage>` - a modelPackage object of shape ```{ model: tf.LayersModel, modelDefinition: ModelDefinition }```

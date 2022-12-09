@@ -15,7 +15,7 @@ const upscaler = new Upscaler();
 upscaler.abort();
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L152">upscaler.ts:152</a></small>
+<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L150">upscaler.ts:150</a></small>
 
 ## Returns
 

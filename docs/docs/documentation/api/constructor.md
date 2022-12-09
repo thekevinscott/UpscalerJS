@@ -20,7 +20,7 @@ const upscaler = new Upscaler({
 });
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L77">upscaler.ts:77</a></small>
+<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L76">upscaler.ts:76</a></small>
 
 ## Parameters
 
@@ -30,7 +30,7 @@ const upscaler = new Upscaler({
     - **`scale`**: _number_  - The scale of the model. Must match the scale at which the model was trained.
     - **`preprocess?`**: _[PreProcess](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/core/src/index.ts#L19)_  - A function that processes the input image before feeding to the model. For example, you can use this function if you need to regularize your input.
     - **`postprocess?`**: _[PostProcess](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/core/src/index.ts#L20)_  - A function that processes the input image after being run through model inference. For example, you may need to convert floats to 0-255 integers.
-    - **`customLayers?`**: _SerializableConstructor[]_  - Custom layers for the model.
+    - **`customLayers?`**: _SerializableConstructor[]_  - Custom layers for the model. You can learn more about custom layers [here](https://js.tensorflow.org/tutorials/custom-layers.html).
   - **`warmupSizes?`**: _[WarmupSizes[]](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L9)_
 
 ## Returns
