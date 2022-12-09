@@ -9,6 +9,7 @@ export const ModelExample = ({ model }: { model: string }) => {
     colorMode,
   ]);
 
+  // skip-cq JS-D010
   return (
     <iframe height="400" width="100%" src={src}></iframe>
   )
