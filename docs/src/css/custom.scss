@@ -4,15 +4,18 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #254b98;
-  --ifm-color-primary-dark: #214489;
-  --ifm-color-primary-darker: #1f4081;
-  --ifm-color-primary-darkest: #1a356a;
-  --ifm-color-primary-light: #2952a7;
-  --ifm-color-primary-lighter: #2b56af;
-  --ifm-color-primary-lightest: #3062c6;
+  --ifm-color-primary: #2857a4;
+  --ifm-color-primary-dark: #244e94;
+  --ifm-color-primary-darker: #224a8b;
+  --ifm-color-primary-darkest: #1c3d73;
+  --ifm-color-primary-light: #2c60b4;
+  --ifm-color-primary-lighter: #2e64bd;
+  --ifm-color-primary-lightest: #3a73cf;
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  --off-background-color: white;
+  --header-color: #303C50;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -25,6 +28,9 @@
   --ifm-color-primary-lighter: #b0c8f6;
   --ifm-color-primary-lightest: #e2eafc;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --off-background-color: rgb(21, 37, 57);
+  --header-color: hsl(220, 79%, 89%);
 }
 
 html[data-theme='dark'] {
@@ -40,4 +46,16 @@ html {
 
 .main-wrapper {
   display: flex;
+}
+
+.footer__copyright {
+  opacity: 0.4;
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--header-color);
 }

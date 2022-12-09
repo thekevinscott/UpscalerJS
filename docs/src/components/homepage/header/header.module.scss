@@ -1,0 +1,84 @@
+.heroBanner {
+  --fade-primary: yellow;
+
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--off-background-color);
+  color: var(--ifm-font-color-base);
+
+  & > div {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  code {
+    display: block;
+    position: relative;
+    margin: 20px 0;
+    padding: 10px 40px;
+    background: transparent;
+    text-align: center;
+    cursor: pointer;
+
+    svg {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      opacity: .4;
+      transition-duration: 0.2s;
+    }
+
+    &:hover {
+      svg {
+        opacity: 1;
+      }
+    }
+
+    &.copied {
+      svg {
+        animation-name: fade;
+        animation-duration: 1s;
+      }
+    }
+  }
+}
+
+[data-theme='dark'] {
+  .heroBanner {
+    --fade-primary: rgb(156, 68, 0);
+    code {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.4);
+    }
+  }
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+
+  span span {
+    display: flex;
+  }
+}
+
+@keyframes fade {
+  from {color: var(--fade-primary);}
+  to {color: inherit;}
+}
+
+[data-theme='dark'] {
+  @keyframes fade {
+    from {color: var(--fade-primary);}
+    to {color: inherit;}
+  }
+}

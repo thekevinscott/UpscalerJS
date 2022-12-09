@@ -1,3 +1,7 @@
+---
+title: Documentation
+---
+
 # UpscalerJS
 
 <a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler" /></a>
@@ -9,7 +13,7 @@
 
 UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x.
 
-![Demo](assets/demo.gif)
+![Demo](/assets/demo.gif)
 
 [A live demo is here](https://upscaler.ai).
 
@@ -378,9 +382,6 @@ upscaler.upscale('/path/to/img', {
   progress: ...
 })
 ```
-## Contributions 
-
-Contributions are welcome! Please follow the existing conventions, use the linter, add relevant tests, and add relevant documentation.
 
 ## Support
 

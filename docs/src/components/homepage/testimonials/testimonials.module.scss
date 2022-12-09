@@ -1,0 +1,27 @@
+.testimonials {
+  width: 100%;
+  .tweets {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 996px) {
+  .testimonials {
+    .tweets {
+      display: block;
+      .tweet {
+        width: 100%;
+
+        div {
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+  
