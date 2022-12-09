@@ -1,0 +1,5 @@
+[build]
+  base = "docs/"
+  command = "pnpm run build"
+  publish = "build/"
+
