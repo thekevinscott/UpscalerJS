@@ -438,7 +438,12 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   }
 
   const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
-  const source = getSource(sources);
+  try {
+    const source = getSource(sources);
+  } catch(e) {
+    console.error(JSON.stringify(method, null, 2));
+    throw e;
+  }
 
   const content = [
     [
