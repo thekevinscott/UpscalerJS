@@ -1,7 +1,7 @@
 import { ColorMode, useColorMode } from '@docusaurus/theme-common';
 import { deepMerge } from '@site/src/utils/deepMerge';
 import type { ChartData, ChartOptions, PluginChartOptions } from 'chart.js';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Line, Bar } from './chartjs';
 import { ScaleType } from './scaleType/scaleType';
 import { ChildrenFn, Tooltip } from './tooltip/tooltip';
@@ -119,10 +119,40 @@ function useOptions<T extends CHART_TYPE>(title: string, relativeScale: boolean,
   return options;
 }
 
+const useResize = (onResize: () => void) => {
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+    }
+  }, [onResize]);
+};
+
+const useRerenderOnResize = () => {
+  const [visible, setVisible] = useState(true);
+  const onResize = useCallback(() => {
+    setVisible(false);
+  }, []);
+  useResize(onResize);
+  useEffect(() => {
+    if (visible === false) {
+      setVisible(true);
+    }
+  }, [visible]);
+  return visible;
+}
+
 function SoloChart<T extends CHART_TYPE>({ relativeScale, type, title, options: opts, data, plugins}: Exclude<Opts<T>, 'tooltip'> & {
   relativeScale: boolean;
 }) {
+  const visible = useRerenderOnResize();
+
   const options = useOptions<T>(title, relativeScale, data, opts);
+
+  if (visible === false) {
+    return (<div />);
+  }
 
   if (type === 'line') {
     return (
@@ -147,6 +177,7 @@ export default function Chart<T extends CHART_TYPE>({ children, ...opts }: Opts<
   const [ tooltip, tooltipCallback ] = useTooltip();
   const hasTooltip = Boolean(children);
   const [relativeScale, setRelativeScale] = useState(false);
+
   return (
     <div className={styles.chart}>
       <ScaleType toggleScaleType={(e) => {
