@@ -16,7 +16,7 @@ export function Examples() {
         <h2>Examples</h2>
       </div>
       <div className={styles.right}>
-        <iframe sandbox="" src={EXAMPLE_SRC}></iframe>
+        <iframe rc={EXAMPLE_SRC}></iframe>
       </div>
     </div>
   );
