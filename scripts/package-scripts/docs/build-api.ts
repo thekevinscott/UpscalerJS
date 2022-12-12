@@ -165,7 +165,7 @@ const getSource = ([source]: SourceReference[]) => {
     // character, 
     url,
   } = source;
-  url = `http://github.com/thekevinscott/UpscalerJS/tree/main/${fileName}#L{$line}`;
+  url = `https://github.com/thekevinscott/UpscalerJS/blob/main/${fileName}#L${line}`;
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
