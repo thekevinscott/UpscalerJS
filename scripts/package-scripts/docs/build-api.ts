@@ -165,7 +165,7 @@ const getSource = ([source]: SourceReference[]) => {
     // character, 
     url,
   } = source;
-  url = `https://github.com/thekevinscott/UpscalerJS/tree/main/${fileName}#L${line}`;
+  url = `https://github.com/thekevinscott/UpscalerJS/blob/main/${fileName}#L${line}`;
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
@@ -439,7 +439,12 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   }
 
   const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
-  const source = getSource(sources);
+  try {
+    const source = getSource(sources);
+  } catch(e) {
+    console.error(JSON.stringify(method, null, 2));
+    throw e;
+  }
 
   const content = [
     [
@@ -456,7 +461,6 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `## Example`,
       codeSnippet,
     ] : []),
-    source,
     ...(parameters ? [
       `## Parameters`,
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
