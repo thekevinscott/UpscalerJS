@@ -13,13 +13,13 @@ const drawOverlaidText = (width: number, height: number): HTMLCanvasElement => {
   ctx.save();
   ctx.font = `${TEXT_FONT_SIZE}px Arial Black`;
   ctx.fillStyle = "rgba(255,255,255,0.2)";
-  let { width: textWidth } = ctx.measureText(OVERLAY_TEXT);
+  const { width: textWidth } = ctx.measureText(OVERLAY_TEXT);
   const textWidthWithPadding = textWidth + TEXT_PADDING;
   const textHeightWithPadding = TEXT_FONT_SIZE + TEXT_PADDING;
   const cols = Math.ceil(width * 2/ textWidthWithPadding);
   const rows = Math.ceil(height * 2 / textHeightWithPadding);
   ctx.rotate(-30 * Math.PI / 180);
-  ctx.translate(width * -.5, height * -.5);
+  ctx.translate(width * -0.5, height * -0.5);
 
   for (let col = 0; col < cols; col++) {
     for (let row = 0; row < rows; row++) {
