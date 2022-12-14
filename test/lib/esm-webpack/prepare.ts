@@ -30,8 +30,8 @@ const PACKAGES = [
   })),
 ];
 
-export const prepareScriptBundleForESM = async () => {
-  await installNodeModules(ROOT);
+export const prepareScriptBundleForESM = async ({ verbose = false }: { verbose?: boolean } = {}) => {
+  await installNodeModules(ROOT, { verbose });
   await installLocalPackages(ROOT, [
     {
       src: UPSCALER_PATH,
@@ -41,7 +41,7 @@ export const prepareScriptBundleForESM = async () => {
         src: path.resolve(MODELS_DIR, packageName),
         name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
       })),
-  ]);
+  ], { verbose});
 };
 
 export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
