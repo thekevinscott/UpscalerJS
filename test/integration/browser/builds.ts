@@ -12,7 +12,7 @@ import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const JEST_TIMEOUT_IN_SECONDS = 120;
-const VERBOSE = false;
+const VERBOSE = true;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(0);
@@ -80,8 +80,8 @@ describe('Build Integration Tests', () => {
 
   it("upscales using an ESM build using Webpack", async () => {
     const { page } = await start(async () => {
-      await prepareScriptBundleForESM();
-      await bundleWebpack();
+      await prepareScriptBundleForESM({ verbose: VERBOSE });
+      await bundleWebpack({ verbose: VERBOSE });
     }, WEBPACK_DIST, webpackMockCDN, '| Loaded');
     await new Promise(r => setTimeout(r, 60000));
     const result = await page.evaluate(() => {
