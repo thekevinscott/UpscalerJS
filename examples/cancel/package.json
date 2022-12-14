@@ -5,10 +5,7 @@
   "description": "Demonstrates how to cancel an inflight upscale request.",
   "main": "index.js",
   "scripts": {
-    "dev": "vite"
-  },
-  "devDependencies": {
-    "vite": "*"
+    "dev": "npx vite"
   },
   "author": "Kevin Scott",
   "license": "MIT",
