@@ -51,7 +51,7 @@ describe('Speed Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  if (new Date().getTime() > 1670772364086) {
+  if (new Date().getTime() > 1673364364086) {
     [
       {
         label: 'Simple Model',
