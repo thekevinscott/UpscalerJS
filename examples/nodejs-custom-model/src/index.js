@@ -2,7 +2,7 @@ const express = require("express");
 const path = require('path');
 const fs = require('fs');
 const Upscaler = require('upscaler/node');
-const x2 = require('@upscalerjs/esrgan-thick/node/2x');
+const x2 = require('@upscalerjs/esrgan-thick/2x');
 const tf = require('@tensorflow/tfjs-node');
 
 const app = express();
