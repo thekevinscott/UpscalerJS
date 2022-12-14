@@ -81,7 +81,7 @@ describe('Build Integration Tests', () => {
   it("upscales using an ESM build using Webpack", async () => {
     const { page } = await start(async () => {
       await prepareScriptBundleForESM({ verbose: VERBOSE });
-      await bundleWebpack();
+      await bundleWebpack({ verbose: VERBOSE });
     }, WEBPACK_DIST, webpackMockCDN, '| Loaded');
     await new Promise(r => setTimeout(r, 60000));
     const result = await page.evaluate(() => {
