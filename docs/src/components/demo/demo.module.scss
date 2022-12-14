@@ -1,5 +1,8 @@
 #page {
-  min-height: calc(100vh - 60px);
+  // min-height: calc(100vh - 60px);
+  /* mobile viewport bug fix */
+  // min-height: -webkit-fill-available;
+
   flex: 1;
   position: relative;
   background-color: #fff;

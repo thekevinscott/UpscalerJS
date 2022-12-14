@@ -131,7 +131,7 @@ const useResize = (onResize: () => void) => {
 
 const useRerenderOnResize = () => {
   const [visible, setVisible] = useState<boolean>(false);
-  const [width, setWidth] = useState<number>();
+  const [width, setWidth] = useState<number>(window.visualViewport.width);
   const onResize = useCallback(() => {
     if (width !== window.visualViewport.width) {
       setWidth(window.visualViewport.width);

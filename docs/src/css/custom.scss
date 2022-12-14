@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+body {
+  min-height: -webkit-fill-available;
+  min-height: 100vh;
+}
+
+html {
+  height: -webkit-fill-available;
+}
+
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #2857a4;

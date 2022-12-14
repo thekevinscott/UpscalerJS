@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styles from './demo.module.scss';
 import Viewer from './components/viewer/viewer';
 import Controls from './controls/controls';
@@ -11,6 +11,8 @@ import { useImages } from './hooks/useImages';
 import { ProgressBar } from './components/progressBar/progressBar';
 import { useDownload } from './hooks/useDownload';
 
+console.log(styles);
+
 const globalStyle = document.createElement('style');
 globalStyle.type = 'text/css';
 globalStyle.innerHTML = `
@@ -19,9 +21,19 @@ body {
   overflow: hidden !important;
   width: 100%;
 }
+footer {
+  display: none;
+}
+#${styles.page} {
+  max-height: 500px;
+}
 `;
 
 export function Demo() {
+  const onResize = useCallback(() => {
+    console.log('resize!')
+    document.getElementById(styles.page).style.minHeight = `calc(${window.innerHeight}px - 60px)`;
+  }, []);
   useEffect(() => {
     const head = document.getElementsByTagName('head')[0];
     head.appendChild(globalStyle);
@@ -29,10 +41,14 @@ export function Demo() {
     meta.name = 'viewport';
     meta.content = 'width=device-width, user-scalable=no';
     head.appendChild(meta)
+    onResize();
+
+    window.addEventListener('resize', onResize);
 
     return () => {
       head.removeChild(globalStyle);
       head.removeChild(meta);
+      window.removeEventListener('resize', onResize);
     }
   }, []);
   const { 
