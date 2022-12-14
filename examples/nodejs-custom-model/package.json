@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npx -y nodemon src/index.js localhost 8080"
+    "dev": "node src/index.js localhost 8080"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^4.1.0",
