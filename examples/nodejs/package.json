@@ -7,7 +7,7 @@
   "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "dev": "npx nodemon --yes src/index.js localhost 8080"
+    "dev": "npx -y nodemon src/index.js localhost 8080"
   },
   "engines": {
     "node": "^16.0.0"
