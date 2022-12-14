@@ -34,7 +34,7 @@ describe('Image Format Integration Tests', () => {
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll(bundleEsbuild);
-  }, 20000);
+  }, 60000);
 
   afterAll(async function imageAfterAll() {
     await testRunner.afterAll();
