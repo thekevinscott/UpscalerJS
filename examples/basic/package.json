@@ -5,10 +5,7 @@
   "description": "Demonstration of basic usage of UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "dev": "vite"
-  },
-  "devDependencies": {
-    "vite": "*"
+    "dev": "npx -y vite"
   },
   "author": "Kevin Scott",
   "license": "MIT",
