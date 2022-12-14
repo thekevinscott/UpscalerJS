@@ -83,7 +83,6 @@ describe('Build Integration Tests', () => {
       await prepareScriptBundleForESM({ verbose: VERBOSE });
       await bundleWebpack({ verbose: VERBOSE });
     }, WEBPACK_DIST, webpackMockCDN, '| Loaded');
-    await new Promise(r => setTimeout(r, 60000));
     const result = await page.evaluate(() => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
