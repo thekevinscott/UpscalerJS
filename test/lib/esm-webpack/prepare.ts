@@ -44,14 +44,18 @@ export const prepareScriptBundleForESM = async ({ verbose = false }: { verbose?:
   ], { verbose});
 };
 
-export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, reject) => {
+export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): Promise<void> => new Promise(async (resolve, reject) => {
   rimraf.sync(DIST);
   copyFixtures(DIST, {
     includeModels: true,
+    verbose,
   });
 
   const entryFile = path.join(ROOT, 'src/index.js');
   await writeIndex(entryFile, LOCAL_UPSCALER_NAME);
+  if (verbose) {
+    console.log('Wrote index file for webpack');
+  }
 
   const compiler = webpack({
     mode: 'production',
@@ -75,10 +79,16 @@ export const bundleWebpack = (): Promise<void> => new Promise(async (resolve, re
     },
   });
 
+  if (verbose) {
+    console.log('Running webpack compiler');
+  }
   compiler.run((err, stats) => {
     if (err || stats?.hasErrors()) {
       reject(err || stats?.toJson('errors-only').errors?.map(e => e.message));
     } else {
+      if (verbose) {
+        console.log('Webpack compiler complete');
+      }
       resolve();
     }
   });
