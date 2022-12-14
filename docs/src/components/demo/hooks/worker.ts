@@ -15,14 +15,14 @@ export enum SenderWorkerState {
 let upscaler: Upscaler;
 let id: string;
 
-const PATCH_SIZE = 64;
+const PATCH_SIZE = 32;
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
     if (!upscaler) {
       upscaler = new Upscaler();
       await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
-      id = data.id;
+      console.log('UpscalerJS warmup complete.');
     } else {
       console.warn('Was asked to instantiate UpscalerJS, but it already exists.')
     }
@@ -32,6 +32,9 @@ onmessage = async ({ data: { type, data } }) => {
     } catch(err) {
       // empty
     }
+      if (!data) {
+        throw new Error('No data in set id');
+      }
     id = data.id;
   } else if (type === ReceiverWorkerState.UPSCALE) {
     if (!upscaler) {

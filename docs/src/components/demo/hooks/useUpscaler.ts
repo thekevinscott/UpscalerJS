@@ -6,7 +6,7 @@ import { tensorAsBase64 } from 'tensor-as-base64';
 
 // TODO: This has to manually be set to the scale of the model loaded in the worker.
 const SCALE = 4;
-const PATCH_SIZE = 64;
+const PATCH_SIZE = 32;
 
 export const useUpscaler = (img?: HTMLImageElement) => {
   const [upscaling, setUpscaling] = useState(false);
