@@ -3,6 +3,7 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/nightOwl');
+const sectionPrefix = require('./src/plugins/remark/section-prefix');
 
 const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 
@@ -58,6 +59,7 @@ const config = {
           routeBasePath: '/', // Serve the docs at the site's root
           sidebarPath: require.resolve('./sidebars.js'),
           breadcrumbs: false,
+          remarkPlugins: [sectionPrefix],
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
