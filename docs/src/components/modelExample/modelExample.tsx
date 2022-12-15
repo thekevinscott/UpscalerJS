@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
-import { useColorMode } from '@docusaurus/theme-common';
+import StackBlitz from '../stackBlitz/stackBlitz';
 
 export const ModelExample = ({ model }: { model: string }) => {
-  const { colorMode } = useColorMode();
-
-  const src = useMemo(() => `https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/models/${model}/demo?file=index.js&title=@upscalerjs/${model}&theme=${colorMode}`, [
-    model,
-    colorMode,
-  ]);
+  const params = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('file', 'index.js');
+    params.set('title', `@upscalerjs/${model}`);
+    return params;
+  }, []);
 
   return (
-    <iframe height="400" width="100%" src={src}></iframe>
-  )
+    <StackBlitz url={`models/${model}/demo`} params={params} />
+  );
 }
 
 export default ModelExample;
