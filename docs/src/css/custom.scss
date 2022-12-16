@@ -81,3 +81,8 @@ h1, h2, h3, h4, h5, h6 {
     }
   }
 }
+
+.markdown h1 {
+  --ifm-h1-font-size: 3rem;
+  margin-bottom: calc( var(--ifm-h1-vertical-rhythm-bottom) * var(--ifm-leading) );
+}
