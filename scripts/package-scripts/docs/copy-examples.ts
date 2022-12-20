@@ -1,6 +1,6 @@
 import path from 'path';
 import glob from 'glob';
-import { copyFile, mkdirp, readdirSync, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
+import { mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 
 /****
@@ -103,6 +103,11 @@ const getExamplesByName = () => {
   };
 }
 
+const parseContents = async (path: string) => {
+  const contents = await readFile(path, 'utf-8');
+  return contents;
+}
+
 const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
   await Promise.all(exampleOrder.map(async (key) => {
     const example = examplesByName[key];
@@ -118,7 +123,8 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     } = example;
     const targetPath = path.resolve(...[dest, category, parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
-    await copyFile(readmePath, targetPath)
+    const fileContents = await parseContents(readmePath)
+    await writeFile(targetPath, fileContents, 'utf-8');
   }));
 }
 
