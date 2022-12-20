@@ -16,13 +16,17 @@ Here we'll discuss working with tensors directly within the context of UpscalerJ
 
 [Tensors are a data type used in neural networks](https://thekevinscott.com/tensors-in-javascript/), and they're used internally to represent the images being upscaled in UpscalerJS.
 
-UpscalerJS offers convenience methods for simply converting between input formats and returning an easily displayable format depending on browser or node.
+If you are already working with tensors in the context of your application, it can often be more performant to work directly with tensors throughout the process. Doing so can give finer grained control over memory management and performance.
 
-However, if you are already working with tensors in the context of your application, it can often be more performant to work directly with tensors throughout the process. Doing so can give finer grained control over memory management and performance.
+:::tip
+
+You don't need to know anything about tensors to use UpscalerJS. Stick with the defaults, and UpscalerJS will automatically convert everything internally.
+
+:::
 
 Here we'll discuss the particulars of working with tensors in UpscalerJS.
 
-## Providing a Tensor
+## Tensor as Input
 
 Let's say we've got a tensor that we'd like to upscale.
 
@@ -52,11 +56,11 @@ upscaler.upscale(tensor).then(upscaledSrc => {
 })
 ```
 
-## Receiving a Tensor
+## Tensor as Output
 
-We can also receive a tensor as the output of our operation. Similarly to the input steps, doing so will be slightly more performant and give us finer grained control over memory management.
+We can also return a tensor in the output of our operation. Doing so will be slightly more performant and give us finer grained control over memory management.
 
-We can specify we wish to receive a tensor response with:
+We can specify the return type as `tensor` by providing the `output` argument:
 
 ```javascript
 upscaler.upscale(tensor, {
@@ -85,6 +89,10 @@ upscaler.upscale(tensor, {
 })
 ```
 
+:::caution
+
 [Tensorflow.js provides a handy method, `tidy`](https://js.tensorflow.org/api/latest/#tidy), for automatically managing tensor memory within synchronous methods. However, most UpscalerJS methods are asynchronous, so take care not to use `tidy` outside of the context of a synchronous function.
 
-Congratulations! You're upscaling images now. From here, read about some performance optimizations you can take to squeeze the most performance out of UpscalerJS on the browser.
+:::
+
+Next, read about some performance optimizations you can take to squeeze the most performance out of UpscalerJS in the browser.

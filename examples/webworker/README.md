@@ -20,7 +20,6 @@ Another strategy for speeding up inference calls in the browser is to move the u
 
 :::caution
 
-While incorporating a Web Worker will help improve UI performance, larger images, slower models, or older hardware will still suffer from performance hits.
-it won't mitigate UI jank entirely.
+While incorporating a Web Worker will help improve UI performance, it's not a panacea. Larger images, slower models, or older hardware can still suffer from UI jank.
 
 :::

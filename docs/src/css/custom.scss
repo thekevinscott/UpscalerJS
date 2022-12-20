@@ -86,3 +86,13 @@ h1, h2, h3, h4, h5, h6 {
   --ifm-h1-font-size: 3rem;
   margin-bottom: calc( var(--ifm-h1-vertical-rhythm-bottom) * var(--ifm-leading) );
 }
+
+figure {
+  text-align: center;
+
+  figcaption {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.6;
+  }
+}

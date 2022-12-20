@@ -15,25 +15,40 @@ Demonstrates the use of patch sizes with UpscalerJS.
 
 ## Background & Motivation behind Patch Sizes
 
-Inference requests of Tensorflow.js models are synchronous and blocking, which can make incorporating them into UI operations tricky. Attempting to upscale a particularly large image, or running UpscalerJS on older hardware, can result in a hung UI, in worst cases, even crash a user's browser. We don't want that!
+[Inference requests with Tensorflow.js models are synchronous and blocking](https://js.tensorflow.org/api/latest/#tf.LayersModel.predict), which makes achieving UI responsiveness difficult, particularly with larger images or on older hardware.
 
 A solution is to slice the upcoming image into pieces and upscale each one individually.
 
+<figure>
+
 ![Demonstration of splitting an image into patches](../../../assets/splitting-image.gif)
+
+<figcaption>Splitting an image into patches</figcaption>
+</figure>
 
 However, upscaling models have a tendency to perform poorly on edges, resulting in noticeable artifacting:
 
+<figure>
+
 ![Demonstration of artifacting along the sides of patch sizes](../../../assets/artifacting.gif)
 
-A solution is to add a bit of _padding_ to each patch size, and then slice off the resulting padding when stitching our image back together. Here's what that looks like if we _don't_ slice our padding off:
+<figcaption>Example of artifacting along the edges of patches</figcaption>
+</figure>
+
+A solution is to add a bit of _padding_ to each patch size, and then slice off the resulting padding when stitching our image back together. Here's what that looks like (note, we are explicitly _not_ removing the padding in this demonstration):
+
+<figure>
 
 ![Demonstration of using padding but not slicing it off](../../../assets/padding.gif)
 
-## Code
+<figcaption>Example of adding padding to the image (UpscalerJS slices off the excess padding)</figcaption>
+</figure>
 
 UpscalerJS provides an easy mechanism for working with patch sizes, no math required.
 
-Simply specify your patch size and padding in the request to upscale:
+## Code
+
+Specify our patch size and padding in the request to upscale:
 
 ```javascript
 import Upscaler from 'upscaler'
@@ -47,7 +62,7 @@ upscaler.upscale(image, {
 
 A `padding` of `2` or greater is generally sufficient to avoid noticeable artifacting.
 
-If you do not explicitly provide a `padding` argument, UpscalerJS will emit a warning. Generally, a `patchSize` argument should always be accompanied by a `padding` to avoid the artifacting demonstrated above. If you wish to avoid this warning, you can pass an explicit argument of `0` as the padding:
+If we do not explicitly provide a `padding` argument, UpscalerJS will emit a warning. Generally, a `patchSize` argument should always be accompanied by a `padding` to avoid the artifacting demonstrated above. To avoid this warning, pass an explicit argument of `0` as the padding:
 
 ```javascript
 upscaler.upscale(image, {

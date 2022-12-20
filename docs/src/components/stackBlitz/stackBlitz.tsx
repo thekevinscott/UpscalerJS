@@ -17,7 +17,14 @@ const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: str
   return params.toString();
 }
 
-const localHeight = Number(localStorage.getItem('example-height'));
+const getLocalHeight = () => {
+  const localHeight = Number(localStorage.getItem('example-height'));
+  if (Number.isNaN(localHeight)) {
+    return IFRAME_DEFAULT_HEIGHT;
+  }
+
+  return localHeight;
+}
 
 const Dragger = ({
   onDrag,
@@ -81,7 +88,7 @@ export const StackBlitz = ({
 }) => {
   const ref = useRef<HTMLIFrameElement>(null);
   const { colorMode } = useColorMode();
-  const [height, setHeight] = useState<number>(Number.isNaN(localHeight) ? IFRAME_DEFAULT_HEIGHT : localHeight);
+  const [height, setHeight] = useState<number>(getLocalHeight());
   const [delta, setDelta] = useState(0);
   const [dragging, setDragging] = useState(false);
 

@@ -164,7 +164,7 @@ export class Upscaler {
    */
   dispose = async (): Promise<void> => {
     await this._ready;
-    const [{ model }] = await Promise.all([
+    const [{ model, }, ] = await Promise.all([
       this._model,
       this.abort(),
     ]);
