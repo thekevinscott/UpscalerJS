@@ -19,6 +19,57 @@ const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: str
 
 const localHeight = Number(localStorage.getItem('example-height'));
 
+const Dragger = ({
+  onDrag,
+  onDragging,
+  text,
+}: {
+  text: string;
+  onDrag: (delta: number) => void;
+  onDragging: (dragging: boolean) => void;
+}) => {
+  const [start, setStart] = useState<number>(0);
+  const [dragging, setDragging] = useState(false);
+
+  useEffect(() => {
+    const drag = (e: globalThis.MouseEvent) => {
+      if (dragging) {
+        const dragAmount = e.clientY - start
+        onDrag(dragAmount);
+      }
+    }
+
+    window.addEventListener('mousemove', drag);
+    return () => {
+      window.removeEventListener('mousemove', drag);
+    }
+  }, [dragging, start, onDrag]);
+
+  useEffect(() => {
+    const mouseup = () => {
+      setDragging(false);
+    };
+
+    window.addEventListener('mouseup', mouseup);
+    return () => {
+      window.removeEventListener('mouseup', mouseup);
+    }
+  }, []);
+
+  const startDrag = useCallback((e: MouseEvent) => {
+    setStart(e.clientY);
+    setDragging(true);
+  }, []);
+
+  useEffect(() => {
+    onDragging(dragging);
+  }, [dragging]);
+
+  return (
+    <div className={styles.dragger} onMouseDown={startDrag}>{text}</div>
+  );
+}
+
 export const StackBlitz = ({
   url,
   params = 'embed=1&file=index.js&hideExplorer=1',
@@ -83,58 +134,6 @@ export const StackBlitz = ({
   return (
     <iframe className={styles.iframe} ref={ref} src={src}></iframe>
   )
-}
-
-const Dragger = ({
-  onDrag,
-  onDragging,
-  text,
-}: {
-  text: string;
-  onDrag: (delta: number) => void;
-  onDragging: (dragging: boolean) => void;
-}) => {
-  const [start, setStart] = useState<number>(0);
-  const [dragging, setDragging] = useState(false);
-
-  useEffect(() => {
-    const drag = (e: any) => {
-      if (dragging) {
-        const drag = e.clientY - start
-        console.log('drag', drag);
-        onDrag(drag);
-      }
-    }
-
-    window.addEventListener('mousemove', drag);
-    return () => {
-      window.removeEventListener('mousemove', drag);
-    }
-  }, [dragging, start, onDrag]);
-
-  useEffect(() => {
-    const mouseup = () => {
-      setDragging(false);
-    };
-
-    window.addEventListener('mouseup', mouseup);
-    return () => {
-      window.removeEventListener('mouseup', mouseup);
-    }
-  }, []);
-
-  const startDrag = useCallback((e: MouseEvent) => {
-    setStart(e.clientY);
-    setDragging(true);
-  }, []);
-
-  useEffect(() => {
-    onDragging(dragging);
-  }, [dragging]);
-
-  return (
-    <div className={styles.dragger} onMouseDown={startDrag}>{text}</div>
-  );
 }
 
 export default StackBlitz;
