@@ -1,3 +1,11 @@
+---
+sidebar_position: 31
+parent: implementations
+code_embed:
+  type: 'stackblitz'
+  url: '/examples/upload'
+---
+
 # Upload Example
 
 Shows an uploading use case of UpscalerJS.

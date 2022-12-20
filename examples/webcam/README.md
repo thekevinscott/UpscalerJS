@@ -1,3 +1,11 @@
+---
+sidebar_position: 32
+parent: implementations
+code_embed:
+  type: 'stackblitz'
+  url: '/examples/webcam'
+---
+
 # Webcam Example
 
 Shows a webcam use case of UpscalerJS.

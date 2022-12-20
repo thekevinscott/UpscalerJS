@@ -1,0 +1,40 @@
+<html>
+<head>
+  <title>Tensor Input/Output Example | Upscaler.JS</title>
+  <style>
+    body {
+      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button {
+      margin-top: 20px;
+      display: block;
+      padding: 10px 40px;
+    }
+    #flower {
+      border: 1px solid #DDD;
+      display: block;
+    }
+    #code {
+      padding: 10px;
+      background: #EEE;
+      border: 1px solid #DDD;
+      border-radius: 5px;
+      margin: 0;
+    }
+    table td {
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tensor Example</h1>
+  <p>An example of using a tensor as input and output with <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank">UpscalerJS</a>.</p>
+  <p>Click the upscale button to upscale the photo.</p>
+  <button id="button">Upscale</button>
+  <p id="info"></p>
+  <label>Original:</label>
+  <img src="./flower.png" id="flower" />
+  <script src="./index.js" type="module"></script>
+</body>
+</html>

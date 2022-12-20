@@ -20,8 +20,6 @@ const upscaler = new Upscaler({
 });
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L76">upscaler.ts:76</a></small>
-
 ## Parameters
 
 - **`opts`**: _[UpscalerOptions](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L10)_

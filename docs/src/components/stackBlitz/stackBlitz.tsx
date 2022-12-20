@@ -1,11 +1,12 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from './stackBlitz.module.scss';
-import clsx from 'clsx';
 
 const ROOT_URL = 'https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
 const THRESHOLD_TO_GO_MAX = 100;
+const IFRAME_DEFAULT_HEIGHT = 300;
 const HEADER_HEIGHT = 60;
+const MINIMUM_SIZE = 32;
 
 const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: string) => {
   if (typeof params === 'string') {
@@ -16,9 +17,11 @@ const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: str
   return params.toString();
 }
 
+const localHeight = Number(localStorage.getItem('example-height'));
+
 export const StackBlitz = ({
   url,
-  params = new URLSearchParams(),
+  params = 'embed=1&file=index.js&hideExplorer=1',
   persist,
 }: {
   url: string,
@@ -27,7 +30,7 @@ export const StackBlitz = ({
 }) => {
   const ref = useRef<HTMLIFrameElement>(null);
   const { colorMode } = useColorMode();
-  const [height, setHeight] = useState(300);
+  const [height, setHeight] = useState<number>(Number.isNaN(localHeight) ? IFRAME_DEFAULT_HEIGHT : localHeight);
   const [delta, setDelta] = useState(0);
   const [dragging, setDragging] = useState(false);
 
@@ -38,7 +41,14 @@ export const StackBlitz = ({
     }
   }, [dragging]);
 
+  useEffect(() => {
+    localStorage.setItem('example-height', `${height}`);
+  }, [height]);
+
   const src = useMemo(() => {
+    if (!url) {
+      throw new Error('No URL is provided');
+    }
     const builtURL = [
       ...ROOT_URL.split('/'),
       ...url.split('/'),
@@ -51,9 +61,13 @@ export const StackBlitz = ({
   ]);
 
   let containerHeight: number | string = height + delta;
-  if (window?.visualViewport && window.visualViewport.height - HEADER_HEIGHT < containerHeight) {
-    containerHeight = window.visualViewport.height - HEADER_HEIGHT;
-    // containerHeight = `calc(100vh - ${HEADER_HEIGHT}px - 20px)`;
+  if (window?.visualViewport) {
+    if (window.visualViewport.height - HEADER_HEIGHT - THRESHOLD_TO_GO_MAX < containerHeight) {
+      containerHeight = window.visualViewport.height - HEADER_HEIGHT;
+    }
+    if (containerHeight < 100) {
+      containerHeight = MINIMUM_SIZE;
+    }
   }
 
   if (persist) {
@@ -61,7 +75,7 @@ export const StackBlitz = ({
       <div className={styles.container} style={{ height: containerHeight }}>
         {dragging && <div className={styles.overlay}></div>}
         <iframe className={styles.iframe} ref={ref} src={src}></iframe>
-        <Dragger onDragging={setDragging} onDrag={setDelta} />
+        <Dragger onDragging={setDragging} onDrag={setDelta} text={containerHeight === MINIMUM_SIZE ? 'Drag to expand' : 'Drag to resize'} />
       </div>
     );
   }
@@ -74,7 +88,9 @@ export const StackBlitz = ({
 const Dragger = ({
   onDrag,
   onDragging,
+  text,
 }: {
+  text: string;
   onDrag: (delta: number) => void;
   onDragging: (dragging: boolean) => void;
 }) => {
@@ -112,15 +128,12 @@ const Dragger = ({
     setDragging(true);
   }, []);
 
-  const stopDrag = useCallback(() => {
-  }, []);
-
   useEffect(() => {
     onDragging(dragging);
   }, [dragging]);
 
   return (
-    <small onMouseDown={startDrag}>Drag to resize</small>
+    <div className={styles.dragger} onMouseDown={startDrag}>{text}</div>
   );
 }
 

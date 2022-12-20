@@ -29,7 +29,7 @@ export function Homepage() {
           <div className={styles.innerSection}>
             <h2>Get Started</h2>
             <ul>
-              <li><Link href="/documentation#getting-started">Install and integrate locally</Link></li>
+              <li><Link href="/documentation/getting-started">Install and integrate locally</Link></li>
               <li><Link href="/demo">Check out a live demo in your browser</Link></li>
               <li><Link href="/models">See benchmarks and information on available models</Link></li>
             </ul>

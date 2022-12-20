@@ -1,5 +1,9 @@
 ---
-sidebar_position: 2
+sidebar_position: 21
+parent: usage
+code_embed:
+  type: 'stackblitz'
+  url: '/examples/cancel'
 ---
 
 # Cancel Example

@@ -1,6 +1,9 @@
 $height: 300px;
+$stackblitz_footer_height: 32px;
+$dragger_bottom_padding: 10px;
 .container {
   position: sticky;
+  z-index: 1;
   top: 60px;
   text-align: center;
   height: $height;
@@ -22,7 +25,7 @@ $height: 300px;
     z-index: 1;
   }
 
-  small {
+  .dragger {
     cursor: move; /* fallback if grab cursor is unsupported */
     cursor: grab;
     cursor: -moz-grab;
@@ -30,10 +33,12 @@ $height: 300px;
     position: relative;
     user-select: none;
     opacity: 0.4;
-    display: block;
-    margin-top: -30px;
-    padding-top: 12px;
-    transition-duration: 0.1s;
+    height: calc($stackblitz_footer_height + $dragger_bottom_padding);
+    margin-top: calc(-7px - $stackblitz_footer_height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: $dragger_bottom_padding;
     z-index: 2;
 
     &:hover, &:active {

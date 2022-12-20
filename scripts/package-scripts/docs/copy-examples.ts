@@ -1,5 +1,6 @@
 import path from 'path';
-import { copyFile, mkdirp, readdirSync, readFileSync, statSync, writeFile } from 'fs-extra';
+import glob from 'glob';
+import { copyFile, mkdirp, readdirSync, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 
 /****
@@ -111,14 +112,16 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     const {
       readmePath,
       frontmatter: {
+        parent,
         category = 'Browser',
       },
     } = example;
-    const targetPath = path.resolve(dest, category, `${key}.md`);
+    const targetPath = path.resolve(...[dest, category, parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
     await copyFile(readmePath, targetPath)
   }));
 }
+
 const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
   const examplesByCategory = exampleOrder.reduce((obj, example) => {
     const { frontmatter: { category = 'Browser' } } = examplesByName[example];
@@ -138,12 +141,28 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
   await writeFile(path.resolve(dest, 'index.md'), content, 'utf-8');
 }
 
+const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, reject) => {
+  glob(`${target}/**/*.md?(x)`, (err, files) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(files);
+    }
+  });
+});
+
+const clearOutMarkdownFiles = async (target: string) => {
+  const files = await getAllMarkdownFiles(target);
+  await Promise.all(files.map(file => unlink(file)));
+  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file))}`);
+};
+
 /****
  * Main function
  */
 const copyAllReadmes = async (src: string, dest: string) => {
   await mkdirp(dest)
-  const examples = getExampleFolders(src);
+  await clearOutMarkdownFiles(dest);
   const { exampleOrder, examplesByName } = getExamplesByName();
 
   await Promise.all([
