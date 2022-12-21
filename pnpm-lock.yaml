@@ -484,6 +484,18 @@ importers:
       typescript: 4.8.3
       webpack: 5.73.0_esbuild@0.11.23
 
+  docs/src/components/homepage/homepage-code-embed:
+    specifiers:
+      '@tensorflow/tfjs': ^4.1.0
+      '@upscalerjs/esrgan-thick': latest
+      seedrandom: ^3.0.5
+      upscaler: latest
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
+      seedrandom: 3.0.5
+      upscaler: link:../../../../../packages/upscalerjs
+
   docs/workers/image-search:
     specifiers:
       '@cloudflare/workers-types': ^3.14.1

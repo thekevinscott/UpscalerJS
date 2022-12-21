@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './examples.module.scss';
 import {useColorMode} from '@docusaurus/theme-common';
 
-const EXAMPLE_ROOT = 'https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic';
+const EXAMPLE_ROOT = 'https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/docs/src/components/homepage/homepage-code-embed';
 
 export function Examples() {
   const { colorMode } = useColorMode();

@@ -177,7 +177,7 @@ const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, 
 const clearOutMarkdownFiles = async (target: string) => {
   const files = await getAllMarkdownFiles(target);
   await Promise.all(files.map(file => unlink(file)));
-  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file.split(/upscalerjs\/docs/gi).pop()))}`);
+  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file.split(/upscalerjs\/docs\/documentation\/guides/gi).pop()))}`);
 };
 
 /****
