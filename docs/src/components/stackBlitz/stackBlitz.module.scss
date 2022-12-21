@@ -1,0 +1,69 @@
+$height: 300px;
+$stackblitz_footer_height: 32px;
+$dragger_bottom_padding: 10px;
+.container {
+  position: sticky;
+  z-index: 1;
+  top: 60px;
+  text-align: center;
+  height: $height;
+  margin-bottom: 40px;
+
+  iframe.iframe {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.3;
+    z-index: 1;
+  }
+
+  .dragger {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    position: relative;
+    user-select: none;
+    opacity: 0.4;
+    height: calc($stackblitz_footer_height + $dragger_bottom_padding);
+    margin-top: calc(-7px - $stackblitz_footer_height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: $dragger_bottom_padding;
+    z-index: 2;
+
+    &:hover, &:active {
+      opacity: 1;
+    }
+
+    &:active {
+      cursor: grabbing;
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
+    }
+  }
+
+  @media (max-width: 997px) {
+    iframe {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      left: 0;
+      top: 0;
+    }
+  }
+}
+
+iframe.iframe {
+  width: 100%;
+  height: 400px;
+}

@@ -1,0 +1,26 @@
+.container {
+  width: 100%;
+}
+
+.docItemContainer header + *,
+.docItemContainer article > *:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 997px) {
+  .docItemCol {
+    max-width: 75% !important;
+
+    &.fullWidth {
+      max-width: 100% !important;
+    }
+  }
+}
+
+@media (min-width: 997px) {
+  .docItemWrapperEnhanced {
+    max-width: calc(
+      var(--ifm-container-width) + var(--doc-sidebar-width)
+    ) !important;
+  }
+}

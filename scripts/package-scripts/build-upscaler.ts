@@ -124,7 +124,8 @@ const getDefaultOutputFormats = (platform: Platform): OutputFormat[] => {
   return ['cjs'];
 };
 
-const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions) => {
+const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions): Promise<number> => {
+  const start = performance.now();
   const outputFormats = _outputFormats || getDefaultOutputFormats(platform);
   if (outputFormats.length === 0) {
     console.log('No output formats selected, nothing to do.')
@@ -138,6 +139,7 @@ const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[]
     const outputFormat = outputFormats[i];
     await OUTPUT_FORMAT_FNS[outputFormat](platform, opts);
   }
+  return performance.now() - start;
 };
 
 export default buildUpscaler;
