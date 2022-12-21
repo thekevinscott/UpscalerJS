@@ -1,5 +1,5 @@
 import path from 'path';
-import { copyFile, mkdirp, readdirSync, readFileSync, statSync, writeFile } from 'fs-extra';
+import { copyFile, existsSync, mkdirp, readdirSync, readFileSync, statSync, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 
 /****
@@ -61,7 +61,10 @@ const getFrontmatter = (src: string): FrontMatter => {
   }
 }
 
-const getExamplesWithFrontmatter = (): ({ key: string; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).map(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+  const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
+  return existsSync(readmePath);
+}).map(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return {
     key,
