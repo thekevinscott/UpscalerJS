@@ -7,7 +7,7 @@
     "build-api": "pnpm --filter @upscalerjs/scripts docs:build-api",
     "build-api:watch": "nodemon -e ts --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\"",
     "copy-examples": "pnpm --filter @upscalerjs/scripts docs:copy-examples",
-    "copy-examples:watch": "nodemon -e md --watch '../examples/**/*' -x \"pnpm run copy-examples\"",
+    "copy-examples:watch": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/copy-examples.ts' -x \"pnpm run copy-examples\"",
     "link-model-readmes": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes",
     "link-model-readmes:watch": "nodemon -e md -e mdx --watch '../models/**/*' -x \"pnpm run link-model-readmes\"",
     "docusaurus": "docusaurus",

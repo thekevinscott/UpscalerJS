@@ -26,11 +26,13 @@
     "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
   },
   "dependencies": {
+    "@types/glob": "^8.0.0",
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "cli-table": "^0.3.11",
+    "glob": "^8.0.3",
     "sequelize": "^6.23.1",
     "sqlite3": "^5.1.1",
     "typedoc": "^0.23.20",
