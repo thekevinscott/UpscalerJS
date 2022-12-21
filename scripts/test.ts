@@ -79,15 +79,17 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     }
   }
   if (skipBuild !== true) {
-    if (platform === 'browser') {
-      await buildUpscaler('browser');
-    } else if (platform === 'node') {
-      await buildUpscaler('node');
-      await buildUpscaler('node-gpu');
+    const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
+
+    const durations: number[] = [];
+    for (let i = 0; i < platformsToBuild.length; i++) {
+      durations.push(await buildUpscaler(platformsToBuild[i]));
+      console.log([
+        `** built upscaler: ${platform}`,
+        ...platformsToBuild.map(platformToBuild => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+      ].join('\n'))
     }
-    console.log(`** built upscaler: ${platform}`)
-  }
-  const args = [
+    const args = [
     'pnpm',
     'jest',
     '--config',

@@ -166,7 +166,7 @@ export class Upscaler {
     await this._ready;
     const [{ model, }, ] = await Promise.all([
       this._model,
-      this.abort(),
+      // this.abort(),
     ]);
     model.dispose();
   };

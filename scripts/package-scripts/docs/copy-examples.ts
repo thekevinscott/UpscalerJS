@@ -130,17 +130,31 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
 
 const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
   const examplesByCategory = exampleOrder.reduce((obj, example) => {
-    const { frontmatter: { category = 'Browser' } } = examplesByName[example];
+    const { frontmatter: { parent, category = 'Browser' } } = examplesByName[example];
     return {
       ...obj,
-      [category]: (obj[category] || []).concat(example),
+      [category]: (obj[category] || []).concat([parent, example]),
     }
-  }, {} as Record<string, Array<string>>);
+  }, {} as Record<string, Array<[undefined | string, string]>>);
 
   const content = `# Guides\n${Object.entries(examplesByCategory).map(([category, examples]) => {
-    return `\n## ${category}\n\n${examples.map((example, i) => {
+    let activeParent: undefined | string;
+    return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
       const { title } = examplesByName[example];
-      return `- [${title}](/documentation/guides/${category.toLowerCase()}/${example})`;
+      const url = [
+        'documentation',
+        'guides',
+        category.toLowerCase(),
+        parent,
+        example
+      ].filter(Boolean).join('/');
+      let strings: string[] = [];
+      if (activeParent !== parent) {
+        activeParent = parent;
+        strings.push(`- [${parent}]`);
+      }
+      strings.push(`${activeParent ? '  ' : ''}- [${title}](${url})`);
+      return strings.join('\n');
     }).join('\n')}`;
   }).join('\n')}`
 
