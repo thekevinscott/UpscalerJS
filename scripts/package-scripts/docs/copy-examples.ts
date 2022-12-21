@@ -1,6 +1,6 @@
 import path from 'path';
 import glob from 'glob';
-import { mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
+import { existsSync, mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 
 /****
@@ -62,7 +62,10 @@ const getFrontmatter = (src: string): FrontMatter => {
   }
 }
 
-const getExamplesWithFrontmatter = (): ({ key: string; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).map(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+  const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
+  return existsSync(readmePath);
+}).map(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return {
     key,
