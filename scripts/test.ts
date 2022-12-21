@@ -78,18 +78,22 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
       ].join('\n'));
     }
   }
+
   if (skipBuild !== true) {
     const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
-      durations.push(await buildUpscaler(platformsToBuild[i]));;
-      console.log([
-        `** built upscaler: ${platform}`,
-        ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-      ].join('\n'));
+      const duration = await buildUpscaler(platformsToBuild[i]);
+      durations.push(duration);
     }
-    const args = [
+    console.log([
+      `** built upscaler: ${platform}`,
+      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+    ].join('\n'));
+  }
+
+  const args = [
     'pnpm',
     'jest',
     '--config',
