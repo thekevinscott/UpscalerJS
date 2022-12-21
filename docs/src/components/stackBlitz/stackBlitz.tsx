@@ -1,4 +1,5 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from './stackBlitz.module.scss';
 
@@ -18,12 +19,33 @@ const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: str
 }
 
 const getLocalHeight = () => {
-  const localHeight = Number(localStorage.getItem('example-height'));
-  if (Number.isNaN(localHeight)) {
-    return IFRAME_DEFAULT_HEIGHT;
-  }
+  const isBrowser = useIsBrowser();
+  return useMemo(() => {
+    if (isBrowser) {
+      const localHeight = Number(localStorage.getItem('example-height'));
+      if (!Number.isNaN(localHeight)) {
+        return localHeight;
+      }
 
-  return localHeight;
+    }
+    return IFRAME_DEFAULT_HEIGHT;
+  }, [isBrowser]);
+}
+
+const useContainerHeight = (height: number, delta: number) => {
+  const isBrowser = useIsBrowser();
+  return useMemo(() => {
+    const containerHeight: number | string = height + delta;
+    if (isBrowser && window?.visualViewport) {
+      if (window.visualViewport.height - HEADER_HEIGHT - THRESHOLD_TO_GO_MAX < containerHeight) {
+        return window.visualViewport.height - HEADER_HEIGHT;
+      }
+      if (containerHeight < 100) {
+        return MINIMUM_SIZE;
+      }
+    }
+    return containerHeight;
+  }, [isBrowser])
 }
 
 const Dragger = ({
@@ -118,22 +140,15 @@ export const StackBlitz = ({
     colorMode,
   ]);
 
-  let containerHeight: number | string = height + delta;
-  if (window?.visualViewport) {
-    if (window.visualViewport.height - HEADER_HEIGHT - THRESHOLD_TO_GO_MAX < containerHeight) {
-      containerHeight = window.visualViewport.height - HEADER_HEIGHT;
-    }
-    if (containerHeight < 100) {
-      containerHeight = MINIMUM_SIZE;
-    }
-  }
+  const containerHeight = useContainerHeight(height, delta);
+  const isBrowser = useIsBrowser();
 
   if (persist) {
     return (
       <div className={styles.container} style={{ height: containerHeight }}>
         {dragging && <div className={styles.overlay}></div>}
         <iframe className={styles.iframe} ref={ref} src={src}></iframe>
-        <Dragger onDragging={setDragging} onDrag={setDelta} text={containerHeight === MINIMUM_SIZE ? 'Drag to expand' : 'Drag to resize'} />
+        {isBrowser && <Dragger onDragging={setDragging} onDrag={setDelta} text={containerHeight === MINIMUM_SIZE ? 'Drag to expand' : 'Drag to resize'} />}
       </div>
     );
   }

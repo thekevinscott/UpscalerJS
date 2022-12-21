@@ -121,7 +121,7 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
         category = 'Browser',
       },
     } = example;
-    const targetPath = path.resolve(...[dest, category, parent, `${key}.md`].filter(Boolean));
+    const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
     const fileContents = await parseContents(readmePath)
     await writeFile(targetPath, fileContents, 'utf-8');
@@ -140,7 +140,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
   const content = `# Guides\n${Object.entries(examplesByCategory).map(([category, examples]) => {
     return `\n## ${category}\n\n${examples.map((example, i) => {
       const { title } = examplesByName[example];
-      return `- [${title}](/documentation/guides/${category}/${example})`;
+      return `- [${title}](/documentation/guides/${category.toLowerCase()}/${example})`;
     }).join('\n')}`;
   }).join('\n')}`
 
@@ -160,7 +160,7 @@ const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, 
 const clearOutMarkdownFiles = async (target: string) => {
   const files = await getAllMarkdownFiles(target);
   await Promise.all(files.map(file => unlink(file)));
-  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file))}`);
+  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file.split(/upscalerjs\/docs/gi).pop()))}`);
 };
 
 /****
