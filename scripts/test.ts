@@ -83,11 +83,11 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
-      durations.push(await buildUpscaler(platformsToBuild[i]));
+      durations.push(await buildUpscaler(platformsToBuild[i]));;
       console.log([
         `** built upscaler: ${platform}`,
-        ...platformsToBuild.map(platformToBuild => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-      ].join('\n'))
+        ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+      ].join('\n'));
     }
     const args = [
     'pnpm',
