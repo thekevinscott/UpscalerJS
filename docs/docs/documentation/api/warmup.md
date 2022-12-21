@@ -19,8 +19,6 @@ upscaler.warmup([{
 });
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L135">upscaler.ts:135</a></small>
-
 ## Parameters
 
 - **`warmupSizes`**: _[WarmupSizes[]](https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/types.ts#L9)_

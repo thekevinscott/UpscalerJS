@@ -17,8 +17,6 @@ upscaler.dispose().then(() => {
 })
 ```
 
-<small className="gray">Defined in <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS/tree/main/packages/upscalerjs/src/upscaler.ts#L165">upscaler.ts:165</a></small>
-
 ## Returns
 
 `Promise<void>`
