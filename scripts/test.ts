@@ -78,15 +78,21 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
       ].join('\n'));
     }
   }
+
   if (skipBuild !== true) {
-    if (platform === 'browser') {
-      await buildUpscaler('browser');
-    } else if (platform === 'node') {
-      await buildUpscaler('node');
-      await buildUpscaler('node-gpu');
+    const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
+
+    const durations: number[] = [];
+    for (let i = 0; i < platformsToBuild.length; i++) {
+      const duration = await buildUpscaler(platformsToBuild[i]);
+      durations.push(duration);
     }
-    console.log(`** built upscaler: ${platform}`)
+    console.log([
+      `** built upscaler: ${platform}`,
+      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+    ].join('\n'));
   }
+
   const args = [
     'pnpm',
     'jest',
