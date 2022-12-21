@@ -133,7 +133,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     const { frontmatter: { parent, category = 'Browser' } } = examplesByName[example];
     return {
       ...obj,
-      [category]: (obj[category] || []).concat([parent, example]),
+      [category]: (obj[category] || []).concat([[parent, example]]),
     }
   }, {} as Record<string, Array<[undefined | string, string]>>);
 
