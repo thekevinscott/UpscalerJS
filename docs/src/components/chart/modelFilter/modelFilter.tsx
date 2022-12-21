@@ -45,7 +45,9 @@ const usePackages = (databasePath: string) => {
     onChange: setSelectedPackages,
     selectedItems: selectedPackages,
   } = useData<Package>(databasePath, `
-    SELECT p.id, p.name FROM packages p GROUP BY p.name
+    SELECT p.id, p.name FROM packages p 
+    WHERE p.name != 'default-model'
+    GROUP BY p.name
   `)
 
   useEffect(() => {

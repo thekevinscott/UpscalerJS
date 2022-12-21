@@ -85,7 +85,15 @@ export const usePerformanceQuery = (databasePath: string, opts: {
       scale: number;
       value: number;
     }>(stmt, args);
-    return rows.map(({ packageId, modelId, name, package: _packageName, scale, meta, ...row }) => {
+    return rows.filter(row => {
+      if (row['package'] === 'default-model') {
+        return false;
+      }
+      if (!['esrgan-slim', 'esrgan-medium'].includes(row['package'])) {
+        return true;
+      }
+      return row['scale'] !== 8;
+    }).map(({ packageId, modelId, name, package: _packageName, scale, meta, ...row }) => {
       return {
         ...row,
         model: {
