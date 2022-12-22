@@ -12,7 +12,7 @@ import DocItemContent from '@theme/DocItem/Content';
 import DocBreadcrumbs from '@theme/DocBreadcrumbs';
 import styles from './styles.module.scss';
 import { HiddenSidebarContainerContext } from '../../DocPage/Layout/Main';
-import StackBlitz from '@site/src/components/stackBlitz/stackBlitz';
+import CodeEmbed from '@site/src/components/codeEmbed/codeEmbed';
 /**
  * Decide if the toc should be rendered, on mobile or desktop viewports
  */
@@ -42,7 +42,7 @@ export default function DocItemLayout({children}) {
   return (
     <div className={styles.container}>
       {docTOC.embed && (
-        <StackBlitz url={docTOC.embed.url} params={docTOC.embed.params} persist />
+        <CodeEmbed url={docTOC.embed.url} params={docTOC.embed.params} persist />
       )}
       <div
         className={clsx(
