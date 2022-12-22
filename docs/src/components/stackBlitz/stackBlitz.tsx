@@ -18,8 +18,7 @@ const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: str
   return params.toString();
 }
 
-const getLocalHeight = () => {
-  const isBrowser = useIsBrowser();
+const getLocalHeight = (isBrowser: boolean) => {
   return useMemo(() => {
     if (isBrowser) {
       const localHeight = Number(localStorage.getItem('example-height'));
@@ -32,8 +31,7 @@ const getLocalHeight = () => {
   }, [isBrowser]);
 }
 
-const useContainerHeight = (height: number, delta: number) => {
-  const isBrowser = useIsBrowser();
+const useContainerHeight = (isBrowser: boolean, height: number, delta: number) => {
   return useMemo(() => {
     const containerHeight: number | string = height + delta;
     if (isBrowser && window?.visualViewport) {
@@ -45,7 +43,7 @@ const useContainerHeight = (height: number, delta: number) => {
       }
     }
     return containerHeight;
-  }, [isBrowser])
+  }, [isBrowser, height, delta])
 }
 
 const Dragger = ({
@@ -108,9 +106,10 @@ export const StackBlitz = ({
   params?: URLSearchParams | string,
   persist?: string;
 }) => {
+  const isBrowser = useIsBrowser();
   const ref = useRef<HTMLIFrameElement>(null);
   const { colorMode } = useColorMode();
-  const [height, setHeight] = useState<number>(getLocalHeight());
+  const [height, setHeight] = useState<number>(getLocalHeight(isBrowser));
   const [delta, setDelta] = useState(0);
   const [dragging, setDragging] = useState(false);
 
@@ -140,8 +139,9 @@ export const StackBlitz = ({
     colorMode,
   ]);
 
-  const containerHeight = useContainerHeight(height, delta);
-  const isBrowser = useIsBrowser();
+  const containerHeight = useContainerHeight(isBrowser, height, delta);
+
+  console.log(containerHeight);
 
   if (persist) {
     return (
