@@ -1,13 +1,21 @@
 import React, { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useColorMode } from '@docusaurus/theme-common';
-import styles from './stackBlitz.module.scss';
+import styles from './codeEmbed.module.scss';
 
-const ROOT_URL = 'stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
+const ROOT_URL_STACKBLITZ = 'stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
+const ROOT_URL_CODESANDBOX = 'https://githubbox.com/thekevinscott/upscalerjs/tree/main';
 const THRESHOLD_TO_GO_MAX = 100;
 const IFRAME_DEFAULT_HEIGHT = 300;
 const HEADER_HEIGHT = 60;
 const MINIMUM_SIZE = 32;
+
+const getRootURL = (type: 'stackblitz' | 'codesandbox') => {
+  if (type === 'codesandbox') {
+    return ROOT_URL_CODESANDBOX;
+  }
+  return ROOT_URL_STACKBLITZ;
+}
 
 const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: string) => {
   if (typeof params === 'string') {
@@ -97,18 +105,40 @@ const Dragger = ({
   );
 }
 
-export const StackBlitz = ({
+const useIFrameSrc = (url: string, params: URLSearchParams | string, type: 'stackblitz' | 'codesandbox') => {
+  const { colorMode } = useColorMode();
+  return useMemo(() => {
+    if (!url) {
+      throw new Error('No URL is provided');
+    }
+    const builtURL = [
+      ...getRootURL(type).split('/'),
+      ...url.split('/'),
+    ].filter(Boolean).join('/');
+    return `//${builtURL}?${getParamsWithColorMode(params, colorMode)}`;
+  }, [
+    url,
+    params.toString(),
+    colorMode,
+    type,
+  ]);
+
+}
+
+export const CodeEmbed = ({
   url,
   params = 'embed=1&file=index.js&hideExplorer=1',
   persist,
+  type = 'stackblitz',
 }: {
   url: string,
   params?: URLSearchParams | string,
   persist?: string;
+  type?: 'stackblitz' | 'codesandbox';
 }) => {
   const isBrowser = useIsBrowser();
   const ref = useRef<HTMLIFrameElement>(null);
-  const { colorMode } = useColorMode();
+  const src = useIFrameSrc(url, params, type);
   const [height, setHeight] = useState<number>(getLocalHeight(isBrowser));
   const [delta, setDelta] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -124,24 +154,7 @@ export const StackBlitz = ({
     localStorage.setItem('example-height', `${height}`);
   }, [height]);
 
-  const src = useMemo(() => {
-    if (!url) {
-      throw new Error('No URL is provided');
-    }
-    const builtURL = [
-      ...ROOT_URL.split('/'),
-      ...url.split('/'),
-    ].filter(Boolean).join('/');
-    return `//${builtURL}?${getParamsWithColorMode(params, colorMode)}`;
-  }, [
-    url,
-    params.toString(),
-    colorMode,
-  ]);
-
   const containerHeight = useContainerHeight(isBrowser, height, delta);
-
-  console.log(containerHeight);
 
   if (persist) {
     return (
@@ -158,4 +171,4 @@ export const StackBlitz = ({
   )
 }
 
-export default StackBlitz;
+export default CodeEmbed;
