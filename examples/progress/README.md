@@ -1,5 +1,5 @@
 ---
-sidebar_position: 20 
+sidebar_position: 1
 hide_table_of_contents: true
 parent: usage
 code_embed:

@@ -66,3 +66,9 @@ const upscaler = new Upscaler({
 ```
 
 The resulting image will be upscaled using the `esrgan-thick` model.
+
+:::tip
+
+If you're interested in learning about how to self-host models, or work with custom models, [check out the guide on self hosting](usage/self-hosting-models).
+
+:::
