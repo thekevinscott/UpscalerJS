@@ -1,5 +1,5 @@
 ---
-sidebar_position: 21
+sidebar_position: 2
 parent: usage
 code_embed:
   type: 'stackblitz'
