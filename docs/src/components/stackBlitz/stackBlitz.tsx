@@ -3,6 +3,7 @@ import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from './stackBlitz.module.scss';
 
+// const ROOT = 'https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs';
 const ROOT_URL = 'stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
 const THRESHOLD_TO_GO_MAX = 100;
 const IFRAME_DEFAULT_HEIGHT = 300;

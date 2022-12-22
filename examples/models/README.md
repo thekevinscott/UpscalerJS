@@ -32,6 +32,8 @@ In this example, [we'll use `esrgan-thick`](/models/available/esrgan-thick), the
 npm install @upscalerjs/esrgan-thick
 ```
 
+## Code
+
 We'll need to decide what _scale_ model we wish to use. The larger the scale, generally the less accurate the resulting upscaled image will be.
 
 import SampleTable from '@site/src/components/sampleTable/sampleTable';
@@ -67,8 +69,15 @@ const upscaler = new Upscaler({
 
 The resulting image will be upscaled using the `esrgan-thick` model.
 
+## How Models are Loaded in the Browser
+
+[Tensorflow.js requires that models be available via a public URL](https://www.tensorflow.org/js/guide/save_load#https). Therefore, UpscalerJS will attempt to load the model files via a public CDN. The CDNs UpscalerJS loads from, by order of preference, include:
+
+1. [`jsdelivr`](https://www.jsdelivr.com)
+2. [`unpkg`](http://unpkg.com)
+
 :::tip
 
-If you're interested in learning about how to self-host models, or work with custom models, [check out the guide on self hosting](usage/self-hosting-models).
+If you want to avoid a CDN and self-host a model instead(or you've got a custom model) [check out the guide on self hosting](usage/self-hosting-models).
 
 :::
