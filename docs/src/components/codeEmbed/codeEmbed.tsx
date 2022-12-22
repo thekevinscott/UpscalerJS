@@ -105,9 +105,9 @@ const Dragger = ({
   );
 }
 
-const useIFrameSrc = (url: string, params: string, type: 'stackblitz' | 'codesandbox') => {
+const useIFrameSrc = (url: string, params: URLSearchParams | string, type: 'stackblitz' | 'codesandbox') => {
   const { colorMode } = useColorMode();
-  const src = useMemo(() => {
+  return useMemo(() => {
     if (!url) {
       throw new Error('No URL is provided');
     }
