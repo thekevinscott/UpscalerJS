@@ -15,7 +15,7 @@ Demonstrates how to self host a model with UpscalerJS.
 
 :::tip
 
-If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/self-hosting-models).
+If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/nodejs-custom-models).
 
 :::
 
