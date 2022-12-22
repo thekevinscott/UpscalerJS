@@ -22,9 +22,11 @@ import type {
   UpscaleResponse,
   ModelPackage,
   BASE64,
-  UpscaleArgs,
+  PrivateUpscaleArgs,
   WarmupArgs,
+  PublicUpscaleArgs,
 } from './types';
+import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
@@ -109,11 +111,11 @@ export class Upscaler {
    */
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
-    options: UpscaleArgs<P, O, PO> = {},
+    options: PublicUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, options, {
+    return cancellableUpscale(image, getUpscaleOptions(options), {
       model,
       modelDefinition,
       signal: this._abortController.signal,

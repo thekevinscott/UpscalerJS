@@ -43,12 +43,16 @@ interface SharedArgs {
   awaitNextFrame?: boolean;
 }
 
-export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
-  output?: O;
+export interface PrivateUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
+  output: O;
   patchSize?: number;
   padding?: number;
   progress?: P;
   progressOutput?: PO;
+}
+
+export interface PublicUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends Omit<PrivateUpscaleArgs<P, O, PO>, 'output'> {
+  output?: O;
 }
 
 export type Layer = tf.layers.Layer;
