@@ -73,9 +73,9 @@ upscaler.upscale(image, {
 
 :::info
 
-You may notice, if you [inspect the patch sizes received from the progress example](usage/progress), that all image patches are the same size, even if the numbers don't match up precisely; for example, if you specify a patch size of 10 for a 12x12 image, you'll receive 4 10x10 patches.
+You may notice, if you [inspect the patch sizes received from the progress example](../usage/progress), that all image patches are the same size, even if the numbers don't match up precisely; for example, if you specify a patch size of 10 for a 12x12 image, you'll receive 4 10x10 patches.
 
-This is done purposefully to improve performance. [Every new tensor size requires another "warm up" of the model on the GPU](performance/warmup). Therefore, it's actually faster to process a larger image that's the same size as images we've seen before, than to process a novel image size, even if it's smaller.
+This is done purposefully to improve performance. [Every new tensor size requires another "warm up" of the model on the GPU](../performance/warmup). Therefore, it's actually faster to process a larger image that's the same size as images we've seen before, than to process a novel image size, even if it's smaller.
 
 [You can read more about patch sizes and performance here](https://thekevinscott.com/super-resolution-with-js/).
 
