@@ -71,7 +71,7 @@ The resulting image will be upscaled using the `esrgan-thick` model.
 
 ## How Models are Loaded in the Browser
 
-[Tensorflow.js requires that models be available via a public URL](https://www.tensorflow.org/js/guide/save_load#https). Therefore, UpscalerJS will attempt to load the model files via a public CDN. The CDNs UpscalerJS loads from, by order of preference, include:
+[Tensorflow.js requires that models be available via a public URL](https://www.tensorflow.org/js/guide/save_load#https). Therefore, UpscalerJS will attempt to load model files via a public CDN. The CDNs UpscalerJS loads from, by order of preference, include:
 
 1. [`jsdelivr`](https://www.jsdelivr.com)
 2. [`unpkg`](http://unpkg.com)
