@@ -10,7 +10,7 @@ import {
 type CDN = 'jsdelivr' | 'unpkg';
 type CDNFn = (packageName: string, version: string, path: string) => string;
 
-const CDNs: CDN[] = ['jsdelivr', 'unpkg'];
+export const CDNs: CDN[] = ['jsdelivr', 'unpkg', ];
 
 export const CDNFns: {[key in CDN]: CDNFn} = {
   'jsdelivr': (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
