@@ -51,11 +51,8 @@ export interface PrivateUpscaleArgs<P extends Progress<O, PO>, O extends ResultF
   progressOutput?: PO;
 }
 
-
- /* eslint-disable @typescript-eslint/no-empty-interface */
- export interface PublicUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends PrivateUpscaleArgs<P, O, PO> {
-  // export interface PublicUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends Omit<PrivateUpscaleArgs<P, O, PO>, 'output'> {
-    // output?: O;
+export interface PublicUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends Omit<PrivateUpscaleArgs<P, O, PO>, 'output'> {
+  output?: O;
 }
 
 export type Layer = tf.layers.Layer;
