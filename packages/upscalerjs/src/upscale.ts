@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
-  UpscaleArgs, 
+  PrivateUpscaleArgs, 
   ResultFormat, 
   UpscaleResponse, 
   Progress, 
@@ -22,8 +22,6 @@ import {
   processAndDisposeOfTensor,
  } from './utils';
 import { makeTick, } from './makeTick';
-
-type DEFAULT_OUTPUT = BASE64;
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
@@ -263,9 +261,9 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 }
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
+export async function* predict<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs<P, O, PO>,
   {
     model,
     modelDefinition,
@@ -378,9 +376,9 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
 
-export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
+export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
-  args: UpscaleArgs<P, O, PO>,
+  args: PrivateUpscaleArgs<P, O, PO>,
   { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
@@ -422,9 +420,9 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   return <UpscaleResponse<O>>base64Src;
 }
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
+export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
-  { signal, awaitNextFrame, ...args }: UpscaleArgs<P, O, PO>,
+  { signal, awaitNextFrame, ...args }: PrivateUpscaleArgs<P, O, PO>,
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
