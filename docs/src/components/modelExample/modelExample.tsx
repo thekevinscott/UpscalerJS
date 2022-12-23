@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import StackBlitz from '../stackBlitz/stackBlitz';
+import CodeEmbed from '../codeEmbed/codeEmbed';
 
 export const ModelExample = ({ model }: { model: string }) => {
   const params = useMemo(() => {
@@ -10,7 +10,7 @@ export const ModelExample = ({ model }: { model: string }) => {
   }, []);
 
   return (
-    <StackBlitz url={`models/${model}/demo`} params={params} />
+    <CodeEmbed url={`models/${model}/demo`} params={params} />
   );
 }
 
