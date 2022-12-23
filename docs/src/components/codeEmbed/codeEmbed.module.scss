@@ -34,7 +34,7 @@ $dragger_bottom_padding: 10px;
     user-select: none;
     opacity: 0.4;
     height: calc($stackblitz_footer_height + $dragger_bottom_padding);
-    margin-top: calc(-7px - $stackblitz_footer_height);
+    margin: calc(-7px - $stackblitz_footer_height) 200px 0 200px;
     display: flex;
     align-items: center;
     justify-content: center;
