@@ -8,22 +8,26 @@ import {
 } from './utils';
 
 type CDN = 'jsdelivr' | 'unpkg';
-type CDNFn = (packageName: string, version: string, path: string) => string;
 
-export const CDNs: CDN[] = ['jsdelivr', 'unpkg', ];
+type CdnFn = (packageName: string, version: string, path: string) => string;
 
-export const CDNFns: {[key in CDN]: CDNFn} = {
-  'jsdelivr': (packageName: string, version: string, path: string) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
-  'unpkg': (packageName: string, version: string, path: string) => `https://unpkg.com/${packageName}@${version}/${path}`,
+export const CDN_PATH_DEFINITIONS: { [key in CDN]: CdnFn } = {
+  'jsdelivr': (packageName, version, path) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
+  'unpkg': (packageName, version, path) => `https://unpkg.com/${packageName}@${version}/${path}`,
 };
+
+export const CDNS: CDN[] = [
+  'jsdelivr',
+  'unpkg',
+];
 
 export const getLoadModelErrorMessage = (modelPath: string): Error => new Error(`Could not resolve URL ${modelPath}`);
 
 export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation): Promise<tf.LayersModel> => {
   if (packageInformation) {
-    for (let i = 0; i < CDNs.length; i++) {
-      const CDN = CDNs[i];
-      const getCDNFn = CDNFns[CDN];
+    for (let i = 0; i < CDNS.length; i++) {
+      const cdn = CDNS[i];
+      const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
       try {
         const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
         return await tf.loadLayersModel(url);

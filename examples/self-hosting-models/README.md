@@ -15,11 +15,11 @@ Demonstrates how to self host a model with UpscalerJS.
 
 :::tip
 
-If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/self-hosting-models).
+If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/nodejs-custom-models).
 
 :::
 
-## Getting Started
+## Background
 
 UpscalerJS provides support for loading models via the local filesystem. This might be useful when we want to host the models ourselves (perhaps we're running offline), _or_ if we have a custom model we wish to integrate with UpscalerJS.
 
@@ -28,6 +28,8 @@ UpscalerJS provides support for loading models via the local filesystem. This mi
 In this example, we'll be using the raw 2x `model.json` available via the `esrgan-slim` package to demonstrate.
 
 :::
+
+## Code
 
 We first need to ensure that our model file is accessible locally via a URL, [as Tensorflow.js requires a HTTP-compatible model file](https://www.tensorflow.org/js/guide/save_load#https). In our example, we're using [`vite`](https://vitejs.dev/), which automatically exposes the `public` folder statically. Therefore, we've placed our model files into the `public` folder which has made them accessible at `/model.json`.
 
@@ -46,7 +48,9 @@ const upscaler = new Upscaler({
 
 Both `scale` and `path` are required options. Models are tied to a specific scale which must be specified per model.
 
-You may also provide additional options:
+## Model options
+
+We can further specify our model with additional configuration options:
 
 ```javascript
 import Upscaler from 'upscaler'

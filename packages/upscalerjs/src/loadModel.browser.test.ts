@@ -3,8 +3,8 @@ import { ModelDefinition } from '@upscalerjs/core';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import {
-  CDNs,
-  CDNFns,
+  CDNS,
+  CDN_PATH_DEFINITIONS,
   fetchModel,
   getLoadModelErrorMessage,
   loadModel,
@@ -74,7 +74,7 @@ describe('loadModel browser tests', () => {
         version,
       });
       expect(tf.loadLayersModel).toBeCalledTimes(1);
-      expect(tf.loadLayersModel).toBeCalledWith(CDNFns[CDNs[0]](packageName, version, modelPath));
+      expect(tf.loadLayersModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath));
     });
 
     it('attempts to load a model from a subsequent CDN if a prior one fails', async () => {
@@ -82,7 +82,7 @@ describe('loadModel browser tests', () => {
       const version = 'version';
       const modelPath = 'modelPath';
       tf.loadLayersModel.mockImplementation(async (url: string | io.IOHandler) => {
-        if (url === CDNFns[CDNs[0]](packageName, version, modelPath)) {
+        if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
           throw new Error('next');
         }
         return 'foo' as unknown as LayersModel;
@@ -93,7 +93,7 @@ describe('loadModel browser tests', () => {
         version,
       });
       expect(tf.loadLayersModel).toBeCalledTimes(2);
-      expect(tf.loadLayersModel).toBeCalledWith(CDNFns[CDNs[1]](packageName, version, modelPath));
+      expect(tf.loadLayersModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath));
     });
 
     it('throws if all attempts to fetch a model fail', async () => {
