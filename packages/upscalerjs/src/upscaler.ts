@@ -22,7 +22,7 @@ import type {
   UpscaleResponse,
   ModelPackage,
   BASE64,
-  UpscaleArgs,
+  PrivateUpscaleArgs,
   WarmupArgs,
 } from './types';
 import { loadModel, } from './loadModel.generated';
@@ -110,7 +110,7 @@ export class Upscaler {
    */
   upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
     image: GetImageAsTensorInput,
-    options: UpscaleArgs<P, O, PO> = {},
+    options: PrivateUpscaleArgs<P, O, PO> = {},
   ): Promise<UpscaleResponse<O>> => {
     await this._ready;
     const { model, modelDefinition, } = await this._model;

@@ -43,7 +43,7 @@ interface SharedArgs {
   awaitNextFrame?: boolean;
 }
 
-export interface UpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
+export interface PrivateUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
   output?: O;
   patchSize?: number;
   padding?: number;
