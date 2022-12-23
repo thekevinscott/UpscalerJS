@@ -31,6 +31,7 @@ import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './utils';
+import { getUpscaleOptions, } from './args';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
@@ -113,7 +114,7 @@ export class Upscaler {
   ): Promise<UpscaleResponse<O>> => {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, options, {
+    return cancellableUpscale(image, getUpscaleOptions<P, O, PO>(options), {
       model,
       modelDefinition,
       signal: this._abortController.signal,
