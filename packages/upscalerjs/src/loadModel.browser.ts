@@ -11,7 +11,7 @@ type CDN = 'jsdelivr' | 'unpkg';
 
 type CdnFn = (packageName: string, version: string, path: string) => string;
 
-const CDN_DEFINITIONS: { [key in CDN]: CdnFn } = {
+export const CDN_PATH_DEFINITIONS: { [key in CDN]: CdnFn } = {
   'jsdelivr': (packageName, version, path) => `https://cdn.jsdelivr.net/npm/${packageName}@${version}/${path}`,
   'unpkg': (packageName, version, path) => `https://unpkg.com/${packageName}@${version}/${path}`,
 };
@@ -27,7 +27,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
   if (packageInformation) {
     for (let i = 0; i < CDNS.length; i++) {
       const cdn = CDNS[i];
-      const getCDNFn = CDN_DEFINITIONS[cdn];
+      const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
       try {
         const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
         return await tf.loadLayersModel(url);
