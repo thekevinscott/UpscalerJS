@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
-  UpscaleArgs, 
+  PrivateUpscaleArgs, 
   ResultFormat, 
   UpscaleResponse, 
   Progress, 
@@ -265,7 +265,7 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 /* eslint-disable @typescript-eslint/require-await */
 export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: UpscaleArgs<P, O, PO>,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs<P, O, PO>,
   {
     model,
     modelDefinition,
@@ -380,7 +380,7 @@ export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorIn
 
 export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
-  args: UpscaleArgs<P, O, PO>,
+  args: PrivateUpscaleArgs<P, O, PO>,
   { model, modelDefinition, }: ModelPackage,
 ): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
   const parsedInput = getCopyOfInput(input);
@@ -424,7 +424,7 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
 
 export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
   input: GetImageAsTensorInput,
-  { signal, awaitNextFrame, ...args }: UpscaleArgs<P, O, PO>,
+  { signal, awaitNextFrame, ...args }: PrivateUpscaleArgs<P, O, PO>,
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
