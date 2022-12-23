@@ -31,7 +31,7 @@ import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './utils';
-import { getUpscaleOptions, } from './args';
+import { getUpscaleOptions, } from './args.generated';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
