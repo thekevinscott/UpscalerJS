@@ -2,7 +2,8 @@ import { PrivateUpscaleArgs, Progress, ResultFormat, PublicUpscaleArgs, } from "
 
 export function getUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(options: PublicUpscaleArgs<P, O, PO> = {}): PrivateUpscaleArgs<P, O, PO> {
   return {
-    output: 'tensor',
+    // TODO: Avoid this casting
+    output: 'tensor' as O,
     ...options,
   };
 }

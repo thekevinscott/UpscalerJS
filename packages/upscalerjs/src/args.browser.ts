@@ -3,7 +3,8 @@ type DEFAULT_OUTPUT = BASE64;
 
 export function getUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(options: PublicUpscaleArgs<P, O, PO> = {}): PrivateUpscaleArgs<P, O, PO> {
   return {
-    output: 'base64',
+    // TODO: Avoid this casting
+    output: 'base64' as O,
     ...options,
   };
 }

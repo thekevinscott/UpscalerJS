@@ -78,7 +78,7 @@ const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform, { ver
   if (verbose) {
     console.log([
       'Scaffolding the following files:',
-      ...Array.from(files).map(file => `- ${file}`),
+      ...Array.from(files).map(file => `- ${file}.generated.ts`),
     ].join('\n'))
   }
   files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
