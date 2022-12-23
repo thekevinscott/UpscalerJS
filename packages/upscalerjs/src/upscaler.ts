@@ -22,7 +22,6 @@ import type {
   UpscaleResponse,
   ModelPackage,
   BASE64,
-  PrivateUpscaleArgs,
   WarmupArgs,
   PublicUpscaleArgs,
 } from './types';
