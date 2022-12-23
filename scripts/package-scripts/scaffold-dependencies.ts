@@ -73,8 +73,14 @@ const findPlatformSpecificFiles = (folder: string) => new Set(fs.readdirSync(fol
 }).map(file => file.split('.').slice(0, -2).join('.')));
 
 
-const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform) => {
+const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform, { verbose }: { verbose: boolean }) => {
   const files = findPlatformSpecificFiles(folder);
+  if (verbose) {
+    console.log([
+      'Scaffolding the following files:',
+      ...Array.from(files).map(file => `- ${file}`),
+    ].join('\n'))
+  }
   files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
 }
 
@@ -104,7 +110,8 @@ export function loadScaffoldDependenciesConfig(filePath: string): Promise<{
 type ScaffoldDependencies = (
   packageRoot: string, 
   config: ScaffoldDependenciesConfig, 
-  platform?: Platform
+  platform?: Platform,
+  opts?: { verbose?: boolean },
 ) => Promise<void>;
 const scaffoldDependencies: ScaffoldDependencies = async (
   packageRoot,
@@ -112,14 +119,14 @@ const scaffoldDependencies: ScaffoldDependencies = async (
     files,
     scaffoldPlatformFiles,
   },
-  platform) => {
+  platform, { verbose = false } = {}) => {
   const PACKAGE_ROOT = path.resolve(ROOT, packageRoot);
   const PACKAGE_SRC = path.resolve(PACKAGE_ROOT, 'src');
   if (scaffoldPlatformFiles) {
     if (!platform) {
       throw new Error('You must provide a platform to scaffold platform specific files');
     }
-    scaffoldPlatformSpecificFiles(PACKAGE_SRC, platform);
+    scaffoldPlatformSpecificFiles(PACKAGE_SRC, platform, { verbose });
   }
   const tfjs = getPlatformSpecificTensorflow(platform);
   const packageJSON = getPackageJSON(PACKAGE_ROOT);
