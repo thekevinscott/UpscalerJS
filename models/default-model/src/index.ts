@@ -14,7 +14,7 @@ const clipOutput = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D
 const modelDefinition: ModelDefinitionFn = tf => ({
   scale: SCALE,
   channels: 3,
-  path: `models/${SCALE}x/model.json`,
+  path: `models/model.json`,
   packageInformation: {
     name: NAME,
     version: VERSION,
