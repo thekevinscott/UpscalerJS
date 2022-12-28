@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/examples.nodejs-model",
   "private": true,
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "Demonstration of Node.js usage of UpscalerJS with a different model",
   "author": "Kevin Scott",
   "license": "MIT",
