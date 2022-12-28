@@ -13,6 +13,7 @@ import { getOutputFormats } from './prompt/getOutputFormats';
 import { getPlatform } from './prompt/getPlatform';
 import { withTmpDir } from './utils/withTmpDir';
 import { UPSCALER_DIR } from './utils/constants';
+import { ifDefined as _ifDefined} from './prompt/ifDefined';
 
 /****
  * Types
@@ -124,7 +125,7 @@ const getDefaultOutputFormats = (platform: Platform): OutputFormat[] => {
   return ['cjs'];
 };
 
-const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions): Promise<number> => {
+const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions, { verbose = false } = {}): Promise<number> => {
   const start = performance.now();
   const outputFormats = _outputFormats || getDefaultOutputFormats(platform);
   if (outputFormats.length === 0) {
@@ -133,7 +134,7 @@ const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[]
   }
 
   const { default: scaffoldConfig } = await loadScaffoldDependenciesConfig(path.resolve(UPSCALER_DIR, 'scaffolder.ts'));
-  await scaffoldDependencies(UPSCALER_DIR, scaffoldConfig, platform);
+  await scaffoldDependencies(UPSCALER_DIR, scaffoldConfig, platform, { verbose });
 
   for (let i = 0; i < outputFormats.length; i++) {
     const outputFormat = outputFormats[i];
@@ -148,12 +149,16 @@ export default buildUpscaler;
  * Functions to expose the main function as a CLI tool
  */
 
-type Answers = { platform: Platform, outputFormats: Array<OutputFormat> }
+type Answers = { platform: Platform, outputFormats: Array<OutputFormat>, verbose: boolean }
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('build upscaler', 'build upscaler', yargs => {
     yargs.positional('platforms', {
       describe: 'The platforms to build for',
+    }).option('v', {
+      alias: 'verbose',
+      default: false,
+      type: 'boolean',
     }).option('o', {
       alias: 'outputFormat',
       type: 'string',
@@ -165,15 +170,18 @@ const getArgs = async (): Promise<Answers> => {
   const platform = await getPlatform(argv._[0]);
   const outputFormats = await getOutputFormats(argv.o);
 
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
+
   return {
     platform,
     outputFormats,
+    verbose: ifDefined('v', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await buildUpscaler(args.platform, args.outputFormats);
+    await buildUpscaler(args.platform, args.outputFormats, undefined, { verbose: args.verbose });
   })();
 }

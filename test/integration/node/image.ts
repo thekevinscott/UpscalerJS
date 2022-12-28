@@ -43,7 +43,6 @@ const main: Main = async (deps) => {
     model,
   });
   const result = await upscaler.upscale(image, {
-    output: 'tensor',
     patchSize,
     padding,
   });
