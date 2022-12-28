@@ -25,7 +25,7 @@ export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTens
 
 interface SharedArgs {
   /**
-   * Provides a mechanism to abort the warmup process. [For more, see the guides on cancelling requests](../guides/usage/cancel).
+   * Provides a mechanism to abort the warmup process. [For more, see the guides on cancelling requests](/documentation/guides/browser/usage/cancel).
    */
   signal?: AbortSignal;
   /**
@@ -40,15 +40,15 @@ export interface UpscaleArgs extends SharedArgs {
    */
   output?: BASE64 | TENSOR;
   /**
-   * Optionally specify an image patch size to operate on. [For more, see the guide on patch sizes](../guides/browser/performance/patch-sizes).
+   * Optionally specify an image patch size to operate on. [For more, see the guide on patch sizes](/documentation/guides/browser/performance/patch-sizes).
    */
   patchSize?: number;
   /**
-   * Optionally specify a patch size padding. [For more, see the guide on patch sizes](../guides/browser/performance/patch-sizes).
+   * Optionally specify a patch size padding. [For more, see the guide on patch sizes](/documentation/guides/browser/performance/patch-sizes).
    */
   padding?: number;
   /**
-   * An optional progress callback if `upscale` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](../guides/browser/usage/progress).
+   * An optional progress callback if `upscale` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](/documentation/guides/browser/usage/progress).
    */
   progress?: Progress;
   /**
