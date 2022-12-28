@@ -25,7 +25,7 @@ export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTens
 
 interface SharedArgs {
   /**
-   * [Provides a mechanism to abort the warmup process](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
+   * Provides a mechanism to abort the warmup process. [For more, see the guides on cancelling requests](../guides/usage/cancel).
    */
   signal?: AbortSignal;
   /**

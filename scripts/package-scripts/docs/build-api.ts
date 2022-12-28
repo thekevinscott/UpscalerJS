@@ -1,6 +1,6 @@
 import { mkdirp, writeFile } from 'fs-extra';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { CORE_DIR, DOCS_DIR, ROOT_DIR, UPSCALER_DIR } from '../utils/constants';
 
 /****
@@ -18,6 +18,7 @@ interface Definitions {
 /****
  * Constants
  */
+const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
@@ -33,6 +34,25 @@ const INTRINSIC_TYPES = [
   'number',
   'boolean',
 ];
+// define special type information that is external
+const makeNewExternalType = (name: string, url: string) => {
+  const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
+  const source = new SourceReference('', 0, 0);
+  source.url = url;
+  type.sources = [source];
+  return type;
+};
+
+const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
+  'AbortSignal': makeNewExternalType(
+    'AbortSignal',
+    'https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal'
+  ),
+  'SerializableConstructor': makeNewExternalType(
+    'SerializableConstructor',
+    'https://github.com/tensorflow/tfjs/blob/38f8462fe642011ff1b7bcbb52e018f3451be58b/tfjs-core/src/serialization.ts#L54',
+  ),
+}
 
 /****
  * Utility functions
@@ -136,7 +156,11 @@ const getSummary = (comment?: Comment) => {
   return comment?.summary.map(({ text }) => text).join('');
 }
 
-const getTextSummary = ({ summary, blockTags }: Comment) => {
+const getTextSummary = (comment?: Comment) => {
+  if (comment === undefined) {
+    return {};
+  }
+  const { summary, blockTags } = comment;
   const { text, code } = summary.reduce((obj, item) => {
     return {
       ...obj,
@@ -165,7 +189,7 @@ const getSource = ([source]: SourceReference[]) => {
     // character, 
     url,
   } = source;
-  url = `https://github.com/thekevinscott/UpscalerJS/blob/main/${fileName}#L${line}`;
+  url = `${REPO_ROOT}/blob/main/${fileName}#L${line}`;
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
@@ -263,7 +287,6 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
     if (!t || !('name' in t)) {
       throw new Error('No type arguments found on intersection type.');
     }
-    console.log('our t', t);
     return {
       type: 'literal',
       name: t.name,
@@ -303,7 +326,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         }
         return t.name;
       } else if (isLiteralType(t)) {
-        return JSON.stringify(t.value);
+        return `\`${t.value}\``;
       }
       throw new Error(`Unsupported type in union type: ${t.type}`);
     }).filter(Boolean).join(' | ');
@@ -323,9 +346,10 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
 const getURLFromSources = (sources?: SourceReference[]) => {
   if (sources?.length) {
     const { url } = sources?.[0] || {};
-    if (url) {
+    if (url?.startsWith(REPO_ROOT)) {
       return rewriteURL(url);
     }
+    return url;
   }
 
   return undefined;
@@ -361,12 +385,14 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
   if (depth > 5) {
     throw new Error('Too many levels of depth');
   }
-  const { interfaces, types } = definitions;
+  const { classes, interfaces, types } = definitions;
   return parameters.map((parameter) => {
     let { name: nameOfTypeDefinition } = getReferenceTypeOfParameter(parameter.type);
     let matchingType: undefined | DeclarationReflection | TypeParameterReflection = undefined;
     if (!INTRINSIC_TYPES.includes(nameOfTypeDefinition) && parameter.type !== undefined && !isLiteralType(parameter.type)) {
-      matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+      // first, check if it is a specially defined external type
+      matchingType = EXTERNALLY_DEFINED_TYPES[nameOfTypeDefinition] || interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+      // console.log('matchingType', matchingType);
       if (!matchingType) {
         // it's possible that this type is a generic type; in which case, replace the generic with the actual type it's extending
         matchingType = typeParameters[nameOfTypeDefinition];
@@ -376,9 +402,9 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
           parameter.type = matchingType.type;
         }
       }
-      if (!matchingType) {
+      if (!matchingType && (parameter.type === undefined || !isUnionType(parameter.type))) {
         console.warn(parameter.type);
-        console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}.`);
+        console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}. Available classes are ${Object.keys(classes).join(', ')}.`);
       }
     }
     const { children = [] } = matchingType || {};
@@ -397,7 +423,6 @@ const getReturnType = (signatures: (SignatureReflection & { typeParameter?: Type
     }
 
     if (isReferenceType(type)) {
-      // console.log('type is reference', JSON.stringify(type, null, 2));
       const { name, typeArguments } = type;
       let nameOfType = name;
       if (typeArguments?.length) {
@@ -481,9 +506,9 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   }
   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
   const { comment, parameters, typeParameter: typeParameters } = signature;
-  if (!comment) {
-    throw new Error(`No comment found in method ${name}`);
-  }
+  // if (!comment) {
+  //   throw new Error(`No comment found in method ${name}`);
+  // }
 
   const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
   let source;
@@ -500,7 +525,6 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `title: ${name}`,
       `sidebar_position: ${i}`,
       `sidebar_label: ${name}`,
-      'hide_table_of_contents: true',
       '---',
     ].join('\n'),
 
@@ -517,7 +541,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     ] : []),
     `## Returns`,
     getReturnType(signatures, blockTags),
-  ].join('\n\n');
+  ].filter(Boolean).join('\n\n');
   return content;
 }
 
