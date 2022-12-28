@@ -122,7 +122,7 @@ describe('Model Loading Integration Tests', () => {
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
       });
-      return upscaler.upscale(tensor, { output: 'base64'}).then((output) => {
+      return upscaler.upscale(tensor).then((output) => {
         return loadImage(output);
       }).then((img: HTMLImageElement) => {
         const predictedPixels = tf.browser.fromPixels(img);

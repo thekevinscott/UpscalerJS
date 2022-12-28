@@ -4,7 +4,7 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
-import Upscaler, { BASE64, Progress } from 'upscaler';
+import Upscaler from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
