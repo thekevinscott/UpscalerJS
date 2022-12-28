@@ -64,6 +64,6 @@ upscaler.upscale(pathToImage).then(upscaledImageSrc => {
 });
 ```
 
-There are a number of options you can pass to the `upscale` method, [detailed here](http://localhost:3000/documentation/api/upscale).
+There are a number of options we can pass to the `upscale` method, [detailed here](http://localhost:3000/documentation/api/upscale).
 
 [Next, read about the concept of models and how they work with UpscalerJS](models).

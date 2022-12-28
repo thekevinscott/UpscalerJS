@@ -43,9 +43,9 @@ In addition to returning the percentage of operation completed, the `progress` c
 * `row` - The row being operated upon
 * `col` - The column being operated upon
 
-By default, `imageSlice` will be in the format specified by `output` - e.g., if you have specified an `output` of `tensor`, you will receive a `tensor` back in the `progress` function.
+By default, `imageSlice` will be in the format specified by `output` - e.g., if we've specified an `output` of `tensor`, we'll receive a `tensor` back in the `progress` function.
 
-If you wish to change this, you can specify the format you wish to receive in `progress` with `progressOutput`:
+To change this, we can specify the format we wish to receive in `progress` with `progressOutput`:
 
 ```javascript
 upscaler.upscale(image, {

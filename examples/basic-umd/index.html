@@ -1,61 +1,93 @@
 <html>
-<head>
-  <title>Basic UMD| Upscaler.JS</title>
-  <style>
-    body {
-      padding: 40px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    button {
-      margin-top: 20px;
-      display: block;
-      padding: 10px 40px;
-    }
-    #target {
-      background: #EEE;
-      border: 1px solid #DDD;
-      display: inline-block;
-      width: 256px;
-      height: 256px;
-    }
-    #flower {
-      border: 1px solid #DDD;
-    }
-    pre {
-      padding: 10px;
-      background: #EEE;
-      border: 1px solid #DDD;
-      border-radius: 5px;
-    }
-    table td {
-      vertical-align: top;
-    }
-  </style>
-</head>
-<body>
-  <h1>Basic Example With a Script Tag</h1>
-  <p>A basic example showing how to upscale an image with <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank">UpscalerJS</a> installed using a script tag.</p>
-  <p>Click the upscale button to upscale the photo.</p>
-  <button id="button">Upscale</button>
-  <p id="info"></p>
-  <table>
-    <thead>
-      <tr><td>Original</td><td>Upscaled</td></tr>
-    </thead>
-    <tbody>
-      <tr><td>
-      <img src="./flower.png" id="flower" />
-        </td>
-      <td>
-        <div id="target">
-
-        </div>
-      </td>
-    </tr>
+  <head>
+    <title>Basic UMD| Upscaler.JS</title>
+    <style>
+      body {
+        padding: 40px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      button {
+        margin-top: 20px;
+        display: block;
+        padding: 10px 40px;
+      }
+      #target {
+        background: #eee;
+        border: 1px solid #ddd;
+        display: inline-block;
+        width: 256px;
+        height: 256px;
+      }
+      #flower {
+        border: 1px solid #ddd;
+      }
+      pre {
+        padding: 10px;
+        background: #eee;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      table td {
+        vertical-align: top;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Basic Example With a Script Tag</h1>
+    <p>
+      A basic example showing how to upscale an image with
+      <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank"
+        >UpscalerJS</a
+      >
+      installed using a script tag.
+    </p>
+    <p>Click the upscale button to upscale the photo.</p>
+    <button id="button">Upscale</button>
+    <p id="info"></p>
+    <table>
+      <thead>
+        <tr>
+          <td>Original</td>
+          <td>Upscaled</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <img src="./flower.png" id="flower" />
+          </td>
+          <td>
+            <div id="target"></div>
+          </td>
+        </tr>
       </tbody>
     </table>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@1.0.0-beta.12/dist/umd/index.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
-    <script src="./index.js" type="module"></script>
+    <script>
+      const target = document.getElementById('target');
+      const button = document.getElementById('button');
+      const info = document.getElementById('info');
+
+      const upscaler = new Upscaler({
+        model: DefaultUpscalerJSModel,
+      });
+
+      button.onclick = () => {
+        button.disabled = true;
+        info.innerText = 'Upscaling...';
+        const start = new Date().getTime();
+        upscaler.upscale(img).then((upscaledImgSrc) => {
+          button.disabled = false;
+          const img = document.createElement('img');
+          img.src = upscaledImgSrc;
+          target.innerHTML = '';
+          target.appendChild(img);
+          const ms = new Date().getTime() - start;
+          info.innerText = `Upscaled in ${ms} ms`;
+        });
+      };
+    </script>
   </body>
 </html>

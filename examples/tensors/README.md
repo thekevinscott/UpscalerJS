@@ -16,7 +16,7 @@ Here we'll discuss working with tensors directly within the context of UpscalerJ
 
 [Tensors are a data type used in neural networks](https://thekevinscott.com/tensors-in-javascript/), and they're used internally to represent the images being upscaled in UpscalerJS.
 
-If you are already working with tensors in the context of your application, it can often be more performant to work directly with tensors throughout the process. Doing so can give finer grained control over memory management and performance.
+If we're already working with tensors in the context of our application, it can often be more performant to work directly with tensors throughout the process. Doing so can give finer grained control over memory management and performance.
 
 :::tip
 
@@ -40,7 +40,7 @@ For the purposes of this example, we'll create a tensor with `tf.browser.fromPix
 import flower from '/path/to/flower.png'
 
 const tensor = tf.browser.fromPixels(flower)
-// you can inspect this tensor further with:
+// inspect this tensor further with:
 // tensor.print()
 ```
 
@@ -95,4 +95,4 @@ upscaler.upscale(tensor, {
 
 :::
 
-Next, read about some performance optimizations you can take to squeeze the most performance out of UpscalerJS in the browser.
+Next, read about some performance optimizations we can take to squeeze the most performance out of UpscalerJS in the browser.
