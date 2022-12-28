@@ -2,9 +2,10 @@ import React, { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } 
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from './codeEmbed.module.scss';
+import clsx from 'clsx';
 
 const ROOT_URL_STACKBLITZ = 'stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
-const ROOT_URL_CODESANDBOX = 'https://githubbox.com/thekevinscott/upscalerjs/tree/main';
+const ROOT_URL_CODESANDBOX = 'githubbox.com/thekevinscott/upscalerjs/tree/main';
 const THRESHOLD_TO_GO_MAX = 100;
 const IFRAME_DEFAULT_HEIGHT = 300;
 const HEADER_HEIGHT = 60;
@@ -58,7 +59,9 @@ const Dragger = ({
   onDrag,
   onDragging,
   text,
+  type,
 }: {
+  type: 'codesandbox' | 'stackblitz';
   text: string;
   onDrag: (delta: number) => void;
   onDragging: (dragging: boolean) => void;
@@ -101,7 +104,7 @@ const Dragger = ({
   }, [dragging]);
 
   return (
-    <div className={styles.dragger} onMouseDown={startDrag}>{text}</div>
+    <div className={clsx(styles.dragger, styles[type])} onMouseDown={startDrag}>{text}</div>
   );
 }
 
@@ -161,7 +164,7 @@ export const CodeEmbed = ({
       <div className={styles.container} style={{ height: containerHeight }}>
         {dragging && <div className={styles.overlay}></div>}
         <iframe className={styles.iframe} ref={ref} src={src}></iframe>
-        {isBrowser && <Dragger onDragging={setDragging} onDrag={setDelta} text={containerHeight === MINIMUM_SIZE ? 'Drag to expand' : 'Drag to resize'} />}
+        {isBrowser && <Dragger type={type} onDragging={setDragging} onDrag={setDelta} text={containerHeight === MINIMUM_SIZE ? 'Drag to expand' : 'Drag to resize'} />}
       </div>
     );
   }

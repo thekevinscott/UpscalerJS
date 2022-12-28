@@ -21,7 +21,6 @@ const getUpscaledImage = async () => {
   const file = fs.readFileSync(path.resolve(__dirname, './flower-small.png'));
   const image = tf.node.decodeImage(file, 3);
   const tensor = await upscaler.upscale(image, {
-    output: 'tensor',
     patchSize: 64,
     padding: 6
   });
