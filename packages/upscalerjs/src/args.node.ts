@@ -1,9 +1,16 @@
-import { PrivateUpscaleArgs, Progress, ResultFormat, PublicUpscaleArgs, } from "./types";
+import { BASE64, UpscaleArgs, TENSOR, PrivateUpscaleArgs, } from "./types";
 
-export function getUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(options: PublicUpscaleArgs<P, O, PO> = {}): PrivateUpscaleArgs<P, O, PO> {
+const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
+  if (output === 'base64') {
+    return 'base64';
+  }
+  return 'tensor';
+};
+
+export function getUpscaleOptions(options: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
   return {
-    // TODO: Avoid this casting
-    output: 'tensor' as O,
     ...options,
+    output: getOutputOption(options.output),
+    progressOutput: getOutputOption(options.progressOutput || options.output),
   };
 }

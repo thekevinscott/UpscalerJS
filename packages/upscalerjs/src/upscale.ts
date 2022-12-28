@@ -1,10 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
   PrivateUpscaleArgs, 
-  ResultFormat, 
-  UpscaleResponse, 
-  Progress, 
-  MultiArgProgress,
   ModelPackage,
   BASE64,
   TENSOR,
@@ -20,6 +16,7 @@ import {
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
   processAndDisposeOfTensor,
+  isSingleArgProgress,
  } from './utils';
 import { makeTick, } from './makeTick';
 
@@ -261,9 +258,9 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 }
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* predict<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
+export async function* predict(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs<P, O, PO>,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs,
   {
     model,
     modelDefinition,
@@ -318,19 +315,19 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
           const percent = index / total;
-          if (progress.length <= 1) {
+          if (isSingleArgProgress(progress)) {
             progress(percent);
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
             const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor, row, col);
+              progress(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              (<MultiArgProgress<BASE64>>progress)(percent, src, row, col);
+              progress(percent, src, row, col);
             }
           }
         }
@@ -376,11 +373,34 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
 
-export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
+export function upscale(
   input: GetImageAsTensorInput,
-  args: PrivateUpscaleArgs<P, O, PO>,
+  args: Omit<PrivateUpscaleArgs, 'output'> & {
+    output: BASE64;
+  },
+  modelPackage: ModelPackage,
+  ): AsyncGenerator<YieldedIntermediaryValue, string>;
+export function upscale(
+  input: GetImageAsTensorInput,
+  args: Omit<PrivateUpscaleArgs, 'output'> & {
+    output: TENSOR;
+  },
+  modelPackage: ModelPackage,
+  ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D>;
+export function upscale(
+  input: GetImageAsTensorInput,
+  args: Omit<PrivateUpscaleArgs, 'output'> & {
+    output: BASE64 | TENSOR;
+  },
+  modelPackage: ModelPackage,
+  ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
+export async function* upscale(
+  input: GetImageAsTensorInput,
+  args: Omit<PrivateUpscaleArgs, 'output'> & {
+    output: BASE64 | TENSOR;
+  },
   { model, modelDefinition, }: ModelPackage,
-): AsyncGenerator<YieldedIntermediaryValue, UpscaleResponse<O>> {
+  ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
@@ -412,21 +432,42 @@ export async function* upscale<P extends Progress<O, PO>, O extends ResultFormat
   const upscaledPixels: tf.Tensor3D = result.value;
 
   if (args.output === 'tensor') {
-    return <UpscaleResponse<O>>upscaledPixels;
+    return upscaledPixels;
   }
 
   const base64Src = tensorAsBase64(upscaledPixels);
   upscaledPixels.dispose();
-  return <UpscaleResponse<O>>base64Src;
+  return base64Src;
 }
 
-export async function cancellableUpscale<P extends Progress<O, PO>, O extends ResultFormat, PO extends ResultFormat = undefined>(
+export function cancellableUpscale(
   input: GetImageAsTensorInput,
-  { signal, awaitNextFrame, ...args }: PrivateUpscaleArgs<P, O, PO>,
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: TENSOR},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
-): Promise<UpscaleResponse<O>> {
+  ): Promise<tf.Tensor3D>;
+export function cancellableUpscale(
+  input: GetImageAsTensorInput,
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64},
+  internalArgs: ModelPackage & {
+    signal: AbortSignal;
+  },
+): Promise<string>;
+export function cancellableUpscale(
+  input: GetImageAsTensorInput,
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR },
+  internalArgs: ModelPackage & {
+    signal: AbortSignal;
+  },
+): Promise<tf.Tensor3D | string>;
+export async function cancellableUpscale(
+  input: GetImageAsTensorInput,
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR},
+  internalArgs: ModelPackage & {
+    signal: AbortSignal;
+  },
+) {
   const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(

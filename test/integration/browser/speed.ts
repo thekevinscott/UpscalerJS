@@ -104,7 +104,7 @@ describe('Speed Integration Tests', () => {
                     output: 'tensor',
                   })).then(upscalerJSDuration => {
                     if (output !== undefined) {
-                      (output as tf.Tensor).dispose();
+                      output.dispose();
                     }
                     return [rawDuration, upscalerJSDuration] as [number, number];
                   });
@@ -163,7 +163,7 @@ describe('Speed Integration Tests', () => {
                     padding: 0,
                   })).then(upscalerJSDuration => {
                     if (output !== undefined) {
-                      (output as tf.Tensor).dispose();
+                      output.dispose();
                     }
                     return [rawDuration, upscalerJSDuration] as [number, number];
                   });
