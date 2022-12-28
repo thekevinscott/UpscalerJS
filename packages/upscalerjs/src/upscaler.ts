@@ -211,5 +211,3 @@ export class Upscaler {
 }
 
 export default Upscaler;
-
-const upscaler = new Upscaler();
