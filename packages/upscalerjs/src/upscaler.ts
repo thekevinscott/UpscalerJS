@@ -13,7 +13,7 @@
  *
  * @module UpscalerJS
  */
-import { DefaultUpscalerModel, } from './dependencies.generated';
+import { DefaultUpscalerModel, tf, } from './dependencies.generated';
 import type {
   UpscalerOptions,
   WarmupSizes,
@@ -24,6 +24,8 @@ import type {
   BASE64,
   WarmupArgs,
   PublicUpscaleArgs,
+  TENSOR,
+  PrivateUpscaleArgs,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
@@ -108,18 +110,30 @@ export class Upscaler {
    * @param options a set of upscaling arguments
    * @returns an upscaled image.
    */
-  upscale = async<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(
+  public async upscale(
     image: GetImageAsTensorInput,
-    options: PublicUpscaleArgs<P, O, PO> = {},
-  ): Promise<UpscaleResponse<O>> => {
+    options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output: TENSOR; progressOutput?: unknown },
+    ): Promise<tf.Tensor3D>;
+  public async upscale(
+    image: GetImageAsTensorInput,
+    options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: BASE64; progressOutput?: unknown },
+    ): Promise<string>;
+  public async upscale(
+    image: GetImageAsTensorInput,
+    options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: TENSOR | BASE64; progressOutput?: unknown },
+    ): Promise<tf.Tensor3D | string>;
+  public async upscale(
+    image: GetImageAsTensorInput,
+    options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown }= {},
+    ) {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, getUpscaleOptions<P, O, PO>(options), {
+    return cancellableUpscale(image, getUpscaleOptions(options), {
       model,
       modelDefinition,
       signal: this._abortController.signal,
     });
-  };
+  }
 
   /**
    * Warms up an upscaler instance.
@@ -188,3 +202,7 @@ export class Upscaler {
 }
 
 export default Upscaler;
+
+const upscaler = new Upscaler();
+const f1 = upscaler.upscale('foo', { output: 'tensor', });
+const f2 = upscaler.upscale('foo', { output: 'base64', });
