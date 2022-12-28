@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/workers.upscale",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.10",
   "devDependencies": {
     "seedrandom": "3.0.5",
     "@cloudflare/workers-types": "^3.14.1",

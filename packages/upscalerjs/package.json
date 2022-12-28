@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.12",
   "description": "Increase Image Resolution with Tensorflow.js",
   "exports": {
     "./node": "./dist/node/cjs/cjs.js",

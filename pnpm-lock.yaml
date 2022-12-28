@@ -258,7 +258,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-legacy': link:../../../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-legacy': 1.0.0-beta.9_@tensorflow+tfjs@4.1.0
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -712,7 +712,7 @@ importers:
 
   packages/upscalerjs-wrapper:
     specifiers:
-      upscaler: 1.0.0-beta.11
+      upscaler: 1.0.0-beta.12
     dependencies:
       upscaler: link:../upscalerjs
 
@@ -4968,6 +4968,17 @@ packages:
 
   /@upscalerjs/default-model/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
     resolution: {integrity: sha512-9QQfeLUwrSaThChi0V0sWzE31EUNkViSPI5hRV2wqcjKlD1L3LSRGlFqXefM7QUi3QtpxNDM3Tx79z9ozT3Sxg==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.1.0
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.8
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upscalerjs/esrgan-legacy/1.0.0-beta.9_@tensorflow+tfjs@4.1.0:
+    resolution: {integrity: sha512-0i0n3IrxW3JvRSUGgsC8VQb64im27BYL1duOwmd8YWVvsBmSH5fqOSj4DHXtAHB5E48wnVnTfS0BXaJziGWkZQ==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
