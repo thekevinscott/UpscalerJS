@@ -22,7 +22,7 @@ export class UpscalerModel extends Model {
 
   get modelDefinition() {
     if (!this._modelDefinition) {
-      throw new Error(`No model definition set for model ${this.name}, ${JSON.stringify(this.meta)}`);
+      throw new Error(`No model definition set for model ${this.name}, meta: ${JSON.stringify(this.meta)}`);
     }
 
     return this._modelDefinition;
@@ -30,7 +30,7 @@ export class UpscalerModel extends Model {
 
   get upscaler(): _Upscaler {
     if (!this._upscaler) {
-      throw new Error(`No upscaler set for model ${this.name}, ${JSON.stringify(this.meta)}`);
+      throw new Error(`No upscaler set for model for name ${this.name}, meta: ${JSON.stringify(this.meta)}`);
     }
 
     return this._upscaler;
@@ -43,12 +43,37 @@ export class UpscalerModel extends Model {
     this._modelDefinition = modelDefinition;
   }
 
+  async hydrate(tf: TF) {
+    try {
+      this._package;
+    } catch(err) {
+      if (!this.packageId) {
+        throw new Error('No package id');
+      }
+      const pkg = await Package.findByPk(this.packageId);
+      if (pkg === null) {
+        throw new Error(`No package found for package id ${this.packageId}`);
+      }
+      this._package = pkg;
+    }
+
+    try {
+      this.upscaler;
+      this.modelDefinition
+    } catch(err) {
+      const pkg = await this.package;
+      const [upscaler, modelDefinition] = await UpscalerModel.getUpscaler(tf, pkg.name, this.name);
+      this.upscaler = upscaler;
+      this.modelDefinition = modelDefinition;
+    }
+  }
+
   get package() {
     return new Promise<Package>(async (resolve) => {
       if (!this._package) {
         const packageId = this.packageId;
         if (!packageId) {
-          throw new Error(`No package id set for model ${this.name}`);
+          throw new Error(`No package id set for model for name ${this.name}`);
         }
         const pkg = await Package.findOne({
           where: {
