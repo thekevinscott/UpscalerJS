@@ -712,9 +712,9 @@ importers:
 
   packages/upscalerjs-wrapper:
     specifiers:
-      upscaler: 1.0.0-beta.9
+      upscaler: 1.0.0-beta.11
     dependencies:
-      upscaler: 1.0.0-beta.9_@tensorflow+tfjs@4.1.0
+      upscaler: link:../upscalerjs
 
   scripts:
     specifiers:
@@ -15206,19 +15206,6 @@ packages:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@upscalerjs/core': 1.0.0-beta.8
       '@upscalerjs/default-model': 1.0.0-beta.6_@tensorflow+tfjs@4.1.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /upscaler/1.0.0-beta.9_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-slo8adst2Umg9JXLwpzw73aNiendALrAB09Mwpg2rFD9YMQw3+YYJSdh8ydOuQab5vywsSXmIhwUOFfYws8IQw==}
-    engines: {node: '>=16.0'}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-      '@upscalerjs/default-model': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
     transitivePeerDependencies:
       - encoding
     dev: false
