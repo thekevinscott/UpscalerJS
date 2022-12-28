@@ -483,18 +483,3 @@ export async function cancellableUpscale(
   await tick();
   return upscaledPixels;
 }
-
-
-
-// const f1 = upscale('foo', { output: 'tensor', }, { model: null, modelDefinition: null, } as unknown as ModelPackage);
-// const f2 = upscale('foo', { output: 'base64', }, { model: null, modelDefinition: null, } as unknown as ModelPackage);
-const g1 = cancellableUpscale('foo', {
-  output: 'base64',
-  }, {} as unknown as ModelPackage & {
-    signal: AbortSignal;
-  });
-const g2 = cancellableUpscale('foo', {
-  output: 'tensor',
-  }, {} as unknown as ModelPackage & {
-    signal: AbortSignal;
-  });

@@ -18,19 +18,9 @@ export interface UpscalerOptions {
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';
 export type ResultFormat = BASE64 | TENSOR | undefined;
-export type UpscaleResponse<O extends ResultFormat> = O extends BASE64 ? string : tf.Tensor3D;
-export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = 
-  PO extends BASE64 ? 
-    BASE64 : 
-    PO extends TENSOR ? 
-      TENSOR :
-      O extends TENSOR ?
-        TENSOR :
-        BASE64;
-
-export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>, row: number, col: number) => void;
-export type SingleArgProgress = (amount: number) => void;
-export type Progress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
+export type MultiArgStringProgress = (amount: number, slice: string, row: number, col: number) => void;
+export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, row: number, col: number) => void;
+export type Progress = MultiArgStringProgress | MultiArgTensorProgress;
 
 interface SharedArgs {
   /**
@@ -47,8 +37,7 @@ export interface PrivateUpscaleArgs extends SharedArgs {
   output: BASE64 | TENSOR;
   patchSize?: number;
   padding?: number;
-  // progress?: P;
-  progress: Progress;
+  progress?: Progress;
   progressOutput: BASE64 | TENSOR;
 }
 
