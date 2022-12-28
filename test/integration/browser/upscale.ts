@@ -8,6 +8,7 @@ import Upscaler, { BASE64, Progress } from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -243,7 +244,7 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
-        const progress: Progress<BASE64> = (rate, slice) => {
+        const progress: MultiArgStringProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
@@ -265,7 +266,7 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
-        const progress: Progress<'tensor'> = (rate, slice) => {
+        const progress: MultiArgTensorProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
@@ -288,7 +289,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progressRates: Array<[number, number]> = [];
-        const progress: Progress<'base64'> = (rate, slice, row, col) => {
+        const progress: MultiArgStringProgress = (rate, slice, row, col) => {
           progressRates.push([row, col]);
         };
         upscaler.upscale(window['flower'], {

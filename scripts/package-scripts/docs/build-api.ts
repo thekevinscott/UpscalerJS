@@ -1,6 +1,6 @@
 import { mkdirp, writeFile } from 'fs-extra';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { CORE_DIR, DOCS_DIR, ROOT_DIR, UPSCALER_DIR } from '../utils/constants';
 
 /****
@@ -190,6 +190,7 @@ const isReferenceType = (type: SomeType): type is ReferenceType => type.type ===
 const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
 const isInstrinsicType = (type: SomeType): type is IntrinsicType => type.type === 'intrinsic';
 const isUnionType = (type: SomeType): type is UnionType => type.type === 'union';
+const isIntersectionType = (type: SomeType): type is IntersectionType => type.type === 'intersection';
 
 const getLiteralTypeValue = (type: LiteralType): string => {
   const { value } = type;
@@ -247,6 +248,13 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
     return {
       type: 'intrinsic',
       name: _type.name,
+    }
+  }
+
+  if (isIntersectionType(_type)) {
+    return {
+      type: 'literal',
+      name: 'UNKNOWN NOW',
     }
   }
 
