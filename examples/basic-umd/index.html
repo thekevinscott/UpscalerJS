@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Basic | Upscaler.JS</title>
+  <title>Basic UMD| Upscaler.JS</title>
   <style>
     body {
       padding: 40px;
@@ -33,8 +33,8 @@
   </style>
 </head>
 <body>
-  <h1>Basic Example With NPM</h1>
-  <p>A basic example showing how to upscale an image with <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank">UpscalerJS</a> installed using NPM.</p>
+  <h1>Basic Example With a Script Tag</h1>
+  <p>A basic example showing how to upscale an image with <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank">UpscalerJS</a> installed using a script tag.</p>
   <p>Click the upscale button to upscale the photo.</p>
   <button id="button">Upscale</button>
   <p id="info"></p>
@@ -54,6 +54,8 @@
     </tr>
       </tbody>
     </table>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
     <script src="./index.js" type="module"></script>
   </body>
 </html>
