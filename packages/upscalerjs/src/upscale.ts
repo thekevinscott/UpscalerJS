@@ -373,28 +373,28 @@ export async function* predict(
 // what input is in which format
 export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
 
-function upscale(
+export function upscale(
   input: GetImageAsTensorInput,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, string>;
-function upscale(
+export function upscale(
   input: GetImageAsTensorInput,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: TENSOR;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D>;
-function upscale(
+export function upscale(
   input: GetImageAsTensorInput,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
-async function* upscale(
+export async function* upscale(
   input: GetImageAsTensorInput,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;

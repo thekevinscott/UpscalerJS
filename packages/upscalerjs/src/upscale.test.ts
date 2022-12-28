@@ -22,7 +22,7 @@ import {
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
-import { BASE64, ModelPackage, MultiArgTensorProgress, Progress, TENSOR, } from './types';
+import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./image.generated', () => {
@@ -1143,7 +1143,10 @@ describe('predict', () => {
   it('should make a prediction', async () => {
     const spy = jest.spyOn(model, 'predict');
     tensor = getTensor(2, 2);
-    const result = await wrapGenerator(predict(tensor.expandDims(0), { }, modelPackage));
+    const result = await wrapGenerator(predict(tensor.expandDims(0), {
+      output: 'base64',
+      progressOutput: 'base64',
+    }, modelPackage));
     expect(spy).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3,],
