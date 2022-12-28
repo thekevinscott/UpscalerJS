@@ -110,6 +110,10 @@ export class Upscaler {
    */
   public async upscale(
     image: GetImageAsTensorInput,
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
+  ): Promise<tf.Tensor3D | string>;
+  public async upscale(
+    image: GetImageAsTensorInput,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgStringProgress; progressOutput: BASE64 },
   ): Promise<tf.Tensor3D>;
   public async upscale(
@@ -124,10 +128,6 @@ export class Upscaler {
     image: GetImageAsTensorInput,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgStringProgress; progressOutput?: unknown },
   ): Promise<string>;
-  public async upscale(
-    image: GetImageAsTensorInput,
-    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
-  ): Promise<tf.Tensor3D | string>;
   public async upscale(
     image: GetImageAsTensorInput,
   ): Promise<string>;

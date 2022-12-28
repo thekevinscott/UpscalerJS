@@ -35,10 +35,30 @@ interface SharedArgs {
 }
 
 export interface UpscaleArgs extends SharedArgs {
-  output: BASE64 | TENSOR;
+  /**
+   * Denotes the kind of response UpscalerJS returns - a base64 string representation of the image, or the tensor. In the browser, this defaults to `"base64"` and in Node.js, to `"tensor"`.
+   */
+  output?: BASE64 | TENSOR;
+  /**
+   * Optionally specify an image patch size to operate on. [For more, see the guide on patch sizes](../guides/browser/performance/patch-sizes).
+   */
   patchSize?: number;
+  /**
+   * Optionally specify a patch size padding. [For more, see the guide on patch sizes](../guides/browser/performance/patch-sizes).
+   */
   padding?: number;
+  /**
+   * An optional progress callback if `upscale` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](../guides/browser/usage/progress).
+   */
   progress?: Progress;
+  /**
+   * Denotes the kind of response UpscalerJS returns within a `progress` callback.
+   */
+  progressOutput?: BASE64 | TENSOR;
+}
+
+export interface PrivateUpscaleArgs extends Omit<UpscaleArgs, 'output' | 'progressOutput'> {
+  output: BASE64 | TENSOR;
   progressOutput: BASE64 | TENSOR;
 }
 

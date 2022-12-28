@@ -252,8 +252,22 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
   }
 
   if (isIntersectionType(_type)) {
-    console.log('types', JSON.stringify(_type.types, null, 2))
-    return getReferenceTypeOfParameter(_type.types[0], definitions);
+    const refType = _type.types.filter(t => t.type === 'reference').pop();
+    if (!refType || !isReferenceType(refType)) {
+      throw new Error('No reference type found on intersection type.');
+    }
+    // if (definitions === undefined) {
+    //   throw new Error('Intersection type was provided and a reference type was found in the union, but no definitions are present.')
+    // }
+    const t = refType.typeArguments?.filter(t => t.type === 'reference').pop();
+    if (!t || !('name' in t)) {
+      throw new Error('No type arguments found on intersection type.');
+    }
+    console.log('our t', t);
+    return {
+      type: 'literal',
+      name: t.name,
+    };
   }
 
   if (isUnionType(_type)) {
@@ -261,7 +275,8 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
     const name = _type.types.map(t => {
       if (isReferenceType(t)) {
         if (definitions === undefined) {
-          throw new Error('Union type was provided and a reference type was found in the union, but no definitions are present.')
+          console.warn('Union type was provided and a reference type was found in the union, but no definitions are present.');
+          return t.name;
         }
         const { interfaces, types } = definitions;
         const matchingType = interfaces[t.name] || types[t.name];
@@ -283,10 +298,12 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
       } else if (isInstrinsicType(t)) {
         if (t.name === 'undefined') {
-          // ignore an explicit undefined type; this should be better represented as an optional flag.
+          // ignore an explicit undefined type; this should be better represented to the user as an optional flag.
           return undefined;
         }
         return t.name;
+      } else if (isLiteralType(t)) {
+        return JSON.stringify(t.value);
       }
       throw new Error(`Unsupported type in union type: ${t.type}`);
     }).filter(Boolean).join(' | ');
@@ -294,36 +311,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
     return {
       type: 'literal',
       includeURL,
-      name: _type.types.map(t => {
-        if (isReferenceType(t)) {
-          if (definitions === undefined ) {
-            throw new Error('Union type was provided and a reference type was found in the union, but no definitions are present.')
-          }
-          const { interfaces, types } = definitions;
-          const matchingType = interfaces[t.name] || types[t.name];
-          if (!matchingType?.type) {
-            throw new Error(`No matching type found for literal ${t.name} in union`);
-          }
-          const matchingTypeType = matchingType.type;
-          if (isLiteralType(matchingTypeType)) {
-            return JSON.stringify(matchingTypeType.value);
-          }
-          if (matchingTypeType.type === 'reflection') {
-            // Ignore reflection types
-            return t.name;
-          }
-          console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
-
-          throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
-        } else if (isInstrinsicType(t)) {
-          if (t.name === 'undefined') {
-            // ignore an explicit undefined type; this should be better represented as an optional flag.
-            return undefined;
-          }
-          return t.name;
-        }
-        throw new Error(`Unsupported type in union type: ${t.type}`);
-      }).filter(Boolean).join(' | '),
+      name,
     };
   }
 
@@ -389,8 +377,8 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
         }
       }
       if (!matchingType) {
-        // console.warn(parameter.type);
-        // console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}.`);
+        console.warn(parameter.type);
+        console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}.`);
       }
     }
     const { children = [] } = matchingType || {};
@@ -407,6 +395,7 @@ const getReturnType = (type?: SomeType, blockTags?: Record<string, CommentTag['c
   }
 
   if (isReferenceType(type)) {
+    console.log('type is reference', JSON.stringify(type, null, 2));
     const { name, typeArguments } = type;
     let nameOfType = name;
     if (typeArguments?.length) {
@@ -446,8 +435,9 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   }
 
   const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
+  let source;
   try {
-    const source = getSource(sources);
+    source = getSource(sources);
   } catch(e) {
     console.error(JSON.stringify(method, null, 2));
     throw e;
@@ -468,6 +458,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `## Example`,
       codeSnippet,
     ] : []),
+    source,
     ...(parameters ? [
       `## Parameters`,
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
