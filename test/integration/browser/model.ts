@@ -70,7 +70,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
+    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
