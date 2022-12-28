@@ -1,5 +1,6 @@
 $height: 300px;
 $stackblitz_footer_height: 32px;
+$codesandbox_footer_height: 23px;
 $dragger_bottom_padding: 10px;
 .container {
   position: sticky;
@@ -33,8 +34,6 @@ $dragger_bottom_padding: 10px;
     position: relative;
     user-select: none;
     opacity: 0.4;
-    height: calc($stackblitz_footer_height + $dragger_bottom_padding);
-    margin: calc(-7px - $stackblitz_footer_height) 200px 0 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -49,6 +48,16 @@ $dragger_bottom_padding: 10px;
       cursor: grabbing;
       cursor: -moz-grabbing;
       cursor: -webkit-grabbing;
+    }
+
+    &.stackblitz {
+      height: calc($stackblitz_footer_height + $dragger_bottom_padding);
+      margin: calc(-7px - $stackblitz_footer_height) 200px 0 200px;
+    }
+
+    &.codesandbox {
+      height: calc($codesandbox_footer_height + $dragger_bottom_padding);
+      margin: calc(-7px - $codesandbox_footer_height) 200px 0 200px;
     }
   }
 

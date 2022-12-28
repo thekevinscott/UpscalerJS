@@ -42,7 +42,7 @@ export default function DocItemLayout({children}) {
   return (
     <div className={styles.container}>
       {docTOC.embed && (
-        <CodeEmbed url={docTOC.embed.url} params={docTOC.embed.params} persist />
+        <CodeEmbed url={docTOC.embed.url} params={docTOC.embed.params} persist type={docTOC.embed.type} />
       )}
       <div
         className={clsx(
