@@ -20,18 +20,18 @@ import type {
   ModelPackage,
   BASE64,
   WarmupArgs,
-  TENSOR,
   UpscaleArgs,
-  MultiArgTensorProgress,
+  TENSOR,
   MultiArgStringProgress,
+  MultiArgTensorProgress,
 } from './types';
+import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { GetImageAsTensorInput, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './utils';
-import { getUpscaleOptions, } from './args.generated';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
