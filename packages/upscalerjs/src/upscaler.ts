@@ -21,7 +21,7 @@ import type {
   BASE64,
   WarmupArgs,
   TENSOR,
-  PrivateUpscaleArgs,
+  UpscaleArgs,
   MultiArgTensorProgress,
   MultiArgStringProgress,
 } from './types';
@@ -110,30 +110,30 @@ export class Upscaler {
    */
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgStringProgress; progressOutput: BASE64 },
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgStringProgress; progressOutput: BASE64 },
   ): Promise<tf.Tensor3D>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgTensorProgress; progressOutput: TENSOR },
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgTensorProgress; progressOutput: TENSOR },
   ): Promise<string>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgTensorProgress; progressOutput?: unknown },
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgStringProgress; progressOutput?: unknown },
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgStringProgress; progressOutput?: unknown },
   ): Promise<string>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
+    options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D | string>;
   public async upscale(
     image: GetImageAsTensorInput,
-  ): Promise<tf.Tensor3D | string>;
+  ): Promise<string>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options?: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
+    options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
@@ -211,3 +211,5 @@ export class Upscaler {
 }
 
 export default Upscaler;
+
+const upscaler = new Upscaler();

@@ -122,7 +122,7 @@ describe('Model Loading Integration Tests', () => {
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
       });
-      return upscaler.upscale(tensor).then((output: string) => {
+      return upscaler.upscale(tensor, { output: 'base64'}).then((output) => {
         return loadImage(output);
       }).then((img: HTMLImageElement) => {
         const predictedPixels = tf.browser.fromPixels(img);
@@ -142,7 +142,7 @@ describe('Model Loading Integration Tests', () => {
         model: window['pixel-upsampler']['2x'],
       });
       const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
-      return upscaler.upscale<any, 'tensor'>(tensor, {
+      return upscaler.upscale(tensor, {
         output: 'tensor',
       }).then((output) => {
         return Array.from(output.dataSync());

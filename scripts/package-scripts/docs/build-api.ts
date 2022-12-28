@@ -252,10 +252,8 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
   }
 
   if (isIntersectionType(_type)) {
-    return {
-      type: 'literal',
-      name: 'UNKNOWN NOW',
-    }
+    console.log('types', JSON.stringify(_type.types, null, 2))
+    return getReferenceTypeOfParameter(_type.types[0], definitions);
   }
 
   if (isUnionType(_type)) {
@@ -280,7 +278,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
           // Ignore reflection types
           return t.name;
         }
-        console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
+        // console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
 
         throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
       } else if (isInstrinsicType(t)) {
@@ -292,6 +290,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
       }
       throw new Error(`Unsupported type in union type: ${t.type}`);
     }).filter(Boolean).join(' | ');
+
     return {
       type: 'literal',
       includeURL,

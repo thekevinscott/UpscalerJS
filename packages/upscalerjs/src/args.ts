@@ -1,4 +1,4 @@
-import { BASE64, PrivateUpscaleArgs, TENSOR, } from "./types";
+import { BASE64, UpscaleArgs, TENSOR, } from "./types";
 
 const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   if (output === 'tensor') {
@@ -7,7 +7,7 @@ const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   return 'base64';
 };
 
-export function getUpscaleOptions(options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
+export function getUpscaleOptions(options: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): UpscaleArgs {
   return {
     ...options,
     output: getOutputOption(options.output),

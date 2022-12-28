@@ -34,7 +34,7 @@ interface SharedArgs {
   awaitNextFrame?: boolean;
 }
 
-export interface PrivateUpscaleArgs extends SharedArgs {
+export interface UpscaleArgs extends SharedArgs {
   output: BASE64 | TENSOR;
   patchSize?: number;
   padding?: number;
