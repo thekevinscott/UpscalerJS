@@ -4,10 +4,11 @@
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
-import Upscaler, { BASE64, Progress } from 'upscaler';
+import Upscaler from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -243,7 +244,7 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
-        const progress: Progress<BASE64> = (rate, slice) => {
+        const progress: MultiArgStringProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
@@ -265,9 +266,8 @@ describe('Upscale Integration Tests', () => {
             scale: 4,
           },
         });
-        const progress: Progress<'tensor'> = (rate, slice) => {
-          // TODO: Figure out why slice is not being typed as a tensor
-          resolve([rate, slice as unknown as tf.Tensor]);
+        const progress: MultiArgTensorProgress = (rate, slice) => {
+          resolve([rate, slice]);
         };
         upscaler.upscale(window['flower'], {
           patchSize: 12,
@@ -289,7 +289,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progressRates: Array<[number, number]> = [];
-        const progress: Progress<'base64'> = (rate, slice, row, col) => {
+        const progress: MultiArgStringProgress = (rate, slice, row, col) => {
           progressRates.push([row, col]);
         };
         upscaler.upscale(window['flower'], {

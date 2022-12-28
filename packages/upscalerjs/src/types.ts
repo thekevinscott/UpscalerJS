@@ -18,23 +18,14 @@ export interface UpscalerOptions {
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';
 export type ResultFormat = BASE64 | TENSOR | undefined;
-export type UpscaleResponse<O extends ResultFormat> = O extends BASE64 ? string : tf.Tensor3D;
-export type ProgressResponse<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = 
-  PO extends BASE64 ? 
-    BASE64 : 
-    PO extends TENSOR ? 
-      TENSOR :
-      O extends TENSOR ?
-        TENSOR :
-        BASE64;
-
-export type MultiArgProgress<O extends ResultFormat = BASE64> = (amount: number, slice: UpscaleResponse<O>, row: number, col: number) => void;
+export type MultiArgStringProgress = (amount: number, slice: string, row: number, col: number) => void;
+export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, row: number, col: number) => void;
 export type SingleArgProgress = (amount: number) => void;
-export type Progress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> = undefined | SingleArgProgress | MultiArgProgress<ProgressResponse<O, PO>>;
+export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTensorProgress;
 
 interface SharedArgs {
   /**
-   * [Provides a mechanism to abort the warmup process](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
+   * Provides a mechanism to abort the warmup process. [For more, see the guides on cancelling requests](/documentation/guides/browser/usage/cancel).
    */
   signal?: AbortSignal;
   /**
@@ -43,16 +34,32 @@ interface SharedArgs {
   awaitNextFrame?: boolean;
 }
 
-export interface PrivateUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends SharedArgs {
-  output?: O;
+export interface UpscaleArgs extends SharedArgs {
+  /**
+   * Denotes the kind of response UpscalerJS returns - a base64 string representation of the image, or the tensor. In the browser, this defaults to `"base64"` and in Node.js, to `"tensor"`.
+   */
+  output?: BASE64 | TENSOR;
+  /**
+   * Optionally specify an image patch size to operate on. [For more, see the guide on patch sizes](/documentation/guides/browser/performance/patch-sizes).
+   */
   patchSize?: number;
+  /**
+   * Optionally specify a patch size padding. [For more, see the guide on patch sizes](/documentation/guides/browser/performance/patch-sizes).
+   */
   padding?: number;
-  progress?: P;
-  progressOutput?: PO;
+  /**
+   * An optional progress callback if `upscale` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](/documentation/guides/browser/usage/progress).
+   */
+  progress?: Progress;
+  /**
+   * Denotes the kind of response UpscalerJS returns within a `progress` callback.
+   */
+  progressOutput?: BASE64 | TENSOR;
 }
 
-export interface PublicUpscaleArgs<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined> extends Omit<PrivateUpscaleArgs<P, O, PO>, 'output'> {
-  output?: O;
+export interface PrivateUpscaleArgs extends Omit<UpscaleArgs, 'output' | 'progressOutput'> {
+  output: BASE64 | TENSOR;
+  progressOutput: BASE64 | TENSOR;
 }
 
 export type Layer = tf.layers.Layer;
