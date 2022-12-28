@@ -1,44 +1,31 @@
-// import * as tf from "@tensorflow/tfjs";
-import Upscaler from "upscaler";
-const table = document.getElementById("table");
-const original = document.getElementById("original");
-const target = document.getElementById("target");
-const file = document.getElementById("file");
-const info = document.getElementById("info");
-const progressLabel = document.getElementById("progress");
+import Upscaler from 'upscaler';
+import img from './flower.png';
 
-const createImage = (targetDiv, src) => {
-  const img = document.createElement("img");
-  img.src = src;
-  targetDiv.innerHTML = "";
-  targetDiv.appendChild(img);
-  return img;
-};
+const target = document.getElementById('target');
+const button = document.getElementById('button');
+const info = document.getElementById('info');
+const progressLabel = document.getElementById('progress');
 
 const upscaler = new Upscaler();
-
-async function handleFiles() {
-  info.innerText = "Loading...";
-  target.innerHTML = "";
-  table.style = "";
-  const file = this.files[0];
-  const fr = new FileReader();
-  fr.onload = async () => {
-    const img = createImage(original, fr.result);
-    const start = new Date().getTime();
-    info.innerText = "Upscaling...";
-    const upscaledImgSrc = await upscaler.upscale(img, {
-      patchSize: 64,
-      padding: 5,
+button.onclick = () => {
+  button.disabled = true;
+  info.innerText = 'Upscaling...';
+  const start = new Date().getTime();
+  upscaler
+    .upscale(img, {
+      patchSize: 2,
+      padding: 2,
       progress: (amount) => {
         progressLabel.innerText = `${(amount * 100).toFixed(2)}%`;
       },
+    })
+    .then((upscaledImgSrc) => {
+      button.disabled = false;
+      const img = document.createElement('img');
+      img.src = upscaledImgSrc;
+      target.innerHTML = '';
+      target.appendChild(img);
+      const ms = new Date().getTime() - start;
+      info.innerText = `Upscaled in ${ms} ms`;
     });
-    createImage(target, upscaledImgSrc);
-    const ms = new Date().getTime() - start;
-    info.innerText = `Upscaled in ${ms} ms`;
-  };
-  fr.readAsDataURL(file);
-}
-
-file.addEventListener("change", handleFiles, false);
+};
