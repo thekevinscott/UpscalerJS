@@ -649,7 +649,7 @@ describe('Memory Leaks', () => {
             patchSize: 14,
             padding: 2,
             progress: (rate, slice) => {
-              (slice as unknown as tf.Tensor).dispose();
+              slice.dispose();
               if (rate >= .5) {
                 abortController.abort();
               }

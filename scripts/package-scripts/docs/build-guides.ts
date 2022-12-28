@@ -183,7 +183,7 @@ const clearOutMarkdownFiles = async (target: string) => {
 /****
  * Main function
  */
-const copyAllReadmes = async (src: string, dest: string) => {
+export const buildGuides = async (src: string, dest: string) => {
   await mkdirp(dest)
   await clearOutMarkdownFiles(dest);
   const { exampleOrder, examplesByName } = getExamplesByName();
@@ -200,6 +200,6 @@ const copyAllReadmes = async (src: string, dest: string) => {
 
 if (require.main === module) {
   (async () => {
-    await copyAllReadmes(EXAMPLES_DIR, EXAMPLES_DOCS_DEST);
+    await buildGuides(EXAMPLES_DIR, EXAMPLES_DOCS_DEST);
   })();
 }

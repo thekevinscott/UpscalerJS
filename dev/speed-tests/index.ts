@@ -47,7 +47,7 @@ let gansWarmedUp = false;
       options.patchSize = patchSize;
       options.padding = 0;
     }
-    return await upscaler.upscale(input, options) as unknown as tf.Tensor3D;
+    return await upscaler.upscale(input, options);
   };
 
   const warmup = async (patchInput: tf.Tensor4D, input: tf.Tensor4D) => {

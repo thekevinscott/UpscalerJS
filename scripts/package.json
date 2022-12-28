@@ -6,7 +6,7 @@
     "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
     "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
     "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
-    "docs:copy-examples": "pnpm __run_command ./package-scripts/docs/copy-examples.ts",
+    "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
     "example:start": "pnpm __run_command ./start-example.ts",
     "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
     "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance/index.ts",
