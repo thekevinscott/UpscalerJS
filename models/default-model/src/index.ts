@@ -1,80 +1,39 @@
 import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
-import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
+import { ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
+import { PostProcess, TF, } from '@upscalerjs/core';
 
-const modelDefinition: ModelDefinitionFn = tf => {
-  const Layer = tf.layers.Layer;
-  const SCALE = 4;
-  const BETA = 0.2;
+const SCALE = 2;
 
-  type Inputs = Tensor4D | Tensor4D[];
+const clipOutput = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
+  const clippedValue = output.clipByValue(0, 255);
+  output.dispose();
+  return clippedValue as Tensor4D;
+});
 
-  const isTensorArray = (inputs: Inputs): inputs is Tensor4D[] => {
-    return Array.isArray(inputs);
-  };
-
-  const getInput = (inputs: Inputs): Tensor4D => {
-    if (isTensorArray(inputs)) {
-      return inputs[0];
-    }
-    return inputs;
-  };
-
-  class MultiplyBeta extends Layer {
-    beta: number;
-
-    constructor() {
-      super({});
-      this.beta = BETA;
-    }
-
-    call(inputs: Inputs) {
-      return tf.mul(getInput(inputs), this.beta);
-    }
-
-    static className = 'MultiplyBeta';
-  }
-
-  class PixelShuffle extends Layer {
-    scale: number;
-
-    constructor() {
-      super({});
-      this.scale = SCALE;
-    }
-
-    computeOutputShape(inputShape: number[]) {
-      return [inputShape[0], inputShape[1], inputShape[2], 3,];
-    }
-
-    call(inputs: Inputs) {
-      return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
-    }
-
-    static className = 'PixelShuffle';
-  }
-
-  const modelDefinition: ModelDefinition = {
-    scale: SCALE,
-    channels: 3,
-    path: 'models/model.json',
-    packageInformation: {
-      name: NAME,
-      version: VERSION,
-    },
-    meta: {
-      dataset: 'div2k',
-    },
-    preprocess: (image: Tensor) => tf.mul(image, 1 / 255),
-    postprocess: (output: Tensor) => tf.tidy(() => {
-      const clippedValue = (output).clipByValue(0, 1);
-      output.dispose();
-      return tf.mul(clippedValue, 255);
-    }),
-    customLayers: [MultiplyBeta, PixelShuffle,],
-  };
-
-  return modelDefinition;
-};
+const modelDefinition: ModelDefinitionFn = tf => ({
+  scale: SCALE,
+  channels: 3,
+  path: `models/${SCALE}x/model.json`,
+  packageInformation: {
+    name: NAME,
+    version: VERSION,
+  },
+  meta: {
+    C: 1,
+    D: 2,
+    G: 4,
+    G0: 64,
+    T: 10,
+    architecture: "rdn",
+    patchSize: 128,
+    size: 'slim',
+    artifactReducing: false,
+    sharpening: false,
+    dataset: 'div2k',
+    modelFileName: 'rdn-C1-D2-G4-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch494',
+  },
+  postprocess: clipOutput(tf),
+});
 
 export default modelDefinition;
