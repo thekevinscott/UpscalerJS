@@ -1,69 +1,23 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 hide_table_of_contents: true
 code_embed:
   type: 'stackblitz'
-  url: '/examples/basic'
+  url: '/examples/basic-umd'
+  params: embed=1&file=index.js,index.html&hideExplorer=1
 ---
 
-# Basic Implementation
+# Basic Implementation using a Script Tag
 
-Demonstrates a basic implementation of UpscalerJS for the browser.
+Demonstrates installing UpscalerJS with a script tag.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Basic Implementation">Open example in Stackblitz</a>.
+<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic-umd?file=index.js&title=UpscalerJS: Basic Implementation using a Script Tag">Open example in Stackblitz</a>.
 
-## Getting Started
+This guide is identical to [basic](basic), except that instead of UpscalerJS being installed via NPM, it is instead imported via a script tag.
 
-:::info
+Check out the HTML file where the script tags are imported:
 
-[You can learn more about available installation methods here](https://upscalerjs.com/documentation/getting-started#browser-setup).
-
-:::
-
-In this example we're using [Vite](https://vitejs.dev/), a development server, and we've installed UpscalerJS via npm.
-
-We can import UpscalerJS with the following:
-
-```javascript
-import Upscaler from 'upscaler';
 ```
-
-We can then instantiate an instance of UpscalerJS with:
-
-```javascript
-const upscaler = new Upscaler();
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
 ```
-
-## Upscaling an Image
-
-Input images can come in a variety of formats, including URL strings, `<img />` elements, and more. 
-
-:::info
-
-[For a full list of supported image formats, read here](/documentation/api/upscale).
-
-:::
-
-Our input will be a string representing a URL. Provide the string to the `upscale` method with:
-
-```javascript
-import pathToImage from '/path/to/image.png';
-
-upscaler.upscale(pathToImage);
-```
-
-This will upscale the image and return a promise that resolves to the upscaled image src represented as a base64 string:
-
-```javascript
-upscaler.upscale(pathToImage).then(upscaledImageSrc => {
-  // Create a new image, set its src to the upscaled src,
-  // and place it on the page
-  const img = document.createElement("img");
-  img.src = upscaledImgSrc;
-  document.body.appendChild(img);
-});
-```
-
-There are a number of options you can pass to the `upscale` method, [detailed here](http://localhost:3000/documentation/api/upscale).
-
-[Next, read about the concept of models and how they work with UpscalerJS](models).
