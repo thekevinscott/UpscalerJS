@@ -4,7 +4,7 @@ import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
 
-const JEST_TIMEOUT_IN_SECONDS = 60;
+const JEST_TIMEOUT_IN_SECONDS = 90;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(0);
 
