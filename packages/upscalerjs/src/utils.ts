@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { BASE64, TENSOR, Progress, MultiArgProgress, SingleArgProgress, ResultFormat, } from './types';
+import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
 import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
@@ -60,9 +60,9 @@ export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };
 
-export function isProgress<O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(p: undefined | Progress<ResultFormat, ResultFormat>): p is Exclude<Progress<O, PO>, undefined> { return p !== undefined && typeof p === 'function'; }
-export function isSingleArgProgress(p: Progress<ResultFormat, ResultFormat>): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
-export const isMultiArgTensorProgress = (p: Progress<ResultFormat, ResultFormat>, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgProgress<TENSOR> => {
+export function isProgress(p: undefined | Progress): p is Progress { return p !== undefined && typeof p === 'function'; }
+export function isSingleArgProgress(p: Progress): p is SingleArgProgress { return isProgress(p) && p.length <= 1; }
+export const isMultiArgTensorProgress = (p: Progress, output: ResultFormat, progressOutput: ResultFormat): p is MultiArgTensorProgress => {
   if (!isProgress(p) || p.length <= 1) {
     return false;
   }

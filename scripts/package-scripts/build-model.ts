@@ -168,7 +168,7 @@ const buildModel = async (
     }
   }
 
-  return performance.now() - start;
+  return Number((performance.now() - start).toFixed(2));
 }
 
 const buildModels = async (

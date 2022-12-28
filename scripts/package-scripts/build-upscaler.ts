@@ -139,7 +139,7 @@ const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[]
     const outputFormat = outputFormats[i];
     await OUTPUT_FORMAT_FNS[outputFormat](platform, opts);
   }
-  return performance.now() - start;
+  return Number((performance.now() - start).toFixed(2));
 };
 
 export default buildUpscaler;
