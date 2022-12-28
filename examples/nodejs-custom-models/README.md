@@ -18,7 +18,7 @@ If we wish to serve our models from a different point on our file system, _or_ w
 
 :::note
 
-We'll be using the 2x model from `esrgan-slim`
+We'll be using the 2x model from `esrgan-slim` for this example.
 
 :::
 
@@ -34,4 +34,4 @@ const upscaler = new Upscaler({
 })
 ```
 
-For more information on the `model` option's attributes, [see the section on custom models definitions](../browser/usage/self-hosting-models#model-options).
+For more information on the `model` option's attributes, [see the section on custom model definitions](../browser/usage/self-hosting-models#model-options).

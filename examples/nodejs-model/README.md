@@ -3,7 +3,7 @@ sidebar_position: 2
 category: node
 code_embed:
   type: 'codesandbox'
-  url: '/examples/nodejs-custom-model'
+  url: '/examples/nodejs-model'
 ---
 
 # Node.js Model Guide

@@ -20,13 +20,13 @@ Similarly, UpscalerJS provides platform-specific builds that parallel Tensorflow
 
 :::note
 
-While you _can_ use `@tensorflow/tfjs` on the server, you'll see a performance bump using the `@tensorflow/tfjs-node` package instead. Importing `upscaler` is _not_ supported in Node.js; you'll need to use one of `tfjs-node` or `tfjs-node-gpu`. If support for `tfjs` on the server is important to you, [open a feature request](https://github.com/thekevinscott/UpscalerJS/issues/new/choose)!
+Technically, importing `@tensorflow/tfjs` is supported on the server, but importing `upscaler` alongside it is _not_ supported. For Node.js support you'll need to use one of `tfjs-node` or `tfjs-node-gpu`. If support for `tfjs` on the server is important to you, [open a feature request](https://github.com/thekevinscott/UpscalerJS/issues/new/choose)!
 
 :::
 
 In this example, we'll be using the Node.js CPU platform. 
 
-**Ensure you load UpscalerJS via `upscaler/node`**, _not_ `upscaler`:
+**Ensure you load UpscalerJS via** `upscaler/node`, _not_ `upscaler`:
 
 ```javascript
 const tf = require('@tensorflow/tfjs-node')
@@ -44,7 +44,7 @@ tensor.dispose()
 upscaledTensor.dispose()
 ```
 
-Like the browser version of UpscalerJS, the Node.js version will make a best effort to handle any input we throw at it. A full list of support inputs can be found here.
+Like the browser version of UpscalerJS, the Node.js version will make a best effort to handle any input we throw at it. The list of supported inputs includes a string to a file path, a `Buffer`, a `UInt8Array`, or a tensor.
 
 By default, UpscalerJS will return a tensor when running in Node.js. You can change this to return a base64 string by explicitly specifying the output:
 
