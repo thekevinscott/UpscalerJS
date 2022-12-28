@@ -1,11 +1,8 @@
 import yargs from 'yargs';
 import path from 'path';
-import inquirer from 'inquirer';
-import callExec from '../../test/lib/utils/callExec';
-import fs, { mkdirp, mkdirpSync } from 'fs-extra';
+import { mkdirp, readFileSync, writeFile } from 'fs-extra';
 import { getString } from './prompt/getString';
-import { getNumber } from './prompt/getNumber';
-import { MODELS_DIR } from './utils/constants';
+import { MODELS_DIR, ROOT_DIR } from './utils/constants';
 
 /****
  * Type Definitions
@@ -30,48 +27,49 @@ const TS_CONFIG = {
   "exclude": ["node_modules", "**/*.test.ts"]
 };
 
-const TS_CONFIG_CJS = {
+const BASE_TS_CONFIG = {
   "extends": "../tsconfig.cjs.json",
+  "include": [
+    "src/**/*.ts"
+  ],
+};
+
+const TS_CONFIG_CJS = {
+  ...BASE_TS_CONFIG,
   "compilerOptions": {
     "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist/cjs",
   },
-  "include": [
-    "./src/index.ts",
-  ]
 };
 
 const TS_CONFIG_ESM = {
-  "extends": "../tsconfig.esm.json",
+  ...BASE_TS_CONFIG,
   "compilerOptions": {
     "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist/esm",
   },
-  "include": [
-    "./src/index.ts",
-  ]
 };
 
 const TS_CONFIG_UMD = {
-  "extends": "../tsconfig.esm.json",
+  ...BASE_TS_CONFIG,
   "compilerOptions": {
     "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist/tmp",
   },
-  "include": [
-    "./src/index.ts",
-  ]
 };
 
 /****
  * Helper functions
  */
-const writeFile = (name: string, data: string) => fs.writeFile(name, data);
+const writeModelFile = async (name: string, data: string) => {
+  await mkdirp(path.dirname(name));
+  await writeFile(name, data);
+}
 
-const createNpmIgnore = () => [
+const createNpmIgnore = (): string => [
   'src',
   'yarn-error.log',
   'node_modules',
@@ -141,76 +139,157 @@ const createPackageJSON = (name: string, description: string, keywords = DEFAULT
     "dist/**/*"
   ],
   "peerDependencies": {
-    "@tensorflow/tfjs": "^3.19.0"
+    "@tensorflow/tfjs": getTensorflowVersion(),
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "^3.19.0",
-    "@tensorflow/tfjs-layers": "^3.19.0",
-    "@tensorflow/tfjs": "^3.19.0",
-    "@tensorflow/tfjs-node": "^3.19.0",
-    "@tensorflow/tfjs-node-gpu": "^3.19.0",
+    "@tensorflow/tfjs-core": getTensorflowVersion(),
+    "@tensorflow/tfjs-layers": getTensorflowVersion(),
+    "@tensorflow/tfjs": getTensorflowVersion(),
+    "@tensorflow/tfjs-node": getTensorflowVersion(),
+    "@tensorflow/tfjs-node-gpu": getTensorflowVersion(),
     "seedrandom": "3.0.5"
   },
   "author": "Kevin Scott",
   "license": "MIT"
 }, null, 2);
 
-const createNewUMDNames = (name: string) => JSON.stringify({
+const getTensorflowVersion = () => {
+  const { peerDependencies } = JSON.parse(readFileSync(path.resolve(ROOT_DIR, 'package.json'), 'utf-8'));
+  return peerDependencies['@tensorflow/tfjs'];
+}
+
+const createNewUMDNames = (name?: string) => JSON.stringify(name ? {
   ".": name,
-}, null, 2);
+} : {}, null, 2);
 
-const createNewSrcIndex = (scale: number) => `
-import { ModelDefinition, PostProcess, TF, } from '@upscalerjs/core';
-import { NAME, VERSION, } from '../constants.generated';
+const createClipOutput = () => `
 import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
+import { PostProcess, TF, } from '@upscalerjs/core';
 
-export const postprocess = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
+export const clipOutput = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
   const clippedValue = output.clipByValue(0, 255);
   output.dispose();
   return clippedValue as Tensor4D;
 });
+`.trim();
 
-const modelDefinition: ModelDefinition = {
-  scale: ${scale},
-  channels: 3,
-  path: 'models/model.json',
-  packageInformation: {
-    name: NAME,
-    version: VERSION,
-  },
-  meta: {
-  },
-  postprocess,
+const createGetModelDefinition = () => `
+import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
+import { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
+import { NAME, VERSION, } from '../constants.generated';
+import { clipOutput, } from './clipOutput';
+
+type Size = 'rdn' | 'rrdn';
+
+const getModelDefinition = (scale: 2 | 3 | 4 | 8, architecture: Size, modelPath: string, meta = {}): ModelDefinitionFn => tf => {
+  let preprocess: ModelDefinition['preprocess'];
+  let postprocess: ModelDefinition['postprocess'] = clipOutput(tf);
+  let customLayers: ModelDefinition['customLayers'];
+  if (architecture === 'rrdn') {
+    const Layer = tf.layers.Layer;
+    const BETA = 0.2;
+
+    type Inputs = Tensor4D | Tensor4D[];
+
+    const isTensorArray = (inputs: Inputs): inputs is Tensor4D[] => {
+      return Array.isArray(inputs);
+    };
+
+    const getInput = (inputs: Inputs): Tensor4D => {
+      if (isTensorArray(inputs)) {
+        return inputs[0];
+      }
+      return inputs;
+    };
+    class MultiplyBeta extends Layer {
+      beta: number;
+
+      constructor() {
+        super({});
+        this.beta = BETA;
+      }
+
+      call(inputs: Inputs) {
+        return tf.mul(getInput(inputs), this.beta);
+      }
+
+      static className = 'MultiplyBeta';
+    }
+
+    class PixelShuffle extends Layer {
+      scale: number;
+
+      constructor() {
+        super({});
+        this.scale = scale;
+      }
+
+      computeOutputShape(inputShape: number[]) {
+        return [inputShape[0], inputShape[1], inputShape[2], 3,];
+      }
+
+      call(inputs: Inputs) {
+        return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
+      }
+
+      static className = 'PixelShuffle';
+    }
+    customLayers = [MultiplyBeta, PixelShuffle,];
+    preprocess = (image: Tensor) => tf.mul(image, 1 / 255);
+    postprocess = (output: Tensor) => tf.tidy(() => {
+      const clippedValue = (output).clipByValue(0, 1);
+      output.dispose();
+      return tf.mul(clippedValue, 255);
+    });
+  }
+
+  return {
+    scale,
+    channels: 3,
+    path: modelPath,
+    packageInformation: {
+      name: NAME,
+      version: VERSION,
+    },
+    meta,
+    preprocess,
+    postprocess,
+    customLayers,
+  };
 };
 
-export default modelDefinition;
+export default getModelDefinition;
+
 `.trim();
+
+const getFilesToCreate = (name: string, description: string, UMDName?: string): [string, string][] => ([
+  ['LICENSE', createLicense()],
+  ['.npmignore', createNpmIgnore()],
+  ['.gitignore', createGitIgnore()],
+  ['package.json', createPackageJSON(name, description)],
+  ['tsconfig.cjs.json', JSON.stringify(TS_CONFIG_CJS, null, 2)],
+  ['tsconfig.esm.json', JSON.stringify(TS_CONFIG_ESM, null, 2)],
+  ['tsconfig.umd.json', JSON.stringify(TS_CONFIG_UMD, null, 2)],
+  ['tsconfig.json', JSON.stringify(TS_CONFIG, null, 2)],
+  ['umd-names.json', createNewUMDNames(UMDName)],
+  ['src/utils/clipOutput.ts', createClipOutput()],
+  ['src/utils/getModelDefinition.ts', createGetModelDefinition()],
+]);
 
 /****
  * Main function
  */
-const createNewModelFolder = async (name: string, description: string, UMDName: string, scale: number): Promise<void> => {
+const createNewModelFolder = async (name: string, description: string, UMDName?: string): Promise<void> => {
   const base = path.resolve(MODELS_DIR, name);
   await mkdirp(base);
   await Promise.all([
     mkdirp(path.resolve(base, 'models')),
     mkdirp(path.resolve(base, 'src')),
   ]);
-  await Promise.all([
-    ['LICENSE', createLicense()],
-    ['.npmignore', createNpmIgnore()],
-    ['.gitignore', createGitIgnore()],
-    ['package.json', createPackageJSON(name, description)],
-    ['tsconfig.cjs.json', JSON.stringify(TS_CONFIG_CJS, null, 2)],
-    ['tsconfig.esm.json', JSON.stringify(TS_CONFIG_ESM, null, 2)],
-    ['tsconfig.umd.json', JSON.stringify(TS_CONFIG_UMD, null, 2)],
-    ['tsconfig.json', JSON.stringify(TS_CONFIG, null, 2)],
-    ['umd-names.json', createNewUMDNames(UMDName)],
-    ['src/index.ts', createNewSrcIndex(scale)]
-  ].map(([name, data]) => writeFile(path.resolve(base, name), data)));
+  await Promise.all(getFilesToCreate(name, description, UMDName).map(([name, data]) => writeModelFile(path.resolve(base, name), data)));
 };
 
 export default createNewModelFolder;
@@ -219,14 +298,13 @@ export default createNewModelFolder;
  * Functions to expose the main function as a CLI tool
  */
 
-type Answers = { name: string; description: string; UMDName: string; scale: number }
+type Answers = { name: string; description: string; UMDName: string }
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('create new model folder', 'create folder', yargs => {
     yargs.positional('model', {
       describe: 'The model folder to create',
     }).options({
-      scale: { type: 'number' },
       description: { type: 'string' },
       umdName: { type: 'string' },
     });
@@ -237,20 +315,18 @@ const getArgs = async (): Promise<Answers> => {
   const name = await getString('What is the name of the model folder you wish to create?', argv._[0]);
   const description = await getString('What is the description of the model', argv.description);
   const UMDName = await getString('What do you want to use for the UMD name', argv.umdName);
-  const scale = await getNumber('What is the scale of the model', argv.scale);
 
   return {
     name,
     description,
     UMDName,
-    scale,
   }
 }
 
 if (require.main === module) {
   (async () => {
-    const { name, description, UMDName, scale } = await getArgs();
-    createNewModelFolder(name, description, UMDName, scale);
+    const { name, description, UMDName } = await getArgs();
+    createNewModelFolder(name, description, UMDName);
     console.log('** Make sure to cd to your folder, and run "pnpm install && pnpm build"');
   })();
 }
