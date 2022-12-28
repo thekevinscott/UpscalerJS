@@ -130,7 +130,10 @@ export class Upscaler {
   ): Promise<tf.Tensor3D | string>;
   public async upscale(
     image: GetImageAsTensorInput,
-    options: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
+  ): Promise<tf.Tensor3D | string>;
+  public async upscale(
+    image: GetImageAsTensorInput,
+    options?: Omit<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
@@ -208,45 +211,3 @@ export class Upscaler {
 }
 
 export default Upscaler;
-
-
-// const upscaler = new Upscaler();
-// const f1 = upscaler.upscale('foo', { output: 'tensor', });
-// const f2 = upscaler.upscale('foo', { output: 'base64', });
-
-// const f3 = upscaler.upscale('foo', { 
-//   output: 'base64', 
-//   progress: (rate, slice) => {
-//     console.log(rate, slice); // string
-//   },
-// });
-
-// const f4 = upscaler.upscale('foo', { 
-//   output: 'tensor', 
-//   progress: (rate, slice) => {
-//     console.log(rate, slice); // tensor
-//   },
-// });
-
-// const f5 = upscaler.upscale('foo', { 
-//   output: 'base64', 
-//   progressOutput: 'tensor',
-//   progress: (rate, slice) => {
-//     console.log(rate, slice); // tensor
-//   },
-// });
-
-// const f6 = upscaler.upscale('foo', { 
-//   output: 'tensor', 
-//   progressOutput: 'base64',
-//   progress: (rate, slice) => {
-//     console.log(rate, slice); // string
-//   },
-// });
-
-// const f7 = upscaler.upscale('foo', {
-//   output: 'tensor',
-//   progress: (rate, slice, row, col) => {
-//     slice.dispose(); //tensor
-//   },
-// });

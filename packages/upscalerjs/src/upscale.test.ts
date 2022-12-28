@@ -1529,7 +1529,10 @@ describe('upscale', () => {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
     } as unknown as tf.LayersModel;
     tensorAsBase64.mockImplementation(() => 'foobarbaz4');
-    const result = await wrapGenerator(upscale(img, {}, {
+    const result = await wrapGenerator(upscale(img, {
+      output: 'base64',
+      progressOutput: 'base64',
+    }, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
     }));
@@ -1553,7 +1556,7 @@ describe('upscale', () => {
       predict: jest.fn(() => upscaledTensor.clone()),
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
-    const result = await wrapGenerator(upscale(img, { output: 'tensor', }, { 
+    const result = await wrapGenerator(upscale(img, { output: 'tensor', progressOutput: 'tensor', }, { 
       model, 
       modelDefinition: { scale: 2, } as ModelDefinition, 
     }));

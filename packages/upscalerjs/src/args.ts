@@ -1,6 +1,6 @@
 import { BASE64, PrivateUpscaleArgs, TENSOR, } from "./types";
 
-export function getUpscaleOptions(options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown }): PrivateUpscaleArgs {
+export function getUpscaleOptions(options: Omit<PrivateUpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
   return {
     ...options,
     output: getOutputOption(options.output),
