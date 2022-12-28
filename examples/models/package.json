@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/examples.models",
   "private": true,
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.10",
   "description": "Demonstrates how to load a custom model into UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "@tensorflow/tfjs": "^4.1.0",
     "seedrandom": "^3.0.5",
     "@upscalerjs/esrgan-thick": "1.0.0-beta.8",
-    "upscaler": "1.0.0-beta.9"
+    "upscaler": "1.0.0-beta.10"
   },
   "engines": {
     "npm": ">8.0.0"
