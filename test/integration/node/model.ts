@@ -63,7 +63,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, path.resolve(ESRGAN_LEGACY_DIR, "gans/result.png"), 'diff.png');
+    checkImage(formattedResult, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via file:// path", async () => {
