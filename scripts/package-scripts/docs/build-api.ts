@@ -389,30 +389,81 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
   }).filter(Boolean).join('\n');
 };
 
-const getReturnType = (type?: SomeType, blockTags?: Record<string, CommentTag['content']>) => {
-  if (type === undefined) {
-    return 'void';
-  }
-
-  if (isReferenceType(type)) {
-    console.log('type is reference', JSON.stringify(type, null, 2));
-    const { name, typeArguments } = type;
-    let nameOfType = name;
-    if (typeArguments?.length) {
-      nameOfType = `${nameOfType}<${typeArguments.map(t => getReferenceTypeOfParameter(t)).map(({ name }) => name).join(', ')}>`;
+const getReturnType = (signatures: (SignatureReflection & { typeParameter?: TypeParameterReflection[] })[], blockTags?: Record<string, CommentTag['content']>) => {
+  if (signatures.length === 1) {
+    const { type } = signatures[0];
+    if (type === undefined) {
+      return 'void';
     }
-    const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
-    return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
+
+    if (isReferenceType(type)) {
+      // console.log('type is reference', JSON.stringify(type, null, 2));
+      const { name, typeArguments } = type;
+      let nameOfType = name;
+      if (typeArguments?.length) {
+        nameOfType = `${nameOfType}<${typeArguments.map(t => getReferenceTypeOfParameter(t)).map(({ name }) => name).join(', ')}>`;
+      }
+      const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
+      return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
+    }
+
+    if (isInstrinsicType(type)) {
+      let nameOfType = type.name;
+      const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
+      return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
+    }
+
+    console.error(type);
+    throw new Error(`Return Type function not yet implemented for type ${type.type}`)
   }
 
-  if (isInstrinsicType(type)) {
-    let nameOfType = type.name;
-    const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
-    return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
-  }
+  let comment: Comment;
+  const validReturnTypes = new Set();
+  let returnType = '';
+  signatures.forEach(signature => {
+    if (signature.comment) {
+      if (comment !== undefined) {
+        throw new Error('Multiple comments defined for return signatures');
+      }
+      comment = signature.comment;
+    }
+    const { type } = signature;
+    if (type === undefined) {
+      throw new Error('No type defined for signature');
+    }
+    if (!isReferenceType(type)) {
+      throw new Error(`Unsupported type: ${type.type}`);
+    }
+    if (returnType !== '' && returnType !== type.name) {
+      throw new Error(`Conflicting return types in signatures: ${returnType} vs ${type.name}}`)
+    }
+    returnType = type.name;
+    if (!('typeArguments' in type)) {
+      throw new Error('No type arguments defined for type');
+    }
+    const { typeArguments } = type;
+    typeArguments?.forEach(type => {
+      if (isUnionType(type)) {
+        type.types.forEach(t => {
+          if (isInstrinsicType(t) || isReferenceType(t)) {
+            validReturnTypes.add(t.name);
+          } else {
+            throw new Error(`Unsupported type when trying to handle union type while collecting valid signatures: ${type.type} ${t.type}`);
+          }
+        });
+      } else if (isInstrinsicType(type)) {
+        validReturnTypes.add(type.name);
+      } else if (isReferenceType(type)) {
+        validReturnTypes.add(type.name);
+      } else {
+        throw new Error(`Unsupported type when trying to collect valid signatures: ${type.type}`);
+      }
+    });
+  })
 
-  console.error(type);
-  throw new Error(`Return Type function not yet implemented for type ${type.type}`)
+  const nameOfType = `${returnType}<${Array.from(validReturnTypes).join(' | ')}>`;
+  const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
+  return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
 }
 
 const getContentForMethod = (method: DeclarationReflection, definitions: Definitions, i: number) => {
@@ -429,7 +480,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     throw new Error(`No signatures found in ${name}`);
   }
   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
-  const { comment, parameters, type, typeParameter: typeParameters } = signature;
+  const { comment, parameters, typeParameter: typeParameters } = signature;
   if (!comment) {
     throw new Error(`No comment found in method ${name}`);
   }
@@ -449,6 +500,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `title: ${name}`,
       `sidebar_position: ${i}`,
       `sidebar_label: ${name}`,
+      'hide_table_of_contents: true',
       '---',
     ].join('\n'),
 
@@ -464,7 +516,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
     `## Returns`,
-    getReturnType(type, blockTags),
+    getReturnType(signatures, blockTags),
   ].join('\n\n');
   return content;
 }
