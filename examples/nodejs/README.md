@@ -26,7 +26,7 @@ Technically, importing `@tensorflow/tfjs` is supported on the server, but import
 
 In this example, we'll be using the Node.js CPU platform. 
 
-**Ensure you load UpscalerJS via** `upscaler/node`, _not_ `upscaler`:
+**Ensure we load UpscalerJS via** `upscaler/node`, _not_ `upscaler`:
 
 ```javascript
 const tf = require('@tensorflow/tfjs-node')
@@ -46,7 +46,7 @@ upscaledTensor.dispose()
 
 Like the browser version of UpscalerJS, the Node.js version will make a best effort to handle any input we throw at it. The list of supported inputs includes a string to a file path, a `Buffer`, a `UInt8Array`, or a tensor.
 
-By default, UpscalerJS will return a tensor when running in Node.js. You can change this to return a base64 string by explicitly specifying the output:
+By default, UpscalerJS will return a tensor when running in Node.js. We can change this to return a base64 string by explicitly specifying the output:
 
 ```javascript
 const tensor = await upscaler.upscale(image, {
