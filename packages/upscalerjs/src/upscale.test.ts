@@ -22,7 +22,7 @@ import {
 import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
-import { BASE64, ModelPackage, Progress, TENSOR, } from './types';
+import { BASE64, ModelPackage, MultiArgTensorProgress, Progress, TENSOR, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./image.generated', () => {
@@ -1159,6 +1159,8 @@ describe('predict', () => {
       {
         patchSize: 1,
         padding: 0,
+        output: 'base64',
+        progressOutput: 'base64',
       },
       modelPackage,
     ));
@@ -1172,6 +1174,8 @@ describe('predict', () => {
       {
         patchSize: 1,
         padding: 0,
+        output: 'base64',
+        progressOutput: 'base64',
       },
       modelPackage,
     ));
@@ -1188,6 +1192,8 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         progress,
+        output: 'base64',
+        progressOutput: 'base64',
       }, modelPackage)
     );
     expect(progress).toHaveBeenCalledWith(0.25);
@@ -1209,6 +1215,8 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         progress,
+        output: 'base64',
+        progressOutput: 'base64',
       }, modelPackage)
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -1230,6 +1238,8 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         progress,
+        output: 'base64',
+        progressOutput: 'base64',
       }, modelPackage)
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -1253,13 +1263,14 @@ describe('predict', () => {
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
-    }) as unknown as Progress<'tensor', undefined>
+    });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
         padding: 0,
         progress,
         output: 'tensor',
+        progressOutput: 'tensor',
       }, modelPackage)
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -1292,13 +1303,14 @@ describe('predict', () => {
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
-    }) as unknown as Progress<'tensor', undefined>
+    });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
         padding: 0,
         progress,
         output: 'tensor',
+        progressOutput: 'tensor',
       }, modelPackage)
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -1331,7 +1343,7 @@ describe('predict', () => {
       } else {
         throw new Error(`Unexpected rate: ${rate}`);
       }
-    }) as Progress<BASE64, TENSOR>
+    });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
@@ -1365,6 +1377,8 @@ describe('predict', () => {
     await wrapGenerator(
       predict(tensor, {
         patchSize,
+        output: 'base64',
+        progressOutput: 'base64',
       }, modelPackage)
     );
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
@@ -1375,6 +1389,8 @@ describe('predict', () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     await wrapGenerator(
       predict(tensor, {
+        output: 'base64',
+        progressOutput: 'base64',
         progress: () => { },
       }, modelPackage)
     );
@@ -1386,7 +1402,10 @@ describe('predict', () => {
       const IMG_SIZE = 2;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const gen = predict(tensor, {}, modelPackage);
+      const gen = predict(tensor, {
+        output: 'base64',
+        progressOutput: 'base64',
+      }, modelPackage);
 
 
       let currentExpectationIndex = 0;
@@ -1420,6 +1439,8 @@ describe('predict', () => {
       const patchSize = 2;
       const gen = predict(tensor, {
         patchSize,
+        output: 'base64',
+        progressOutput: 'base64',
       }, modelPackage);
 
       let currentExpectationIndex = 0;
@@ -1563,6 +1584,8 @@ describe('cancellableUpscale', () => {
       }
     });
     await expect(() => cancellableUpscale(img, {
+      output: 'base64',
+      progressOutput: 'base64',
       patchSize,
       padding: 0,
       progress,
@@ -1605,6 +1628,8 @@ describe('cancellableUpscale', () => {
       patchSize,
       padding: 0,
       progress,
+      output: 'base64',
+      progressOutput: 'base64',
     }, {
       model, 
       modelDefinition: { scale, } as ModelDefinition, 
@@ -1635,6 +1660,8 @@ describe('cancellableUpscale', () => {
     const result = await cancellableUpscale(img, {
       patchSize,
       padding: 0,
+      output: 'base64',
+      progressOutput: 'base64',
     }, {
       model,
       modelDefinition: { scale, } as ModelDefinition,
