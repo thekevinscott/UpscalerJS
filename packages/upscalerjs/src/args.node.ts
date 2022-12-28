@@ -1,5 +1,16 @@
-import { BASE64, Progress, ResultFormat, PrivateUpscaleArgs, PublicUpscaleArgs, } from "./types";
+import { BASE64, UpscaleArgs, TENSOR, PrivateUpscaleArgs, } from "./types";
 
-export function getUpscaleOptions<P extends Progress<O, PO>, O extends ResultFormat = BASE64, PO extends ResultFormat = undefined>(options: PublicUpscaleArgs<P, O, PO>): PrivateUpscaleArgs<P, O, PO> {
-  return options;
+const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
+  if (output === 'base64') {
+    return 'base64';
+  }
+  return 'tensor';
+};
+
+export function getUpscaleOptions(options: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
+  return {
+    ...options,
+    output: getOutputOption(options.output),
+    progressOutput: getOutputOption(options.progressOutput || options.output),
+  };
 }
