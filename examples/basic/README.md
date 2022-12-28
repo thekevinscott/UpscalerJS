@@ -6,7 +6,7 @@ code_embed:
   url: '/examples/basic'
 ---
 
-# Basic Implementation
+# Usage with NPM
 
 Demonstrates a basic implementation of UpscalerJS for the browser.
 
