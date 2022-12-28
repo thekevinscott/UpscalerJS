@@ -177,7 +177,7 @@ export class Upscaler {
   };
 
   /**
-   * Disposes of an UpscalerJS instance and clears up any used memory.
+   * Disposes of an UpscalerJS instance and clears up any used memory. Ensure you've aborted any active upscaling events before disposing of the model.
    * 
    * ```javascript
    * const upscaler = new Upscaler();
@@ -188,10 +188,7 @@ export class Upscaler {
    */
   dispose = async (): Promise<void> => {
     await this._ready;
-    const [{ model, }, ] = await Promise.all([
-      this._model,
-      // this.abort(),
-    ]);
+    const { model, } = await this._model;
     model.dispose();
   };
 
