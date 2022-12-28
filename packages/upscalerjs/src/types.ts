@@ -20,7 +20,8 @@ export type TENSOR = 'tensor';
 export type ResultFormat = BASE64 | TENSOR | undefined;
 export type MultiArgStringProgress = (amount: number, slice: string, row: number, col: number) => void;
 export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, row: number, col: number) => void;
-export type Progress = MultiArgStringProgress | MultiArgTensorProgress;
+export type SingleArgProgress = (amount: number) => void;
+export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTensorProgress;
 
 interface SharedArgs {
   /**

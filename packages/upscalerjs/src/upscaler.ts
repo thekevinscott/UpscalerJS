@@ -17,19 +17,13 @@ import { DefaultUpscalerModel, tf, } from './dependencies.generated';
 import type {
   UpscalerOptions,
   WarmupSizes,
-  ResultFormat,
-  Progress,
-  UpscaleResponse,
   ModelPackage,
   BASE64,
   WarmupArgs,
-  PublicUpscaleArgs,
   TENSOR,
   PrivateUpscaleArgs,
-  MultiArgProgress,
   MultiArgTensorProgress,
   MultiArgStringProgress,
-  SingleArgProgress,
 } from './types';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
@@ -214,3 +208,45 @@ export class Upscaler {
 }
 
 export default Upscaler;
+
+
+// const upscaler = new Upscaler();
+// const f1 = upscaler.upscale('foo', { output: 'tensor', });
+// const f2 = upscaler.upscale('foo', { output: 'base64', });
+
+// const f3 = upscaler.upscale('foo', { 
+//   output: 'base64', 
+//   progress: (rate, slice) => {
+//     console.log(rate, slice); // string
+//   },
+// });
+
+// const f4 = upscaler.upscale('foo', { 
+//   output: 'tensor', 
+//   progress: (rate, slice) => {
+//     console.log(rate, slice); // tensor
+//   },
+// });
+
+// const f5 = upscaler.upscale('foo', { 
+//   output: 'base64', 
+//   progressOutput: 'tensor',
+//   progress: (rate, slice) => {
+//     console.log(rate, slice); // tensor
+//   },
+// });
+
+// const f6 = upscaler.upscale('foo', { 
+//   output: 'tensor', 
+//   progressOutput: 'base64',
+//   progress: (rate, slice) => {
+//     console.log(rate, slice); // string
+//   },
+// });
+
+// const f7 = upscaler.upscale('foo', {
+//   output: 'tensor',
+//   progress: (rate, slice, row, col) => {
+//     slice.dispose(); //tensor
+//   },
+// });

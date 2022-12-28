@@ -1,10 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { 
   PrivateUpscaleArgs, 
-  ResultFormat, 
-  UpscaleResponse, 
-  Progress, 
-  MultiArgProgress,
   ModelPackage,
   BASE64,
   TENSOR,
@@ -20,10 +16,9 @@ import {
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
   processAndDisposeOfTensor,
+  isSingleArgProgress,
  } from './utils';
 import { makeTick, } from './makeTick';
-
-type DEFAULT_OUTPUT = BASE64;
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
@@ -263,9 +258,9 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
 }
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* predict<P extends Progress<O, PO>, O extends ResultFormat = DEFAULT_OUTPUT, PO extends ResultFormat = undefined>(
+export async function* predict(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs<P, O, PO>,
+  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs,
   {
     model,
     modelDefinition,
@@ -320,19 +315,19 @@ export async function* predict<P extends Progress<O, PO>, O extends ResultFormat
         if (progress !== undefined && isProgress(progress)) {
           const index = row * columns + col + 1;
           const percent = index / total;
-          if (progress.length <= 1) {
+          if (isSingleArgProgress(progress)) {
             progress(percent);
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
             const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              (<MultiArgProgress<TENSOR>>progress)(percent, squeezedTensor, row, col);
+              progress(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              (<MultiArgProgress<BASE64>>progress)(percent, src, row, col);
+              progress(percent, src, row, col);
             }
           }
         }

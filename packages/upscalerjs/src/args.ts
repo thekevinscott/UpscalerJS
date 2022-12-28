@@ -5,7 +5,7 @@ export function getUpscaleOptions(options: Omit<PrivateUpscaleArgs, 'output' | '
     ...options,
     output: getOutputOption(options.output),
     progressOutput: getOutputOption(options.progressOutput || options.output),
-  }
+  };
 }
 
 const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
