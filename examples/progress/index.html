@@ -24,13 +24,16 @@
   <body>
     <h1>Progress Example</h1>
     <p>
-      Shows how to measure progress with <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS">UpscalerJS</a>.
+      Shows how to measure progress with
+      <a target="_blank" href="https://github.com/thekevinscott/UpscalerJS"
+        >UpscalerJS</a
+      >.
     </p>
-    <p>Upload a file below to upscale it.</p>
-    <input type="file" id="file" />
+    <p>Click the upscale button to upscale the photo.</p>
+    <button id="button">Upscale</button>
     <p id="info"></p>
     <p>Progress: <span id="progress"></span></p>
-    <table style="display: none;" id="table">
+    <table>
       <thead>
         <tr>
           <td>Original</td>
@@ -39,8 +42,12 @@
       </thead>
       <tbody>
         <tr>
-          <td><div id="original"></div></td>
-          <td><div id="target"></div></td>
+          <td>
+            <img src="./flower.png" id="flower" />
+          </td>
+          <td>
+            <div id="target"></div>
+          </td>
         </tr>
       </tbody>
     </table>
