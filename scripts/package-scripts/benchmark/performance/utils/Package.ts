@@ -149,6 +149,7 @@ export class Package extends BaseModel {
   private _models?: string[];
   async addModels(models?: string[]) {
     this._models = models;
+    console.log(this.getModelKeysAndPaths());
     const modelKeysAndPaths = this.getModelKeysAndPaths().filter(model => {
       if (models) {
         return models.reduce((isMatch, modelPart) => {

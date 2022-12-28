@@ -163,6 +163,9 @@ const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?
     console.log('value', value);
     throw new Error('importPath is undefined');
   }
+  if (typeof importPath !== 'string') {
+    throw new Error(`importPath is not a string: ${JSON.stringify(importPath)}`)
+  }
   try {
     return path.resolve(modelPackageFolder, importPath);
   } catch (err) {
