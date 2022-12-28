@@ -1,6 +1,6 @@
-import fs from 'fs';
+import fs, { readFile } from 'fs';
 import yargs from 'yargs';
-import { mkdirpSync } from 'fs-extra';
+import { mkdirp, mkdirpSync, writeFile } from 'fs-extra';
 import path from 'path';
 import convertPythonModel from './convert-python-model';
 import { getString } from './prompt/getString';
@@ -8,6 +8,8 @@ import { ifDefined } from './prompt/ifDefined';
 import { ProgressBar } from './utils/ProgressBar';
 import { getHashedFilepath } from './benchmark/performance/utils/utils';
 import { MODELS_DIR } from './utils/constants';
+import createNewModelFolder from './create-new-model-folder';
+import { getNumber } from './prompt/getNumber';
 
 /****
  * Utility Functions
@@ -120,12 +122,8 @@ export default ${exportName};
 `.trim();
 };
 
-const updateIndex = (folder: string, files: string[], shouldClearOutExports?: boolean) => {
-  const packageJSONPath = path.resolve(folder, 'package.json');
+const updateIndex = (folder: string, packageJSONPath: string, files: string[]) => {
   const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
-  if (shouldClearOutExports === true) {
-    packageJSON['exports'] = {};
-  }
   packageJSON['exports'] = {
     ...packageJSON['exports'],
     ".": {
@@ -133,65 +131,107 @@ const updateIndex = (folder: string, files: string[], shouldClearOutExports?: bo
         "import": `./dist/esm/index.js`
     }
   };
-  const umdPath = path.resolve(folder, 'umd-names.json');
-  const umdNames: Record<string, string> = {};
+  fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
 
   const index: string[] = [];
   files.forEach(file => {
     const { exportName } = getModelInfo(file);
-    const indexPath = path.resolve(folder, `src/models/esrgan/${exportName}.ts`);
-    mkdirpSync(path.dirname(indexPath));
-    fs.writeFileSync(indexPath, getSrcForFile(file), 'utf-8');
-    packageJSON['exports'] = {
-      ...packageJSON['exports'],
-      [`./models/esrgan/${exportName}`]: {
-        "require": `./dist/cjs/models/esrgan/${exportName}.js`,
-        "import": `./dist/esm/models/esrgan/${exportName}.js`
-      },
-    };
-    umdNames[`./models/esrgan/${exportName}`] = `${exportName}`;
-    fs.writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-    fs.writeFileSync(umdPath, JSON.stringify(umdNames, null, 2), 'utf-8');
     index.push(`export { default as ${exportName}, } from './models/esrgan/${exportName}';`);
   });
 
   fs.writeFileSync(path.resolve(folder, 'src/index.ts'), index.join('\n'), 'utf-8')
 }
 
+const askToCreateNewModelFolder = async () => {
+  const name = await getString('What is the name of the model folder you wish to create?', undefined);
+  const description = await getString('What is the description of the model', undefined);
+  const UMDName = await getString('What do you want to use for the UMD name', undefined);
+  console.log('** Make sure to cd to your folder, and run "pnpm install && pnpm build"');
+  await createNewModelFolder(name, description, UMDName);
+}
+
+const updateFileForModel = async (file: string, folder: string, packageJSONPath: string) => {
+  const umdPath = path.resolve(folder, 'umd-names.json');
+  const { exportName } = getModelInfo(file);
+
+  const filePath = path.resolve(folder, `src/models/esrgan/${exportName}.ts`);
+  await mkdirp(path.dirname(filePath));
+  const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
+  packageJSON['exports'] = {
+    ...packageJSON['exports'],
+    [`./models/esrgan/${exportName}`]: {
+      "require": `./dist/cjs/models/esrgan/${exportName}.js`,
+      "import": `./dist/esm/models/esrgan/${exportName}.js`
+    },
+  };
+  const umdNames: Record<string, string> = {
+    ...JSON.parse(fs.readFileSync(umdPath, 'utf-8')),
+    [`./models/esrgan/${exportName}`]: `${exportName}`,
+  };
+  await Promise.all([
+    writeFile(filePath, getSrcForFile(file), 'utf-8'),
+    writeFile(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8'),
+    writeFile(umdPath, JSON.stringify(umdNames, null, 2), 'utf-8'),
+  ]);
+};
+
 /****
  * Main function
  */
-const convertPythonModelFolder = async (folder: string, outputModel: string, convertModels = true, shouldClearOutExports?: boolean) => {
+const convertPythonModelFolder = async (folder: string, outputModel: string, {
+  skipConvertModels, 
+  shouldClearOutExports,
+  shouldCreateNewModelFolder,
+}: {
+  skipConvertModels?: boolean;
+  shouldClearOutExports?: boolean,
+  shouldCreateNewModelFolder?: boolean,
+}) => {
   const totalFiles = readModelDirectory(folder);
   const files = filterFiles(totalFiles);
   if (files.length === 0) {
     throw new Error(`No files found for folder ${folder} after filter. Pre-filter, the total files count was ${totalFiles.length}`)
   }
 
-  const progressBar = new ProgressBar(files.length)
+  if (shouldCreateNewModelFolder) {
+    await askToCreateNewModelFolder();
+  }
+
   const outputModelFolder = path.resolve(MODELS_DIR, outputModel);
+  const packageJSONPath = path.resolve(outputModelFolder, 'package.json');
+  const packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
+  if (shouldClearOutExports === true) {
+    packageJSON['exports'] = {};
+  }
+
+  const progressBar = new ProgressBar(files.length)
   for (const file of files) {
     const fullfilepath = path.resolve(folder, file);
     const fileWithoutModel = file.split('/').slice(0, -1).join('/')
     const outputDirectory = path.resolve(outputModelFolder, 'models/esrgan', fileWithoutModel);
-    if (convertModels) {
+    if (skipConvertModels !== true) {
       try {
         await convertPythonModel(fullfilepath, outputDirectory);
       } catch(err) {
         console.error('There was an error', err);
       }
     }
+    const splitFile = file.split('.').shift();
+    if (splitFile === undefined) {
+      throw new Error(`Broken: ${file}`);
+    }
+    await updateFileForModel(splitFile, outputModelFolder, packageJSONPath)
     progressBar.update();
   }
   progressBar.end();
 
-  updateIndex(outputModelFolder, files.map(file => {
+  updateIndex(outputModelFolder, packageJSONPath, files.map(file => {
     const splitFile = file.split('.').shift();
     if (splitFile === undefined) {
       throw new Error(`Broken: ${file}`);
     }
     return splitFile;
-  }), shouldClearOutExports);
+  }));
 };
 
 /****
@@ -202,6 +242,7 @@ type Answers = {
   outputModel: string; 
   skipConvertModels?: boolean;
   shouldClearOutExports?: boolean;
+  shouldCreateNewModelFolder?: boolean;
 }
 
 const getArgs = async (): Promise<Answers> => {
@@ -213,6 +254,7 @@ const getArgs = async (): Promise<Answers> => {
     }).options({
       skipConvertModels: { type: 'boolean' },
       shouldClearOutExports: { type: 'boolean' },
+      shouldCreateNewModelFolder: { type: 'boolean' },
     });
   })
     .help()
@@ -224,6 +266,7 @@ const getArgs = async (): Promise<Answers> => {
   return {
     skipConvertModels: ifDefined(argv, 'skipConvertModels', 'boolean'),
     shouldClearOutExports: ifDefined(argv, 'shouldClearOutExports', 'boolean'),
+    shouldCreateNewModelFolder: ifDefined(argv, 'shouldCreateNewModelFolder', 'boolean'),
     outputModel,
     modelFolder
   };
@@ -231,7 +274,11 @@ const getArgs = async (): Promise<Answers> => {
 
 if (require.main === module) {
   (async () => {
-    const { modelFolder, outputModel, skipConvertModels, shouldClearOutExports } = await getArgs();
-    await convertPythonModelFolder(modelFolder, outputModel, skipConvertModels !== true, shouldClearOutExports);
+    const { modelFolder, outputModel, skipConvertModels, shouldClearOutExports, shouldCreateNewModelFolder } = await getArgs();
+    await convertPythonModelFolder(modelFolder, outputModel, {
+      skipConvertModels,
+      shouldClearOutExports, 
+      shouldCreateNewModelFolder,
+    });
   })();
 }

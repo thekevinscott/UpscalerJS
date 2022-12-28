@@ -173,10 +173,9 @@ export class PerformanceBenchmarker extends Benchmarker {
       await new Promise(r => setTimeout(r, delay));
       const upscaledPath = path.resolve(upscaledFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
       mkdirpSync(path.dirname(upscaledPath));
-      // if (!existsSync(upscaledPath)) {
-        const upscaledBuffer = await this.upscale(tf, model, path.resolve(cacheDir, lrPath));
-        writeFileSync(upscaledPath, upscaledBuffer);
-      // }
+      await model.hydrate(tf);
+      const upscaledBuffer = await this.upscale(tf, model, path.resolve(cacheDir, lrPath));
+      writeFileSync(upscaledPath, upscaledBuffer);
       const upscaledDimensions = await getSize(upscaledPath);
 
       const diffPath = path.resolve(diffFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
