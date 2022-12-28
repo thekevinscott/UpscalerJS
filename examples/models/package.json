@@ -13,7 +13,7 @@
     "@tensorflow/tfjs": "^4.1.0",
     "seedrandom": "^3.0.5",
     "@upscalerjs/esrgan-thick": "1.0.0-beta.8",
-    "upscaler": "1.0.0-beta.12"
+    "upscaler": "1.0.0-beta.13"
   },
   "engines": {
     "npm": ">8.0.0"
