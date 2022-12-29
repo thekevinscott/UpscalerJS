@@ -28,9 +28,11 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
-const getFrontmatter = (src: string): ExampleContent => {
-  const readmeContents = readFileSync(src, 'utf-8');
-  const { attributes, body } = fm(readmeContents);
+const getFrontmatter = (key: string): ExampleContent => {
+  const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
+  const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
+  const readmeContents = readFileSync(readmePath, 'utf-8');
+  const { body } = fm(readmeContents);
   const bodyParts = body.split('\n');
   let title: undefined | string;
   for (let i = 0; i < bodyParts.length; i++) {
@@ -42,25 +44,35 @@ const getFrontmatter = (src: string): ExampleContent => {
   }
 
   if (!title) {
-    throw new Error(`No title found in file ${src}`);
+    throw new Error(`No title found in file ${readmePath}`);
   }
 
+  const {
+    category = 'Browser',
+    ...frontmatter
+  } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
+
   return {
-    frontmatter: attributes as Record<string, any>,
+    frontmatter: {
+      category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
+      hide_table_of_contents: true,
+      code_embed: {
+        type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
+        url: `/examples/${key}`,
+      },
+      ...frontmatter,
+    },
     title,
   }
 };
 
-const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; } & ExampleContent)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; } & ExampleContent)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return existsSync(readmePath);
 }).map(key => {
-  const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
-  const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
   return {
     key,
-    packageJSON,
-    ...getFrontmatter(readmePath),
+    ...getFrontmatter(key),
   };
 });
 
@@ -91,12 +103,13 @@ const getExamplesByName = () => {
         ...obj,
         [key]: rest,
       };
-    }, {} as Record<string, ({ packageJSON: JSONSchema; } & ExampleContent)>),
+    }, {} as Record<string, ExampleContent>),
     exampleOrder,
   };
 }
 
 const indent = (str: string, depth = 0) => [...Array(depth * 2).fill(''), str].join(' ');
+const uppercase = (str: string) => str[0].toUpperCase() + str.slice(1);
 
 const buildFrontmatter = (frontmatter: FrontMatter = {}, depth = 0): string[] => Object.entries(frontmatter).reduce((arr, [key, val]) => {
   if (typeof (val) === 'object') {
@@ -113,12 +126,6 @@ const parseContents = async (key: string, { category, code_embed = {}, ...frontm
   const contents = await readFile(readmePath, 'utf-8');
   const frontmatterContents = [
     ...buildFrontmatter(frontmatter),
-    category ? `category: ${category}` : '',
-    'hide_table_of_contents: true',
-    'code_embed:',
-    `  type: '${category === 'node' ? 'codesandbox' : 'stackblitz'}'`,
-    `  url: '/examples/${key}'`,
-    ...Object.entries(code_embed).map(entry => indent(`${entry[0]}: ${entry[1]}`, 1)),
   ];
   return [
     '---',
@@ -128,20 +135,16 @@ const parseContents = async (key: string, { category, code_embed = {}, ...frontm
   ].filter(Boolean).join('\n');
 }
 
-const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; } & ExampleContent)>, dest: string) => {
+const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ExampleContent>, dest: string) => {
   await Promise.all(exampleOrder.map(async (key) => {
     const example = examplesByName[key];
     if (!example) {
       throw new Error(`No example found for key ${key}`);
     }
     const {
-      packageJSON,
+      frontmatter,
     } = example;
 
-    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
-    if (!frontmatter) {
-      throw new Error(`No frontmatter found in package.json for example ${key}`);
-    }
     const {
       parent,
       category = 'Browser',
@@ -170,7 +173,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     }
     return {
       ...obj,
-      [category]: (obj[category] || []).concat([[parent, example]]),
+      [category]: (obj[category] || []).concat([[parent ? uppercase(parent) : undefined, example]]),
     }
   }, {} as Record<string, Array<[undefined | string, string]>>);
 
@@ -188,9 +191,9 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
       let strings: string[] = [];
       if (activeParent !== parent) {
         activeParent = parent;
-        strings.push(`- [${parent}]`);
+        strings.push(`- ${parent}`);
       }
-      strings.push(`${activeParent ? '  ' : ''}- [${title}](${url})`);
+      strings.push(indent(`- [${title}](${url})`, activeParent ? 1 : 0));
       return strings.join('\n');
     }).join('\n')}`;
   }).join('\n')}`

@@ -20,7 +20,7 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": 31,
+        "sidebar_position": 300,
         "parent": "implementations"
       }
     }

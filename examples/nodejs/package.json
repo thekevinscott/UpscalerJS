@@ -22,7 +22,7 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": 1,
+        "sidebar_position": 1000,
         "category": "node"
       }
     }
