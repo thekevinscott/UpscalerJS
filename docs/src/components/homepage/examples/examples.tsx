@@ -7,7 +7,7 @@ const EXAMPLE_ROOT = 'https://stackblitz.com/github/thekevinscott/upscalerjs/tre
 
 export function Examples() {
   const { colorMode } = useColorMode();
-  const EXAMPLE_SRC = useMemo(() => `${EXAMPLE_ROOT}?embed=1&file=index.js&hideExplorer=1&theme=${colorMode}`, [
+  const EXAMPLE_SRC = useMemo(() => `${EXAMPLE_ROOT}?embed=1&ctl=1&file=index.js&hideExplorer=1&theme=${colorMode}`, [
     // colorMode, // switching reloads the whole iframe, which is not ideal.
   ]);
 
@@ -22,5 +22,3 @@ export function Examples() {
     </div>
   );
 }
-
-
