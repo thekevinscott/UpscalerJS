@@ -187,26 +187,32 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     }
   }, {} as Record<string, Array<[undefined | string, string]>>);
 
-  const content = `# Guides\n${Object.entries(examplesByCategory).map(([category, examples]) => {
-    let activeParent: undefined | string;
-    return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
-      const { title } = examplesByName[example];
-      const url = [
-        '/documentation',
-        'guides',
-        category.toLowerCase(),
-        parent,
-        example
-      ].filter(Boolean).join('/');
-      let strings: string[] = [];
-      if (activeParent !== parent) {
-        activeParent = parent;
-        strings.push(`- ${parent}`);
-      }
-      strings.push(indent(`- [${title}](${url})`, activeParent ? 1 : 0));
-      return strings.join('\n');
-    }).join('\n')}`;
-  }).join('\n')}`
+  const content = [
+    '---',
+    'hide_table_of_contents: true',
+    '---',
+    `# Guides`,
+    ...Object.entries(examplesByCategory).map(([category, examples]) => {
+      let activeParent: undefined | string;
+      return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
+        const { title } = examplesByName[example];
+        const url = [
+          '/documentation',
+          'guides',
+          category.toLowerCase(),
+          parent,
+          example
+        ].filter(Boolean).join('/');
+        let strings: string[] = [];
+        if (activeParent !== parent) {
+          activeParent = parent;
+          strings.push(`- ${parent}`);
+        }
+        strings.push(indent(`- [${title}](${url})`, activeParent ? 1 : 0));
+        return strings.join('\n');
+      }).join('\n')}`;
+    }),
+  ].join('\n');
 
   await writeFile(path.resolve(dest, 'index.md'), content, 'utf-8');
 }
