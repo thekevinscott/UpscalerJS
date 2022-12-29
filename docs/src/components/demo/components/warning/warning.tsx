@@ -6,6 +6,7 @@ import { Button } from '@site/src/components/button/button';
 import Dialogue from '../dialogue/dialogue';
 import Pane from '../pane/pane';
 import { Size, UpscaleChoice } from '../../types';
+import Link from '@docusaurus/Link';
 
 export type Choose = (option: UpscaleChoice) => void;
 export default function Warning({
@@ -27,12 +28,17 @@ export default function Warning({
         </Alert>
         <img id={styles.uploadedImage} src={img.src} />
         <p>
-          Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels. Large images can take a long time to upscale in the browser.
+          Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels. Large 
+          images can take a long time to upscale in the browser.
         </p>
         <p>
           We recommend first downscaling your image to 
           to <strong>{img.width}</strong> by <strong>{img.height}</strong> pixels before 
-          upscaling to demonstrate UpscalerJS.
+          upscaling to demonstrate UpscalerJS. 
+        </p>
+        <p>
+          <Link href="/documentation/guides/node/nodejs">Alternatively, 
+          you can upload the image in Node.js</Link>.
         </p>
         <div id={styles.options}>
           <div id={styles.left}>
