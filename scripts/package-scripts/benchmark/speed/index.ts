@@ -17,9 +17,7 @@ import { Device } from '../performance/utils/Device';
 import { Local } from 'browserstack-local';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR } from '../../utils/constants';
-import buildModels from '../../build-model';
-import { getOutputFormats } from '../../prompt/getOutputFormats';
-import buildUpscaler from '../../build-upscaler';
+import { prebuild } from '../shared/prebuild';
 
 /****
  * Constants
@@ -425,48 +423,6 @@ const writeResultsToOutput = (results: BenchmarkedSpeedResult[], outputCSV: stri
   ].join('\n'), 'utf-8');
 }
 
-const preBuild = async ({
-  skipBuild,
-  skipModelBuild,
-  forceModelRebuild,
-  verbose,
-}: {
-  skipBuild?: boolean;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
-  verbose?: boolean;
-}) => {
-  const outputFormats: ('esm' | 'umd')[] = ['esm', 'umd'];
-  const platform = 'browser';
-  if (skipModelBuild !== true) {
-    const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, outputFormats, {
-      verbose,
-      forceRebuild: forceModelRebuild,
-    });
-    if (verbose) {
-      console.log([
-        `** built models: ${getOutputFormats(platform)}`,
-        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-      ].join('\n'));
-    }
-  }
-
-  if (skipBuild !== true) {
-    const platformsToBuild: ('node' | 'node-gpu')[] = ['node', 'node-gpu'];
-
-    const durations: number[] = [];
-    for (let i = 0; i < platformsToBuild.length; i++) {
-      const duration = await buildUpscaler(platformsToBuild[i]);
-      durations.push(duration);
-    }
-    console.log([
-      `** built upscaler: ${platform}`,
-      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-    ].join('\n'));
-  }
-};
-
 /****
  * Main function
  */
@@ -491,7 +447,10 @@ const benchmarkSpeed = async (
   forceModelRebuild?: boolean;
   verbose?: boolean;
 }) => setupSpeedBenchmarking(async (bsLocal, server) => {
-  await preBuild(opts);
+  await prebuild('browser', {
+    packages,
+    ...opts,
+  });
   const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
   await benchmarker.initialize();
   if (resultsOnly !== true) {

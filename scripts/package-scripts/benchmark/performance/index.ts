@@ -10,9 +10,7 @@ import Table from 'cli-table';
 import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR, TMP_DIR } from '../../utils/constants';
-import buildModels from '../../build-model';
-import { getOutputFormats } from '../../prompt/getOutputFormats';
-import buildUpscaler from '../../build-upscaler';
+import { prebuild } from '../shared/prebuild';
 
 /****
  * Constants
@@ -271,48 +269,6 @@ const mark = (msg: string) => {
   console.log(`${divider}\n${msg}\n${divider}`);
 };
 
-const preBuild = async ({
-  skipBuild,
-  skipModelBuild,
-  forceModelRebuild,
-  verbose,
-}: {
-  skipBuild?: boolean;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
-  verbose?: boolean;
-}) => {
-  const outputFormats: ('cjs')[] = ['cjs'];
-  const platform = 'node';
-  if (skipModelBuild !== true) {
-    const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, outputFormats, {
-      verbose,
-      forceRebuild: forceModelRebuild,
-    });
-    if (verbose) {
-      console.log([
-        `** built models: ${getOutputFormats(platform)}`,
-        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-      ].join('\n'));
-    }
-  }
-
-  if (skipBuild !== true) {
-    const platformsToBuild: ('node' | 'node-gpu')[] = ['node', 'node-gpu'];
-
-    const durations: number[] = [];
-    for (let i = 0; i < platformsToBuild.length; i++) {
-      const duration = await buildUpscaler(platformsToBuild[i]);
-      durations.push(duration);
-    }
-    console.log([
-      `** built upscaler: ${platform}`,
-      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-    ].join('\n'));
-  }
-};
-
 /****
  * Main function
  */
@@ -347,8 +303,8 @@ const benchmarkPerformance = async (
     forceModelRebuild?: boolean;
     verbose?: boolean;
 }) => {
-  const platform = 'node';
-  await preBuild({
+  await prebuild('node', {
+    packages,
     skipBuild,
     skipModelBuild,
     forceModelRebuild,

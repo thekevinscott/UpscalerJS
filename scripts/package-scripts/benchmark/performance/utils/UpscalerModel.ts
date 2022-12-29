@@ -2,7 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import path from 'path';
 import sequelize from './sequelize';
 import { readFileSync } from "fs-extra";
-import { ModelDefinition } from "@upscalerjs/core";
+import { Meta, ModelDefinition } from "@upscalerjs/core";
 import { Package } from "./Package";
 import _Upscaler from 'upscaler';
 import { TF } from "./types";
@@ -13,7 +13,7 @@ export class UpscalerModel extends Model {
   // a name is the key defined in the exports object in package.json. It is _not_ the name of the package
   declare name: string;
   declare scale: number;
-  declare meta: Record<string, any>;
+  declare meta: any;
   declare packageId?: number;
 
   _upscaler?: _Upscaler;
@@ -66,6 +66,7 @@ export class UpscalerModel extends Model {
       this.upscaler = upscaler;
       this.modelDefinition = modelDefinition;
     }
+    console.log(`** Hydrated model ${this.name}`);
   }
 
   get package() {
@@ -166,7 +167,6 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
       path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
     }
     try {
-      console.log('here!')
       const upscaler = new Upscaler({
         // TODO: Need to pull in the Upscaler type definitions for Node, for which
         // we need ESM Node code
@@ -175,7 +175,6 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
       await upscaler.getModel();
       return upscaler;
     } catch (err) {
-      console.log('no!')
       console.error('Error instantiating upscaler for model definition', model);
       throw err;
     }

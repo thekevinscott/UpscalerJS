@@ -45,8 +45,12 @@ const buildESM = async (modelFolder: string, opts: Opts = {}) => {
     }
     return;
   }
+  if (opts.forceRebuild === true) {
+    // clear out dist folder
+    rimraf.sync(DIST);
+  }
   if (opts.verbose) {
-    console.log('Compiling typescript for ESM')
+    console.log(`Compiling typescript for ESM in folder ${modelFolder}`)
   }
   await compileTypescript(modelFolder, 'esm');
 };
@@ -67,10 +71,14 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     }
     return;
   }
+  if (opts.forceRebuild === true) {
+    // clear out dist folder
+    rimraf.sync(DIST);
+  }
   await mkDistFolder(DIST);
 
   if (opts.verbose) {
-    console.log('Compiling typescript for UMD')
+    console.log(`Compiling typescript for UMD in folder ${modelFolder}`)
   }
   await compileTypescript(modelFolder, 'umd');
 
@@ -94,7 +102,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
 
     mkdirpSync(FILE_DIST);
     if (opts.verbose) {
-      console.log(`Rollup building ${filename} for UMD`)
+      console.log(`Rollup building ${filename} for UMD in folder ${modelFolder}`);
     }
     await rollupBuild({
       ...inputOptions,
@@ -124,13 +132,17 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
     }
     return;
   }
+  if (opts.forceRebuild === true) {
+    // clear out dist folder
+    rimraf.sync(DIST);
+  }
   await mkDistFolder(DIST);
   if (opts.verbose) {
-    console.log('Compiling typescript for CJS');
+    console.log(`Compiling typescript for CJS for ${modelFolder}`);
   }
   await compileTypescript(modelFolder, 'cjs');
   if (opts.verbose) {
-    console.log('Babel transforming for CJS');
+    console.log(`Babel transforming for CJS for ${modelFolder}`);
   }
   await babelTransform(DIST);
 };
