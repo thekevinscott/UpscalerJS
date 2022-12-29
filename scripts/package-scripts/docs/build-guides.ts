@@ -179,7 +179,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
       const { title } = examplesByName[example];
       const url = [
-        'documentation',
+        '/documentation',
         'guides',
         category.toLowerCase(),
         parent,
