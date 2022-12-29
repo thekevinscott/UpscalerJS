@@ -1,5 +1,6 @@
 .examples {
   display: flex;
+  color: inherit;
 
   .left {
     width: 30%;
@@ -7,6 +8,7 @@
 
   .right {
     flex: 1;
+    padding-left: 40px;
 
     iframe {
       width: 100%;
