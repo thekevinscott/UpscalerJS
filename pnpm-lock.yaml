@@ -165,15 +165,19 @@ importers:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@types/stats.js': ^0.17.0
+      '@upscalerjs/esrgan-thick': workspace:*
       seedrandom: 3.0.5
       stats.js: ^0.17.0
+      upscaler: workspace:*
       vite: ^3.1.5
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       stats.js: 0.17.0
     devDependencies:
       '@types/stats.js': 0.17.0
+      '@upscalerjs/esrgan-thick': link:../models/esrgan-thick
       seedrandom: 3.0.5
+      upscaler: link:../packages/upscalerjs
       vite: 3.1.5
 
   dev/public/models:
