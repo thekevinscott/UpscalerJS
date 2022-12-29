@@ -1,11 +1,3 @@
----
-sidebar_position: 31
-parent: implementations
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/upload'
----
-
 # Upload Example
 
 Demonstrates how to incorporate an upload mechanism with UpscalerJS.

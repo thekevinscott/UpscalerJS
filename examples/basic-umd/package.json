@@ -15,5 +15,15 @@
   },
   "engines": {
     "npm": ">8.0.0"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": 2,
+        "code_embed": {
+          "params": "embed=1&file=index.html&hideExplorer=1"
+        }
+      }
+    }
   }
 }

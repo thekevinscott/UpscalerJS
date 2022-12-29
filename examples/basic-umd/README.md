@@ -1,12 +1,3 @@
----
-sidebar_position: 2
-hide_table_of_contents: true
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/basic-umd'
-  params: embed=1&file=index.html&hideExplorer=1
----
-
 # Usage with Script Tag
 
 Demonstrates installing UpscalerJS with a script tag.

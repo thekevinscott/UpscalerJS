@@ -1,11 +1,3 @@
----
-sidebar_position: 33
-parent: implementations
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/react'
----
-
 # React Integration
 
 Demonstrates integration between React and UpscalerJS.

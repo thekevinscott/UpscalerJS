@@ -258,7 +258,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-legacy': 1.0.0-beta.9_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-legacy': link:../../../../../models/esrgan-legacy
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -292,7 +292,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-medium': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-medium': link:../../../../../models/esrgan-medium
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -326,7 +326,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-slim': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-slim': link:../../../../../models/esrgan-slim
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -360,7 +360,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-thick': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
+      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -731,6 +731,7 @@ importers:
       '@upscalerjs/pixel-upsampler': workspace:*
       cli-table: ^0.3.11
       crimson-progressbar: ^1.3.0
+      front-matter: ^4.0.2
       glob: ^8.0.3
       image-size: ^1.0.2
       inquirer: ^8.2.4
@@ -747,6 +748,7 @@ importers:
       '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
       '@upscalerjs/pixel-upsampler': link:../models/pixel-upsampler
       cli-table: 0.3.11
+      front-matter: 4.0.2
       glob: 8.0.3
       sequelize: 6.23.1_sqlite3@5.1.1
       sqlite3: 5.1.1
@@ -4977,50 +4979,6 @@ packages:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-legacy/1.0.0-beta.9_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-0i0n3IrxW3JvRSUGgsC8VQb64im27BYL1duOwmd8YWVvsBmSH5fqOSj4DHXtAHB5E48wnVnTfS0BXaJziGWkZQ==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-medium/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-ORBZS+8c2iLFwE/WnVsXNp+YiJsbHxmSOS6oDV7f8V6b7noqiXtx7uH7yA6jkavi66Ci7wRtXQ9xT8mvBH5G7Q==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-slim/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-uCuuGXdFNN/hx2Lm4uCEzGARFbFWsT+FDl+b5EH5q3Sfy+x2l+CQ5a/9FvMKpbScJKbj6d/bU6gyyxvFVoA3zw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-thick/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
-    resolution: {integrity: sha512-OtbVQE81GWab6V5m1cdej9FCd9hxFCkzGiiUblTwF60Bap3r9NSxkFXD150Er1NH3b9bjTkP0ETtiGN9lWrsMA==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@webassemblyjs/ast/1.11.1:
     resolution: {integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==}
     dependencies:
@@ -8915,6 +8873,12 @@ packages:
     resolution: {integrity: sha512-twe20eF1OxVxp/ML/kq2p1uc6KvFK/+vs8WjEbeKmV2He22MKm7YF2ANIt+EOqhJ5L3K/SuuPhk0hWQDjOM23g==}
     dev: true
 
+  /front-matter/4.0.2:
+    resolution: {integrity: sha512-I8ZuJ/qG92NWX8i5x1Y8qyj3vizhXS31OxjKDu3LKP+7/qBgfIKValiZIEwoVoJKUHlhWtYrktkxV1XsX+pPlg==}
+    dependencies:
+      js-yaml: 3.14.1
+    dev: false
+
   /fs-constants/1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
     dev: true
@@ -11094,8 +11058,8 @@ packages:
     hasBin: true
     dev: true
 
-  /marked/4.2.4:
-    resolution: {integrity: sha512-Wcc9ikX7Q5E4BYDPvh1C6QNSxrjC9tBgz+A/vAhp59KXUgachw++uMvMKiSW8oA85nopmPZcEvBoex/YLMsiyA==}
+  /marked/4.2.5:
+    resolution: {integrity: sha512-jPueVhumq7idETHkb203WDD4fMA3yV9emQ5vLwop58lu8bTclMghBWcYAavlDqIEMaisADinV1TooIFCfqOsYQ==}
     engines: {node: '>= 12'}
     hasBin: true
 
@@ -14973,7 +14937,7 @@ packages:
       typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
     dependencies:
       lunr: 2.3.9
-      marked: 4.2.4
+      marked: 4.2.5
       minimatch: 5.1.1
       shiki: 0.11.1
       typescript: 4.8.3

@@ -1,11 +1,3 @@
----
-sidebar_position: 1
-category: node
-code_embed:
-  type: 'codesandbox'
-  url: '/examples/nodejs'
----
-
 # Node.js Example
 
 Demonstates how to use UpscalerJS within a Node.js context.

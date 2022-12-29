@@ -33,5 +33,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": 303,
+        "parent": "implementations"
+      }
+    }
   }
 }

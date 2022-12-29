@@ -1,12 +1,3 @@
----
-sidebar_position: 7
-hide_table_of_contents: true
-parent: performance
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/memory-management'
----
-
 # Memory Management
 
 This guide demonstrates additional techniques for managing memory when using UpscalerJS.

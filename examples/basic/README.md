@@ -1,11 +1,3 @@
----
-sidebar_position: 1
-hide_table_of_contents: true
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/basic'
----
-
 # Usage with NPM
 
 Demonstrates a basic implementation of UpscalerJS for the browser.

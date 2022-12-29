@@ -1,11 +1,3 @@
----
-sidebar_position: 2
-parent: usage
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/cancel'
----
-
 # Cancel Example
 
 Demonstrates how to cancel an inflight `upscale` request.

@@ -1,12 +1,3 @@
----
-sidebar_position: 1
-hide_table_of_contents: true
-parent: usage
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/progress'
----
-
 # Monitoring Progress
 
 It can be useful to monitor the progress of an upscale operation, particularly for larger images or heavier models. UpscalerJS provides an easy way to do so.

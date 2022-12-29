@@ -1,11 +1,3 @@
----
-sidebar_position: 2
-category: node
-code_embed:
-  type: 'codesandbox'
-  url: '/examples/nodejs-model'
----
-
 # Node.js Model Guide
 
 Demonstration of loading a model in Node.js.

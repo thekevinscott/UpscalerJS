@@ -19,5 +19,13 @@
   },
   "engines": {
     "npm": ">8.0.0"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": 100,
+        "parent": "performance"
+      }
+    }
   }
 }
