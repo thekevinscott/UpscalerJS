@@ -10,6 +10,7 @@ import Table from 'cli-table';
 import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR, TMP_DIR } from '../../utils/constants';
+import { prebuild } from '../shared/prebuild';
 
 /****
  * Constants
@@ -266,7 +267,7 @@ const display = (results: BenchmarkedResult[]) => {
 const mark = (msg: string) => {
   const divider = Array(98).fill('*').join('');
   console.log(`${divider}\n${msg}\n${divider}`);
-}
+};
 
 /****
  * Main function
@@ -285,6 +286,10 @@ const benchmarkPerformance = async (
     useGPU = false,
     outputCSV,
     skipDisplayResults,
+    skipBuild,
+    skipModelBuild,
+    forceModelRebuild,
+    verbose,
   }: {
     models?: string[]
     cropSize?: number;
@@ -293,7 +298,18 @@ const benchmarkPerformance = async (
     useGPU?: boolean;
     outputCSV?: string
     skipDisplayResults?: boolean;
-  }) => {
+    skipBuild?: boolean;
+    skipModelBuild?: boolean;
+    forceModelRebuild?: boolean;
+    verbose?: boolean;
+}) => {
+  await prebuild('node', {
+    packages,
+    skipBuild,
+    skipModelBuild,
+    forceModelRebuild,
+    verbose,
+  });
   const benchmarker = new PerformanceBenchmarker(cacheDir);
   await benchmarker.initialize(metrics);
   if (resultsOnly !== true) {
@@ -348,7 +364,7 @@ const benchmarkPerformance = async (
 /****
  * Functions to expose the main function as a CLI tool
  */
-interface Args {
+interface Answers {
   cacheDir: string;
   datasets: DatasetDefinition[];
   models?: Array<string>;
@@ -360,6 +376,10 @@ interface Args {
   useGPU?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+  forceModelRebuild?: boolean;
+  verbose?: boolean;
 }
 
 async function getArg<T>(options: { message: string, type: string }) {
@@ -421,7 +441,7 @@ const getModels = (model?: unknown): undefined | string[] => {
   return undefined;
 }
 
-const getArgs = async (): Promise<Args> => {
+const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('benchmark-performance <dataset>', 'benchmark performance', yargs => {
     yargs.positional('dataset', {
       describe: 'The dataset',
@@ -437,6 +457,10 @@ const getArgs = async (): Promise<Args> => {
       metric: { type: 'string' },
       outputCSV: { type: 'string' },
       skipDisplayResults: { type: 'boolean' },
+      skipBuild: { type: 'boolean' },
+      skipModelBuild: { type: 'boolean' },
+      forceModelRebuild: { type: 'boolean' },
+      verbose: { type: 'boolean' },
     });
   })
   .help()
@@ -453,6 +477,7 @@ const getArgs = async (): Promise<Args> => {
   function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
   return {
+    ...argv,
     packages,
     models,
     datasets,
@@ -469,8 +494,18 @@ const getArgs = async (): Promise<Args> => {
 
 if (require.main === module) {
   (async () => {
-    const args = await getArgs();
-    await benchmarkPerformance(args.cacheDir, args.datasets, args.packages, args.metrics, {
+    const {
+      skipBuild,
+      skipModelBuild,
+      forceModelRebuild,
+      cacheDir,
+      datasets,
+      packages,
+      metrics,
+      verbose,
+      ...args
+    } = await getArgs();
+    await benchmarkPerformance(cacheDir, datasets, packages, metrics, {
       models: args.models,
       cropSize: args.cropSize,
       n: args.n,
@@ -478,6 +513,10 @@ if (require.main === module) {
       useGPU: args.useGPU,
       outputCSV: args.outputCSV,
       skipDisplayResults: args.skipDisplayResults,
+      skipBuild,
+      skipModelBuild,
+      forceModelRebuild,
+      verbose,
     });
   })();
 }

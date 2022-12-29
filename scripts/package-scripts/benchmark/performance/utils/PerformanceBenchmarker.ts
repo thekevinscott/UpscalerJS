@@ -146,7 +146,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     return this.existingResults.has(key);
   }
 
-  async benchmarkFile(dataset: Dataset, model: UpscalerModel, image: FileAndImage, metrics: Metric[], {
+  async benchmarkFile(dataset: Dataset, model: UpscalerModel, file: FileAndImage, metrics: Metric[], {
     delay,
     cropSize,
     upscaledFolder,
@@ -160,7 +160,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     const cacheDir = path.resolve(this.cacheDir, dataset.name);
     let shouldProcess = false;
     for (const metric of metrics) {
-      const isExisting = this.hasExistingResult(model.id, metric.id, image.imageId);
+      const isExisting = this.hasExistingResult(model.id, metric.id, file.imageId);
       if (isExisting === false) {
         shouldProcess = true;
         break;
@@ -169,12 +169,12 @@ export class PerformanceBenchmarker extends Benchmarker {
     if (shouldProcess) {
       const cropKey = Image.getCropKey(cropSize);
       const diffFolder = path.resolve(os.tmpdir(), 'upscalerjs/diff');
-      const { srPath, srHeight, srWidth, lrPath } = image;
+      const { srPath, srHeight, srWidth, lrPath } = file;
       await new Promise(r => setTimeout(r, delay));
       const upscaledPath = path.resolve(upscaledFolder, Image.makePath(lrPath, cropKey, `${model.scale}x`));
       mkdirpSync(path.dirname(upscaledPath));
-      await model.hydrate(tf);
-      const upscaledBuffer = await this.upscale(tf, model, path.resolve(cacheDir, lrPath));
+      const lrImage = path.resolve(cacheDir, lrPath);
+      const upscaledBuffer = await this.upscale(tf, model, lrImage);
       writeFileSync(upscaledPath, upscaledBuffer);
       const upscaledDimensions = await getSize(upscaledPath);
 
@@ -182,6 +182,9 @@ export class PerformanceBenchmarker extends Benchmarker {
       mkdirpSync(path.dirname(diffPath));
 
       if (srWidth !== upscaledDimensions.width || srHeight !== upscaledDimensions.height) {
+        const lrDimensions = await getSize(lrImage);
+        console.error(`Provided LR image at ${lrImage}`);
+        console.error(`LR image size: ${JSON.stringify(lrDimensions)}`);
         throw new Error(`Dimensions mismatch. Original image: ${JSON.stringify({ originalWidth: srWidth, originalHeight: srHeight })}, Upscaled image: ${JSON.stringify(upscaledDimensions)}`)
       }
       await Promise.all(metrics.map(async metric => {
@@ -193,7 +196,7 @@ export class PerformanceBenchmarker extends Benchmarker {
           value,
           MetricId: metric.id,
           UpscalerModelId: model.id,
-          ImageId: image.imageId,
+          ImageId: file.imageId,
         });
       }));
     }
@@ -231,8 +234,16 @@ export class PerformanceBenchmarker extends Benchmarker {
     for (const modelPackage of this.modelPackages) {
       if (packageNames.includes(modelPackage.name)) {
         const models = await modelPackage.getModels(modelNames);
+        await Promise.all(models.map(model => model.hydrate(tf)));
         for (const model of models) {
           modelsForDatasets.push(model);
+          const { modelDefinition } = model;
+          if (model.scale !== modelDefinition.scale) {
+            const pkg = await model.package;
+            console.warn(`Model attributes have changed for ${model.name} in package ${pkg.name}, updating`);
+            model.scale = modelDefinition.scale;
+            model.meta = modelDefinition.meta;
+          }
         }
       }
     }
@@ -325,6 +336,9 @@ export class PerformanceBenchmarker extends Benchmarker {
         if (!errors.get(model)) {
           try {
             const upscaledFolder = path.resolve(rootUpscaledFolder, model.name, `${file.imageId}`);
+            if (file.scale !== model.modelDefinition.scale) {
+              throw new Error(`There is a scale mismatch. The image provided has a scale of ${file.scale} and the model has a scale of ${model.modelDefinition.scale}. ${JSON.stringify(model.modelDefinition)}`)
+            }
             return await this.benchmarkFile(dataset, model, file, metrics, {
               delay,
               cropSize,
@@ -353,15 +367,27 @@ export class PerformanceBenchmarker extends Benchmarker {
     console.log('processed', total, 'files');
   }
 
-  private async upscale(tf: TF, { upscaler }: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
-    const upscaledData = await upscaler.upscale(downscaled, {
-      output: 'tensor',
-      patchSize: 64,
-      padding: 2,
-      progress,
-    });
-    const data = await tf.node.encodePng(upscaledData);
-    return Buffer.from(data);
+  private async upscale(tf: TF, { upscaler, modelDefinition }: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
+    try {
+      const upscaledData = await upscaler.upscale(downscaled, {
+        output: 'tensor',
+        patchSize: 64,
+        padding: 2,
+        progress,
+      });
+      const data = await tf.node.encodePng(upscaledData);
+      return Buffer.from(data);
+    } catch (err) {
+      console.error([
+        `There was an error upscaling the image ${downscaled}`,
+        `The model definition is: ${JSON.stringify(modelDefinition, null, 2)}`,
+        '',
+        `A common error is that the model may need to be rebuilt.`,
+        'Try running the command again with the flags:',
+        '--forceModelRebuild --verbose',
+      ].join('\n'));
+      throw err;
+    }
   }
 
   private async calculatePerformance(upscaledPath: string, originalPath: string, diffPath: string, metric: string): Promise<number> {
