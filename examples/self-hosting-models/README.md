@@ -1,12 +1,3 @@
----
-sidebar_position: 3
-hide_table_of_contents: true
-parent: usage
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/self-hosting-models'
----
-
 # Self Hosting Models
 
 Demonstrates how to self host a model with UpscalerJS.

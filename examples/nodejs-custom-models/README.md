@@ -1,11 +1,3 @@
----
-sidebar_position: 3
-category: node
-code_embed:
-  type: 'codesandbox'
-  url: '/examples/nodejs-custom-models'
----
-
 # Node.js Custom Models Guide
 
 Demonstration of loading a custom model in Node.js.

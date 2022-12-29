@@ -1,12 +1,3 @@
----
-sidebar_position: 4
-hide_table_of_contents: true
-parent: performance
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/patch-sizes'
----
-
 # Patch Sizes
 
 Demonstrates the use of patch sizes with UpscalerJS.

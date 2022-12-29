@@ -1,12 +1,3 @@
----
-sidebar_position: 5
-hide_table_of_contents: true
-parent: performance
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/warmup'
----
-
 # Warming up models
 
 This guide demonstrates how to make calls to UpscalerJS process faster.

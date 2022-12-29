@@ -1,11 +1,3 @@
----
-sidebar_position: 2
-hide_table_of_contents: true
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/models'
----
-
 # Models
 
 Discusses how models work in UpscalerJS.

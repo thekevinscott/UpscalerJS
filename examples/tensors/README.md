@@ -1,11 +1,3 @@
----
-sidebar_position: 3
-hide_table_of_contents: true
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/tensors'
----
-
 # Working with Tensors
 
 Here we'll discuss working with tensors directly within the context of UpscalerJS.

@@ -1,12 +1,3 @@
----
-sidebar_position: 6
-hide_table_of_contents: true
-parent: performance
-code_embed:
-  type: 'stackblitz'
-  url: '/examples/webworker'
----
-
 # Web Worker Integration
 
 This guide demonstrates how to integrate UpscalerJS into a Web Worker.
