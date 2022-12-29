@@ -6,7 +6,7 @@ Demonstrates installing UpscalerJS with a script tag.
 
 ## Overview
 
-This guide is identical to the [basic NPM example](basic), except that instead of UpscalerJS being installed via NPM, it is instead imported via a script tag.
+This guide is identical to the [basic NPM example](basic-npm), except that instead of UpscalerJS being installed via NPM, it is instead imported via a script tag.
 
 Script tags can be added like this:
 

@@ -44,3 +44,20 @@ upscaler.upscale('/path/to/img', {
   progress: ...
 })
 ```
+
+## Unexpected Token
+
+If you're in a Node.js environment, you may encounter something like this:
+
+```
+/node_modules/upscaler/dist/browser/esm/index.js:1
+export { default, } from './upscaler';
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+```
+
+This likely means one of two things:
+
+- You are using `upscaler`, instead of `upscaler/node`; [check out the guide on Node.js here](/documentation/guides/node/nodejs).
+- You are using `import` syntax instead of `require` syntax; if so, try switching to `require('upscaler')`. For more information on this, [see this Github issue](https://github.com/thekevinscott/UpscalerJS/issues/554#issuecomment-1344108954).
