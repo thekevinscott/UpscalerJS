@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/esrgan-thick",
-  "version": "1.0.0-beta.12",
+  "version": "1.0.0-beta.7",
   "description": "ESRGAN Thick Model for Upscaler.js",
   "exports": {
     "./2x": {

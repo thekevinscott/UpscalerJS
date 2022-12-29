@@ -76,4 +76,4 @@ const upscaler = new Upscaler({
 
 `preprocess` and `postprocess` are functions called on the input and output tensors, respectively.
 
-[`customLayers` allows us to define custom layers for our model](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers). You can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/src/utils/getModelDefinition.ts#L14).
+[`customLayers` allows us to define custom layers for our model](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers). We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/src/utils/getModelDefinition.ts#L14).

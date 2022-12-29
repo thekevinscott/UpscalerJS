@@ -46,7 +46,8 @@ const usePackages = (databasePath: string) => {
     selectedItems: selectedPackages,
   } = useData<Package>(databasePath, `
     SELECT p.id, p.name FROM packages p 
-    WHERE p.name != 'default-model'
+    WHERE 1=1
+    /* AND p.name != 'default-model' */
     GROUP BY p.name
   `)
 
