@@ -1,6 +1,6 @@
 # Models
 
-Discusses how models work in UpscalerJS.
+This guide discusses how models work in UpscalerJS.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Models">Open example in Stackblitz</a>.
 
