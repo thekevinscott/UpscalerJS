@@ -16,5 +16,17 @@
   },
   "engines": {
     "npm": ">8.0.0"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": "3",
+        "hide_table_of_contents": "true",
+        "parent": "usage",
+        "code_embed": "",
+        "type": "'stackblitz'",
+        "url": "'/examples/self-hosting-models'"
+      }
+    }
   }
 }

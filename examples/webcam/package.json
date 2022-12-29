@@ -15,5 +15,16 @@
     "@tensorflow/tfjs": "^4.1.0",
     "seedrandom": "^3.0.5",
     "upscaler": "1.0.0-beta.13"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": "32",
+        "parent": "implementations",
+        "code_embed": "",
+        "type": "'stackblitz'",
+        "url": "'/examples/webcam'"
+      }
+    }
   }
 }

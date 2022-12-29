@@ -2,6 +2,8 @@ import path from 'path';
 import glob from 'glob';
 import { existsSync, mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
+import { JSONSchema } from '../utils/packages';
+import { writeFileSync } from 'fs';
 
 /****
  * Types
@@ -62,14 +64,16 @@ const getFrontmatter = (src: string): FrontMatter => {
   }
 }
 
-const getExamplesWithFrontmatter = (): ({ key: string; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return existsSync(readmePath);
 }).map(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
+  const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
   return {
     key,
     readmePath,
+    packageJSON,
     ...getFrontmatter(readmePath),
   };
 });
@@ -101,17 +105,17 @@ const getExamplesByName = () => {
         ...obj,
         [key]: rest,
       };
-    }, {} as Record<string, ({ readmePath: string; } & FrontMatter)>),
+    }, {} as Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & FrontMatter)>),
     exampleOrder,
   };
 }
 
-const parseContents = async (path: string) => {
+const parseContents = async (path: string, frontmatter?: Record<string, any>) => {
   const contents = await readFile(path, 'utf-8');
   return contents;
 }
 
-const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
+const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & FrontMatter)>, dest: string) => {
   await Promise.all(exampleOrder.map(async (key) => {
     const example = examplesByName[key];
     if (!example) {
@@ -119,14 +123,27 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     }
     const {
       readmePath,
+      packageJSON,
       frontmatter: {
         parent,
         category = 'Browser',
       },
     } = example;
+    /****
+     * remove this
+     */
+    const packageJSONPath = path.resolve(EXAMPLES_DIR, key, 'package.json');
+    packageJSON['@upscalerjs'] = {
+      'guide': {
+        'frontmatter': example.frontmatter,
+      }
+    }
+    writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
+    // write to package json
+    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
     const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
-    const fileContents = await parseContents(readmePath)
+    const fileContents = await parseContents(readmePath, frontmatter);
     await writeFile(targetPath, fileContents, 'utf-8');
   }));
 }

@@ -33,5 +33,16 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": "33",
+        "parent": "implementations",
+        "code_embed": "",
+        "type": "'stackblitz'",
+        "url": "'/examples/react'"
+      }
+    }
   }
 }

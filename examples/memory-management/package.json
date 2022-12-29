@@ -16,5 +16,17 @@
   },
   "engines": {
     "npm": ">8.0.0"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": "7",
+        "hide_table_of_contents": "true",
+        "parent": "performance",
+        "code_embed": "",
+        "type": "'stackblitz'",
+        "url": "'/examples/memory-management'"
+      }
+    }
   }
 }

@@ -7,6 +7,17 @@
   "scripts": {
     "dev": "npx vite"
   },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": "1",
+        "hide_table_of_contents": "true",
+        "code_embed": "",
+        "type": "'stackblitz'",
+        "url": "'/examples/basic'"
+      }
+    }
+  },
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
