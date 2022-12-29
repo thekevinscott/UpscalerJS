@@ -32,6 +32,7 @@ export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
   'You must provide a "scale" for a model definition',
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
 ].join('\n');
+export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
 
 export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
   if (!modelDefinition.path) {
@@ -41,7 +42,7 @@ export function getModelDefinitionError(modelDefinition: ModelDefinition): Error
     return new Error(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   }
 
-  throw new Error('There is a bug with the upscaler code. Please report this.');
+  return new Error(ERROR_MODEL_DEFINITION_BUG);
 }
 
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {

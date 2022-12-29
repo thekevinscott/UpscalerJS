@@ -15,13 +15,12 @@ import {
   isAborted,
   registerCustomLayers,
   tensorAsClampedArray,
-  MISSING_MODEL_DEFINITION_ERROR,
-  MISSING_MODEL_DEFINITION_PATH_ERROR,
-  MISSING_MODEL_DEFINITION_SCALE_ERROR,
-  LOGICAL_ERROR,
+  ERROR_MISSING_MODEL_DEFINITION_PATH,
+  ERROR_MISSING_MODEL_DEFINITION_SCALE,
   getModel,
   hasValidChannels,
   processAndDisposeOfTensor,
+  ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -306,20 +305,16 @@ describe('tensorAsClampedArray', () => {
 });
 
 describe('getModelDefinitionError', () => {
-  it('returns an error if no model definition is provided', () => {
-    expect(getModelDefinitionError(undefined)).toEqual(MISSING_MODEL_DEFINITION_ERROR);
-  });
-
   it('returns an error if path is not provided', () => {
-    expect(getModelDefinitionError({ path: undefined } as unknown as ModelDefinition)).toEqual(MISSING_MODEL_DEFINITION_PATH_ERROR);
+    expect(getModelDefinitionError({ path: undefined } as unknown as ModelDefinition)).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
   });
 
   it('returns an error if scale is not provided', () => {
-    expect(getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition)).toEqual(MISSING_MODEL_DEFINITION_SCALE_ERROR);
+    expect(getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition)).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   });
 
   it('returns a generic error otherwise', () => {
-    expect(getModelDefinitionError({ path: 'foo', scale: 2 } as unknown as ModelDefinition)).toEqual(LOGICAL_ERROR);
+    expect(() => getModelDefinitionError({ path: 'foo', scale: 2 })).toThrow(ERROR_MODEL_DEFINITION_BUG);
   });
 })
 
