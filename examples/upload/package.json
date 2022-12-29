@@ -20,11 +20,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "31",
-        "parent": "implementations",
-        "code_embed": "",
-        "type": "'stackblitz'",
-        "url": "'/examples/upload'"
+        "sidebar_position": 31,
+        "parent": "implementations"
       }
     }
   }

@@ -20,12 +20,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "5",
-        "hide_table_of_contents": "true",
-        "parent": "performance",
-        "code_embed": "",
-        "type": "'stackblitz'",
-        "url": "'/examples/warmup'"
+        "sidebar_position": 5,
+        "parent": "performance"
       }
     }
   }

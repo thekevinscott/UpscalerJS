@@ -22,11 +22,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "1",
-        "category": "Node",
-        "code_embed": "",
-        "type": "'codesandbox'",
-        "url": "'/examples/nodejs'"
+        "sidebar_position": 1,
+        "category": "node"
       }
     }
   }

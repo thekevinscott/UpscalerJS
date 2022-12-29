@@ -32,6 +32,7 @@
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
     "cli-table": "^0.3.11",
+    "front-matter": "^4.0.2",
     "glob": "^8.0.3",
     "sequelize": "^6.23.1",
     "sqlite3": "^5.1.1",

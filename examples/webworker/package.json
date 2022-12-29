@@ -23,12 +23,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "6",
-        "hide_table_of_contents": "true",
-        "parent": "performance",
-        "code_embed": "",
-        "type": "'stackblitz'",
-        "url": "'/examples/webworker'"
+        "sidebar_position": 6,
+        "parent": "performance"
       }
     }
   }

@@ -22,11 +22,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "3",
-        "category": "Node",
-        "code_embed": "",
-        "type": "'codesandbox'",
-        "url": "'/examples/nodejs-custom-models'"
+        "sidebar_position": 3,
+        "category": "node"
       }
     }
   }

@@ -20,11 +20,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": "2",
-        "category": "Node",
-        "code_embed": "",
-        "type": "'codesandbox'",
-        "url": "'/examples/nodejs-model'"
+        "sidebar_position": 2,
+        "category": "node"
       }
     }
   }

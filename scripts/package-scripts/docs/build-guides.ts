@@ -113,27 +113,11 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
         category = 'Browser',
       },
     } = example;
-    /****
-     * remove this
-     */
-    const packageJSONPath = path.resolve(EXAMPLES_DIR, key, 'package.json');
-    const { hide_table_of_contents, code_embed, ...rest } = example.frontmatter;
-    const { type, url, ...restOfCodeEmbed } = code_embed || {};
-    if (Object.keys(restOfCodeEmbed).length > 0) {
-      rest['code_embed'] = restOfCodeEmbed;
-    }
-    packageJSON['@upscalerjs'] = {
-      'guide': {
-        'frontmatter': rest,
-      }
-    }
-    writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-    /****
-     * Remove before this
-     */
 
-
-    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
+    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter;
+    if (!frontmatter) {
+      throw new Error(`No frontmatter found in package.json for example ${key}`);
+    }
     const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
     const fileContents = await parseContents(readmePath, frontmatter);
