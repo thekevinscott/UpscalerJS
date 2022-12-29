@@ -18,7 +18,7 @@ const getRootURL = (type: 'stackblitz' | 'codesandbox') => {
   return ROOT_URL_STACKBLITZ;
 }
 
-const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: string) => {
+const getParamsWithColorMode = (params: URLSearchParams | string, colorMode: string): string => {
   if (typeof params === 'string') {
     return `${params}&theme=${colorMode}`;
   }
@@ -130,7 +130,7 @@ const useIFrameSrc = (url: string, params: URLSearchParams | string, type: 'stac
 
 export const CodeEmbed = ({
   url,
-  params = 'embed=1&file=index.js&hideExplorer=1',
+  params,
   persist,
   type = 'stackblitz',
 }: {
