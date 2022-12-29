@@ -10,8 +10,11 @@ import fm from 'front-matter';
  * Types
  */
 interface FrontMatter {
+  [index: string]: string | number | FrontMatter;
+}
+interface ExampleContent {
   title: string;
-  frontmatter: Record<string, any>;
+  frontmatter: FrontMatter;
 }
 
 /****
@@ -25,7 +28,7 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
-const getFrontmatter = (src: string): FrontMatter => {
+const getFrontmatter = (src: string): ExampleContent => {
   const readmeContents = readFileSync(src, 'utf-8');
   const { attributes, body } = fm(readmeContents);
   const bodyParts = body.split('\n');
@@ -48,7 +51,7 @@ const getFrontmatter = (src: string): FrontMatter => {
   }
 };
 
-const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; readmePath: string } & ExampleContent)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return existsSync(readmePath);
 }).map(key => {
@@ -62,7 +65,7 @@ const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; 
   };
 });
 
-const getExampleOrder = (examples: ({ key: string; } & FrontMatter)[]) => {
+const getExampleOrder = (examples: ({ key: string; } & ExampleContent)[]) => {
   return examples.sort((a, b) => {
     const aPos = Number(a.frontmatter.sidebar_position);
     const bPos = Number(b.frontmatter.sidebar_position);
@@ -89,17 +92,44 @@ const getExamplesByName = () => {
         ...obj,
         [key]: rest,
       };
-    }, {} as Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & FrontMatter)>),
+    }, {} as Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & ExampleContent)>),
     exampleOrder,
   };
 }
 
-const parseContents = async (path: string, frontmatter?: Record<string, any>) => {
-  const contents = await readFile(path, 'utf-8');
-  return contents;
+const indent = (str: string, depth = 0) => {
+  return Array(depth * 2).fill(' ') + str;
 }
 
-const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & FrontMatter)>, dest: string) => {
+const buildFrontmatter = (frontmatter: FrontMatter = {}, depth = 0): string[] => Object.entries(frontmatter).reduce((arr, [key, val]) => {
+  if (typeof (val) === 'object') {
+    return arr.concat(...[
+      `${key}:`, 
+      ...buildFrontmatter(val),
+    ].map(str => indent(str, depth)));
+  }
+  return arr.concat(indent(`${key}: ${val}`, depth));
+}, [] as string[]);
+
+const parseContents = async (path: string, { category, code_embed = {}, ...frontmatter}: FrontMatter = {}) => {
+  const contents = await readFile(path, 'utf-8');
+  return [
+    '---',
+    ...buildFrontmatter(frontmatter),
+    category ? `category: ${category}` : '',
+    'hide_table_of_contents: true',
+    'code_embed:',
+    `  type: '${category === 'node' ? 'codesandbox' : 'stackblitz'}'`,
+    '  url: \'/examples/basic\'',
+    ...Object.entries(code_embed).map(entry => {
+      return `  ${entry[0]}: ${entry[1]}`;
+    }),
+    '---',
+    contents,
+  ].filter(Boolean).join('\n');
+}
+
+const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & ExampleContent)>, dest: string) => {
   await Promise.all(exampleOrder.map(async (key) => {
     const example = examplesByName[key];
     if (!example) {
@@ -118,6 +148,12 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     if (!frontmatter) {
       throw new Error(`No frontmatter found in package.json for example ${key}`);
     }
+    if (typeof category !== 'string') {
+      throw new Error(`Category is not of type string ${category}`);
+    }
+    if (parent !== undefined && typeof parent !== 'string') {
+      throw new Error(`Parent is not of type string: ${parent}`);
+    }
     const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
     const fileContents = await parseContents(readmePath, frontmatter);
@@ -125,9 +161,15 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
   }));
 }
 
-const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & FrontMatter)>, dest: string) => {
+const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & ExampleContent)>, dest: string) => {
   const examplesByCategory = exampleOrder.reduce((obj, example) => {
     const { frontmatter: { parent, category = 'Browser' } } = examplesByName[example];
+    if (typeof category !== 'string') {
+      throw new Error(`Category is not of type string: ${category}`);
+    }
+    if (parent !== undefined && typeof parent !== 'string') {
+      throw new Error(`Parent is not of type string: ${parent}`);
+    }
     return {
       ...obj,
       [category]: (obj[category] || []).concat([[parent, example]]),

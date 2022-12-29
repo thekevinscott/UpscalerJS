@@ -12,7 +12,7 @@ A solution is to slice the upcoming image into pieces and upscale each one indiv
 
 <figure>
 
-![Demonstration of splitting an image into patches](../../../assets/splitting-image.gif)
+![Demonstration of splitting an image into patches](../../assets/splitting-image.gif)
 
 <figcaption>Splitting an image into patches</figcaption>
 </figure>
@@ -21,7 +21,7 @@ However, upscaling models have a tendency to perform poorly on edges, resulting 
 
 <figure>
 
-![Demonstration of artifacting along the sides of patch sizes](../../../assets/artifacting.gif)
+![Demonstration of artifacting along the sides of patch sizes](../../assets/artifacting.gif)
 
 <figcaption>Example of artifacting along the edges of patches</figcaption>
 </figure>
@@ -30,7 +30,7 @@ A solution is to add a bit of _padding_ to each patch size, and then slice off t
 
 <figure>
 
-![Demonstration of using padding but not slicing it off](../../../assets/padding.gif)
+![Demonstration of using padding but not slicing it off](../../assets/padding.gif)
 
 <figcaption>Example of adding padding to the image (UpscalerJS slices off the excess padding)</figcaption>
 </figure>
