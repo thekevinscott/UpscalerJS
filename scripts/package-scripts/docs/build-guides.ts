@@ -28,6 +28,13 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
+const getDefaultCodeEmbedParameters = (category: string) => {
+  if (category.toLowerCase() === 'node') {
+    return 'view=split,preview&module=index.js&hidenavigation=1';
+  };
+  return 'embed=1&file=index.js&hideExplorer=1';
+}
+
 const getFrontmatter = (key: string): ExampleContent => {
   const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
@@ -57,6 +64,7 @@ const getFrontmatter = (key: string): ExampleContent => {
       category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
       hide_table_of_contents: true,
       code_embed: {
+        params: getDefaultCodeEmbedParameters(category),
         type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
         url: `/examples/${key}`,
       },
