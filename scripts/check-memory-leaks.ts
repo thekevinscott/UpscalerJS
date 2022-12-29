@@ -39,8 +39,18 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
     ].join('\n'));
   }
   if (argv.skipBuild !== true) {
-    await buildUpscaler('browser');
+    const platformsToBuild: ('browser')[] = ['browser'];
     console.log(`** built upscaler: browser`)
+
+    const durations: number[] = [];
+    for (let i = 0; i < platformsToBuild.length; i++) {
+      const duration = await buildUpscaler(platformsToBuild[i]);
+      durations.push(duration);
+    }
+    console.log([
+      `** built upscaler: ${platformsToBuild.join(', ')}`,
+      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+    ].join('\n'));
   }
   const args = [
     'pnpm',

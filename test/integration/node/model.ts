@@ -7,7 +7,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'esrgan-legacy/test/__fixtures__');
+const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
@@ -63,7 +63,7 @@ describe('Node Model Loading Integration Tests', () => {
     });
     expect(result).not.toEqual('');
     const formattedResult = `data:image/png;base64,${result}`;
-    checkImage(formattedResult, path.resolve(ESRGAN_LEGACY_DIR, "gans/result.png"), 'diff.png');
+    checkImage(formattedResult, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via file:// path", async () => {

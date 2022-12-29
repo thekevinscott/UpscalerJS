@@ -1,7 +1,7 @@
 {
   "name": "@upscalerjs/examples.self-hosting",
   "private": true,
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.10",
   "description": "Demonstration of self hosting models with UpscalerJS",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   "dependencies": {
     "@tensorflow/tfjs": "^4.1.0",
     "seedrandom": "^3.0.5",
-    "upscaler": "1.0.0-beta.9"
+    "upscaler": "1.0.0-beta.13"
   },
   "engines": {
     "npm": ">8.0.0"

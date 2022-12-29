@@ -4,6 +4,7 @@ import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
+import { catchFailures } from './catchFailures';
 
 type Bundle = (opts?: Opts) => Promise<void>;
 
@@ -265,6 +266,7 @@ export class BrowserTestRunner {
    * Jest lifecycle methods
    */
 
+  @catchFailures()
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     const opts = this._makeOpts();
@@ -284,6 +286,7 @@ export class BrowserTestRunner {
     cachedBundles.add(bundle.name);
   }
 
+  @catchFailures()
   @timeit('afterAll clean up')
   async afterAll() {
     await Promise.all([
@@ -292,12 +295,14 @@ export class BrowserTestRunner {
     ]);
   }
 
+  @catchFailures()
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
+  @catchFailures()
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([

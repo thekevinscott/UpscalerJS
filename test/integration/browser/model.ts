@@ -14,7 +14,7 @@ import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'esrgan-legacy/test/__fixtures__');
+const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -70,7 +70,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.upscale(window['flower']);
     });
-    checkImage(result, path.resolve(ESRGAN_LEGACY_DIR, "gans/result.png"), 'diff.png');
+    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
