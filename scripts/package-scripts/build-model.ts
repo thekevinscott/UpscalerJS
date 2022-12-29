@@ -160,7 +160,7 @@ const buildModel = async (
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
   const DIST = path.resolve(MODEL_ROOT, 'dist')
   if (opts.verbose) {
-    console.log('Scaffolding dependencies');
+    console.log(`Scaffolding dependencies for model ${model}`);
   }
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
