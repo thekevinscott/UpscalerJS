@@ -22,8 +22,8 @@ export function Examples() {
           <li><Link href="/documentation/guides/browser/basic-umd">Installation Guide for Script Tags</Link></li>
           <li><Link href="/documentation/guides/node/nodejs">Node.js Integration</Link></li>
           <li><Link href="/documentation/guides/browser/models">Working with Models</Link></li>
-          <li><Link href="/documentation/guides/browser/upload">Working with Image Uploads</Link></li>
-          <li><Link href="/documentation/guides/browser/react">React Integration</Link></li>
+          <li><Link href="/documentation/guides/browser/implementations/upload">Working with Image Uploads</Link></li>
+          <li><Link href="/documentation/guides/browser/implementations/react">React Integration</Link></li>
         </ul>
         <p><Link href="/documentation/guides">Check out the full list of examples</Link>.</p>
       </div>
