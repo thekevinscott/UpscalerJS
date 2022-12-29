@@ -20,7 +20,7 @@ If we're already working with tensors in the context of our application, it can 
 
 :::tip
 
-You don't need to know anything about tensors to use UpscalerJS. Stick with the defaults, and UpscalerJS will automatically convert everything internally.
+If you stick with the defaults, you won't need to know anything about tensors. UpscalerJS will automatically handle everything for you. This guide is for those wishing to exercise more control over memory and performance.
 
 :::
 
