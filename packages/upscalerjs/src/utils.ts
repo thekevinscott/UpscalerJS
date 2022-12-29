@@ -20,29 +20,20 @@ export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number): IsT
   return fn;
 }
 
-const ERROR_MISSING_MODEL_DEFINITION_URL =
-  'https://upscalerjs.com/documentation/troubleshooting#missing-model';
 const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
 
-export const ERROR_MISSING_MODEL_DEFINITION = [
-  'You must provide a model definition as the "model" argument to UpscalerJS.',
-  `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_URL}.`,
-].join('\n');
 export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
   'You must provide a "path" when providing a model definition',
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_PATH_URL}.`,
 ].join('\n');
 export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
-  'You must provide a scale for a model definition',
+  'You must provide a "scale" for a model definition',
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
 ].join('\n');
 
-export function getModelDefinitionError(modelDefinition?: ModelDefinition): Error {
-  if (!modelDefinition) {
-    return new Error(ERROR_MISSING_MODEL_DEFINITION);
-  }
+export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
   if (!modelDefinition.path) {
     return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
   }

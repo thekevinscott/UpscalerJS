@@ -62,19 +62,13 @@ This likely means one of two things:
 - You are using `upscaler`, instead of `upscaler/node`; [check out the guide on Node.js here](/documentation/guides/node/nodejs).
 - You are using `import` syntax instead of `require` syntax; if so, try switching to `require('upscaler')`. For more information on this, [see this Github issue](https://github.com/thekevinscott/UpscalerJS/issues/554#issuecomment-1344108954).
 
-## Missing Model
-
-You've passed a `null` or `undefined` model argument to UpscalerJS:
-
-```javascript
-const upscaler = new Upscaler({
-  model: null,
-})
-```
-
-Ensure you pass a valid `model` argument. [See the guide on models for more information](/documentation/guides/browser/models).
-
 ## Missing Model Path
+
+If you see an error like:
+
+```
+Uncaught (in promise) Error: You must provide a "path" when providing a model definition
+```
 
 You've passed a `null` or `undefined` path argument in the `model` argument to UpscalerJS:
 
@@ -89,6 +83,12 @@ const upscaler = new Upscaler({
 Ensure you pass a valid `path` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
 
 ## Missing Model Scale
+
+If you see an error like:
+
+```
+Uncaught (in promise) Error: You must provide a "scale" when providing a model definition
+```
 
 You've passed a `null` or `undefined` scale argument in the `model` argument to UpscalerJS:
 
