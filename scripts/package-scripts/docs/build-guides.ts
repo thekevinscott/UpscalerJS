@@ -4,13 +4,14 @@ import { existsSync, mkdirp, readdirSync, readFile, readFileSync, statSync, unli
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 import { JSONSchema } from '../utils/packages';
 import { writeFileSync } from 'fs';
+import fm from 'front-matter';
 
 /****
  * Types
  */
 interface FrontMatter {
   title: string;
-  frontmatter: Record<string, string>;
+  frontmatter: Record<string, any>;
 }
 
 /****
@@ -25,44 +26,27 @@ const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
 const getFrontmatter = (src: string): FrontMatter => {
-  const readmeContents = readFileSync(src, 'utf-8').split('\n');
-  let title: string = '';
-  let seenFrontmatter = false;
-  let isFrontmatter = false;
-  const frontmatter: Record<string, string> = {};
-  for (let i = 0; i < readmeContents.length; i++) {
-    const line = readmeContents[i];
-    if (line === '---') {
-      if (seenFrontmatter === false) {
-        isFrontmatter = true;
-        seenFrontmatter = true;
-      } else {
-        isFrontmatter = false;
-      }
-    } else if (isFrontmatter) {
-      const parts = line.split(':');
-      if (parts.length === 2) {
-        const key = parts[0].trim();
-        const val = parts[1].trim();
-        if (key === 'category') {
-          frontmatter[key] = val.charAt(0).toUpperCase() + val.slice(1);
-        } else {
-          frontmatter[key] = val;
-        }
-      }
-    } else if (!title && line.startsWith('#')) {
+  const readmeContents = readFileSync(src, 'utf-8');
+  const { attributes, body } = fm(readmeContents);
+  const bodyParts = body.split('\n');
+  let title: undefined | string;
+  for (let i = 0; i < bodyParts.length; i++) {
+    const line = bodyParts[i];
+    if (line.startsWith('#')) {
       title = line.split('#')?.pop()?.trim() || '';
+      break;
     }
   }
 
   if (!title) {
-    throw new Error(`No title found in file ${src}`)
+    throw new Error(`No title found in file ${src}`);
   }
+
   return {
+    frontmatter: attributes as Record<string, any>,
     title,
-    frontmatter,
   }
-}
+};
 
 const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; readmePath: string } & FrontMatter)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
@@ -133,13 +117,22 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
      * remove this
      */
     const packageJSONPath = path.resolve(EXAMPLES_DIR, key, 'package.json');
+    const { hide_table_of_contents, code_embed, ...rest } = example.frontmatter;
+    const { type, url, ...restOfCodeEmbed } = code_embed || {};
+    if (Object.keys(restOfCodeEmbed).length > 0) {
+      rest['code_embed'] = restOfCodeEmbed;
+    }
     packageJSON['@upscalerjs'] = {
       'guide': {
-        'frontmatter': example.frontmatter,
+        'frontmatter': rest,
       }
     }
     writeFileSync(packageJSONPath, JSON.stringify(packageJSON, null, 2), 'utf-8');
-    // write to package json
+    /****
+     * Remove before this
+     */
+
+
     const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
     const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
@@ -194,7 +187,10 @@ const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, 
 const clearOutMarkdownFiles = async (target: string) => {
   const files = await getAllMarkdownFiles(target);
   await Promise.all(files.map(file => unlink(file)));
-  console.log(`Cleared out ${files.length} markdown files, including ${JSON.stringify(files.map(file => file.split(/upscalerjs\/docs\/documentation\/guides/gi).pop()))}`);
+  console.log([
+    `Cleared out ${files.length} markdown files, including:`,
+    ...files.map(file => file.split(/docs\/documentation\//gi).pop()).map(file => `- ${file}`),
+  ].join('\n'));
 };
 
 /****
