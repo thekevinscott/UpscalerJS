@@ -49,6 +49,7 @@ const getFrontmatter = (key: string): ExampleContent => {
 
   const {
     category = 'Browser',
+    code_embed,
     ...frontmatter
   } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
 
@@ -56,11 +57,12 @@ const getFrontmatter = (key: string): ExampleContent => {
     frontmatter: {
       category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
       hide_table_of_contents: true,
+      ...frontmatter,
       code_embed: {
         type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
         url: `/examples/${key}`,
+        ...code_embed,
       },
-      ...frontmatter,
     },
     title,
   }
