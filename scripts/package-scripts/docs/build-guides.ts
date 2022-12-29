@@ -49,6 +49,7 @@ const getFrontmatter = (key: string): ExampleContent => {
 
   const {
     category = 'Browser',
+    code_embed,
     ...frontmatter
   } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
 
@@ -56,11 +57,12 @@ const getFrontmatter = (key: string): ExampleContent => {
     frontmatter: {
       category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
       hide_table_of_contents: true,
+      ...frontmatter,
       code_embed: {
         type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
         url: `/examples/${key}`,
+        ...code_embed,
       },
-      ...frontmatter,
     },
     title,
   }
@@ -112,7 +114,7 @@ const indent = (str: string, depth = 0) => [...Array(depth * 2).fill(''), str].j
 const uppercase = (str: string) => str[0].toUpperCase() + str.slice(1);
 
 const buildFrontmatter = (frontmatter: FrontMatter = {}, depth = 0): string[] => Object.entries(frontmatter).reduce((arr, [key, val]) => {
-  if (typeof (val) === 'object') {
+  if (typeof val === 'object') {
     return arr.concat(...[
       `${key}:`, 
       ...buildFrontmatter(val, depth + 1),
@@ -121,7 +123,7 @@ const buildFrontmatter = (frontmatter: FrontMatter = {}, depth = 0): string[] =>
   return arr.concat(indent(`${key}: ${val}`, depth));
 }, [] as string[]);
 
-const parseContents = async (key: string, { category, code_embed = {}, ...frontmatter}: FrontMatter = {}) => {
+const parseContents = async (key: string, frontmatter: FrontMatter = {}) => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   const contents = await readFile(readmePath, 'utf-8');
   const frontmatterContents = [
