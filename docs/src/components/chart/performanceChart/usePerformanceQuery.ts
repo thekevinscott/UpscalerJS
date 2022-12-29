@@ -86,9 +86,6 @@ export const usePerformanceQuery = (databasePath: string, opts: {
       value: number;
     }>(stmt, args);
     return rows.filter(row => {
-      if (row['package'] === 'default-model') {
-        return false;
-      }
       if (!['esrgan-slim', 'esrgan-medium'].includes(row['package'])) {
         return true;
       }
