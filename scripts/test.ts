@@ -44,16 +44,16 @@ const runTTYProcess = (command: string, args: Array<string> = []): Promise<null 
  */
 const test = async (platform: Platform, runner: Runner, positionalArgs: (string | number)[], {
   browserstackAccessKey,
+  verbose,
   skipBuild,
   skipModelBuild,
-  verbose,
   forceModelRebuild,
 }: {
   browserstackAccessKey?: string;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
-  verbose?: boolean;
   forceModelRebuild?: boolean;
+  verbose?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
@@ -161,9 +161,9 @@ const getArgs = async (): Promise<Args> => {
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
+    forceModelRebuild: { type: 'boolean' },
     kind: { type: 'string' },
     verbose: { type: 'boolean' },
-    forceModelRebuild: { type: 'boolean' },
   }).argv;
   const platform = getPlatform(argv.platform);
   const runner = getRunner(argv.kind);
@@ -190,11 +190,11 @@ if (require.main === module) {
     const {
       platform,
       runner,
-      skipBuild,
-      skipModelBuild,
       positionalArgs,
       browserstackAccessKey,
       verbose,
+      skipBuild,
+      skipModelBuild,
       forceModelRebuild,
     } = await getArgs();
     await test(platform, runner, positionalArgs, {

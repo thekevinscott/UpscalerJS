@@ -166,6 +166,7 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
       path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
     }
     try {
+      console.log('here!')
       const upscaler = new Upscaler({
         // TODO: Need to pull in the Upscaler type definitions for Node, for which
         // we need ESM Node code
@@ -174,6 +175,7 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
       await upscaler.getModel();
       return upscaler;
     } catch (err) {
+      console.log('no!')
       console.error('Error instantiating upscaler for model definition', model);
       throw err;
     }

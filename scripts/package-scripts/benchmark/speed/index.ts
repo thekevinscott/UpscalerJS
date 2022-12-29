@@ -17,6 +17,9 @@ import { Device } from '../performance/utils/Device';
 import { Local } from 'browserstack-local';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR } from '../../utils/constants';
+import buildModels from '../../build-model';
+import { getOutputFormats } from '../../prompt/getOutputFormats';
+import buildUpscaler from '../../build-upscaler';
 
 /****
  * Constants
@@ -422,6 +425,48 @@ const writeResultsToOutput = (results: BenchmarkedSpeedResult[], outputCSV: stri
   ].join('\n'), 'utf-8');
 }
 
+const preBuild = async ({
+  skipBuild,
+  skipModelBuild,
+  forceModelRebuild,
+  verbose,
+}: {
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+  forceModelRebuild?: boolean;
+  verbose?: boolean;
+}) => {
+  const outputFormats: ('esm' | 'umd')[] = ['esm', 'umd'];
+  const platform = 'browser';
+  if (skipModelBuild !== true) {
+    const modelPackages = getAllAvailableModelPackages();
+    const durations = await buildModels(modelPackages, outputFormats, {
+      verbose,
+      forceRebuild: forceModelRebuild,
+    });
+    if (verbose) {
+      console.log([
+        `** built models: ${getOutputFormats(platform)}`,
+        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
+      ].join('\n'));
+    }
+  }
+
+  if (skipBuild !== true) {
+    const platformsToBuild: ('node' | 'node-gpu')[] = ['node', 'node-gpu'];
+
+    const durations: number[] = [];
+    for (let i = 0; i < platformsToBuild.length; i++) {
+      const duration = await buildUpscaler(platformsToBuild[i]);
+      durations.push(duration);
+    }
+    console.log([
+      `** built upscaler: ${platform}`,
+      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
+    ].join('\n'));
+  }
+};
+
 /****
  * Main function
  */
@@ -441,7 +486,12 @@ const benchmarkSpeed = async (
   outputCSV?: string;
   resultsOnly?: boolean;
   skipDisplayResults?: boolean;
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+  forceModelRebuild?: boolean;
+  verbose?: boolean;
 }) => setupSpeedBenchmarking(async (bsLocal, server) => {
+  await preBuild(opts);
   const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
   await benchmarker.initialize();
   if (resultsOnly !== true) {
@@ -489,13 +539,17 @@ const benchmarkSpeed = async (
 /****
  * Functions to expose the main function as a CLI tool
  */
-interface Args extends SetupSpeedBenchmarkingOpts {
+interface Answers extends SetupSpeedBenchmarkingOpts {
   models?: Array<string>;
   packages: Array<string>;
   times?: number;
   resultsOnly?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
+  skipBuild?: boolean;
+  skipModelBuild?: boolean;
+  forceModelRebuild?: boolean;
+  verbose?: boolean;
 }
 
 const getModels = (model?: unknown): undefined | string[] => {
@@ -522,7 +576,7 @@ const getPackages = (pkg?: unknown): string[] => {
   return getAllAvailableModelPackages().filter(model => model !== 'pixel-upsampler');
 };
 
-const getArgs = async (): Promise<Args> => {
+const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('benchmark-speed', 'benchmark speed', yargs => {
     yargs
     .options({
@@ -534,8 +588,11 @@ const getArgs = async (): Promise<Args> => {
       skipDisplayResults: { type: 'boolean' },
       skipBundle: { type: 'boolean' },
       skipInstallNodeModules: { type: 'boolean' },
-      verbose: { type: 'boolean' },
       useNPM: { type: 'boolean' },
+      skipBuild: { type: 'boolean' },
+      skipModelBuild: { type: 'boolean' },
+      forceModelRebuild: { type: 'boolean' },
+      verbose: { type: 'boolean' },
     });
   })
   .help()
@@ -547,6 +604,7 @@ const getArgs = async (): Promise<Args> => {
   function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
   return {
+    ...argv,
     packages,
     models,
     times: ifDefined('times', 'number'),
@@ -555,7 +613,6 @@ const getArgs = async (): Promise<Args> => {
     skipDisplayResults: ifDefined('skipDisplayResults', 'boolean'),
     skipBundle: ifDefined('skipBundle', 'boolean'),
     skipInstallNodeModules: ifDefined('skipInstallNodeModules', 'boolean'),
-    verbose: ifDefined('verbose', 'boolean'),
     useNPM: ifDefined('useNPM', 'boolean'),
   }
 }
@@ -563,16 +620,6 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     const args = await getArgs();
-    await benchmarkSpeed(args.packages, {
-      models: args.models,
-      times: args.times,
-      resultsOnly: args.resultsOnly,
-      outputCSV: args.outputCSV,
-      skipDisplayResults: args.skipDisplayResults,
-      skipBundle: args.skipBundle,
-      skipInstallNodeModules: args.skipInstallNodeModules,
-      verbose: args.verbose,
-      useNPM: args.useNPM,
-    });
+    await benchmarkSpeed(args.packages, args);
   })();
 }

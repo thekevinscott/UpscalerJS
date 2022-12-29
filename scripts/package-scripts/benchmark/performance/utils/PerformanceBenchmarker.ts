@@ -353,15 +353,23 @@ export class PerformanceBenchmarker extends Benchmarker {
     console.log('processed', total, 'files');
   }
 
-  private async upscale(tf: TF, { upscaler }: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
-    const upscaledData = await upscaler.upscale(downscaled, {
-      output: 'tensor',
-      patchSize: 64,
-      padding: 2,
-      progress,
-    });
-    const data = await tf.node.encodePng(upscaledData);
-    return Buffer.from(data);
+  private async upscale(tf: TF, { upscaler, modelDefinition }: UpscalerModel, downscaled: string, progress?: (rate: number) => void): Promise<Buffer> {
+    try {
+      const upscaledData = await upscaler.upscale(downscaled, {
+        output: 'tensor',
+        patchSize: 64,
+        padding: 2,
+        progress,
+      });
+      const data = await tf.node.encodePng(upscaledData);
+      return Buffer.from(data);
+    } catch (err) {
+      console.error([
+        `There was an error upscaling the image ${downscaled}`,
+        `The model definition is: ${JSON.stringify(modelDefinition, null, 2)}`,
+      ].join('\n'));
+      throw err;
+    }
   }
 
   private async calculatePerformance(upscaledPath: string, originalPath: string, diffPath: string, metric: string): Promise<number> {
