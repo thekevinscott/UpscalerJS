@@ -20,6 +20,8 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise
   img.onerror = () => reject(getInvalidImageError());
 });
 
+const fromPixels = (input: Exclude<GetImageAsTensorInput, string | tf.Tensor>) => tf.browser.fromPixelsAsync(input);
+
 const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isTensor(input)) {
     return input;
@@ -27,15 +29,15 @@ const getTensorFromInput = async (input: GetImageAsTensorInput): Promise<tf.Tens
 
   if (isString(input)) {
     const imgHTMLElement = await loadImage(input);
-    return tf.browser.fromPixels(imgHTMLElement);
+    return fromPixels(imgHTMLElement);
   }
 
-  return tf.browser.fromPixels(input);
+  return fromPixels(input);
 };
 
-// TODO: Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
-type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
-export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | FromPixelsInputs;
+// // TODO: Bug with TFJS, ImageBitmap's types differ between browser.fromPixels and the exported type
+// type FromPixelsInputs = Exclude<tf.FromPixelsInputs['pixels'], 'ImageBitmap'> | ImageBitmap;
+export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
 export const getImageAsTensor = async (
   input: GetImageAsTensorInput,
 ): Promise<tf.Tensor4D> => {
