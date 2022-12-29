@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn'
@@ -12,23 +12,24 @@ const useAgent = () => {
     if (isBrowser) {
       // https://www.geeksforgeeks.org/how-to-detect-the-user-browser-safari-chrome-ie-firefox-and-opera-using-javascript/
       const userAgentString = window.navigator.userAgent;
-      // Detect Chrome
-      let chromeAgent = userAgentString.indexOf("Chrome") > -1;
 
       // Detect Internet Explorer
-      let IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1;
+      const IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1;
 
       // Detect Firefox
-      let firefoxAgent = userAgentString.indexOf("Firefox") > -1;
+      const firefoxAgent = userAgentString.indexOf("Firefox") > -1;
+
+      // Detect Opera
+      const operaAgent = userAgentString.indexOf("OP") > -1;
+
+      // Detect Chrome
+      let chromeAgent = userAgentString.indexOf("Chrome") > -1;
 
       // Detect Safari
       let safariAgent = userAgentString.indexOf("Safari") > -1;
             
       // Discard Safari since it also matches Chrome
       if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
-
-      // Detect Opera
-      let operaAgent = userAgentString.indexOf("OP") > -1;
             
       // Discard Chrome since it also matches Opera     
       if ((chromeAgent) && (operaAgent)) { chromeAgent = false; }
