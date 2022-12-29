@@ -80,7 +80,7 @@
         button.disabled = true;
         info.innerText = 'Upscaling...';
         const start = new Date().getTime();
-        upscaler.upscale(img).then((upscaledImgSrc) => {
+        upscaler.upscale('/flower.png').then((upscaledImgSrc) => {
           button.disabled = false;
           const img = document.createElement('img');
           img.src = upscaledImgSrc;
