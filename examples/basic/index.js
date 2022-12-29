@@ -5,6 +5,8 @@ const button = document.getElementById("button");
 const info = document.getElementById("info");
 
 const upscaler = new Upscaler();
+button.disabled = false;
+button.innerText = 'Upscale';
 button.onclick = () => {
   button.disabled = true;
   info.innerText = "Upscaling...";
