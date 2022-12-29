@@ -1,9 +1,74 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn'
 import styles from './header.module.scss';
 import { GoClippy } from 'react-icons/go';
+import useIsBrowser from '@docusaurus/useIsBrowser';
+
+const useAgent = () => {
+  const isBrowser = useIsBrowser();
+  return useMemo(() => {
+    if (isBrowser) {
+      // https://www.geeksforgeeks.org/how-to-detect-the-user-browser-safari-chrome-ie-firefox-and-opera-using-javascript/
+      const userAgentString = window.navigator.userAgent;
+
+      // Detect Internet Explorer
+      const IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1;
+
+      // Detect Firefox
+      const firefoxAgent = userAgentString.indexOf("Firefox") > -1;
+
+      // Detect Opera
+      const operaAgent = userAgentString.indexOf("OP") > -1;
+
+      // Detect Chrome
+      let chromeAgent = userAgentString.indexOf("Chrome") > -1;
+
+      // Detect Safari
+      let safariAgent = userAgentString.indexOf("Safari") > -1;
+            
+      // Discard Safari since it also matches Chrome
+      if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
+            
+      // Discard Chrome since it also matches Opera     
+      if ((chromeAgent) && (operaAgent)) { chromeAgent = false; }
+
+      if (safariAgent) {
+        return 'safari';
+      }
+      if (firefoxAgent) {
+        return 'firefox';
+      }
+      if (IExplorerAgent) {
+        return 'ie';
+      }
+      if (operaAgent) {
+        return 'opera';
+      }
+      if (chromeAgent) {
+        return 'chrome';
+      }
+    }
+    return undefined;
+  }, [isBrowser]);
+};
+
+const DemoVideo = () => {
+  const browser = useAgent();
+
+  if (browser === 'safari') {
+    return (
+      <img className="demo" src="/assets/demo.mov" />
+    );
+  }
+
+  return (
+    <video autoPlay muted>
+      <source src="/assets/demo.mov#t=3" type="video/mp4" />
+    </video>
+  );
+}
 
 export function HomepageHeader() {
   const [copied, setCopied] = useState(false);
@@ -32,15 +97,19 @@ export function HomepageHeader() {
               Get Started
           </Link>
           <GitHubButton 
-          href="https://github.com/thekevinscott/upscalerjs" 
-          data-size='large' 
-          data-show-count="true" 
-          aria-label="Star thekevinscott/upscalerjs on GitHub">Star</GitHubButton>
+            href="https://github.com/thekevinscott/upscalerjs" 
+            data-size='large' 
+            data-show-count="true" 
+            aria-label="Star thekevinscott/upscalerjs on GitHub">Star</GitHubButton>
         </div>
-          <code className={clsx(copied ? styles.copied : '')} onClick={copyInstallationInstructions}>npm install upscaler <GoClippy /></code>
+        <code className={clsx(copied ? styles.copied : '')} onClick={copyInstallationInstructions}>npm install upscaler <GoClippy /></code>
         </div>
         <div className={clsx('col col--8')}>
-          <img src="/assets/demo.gif" />
+          <div className={styles.demo}>
+            <div className={styles.demoInner}>
+              <DemoVideo />
+          </div>
+          </div>
         </div>
       </div>
     </header>

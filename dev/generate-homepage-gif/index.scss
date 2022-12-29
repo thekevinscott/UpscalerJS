@@ -1,0 +1,107 @@
+html {
+  zoom: 50%;
+}
+
+body {
+  // background-color: #FFF;
+  background-color: rgba(83, 146, 249, 0.2);
+  // color: rgba(0,0,0,0.8);
+
+  // &.dark-mode {
+  //   background-color: #152539;
+  //   color: rgba(255,255,255,0.8);
+
+  //   #output {
+  //     border: 1px solid white;
+  //   }
+  // }
+}
+
+$size: 512px;
+$width: calc($size * 2 + 40px);
+#buttons {
+  width: $width;
+  margin: 40px auto;
+
+  button {
+    margin: 0 auto;
+    padding: 20px 80px;
+    cursor: pointer;
+    font-size: 34px;
+  }
+}
+
+body {
+  padding: 20px;
+}
+
+#info {
+  margin: 0 auto;
+  width: $width;
+}
+
+$padding: 10px;
+$start_scale: 0.7;
+$end_scale: 0.8;
+#output {
+  height: $size + 0px + 40px;
+  width: $width;
+  margin: 40px auto;
+  border: 1px solid black;
+  position: relative;
+
+  .img-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: $size / -2;
+    margin-top: $size / -2;
+    width: $size;
+    height: $size;
+    animation-duration: 1.0s;
+    animation-name: animate-fade;
+    animation-delay: 0.0s;
+    animation-fill-mode: backwards;
+
+    width: $size;
+    height: $size;
+    transition: 1s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      transition: 1.6s;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    &.left {
+      transition-duration: 1.0s;
+      left: $size / 2 + $padding;
+    }
+
+    &.right {
+      left: calc(100% - ($size / 2) - $padding);
+    }
+
+    &.fadeOut {
+      opacity: 0;
+      transform: scale($end_scale) translateY(30px);
+    }
+  }
+
+  img, label {
+    display: block;
+  }
+
+  label {
+    font-size: 20px;
+  }
+}
+
+@keyframes animate-fade {
+  0% { opacity: 0; transform: scale($start_scale) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}

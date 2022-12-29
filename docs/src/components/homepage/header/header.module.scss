@@ -13,14 +13,10 @@
     text-align: left;
   }
 
-  img {
-    max-height: 800px;
-  }
-
   code {
     display: block;
     position: relative;
-    margin: 20px 0;
+    margin: 28px 0 20px 0;
     padding: 10px 40px;
     background: transparent;
     text-align: center;
@@ -47,6 +43,30 @@
       }
     }
   }
+
+  .demo {
+    background-color: #dce9fd;
+    border: 0.1em solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 10px;
+    position: relative;
+    width: 768px;
+    height: 407px;
+
+    .demoInner {
+      background-size: cover;
+      background-image: url('/assets/demo.png');
+      height: 100%;
+    }
+
+    img, video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #dce9fd;
+    }
+  }
 }
 
 [data-theme='dark'] {
@@ -62,6 +82,12 @@
 @media screen and (max-width: 996px) {
   .heroBanner {
     padding: 2rem;
+
+    .demo {
+      height: auto;
+      width: auto;
+      max-width: 100%;
+    }
   }
 }
 
