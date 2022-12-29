@@ -306,15 +306,18 @@ describe('tensorAsClampedArray', () => {
 
 describe('getModelDefinitionError', () => {
   it('returns an error if path is not provided', () => {
-    expect(getModelDefinitionError({ path: undefined } as unknown as ModelDefinition)).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
+    const err = getModelDefinitionError({ path: undefined } as unknown as ModelDefinition);
+    expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
   });
 
   it('returns an error if scale is not provided', () => {
-    expect(getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition)).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
+    const err = getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition);
+    expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   });
 
   it('returns a generic error otherwise', () => {
-    expect(() => getModelDefinitionError({ path: 'foo', scale: 2 })).toThrow(ERROR_MODEL_DEFINITION_BUG);
+    const err = getModelDefinitionError({ path: 'foo', scale: 2 });
+    expect(err.message).toEqual(ERROR_MODEL_DEFINITION_BUG);
   });
 })
 
