@@ -20,21 +20,29 @@ export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number): IsT
   return fn;
 }
 
-export const MISSING_MODEL_DEFINITION_ERROR = new Error('You must provide a model definition');
-export const MISSING_MODEL_DEFINITION_PATH_ERROR = new Error('You must provide a path for a model definition');
-export const MISSING_MODEL_DEFINITION_SCALE_ERROR = new Error('You must provide a scale for a model definition');
-export const LOGICAL_ERROR = new Error('There is a bug with the upscaler code. Please report this.');
-export function getModelDefinitionError(modelDefinition?: ModelDefinition): Error {
-  if (!modelDefinition) {
-    return MISSING_MODEL_DEFINITION_ERROR;
-  }
+const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
+const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
+
+export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
+  'You must provide a "path" when providing a model definition',
+  `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_PATH_URL}.`,
+].join('\n');
+export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
+  'You must provide a "scale" for a model definition',
+  `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
+].join('\n');
+export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
+
+export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
   if (!modelDefinition.path) {
-    return MISSING_MODEL_DEFINITION_PATH_ERROR;
+    return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
   }
   if (!modelDefinition.scale) {
-    return MISSING_MODEL_DEFINITION_SCALE_ERROR;
+    return new Error(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   }
-  return LOGICAL_ERROR;
+
+  return new Error(ERROR_MODEL_DEFINITION_BUG);
 }
 
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {

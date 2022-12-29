@@ -33,7 +33,7 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
 };
 
 export const loadModel = async (
-  modelDefinition: ModelDefinition | undefined,
+  modelDefinition: ModelDefinition,
 ): Promise<ModelPackage> => {
   if (isValidModelDefinition(modelDefinition)) {
     registerCustomLayers(modelDefinition);
