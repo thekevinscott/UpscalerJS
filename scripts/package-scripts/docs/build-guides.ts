@@ -51,7 +51,7 @@ const getFrontmatter = (src: string): ExampleContent => {
   }
 };
 
-const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; readmePath: string } & ExampleContent)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
+const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; } & ExampleContent)[] => getExampleFolders(EXAMPLES_DIR).filter(key => {
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   return existsSync(readmePath);
 }).map(key => {
@@ -59,7 +59,6 @@ const getExamplesWithFrontmatter = (): ({ key: string; packageJSON: JSONSchema; 
   const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
   return {
     key,
-    readmePath,
     packageJSON,
     ...getFrontmatter(readmePath),
   };
@@ -92,62 +91,61 @@ const getExamplesByName = () => {
         ...obj,
         [key]: rest,
       };
-    }, {} as Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & ExampleContent)>),
+    }, {} as Record<string, ({ packageJSON: JSONSchema; } & ExampleContent)>),
     exampleOrder,
   };
 }
 
-const indent = (str: string, depth = 0) => {
-  return Array(depth * 2).fill(' ') + str;
-}
+const indent = (str: string, depth = 0) => [...Array(depth * 2).fill(''), str].join(' ');
 
 const buildFrontmatter = (frontmatter: FrontMatter = {}, depth = 0): string[] => Object.entries(frontmatter).reduce((arr, [key, val]) => {
   if (typeof (val) === 'object') {
     return arr.concat(...[
       `${key}:`, 
-      ...buildFrontmatter(val),
+      ...buildFrontmatter(val, depth + 1),
     ].map(str => indent(str, depth)));
   }
   return arr.concat(indent(`${key}: ${val}`, depth));
 }, [] as string[]);
 
-const parseContents = async (path: string, { category, code_embed = {}, ...frontmatter}: FrontMatter = {}) => {
-  const contents = await readFile(path, 'utf-8');
-  return [
-    '---',
+const parseContents = async (key: string, { category, code_embed = {}, ...frontmatter}: FrontMatter = {}) => {
+  const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
+  const contents = await readFile(readmePath, 'utf-8');
+  const frontmatterContents = [
     ...buildFrontmatter(frontmatter),
     category ? `category: ${category}` : '',
     'hide_table_of_contents: true',
     'code_embed:',
     `  type: '${category === 'node' ? 'codesandbox' : 'stackblitz'}'`,
-    '  url: \'/examples/basic\'',
-    ...Object.entries(code_embed).map(entry => {
-      return `  ${entry[0]}: ${entry[1]}`;
-    }),
+    `  url: '/examples/${key}'`,
+    ...Object.entries(code_embed).map(entry => indent(`${entry[0]}: ${entry[1]}`, 1)),
+  ];
+  return [
+    '---',
+    ...frontmatterContents,
     '---',
     contents,
   ].filter(Boolean).join('\n');
 }
 
-const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; readmePath: string; } & ExampleContent)>, dest: string) => {
+const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ({ packageJSON: JSONSchema; } & ExampleContent)>, dest: string) => {
   await Promise.all(exampleOrder.map(async (key) => {
     const example = examplesByName[key];
     if (!example) {
       throw new Error(`No example found for key ${key}`);
     }
     const {
-      readmePath,
       packageJSON,
-      frontmatter: {
-        parent,
-        category = 'Browser',
-      },
     } = example;
 
-    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter;
+    const frontmatter = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
     if (!frontmatter) {
       throw new Error(`No frontmatter found in package.json for example ${key}`);
     }
+    const {
+      parent,
+      category = 'Browser',
+    } = frontmatter;
     if (typeof category !== 'string') {
       throw new Error(`Category is not of type string ${category}`);
     }
@@ -156,12 +154,12 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     }
     const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
     await mkdirp(path.dirname(targetPath));
-    const fileContents = await parseContents(readmePath, frontmatter);
+    const fileContents = await parseContents(key, frontmatter);
     await writeFile(targetPath, fileContents, 'utf-8');
   }));
 }
 
-const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ({ readmePath: string; } & ExampleContent)>, dest: string) => {
+const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ExampleContent>, dest: string) => {
   const examplesByCategory = exampleOrder.reduce((obj, example) => {
     const { frontmatter: { parent, category = 'Browser' } } = examplesByName[example];
     if (typeof category !== 'string') {
