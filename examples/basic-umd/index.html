@@ -42,7 +42,7 @@
       installed using a script tag.
     </p>
     <p>Click the upscale button to upscale the photo.</p>
-    <button id="button">Upscale</button>
+    <button disabled id="button">Loading...</button>
     <p id="info"></p>
     <table>
       <thead>
@@ -74,11 +74,13 @@
         model: DefaultUpscalerJSModel,
       });
 
+      button.disabled = false;
+      button.innerText = 'Upscale';
       button.onclick = () => {
         button.disabled = true;
         info.innerText = 'Upscaling...';
         const start = new Date().getTime();
-        upscaler.upscale(img).then((upscaledImgSrc) => {
+        upscaler.upscale('/flower.png').then((upscaledImgSrc) => {
           button.disabled = false;
           const img = document.createElement('img');
           img.src = upscaledImgSrc;
