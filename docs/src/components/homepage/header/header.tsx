@@ -64,7 +64,7 @@ const DemoVideo = () => {
   }
 
   return (
-    <video autoPlay muted>
+    <video autoPlay muted loop>
       <source src="/assets/demo.mov#t=3" type="video/mp4" />
     </video>
   );
@@ -93,7 +93,7 @@ export function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--primary button--lg"
-            to="/documentation#getting-started">
+            to="/documentation/getting-started">
               Get Started
           </Link>
           <GitHubButton 
