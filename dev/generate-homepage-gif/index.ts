@@ -28,9 +28,10 @@ const upscaler = new Upscaler({
 const images = [
   'images/flower.png',
   'images/face2.jpeg',
-  'images/waifu.jpeg',
+  'images/face1.png',
+  // 'images/waifu.jpeg',
   'images/face3.jpeg',
-  'images/ninja.png',
+  // 'images/ninja.png',
   // 'images/mountain.png',
 ];
 const main = async () => {
@@ -115,7 +116,7 @@ const main = async () => {
 
       imgContainer.classList.add('left');
       await wait(130);
-      const upscaledContainer = addImageContainer(upscaledImg, 'Upscaled using @upscalerjs/esrgan-legacy 4x model');
+      const upscaledContainer = addImageContainer(upscaledImg, 'Upscaled using @upscalerjs/esrgan-thick 4x model');
       upscaledContainer.classList.add('right');
       output.appendChild(upscaledContainer);
       await wait(50);
