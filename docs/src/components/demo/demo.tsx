@@ -11,8 +11,6 @@ import { useImages } from './hooks/useImages';
 import { ProgressBar } from './components/progressBar/progressBar';
 import { useDownload } from './hooks/useDownload';
 
-console.log(styles);
-
 const globalStyle = document.createElement('style');
 globalStyle.type = 'text/css';
 globalStyle.innerHTML = `
@@ -31,7 +29,6 @@ footer {
 
 export function Demo() {
   const onResize = useCallback(() => {
-    console.log('resize!')
     document.getElementById(styles.page).style.minHeight = `calc(${window.innerHeight}px - 60px)`;
   }, []);
   useEffect(() => {
@@ -75,7 +72,7 @@ export function Demo() {
     img,
   });
 
-  const [zoom, setZoom] = useState(0.5);
+  const [zoom, setZoom] = useState(0.75);
 
   const progressValue = parseInt(`${progress * 100}`, 10);
 
