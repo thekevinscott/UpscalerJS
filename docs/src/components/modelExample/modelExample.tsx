@@ -6,6 +6,7 @@ export const ModelExample = ({ model }: { model: string }) => {
     const params = new URLSearchParams();
     params.set('file', 'index.js');
     params.set('title', `@upscalerjs/${model}`);
+    params.set('ctl', '1');
     return params;
   }, []);
 
