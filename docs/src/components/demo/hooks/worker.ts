@@ -1,4 +1,5 @@
 import Upscaler, { AbortError } from 'upscaler';
+import model from '@upscalerjs/esrgan-medium/4x';
 import * as tf from '@tensorflow/tfjs';
 
 export enum ReceiverWorkerState {
@@ -10,18 +11,36 @@ export enum ReceiverWorkerState {
 
 export enum SenderWorkerState {
   PROGRESS,
+  SEND_CONSTS,
 }
 
 let upscaler: Upscaler;
 let id: string;
 
+let scale: number;
 const PATCH_SIZE = 32;
+let resolver = () => {};
+let ready = new Promise<void>(r => {
+  resolver = r;
+});
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
     if (!upscaler) {
-      upscaler = new Upscaler();
+      upscaler = new Upscaler({
+        model,
+      });
+      const { modelDefinition } = await upscaler.getModel();
+      scale = modelDefinition.scale;
+      postMessage({
+        type: SenderWorkerState.SEND_CONSTS,
+        data: {
+          scale,
+          patchSize: PATCH_SIZE,
+        },
+      });
       await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
+      resolver();
       console.log('UpscalerJS warmup complete.');
     } else {
       console.warn('Was asked to instantiate UpscalerJS, but it already exists.')
@@ -37,6 +56,7 @@ onmessage = async ({ data: { type, data } }) => {
       }
     id = data.id;
   } else if (type === ReceiverWorkerState.UPSCALE) {
+    await ready;
     if (!upscaler) {
       throw new Error('Instantiate an Upscaler first.')
     }

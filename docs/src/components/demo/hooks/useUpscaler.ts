@@ -4,17 +4,15 @@ import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
 import { tensorAsBase64 } from 'tensor-as-base64';
 
-// TODO: This has to manually be set to the scale of the model loaded in the worker.
-const SCALE = 4;
-const PATCH_SIZE = 32;
-
 export const useUpscaler = (img?: HTMLImageElement) => {
+  const [scale, setScale] = useState<number>();
+  const [patchSize, setPatchSize] = useState<number>();
   const [upscaling, setUpscaling] = useState(false);
   const [progress, setProgress] = useState<number>();
 
   const upscaledSrc = useRef<string>();
 
-  const { drawImage, createCanvas } = useCanvas(SCALE);
+  const { drawImage, createCanvas } = useCanvas();
 
   const setUpscaledSrc = useCallback((newSrc: string) => {
     upscaledSrc.current = newSrc;
@@ -59,7 +57,7 @@ export const useUpscaler = (img?: HTMLImageElement) => {
             const tensor = tf.tensor3d(slice, shape);
             const dataURL = await tensorAsBase64(tensor);
             tensor.dispose();
-            setUpscaledSrc(await drawImage(dataURL, PATCH_SIZE * SCALE, col, row));
+            setUpscaledSrc(await drawImage(dataURL, patchSize * scale, col, row));
             if (rate === 1) {
               setUpscaling(false);
             }
@@ -67,12 +65,18 @@ export const useUpscaler = (img?: HTMLImageElement) => {
         } else {
           console.warn('Received progress event, but we are not supposed to be upscaling.');
         }
+      } else if (type === SenderWorkerState.SEND_CONSTS) {
+        setScale(data.scale);
+        setPatchSize(data.patchSize);
       }
     }
   }, [upscaling, img, setProgress, setUpscaledSrc,]);
 
-  const upscale = useCallback(async (_img: HTMLImageElement) => {
-    setUpscaledSrc(createCanvas(_img));
+  const upscale = useCallback(async (_img: HTMLImageElement, scale?: number, patchSize?: number) => {
+    if (!scale) {
+      throw new Error('Scale is not defined');
+    }
+    setUpscaledSrc(createCanvas(_img, scale));
     setProgress(0);
     setUpscaling(true);
     const src = tf.browser.fromPixels(_img);
@@ -82,11 +86,11 @@ export const useUpscaler = (img?: HTMLImageElement) => {
       data: {
         pixels: src.dataSync(),
         shape: src.shape,
-        patchSize: PATCH_SIZE,
+        patchSize,
         padding: 2,
       }
     });
-  }, [createCanvas, setUpscaling, setProgress]);
+  }, [scale, createCanvas, setUpscaling, setProgress]);
 
   const cancelUpscale = useCallback(() => {
     worker.current.postMessage({
@@ -97,17 +101,17 @@ export const useUpscaler = (img?: HTMLImageElement) => {
   }, [setUpscaling, worker]);
 
   useEffect(() => {
-    if (img) {
-      upscale(img);
+    if (img && scale && patchSize) {
+      upscale(img, scale, patchSize);
     } else {
       upscaledSrc.current = undefined;
     }
-  }, [img, upscale]);
+  }, [img, upscale, scale, patchSize]);
 
   return {
     cancelUpscale,
     upscaledSrc: upscaledSrc.current,
     progress: upscaling ? progress : undefined,
-    scale: SCALE,
+    scale,
   }
 }

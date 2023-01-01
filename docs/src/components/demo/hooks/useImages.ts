@@ -40,7 +40,8 @@ export const useImages = () => {
       if (uploadedImage) {
         _setHasBeenRescaled(false);
         const { src, filename } = uploadedImage;
-        const img = await removeAlpha(src);
+        // const img = await removeAlpha(src);
+        const img = await getHTMLImageElement(src);
         _setOriginalImage({
           src,
           filename,

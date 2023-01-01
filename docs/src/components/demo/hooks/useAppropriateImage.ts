@@ -18,5 +18,5 @@ export const useAppropriateImage = ({ hasBeenRescaled, choice, downscaledImage, 
       return _originalImage?.el;
     }
     return undefined;
-  }, [_originalImage, choice, hasBeenRescaled]);
+  }, [downscaledImage, _originalImage, choice, hasBeenRescaled]);
 }

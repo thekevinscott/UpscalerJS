@@ -52,10 +52,13 @@ const manipulateOriginalImage = (canvas: HTMLCanvasElement) => {
   // Draw text on top
 };
 
-export const useCanvas = (scale: number) => {
+export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
 
-  const createCanvasAndSetImage = useCallback((img: HTMLImageElement) => {
+  const createCanvasAndSetImage = useCallback((img: HTMLImageElement, scale?: number) => {
+    if (!scale) {
+      throw new Error('scale is not defined');
+    }
     const canvas = document.createElement('canvas');
     canvas.width = img.width * scale;
     canvas.height = img.height * scale;
