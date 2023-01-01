@@ -89,7 +89,7 @@ export function Demo() {
             originalSize={originalSize}
           />
         )}
-        <Viewer upscaledSrc={upscaledSrc} src={img?.src} zoom={zoom} scale={scale} /> 
+        <Viewer upscaledSrc={upscaledSrc} src={img} zoom={zoom} scale={scale} /> 
         <Controls 
           cancelUpscale={cancelUpscale} 
           selectImage={setUploadedImage} 

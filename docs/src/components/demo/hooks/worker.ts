@@ -32,8 +32,6 @@ onmessage = async ({ data: { type, data } }) => {
       });
       const { modelDefinition } = await upscaler.getModel();
       scale = modelDefinition.scale;
-      await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
-      resolver();
       postMessage({
         type: SenderWorkerState.SEND_CONSTS,
         data: {
@@ -41,6 +39,8 @@ onmessage = async ({ data: { type, data } }) => {
           patchSize: PATCH_SIZE,
         },
       });
+      await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
+      resolver();
       console.log('UpscalerJS warmup complete.');
     } else {
       console.warn('Was asked to instantiate UpscalerJS, but it already exists.')

@@ -13,20 +13,32 @@ export default function Viewer({
 }: {
   zoom?: number;
   upscaledSrc?: string;
-  src?: string;
-  scale: number;
+  src?: HTMLImageElement;
+  scale?: number;
 }) {
-  const [resizedImage, setResizedImage] = useState<HTMLImageElement>();
+  const [resizedImage, setResizedImage] = useState<string>();
+  const [oldSrc, setOldSrc] = useState<string>();
 
   useEffect(() => {
-    if (src) {
-      getHTMLImageElement(src).then(img => resizeImage(img, scale)).then(getHTMLImageElement).then(setResizedImage);
-    } else if (resizedImage) {
-      setResizedImage(undefined);
-    }
+    setOldSrc(src?.src);
   }, [src]);
 
-  if (!src) {
+  useEffect(() => {
+    if (oldSrc && oldSrc !== src?.src) {
+      setResizedImage(undefined);
+    }
+  }, [src, oldSrc]);
+
+  useEffect(() => {
+    if (src && scale) {
+      const _resizedImage = resizeImage(src, scale);
+      setResizedImage(_resizedImage);
+    } else {
+      setResizedImage(undefined);
+    }
+  }, [src, resizedImage, scale]);
+
+  if (!resizedImage) {
     return (
       <div id={styles.viewer}>
         <image-comparison-viewer></image-comparison-viewer>
@@ -37,8 +49,8 @@ export default function Viewer({
   return (
     <div id={styles.viewer}>
       <image-comparison-viewer zoom={zoom} comparisonX={0.5}>
-        <img src={upscaledSrc} />
-        <img src={resizedImage?.src} />
+        {<img src={upscaledSrc} />}
+        {<img src={resizedImage} />}
       </image-comparison-viewer>
     </div>
   );
