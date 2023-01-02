@@ -104,8 +104,8 @@ export class Upscaler {
    * });
    * ```
    *
-   * @param image the image to upscale. If in the browser, this can be a string to a file path, a tensor, or any element tf.fromPixels supports. If in Node, this can be a string to a file path, a Buffer, a Uint8Array, or a tensor.
-   * @param options a set of upscaling arguments
+   * @param image The image to upscale.
+   * @param options A set of upscaling arguments
    * @returns an upscaled image.
    */
   public async upscale(

@@ -73,15 +73,15 @@ const findPlatformSpecificFiles = (folder: string) => new Set(fs.readdirSync(fol
 }).map(file => file.split('.').slice(0, -2).join('.')));
 
 
-const scaffoldPlatformSpecificFiles = (folder: string, platform: Platform, { verbose }: { verbose: boolean }) => {
-  const files = findPlatformSpecificFiles(folder);
+export const scaffoldPlatformSpecificFiles = (folderSrc: string, platform: Platform, { verbose }: { verbose?: boolean } = {}) => {
+  const files = findPlatformSpecificFiles(folderSrc);
   if (verbose) {
     console.log([
       'Scaffolding the following files:',
       ...Array.from(files).map(file => `- ${file}.generated.ts`),
     ].join('\n'))
   }
-  files.forEach(file => scaffoldPlatformSpecificFile(folder, file, platform));
+  files.forEach(file => scaffoldPlatformSpecificFile(folderSrc, file, platform));
 }
 
 const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platform) => {

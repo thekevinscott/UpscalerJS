@@ -1,18 +1,35 @@
 import { mkdirp, writeFile } from 'fs-extra';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
+import { Platform } from '../prompt/types';
+import { scaffoldPlatformSpecificFiles } from '../scaffold-dependencies';
 import { CORE_DIR, DOCS_DIR, ROOT_DIR, UPSCALER_DIR } from '../utils/constants';
 
 /****
  * Types
  */
+type DecRef = DeclarationReflection | PlatformSpecificDeclarationReflection;
 interface Definitions {
-  constructors: Record<string, DeclarationReflection>;
-  methods: Record<string, DeclarationReflection>;
-  interfaces: Record<string, DeclarationReflection>;
-  types: Record<string, DeclarationReflection>;
-  classes: Record<string, DeclarationReflection>;
-  functions: Record<string, DeclarationReflection>;
+  constructors: Record<string, DecRef>;
+  methods: Record<string, DecRef>;
+  interfaces: Record<string, DecRef>;
+  types: Record<string, DecRef>;
+  classes: Record<string, DecRef>;
+  functions: Record<string, DecRef>;
+}
+
+interface ExpandedProjectReflection extends Omit<ProjectReflection, 'children'> {
+  children?: (DeclarationReflection | PlatformSpecificDeclarationReflection)[];
+}
+
+interface PlatformSpecificDeclarationReflection {
+  name: string;
+  kindString: 'Platform Specific Type';
+  node: DeclarationReflection;
+  browser: DeclarationReflection;
+  type: DeclarationReflection['type'];
+  children: [];
 }
 
 /****
@@ -57,17 +74,16 @@ const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
 /****
  * Utility functions
  */
-const getUpscalerAsTree = (): ProjectReflection => {
-  const upscalerTree: ProjectReflection = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src')], path.resolve(UPSCALER_DIR, 'tsconfig.esm.json'));
+const getUpscalerAsTree = async (): Promise<ExpandedProjectReflection> => {
+  await scaffoldDependenciesForUpscaler('node');
+  const upscalerTree: ExpandedProjectReflection = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src')], path.resolve(UPSCALER_DIR, 'tsconfig.esm.json'));
   const coreTree = getPackageAsTree([path.resolve(CORE_DIR, 'src')], path.resolve(CORE_DIR, 'tsconfig.json'));
-  // const TFJS_DIR = path.resolve(ROOT_DIR, 'node_modules', '@tensorflow', 'tfjs');
-  // const tfjsTree = getPackageAsTree(TFJS_DIR);
+  const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
   upscalerTree.children = [
     upscalerTree,
     coreTree,
-    getTypesFromPlatformSpecificFiles(),
-    // tfjsTree,
-  ].reduce((arr, tree) => arr.concat(tree.children || []), [] as DeclarationReflection[]);
+    platformSpecificTypes,
+  ].reduce((arr, tree) => arr.concat(tree.children || []), [] as (DeclarationReflection | PlatformSpecificDeclarationReflection)[]);
   return upscalerTree;
 }
 
@@ -78,13 +94,8 @@ const getPackageAsTree = (entryPoints: string[], tsconfig: string): ProjectRefle
   app.options.addReader(new TypeDocReader());
 
   app.bootstrap({
-    // typedoc options here
     entryPoints,
-    // entryPoints: [path.resolve(src, 'src')],
     tsconfig,
-  //   "compilerOptions": {
-  //     "strictNullChecks": false
-  // }
   });
 
   const project = app.convert();
@@ -96,11 +107,39 @@ const getPackageAsTree = (entryPoints: string[], tsconfig: string): ProjectRefle
   }
 }
 
-const getTypesFromPlatformSpecificFiles = () => {
-  const imageBrowser = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src', 'image.browser.ts')], path.resolve(UPSCALER_DIR, 'tsconfig.json'));
+const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: string) => {
+  const platforms: Platform[] = ['browser', 'node'];
+  const platformSpecificTypes: DeclarationReflection[] = [];
+  for (let i = 0; i < platforms.length; i++) {
+    const platform = platforms[i];
+    await scaffoldDependenciesForUpscaler(platform);
+    const imageBrowser = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`)], path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`));
+    const matchingType = imageBrowser.children?.filter(child => child.name === typeName).pop();
+    if (!matchingType) {
+      throw new Error(`Could not find input from ${fileName}.${platform}.ts`);
+    }
+    platformSpecificTypes.push(matchingType);
+  }
 
+  const platformSpecificType: PlatformSpecificDeclarationReflection = {
+    name: 'Input',
+    kindString: 'Platform Specific Type',
+    browser: platformSpecificTypes[0],
+    node: platformSpecificTypes[1],
+    children: [],
+    type: platformSpecificTypes[0].type,
+  }
+
+  return platformSpecificType;
+}
+
+const getTypesFromPlatformSpecificFiles = async (): Promise<{
+  children: PlatformSpecificDeclarationReflection[];
+}> => {
   return {
-    children: imageBrowser.children?.filter(child => child.name === 'Input'),
+    children: await Promise.all([
+      getTypeFromPlatformSpecificFiles('image', 'Input'),
+    ]),
   };
 }
 
@@ -113,6 +152,8 @@ function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
 
 const getKindStringKey = (kindString: string = '') => {
   switch (kindString) {
+    case 'Platform Specific Type':
+      return 'types';
     case 'Constructor':
       return 'constructors';
     case 'Method':
@@ -130,7 +171,7 @@ const getKindStringKey = (kindString: string = '') => {
   }
 }
 
-const getChildren = (projectReflection: ProjectReflection): Definitions => {
+const getChildren = (projectReflection: ExpandedProjectReflection): Definitions => {
   const children = projectReflection.children;
   if (children === undefined) {
     throw new Error('No children found in project reflection');
@@ -147,21 +188,21 @@ const getChildren = (projectReflection: ProjectReflection): Definitions => {
       [key]: obj[key].concat(child),
     };
   }, {
-    constructors: [] as DeclarationReflection[],
-    methods: [] as DeclarationReflection[],
-    functions: [] as DeclarationReflection[],
-    interfaces: [] as DeclarationReflection[],
-    types: [] as DeclarationReflection[],
-    classes: [] as DeclarationReflection[],
+    constructors: [] as DecRef[],
+    methods: [] as DecRef[],
+    functions: [] as DecRef[],
+    interfaces: [] as DecRef[],
+    types: [] as DecRef[],
+    classes: [] as DecRef[],
   });
 
   return {
-    methods: getAsObj<DeclarationReflection>(parsedChildren.methods, i => i.name),
-    constructors: getAsObj<DeclarationReflection>(parsedChildren.constructors, i => i.name),
-    functions: getAsObj<DeclarationReflection>(parsedChildren.functions, i => i.name),
-    types: getAsObj<DeclarationReflection>(parsedChildren.types, i => i.name),
-    interfaces: getAsObj<DeclarationReflection>(parsedChildren.interfaces, i => i.name),
-    classes: getAsObj<DeclarationReflection>(parsedChildren.classes, i => i.name),
+    methods: getAsObj<DecRef>(parsedChildren.methods, i => i.name),
+    constructors: getAsObj<DecRef>(parsedChildren.constructors, i => i.name),
+    functions: getAsObj<DecRef>(parsedChildren.functions, i => i.name),
+    types: getAsObj<DecRef>(parsedChildren.types, i => i.name),
+    interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
+    classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
   };
 };
 
@@ -222,6 +263,9 @@ const rewriteURL = (url: string) => {
   ].join('');
 }
 
+const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => {
+  return reflection?.kindString !== 'Platform Specific Type';
+}
 const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
 const isReferenceType = (type: SomeType): type is ReferenceType => type.type === 'reference';
 const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
@@ -316,8 +360,12 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         }
         const { interfaces, types } = definitions;
         const matchingType = interfaces[t.name] || types[t.name];
+        if (!isDeclarationReflection(matchingType)) {
+          throw new Error('Is a platform specific type');
+        }
         if (!matchingType?.type) {
-          throw new Error(`No matching type found for literal ${t.name} in union`);
+          return t.name;
+          // throw new Error(`No matching type found for literal ${t.name} in union`);
         }
         const matchingTypeType = matchingType.type;
         if (isLiteralType(matchingTypeType)) {
@@ -340,7 +388,14 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         return t.name;
       } else if (isLiteralType(t)) {
         return `\`${t.value}\``;
+      } else if (t.type === 'indexedAccess') {
+        const objectType = t.objectType;
+        if ('name' in objectType) {
+          return objectType.name;
+        }
+        return '';
       }
+      console.error(t);
       throw new Error(`Unsupported type in union type: ${t.type}`);
     }).filter(Boolean).join(' | ');
 
@@ -380,7 +435,22 @@ function sortChildrenByLineNumber<T extends (DeclarationReflection | ParameterRe
   });
 }
 
-const writeParameter = (parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DeclarationReflection | TypeParameterReflection, definitions: Definitions) => {
+const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection): reflection is TypeParameterReflection => {
+  return 'parent' in reflection;
+}
+
+const writeParameter = (parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DecRef | TypeParameterReflection, definitions: Definitions) => {
+  if (matchingType !== undefined && !isTypeParameterReflection(matchingType) && !isDeclarationReflection(matchingType)) {
+    const comment = getSummary(parameter.comment);
+    const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
+    const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
+    return [
+      '-',
+      `**\`${parameter.name}${parameter.flags?.isOptional ? '?' : ''}\`**:`,
+      `[${parsedName}](#${name.toLowerCase()})`,
+      comment ? ` - ${comment}` : undefined,
+    ].filter(Boolean).join(' ');
+  }
   const comment = getSummary(parameter.comment);
   const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
   const url = includeURL ? getURLFromSources(matchingType?.sources) : undefined;
@@ -394,39 +464,75 @@ const writeParameter = (parameter: ParameterReflection | DeclarationReflection, 
   ].filter(Boolean).join(' ');
 };
 
+const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
+  const comment = getSummary(parameter.comment);
+  const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
+  const url = getURLFromSources(parameter.sources);
+  const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
+  return [
+    '-',
+    `**[\`${platform}\`](${url})**:`,
+    `_${parsedName}_`,
+    comment ? ` - ${comment}` : undefined,
+  ].filter(Boolean).join(' ');
+
+}
+
+const writePlatformSpecificDefinitions = (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
+  const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
+  for (let i = 0; i< Object.values(definitions.types).length; i++) {
+    const type = Object.values(definitions.types)[i];
+    if (!isDeclarationReflection(type)) {
+      platformSpecificTypes.push(type);
+    }
+  }
+  return platformSpecificTypes.map(parameter => {
+    return [
+      `### \`${parameter.name}\``,
+      writePlatformSpecificParameter('Browser', parameter.browser, definitions),
+      writePlatformSpecificParameter('Node', parameter.node, definitions),
+    ].join('\n')
+  });
+}
+
+const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
+  const { classes, interfaces, types } = definitions;
+  let { name: nameOfTypeDefinition } = getReferenceTypeOfParameter(parameter.type, definitions);
+  let matchingType: undefined | PlatformSpecificDeclarationReflection | DeclarationReflection | TypeParameterReflection = undefined;
+  if (!INTRINSIC_TYPES.includes(nameOfTypeDefinition) && parameter.type !== undefined && !isLiteralType(parameter.type)) {
+    // first, check if it is a specially defined external type
+    matchingType = EXTERNALLY_DEFINED_TYPES[nameOfTypeDefinition] || interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+    // console.log('matchingType', matchingType);
+    if (!matchingType) {
+      // it's possible that this type is a generic type; in which case, replace the generic with the actual type it's extending
+      matchingType = typeParameters[nameOfTypeDefinition];
+      if (matchingType) {
+        nameOfTypeDefinition = (matchingType as any).type.name;
+        matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
+        parameter.type = matchingType.type;
+      }
+    }
+    if (!matchingType && (parameter.type === undefined || !isUnionType(parameter.type))) {
+      console.warn('------')
+      console.warn(parameter.type);
+      console.warn([
+        `No matching type could be found for ${nameOfTypeDefinition}.`,
+        `- Available interfaces: ${Object.keys(interfaces).join(', ')}`,
+        `- Available types: ${Object.keys(types).join(', ')}`,
+        `- Available classes: ${Object.keys(classes).join(', ')}`
+      ].join('\n'));
+      console.warn('------')
+    }
+  }
+  return matchingType;
+}
+
 const getParameters = (parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}, depth = 0): string => {
   if (depth > 5) {
     throw new Error('Too many levels of depth');
   }
-  const { classes, interfaces, types } = definitions;
   return parameters.map((parameter) => {
-    let { name: nameOfTypeDefinition } = getReferenceTypeOfParameter(parameter.type);
-    let matchingType: undefined | DeclarationReflection | TypeParameterReflection = undefined;
-    if (!INTRINSIC_TYPES.includes(nameOfTypeDefinition) && parameter.type !== undefined && !isLiteralType(parameter.type)) {
-      // first, check if it is a specially defined external type
-      matchingType = EXTERNALLY_DEFINED_TYPES[nameOfTypeDefinition] || interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
-      // console.log('matchingType', matchingType);
-      if (!matchingType) {
-        // it's possible that this type is a generic type; in which case, replace the generic with the actual type it's extending
-        matchingType = typeParameters[nameOfTypeDefinition];
-        if (matchingType) {
-          nameOfTypeDefinition = (matchingType as any).type.name;
-          matchingType = interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
-          parameter.type = matchingType.type;
-        }
-      }
-      if (!matchingType && (parameter.type === undefined || !isUnionType(parameter.type))) {
-        console.warn('------')
-        console.warn(parameter.type);
-        console.warn([
-          `No matching type could be found for ${nameOfTypeDefinition}.`,
-          `- Available interfaces: ${Object.keys(interfaces).join(', ')}`,
-          `- Available types: ${Object.keys(types).join(', ')}`,
-          `- Available classes: ${Object.keys(classes).join(', ')}`
-        ].join('\n'));
-        console.warn('------')
-      }
-    }
+    const matchingType = getMatchingType(parameter, definitions, typeParameters);
     const { children = [] } = matchingType || {};
     return [
       writeParameter(parameter, matchingType, definitions),
@@ -559,6 +665,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `## Parameters`,
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
+    ...writePlatformSpecificDefinitions(definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     `## Returns`,
     getReturnType(signatures, blockTags),
   ].filter(Boolean).join('\n\n');
@@ -569,7 +676,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
  * Main function
  */
 async function main() {
-  const projectReflection: ProjectReflection = getUpscalerAsTree();
+  const projectReflection = await getUpscalerAsTree();
   const definitions = getChildren(projectReflection);
   const exports = Object.values(definitions.classes);
   for (let i = 0; i < exports.length; i++) {
