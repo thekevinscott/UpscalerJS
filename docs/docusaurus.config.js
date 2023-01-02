@@ -132,7 +132,7 @@ const config = {
               },
               {
                 label: 'Examples',
-                to: 'https://github.com/thekevinscott/UpscalerJS/tree/main/examples',
+                to: '/documentation/guides/',
               },
             ],
           },
@@ -141,27 +141,27 @@ const config = {
             items: [
               {
                 label: 'Introduction',
-                to: '/documentation#motivation',
+                to: '/documentation',
               },
               {
                 label: 'Getting Started',
-                to: '/documentation#getting-started',
+                to: '/documentation/getting-started',
               },
               {
                 label: 'Usage',
-                to: '/documentation#usage',
+                to: '/documentation/getting-started#usage',
               },
               {
                 label: 'API',
-                to: '/documentation#api',
+                to: '/documentation/api/constructor',
               },
               {
                 label: 'Troubleshooting',
-                to: '/documentation#troubleshooting',
+                to: '/documentation/troubleshooting',
               },
               {
                 label: 'Support',
-                to: '/documentation#support',
+                to: '/documentation/support',
               },
             ],
           },
