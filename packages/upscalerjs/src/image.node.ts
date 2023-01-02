@@ -24,10 +24,10 @@ export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error
   `Full tensor shape: ${JSON.stringify(input.shape)}`,
 ].join(' '));
 
-const isUint8Array = (input: GetImageAsTensorInput): input is Uint8Array => input.constructor === Uint8Array;
-const isBuffer = (input: GetImageAsTensorInput): input is Buffer => input.constructor === Buffer;
+const isUint8Array = (input: Input): input is Uint8Array => input.constructor === Uint8Array;
+const isBuffer = (input: Input): input is Buffer => input.constructor === Buffer;
 
-const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tensor4D => {
+const getTensorFromInput = (input: Input): tf.Tensor3D | tf.Tensor4D => {
   if (isUint8Array(input)) {
     return tf.node.decodeImage(input);
   }
@@ -56,11 +56,11 @@ const getTensorFromInput = (input: GetImageAsTensorInput): tf.Tensor3D | tf.Tens
   throw getInvalidInput(input); 
 };
 
-export type GetImageAsTensorInput = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
+export type Input = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
 export const getImageAsTensor = async (
-  input: GetImageAsTensorInput,
+  input: Input,
 ): Promise<tf.Tensor4D> => {
   const tensor = getTensorFromInput(input);
 

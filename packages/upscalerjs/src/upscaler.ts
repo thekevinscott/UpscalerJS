@@ -29,7 +29,7 @@ import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
-import type { GetImageAsTensorInput, } from './image.generated';
+import type { Input, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './utils';
 
@@ -109,30 +109,30 @@ export class Upscaler {
    * @returns an upscaled image.
    */
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgStringProgress; progressOutput: BASE64 },
   ): Promise<tf.Tensor3D>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgTensorProgress; progressOutput: TENSOR },
   ): Promise<string>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgStringProgress; progressOutput?: unknown },
   ): Promise<string>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D | string>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
   ): Promise<string>;
   public async upscale(
-    image: GetImageAsTensorInput,
+    image: Input,
     options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
     await this._ready;
