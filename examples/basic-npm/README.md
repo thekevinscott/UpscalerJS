@@ -32,7 +32,7 @@ Input images can come in a variety of formats, including URL strings, `<img />` 
 
 :::info
 
-[For a full list of supported image formats, read here](/documentation/api/upscale).
+[For a full list of supported image formats, read here](/documentation/api/upscale#input).
 
 :::
 
