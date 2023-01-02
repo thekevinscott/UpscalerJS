@@ -125,6 +125,11 @@ const getDefaultOutputFormats = (platform: Platform): OutputFormat[] => {
   return ['cjs'];
 };
 
+export const scaffoldDependenciesForUpscaler = async (platform: Platform, { verbose }: { verbose?: boolean } = {}) => {
+  const { default: scaffoldConfig } = await loadScaffoldDependenciesConfig(path.resolve(UPSCALER_DIR, 'scaffolder.ts'));
+  await scaffoldDependencies(UPSCALER_DIR, scaffoldConfig, platform, { verbose });
+}
+
 const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[], opts?: BuildFnOptions, { verbose = false } = {}): Promise<number> => {
   const start = performance.now();
   const outputFormats = _outputFormats || getDefaultOutputFormats(platform);
@@ -133,8 +138,7 @@ const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[]
     process.exit(0);
   }
 
-  const { default: scaffoldConfig } = await loadScaffoldDependenciesConfig(path.resolve(UPSCALER_DIR, 'scaffolder.ts'));
-  await scaffoldDependencies(UPSCALER_DIR, scaffoldConfig, platform, { verbose });
+  await scaffoldDependenciesForUpscaler(platform, { verbose });
 
   for (let i = 0; i < outputFormats.length; i++) {
     const outputFormat = outputFormats[i];
