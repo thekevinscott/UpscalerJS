@@ -6,7 +6,7 @@ import type {
   TENSOR,
   YieldedIntermediaryValue,
  } from './types';
-import { getImageAsTensor, tensorAsBase64, GetImageAsTensorInput, } from './image.generated';
+import { getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
 import { 
   wrapGenerator, 
   warn, 
@@ -371,31 +371,31 @@ export async function* predict(
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
-export const getCopyOfInput = (input: GetImageAsTensorInput): GetImageAsTensorInput => (isTensor(input) ? input.clone() : input);
+export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
 
 export function upscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, string>;
 export function upscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: TENSOR;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D>;
 export function upscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
   modelPackage: ModelPackage,
   ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
 export async function* upscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
@@ -441,28 +441,28 @@ export async function* upscale(
 }
 
 export function cancellableUpscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: TENSOR},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
   ): Promise<tf.Tensor3D>;
 export function cancellableUpscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
 ): Promise<string>;
 export function cancellableUpscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR },
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
 ): Promise<tf.Tensor3D | string>;
 export async function cancellableUpscale(
-  input: GetImageAsTensorInput,
+  input: Input,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
