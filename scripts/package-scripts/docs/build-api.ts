@@ -58,28 +58,33 @@ const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
  * Utility functions
  */
 const getUpscalerAsTree = (): ProjectReflection => {
-  const upscalerTree: ProjectReflection = getPackageAsTree(UPSCALER_DIR, path.resolve(UPSCALER_DIR, 'tsconfig.esm.json'));
-  const coreTree = getPackageAsTree(CORE_DIR, path.resolve(CORE_DIR, 'tsconfig.json'));
+  const upscalerTree: ProjectReflection = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src')], path.resolve(UPSCALER_DIR, 'tsconfig.esm.json'));
+  const coreTree = getPackageAsTree([path.resolve(CORE_DIR, 'src')], path.resolve(CORE_DIR, 'tsconfig.json'));
   // const TFJS_DIR = path.resolve(ROOT_DIR, 'node_modules', '@tensorflow', 'tfjs');
   // const tfjsTree = getPackageAsTree(TFJS_DIR);
   upscalerTree.children = [
     upscalerTree,
     coreTree,
+    getTypesFromPlatformSpecificFiles(),
     // tfjsTree,
   ].reduce((arr, tree) => arr.concat(tree.children || []), [] as DeclarationReflection[]);
   return upscalerTree;
 }
 
-const getPackageAsTree = (src: string, tsconfig: string): ProjectReflection => {
+const getPackageAsTree = (entryPoints: string[], tsconfig: string): ProjectReflection => {
   const app = new Application();
 
-  app.options.addReader(new TSConfigReader())
-  app.options.addReader(new TypeDocReader())
+  app.options.addReader(new TSConfigReader());
+  app.options.addReader(new TypeDocReader());
 
   app.bootstrap({
     // typedoc options here
-    entryPoints: [path.resolve(src, 'src')],
+    entryPoints,
+    // entryPoints: [path.resolve(src, 'src')],
     tsconfig,
+  //   "compilerOptions": {
+  //     "strictNullChecks": false
+  // }
   });
 
   const project = app.convert();
@@ -89,6 +94,14 @@ const getPackageAsTree = (src: string, tsconfig: string): ProjectReflection => {
   } else {
     throw new Error('No project was converted.')
   }
+}
+
+const getTypesFromPlatformSpecificFiles = () => {
+  const imageBrowser = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src', 'image.browser.ts')], path.resolve(UPSCALER_DIR, 'tsconfig.json'));
+
+  return {
+    children: imageBrowser.children?.filter(child => child.name === 'Input'),
+  };
 }
 
 function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
@@ -403,8 +416,15 @@ const getParameters = (parameters: (ParameterReflection | DeclarationReflection)
         }
       }
       if (!matchingType && (parameter.type === undefined || !isUnionType(parameter.type))) {
+        console.warn('------')
         console.warn(parameter.type);
-        console.warn(`No matching type could be found for ${nameOfTypeDefinition}. Available interfaces are ${Object.keys(interfaces).join(', ')}. Available types are ${Object.keys(types).join(', ')}. Available classes are ${Object.keys(classes).join(', ')}.`);
+        console.warn([
+          `No matching type could be found for ${nameOfTypeDefinition}.`,
+          `- Available interfaces: ${Object.keys(interfaces).join(', ')}`,
+          `- Available types: ${Object.keys(types).join(', ')}`,
+          `- Available classes: ${Object.keys(classes).join(', ')}`
+        ].join('\n'));
+        console.warn('------')
       }
     }
     const { children = [] } = matchingType || {};
