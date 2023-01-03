@@ -156,9 +156,9 @@ export class Upscaler {
    * });
    * ```
    */
-  warmup = async (warmupSizes: WarmupSizes[] = [], options?: WarmupArgs): Promise<void> => {
+  warmup = async (warmupSizes: WarmupSizes | WarmupSizes[] = [], options?: WarmupArgs): Promise<void> => {
     await this._ready;
-    return cancellableWarmup(this._model, warmupSizes, options, {
+    return cancellableWarmup(this._model, ([] as WarmupSizes[]).concat(warmupSizes), options, {
       signal: this._abortController.signal,
     });
   };
