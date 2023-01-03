@@ -11,8 +11,10 @@ export interface UpscalerOptions {
    * Defaults to [`@upscalerjs/default-model`](/models/available/default-model)
    */
   model?: ModelDefinitionObjectOrFn;
-  warmupSizes?: (NumericWarmupSizes | WarmupSizesByPatchSize)[];
+  warmupSizes?: WarmupSizes;
 }
+
+export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize | (NumericWarmupSizes | WarmupSizesByPatchSize)[];
 
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';

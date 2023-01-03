@@ -25,6 +25,7 @@ import type {
   MultiArgTensorProgress,
   NumericWarmupSizes,
   WarmupSizesByPatchSize,
+  WarmupSizes,
 } from './types';
 import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
@@ -161,7 +162,7 @@ export class Upscaler {
    * @param warmupSizes Denotes how to warm the model up.
    * @param options A set of warm up arguments.
    */
-  warmup = async (warmupSizes: NumericWarmupSizes | WarmupSizesByPatchSize | (NumericWarmupSizes | WarmupSizesByPatchSize)[] = [], options?: WarmupArgs): Promise<void> => {
+  warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this._ready;
     return cancellableWarmup(this._model, ([] as (NumericWarmupSizes | WarmupSizesByPatchSize)[]).concat(warmupSizes), options, {
       signal: this._abortController.signal,
