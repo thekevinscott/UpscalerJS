@@ -6,13 +6,12 @@ export type WarmupSizesByPatchSize = {
   padding?: number;
 };
 export type NumericWarmupSizes = [number, number];
-export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize;
 export interface UpscalerOptions {
   /**
    * Defaults to [`@upscalerjs/default-model`](/models/available/default-model)
    */
   model?: ModelDefinitionObjectOrFn;
-  warmupSizes?: WarmupSizes[];
+  warmupSizes?: (NumericWarmupSizes | WarmupSizesByPatchSize)[];
 }
 
 export type BASE64 = 'base64';

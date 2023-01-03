@@ -3,8 +3,7 @@ import path from 'path';
 import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
-import { scaffoldPlatformSpecificFiles } from '../scaffold-dependencies';
-import { CORE_DIR, DOCS_DIR, ROOT_DIR, UPSCALER_DIR } from '../utils/constants';
+import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 
 /****
  * Types
@@ -285,7 +284,7 @@ const getLiteralTypeValue = (type: LiteralType): string => {
 }
 
 const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions): {
-  type: 'reference' | 'array' | 'literal' | 'intrinsic',
+  type: 'reference' | 'array' | 'literal' | 'intrinsic' | 'union',
   name: string;
   includeURL?: boolean;
 } => {
@@ -299,7 +298,19 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         type: _type.type,
         name: elementType.name,
       }
+    } else if (isUnionType(elementType)) {
+      return {
+        type: 'union',
+        name: elementType.types.map(t => {
+          if ('name' in t) {
+            return t.name;
+          }
+          throw new Error('unimplemented');
+        }).join(' | '),
+      }
     }
+
+    console.error(_type);
 
     throw new Error('Not yet implemented');
   }
@@ -352,7 +363,8 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
 
   if (isUnionType(_type)) {
     let includeURL = true;
-    const name = _type.types.map(t => {
+
+    const getNameFromUnionType = (type: UnionType): string => type.types.map(t => {
       if (isReferenceType(t)) {
         if (definitions === undefined) {
           console.warn('Union type was provided and a reference type was found in the union, but no definitions are present.');
@@ -377,7 +389,19 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
           // Ignore reflection types
           return t.name;
         }
-        // console.log('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
+        if (matchingTypeType.type === 'union') {
+          return getNameFromUnionType(matchingTypeType);
+        }
+        if (matchingTypeType.type === 'tuple') {
+          console.log('matchingTypeType tuple', matchingTypeType);
+          return `[${matchingTypeType.elements.map(e => {
+            if ('name' in e) {
+              return e.name;
+            }
+            throw new Error('Array type not yet implemented');
+          }).join(',')}]`;
+        }
+        console.error('matchingTypeType', JSON.stringify(matchingTypeType, null, 2));
 
         throw new Error(`Unsupported type of matching type ${matchingTypeType.type} in reference type of union type ${t.name}.`);
       } else if (isInstrinsicType(t)) {
@@ -387,17 +411,26 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         }
         return t.name;
       } else if (isLiteralType(t)) {
-        return `\`${t.value}\``;
+        return `${t.value}`;
       } else if (t.type === 'indexedAccess') {
         const objectType = t.objectType;
         if ('name' in objectType) {
           return objectType.name;
         }
         return '';
+      } else if (t.type === 'array') {
+        if ('name' in t.elementType) {
+          return `${t.elementType.name}[]`;
+        }
+        console.warn('Unknown element type', t);
+        // throw new Error('Unknown element type');
+        return '';
       }
       console.error(t);
       throw new Error(`Unsupported type in union type: ${t.type}`);
     }).filter(Boolean).join(' | ');
+
+    const name = getNameFromUnionType(_type);
 
     return {
       type: 'literal',
@@ -443,10 +476,10 @@ const writeParameter = (parameter: ParameterReflection | DeclarationReflection, 
   if (matchingType !== undefined && !isTypeParameterReflection(matchingType) && !isDeclarationReflection(matchingType)) {
     const comment = getSummary(parameter.comment);
     const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
-    const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
+    const parsedName = `\`${name}${type === 'array' ? '[]' : ''}\``;
     return [
       '-',
-      `**\`${parameter.name}${parameter.flags?.isOptional ? '?' : ''}\`**:`,
+      `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
       `[${parsedName}](#${name.toLowerCase()})`,
       comment ? ` - ${comment}` : undefined,
     ].filter(Boolean).join(' ');
@@ -455,11 +488,11 @@ const writeParameter = (parameter: ParameterReflection | DeclarationReflection, 
   const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
   const url = includeURL ? getURLFromSources(matchingType?.sources) : undefined;
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
-  const linkedName = url ?  `[${parsedName}](${url})` : parsedName;
+  const linkedName = url ?  `[\`${parsedName}\`](${url})` : `\`${parsedName}\``;
   return [
     '-',
-    `**\`${parameter.name}${parameter.flags?.isOptional ? '?' : ''}\`**:`,
-    `_${linkedName}_`,
+    `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
+    `${linkedName}`,
     comment ? ` - ${comment}` : undefined,
   ].filter(Boolean).join(' ');
 };
@@ -471,8 +504,8 @@ const writePlatformSpecificParameter = (platform: string, parameter: Declaration
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
   return [
     '-',
-    `**[\`${platform}\`](${url})**:`,
-    `_${parsedName}_`,
+    `**[${platform}](${url})**:`,
+    `\`${parsedName}\``,
     comment ? ` - ${comment}` : undefined,
   ].filter(Boolean).join(' ');
 
@@ -665,7 +698,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `## Parameters`,
       getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
-    ...writePlatformSpecificDefinitions(definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
+    ...(method.name === 'upscale' ? writePlatformSpecificDefinitions(definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)) : []),
     `## Returns`,
     getReturnType(signatures, blockTags),
   ].filter(Boolean).join('\n\n');

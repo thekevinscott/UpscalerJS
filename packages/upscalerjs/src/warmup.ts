@@ -1,7 +1,9 @@
 import { makeTick, } from './makeTick';
 import { tf, } from './dependencies.generated';
-import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
+import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
 import { processAndDisposeOfTensor, wrapGenerator, } from './utils';
+
+type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize;
 
 const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPatchSize => size !== null && typeof size === 'object' && 'patchSize' in size;
 const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
