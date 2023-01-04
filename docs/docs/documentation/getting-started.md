@@ -22,6 +22,12 @@ upscaler.upscale('/image/path').then(upscaledSrc => {
 
 In the browser, you can install UpscalerJS via a script tag or by installing via NPM and using a build tool like webpack, parcel, or rollup.
 
+:::tip
+
+For runnable code examples, check out [the guide on Script Tag Installation](/documentation/guides/browser/basic-umd) and [the guide on installation via NPM](/documentation/guides/browser/basic-npm).
+
+:::
+
 ### Usage via Script Tag
 
 First, [ensure you've followed the instructions to install Tensorflow.js](https://www.tensorflow.org/js/tutorials/setup).
@@ -53,6 +59,12 @@ npm install @upscalerjs/esrgan-thick
 ## Node
 
 Install UpscalerJS and the targeted platform of Tensorflow.js. [You can also install specific models](/models).
+
+:::tip
+
+For a runnable code example, check out [the guide on Node.js usage](/documentation/guides/node/nodejs).
+
+:::
 
 ### tfjs-node
 
@@ -92,9 +104,15 @@ upscaler.upscale('/image/path').then(upscaledSrc => {
 
 ### Instantiation
 
-By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default-model`](https://npmjs.com/package/@upscalerjs/default-model).
+By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default-model`](https://npmjs.com/package/@upscalerjs/default-model). You can install alternative models by installing them and providing them as an argument. 
 
-You can install alternative models by installing them and providing them as an argument. For instance, to use `@upscalerjs/esrgan-legacy`, you'd first install it:
+:::tip
+
+For a runnable code example, check out [the guide on providing models](/documentation/guides/browser/models).
+
+:::
+
+For instance, to use `@upscalerjs/esrgan-legacy`, you'd first install it:
 
 ```sh
 npm install @upscalerjs/esrgan-legacy
@@ -125,7 +143,7 @@ const upscaler = new Upscaler({
 
 When providing your own model, **you must provide an explicit scale**.
 
-[The full model definition is defined here](https://github.com/thekevinscott/UpscalerJS/blob/v1.0.0/packages/core/src/index.ts#L18).
+[See the API documentation for a model definition here](/documentation/api/constructor#parameters).
 
 ### Upscaling
 
@@ -167,7 +185,15 @@ The available types for output are:
 
 #### Performance
 
-For larger images, attempting to run inference can impact UI performance. To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
+For larger images, attempting to run inference can impact UI performance.
+
+:::tip
+
+For runnable code examples, check out [the guide on patch sizes](/documentation/guides/browser/performance/patch-sizes).
+
+:::
+
+To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
 
 ```javascript
 ({
