@@ -23,8 +23,6 @@ import type {
   TENSOR,
   MultiArgStringProgress,
   MultiArgTensorProgress,
-  NumericWarmupSizes,
-  WarmupSizesByPatchSize,
   WarmupSizes,
 } from './types';
 import { getUpscaleOptions, } from './args.generated';
@@ -164,7 +162,7 @@ export class Upscaler {
    */
   warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this._ready;
-    return cancellableWarmup(this._model, ([] as (NumericWarmupSizes | WarmupSizesByPatchSize)[]).concat(warmupSizes), options, {
+    return cancellableWarmup(this._model, warmupSizes, options, {
       signal: this._abortController.signal,
     });
   };

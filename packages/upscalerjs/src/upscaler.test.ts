@@ -118,6 +118,28 @@ describe('Upscaler', () => {
   });
 
   describe('warmups', () => {
+    it('calls warmup from constructor', async () => {
+      const modelDefinitionPromise = new Promise<{
+        modelDefinition: ModelDefinition;
+        model: LayersModel;
+      }>(resolve => resolve({
+        modelDefinition: {
+          path: 'foo',
+          scale: 2,
+        },
+        model: 'foo' as unknown as LayersModel,
+      }));
+      loadModel.mockImplementation(() => modelDefinitionPromise);
+      cancellableWarmup.mockImplementation(async () => { });
+      const warmupSizes: WarmupSizes = [[2, 2]];
+      new Upscaler({
+        warmupSizes,
+      });
+      await new Promise(r => setTimeout(r));
+      expect(cancellableWarmup).toBeCalled();
+      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+    });
+
     it('is able to warmup with a numeric array of warmup sizes', async () => {
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
