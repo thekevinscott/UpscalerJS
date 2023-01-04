@@ -34,7 +34,10 @@ const getLocalHeight = (isBrowser: boolean) => {
       if (!Number.isNaN(localHeight)) {
         return localHeight;
       }
+    }
 
+    if (window.innerWidth <= 997) {
+      return 0;
     }
     return IFRAME_DEFAULT_HEIGHT;
   }, [isBrowser]);
@@ -69,19 +72,29 @@ const Dragger = ({
   const [start, setStart] = useState<number>(0);
   const [dragging, setDragging] = useState(false);
 
+  const drag = useCallback((clientY: number) => {
+    if (dragging) {
+      const dragAmount = clientY - start
+      onDrag(dragAmount);
+    }
+  }, [onDrag, start, dragging]);
+
   useEffect(() => {
-    const drag = (e: globalThis.MouseEvent) => {
-      if (dragging) {
-        const dragAmount = e.clientY - start
-        onDrag(dragAmount);
-      }
+    const dragMouse = (e: globalThis.MouseEvent) => {
+      drag(e.clientY);
     }
 
-    window.addEventListener('mousemove', drag);
-    return () => {
-      window.removeEventListener('mousemove', drag);
+    const dragTouch = (e: globalThis.TouchEvent) => {
+      drag(e.touches[0].clientY);
     }
-  }, [dragging, start, onDrag]);
+
+    window.addEventListener('mousemove', dragMouse);
+    window.addEventListener('touchmove', dragTouch);
+    return () => {
+      window.removeEventListener('mousemove', dragMouse);
+      window.removeEventListener('touchmove', dragTouch);
+    }
+  }, [drag]);
 
   useEffect(() => {
     const mouseup = () => {
@@ -89,13 +102,15 @@ const Dragger = ({
     };
 
     window.addEventListener('mouseup', mouseup);
+    window.addEventListener('touchend', mouseup);
     return () => {
       window.removeEventListener('mouseup', mouseup);
+      window.removeEventListener('touchend', mouseup);
     }
   }, []);
 
-  const startDrag = useCallback((e: MouseEvent) => {
-    setStart(e.clientY);
+  const startDrag = useCallback((clientY: number) => {
+    setStart(clientY);
     setDragging(true);
   }, []);
 
@@ -104,7 +119,7 @@ const Dragger = ({
   }, [dragging]);
 
   return (
-    <div className={clsx(styles.dragger, styles[type])} onMouseDown={startDrag}>{text}</div>
+    <div className={clsx(styles.dragger, dragging ? styles.active : null, styles[type])} onTouchStart={e => startDrag(e.touches[0].clientY)} onMouseDown={e => startDrag(e.clientY)}>{text}</div>
   );
 }
 
