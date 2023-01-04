@@ -192,6 +192,12 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     'hide_table_of_contents: true',
     '---',
     `# Guides`,
+    `This page contains a list of guides and examples for using various features of UpscalerJS.`,
+    ``,
+    `The first two guides discuss the basics of UpscalerJS and how to use it in your project. The [Models](browser/models) and [Working with Tensors](browser/tensors) guides discuss useful configuration options of UpscalerJS.`,
+    ``,
+    `There are also guides on [improving the performance](#performance) of UpscalerJS, [specific examples of implementations](#implementations), and [Node.js-specific](#node) guides.`,
+    ``,
     ...Object.entries(examplesByCategory).map(([category, examples]) => {
       let activeParent: undefined | string;
       return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
@@ -206,7 +212,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
         let strings: string[] = [];
         if (activeParent !== parent) {
           activeParent = parent;
-          strings.push(`- ${parent}`);
+          strings.push(`- ### ${parent}`);
         }
         strings.push(indent(`- [${title}](${url})`, activeParent ? 1 : 0));
         return strings.join('\n');
