@@ -10,7 +10,7 @@ export const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPat
   return 'patchSize' in size && typeof (size as { patchSize: unknown })['patchSize'] === 'number';
 };
 export const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
-  return !!size && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
+  return Boolean(size) && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
 };
 
 export const getInvalidValueError = (size: unknown): Error => new Error(
