@@ -99,7 +99,9 @@ export class SpeedBenchmarker extends Benchmarker {
         const models = await modelPackage.getModels(modelNames);
         for (const model of models) {
           let toShow: undefined | [Device, number][] = undefined;
-          if (model.name === './8x') {
+          // if (model.name === './8x' && modelPackage.name !== 'esrgan-thick') {
+          if (model.name === './8x' || model.scale === 8) {
+            console.log(`Skipping ${modelPackage.name}/${model.name}`);
             continue;
           }
           for (const device of this.devices) {
@@ -206,7 +208,7 @@ export class SpeedBenchmarker extends Benchmarker {
           const { upscaleDurations: durations } = await benchmarkDevice(driver, capabilities, { packageName: modelPackage.name, modelName }, times);
           bar.update();
           if (durations && Array.isArray(durations)) {
-            console.log('\nINSERT', durations.length, 'entries for', device.device, 'and', model.name, 'and', modelPackage.name)
+            // console.log('\nINSERT', durations.length, 'entries for', device.device, 'and', model.name, 'and', modelPackage.name)
             for (const duration of durations) {
               await sequelize.query(`
                 INSERT INTO SpeedMeasurements
@@ -379,7 +381,7 @@ const benchmarkModel: BenchmarkModel = async (
   };
 
   // const start = performance.now();
-  const result = await executeAsyncScript<BenchmarkModelReturn>(driver, async ({
+  const result: BenchmarkModelReturn = await executeAsyncScript<BenchmarkModelReturn>(driver, async ({
     modelDefinition: {
       packageName,
       modelName,
@@ -388,62 +390,97 @@ const benchmarkModel: BenchmarkModel = async (
     times,
     // patchSize,
   }: ExecuteScriptOpts) => {
-    const tf = window['tf'];
-    if (!packageName) {
-      throw new Error('No package name provided')
+    const info = document.createElement('p');
+    document.body.append(info);
+    const log = (msg: string) => {
+      const span = document.createElement('span');
+      span.innerHTML = `${msg} | `;
+      info.appendChild(span);
     }
-    if (!modelName) {
-      throw new Error('No model name provided')
-    }
-    const timeIt = async (fn: () => Promise<any>) => {
-      const start = performance.now();
-      const result = await fn();
-      return [performance.now() - start, result];
-    };
-    const upscaleDurations: number[] = [];
-    let model = window[packageName][modelName];
-    if (!model) {
-      throw new Error(`No model found for package name ${packageName} and model name ${modelName}`)
-    }
-    if (typeof model === 'function') {
-      model = model(tf);
-    }
-    const upscalerOpts: UpscalerOptions = {
-      model: {
-        ...model,
-        packageInformation: undefined,
-        meta: undefined,
-        path: `/models/${packageName}/${model.path}`,
-      }
-    };
-    const Upscaler = window['Upscaler'];
     try {
-      const upscaler = new Upscaler(upscalerOpts);
-      const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
-      const [warmupDuration, _] = await timeIt(() => upscaler.warmup([{
-        patchSize: size,
-        padding: 0,
-      }]));
-      for (let i = 0; i < times; i++) {
-        const [upscaleDuration, tensor] = await timeIt(() => upscaler.upscale(input, {
-          patchSize: size,
-          output: 'tensor',
-        }));
-        upscaleDurations.push(upscaleDuration);
-        tensor.dispose();
+      log(`${new Date()}`);
+      const tf = window['tf'];
+      if (!packageName) {
+        throw new Error('No package name provided')
       }
-      upscaler.dispose();
-      input.dispose();
-      return { warmupDuration, upscaleDurations, times };
+      if (!modelName) {
+        throw new Error('No model name provided')
+      }
+      const timeIt = async (fn: () => Promise<any>) => {
+        const start = performance.now();
+        const result = await fn();
+        return [performance.now() - start, result];
+      };
+      const upscaleDurations: number[] = [];
+      log(`0: Loading model ${packageName} and ${modelName}`);
+      const pkg = window[packageName];
+      log('2: got package');
+      let model = pkg[modelName];
+      log('2: got model');
+      if (!model) {
+        throw new Error(`No model found for package name ${packageName} and model name ${modelName}`)
+      }
+      if (typeof model === 'function') {
+        model = model(tf);
+        log('3: ran model');
+      }
+      const upscalerOpts: UpscalerOptions = {
+        model: {
+          ...model,
+          packageInformation: undefined,
+          meta: undefined,
+          path: `/models/${packageName}/${model.path}`,
+        }
+      };
+      log('4: created opts');
+      const Upscaler = window['Upscaler'];
+      log('5: got Upscaler reference');
+      try {
+        const upscaler = new Upscaler(upscalerOpts);
+        log('6: got new upscaler');
+        const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
+        log('7: made new tensor');
+        const [warmupDuration, _] = await timeIt(() => upscaler.warmup([{
+          patchSize: size,
+          padding: 0,
+        }]));
+        log('8: warmed up model');
+        for (let i = 0; i < times; i++) {
+          log(`9: times: ${i}`);
+          const [upscaleDuration, tensor] = await timeIt(() => upscaler.upscale(input, {
+            patchSize: size,
+            output: 'tensor',
+          }));
+          log(`10: times: ${i} | upscaled: ${upscaleDuration}`);
+          upscaleDurations.push(upscaleDuration);
+          tensor.dispose();
+          log(`11: times: ${i} | cleaned up`);
+        }
+        upscaler.dispose();
+        log(`12: disposed upscaler`);
+        input.dispose();
+        log(`13: disposed input`);
+        return { warmupDuration, upscaleDurations, times };
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          log(`error: upscalerOpts: ${JSON.stringify(upscalerOpts)} Error: ${err.message} `);
+          throw new Error(`upscalerOpts: ${JSON.stringify(upscalerOpts)} Error: ${err.message}`);
+        } else {
+          log(JSON.stringify(err));
+          throw err;
+        }
+      }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        throw new Error(`upscalerOpts: ${JSON.stringify(upscalerOpts)} Error: ${err.message}`);
+        log(`Error for ${packageName} and ${modelName}: ${err.message} `);
       } else {
+        log(JSON.stringify(err));
         throw err;
       }
+      throw err;
     }
   }, optionsForDriver, {
-    timeout: 30000, // 30 seconds max
+    timeout: 30000 * 4 * 2, // 240 seconds max
   });
   await printLogs(driver, capabilities);
   return result;

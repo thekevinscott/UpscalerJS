@@ -66,7 +66,8 @@ export class UpscalerModel extends Model {
       this.upscaler = upscaler;
       this.modelDefinition = modelDefinition;
     }
-    console.log(`** Hydrated model ${this.name}`);
+    const pkg = await this.package;
+    console.log(`** Hydrated model ${this.name} in package ${pkg.name}`);
   }
 
   get package() {

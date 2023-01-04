@@ -435,8 +435,10 @@ const benchmarkSpeed = async (
   outputCSV,
   times = 10,
   skipDisplayResults,
+  device,
   ...opts
 }: SetupSpeedBenchmarkingOpts & {
+  device?: string;
   times?: number;
   models?: string[]
   outputCSV?: string;
@@ -464,9 +466,11 @@ const benchmarkSpeed = async (
     modelPackage.tf = tf;
   });
   const mobileOptions = getMobileBrowserOptions().filter(o => {
-    // return o.real_mobile === 'true' && (o.device?.toLowerCase().includes('iphone') || o.device?.toLowerCase().includes('ipad'));
-    // return o.real_mobile === 'true';
-    // return true;
+    if (device) {
+      const itMatches = o.device?.toLowerCase().includes(device.toLowerCase());
+      // console.log(`For device ${device}, is ${o.device} included? ${itMatches}`);
+      return itMatches;
+    }
     // return o.device === 'Samsung Galaxy S22 Ultra';
     return o.device !== "iPad Air 4";
   });
@@ -509,6 +513,7 @@ interface Answers extends SetupSpeedBenchmarkingOpts {
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
+  device?: string;
 }
 
 const getModels = (model?: unknown): undefined | string[] => {
@@ -541,6 +546,7 @@ const getArgs = async (): Promise<Answers> => {
     .options({
       model: { type: 'string' },
       package: { type: 'string' },
+      device: { type: 'string' },
       times: { type: 'number' },
       resultsOnly: { type: 'boolean' },
       outputCSV: { type: 'string' },

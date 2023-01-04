@@ -91,13 +91,16 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
 }: {
   pollTime?: number;
   timeout?: number;
-} = {}) {
+} = {}): Promise<T> {
   const wait = (d: number) => new Promise(r => setTimeout(r, d));
   const localKey = `___result_${Math.random()}___`;
+  const errorKey = `___result_${Math.random()}___`;
   const mainFn = new Function(`
     const main = ${fn.toString()}
     main(...arguments).then((result) => {
       window['${localKey}'] = result;
+    }).catch(err => {
+      window['${errorKey}'] = err.message;
     });
   `);
   try {
@@ -110,8 +113,9 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
     }
   }
   let response: T | undefined;
+  let err: string | undefined;
   const start = performance.now();
-  while (!response) {
+  while (!response && !err) {
     if (performance.now() - start > timeout) {
       throw new Error(`Failed to execute script after ${timeout} ms`);
     }
@@ -120,7 +124,16 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
     } catch(err) {
       console.error('Error executing script', err);
     }
+    if (!response) {
+      err = await driver.executeScript<string | undefined>((errorKey: string) => window[errorKey], errorKey);
+      if (err) {
+        throw new Error(err);
+      }
+    }
     await wait(pollTime);
+  }
+  if (!response) {
+    throw new Error('Bug with code');
   }
   return response;
 }
