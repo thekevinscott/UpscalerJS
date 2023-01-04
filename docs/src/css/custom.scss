@@ -96,3 +96,12 @@ figure {
     opacity: 0.6;
   }
 }
+
+ul {
+  li {
+    h1,h2,h3,h4,h5,h6 {
+      line-height: var(--ifm-list-left-padding);
+      margin-bottom: 0;
+    }
+  }
+}
