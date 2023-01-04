@@ -6,14 +6,15 @@ export type WarmupSizesByPatchSize = {
   padding?: number;
 };
 export type NumericWarmupSizes = [number, number];
-export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize;
 export interface UpscalerOptions {
   /**
    * Defaults to [`@upscalerjs/default-model`](/models/available/default-model)
    */
   model?: ModelDefinitionObjectOrFn;
-  warmupSizes?: WarmupSizes[];
+  warmupSizes?: WarmupSizes;
 }
+
+export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize | (NumericWarmupSizes | WarmupSizesByPatchSize)[];
 
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';

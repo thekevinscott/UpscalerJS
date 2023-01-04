@@ -16,7 +16,6 @@
 import { DefaultUpscalerModel, tf, } from './dependencies.generated';
 import type {
   UpscalerOptions,
-  WarmupSizes,
   ModelPackage,
   BASE64,
   WarmupArgs,
@@ -24,6 +23,7 @@ import type {
   TENSOR,
   MultiArgStringProgress,
   MultiArgTensorProgress,
+  WarmupSizes,
 } from './types';
 import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
@@ -105,7 +105,7 @@ export class Upscaler {
    * ```
    *
    * @param image The image to upscale.
-   * @param options A set of upscaling arguments
+   * @param options A set of upscaling arguments.
    * @returns an upscaled image.
    */
   public async upscale(
@@ -145,18 +145,22 @@ export class Upscaler {
   }
 
   /**
-   * Warms up an upscaler instance.
+   * Warms up an Upscaler instance. For more info, [see the guide on warming up](/documentation/guides/browser/performance/warmup).
    * 
    * ```javascript
    * const upscaler = new Upscaler();
    * upscaler.warmup([{
    *   patchSize: 64,
+   *   padding: 2,
    * }]).then(() => {
    *   console.log('I am all warmed up!');
    * });
    * ```
+   * 
+   * @param warmupSizes Denotes how to warm the model up.
+   * @param options A set of warm up arguments.
    */
-  warmup = async (warmupSizes: WarmupSizes[] = [], options?: WarmupArgs): Promise<void> => {
+  warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this._ready;
     return cancellableWarmup(this._model, warmupSizes, options, {
       signal: this._abortController.signal,
@@ -164,7 +168,7 @@ export class Upscaler {
   };
 
   /**
-   * Aborts all active asynchronous methods (including upscaling and warm up methods).
+   * Aborts all active asynchronous methods (including upscaling and warm up methods). For more info, [see the guide on cancelling](/documentation/guides/browser/usage/cancel).
    * 
    * ```javascript
    * const upscaler = new Upscaler();

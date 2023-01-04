@@ -1,6 +1,6 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
 import * as tf from '@tensorflow/tfjs-node';
-import { getInvalidValueError, cancellableWarmup, warmup } from './warmup';
+import { getInvalidValueError, cancellableWarmup, warmup, getSizesAsArray, isNumericWarmupSize, isWarmupSizeByPatchSize } from './warmup';
 import { ModelPackage, NumericWarmupSizes, WarmupSizesByPatchSize } from './types';
 import { AbortError } from './utils';
 import { PostProcess, PreProcess } from '@upscalerjs/core';
@@ -18,33 +18,71 @@ const getFakeModel = () => {
   } as unknown as LayersModel;
 };
 
-describe('Cancellable Warmup', () => {
-  it('throws if given an invalid size', async () => {
-    const fakeModel = getFakeModel();
-    const model = new Promise<ModelPackage>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
-    );
-    await expect(cancellableWarmup(model, [['foo', 1,],] as any, undefined, {
-      signal: new AbortController().signal,
-    })).rejects.toThrow(
-      getInvalidValueError(['foo', 1])
-    );
-    await expect(cancellableWarmup(model, [[1, 'foo',],] as any, undefined, {
-      signal: new AbortController().signal,
-    })).rejects.toThrow(
-      getInvalidValueError([1, 'foo'])
-    );
+describe('isNumericWarmupSize', () => {
+  it('returns true for numeric warmup sizes', () => {
+    expect(isNumericWarmupSize([1,1])).toBe(true);
   });
 
-  it('throws if given an invalid set of warmup sizes', () => {
-    const fakeModel = getFakeModel();
-    const model = new Promise<ModelPackage>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
-    );
-    expect(cancellableWarmup(model, [20, 20,] as any, undefined, {
-      signal: new AbortController().signal,
-    })).rejects.toEqual(expect.anything());
+  it.each([
+    [1],
+    ['foo'],
+    [[1]],
+    [[1,2,3]],
+    [[1,'foo']],
+    [['foo',1]],
+  ])('returns false for non-numeric warmup sizes', (warmupSize) => {
+    expect(isNumericWarmupSize(warmupSize)).toBe(false);
   });
+});
+
+describe('isWarmupSizeByPatchSize', () => {
+  it('returns true for patchSize warmup sizes', () => {
+    expect(isWarmupSizeByPatchSize({ patchSize: 32, })).toBe(true);
+  });
+
+  it.each([
+    [1],
+    ['foo'],
+    [{ patchSize: 'foo' }],
+    [[{ patchSize: 'foo' }]],
+    [{ patchSize: [1,2] }],
+  ])('returns false for non-patchSize warmup sizes', (warmupSize) => {
+    expect(isWarmupSizeByPatchSize(warmupSize)).toBe(false);
+  });
+});
+
+describe('cancellableWarmup', () => {
+  test.each([
+    // patch size warmup 
+    [{ patchSize: 'foo' }], 
+    // // numeric warm up
+    // [[1]],
+    // [['foo', 1]],
+    // [[1, 'foo']],
+    // // array of patch size warmups
+    // [[{ patchSize: 'foo' }]], 
+    // [[{ patchSize: 32 }, { patchSize: 'foo' }, ]], 
+
+    // // array of numeric warmups
+    // [[['foo', 1,],]], 
+    // [[[1, 'foo',],]],
+    // [[[32, 32, ], ['foo', 1,],]], 
+    // [[[32, 32, ], [1, 'foo',],]],
+    // [[[32, 32, ], [1,],]],
+  ])(
+    'throws if given invalid input of %p',
+    async (args) => {
+      const fakeModel = getFakeModel();
+      const model = new Promise<ModelPackage>((resolve) =>
+        resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
+      );
+      await expect(cancellableWarmup(model, args as any, undefined, {
+        signal: new AbortController().signal,
+      })).rejects.toThrow(
+        getInvalidValueError(args)
+      );
+    },
+  );
 
   it('does nothing if provided an empty array', async () => {
     const fakeModel = getFakeModel();
@@ -417,3 +455,35 @@ describe('Warmup', () => {
     expect(tf.memory().numTensors).toEqual(startingTensors);
   });
 });
+
+describe('getSizesAsArray', () => {
+  it('should return an array for a numeric size', () => {
+    expect(getSizesAsArray([10, 10])).toEqual([[10, 10]]);
+  });
+
+  it('should return an array for a patchSize size', () => {
+    expect(getSizesAsArray({ patchSize: 32, padding: 2 })).toEqual([{ patchSize: 32, padding: 2 }]);
+  });
+
+  it('should return an (unchanged) array for a numeric size array', () => {
+    expect(getSizesAsArray([[10, 10]])).toEqual([[10, 10]]);
+  });
+
+  it('should return an (unchanged) array for a patchSize size array', () => {
+    expect(getSizesAsArray([{ patchSize: 32, padding: 2 }])).toEqual([{ patchSize: 32, padding: 2 }]);
+  });
+
+  it.each([
+    [1],
+    ['foo'],
+    [[1]],
+    [[1,2,3]],
+    [[1,'foo']],
+    [['foo',1]],
+    [{ patchSize: 'foo' }],
+    [[{ patchSize: 'foo' }]],
+    [{ patchSize: [1,2] }],
+  ])('should throw if given an invalid arg of %p', (warmupSize) => {
+    expect(() => getSizesAsArray(warmupSize as any)).toThrow();
+  });
+})
