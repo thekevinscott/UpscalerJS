@@ -38,7 +38,12 @@ $dragger_bottom_padding: 10px;
     align-items: center;
     justify-content: center;
     padding-bottom: $dragger_bottom_padding;
-    z-index: 2;
+    // background: rgba(255,255,255,0.4);
+    &.active {
+
+    // background: rgba(255,255,255,0.8);
+    }
+    z-index: 5;
 
     &:hover, &:active {
       opacity: 1;
@@ -75,4 +80,5 @@ $dragger_bottom_padding: 10px;
 iframe.iframe {
   width: 100%;
   height: 400px;
+  z-index: 2;
 }
