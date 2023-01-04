@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import { useColorMode } from '@docusaurus/theme-common';
 import styles from './codeEmbed.module.scss';
@@ -34,11 +34,12 @@ const getLocalHeight = (isBrowser: boolean) => {
       if (!Number.isNaN(localHeight)) {
         return localHeight;
       }
+
+      if (window.innerWidth <= 997) {
+        return 0;
+      }
     }
 
-    if (window.innerWidth <= 997) {
-      return 0;
-    }
     return IFRAME_DEFAULT_HEIGHT;
   }, [isBrowser]);
 }
