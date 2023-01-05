@@ -301,8 +301,12 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
 
       const size = await fastFolderSize(src);
       if (size > Math.round(1024 * 1024 * 1024 * ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE)) { // anything over x gigs
+        const packageName = src.split('models/').filter(Boolean).pop();
+        if (!packageName) {
+          throw new Error(`There was an error pulling a package name from the src ${src}`)
+        }
         await symlink(src, dest);
-        await buildModels([src.split('/').filter(Boolean).pop()]);
+        await buildModels([packageName]);
       } else {
         const unpackedFolder = await packAndTar(src, tmp, opts);
 
