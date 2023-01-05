@@ -1,10 +1,10 @@
 import path from 'path';
-import glob from 'glob';
 import { existsSync, mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 import { JSONSchema } from '../utils/packages';
 import { writeFileSync } from 'fs';
 import fm from 'front-matter';
+import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 
 /****
  * Types
@@ -222,25 +222,6 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
 
   await writeFile(path.resolve(dest, 'index.md'), content, 'utf-8');
 }
-
-const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, reject) => {
-  glob(`${target}/**/*.md?(x)`, (err, files) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(files);
-    }
-  });
-});
-
-const clearOutMarkdownFiles = async (target: string) => {
-  const files = await getAllMarkdownFiles(target);
-  await Promise.all(files.map(file => unlink(file)));
-  console.log([
-    `Cleared out ${files.length} markdown files, including:`,
-    ...files.map(file => file.split(/docs\/documentation\//gi).pop()).map(file => `- ${file}`),
-  ].join('\n'));
-};
 
 /****
  * Main function

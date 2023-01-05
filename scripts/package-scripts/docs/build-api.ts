@@ -4,6 +4,7 @@ import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, Int
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
+import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 
 /****
  * Types
@@ -705,13 +706,9 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   return content;
 }
 
-/****
- * Main function
- */
-async function main() {
-  const projectReflection = await getUpscalerAsTree();
-  const definitions = getChildren(projectReflection);
+const getSortedMethodsForWriting = async (definitions: Definitions) => {
   const exports = Object.values(definitions.classes);
+  const methods: DeclarationReflection[] = [];
   for (let i = 0; i < exports.length; i++) {
     const xport = exports[i];
     if (VALID_EXPORTS_FOR_WRITING_DOCS.includes(xport.name)) {
@@ -719,22 +716,58 @@ async function main() {
       if (!children) {
         throw new Error(`No methods found in export ${xport.name}`);
       }
-      const methods = sortChildrenByLineNumber<DeclarationReflection>(children);
-      for (let j = 0; j < methods.length; j++) {
-        const method = methods[j];
+      sortChildrenByLineNumber<DeclarationReflection>(children).forEach(method => {
         if (VALID_METHODS_FOR_WRITING_DOCS.includes(method.name)) {
-          const content = getContentForMethod(method, definitions, j);
-          if (content) {
-            const target = path.resolve(EXAMPLES_DOCS_DEST, `${method.name}.md`);
-            await mkdirp(path.dirname(target));
-            writeFile(target, content.trim(), 'utf-8');
-          }
+          methods.push(method);
         } else {
           console.log(`** Ignoring method ${method.name}`);
         }
-      }
+      });
     }
   }
+  return methods;
+}
+
+const writeAPIDocumentationFiles = async (methods: DeclarationReflection[], definitions: Definitions) => {
+  await Promise.all(methods.map(async method => {
+    const content = getContentForMethod(method, definitions, j);
+    if (content) {
+      const target = path.resolve(EXAMPLES_DOCS_DEST, `${method.name}.md`);
+      await mkdirp(path.dirname(target));
+      await writeFile(target, content.trim(), 'utf-8');
+    } else {
+      throw new Error(`No content for method ${method.name}`);
+    }
+  }))
+};
+
+const writeIndexFile = async (methods: DeclarationReflection[]) => {
+  const contents = [
+    '# API',
+    '',
+    'API Documentation for UpscalerJS.',
+    '',
+    'Available methods:',
+    '',
+    ...methods.map(method => `- [\`${method.name}\`](./${method.name})`),
+  ].join('\n')
+  await writeFile(path.resolve(EXAMPLES_DOCS_DEST, 'index.md'), contents, 'utf-8');
+}
+
+/****
+ * Main function
+ */
+async function main() {
+  await mkdirp(EXAMPLES_DOCS_DEST);
+  await clearOutMarkdownFiles(EXAMPLES_DOCS_DEST);
+
+  const definitions = getChildren(await getUpscalerAsTree());
+  const methods = await getSortedMethodsForWriting(definitions);
+
+  await Promise.all([
+    writeAPIDocumentationFiles(methods, definitions),
+    writeIndexFile(methods),
+  ]);
 }
 
 /****
@@ -743,7 +776,6 @@ async function main() {
 
 if (require.main === module) {
   (async () => {
-
     await main();
   })();
 }

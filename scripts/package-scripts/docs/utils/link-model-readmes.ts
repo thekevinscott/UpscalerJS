@@ -3,9 +3,9 @@
  */
 import path from 'path';
 import { copyFile, copy, existsSync, mkdirp, readFile, unlinkSync, writeFile } from 'fs-extra';
-import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
-import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
-import { getHashedName } from '../utils/getHashedName';
+import { DOCS_DIR, MODELS_DIR } from '../../utils/constants';
+import { getAllAvailableModelPackages } from "../../utils/getAllAvailableModels";
+import { getHashedName } from '../../utils/getHashedName';
 
 /****
  * Constants
