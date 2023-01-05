@@ -11,6 +11,7 @@ import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
 import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { promisify } from 'util';
+import buildModels from '../../../scripts/package-scripts/build-model';
 const fastFolderSize = promisify(require('fast-folder-size'));
 
 
@@ -37,6 +38,7 @@ export interface Import {
  * Constants
  */
 
+const ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE = .5;
 const CONCURRENT_ASYNC_THREADS = 1;
 
 const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, EXAMPLES_DIR]).map(packagePath => path.resolve(ROOT_DIR, packagePath)).reduce((map, packagePath) => {
@@ -298,10 +300,9 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
     try {
 
       const size = await fastFolderSize(src);
-      console.log('the size', size, src);
-      if (size > 1073741824) {
+      if (size > Math.round(1024 * 1024 * 1024 * ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE)) { // anything over x gigs
         await symlink(src, dest);
-        // and build?
+        await buildModels([src.split('/').filter(Boolean).pop()]);
       } else {
         const unpackedFolder = await packAndTar(src, tmp, opts);
 

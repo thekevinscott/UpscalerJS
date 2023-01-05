@@ -237,6 +237,10 @@ Package.init({
     allowNull: false,
     unique: true,
   },
+  experimental: {
+    type: DataTypes.BOOLEAN,
+    default: false,
+  },
 }, {
   sequelize,
   modelName: 'Package'
