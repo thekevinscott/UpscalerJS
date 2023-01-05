@@ -239,7 +239,6 @@ Package.init({
   },
   experimental: {
     type: DataTypes.BOOLEAN,
-    default: false,
   },
 }, {
   sequelize,
