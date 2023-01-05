@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs-extra';
+import path from 'path';
 import { Database } from "./Database";
 import { Package } from "./Package";
 import { MODELS_DIR } from '../../../utils/constants';
