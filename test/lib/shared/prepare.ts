@@ -1,5 +1,5 @@
 import { Dependency } from '@schemastore/package';
-import { remove, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
+import { symlink, remove, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -10,6 +10,9 @@ import crypto from 'crypto';
 import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
 import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { promisify } from 'util';
+const fastFolderSize = promisify(require('fast-folder-size'));
+
 
 /***
  * Types
@@ -293,14 +296,22 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
   rimraf.sync(dest);
   await withTmpDir(async tmp => {
     try {
-      const unpackedFolder = await packAndTar(src, tmp, opts);
 
-      const destParent = path.resolve(dest, '..');
-      mkdirpSync(destParent);
+      const size = await fastFolderSize(src);
+      console.log('the size', size, src);
+      if (size > 1073741824) {
+        await symlink(src, dest);
+        // and build?
+      } else {
+        const unpackedFolder = await packAndTar(src, tmp, opts);
 
-      await callExec(`mv ${unpackedFolder} ${dest}`, {
-        cwd: tmp,
-      });
+        const destParent = path.resolve(dest, '..');
+        mkdirpSync(destParent);
+
+        await callExec(`mv ${unpackedFolder} ${dest}`, {
+          cwd: tmp,
+        });
+      }
     } catch (err: unknown) {
       throw new Error(`Failed to pack local package ${src}. ${err instanceof Error ? `Error was: ${err.message}` : ''}`);
     }
