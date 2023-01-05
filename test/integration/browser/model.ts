@@ -3,6 +3,7 @@
  */
 import { checkImage } from '../../lib/utils/checkImage';
 import { bundleEsbuild, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { readFileSync } from 'fs-extra';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
@@ -24,7 +25,11 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
-const MODELS_TO_TEST = getAllAvailableModelPackages().filter(packageName => packageName !== 'esrgan-experiments').reduce((arr, packageName) => {
+const MODELS_TO_TEST = getAllAvailableModelPackages().filter(packageName => {
+  const packageJSON = JSON.parse(readFileSync(path.resolve(MODELS_DIR, packageName, 'package.json'), 'utf-8'));
+  const experimental = packageJSON['@upscalerjs']?.['model']?.['experimental'];
+  return !experimental;
+}).reduce((arr, packageName) => {
   return arr.concat(getAllAvailableModels(packageName).filter(({ esm }) => {
     if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && esm === "8x") {
       return false;
