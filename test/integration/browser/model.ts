@@ -24,7 +24,7 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
-const MODELS_TO_TEST = getAllAvailableModelPackages().filter(packageName => packageName !== 'experiments').reduce((arr, packageName) => {
+const MODELS_TO_TEST = getAllAvailableModelPackages().filter(packageName => packageName !== 'esrgan-experiments').reduce((arr, packageName) => {
   return arr.concat(getAllAvailableModels(packageName).filter(({ esm }) => {
     if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && esm === "8x") {
       return false;
