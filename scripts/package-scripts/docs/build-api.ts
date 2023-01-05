@@ -729,8 +729,8 @@ const getSortedMethodsForWriting = async (definitions: Definitions) => {
 }
 
 const writeAPIDocumentationFiles = async (methods: DeclarationReflection[], definitions: Definitions) => {
-  await Promise.all(methods.map(async method => {
-    const content = getContentForMethod(method, definitions, j);
+  await Promise.all(methods.map(async (method, i) => {
+    const content = getContentForMethod(method, definitions, i);
     if (content) {
       const target = path.resolve(EXAMPLES_DOCS_DEST, `${method.name}.md`);
       await mkdirp(path.dirname(target));
