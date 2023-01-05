@@ -1,12 +1,12 @@
 import Upscaler from 'upscaler';
-import x3 from '@upscalerjs/esrgan-thick/2x';
+import model from '@upscalerjs/esrgan-thick/2x';
 import img from "./flower.png";
 const target = document.getElementById("target");
 const button = document.getElementById("button");
 const info = document.getElementById("info");
 
 const upscaler = new Upscaler({
-  model: x3,
+  model: model,
 });
 button.onclick = () => {
   button.disabled = true;
