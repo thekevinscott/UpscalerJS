@@ -1,4 +1,5 @@
 import { mkdirp, writeFile } from 'fs-extra';
+import yargs from 'yargs';
 import path from 'path';
 import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
@@ -51,6 +52,28 @@ const INTRINSIC_TYPES = [
   'number',
   'boolean',
 ];
+const TYPES_TO_EXPAND: Record<string, string[]> = {
+  'upscale': ['Input', 'Progress'],
+  'warmup': ['WarmupSizes'],
+}
+const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
+  'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
+  'WarmupSizes': () => ([
+    `- \`[number, number]\` - an array of two numbers representing width and height.`,
+    `- \`{patchSize: number; padding?: number}\` - an object with the \`patchSize\` and optional \`padding\` properties.`,
+    `- \`[number, number][]\` - an array of arrays of two numbers representing width and height.`,
+    `- \`{patchSize: number; padding?: number}[]\` - an array of objects with the \`patchSize\` and optional \`padding\` properties.`,
+  ].join('\n')),
+  'Progress': () => ([
+    'The progress callback function has the following four parameters:',
+    '- `progress` - a number between 0 and 1 representing the progress of the upscale.',
+    '- `slice` - a string or 3D tensor representing the current slice of the image being processed. The type returned is specified by the `progressOutput` option, or if not present, the `output` option, or if not present, string for the browser and tensor for node.',
+    '- `row` - the row of the image being processed.',
+    '- `col` - the column of the image being processed.',
+    '',
+    '[See the guide on progress for more information.](/documentation/guides/browser/usage/progress)',
+  ].join('\n')),
+}
 // define special type information that is external
 const makeNewExternalType = (name: string, url: string) => {
   const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
@@ -122,7 +145,7 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   }
 
   const platformSpecificType: PlatformSpecificDeclarationReflection = {
-    name: 'Input',
+    name: typeName,
     kindString: 'Platform Specific Type',
     browser: platformSpecificTypes[0],
     node: platformSpecificTypes[1],
@@ -445,13 +468,19 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
   throw new Error(`Unsupported type: ${_type.type}`)
 }
 
-const getURLFromSources = (sources?: SourceReference[]) => {
-  if (sources?.length) {
-    const { url } = sources?.[0] || {};
-    if (url?.startsWith(REPO_ROOT)) {
-      return rewriteURL(url);
+const getURLFromSources = (matchingType: undefined | DecRef | TypeParameterReflection) => {
+  if (!matchingType) {
+    return undefined;
+  }
+  if ('sources' in matchingType) {
+    const sources = matchingType.sources;
+    if (sources?.length) {
+      const { url } = sources?.[0] || {};
+      if (url?.startsWith(REPO_ROOT)) {
+        return rewriteURL(url);
+      }
+      return url;
     }
-    return url;
   }
 
   return undefined;
@@ -473,27 +502,35 @@ const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection)
   return 'parent' in reflection;
 }
 
-const writeParameter = (parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DecRef | TypeParameterReflection, definitions: Definitions) => {
-  if (matchingType !== undefined && !isTypeParameterReflection(matchingType) && !isDeclarationReflection(matchingType)) {
-    const comment = getSummary(parameter.comment);
-    const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
-    const parsedName = `\`${name}${type === 'array' ? '[]' : ''}\``;
-    return [
-      '-',
-      `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
-      `[${parsedName}](#${name.toLowerCase()})`,
-      comment ? ` - ${comment}` : undefined,
-    ].filter(Boolean).join(' ');
-  }
+const writeParameter = (methodName: string, parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DecRef | TypeParameterReflection, definitions: Definitions, childParameters: string) => {
+  // if (matchingType !== undefined && !isTypeParameterReflection(matchingType) && !isDeclarationReflection(matchingType)) {
+  //   // this is a platform-specify type specification. likely it is the input definition.
+  //   const comment = getSummary(parameter.comment);
+  //   const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
+  //   const parsedName = `\`${name}${type === 'array' ? '[]' : ''}\``;
+  //   return [
+  //     '-',
+  //     `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
+  //     childParameters ? undefined : `[${parsedName}](#${name.toLowerCase()})`, // only show the type information if we're not expanding it
+  //     comment ? ` - ${comment}` : undefined,
+  //   ].filter(Boolean).join(' ');
+  // }
   const comment = getSummary(parameter.comment);
   const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
-  const url = includeURL ? getURLFromSources(matchingType?.sources) : undefined;
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
-  const linkedName = url ?  `[\`${parsedName}\`](${url})` : `\`${parsedName}\``;
+
+  let url: string | undefined = undefined;
+  const typesToExpand = TYPES_TO_EXPAND[methodName === 'constructor' ? '_constructor' : methodName] || [];
+  if (typesToExpand.includes(name)) {
+    url = `#${name.toLowerCase()}`;
+  } else if (includeURL) {
+    url = getURLFromSources(matchingType);
+  }
+  const linkedName = url ? `[\`${parsedName}\`](${url})` : `\`${parsedName}\``;
   return [
     '-',
     `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
-    `${linkedName}`,
+    childParameters === '' ? linkedName : undefined, // only show the type information if we're not expanding it
     comment ? ` - ${comment}` : undefined,
   ].filter(Boolean).join(' ');
 };
@@ -501,7 +538,7 @@ const writeParameter = (parameter: ParameterReflection | DeclarationReflection, 
 const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
   const comment = getSummary(parameter.comment);
   const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
-  const url = getURLFromSources(parameter.sources);
+  const url = getURLFromSources(parameter);
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
   return [
     '-',
@@ -512,7 +549,7 @@ const writePlatformSpecificParameter = (platform: string, parameter: Declaration
 
 }
 
-const writePlatformSpecificDefinitions = (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
+const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
   const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
   for (let i = 0; i< Object.values(definitions.types).length; i++) {
     const type = Object.values(definitions.types)[i];
@@ -522,11 +559,10 @@ const writePlatformSpecificDefinitions = (definitions: Definitions, typeParamete
   }
   return platformSpecificTypes.map(parameter => {
     return [
-      `### \`${parameter.name}\``,
       writePlatformSpecificParameter('Browser', parameter.browser, definitions),
       writePlatformSpecificParameter('Node', parameter.node, definitions),
     ].join('\n')
-  });
+  }).join('\n');
 }
 
 const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
@@ -561,16 +597,17 @@ const getMatchingType = (parameter: ParameterReflection | DeclarationReflection,
   return matchingType;
 }
 
-const getParameters = (parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}, depth = 0): string => {
+const getParameters = (methodName: string, parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}, depth = 0): string => {
   if (depth > 5) {
     throw new Error('Too many levels of depth');
   }
   return parameters.map((parameter) => {
     const matchingType = getMatchingType(parameter, definitions, typeParameters);
     const { children = [] } = matchingType || {};
+    const childParameters = getParameters(methodName, sortChildrenByLineNumber(children), definitions, typeParameters, depth + 1);
     return [
-      writeParameter(parameter, matchingType, definitions),
-      getParameters(sortChildrenByLineNumber(children), definitions, typeParameters, depth + 1),
+      writeParameter(methodName, parameter, matchingType, definitions, childParameters),
+      childParameters,
     ].filter(Boolean).map(line => Array(depth * 2).fill(' ').join('') + line).join('\n');
   }).filter(Boolean).join('\n');
 };
@@ -651,6 +688,17 @@ const getReturnType = (signatures: (SignatureReflection & { typeParameter?: Type
   return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
 }
 
+const writeExpandedTypeDefinitions = (methodName: string, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}): string => {
+  // this method is for writing out additional information on the types, below the parameters
+  const typesToExpand = TYPES_TO_EXPAND[methodName === 'constructor' ? '_constructor' : methodName] || [];
+  return typesToExpand.map(type => {
+    return [
+      `### \`${type}\``,
+      EXPANDED_TYPE_CONTENT[type](definitions, typeParameters),
+    ].join('\n')
+  }).join('\n');
+}
+
 const getContentForMethod = (method: DeclarationReflection, definitions: Definitions, i: number) => {
   const {
     name,
@@ -697,9 +745,9 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     source,
     ...(parameters ? [
       `## Parameters`,
-      getParameters(parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
+      getParameters(name, parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
-    ...(method.name === 'upscale' ? writePlatformSpecificDefinitions(definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)) : []),
+    writeExpandedTypeDefinitions(name, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     `## Returns`,
     getReturnType(signatures, blockTags),
   ].filter(Boolean).join('\n\n');
@@ -757,9 +805,11 @@ const writeIndexFile = async (methods: DeclarationReflection[]) => {
 /****
  * Main function
  */
-async function main() {
+async function main({ shouldClearMarkdown }: { shouldClearMarkdown?: boolean } = {}) {
   await mkdirp(EXAMPLES_DOCS_DEST);
-  await clearOutMarkdownFiles(EXAMPLES_DOCS_DEST);
+  if (shouldClearMarkdown) {
+    await clearOutMarkdownFiles(EXAMPLES_DOCS_DEST);
+  }
 
   const definitions = getChildren(await getUpscalerAsTree());
   const methods = await getSortedMethodsForWriting(definitions);
@@ -773,9 +823,23 @@ async function main() {
 /****
  * Functions to expose the main function as a CLI tool
  */
+interface Args {
+  shouldClearMarkdown?: boolean;
+}
+
+const getArgs = async (): Promise<Args> => {
+  const argv = await yargs(process.argv.slice(2)).options({
+    shouldClearMarkdown: { type: 'boolean' },
+  }).argv;
+
+  return {
+    ...argv,
+  }
+};
 
 if (require.main === module) {
   (async () => {
-    await main();
+    const args = await getArgs();
+    await main(args);
   })();
 }
