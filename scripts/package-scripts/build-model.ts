@@ -183,7 +183,7 @@ const buildModel = async (
   return Number((performance.now() - start).toFixed(2));
 }
 
-const buildModels = async (
+export const buildModels = async (
   models: Array<string> = AVAILABLE_MODELS, 
   outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS, 
   opts: Opts = {}

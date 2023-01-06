@@ -30,9 +30,10 @@ export class Database {
     return dataset;
   }
 
-  async addModelPackage(packageName: string, models?: string[], resultsOnly?: boolean, useGPU = false, callback?: (modelPackage: Package) => void) {
+  async addModelPackage(packageName: string, experimental: boolean, models?: string[], resultsOnly?: boolean, useGPU = false, callback?: (modelPackage: Package) => void) {
     const modelPackage = await Package.returnUpsert({
       name: packageName,
+      experimental,
     });
 
     modelPackage.useGPU = useGPU;
