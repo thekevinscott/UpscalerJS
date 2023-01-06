@@ -103,3 +103,26 @@ const upscaler = new Upscaler({
 Every model must have an explicit `scale` defined.
 
 Ensure you pass a valid `scale` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
+
+## Invalid Warmup Value
+
+If you see an error like:
+
+```
+Uncaught (in promise) Error: Invalid value passed to warmup in warmupSizes: foo
+```
+
+It means you've called `.warmup` with an invalid value:
+
+```javascript
+upscaler.warmup('foo')
+```
+
+Ensure you're passing one of the following:
+
+- `{ patchSize: number; padding: number }`
+- `[width, height]`
+- `{ patchSize: number; padding: number }[]`
+- `[width, height][]`
+
+For more information, [see the guide on warm ups](/documentation/guides/browser/performance/warmup), or review the [API documentation on the `warmup` method](/documentation/api/warmup).
