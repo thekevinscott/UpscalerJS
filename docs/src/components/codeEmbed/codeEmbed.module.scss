@@ -67,6 +67,24 @@ $dragger_bottom_padding: 10px;
   }
 
   @media (max-width: 997px) {
+    .dragger {
+      font-size: 10px;
+      white-space: nowrap;
+
+      &.stackblitz {
+        margin: calc(-8px) auto 0 auto;
+        background: #2f3138;
+        opacity: 1;
+        padding-bottom: 0;
+      }
+      &.codesandbox {
+        margin: calc(-8px) auto 0 auto;
+        background: rgb(52, 52, 52);
+        opacity: 1;
+        padding-bottom: 0;
+      }
+    }
+
     iframe {
       position: relative;
       width: 100%;
@@ -81,4 +99,5 @@ iframe.iframe {
   width: 100%;
   height: 400px;
   z-index: 2;
+  background: black;
 }
