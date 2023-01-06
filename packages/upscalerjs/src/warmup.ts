@@ -13,9 +13,16 @@ export const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes =
   return Boolean(size) && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
 };
 
-export const getInvalidValueError = (size: unknown): Error => new Error(
-  `Invalid value passed to warmup in warmupSizes: ${JSON.stringify(size)}`
-);
+const ERROR_INVALID_WARMUP_VALUE_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#invalid-warmup-value';
+
+export const ERROR_INVALID_WARMUP_VALUE = (size: unknown) => ([
+  'Invalid value passed to warmup in warmupSizes:',
+  JSON.stringify(size),
+  `For more information, see ${ERROR_INVALID_WARMUP_VALUE_URL}.`,
+].join('\n'));
+
+export const getInvalidValueError = (size: unknown): Error => new Error(ERROR_INVALID_WARMUP_VALUE(size));
 
 const getWidthAndHeight = (size: NumericWarmupSizes | WarmupSizesByPatchSize): [number, number] => {
   if (isWarmupSizeByPatchSize(size)) {
