@@ -5,16 +5,14 @@ interface Opts {
   hasBeenRescaled: boolean;
   img: HTMLImageElement;
   progress?: number;
-  upscaledSrc?: string;
 }
 
 export const useDemoLifecycleState = ({
-  hasBeenRescaled, 
+  hasBeenRescaled,
   img,
   progress,
-  upscaledSrc,
 }: Opts) => useMemo(() => {
-  if (progress === undefined && upscaledSrc) {
+  if (progress === 1 && img) {
     return State.COMPLETE;
   }
   if (img) {
@@ -24,4 +22,4 @@ export const useDemoLifecycleState = ({
     return State.WARNING;
   }
   return State.UPLOAD;
-}, [img, hasBeenRescaled, progress, upscaledSrc]);
+}, [img, hasBeenRescaled, progress]);

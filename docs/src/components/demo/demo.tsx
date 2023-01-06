@@ -49,7 +49,7 @@ export function Demo() {
     }
   }, []);
   const { 
-    upscaledSrc,
+    upscaledRef,
     originalSize, 
     downscaledImage, 
     chooseWhichImageToUse, 
@@ -60,15 +60,15 @@ export function Demo() {
     cancelUpscale,
     filename,
 
+    downscaledImageSize,
     scale,
   } = useImages();
 
-  const { handleDownload } = useDownload(filename, progress, upscaledSrc);
+  const { handleDownload } = useDownload(filename, progress, upscaledRef);
 
   const lifecycleState = useDemoLifecycleState({
     progress,
-    upscaledSrc,
-    hasBeenRescaled, 
+    hasBeenRescaled,
     img,
   });
 
@@ -83,22 +83,31 @@ export function Demo() {
           <UploadDialogue />
         )}
         {lifecycleState === State.WARNING && (
-          <Warning 
-            img={downscaledImage}
+          <Warning
+            imgSize={downscaledImageSize}
+            downscaledCanvas={downscaledImage}
             choose={chooseWhichImageToUse}
             originalSize={originalSize}
           />
         )}
-        <Viewer upscaledSrc={upscaledSrc} src={img} zoom={zoom} scale={scale} /> 
-        <Controls 
-          cancelUpscale={cancelUpscale} 
-          selectImage={setUploadedImage} 
-          handleZoom={setZoom} 
-          zoom={zoom} 
-          state={lifecycleState} 
+        {img && (
+          <Viewer
+            ref={upscaledRef}
+            img={img}
+            zoom={zoom}
+            scale={scale}
+          />
+        )
+        }
+        <Controls
+          cancelUpscale={cancelUpscale}
+          selectImage={setUploadedImage}
+          handleZoom={setZoom}
+          zoom={zoom}
+          state={lifecycleState}
           progress={(
             progress !== undefined && <ProgressBar value={progressValue} label={`${progressValue}%`}>{progressValue}%</ProgressBar>
-          )} 
+          )}
           handleDownload={handleDownload}
         />
       </div>

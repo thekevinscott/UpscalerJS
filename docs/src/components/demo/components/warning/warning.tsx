@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './warning.module.scss';
 import { Alert } from '@site/src/components/alert/alert';
 import { Icon } from '@site/src/components/icon/icon';
@@ -11,13 +11,19 @@ import Link from '@docusaurus/Link';
 export type Choose = (option: UpscaleChoice) => void;
 export default function Warning({
   choose,
-  img,
+  downscaledCanvas,
+  imgSize,
   originalSize: { width, height },
 }: {
-  img: HTMLImageElement;
+  downscaledCanvas: HTMLCanvasElement;
   choose: Choose;
   originalSize: Size,
+  imgSize: Size,
 }) {
+  const [src, setSrc] = useState();
+  useEffect(() => {
+    setSrc(downscaledCanvas.toDataURL());
+  }, [downscaledCanvas]);
   return (
     <Dialogue>
       <Pane> 
@@ -26,14 +32,14 @@ export default function Warning({
           <Icon slot="icon" name="exclamation-triangle" />
           <strong>Large Image Detected</strong>
         </Alert>
-        <img id={styles.uploadedImage} src={img.src} />
+        <img id={styles.uploadedImage} src={src} />
         <p>
           Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels. Large 
           images can take a long time to upscale in the browser.
         </p>
         <p>
           We recommend first downscaling your image to 
-          to <strong>{img.width}</strong> by <strong>{img.height}</strong> pixels before 
+          to <strong>{imgSize.width}</strong> by <strong>{imgSize.height}</strong> pixels before 
           upscaling to demonstrate UpscalerJS. 
         </p>
         <p>

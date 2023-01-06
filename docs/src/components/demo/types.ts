@@ -5,13 +5,13 @@ export enum State {
   COMPLETE,
 }
 
-export interface UploadedImage { 
+export interface UploadedImage {
   src: string; 
   filename: string; 
 }
 
 export interface ProcessedImage extends UploadedImage {
-  el: HTMLImageElement;
+  el: HTMLCanvasElement;
 }
 
 export interface Size {

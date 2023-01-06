@@ -1,60 +1,55 @@
-import React, { DOMAttributes, useEffect, useState } from 'react';
+import React, { useRef, Ref, forwardRef, DOMAttributes, useEffect, useState } from 'react';
 import styles from './viewer.module.scss';
 import 'image-comparison-viewer';
 import { ImageComparisonViewer } from 'image-comparison-viewer';
 import { getHTMLImageElement } from '../../utils/getHTMLImageElement';
 import { resizeImage } from '../../utils/resizeImage';
 
-export default function Viewer({
-  src,
-  upscaledSrc,
+interface Props {
+  zoom?: number;
+  img?: HTMLImageElement;
+  scale?: number;
+}
+
+const useResizedImage = (img?: HTMLImageElement, scale?: number) => {
+  const resizedRef = useRef<HTMLCanvasElement>();
+  useEffect(() => {
+    const canvas = resizedRef.current;
+    if (img && scale && canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    }
+  }, [img, scale, resizedRef]);
+
+  return resizedRef;
+};
+
+
+const Viewer = forwardRef<Ref, Props>(({
+  img,
   zoom,
   scale,
-}: {
-  zoom?: number;
-  upscaledSrc?: string;
-  src?: HTMLImageElement;
-  scale?: number;
-}) {
-  const [resizedImage, setResizedImage] = useState<string>();
-  const [oldSrc, setOldSrc] = useState<string>();
+}, upscaledRef) => {
+  const resizedRef = useResizedImage(img, scale);
+  const width = img?.width;
+  const height = img?.height;
 
-  useEffect(() => {
-    setOldSrc(src?.src);
-  }, [src]);
-
-  useEffect(() => {
-    if (oldSrc && oldSrc !== src?.src) {
-      setResizedImage(undefined);
-    }
-  }, [src, oldSrc]);
-
-  useEffect(() => {
-    if (src && scale) {
-      const _resizedImage = resizeImage(src, scale);
-      setResizedImage(_resizedImage);
-    } else {
-      setResizedImage(undefined);
-    }
-  }, [src, resizedImage, scale]);
-
-  if (!resizedImage) {
-    return (
-      <div id={styles.viewer}>
-        <image-comparison-viewer></image-comparison-viewer>
-      </div>
-    );
+  if (!width || !height || !scale) {
+    return null;
   }
+
+  const imgWidth = width * scale;
+  const imgHeight = height * scale;
 
   return (
     <div id={styles.viewer}>
       <image-comparison-viewer zoom={zoom} comparisonX={0.5}>
-        {<img src={upscaledSrc} />}
-        {<img src={resizedImage} />}
+        <canvas ref={upscaledRef} width={imgWidth} height={imgHeight} />
+        <canvas ref={resizedRef} width={imgWidth} height={imgHeight} />
       </image-comparison-viewer>
     </div>
   );
-}
+});
 
 type CustomElement<T> = Partial<T & DOMAttributes<T>>;
 
@@ -66,3 +61,4 @@ declare global {
   }
 }
 
+export default Viewer;

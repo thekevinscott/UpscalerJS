@@ -39,7 +39,7 @@ export default function Actions({
       <div id={styles.right}>
         <Button disabled={disabled} size="large" variant="primary" onClick={handleDownload}>
           Download Upscaled Image
-          <Icon slot="suffix" name="download"></Icon>
+          {/* <Icon slot="suffix" name="box-arrow-down"></Icon> */}
         </Button>
       </div>
     </div>

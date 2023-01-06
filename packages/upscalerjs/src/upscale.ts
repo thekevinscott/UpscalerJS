@@ -257,6 +257,12 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   return concatenatedTensor as T;
 }
 
+export const getPercentageComplete = (row: number, col: number, columns: number, total: number) => {
+  const index = row * columns + col + 1;
+  const percent = index / total;
+  return percent;
+};
+
 /* eslint-disable @typescript-eslint/require-await */
 export async function* predict(
   pixels: tf.Tensor4D,
@@ -313,8 +319,7 @@ export async function* predict(
         yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
-          const index = row * columns + col + 1;
-          const percent = index / total;
+          const percent = getPercentageComplete(row, col, columns, total);
           if (isSingleArgProgress(progress)) {
             progress(percent);
           } else {

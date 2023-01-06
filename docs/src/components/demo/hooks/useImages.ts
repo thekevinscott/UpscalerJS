@@ -13,7 +13,8 @@ const shouldPromptToResize = (el: HTMLImageElement, recommendedSize: Size) => {
 
 export const useImages = () => {
   const [_originalImage, _setOriginalImage] = useState<ProcessedImage>();
-  const [downscaledImage, _setDownscaledImage] = useState<HTMLImageElement>();
+  const [downscaledImage, _setDownscaledImage] = useState<HTMLCanvasElement>();
+  const [downscaledImageSize, setDownscaledImageSize] = useState<HTMLCanvasElement>();
   const [hasBeenRescaled, _setHasBeenRescaled] = useState(undefined);
   const [choice, _setChoice] = useState<UpscaleChoice | undefined>();
 
@@ -24,14 +25,14 @@ export const useImages = () => {
     _setHasBeenRescaled(undefined);
   }, [_setOriginalImage, _setDownscaledImage, _setHasBeenRescaled, _setChoice]);
 
-  const img = useAppropriateImage({ hasBeenRescaled, choice, downscaledImage, _originalImage });
+  const appropriateImage = useAppropriateImage({ hasBeenRescaled, choice, downscaledImage, _originalImage });
 
-  const {     
+  const {
     scale,
-    cancelUpscale, 
+    cancelUpscale,
     progress,
-    upscaledSrc,
-  } = useUpscaler(img);
+    upscaledRef,
+  } = useUpscaler(appropriateImage, _originalImage?.filename);
 
   const setUploadedImage = useCallback(async (uploadedImage?: UploadedImage) => {
     if (uploadedImage?.src !== _originalImage?.src) {
@@ -40,7 +41,7 @@ export const useImages = () => {
       if (uploadedImage) {
         _setHasBeenRescaled(false);
         const { src, filename } = uploadedImage;
-        // const img = await removeAlpha(src);
+        // const img = await removeAlpha(await getHTMLImageElement(src));
         const img = await getHTMLImageElement(src);
         _setOriginalImage({
           src,
@@ -49,8 +50,13 @@ export const useImages = () => {
         });
         const recommendedSize = getRecommendedImageSize(img);
         if (shouldPromptToResize(img, recommendedSize)) {
-          const downscaledImg = await getHTMLImageElement(resizeImage(img, recommendedSize.width / img.width));
+          // const downscaledImg = await getHTMLImageElement(resizeImage(img, recommendedSize.width / img.width));
+          const downscaledImg = resizeImage(img, recommendedSize.width / img.width);
           _setDownscaledImage(downscaledImg);
+          setDownscaledImageSize({
+            width: recommendedSize.width,
+            height: recommendedSize.height,
+          });
           _setHasBeenRescaled(true);
         } else {
           _setChoice('original');
@@ -69,11 +75,12 @@ export const useImages = () => {
     filename: _originalImage?.filename,
     progress,
     setUploadedImage,
-    img,
+    img: appropriateImage,
     downscaledImage,
     hasBeenRescaled,
     chooseWhichImageToUse,
-    upscaledSrc: _originalImage?.src ? upscaledSrc : undefined,
+    upscaledRef: _originalImage?.src ? upscaledRef : undefined,
     scale,
+    downscaledImageSize,
   };
 };
