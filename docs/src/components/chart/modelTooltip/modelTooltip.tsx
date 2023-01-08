@@ -11,13 +11,12 @@ const splitModelName = (model: string): [string, string] => {
 };
 
 const getUpscaledImageSrc = (packageName: string, modelName: string) => {
-  return `http://localhost:3000/assets/sample-images/${packageName}/samples/${modelName}/flower.png`;
+  return `http://localhost:3000/assets/sample-images/${packageName}/samples/${modelName === '.' ? '2x' : modelName}/flower.png`;
 }
 
 const useModelInfo = (model: string) => {
   const [packageName, modelName] = useMemo(() => splitModelName(model), [model]);
   const upscaledImageSrc = useMemo(() => getUpscaledImageSrc(packageName, modelName), [packageName, modelName]);
-  console.log(upscaledImageSrc);
 
   return {
     packageName,
