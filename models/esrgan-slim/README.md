@@ -34,6 +34,20 @@ ESRGAN Slim ships with four models corresponding to the _scale_ of the upscaled 
 - 4x: `@upscalerjs/esrgan-slim/4x`
 - 8x: `@upscalerjs/esrgan-slim/8x` (_note: the 8x model runs only in Node_)
 
+## Sample Images
+
+### Original
+![Original image](./assets/samples/1x/flower.png)
+
+### 2x
+![2x upscaled image](./assets/samples/2x/flower.png)
+
+### 3x
+![3x upscaled image](./assets/samples/3x/flower.png)
+
+### 4x
+![4x upscaled image](./assets/samples/4x/flower.png)
+
 ## Documentation
 
 For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-slim](https://upscalerjs.com/models/available/esrgan-slim).
