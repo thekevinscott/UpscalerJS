@@ -65,14 +65,14 @@ describe('getPercentageComplete', () => {
     [0.125, 0, 0, 4, 2],
     [0.25, 0, 1, 4, 2],
     [0.375, 0, 2, 4, 2],
-    [0.5, 0, 1, 4, 2],
+    [0.5, 0, 3, 4, 2],
     [0.625, 1, 0, 4, 2],
     [0.75, 1, 1, 4, 2],
     [0.875, 1, 2, 4, 2],
     [1.0, 1, 3, 4, 2],
 
     [0.005263157895, 0, 0, 19, 10],
-  ])('gets the percentage %i for row %i, col %i, columns %i and rows %i', (expected, row, col, columns, rows) => {
+  ])('gets the percentage %f for row %i, col %i, columns %i and rows %i', (expected, row, col, columns, rows) => {
     const total = rows * columns;
     const percent = getPercentageComplete(row, col, columns, total);
     expect(percent.toFixed(4)).toBe(expected.toFixed(4));
