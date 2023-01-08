@@ -37,16 +37,16 @@ ESRGAN Slim ships with four models corresponding to the _scale_ of the upscaled 
 ## Sample Images
 
 ### Original
-![Original image](./assets/samples/1x/flower.png)
+![Original image](https://github.com/thekevinscott/UpscalerJS/blob/main/assets/flower.png?raw=true)
 
 ### 2x
-![2x upscaled image](./assets/samples/2x/flower.png)
+![2x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-slim/assets/samples/2x/flower.png?raw=true)
 
 ### 3x
-![3x upscaled image](./assets/samples/3x/flower.png)
+![3x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-slim/assets/samples/3x/flower.png?raw=true)
 
 ### 4x
-![4x upscaled image](./assets/samples/4x/flower.png)
+![4x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-slim/assets/samples/4x/flower.png?raw=true)
 
 ## Documentation
 
