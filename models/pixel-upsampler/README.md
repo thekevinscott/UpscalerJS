@@ -1,5 +1,3 @@
-# Pixel Upsampler
-
 This model is used primarily for testing (unit and integration) UpscalerJS. This model should not be used in production.
 
 This model takes an input image and doubles, triples, or quadruples, the pixels of the given input image.
