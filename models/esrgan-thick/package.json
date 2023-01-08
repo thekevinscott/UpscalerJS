@@ -62,6 +62,10 @@
     "@tensorflow/tfjs-node-gpu": "^4.1.0",
     "seedrandom": "3.0.5"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
   "author": "Kevin Scott",
   "license": "MIT"
 }
