@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.9",
   "description": "Pixel Upsampler Model for Upscaler.js",
   "scripts": {
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",
@@ -28,13 +28,6 @@
       "import": "./dist/esm/index.js"
     }
   },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models"
-  ],
   "files": [
     "license",
     "models/**/*",
