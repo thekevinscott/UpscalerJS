@@ -34,6 +34,21 @@ ESRGAN Medium ships with four models corresponding to the _scale_ of the upscale
 - 4x: `@upscalerjs/esrgan-medium/4x`
 - 8x: `@upscalerjs/esrgan-medium/8x` (_note: the 8x model runs only in Node_)
 
+
+## Sample Images
+
+### Original
+![Original image](https://github.com/thekevinscott/UpscalerJS/blob/main/assets/flower.png?raw=true)
+
+### 2x
+![2x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-medium/assets/samples/2x/flower.png?raw=true)
+
+### 3x
+![3x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-medium/assets/samples/3x/flower.png?raw=true)
+
+### 4x
+![4x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-medium/assets/samples/4x/flower.png?raw=true)
+
 ## Documentation
 
 For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-medium](https://upscalerjs.com/models/available/esrgan-medium).

@@ -34,6 +34,23 @@ ESRGAN thick ships with four models corresponding to the _scale_ of the upscaled
 - 4x: `@upscalerjs/esrgan-thick/4x`
 - 8x: `@upscalerjs/esrgan-thick/8x`
 
+## Sample Images
+
+### Original
+![Original image](https://github.com/thekevinscott/UpscalerJS/blob/main/assets/flower.png?raw=true)
+
+### 2x
+![2x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/assets/samples/2x/flower.png?raw=true)
+
+### 3x
+![3x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/assets/samples/3x/flower.png?raw=true)
+
+### 4x
+![4x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/assets/samples/4x/flower.png?raw=true)
+
+### 8x
+![8x upscaled image](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/assets/samples/8x/flower.png?raw=true)
+
 ## Documentation
 
 For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-thick](https://upscalerjs.com/models/available/esrgan-thick).
