@@ -15,5 +15,5 @@ const scaleCanvas = (canvas, scale) => {
 export const resizeImage = (img: HTMLImageElement, scale: number) => {
   const canvas = getCanvas(img);
   const scaledCanvas = scaleCanvas(canvas, scale);
-  return scaledCanvas.toDataURL();
+  return scaledCanvas;
 };

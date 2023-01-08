@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 export const useAppropriateImage = ({ hasBeenRescaled, choice, downscaledImage, _originalImage }) => {
-  return useMemo<undefined | HTMLImageElement>(() => {
+  return useMemo<undefined | HTMLCanvasElement>(() => {
     if (hasBeenRescaled === undefined) {
       return undefined;
     }

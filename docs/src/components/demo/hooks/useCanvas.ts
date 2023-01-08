@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { spliceImage } from '../utils/spliceImage';
 
 const OVERLAY_TEXT = "UPSCALING";
@@ -49,34 +49,35 @@ const manipulateOriginalImage = (canvas: HTMLCanvasElement) => {
   }
   ctx.putImageData(imgPixels, 0, 0, 0, 0, imgPixels.width, imgPixels.height);
   ctx.drawImage(drawOverlaidText(canvas.width, canvas.height), 0, 0, canvas.width, canvas.height);
-  // Draw text on top
 };
 
 export const useCanvas = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(document.createElement('canvas'));
-
-  const createCanvasAndSetImage = useCallback((img: HTMLImageElement, scale?: number) => {
+  const createCanvasAndSetImage = useCallback((canvas: HTMLCanvasElement, img: HTMLCanvasElement, scale?: number) => {
     if (!scale) {
       throw new Error('scale is not defined');
     }
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width * scale;
-    canvas.height = img.height * scale;
     const ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     manipulateOriginalImage(canvas);
-    canvasRef.current = canvas;
-    return canvas.toDataURL();
   }, []);
 
-  const drawImage = useCallback(async (slice: string, patchSize: number, x: number, y: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      throw new Error('Canvas element has not been created');
-    }
+  const drawImage = useCallback((canvas: HTMLCanvasElement, slice: Float32Array, shape: number[], patchSize: number, x: number, y: number) => {
+    const arr = new Uint8ClampedArray(4 * shape[1] * shape[0]);
 
-    return await spliceImage(canvas, slice, patchSize, x, y);
-  }, [canvasRef]);
+    // Fill the array with the same RGBA values
+    let sliceIndex = 0;
+    let arrIndex = 0;
+    while (sliceIndex < slice.length) {
+      arr[arrIndex + 0] = slice[sliceIndex + 0];
+      arr[arrIndex + 1] = slice[sliceIndex + 1];
+      arr[arrIndex + 2] = slice[sliceIndex + 2];
+      arr[arrIndex + 3] = 255;
+      sliceIndex += 3;
+      arrIndex += 4;
+    }
+    const imageData = new ImageData(arr, shape[1], shape[0]);
+    spliceImage(canvas, imageData, patchSize, x, y);
+  }, []);
 
   return { createCanvas: createCanvasAndSetImage, drawImage };
 };
