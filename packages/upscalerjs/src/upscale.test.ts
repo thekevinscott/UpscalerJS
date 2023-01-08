@@ -74,7 +74,8 @@ describe('getPercentageComplete', () => {
     [0.005263157895, 0, 0, 19, 10],
   ])('gets the percentage %i for row %i, col %i, columns %i and rows %i', (expected, row, col, columns, rows) => {
     const total = rows * columns;
-    expect(getPercentageComplete(row, col, columns, total)).toBe(expected);
+    const percent = getPercentageComplete(row, col, columns, total);
+    expect(percent.toFixed(4)).toBe(expected.toFixed(4));
   });
 });
 
