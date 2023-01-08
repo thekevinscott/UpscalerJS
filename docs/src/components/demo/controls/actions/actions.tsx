@@ -2,11 +2,11 @@ import React from 'react';
 import styles from './actions.module.scss';
 import { Range } from '@site/src/components/range/range';
 import { Button } from '@site/src/components/button/button';
-import { Icon } from '@site/src/components/icon/icon';
+// import { Icon } from '@site/src/components/icon/icon';
 import classNames from 'classnames';
 
 export type HandleZoom = (zoom: number) => void;
-export default function Actions({ 
+export default function Actions({
   handleZoom,
   zoom,
   handleDownload,

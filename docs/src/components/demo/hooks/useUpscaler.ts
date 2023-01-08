@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import * as tf from '@tensorflow/tfjs';
 import { useCanvas } from './useCanvas';
 import { ReceiverWorkerState, SenderWorkerState } from './worker';
-import { tensorAsBase64 } from 'tensor-as-base64';
 
 export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
   const [scale, setScale] = useState<number>();
@@ -37,7 +36,7 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
   }, [id]);
 
   useEffect(() => {
-    worker.current.onmessage = async ({ data: { type, data } }) => {
+    worker.current.onmessage = ({ data: { type, data } }) => {
       if (type === SenderWorkerState.PROGRESS) {
         if (upscaling) {
           const {
@@ -64,26 +63,23 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
     }
   }, [upscaling, id, setProgress, ]);
 
-  const upscale = useCallback(async (_img: HTMLCanvasElement, scale?: number, patchSize?: number) => {
-    let start = performance.now();
-    if (!scale) {
+  const upscale = useCallback(async (_img: HTMLCanvasElement, _scale?: number, _patchSize?: number) => {
+    if (!_scale) {
       throw new Error('Scale is not defined');
     }
     if (!upscaledRef.current) {
       throw new Error('No canvas available');
     }
-    createCanvas(upscaledRef.current, _img, scale);
-    start = performance.now();
+    createCanvas(upscaledRef.current, _img, _scale);
     setProgress(0);
     setUpscaling(true);
     const src = await tf.browser.fromPixelsAsync(_img);
-    start = performance.now();
     worker.current.postMessage({
       type: ReceiverWorkerState.UPSCALE,
       data: {
         pixels: src.dataSync(),
         shape: src.shape,
-        patchSize,
+        patchSize: _patchSize,
         padding: 2,
       }
     });

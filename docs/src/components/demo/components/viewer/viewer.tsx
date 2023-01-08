@@ -1,9 +1,8 @@
-import React, { useRef, Ref, forwardRef, DOMAttributes, useEffect, useState } from 'react';
+import React, { useRef, Ref, forwardRef, DOMAttributes, useEffect } from 'react';
 import styles from './viewer.module.scss';
 import 'image-comparison-viewer';
 import { ImageComparisonViewer } from 'image-comparison-viewer';
 import { getHTMLImageElement } from '../../utils/getHTMLImageElement';
-import { resizeImage } from '../../utils/resizeImage';
 
 interface Props {
   zoom?: number;

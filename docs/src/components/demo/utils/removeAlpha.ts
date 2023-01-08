@@ -1,6 +1,4 @@
-import { getHTMLImageElement } from "./getHTMLImageElement";
-
-export const removeAlpha = async (el: HTMLImageElement): Promise<HTMLCanvasElement> => {
+export const removeAlpha = (img: HTMLImageElement): Promise<HTMLCanvasElement> => {
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -11,5 +9,4 @@ export const removeAlpha = async (el: HTMLImageElement): Promise<HTMLCanvasEleme
   ctx.fill();
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   return canvas;
-  // return getHTMLImageElement(canvas.toDataURL());
 }
