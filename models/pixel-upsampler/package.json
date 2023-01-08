@@ -28,13 +28,6 @@
       "import": "./dist/esm/index.js"
     }
   },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models"
-  ],
   "files": [
     "license",
     "models/**/*",
