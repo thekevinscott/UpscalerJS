@@ -8,7 +8,10 @@
 
 UpscalerJS is a tool for increasing image resolution in Javascript via Tensorflow.js.
 
-![Demo](assets/demo.gif)
+<table>
+<thead><tr><th>Original</th><th>Upscaled</th></tr></thead>
+<tbody><tr><td><img src="https://github.com/thekevinscott/UpscalerJS/blob/main/assets/baboon-bicubic.png?raw=true" /></td><td><img src="https://github.com/thekevinscott/UpscalerJS/blob/main/assets/baboon-upscaled.png?raw=true" /></td></tr></tbody>
+</table>
 
 [A live demo is here](https://upscalerjs.com/demo).
 
