@@ -17,13 +17,13 @@ In this example we're using [Vite](https://vitejs.dev/), a development server, a
 We can import UpscalerJS with the following:
 
 ```javascript
-import Upscaler from 'upscaler';
+import Upscaler from 'upscaler'
 ```
 
 We can then instantiate an instance of UpscalerJS with:
 
 ```javascript
-const upscaler = new Upscaler();
+const upscaler = new Upscaler()
 ```
 
 ## Upscaling an Image
@@ -39,9 +39,9 @@ Input images can come in a variety of formats, including URL strings, `<img />` 
 Our input will be a string representing a URL. Provide the string to the `upscale` method with:
 
 ```javascript
-import pathToImage from '/path/to/image.png';
+import pathToImage from '/path/to/image.png'
 
-upscaler.upscale(pathToImage);
+upscaler.upscale(pathToImage)
 ```
 
 This will upscale the image and return a promise that resolves to the upscaled image src represented as a base64 string:
@@ -50,10 +50,10 @@ This will upscale the image and return a promise that resolves to the upscaled i
 upscaler.upscale(pathToImage).then(upscaledImageSrc => {
   // Create a new image, set its src to the upscaled src,
   // and place it on the page
-  const img = document.createElement("img");
-  img.src = upscaledImgSrc;
-  document.body.appendChild(img);
-});
+  const img = document.createElement("img")
+  img.src = upscaledImgSrc
+  document.body.appendChild(img)
+})
 ```
 
 There are a number of options we can pass to the `upscale` method, [detailed here](http://localhost:3000/documentation/api/upscale).

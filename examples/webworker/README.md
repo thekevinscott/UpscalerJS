@@ -8,7 +8,7 @@ This guide demonstrates how to integrate UpscalerJS into a Web Worker.
 
 Another strategy for speeding up inference calls in the browser is to move the upscaling process to a Web Worker.
 
-This guide won't discuss the specifics of building web workers; [MDN has a great overview of that](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers). This guide will instead focus on what's necessary to incorporate UpscalerJS into a web worker.
+This guide won't cover how to build a web worker; [MDN has a great overview of that](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers). This guide will instead focus on what's necessary to incorporate UpscalerJS into a web worker.
 
 :::caution
 
@@ -24,8 +24,8 @@ In the UI thread, we can load our image and get its data with:
 
 ```javascript
 // UI thread
-const pixels = tf.browser.fromPixels(image);
-const data = await pixels.data();
+const pixels = tf.browser.fromPixels(image)
+const data = await pixels.data()
 ```
 
 When passing messages between a UI thread and a web worker, the data is serialized and then deserialized. Therefore, we need to transform our `tensor` (which is not serializable) into a format that can be serialized.
@@ -34,14 +34,14 @@ We pass `data` along with the tensor's `shape` to our worker:
 
 ```javascript
 // UI thread
-worker.postMessage([data, pixels.shape]);
+worker.postMessage([data, pixels.shape])
 ```
 
 In our worker, we'll turn this into a tensor:
 
 ```javascript
 // Worker thread
-const tensor = tf.tensor(data, shape);
+const tensor = tf.tensor(data, shape)
 ```
 
 Now we can pass this tensor to our upscaler. We will also specify it's `output` as a `tensor`; otherwise, we'll get an error (since `HTMLImageElement` is not available):
@@ -50,16 +50,16 @@ Now we can pass this tensor to our upscaler. We will also specify it's `output` 
 // Worker thread
 const upscaledImg = await upscaler.upscale(tensor, {
   output: 'tensor',
-});
+})
 ```
 
 To get our image back to the UI thread, we'll again need to transform it into a serializable format:
 
 ```javascript
 // Worker thread
-const upscaledShape = upscaledImg.shape;
-const upscaledData = await upscaledImg.data();
-postMessage([upscaledData, upscaledShape]);
+const upscaledShape = upscaledImg.shape
+const upscaledData = await upscaledImg.data()
+postMessage([upscaledData, upscaledShape])
 ```
 
 Finally, we receive it in our UI thread and can work with it as normal:
@@ -67,7 +67,7 @@ Finally, we receive it in our UI thread and can work with it as normal:
 ```javascript
 // UI thread
 worker.onmessage = async (e) => {
-  const [ data, shape ] = e.data;
-  const tensor = tf.tensor(data, shape);
+  const [ data, shape ] = e.data
+  const tensor = tf.tensor(data, shape)
 }
 ```

@@ -15,7 +15,7 @@ The most important consideration about memory is to **dispose of tensors**. If y
 If working with multiple upscalers within a page, we may want to clean up upscaler instances when done with them. We can do so with the below:
 
 ```javascript
-import Upscaler from 'upscaler';
+import Upscaler from 'upscaler'
 const upscaler = new Upscaler()
 
 upscale.dispose().then(() => {

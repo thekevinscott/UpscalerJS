@@ -58,7 +58,7 @@ We can specify the return type as `tensor` by providing the `output` argument:
 upscaler.upscale(tensor, {
   output: 'tensor',
 }).then(upscaledTensor => {
-  upscaledTensor.print();
+  upscaledTensor.print()
 })
 ```
 

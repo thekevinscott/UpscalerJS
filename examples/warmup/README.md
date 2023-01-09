@@ -17,7 +17,7 @@ If we know we'll be doing multiple upscales, we can first warm up our model, whi
 We can warm up an UpscalerJS model by calling `warmup`:
 
 ```javascript
-import Upscaler from 'upscaler';
+import Upscaler from 'upscaler'
 
 const upscaler = new Upscaler()
 
@@ -33,13 +33,13 @@ upscaler.warmup({ patchSize: 64, padding: 2 }).then(() => {
 We can pass an object with a specific patch size and padding, like:
 
 ```javascript
-upscaler.warmup({ patchSize: 64, padding: 2 });
+upscaler.warmup({ patchSize: 64, padding: 2 })
 ```
 
 We can also pass this as an array if we need to warm up multiple sizes, like:
 
 ```javascript
-upscaler.warmup([{ patchSize: 64, padding: 2 }, { patchSize: 32, padding: 2 }]);
+upscaler.warmup([{ patchSize: 64, padding: 2 }, { patchSize: 32, padding: 2 }])
 ```
 
 ### Numeric sizes
@@ -47,11 +47,11 @@ upscaler.warmup([{ patchSize: 64, padding: 2 }, { patchSize: 32, padding: 2 }]);
 Alternatively, we can explicitly provide the width and height as numbers (width first):
 
 ```javascript
-upscaler.warmup([64, 64]);
+upscaler.warmup([64, 64])
 ```
 
 We can also pass this as an array if we need to warm up multiple sizes, like:
 
 ```javascript
-upscaler.warmup([[64, 64], [32, 32]]);
+upscaler.warmup([[64, 64], [32, 32]])
 ```

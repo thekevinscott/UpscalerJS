@@ -51,7 +51,7 @@ class CustomLayer extends Layer {
     ... some definition ...
   }
 
-  static className = 'CustomLayer';
+  static className = 'CustomLayer'
 }
 
 const upscaler = new Upscaler({

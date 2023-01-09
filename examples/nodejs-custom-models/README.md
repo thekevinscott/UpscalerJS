@@ -17,7 +17,7 @@ We'll be using the 2x model from `esrgan-slim` for this example.
 We can specify the model definition with:
 
 ```javascript
-const Upscaler = require('upscaler/node');
+const Upscaler = require('upscaler/node')
 const upscaler = new Upscaler({
   model: {
     scale: 2,

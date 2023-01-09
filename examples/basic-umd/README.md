@@ -21,7 +21,7 @@ When using UpscalerJS via a script tag, we _must_ specify a model to use. In thi
 ```javascript
 const upscaler = new Upscaler({
   model: DefaultUpscalerJSModel,
-});
+})
 ```
 
 [Read more about models in the next guide](/documentation/guides/browser/models).
