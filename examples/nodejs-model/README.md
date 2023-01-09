@@ -22,7 +22,7 @@ npm install @upscalerjs/esrgan-thick
 
 We'll need to decide what _scale_ model we wish to use. The larger the scale, generally the less accurate the resulting upscaled image will be.
 
-import SampleTable from '@site/src/components/sampleTable/sampleTable';
+import SampleTable from '@site/src/components/sampleTable/sampleTable'
 
 <SampleTable
   packageName="esrgan-thick"
@@ -41,13 +41,13 @@ import SampleTable from '@site/src/components/sampleTable/sampleTable';
 We'll use the 2x scale model. We can import the specific model with:
 
 ```javascript
-const x2 = require('@upscalerjs/esrgan-thick/2x');
+const x2 = require('@upscalerjs/esrgan-thick/2x')
 ```
 
 And we can then pass the model as an argument to our upscaler:
 
 ```javascript
-const Upscaler = require('upscaler/node');
+const Upscaler = require('upscaler/node')
 const upscaler = new Upscaler({
   model: x2,
 })
