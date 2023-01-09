@@ -20,14 +20,14 @@ const upscaler = new Upscaler()
 
 upscaler.upscale(image, {
   progress: (percent) => {
-    console.log(`${percent}% of image has been processed`)
+    console.log(`${percent * 100}% of image has been processed`)
   }
 })
 ```
 
 ## Callback Function
 
-In addition to returning the percentage of operation completed, the `progress` callback can accept a few positional other arguments. The full list of arguments is:
+In addition to returning the percentage of operation completed, the `progress` callback can accept a few positional other arguments. [The full list of arguments is](/documentation/api/upscale#progress):
 
 * `percent` - The percentage of the upscale operation completed
 * `imageSlice` - The patch of image being operated upon
