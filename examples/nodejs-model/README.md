@@ -8,7 +8,7 @@ Demonstration of loading a model in Node.js.
 
 UpscalerJS uses the `default-model` as its default, which is tuned to run quickly at the cost of inference accuracy. This is great for the browser, but we'll probably want something more accurate for the server.
 
-UpscalerJS offers a number of [models](/models) for download and installation, depending on the use case. 
+UpscalerJS offers a number of [models](/models#models-1) for download and installation, depending on the use case. 
 
 ## Installing
 

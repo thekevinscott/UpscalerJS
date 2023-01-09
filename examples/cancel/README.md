@@ -6,7 +6,7 @@ Demonstrates how to cancel an inflight `upscale` request.
 
 ## Cancelling requests
 
-The mechanism for cancelling inflight requests [leverages the browser `AbortSignal` object](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
+The mechanism for cancelling inflight requests [leverages the `AbortSignal` object](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 
 To cancel a request, create an instance of an `AbortController`, and then cancel it.
 

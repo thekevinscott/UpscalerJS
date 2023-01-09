@@ -8,7 +8,7 @@ Demonstrates a basic implementation of UpscalerJS for the browser.
 
 :::info
 
-[You can learn more about available installation methods here](https://upscalerjs.com/documentation/getting-started#browser-setup).
+[You can learn more about available installation methods here](/documentation/getting-started#browser-setup).
 
 :::
 
@@ -28,7 +28,7 @@ const upscaler = new Upscaler()
 
 ## Upscaling an Image
 
-Input images can come in a variety of formats, including URL strings, `<img />` elements, and more. 
+Input images can come in a variety of formats, including URL strings, `<img />` elements, and more.
 
 :::info
 
@@ -56,6 +56,6 @@ upscaler.upscale(pathToImage).then(upscaledImageSrc => {
 })
 ```
 
-There are a number of options we can pass to the `upscale` method, [detailed here](http://localhost:3000/documentation/api/upscale).
+There are a number of options we can pass to the `upscale` method, [detailed here](/documentation/api/upscale#parameters).
 
 [Next, read about the concept of models and how they work with UpscalerJS](models).
