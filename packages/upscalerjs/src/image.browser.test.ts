@@ -100,19 +100,19 @@ describe('isHTMLImageElement', () => {
 });
 
 describe('checkValidEnvironment', () => {
-  it('returns true for a tensor output and undefined progressOutput in an invalid environment', () => {
+  it('does not throw for a tensor output and undefined progressOutput in an invalid environment', () => {
     global.Image = undefined;
-    expect(checkValidEnvironment({
+    expect(() => checkValidEnvironment({
       output: 'tensor',
-    }).toEqual(true));
+    }).not.toThrow();
   });
 
-  it('returns true for a tensor output and tensor progressOutput in an invalid environment', () => {
+  it('does not throw for a tensor output and tensor progressOutput in an invalid environment', () => {
     global.Image = undefined;
-    expect(checkValidEnvironment({
+    expect(() => checkValidEnvironment({
       output: 'tensor',
       progressOutput: 'tensor',
-    }).toEqual(true));
+    }).not.toThrow();
   });
 
   it('throws error for a tensor output and base64 progressOutput in an invalid environment', () => {
@@ -141,15 +141,13 @@ describe('checkValidEnvironment', () => {
   it('throws error with default output in an invalid environment', () => {
     global.Image = undefined;
     expect(() => checkValidEnvironment({
-      output: 'base64',
     })).toThrow();
   });
 
-  it('passes with default output in a valid environment', () => {
+  it('does not throw with default output in a valid environment', () => {
     global.Image = true;
     global.document = true;
     expect(() => checkValidEnvironment({
-      output: 'base64',
-    })).toThrow();
+    })).not.toThrow();
   });
 });
