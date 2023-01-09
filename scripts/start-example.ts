@@ -70,7 +70,7 @@ const startExample = async (example: string, skipBuild?: boolean) => {
     console.log(`** built upscaler: ${platform}`)
   }
 
-  spawn("npm", ['install', '&&', 'npm', 'run', 'dev'], {
+  spawn("npm", ['install', '--no-package-lock', '&&', 'npm', 'run', 'dev'], {
     shell: true,
     cwd: examplePath,
     stdio: "inherit"
