@@ -1,12 +1,21 @@
 import { tf, } from './dependencies.generated';
+import { CheckValidEnvironment, } from './types';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
 
+const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-base64';
+
+export const getEnvironmentDisallowsBase64 = () => new Error([
+  'Environment does not support base64 as an output format.',
+  `For more information, see ${ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL}.`,
+].join(' '));
+
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
-    [
-      `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-      'Only 3 or 4 rank tensors are supported.',
-    ].join(' '),
-  );
+  [
+    `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+    'Only 3 or 4 rank tensors are supported.',
+  ].join(' '),
+);
 
 export const getInvalidImageError = (): Error => new Error([
   'Failed to load image',
@@ -79,3 +88,18 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   ctx.putImageData(imageData, 0, 0);
   return canvas.toDataURL();
 };
+
+export const checkValidEnvironment: CheckValidEnvironment = ({
+  output = 'base64',
+  progressOutput,
+}) => {
+  if (progressOutput === 'base64' || output === 'base64') {
+    try {
+      if (Image && document) {
+        return true;
+      }
+    } catch(err) { }
+    throw getEnvironmentDisallowsBase64();
+  }
+  return true;
+}

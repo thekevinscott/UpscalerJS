@@ -1,4 +1,4 @@
-import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, } from './image.browser';
+import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, checkValidEnvironment, } from './image.browser';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import * as tf from '@tensorflow/tfjs';
@@ -96,5 +96,60 @@ describe('isHTMLImageElement', () => {
 
   it('returns false for a non HTMLImageElement', () => {
     expect(isHTMLImageElement('foo')).to.equal(false);
+  });
+});
+
+describe('checkValidEnvironment', () => {
+  it('returns true for a tensor output and undefined progressOutput in an invalid environment', () => {
+    global.Image = undefined;
+    expect(checkValidEnvironment({
+      output: 'tensor',
+    }).toEqual(true));
+  });
+
+  it('returns true for a tensor output and tensor progressOutput in an invalid environment', () => {
+    global.Image = undefined;
+    expect(checkValidEnvironment({
+      output: 'tensor',
+      progressOutput: 'tensor',
+    }).toEqual(true));
+  });
+
+  it('throws error for a tensor output and base64 progressOutput in an invalid environment', () => {
+    global.Image = undefined;
+    expect(() => checkValidEnvironment({
+      output: 'tensor',
+      progressOutput: 'base64',
+    }).toThrow();
+  });
+
+  it('throws error for a base64 output and tensor progressOutput in an invalid environment', () => {
+    global.Image = undefined;
+    expect(() => checkValidEnvironment({
+      output: 'base64',
+      progressOutput: 'tensor',
+    }).toThrow();
+  });
+
+  it('throws error for a base64 output in an invalid environment', () => {
+    global.Image = undefined;
+    expect(() => checkValidEnvironment({
+      output: 'base64',
+    }).toThrow();
+  });
+
+  it('throws error with default output in an invalid environment', () => {
+    global.Image = undefined;
+    expect(() => checkValidEnvironment({
+      output: 'base64',
+    }).toThrow();
+  });
+
+  it('passes with default output in a valid environment', () => {
+    global.Image = true;
+    global.document = true;
+    expect(() => checkValidEnvironment({
+      output: 'base64',
+    }).toThrow();
   });
 });

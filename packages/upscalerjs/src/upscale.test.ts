@@ -20,18 +20,19 @@ import {
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './upscale';
-import { tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
+import { checkValidEnvironment as _checkValidEnvironment, tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
 import { ModelDefinition } from "@upscalerjs/core";
 import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./image.generated', () => {
-  const { tensorAsBase64, getImageAsTensor, ...rest } = jest.requireActual('./image.generated');
+  const { tensorAsBase64, getImageAsTensor, checkValidEnvironment, ...rest } = jest.requireActual('./image.generated');
   return {
     ...rest,
     tensorAsBase64: jest.fn(tensorAsBase64),
     getImageAsTensor: jest.fn(getImageAsTensor),
+    checkValidEnvironment: jest.fn(checkValidEnvironment),
   };
 });
 jest.mock('./utils', () => {
@@ -45,6 +46,7 @@ jest.mock('./utils', () => {
 const tensorAsBase64 = mockFn(_tensorAsBase64);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 const isTensor = mockFn(_isTensor);
+const checkValidEnvironment = mockFn(_checkValidEnvironment);
 
 describe('getPercentageComplete', () => {
   it.each([
@@ -1602,6 +1604,10 @@ describe('upscale', () => {
 });
 
 describe('cancellableUpscale', () => {
+  beforeEach(() => {
+    checkValidEnvironment.mockImplementation(() => true);
+  });
+
   it('is able to cancel an in-flight request', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     getImageAsTensor.mockImplementation(async () => img);
@@ -1686,6 +1692,7 @@ describe('cancellableUpscale', () => {
   it('returns processed pixels', async () => {
     const mockResponse = 'foobarbaz6';
     tensorAsBase64.mockImplementation(() => mockResponse);
+    checkValidEnvironment.mockImplementation(() => true);
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
     getImageAsTensor.mockImplementation(async () => img);
     const controller = new AbortController();

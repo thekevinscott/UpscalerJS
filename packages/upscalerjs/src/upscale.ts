@@ -1,18 +1,18 @@
 import { tf, } from './dependencies.generated';
-import type { 
-  PrivateUpscaleArgs, 
+import type {
+  PrivateUpscaleArgs,
   ModelPackage,
   BASE64,
   TENSOR,
   YieldedIntermediaryValue,
  } from './types';
-import { getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
-import { 
-  wrapGenerator, 
-  warn, 
-  isTensor, 
-  isProgress, 
-  isMultiArgTensorProgress, 
+import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
+import {
+  wrapGenerator,
+  warn,
+  isTensor,
+  isProgress,
+  isMultiArgTensorProgress,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
   processAndDisposeOfTensor,
@@ -473,6 +473,10 @@ export async function cancellableUpscale(
     signal: AbortSignal;
   },
 ) {
+  checkValidEnvironment({
+    output: args.output,
+    progressOutput: args.progressOutput,
+  });
   const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(

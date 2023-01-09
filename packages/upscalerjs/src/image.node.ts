@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, hasValidChannels, } from './utils';
+import { CheckValidEnvironment, } from './types';
 
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
   [
@@ -85,3 +86,5 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   const arr = tensorAsClampedArray(tensor);
   return Buffer.from(arr).toString('base64');
 };
+
+export const checkValidEnvironment: CheckValidEnvironment = () => true;
