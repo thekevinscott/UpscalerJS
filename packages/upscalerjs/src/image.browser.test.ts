@@ -120,7 +120,7 @@ describe('checkValidEnvironment', () => {
     expect(() => checkValidEnvironment({
       output: 'tensor',
       progressOutput: 'base64',
-    }).toThrow();
+    })).toThrow();
   });
 
   it('throws error for a base64 output and tensor progressOutput in an invalid environment', () => {
@@ -128,21 +128,21 @@ describe('checkValidEnvironment', () => {
     expect(() => checkValidEnvironment({
       output: 'base64',
       progressOutput: 'tensor',
-    }).toThrow();
+    })).toThrow();
   });
 
   it('throws error for a base64 output in an invalid environment', () => {
     global.Image = undefined;
     expect(() => checkValidEnvironment({
       output: 'base64',
-    }).toThrow();
+    })).toThrow();
   });
 
   it('throws error with default output in an invalid environment', () => {
     global.Image = undefined;
     expect(() => checkValidEnvironment({
       output: 'base64',
-    }).toThrow();
+    })).toThrow();
   });
 
   it('passes with default output in a valid environment', () => {
@@ -150,6 +150,6 @@ describe('checkValidEnvironment', () => {
     global.document = true;
     expect(() => checkValidEnvironment({
       output: 'base64',
-    }).toThrow();
+    })).toThrow();
   });
 });

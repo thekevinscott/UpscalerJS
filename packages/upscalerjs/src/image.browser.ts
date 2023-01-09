@@ -102,4 +102,4 @@ export const checkValidEnvironment: CheckValidEnvironment = ({
     throw getEnvironmentDisallowsBase64();
   }
   return true;
-}
+};
