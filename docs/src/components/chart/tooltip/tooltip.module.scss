@@ -58,6 +58,8 @@ html {
     .arrow {
       &:after {
         border-right-color: rgb(1, 22, 39);
+        border-bottom-color: rgb(1, 22, 39);
+        border-left-color: rgb(1, 22, 39);
       }
     }
   }

@@ -1,9 +1,10 @@
 .modelTooltip {
-  background: white;
+  background: transparent;
   width: 442px;
   height: 442px;
   overflow: hidden;
   position: relative;
+  color: inherit;
 
   table {
     width: 100%;
@@ -11,6 +12,7 @@
 
     tr {
       border: none;
+      background: inherit;
     }
 
     td {
@@ -26,10 +28,10 @@
     padding: 0;
 
     a {
-      color: rgba(0,0,0,0.9);
+      color: inherit;
     }
     .packageName {
-      color: rgba(0,0,0,0.6);
+      color: inherit;
     }
   }
 
@@ -37,4 +39,7 @@
     margin: 0;
   }
 
+  img {
+    diplay: block;
+  }
 }
