@@ -104,7 +104,7 @@ describe('checkValidEnvironment', () => {
     global.Image = undefined;
     expect(() => checkValidEnvironment({
       output: 'tensor',
-    }).not.toThrow();
+    })).not.toThrow();
   });
 
   it('does not throw for a tensor output and tensor progressOutput in an invalid environment', () => {
@@ -112,7 +112,7 @@ describe('checkValidEnvironment', () => {
     expect(() => checkValidEnvironment({
       output: 'tensor',
       progressOutput: 'tensor',
-    }).not.toThrow();
+    })).not.toThrow();
   });
 
   it('throws error for a tensor output and base64 progressOutput in an invalid environment', () => {
