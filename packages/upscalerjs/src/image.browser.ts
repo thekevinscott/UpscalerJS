@@ -6,7 +6,7 @@ const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =
   'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-base64';
 
 const ERROR_ENVIRONMENT_DISALLOWS_STRING_INPUT_URL =
-  'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-string-input'
+  'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-string-input';
 
 export const getEnvironmentDisallowsStringInput = () => new Error([
   'Environment does not support a string URL as an input format.',
