@@ -87,4 +87,4 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   return Buffer.from(arr).toString('base64');
 };
 
-export const checkValidEnvironment: CheckValidEnvironment = () => true;
+export const checkValidEnvironment: CheckValidEnvironment<Input> = () => {};

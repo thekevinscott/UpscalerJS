@@ -7,6 +7,9 @@
   "devDependencies": {
     "upscaler": "workspace:*",
     "@upscalerjs/esrgan-thick": "workspace:*",
+    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/esrgan-medium": "workspace:*",
+    "@upscalerjs/esrgan-legacy": "workspace:*",
     "seedrandom": "3.0.5",
     "@types/stats.js": "^0.17.0",
     "vite": "^3.1.5"

@@ -1,4 +1,4 @@
-import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, checkValidEnvironment, } from './image.browser';
+import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, checkValidEnvironment, getEnvironmentDisallowsStringInput, getEnvironmentDisallowsBase64, } from './image.browser';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import * as tf from '@tensorflow/tfjs';
@@ -100,53 +100,92 @@ describe('isHTMLImageElement', () => {
 });
 
 describe('checkValidEnvironment', () => {
-  it('does not throw for a tensor output and undefined progressOutput in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-      output: 'tensor',
-    })).not.to.throw();
+  describe('Input', () => {
+    let tensor: tf.Tensor | undefined;
+    beforeAll(() => {
+      tensor = tf.tensor([]);
+    });
+
+    afterAll(() => {
+      tensor?.dispose();
+    });
+    it('does not throw for a tensor input in a valid environment', () => {
+      global.Image = 'foo';
+      expect(() => checkValidEnvironment(tensor, {
+        output: 'tensor',
+      })).not.to.throw();
+    });
+
+    it('does not throw for a tensor input in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(tensor, {
+        output: 'tensor',
+      })).not.to.throw();
+    });
+    it('does not throw for a string input in a valid environment', () => {
+      global.Image = 'foo';
+      expect(() => checkValidEnvironment('foo', {
+        output: 'tensor',
+      })).not.to.throw();
+    });
+
+    it('does throw for a tensor input in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment('foo', {
+        output: 'tensor',
+      })).to.throw(getEnvironmentDisallowsStringInput());
+    });
   });
 
-  it('does not throw for a tensor output and tensor progressOutput in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-      output: 'tensor',
-      progressOutput: 'tensor',
-    })).not.to.throw();
-  });
+  describe('Output', () => {
+    it('does not throw for a tensor output and undefined progressOutput in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+        output: 'tensor',
+      })).not.to.throw();
+    });
 
-  it('throws error for a tensor output and base64 progressOutput in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-      output: 'tensor',
-      progressOutput: 'base64',
-    })).to.throw();
-  });
+    it('does not throw for a tensor output and tensor progressOutput in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+        output: 'tensor',
+        progressOutput: 'tensor',
+      })).not.to.throw();
+    });
 
-  it('throws error for a base64 output and tensor progressOutput in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-      output: 'base64',
-      progressOutput: 'tensor',
-    })).to.throw();
-  });
+    it('throws error for a tensor output and base64 progressOutput in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+        output: 'tensor',
+        progressOutput: 'base64',
+      })).to.throw(getEnvironmentDisallowsBase64());
+    });
 
-  it('throws error for a base64 output in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-      output: 'base64',
-    })).to.throw();
-  });
+    it('throws error for a base64 output and tensor progressOutput in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+        output: 'base64',
+        progressOutput: 'tensor',
+      })).to.throw(getEnvironmentDisallowsBase64());
+    });
 
-  it('throws error with default output in an invalid environment', () => {
-    global.Image = undefined;
-    expect(() => checkValidEnvironment({
-    })).to.throw();
-  });
+    it('throws error for a base64 output in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+        output: 'base64',
+      })).to.throw(getEnvironmentDisallowsBase64());
+    });
 
-  it('does not throw with default output in a valid environment', () => {
-    global.Image = true;
-    expect(() => checkValidEnvironment({
-    })).not.to.throw();
+    it('throws error with default output in an invalid environment', () => {
+      global.Image = undefined;
+      expect(() => checkValidEnvironment(undefined, {
+      })).to.throw(getEnvironmentDisallowsBase64());
+    });
+
+    it('does not throw with default output in a valid environment', () => {
+      global.Image = true;
+      expect(() => checkValidEnvironment(undefined, {
+      })).not.to.throw();
+    });
   });
 });
