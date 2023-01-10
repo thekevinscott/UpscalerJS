@@ -473,7 +473,6 @@ export async function cancellableUpscale(
     signal: AbortSignal;
   },
 ) {
-  console.log('checkValidEnvironment!!!', checkValidEnvironment);
   checkValidEnvironment(input, {
     output: args.output,
     progressOutput: args.progressOutput,

@@ -99,9 +99,12 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
 
 const checkIfValidEnvironment = (errFn: () => Error) => {
   try {
-    Image && document;
-  } catch(err) { }
-  throw errFn();
+    (new Image() && 'createElement' in document) === true;
+  } catch(err) {
+    const error = errFn();
+    console.log(error);
+    throw error;
+  }
 };
 
 export const checkValidEnvironment: CheckValidEnvironment<Input> = (input, {
@@ -112,10 +115,6 @@ export const checkValidEnvironment: CheckValidEnvironment<Input> = (input, {
     checkIfValidEnvironment(getEnvironmentDisallowsStringInput);
   }
   if (progressOutput === 'base64' || output === 'base64') {
-    try {
-      Image && document;
-    } catch(err) { }
     checkIfValidEnvironment(getEnvironmentDisallowsBase64);
   }
-  return true;
 };

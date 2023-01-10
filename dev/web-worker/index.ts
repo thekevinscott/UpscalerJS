@@ -6,10 +6,10 @@ const main = async () => {
 
   const upscaler = new Upscaler();
   for (const [output, progressOutput] of [
-    // [undefined, undefined],
-    // ['base64', undefined],
-    // ['tensor', 'base64'],
-    // ['base64', 'tensor'],
+    [undefined, undefined],
+    ['base64', undefined],
+    ['tensor', 'base64'],
+    ['base64', 'tensor'],
   ]) {
     await upscaler.upscale(flower, {
       patchSize: 2,
@@ -31,6 +31,7 @@ const main = async () => {
     const pixels = tf.browser.fromPixels(image);
     await tf.nextFrame();
     const data = await pixels.data();
+    console.log('***********');
     worker.postMessage([data, pixels.shape]);
   };
 };

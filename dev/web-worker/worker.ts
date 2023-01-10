@@ -13,7 +13,7 @@ onmessage = async (e) => {
     });
     console.log('Should not get here');
   } catch(err) {
-    console.log('Expected err', err.message);
+    console.log('Expected err! Good job');
   }
 
   const [data, shape] = e.data;
