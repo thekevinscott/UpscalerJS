@@ -87,4 +87,5 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   return Buffer.from(arr).toString('base64');
 };
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 export const checkValidEnvironment: CheckValidEnvironment<Input> = () => {};
