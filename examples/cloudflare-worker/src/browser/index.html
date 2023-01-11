@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>Cloudflare Worker Browser Side | Upscaler.JS</title>
+    <style>
+      body {
+        padding: 40px;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      button {
+        margin-top: 20px;
+        display: block;
+        padding: 10px 40px;
+      }
+      #output {
+        background: rgba(0,0,0,0.05);
+        border: 2px solid rgba(0,0,0,0.2);
+        min-height: 400px;
+        margin: 20px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Cloudflare Worker Browser Side</h1>
+    <button id="go">Go!</button>
+    <div id="output"></div>
+    <script src="./index.js" type="module"></script>
+  </body>
+</html>

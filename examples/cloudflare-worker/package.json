@@ -6,22 +6,26 @@
     "@types/node": "^17.0.39",
     "npx": "^10.2.2",
     "seedrandom": "3.0.5",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "vite": "^4.0.4"
   },
   "private": true,
   "scripts": {
-    "start": "npx wrangler dev",
-    "deploy": "npx wrangler publish",
-    "deploy:prod": "npx wrangler publish -e production"
+    "browser:start": "vite",
+    "wrangler:start": "npx wrangler dev"
   },
   "dependencies": {
     "@tensorflow/tfjs": "^4.1.0",
     "@tensorflow/tfjs-core": "^4.1.0",
-    "@tensorflow/tfjs-node": "^4.1.0",
+    "@upscalerjs/esrgan-slim": "^1.0.0-beta.7",
+    "@upscalerjs/esrgan-thick": "^1.0.0-beta.10",
     "aws-sdk": "^2.1291.0",
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.2.9",
-    "upscaler": "1.0.0-beta.13"
+    "upscaler": "*"
+  },
+  "engines": {
+    "npm": ">8.0.0"
   }
 }
