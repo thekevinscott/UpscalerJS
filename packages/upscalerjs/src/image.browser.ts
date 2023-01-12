@@ -1,12 +1,29 @@
 import { tf, } from './dependencies.generated';
+import { CheckValidEnvironment, } from './types';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, } from './utils';
 
+const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-base64';
+
+const ERROR_ENVIRONMENT_DISALLOWS_STRING_INPUT_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-string-input';
+
+export const getEnvironmentDisallowsStringInput = () => new Error([
+  'Environment does not support a string URL as an input format.',
+  `For more information, see ${ERROR_ENVIRONMENT_DISALLOWS_STRING_INPUT_URL}.`,
+].join('\n'));
+
+export const getEnvironmentDisallowsBase64 = () => new Error([
+  'Environment does not support base64 as an output format.',
+  `For more information, see ${ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL}.`,
+].join('\n'));
+
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
-    [
-      `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
-      'Only 3 or 4 rank tensors are supported.',
-    ].join(' '),
-  );
+  [
+    `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
+    'Only 3 or 4 rank tensors are supported.',
+  ].join('\n'),
+);
 
 export const getInvalidImageError = (): Error => new Error([
   'Failed to load image',
@@ -78,4 +95,26 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
   }
   ctx.putImageData(imageData, 0, 0);
   return canvas.toDataURL();
+};
+
+const checkIfValidEnvironment = (errFn: () => Error) => {
+  try {
+    (new Image() && 'createElement' in document) === true; // skipcq: JS-0354
+  } catch(err) {
+    const error = errFn();
+    console.log(error);
+    throw error;
+  }
+};
+
+export const checkValidEnvironment: CheckValidEnvironment<Input> = (input, {
+  output = 'base64',
+  progressOutput,
+}) => {
+  if (typeof input === 'string') {
+    checkIfValidEnvironment(getEnvironmentDisallowsStringInput);
+  }
+  if (progressOutput === 'base64' || output === 'base64') {
+    checkIfValidEnvironment(getEnvironmentDisallowsBase64);
+  }
 };

@@ -67,7 +67,7 @@ This likely means one of two things:
 If you see an error like:
 
 ```
-Uncaught (in promise) Error: You must provide a "path" when providing a model definition
+Error: You must provide a "path" when providing a model definition
 ```
 
 You've passed a `null` or `undefined` path argument in the `model` argument to UpscalerJS:
@@ -87,7 +87,7 @@ Ensure you pass a valid `path` argument in the `model` payload. [See the guide o
 If you see an error like:
 
 ```
-Uncaught (in promise) Error: You must provide a "scale" when providing a model definition
+Error: You must provide a "scale" when providing a model definition
 ```
 
 You've passed a `null` or `undefined` scale argument in the `model` argument to UpscalerJS:
@@ -109,7 +109,7 @@ Ensure you pass a valid `scale` argument in the `model` payload. [See the guide 
 If you see an error like:
 
 ```
-Uncaught (in promise) Error: Invalid value passed to warmup in warmupSizes: foo
+Error: Invalid value passed to warmup in warmupSizes: foo
 ```
 
 It means you've called `.warmup` with an invalid value:
@@ -126,3 +126,41 @@ Ensure you're passing one of the following:
 - `[width, height][]`
 
 For more information, [see the guide on warm ups](/documentation/guides/browser/performance/warmup), or review the [API documentation on the `warmup` method](/documentation/api/warmup).
+
+## Environment disallows String Input
+
+If you see an error like:
+
+```
+Error: Environment does not support a string URL as an input format.
+```
+
+This means that the environment UpscalerJS is running in does not have access to `Image`. This means that it cannot construct an image and load its src.
+
+Examples of such environments include web workers and the like (e.g., Cloudflare workers).
+
+To get around this error, pass your data into UpscalerJS as a tensor. For an example, [check out the guide on web workers](/documentation/guides/browser/performance/webworker).
+
+## Environment disallows Base64
+
+If you see an error like:
+
+```
+Error: Environment does not support base64 as an output format.
+```
+
+This means that the environment UpscalerJS is running in does not have access to `Image` or `document`. This means that it cannot automatically transform a tensor into a base64 representation.
+
+Examples of such environments include web workers and the like (e.g., Cloudflare workers).
+
+To get around this error, specify `tensor` as the `output` format of your data, like:
+
+```javascript
+upscaler.upscale(tensor, {
+  output: 'tensor',
+})
+```
+
+_Note: If you've neglected to provide an `output` argument and you're running the browser version of UpscalerJS, you will need to explicitly provide the `output` argument. This is because the default argument is `base64`._
+
+For an example, [check out the guide on web workers](/documentation/guides/browser/performance/webworker).
