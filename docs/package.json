@@ -53,7 +53,6 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
-    "tensor-as-base64": "^0.3.0",
     "upscaler": "workspace:*"
   },
   "devDependencies": {
