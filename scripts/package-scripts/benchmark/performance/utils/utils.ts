@@ -5,6 +5,8 @@ import imageSize from 'image-size';
 import util from 'util';
 import webdriver from 'selenium-webdriver';
 import callExec from '../../../../../test/lib/utils/callExec';
+import asyncPool from "tiny-async-pool";
+import { ProgressBar } from "../../../utils/ProgressBar";
 
 const sizeOf = util.promisify(imageSize);
 
@@ -142,4 +144,12 @@ declare global {
   interface Window {
     [index: string]: any;
   }
+}
+
+async function poolWithProgress<T>(arr: T, cb: (el: T) => Promise<void | any>, concurrent = 1) => {
+  const progressBar = new ProgressBar(arr.length);
+  for await (const _ of asyncPool(concurrent, models, cb)) {
+    progressBar.update();
+  }
+  progressBar.end();
 }

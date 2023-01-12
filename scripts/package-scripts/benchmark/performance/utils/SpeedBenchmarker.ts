@@ -37,6 +37,7 @@ export interface BenchmarkedSpeedResult {
   times: number;
   size: number;
 
+  experimental: boolean;
   packageName: string;
   modelName: string;
   scale: number;
@@ -261,7 +262,7 @@ export class SpeedBenchmarker extends Benchmarker {
     const devices = this.devices;
 
     const query = `
-          SELECT 
+          SELECT
           AVG(m.value) as duration,
           COUNT(m.value) as times,
           m.size,
@@ -274,6 +275,7 @@ export class SpeedBenchmarker extends Benchmarker {
           d.real_mobile as deviceIsRealMobile,
 
           p.name as packageName,
+          p.experimental,
           um.name as modelName,
           um.scale as scale,
           um.meta as meta

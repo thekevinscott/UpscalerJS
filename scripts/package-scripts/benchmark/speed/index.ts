@@ -196,7 +196,8 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     ].map(table => `DROP TABLE IF EXISTS ${table}`),
     `CREATE TABLE packages (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
+      name TEXT NOT NULL UNIQUE,
+      experimental BOOL NOT NULL
     )`,
     `CREATE TABLE models (
       id INTEGER PRIMARY KEY,
@@ -229,13 +230,13 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     const query = queries[i];
     await sequelize.query(query);
   }
-  const packages = new Set<string>();
+  const packages = new Map<string, { packageName: string; experimental: boolean }>();
   const models = new Map<string, { packageName: string; modelName: string; scale: number; meta: Record<string, string | number>}>();
   const devices = new Map<string, {
     device?: string; deviceOs?: string; deviceOsVersion?: string; deviceBrowserName?: string; deviceBrowserVersion?: string; deviceIsRealMobile?: boolean;
   }>();
-  for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
-    packages.add(packageName);
+  for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile, experimental } of results) {
+    packages.set(packageName, { packageName, experimental });
     models.set(`${packageName}-${modelName}`, {
       packageName,
       modelName,
@@ -248,13 +249,14 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
       device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
     });
   }
-  
-  for (const packageName of Array.from(packages)) {
+
+  for (const [_, { packageName, experimental }] of packages) {
     await sequelize.query(`
-      INSERT INTO packages (name) VALUES (:name)
+      INSERT OR IGNORE INTO packages (name, experimental) VALUES (:name, :experimental)
     `, {
       replacements: {
         name: packageName,
+        experimental,
       },
       type: QueryTypes.INSERT,
     });

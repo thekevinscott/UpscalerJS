@@ -37,8 +37,6 @@ export const prebuild = async (platform: 'node' | 'browser', {
         ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
       ].join('\n'));
     }
-  } else {
-    console.log('naw')
   }
 
   if (skipBuild !== true) {

@@ -3,11 +3,11 @@ import path from 'path';
 import { DatasetDefinition } from "./types";
 import { mkdirp, mkdirpSync, writeFileSync } from "fs-extra";
 import { TF } from "./types";
-import { getUpscalerFromExports, UpscalerModel } from "./UpscalerModel";
+import { UpscalerModel } from "./UpscalerModel";
 import asyncPool from "tiny-async-pool";
 import { Dataset } from "./Dataset";
 import { Image } from "./Image";
-import { getSize, runScript } from "./utils";
+import { poolWithProgress, getSize, runScript } from "./utils";
 import { Metric } from './Metric';
 import { PerformanceMeasurement } from "./PerformanceMeasurement";
 import sequelize from "./sequelize";
@@ -20,6 +20,7 @@ const AGGREGATED_RESULTS_NAME = 'performance_aggregated_results';
 
 export interface BenchmarkedResult {
   packageName: string;
+  experimental: boolean;
   modelName: string;
   scale: number;
   meta: Record<string, string | number>;
@@ -234,7 +235,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     for (const modelPackage of this.modelPackages) {
       if (packageNames.includes(modelPackage.name)) {
         const models = await modelPackage.getModels(modelNames);
-        await Promise.all(models.map(model => model.hydrate(tf)));
+        await poolWithProgress(models, model => model.hydrate(tf), 10);
         for (const model of models) {
           modelsForDatasets.push(model);
           const { modelDefinition } = model;
@@ -247,6 +248,9 @@ export class PerformanceBenchmarker extends Benchmarker {
         }
       }
     }
+      }
+    }
+    progressBar.end();
     for (const dataset of this.datasets) {
       const numberOfFiles = countsByDataset.get(dataset.name);
       if (numberOfFiles === undefined) {
@@ -414,6 +418,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     }[] = await sequelize.query(`
       SELECT 
       um.name as name,
+      p.experimental,
       p.name as packageName
       FROM UpscalerModels um
       LEFT JOIN packages p ON p.id = um.PackageId
@@ -447,6 +452,7 @@ export class PerformanceBenchmarker extends Benchmarker {
 
     const query = `
           SELECT 
+          p.experimental,
           p.name as packageName,
           um.name as modelName,
           um.scale as scale,
@@ -496,6 +502,7 @@ export class PerformanceBenchmarker extends Benchmarker {
       modelName,
       scale,
       meta,
+      experimental,
       ...resultRecords
     }) => {
       const values = pairs.reduce((obj, [datasetName, metricName]) => {
@@ -512,6 +519,7 @@ export class PerformanceBenchmarker extends Benchmarker {
 
       const result: BenchmarkedResult = {
         packageName: `${packageName}`,
+        experimental: Boolean(experimental),
         modelName: `${modelName}`,
         scale: parseInt(`${scale}`, 10),
         meta: JSON.parse(`${meta}`),

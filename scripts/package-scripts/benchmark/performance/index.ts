@@ -65,7 +65,8 @@ const saveResults = async (results: BenchmarkedResult[]) => {
     ].map(table => `DROP TABLE IF EXISTS ${table}`),
     `CREATE TABLE IF NOT EXISTS packages (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
+      name TEXT NOT NULL UNIQUE,
+      experimental BOOL NOT NULL
     )`,
     `CREATE TABLE IF NOT EXISTS models (
       id INTEGER PRIMARY KEY,
@@ -119,12 +120,13 @@ const saveResults = async (results: BenchmarkedResult[]) => {
     }
   }
 
-  for (const { packageName, modelName, meta, scale, values } of results) {
+  for (const { packageName, experimental, modelName, meta, scale, values } of results) {
     await sequelize.query(`
-      INSERT OR IGNORE INTO packages (name) VALUES (:name)
+      INSERT OR IGNORE INTO packages (name, experimental) VALUES (:name, :experimental)
     `, {
       replacements: {
         name: packageName,
+        experimental,
       },
       type: QueryTypes.INSERT,
     });

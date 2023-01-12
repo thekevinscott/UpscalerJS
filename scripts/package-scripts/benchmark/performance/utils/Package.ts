@@ -115,16 +115,6 @@ export class Package extends BaseModel {
       throw new Error('No tensorflow defined');
     }
     return await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
-    // const upscaler = this.upscalers.get(modelPath);
-    // if (!upscaler) {
-    //   if (!this.tf) {
-    //     throw new Error('No tensorflow defined');
-    //   }
-    //   const _upscaler = await UpscalerModel.getUpscaler(this.tf, this.name, modelName, useGPU);
-    //   this.upscalers.set(modelPath, _upscaler);
-    //   return _upscaler;
-    // }
-    // return upscaler;
   }
 
   getModelKeysAndPaths() {
@@ -164,22 +154,27 @@ export class Package extends BaseModel {
     const processFile = async (modelName: string) => {
       if (!existingUpscalerModelNames.has(modelName)) {
         const PackageId = this.getId();
-        const [_, modelDefinition] = await this.getUpscaler(modelName);
         try {
-          await UpscalerModel.upsert({
-            name: modelName,
-            scale: modelDefinition.scale,
-            meta: modelDefinition.meta,
-            PackageId,
-          });
-        } catch (err) {
-          console.error('Failed to insert model for', {
-            name: modelName,
-            scale: modelDefinition.scale,
-            meta: modelDefinition.meta,
-            PackageId
-          });
-          throw err;
+          const [_, modelDefinition] = await this.getUpscaler(modelName);
+          try {
+            await UpscalerModel.upsert({
+              name: modelName,
+              scale: modelDefinition.scale,
+              meta: modelDefinition.meta,
+              PackageId,
+            });
+          } catch (err) {
+            console.error('Failed to insert model for', {
+              name: modelName,
+              scale: modelDefinition.scale,
+              meta: modelDefinition.meta,
+              PackageId
+            });
+            throw err;
+          }
+        } catch(err) {
+          const msg = `Error getting upscaler for model name: ${modelName}\n\n${err instanceof Error ? err.message : err}`;
+          console.error(`\n${msg}`);
         }
       }
     };
@@ -214,9 +209,6 @@ export class Package extends BaseModel {
           throw new Error(`No id set for package ${this.name}`);
         }
         model.packageId = this._id;
-        // const [upscaler, modelDefinition] = await this.getUpscaler(model.name);
-        // model.upscaler = upscaler;
-        // model.modelDefinition = modelDefinition;
         return model;
       } catch (err) {
         return undefined;
