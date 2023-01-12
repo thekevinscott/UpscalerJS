@@ -1,5 +1,5 @@
 import Upscaler from "upscaler";
-import models from '@upscalerjs/esrgan-slim';
+import * as models from '@upscalerjs/esrgan-slim';
 import flower from "./flower.png";
 
 const upscaler = new Upscaler({
