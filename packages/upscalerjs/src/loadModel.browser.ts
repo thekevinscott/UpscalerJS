@@ -26,7 +26,7 @@ export const CDNS: CDN[] = [
 export const getLoadModelErrorMessage = (modelPath: string, packageInformation: PackageInformation, errs: Errors): Error => new Error([
   `Could not resolve URL ${modelPath} for package ${packageInformation.name}@${packageInformation.version}`,
   `Errors include:`,
-  ...errs.map(([cdn, err]) => `- ${cdn}: ${err.message}`),
+  ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
 export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation): Promise<tf.LayersModel> => {
@@ -40,7 +40,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
         return await tf.loadLayersModel(url);
       } catch (err: unknown) {
         // there was an issue with the CDN, try another
-        errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`)]);
+        errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
       }
     }
     throw getLoadModelErrorMessage(modelPath, packageInformation, errs);
