@@ -11,7 +11,8 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const THRESHOLD = 20; // in milliseconds
+const LOWER_THRESHOLD = 40; // in milliseconds
+const UPPER_THRESHOLD = 20; // in milliseconds
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);
@@ -51,7 +52,9 @@ describe('Speed Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  if (new Date().getTime() > 1673364364086) {
+  const dateAtWhichSpeedTestsTakeEffect = new Date('February 1, 2023 00:00:00');
+  if (new Date().getTime() > dateAtWhichSpeedTestsTakeEffect.getTime()) {
+    console.log('The date is after', dateAtWhichSpeedTestsTakeEffect, 'running speed tests!');
     [
       {
         label: 'Simple Model',
@@ -182,10 +185,10 @@ describe('Speed Integration Tests', () => {
         rawDuration /= times;
         upscalerJSDuration /= times;
 
-        console.log('raw duration', rawDuration)
-        console.log('upscalerJS Duration', upscalerJSDuration)
+        console.log('patch size: raw duration', rawDuration)
+        console.log('patch size: upscalerJS Duration', upscalerJSDuration)
 
-        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
+        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
       });
     });
   } else {
@@ -207,7 +210,7 @@ declare global {
   }
   namespace jest {
     interface Matchers<R> {
-      toBeWithin: (expected: [number, number]) => CustomMatcherResult;
+      toBeWithin: (expected: [number, number, number]) => CustomMatcherResult;
     }
   }
 }

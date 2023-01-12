@@ -1,7 +1,7 @@
 import { timeit } from "./timeit";
 import { GetScriptContents, testNodeScript as runNodeScript } from "../../lib/node/prepare";
 
-type Bundle = () => Promise<void>;
+export type Bundle = (opts?: { verbose?: boolean }) => Promise<void>;
 
 export type Dependencies = Record<string, string>;
 export type DefinedDependencies = Record<string, any>;
@@ -27,18 +27,27 @@ export class NodeTestRunner<T extends DefinedDependencies> {
   dependencies: Dependencies;
   main?: Main<T>;
   globals: Globals;
+  verbose?: boolean;
+  bundleOnce: boolean;
 
   constructor({
     trackTime = false,
     dependencies = {},
     main,
     globals = {},
+    bundleOnce = true,
   }: {
     trackTime?: boolean;
     main?: Main<T>,
     dependencies?: Dependencies;
     globals?: Globals;
+    bundleOnce?: boolean;
   } = {}) {
+    this.bundleOnce = bundleOnce;
+    this.verbose = process.env.verbose === 'true';
+    if (this.verbose) {
+      console.log('Running NodeTestRunner in verbose mode.');
+    }
     this.trackTime = trackTime;
     this.dependencies = {
       ...DEFAULT_DEPENDENCIES,
@@ -95,7 +104,9 @@ export class NodeTestRunner<T extends DefinedDependencies> {
 
   @timeit<[Bundle], NodeTestRunner<T>>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
-    await bundle();
+    await bundle({
+      verbose: this.verbose,
+    });
   }
 }
 

@@ -54,9 +54,17 @@ const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, 
  */
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
-export const installNodeModules = (cwd: string, { verbose = false}: Opts = {}) => callExec(`npm install ${verbose ? '' : '--silent'} --no-audit`, {
-  cwd,
-});
+export const installNodeModules = (cwd: string, { verbose = false }: Opts = {}) => {
+  const cmd = `npm install ${verbose ? '' : '--silent'} --no-audit`;
+  try {
+    return callExec(cmd, {
+      cwd,
+    });
+  } catch (err) {
+    console.error(`Error with cwd: ${cwd} and command: ${cmd}`);
+    throw err;
+  }
+};
 
 const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, { verbose = false }: Opts = {}) => {
   if (Object.keys(remoteDependencies).length) {
