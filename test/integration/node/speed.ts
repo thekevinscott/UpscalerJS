@@ -77,7 +77,9 @@ describe('Node Speed Integration Tests', () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   }, 1000 * 120);
 
-  if (new Date().getTime() > new Date('February 1, 2023 00:00:00').getTime()) {
+  const dateAtWhichSpeedTestsTakeEffect = new Date('February 1, 2023 00:00:00');
+  if (new Date().getTime() > dateAtWhichSpeedTestsTakeEffect.getTime()) {
+    console.log('The date is after', dateAtWhichSpeedTestsTakeEffect, 'running speed tests!');
     [
       {
         label: 'Simple Model',
