@@ -364,7 +364,7 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
+      '@upscalerjs/esrgan-thick': 1.0.0-beta.7_@tensorflow+tfjs@4.1.0
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
@@ -719,6 +719,9 @@ importers:
       '@types/jest': 29.0.3
       chokidar: 3.5.3
       seedrandom: 3.0.5
+
+  packages/upscalerjs-models:
+    specifiers: {}
 
   packages/upscalerjs-wrapper:
     specifiers:
@@ -5047,6 +5050,17 @@ packages:
 
   /@upscalerjs/default-model/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
     resolution: {integrity: sha512-9QQfeLUwrSaThChi0V0sWzE31EUNkViSPI5hRV2wqcjKlD1L3LSRGlFqXefM7QUi3QtpxNDM3Tx79z9ozT3Sxg==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.1.0
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.8
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upscalerjs/esrgan-thick/1.0.0-beta.7_@tensorflow+tfjs@4.1.0:
+    resolution: {integrity: sha512-OtbVQE81GWab6V5m1cdej9FCd9hxFCkzGiiUblTwF60Bap3r9NSxkFXD150Er1NH3b9bjTkP0ETtiGN9lWrsMA==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:

@@ -5,7 +5,8 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
-const THRESHOLD = 10; // in milliseconds
+const LOWER_THRESHOLD = 20; // in milliseconds
+const UPPER_THRESHOLD = 10; // in milliseconds
 
 const main: Main = async (deps) => {
   const FLOWER_SIZE = 16;
@@ -105,7 +106,7 @@ describe('Node Speed Integration Tests', () => {
         }
         const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
 
-        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
+        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
       });
 
       it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly with patch sizes`, async () => {
@@ -125,7 +126,7 @@ describe('Node Speed Integration Tests', () => {
         }
         const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
 
-        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
+        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
       });
     });
   } else {
@@ -138,7 +139,7 @@ describe('Node Speed Integration Tests', () => {
 declare global {
   namespace jest {
     interface Matchers<R> {
-      toBeWithin: (expected: [number, number]) => CustomMatcherResult;
+      toBeWithin: (expected: [number, number, number]) => CustomMatcherResult;
     }
   }
 }

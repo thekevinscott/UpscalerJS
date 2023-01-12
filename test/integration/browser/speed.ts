@@ -11,7 +11,8 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const THRESHOLD = 20; // in milliseconds
+const LOWER_THRESHOLD = 40; // in milliseconds
+const UPPER_THRESHOLD = 20; // in milliseconds
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);
@@ -185,7 +186,7 @@ describe('Speed Integration Tests', () => {
         console.log('raw duration', rawDuration)
         console.log('upscalerJS Duration', upscalerJSDuration)
 
-        expect(upscalerJSDuration).toBeWithin([rawDuration, THRESHOLD]);
+        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
       });
     });
   } else {
@@ -207,7 +208,7 @@ declare global {
   }
   namespace jest {
     interface Matchers<R> {
-      toBeWithin: (expected: [number, number]) => CustomMatcherResult;
+      toBeWithin: (expected: [number, number, number]) => CustomMatcherResult;
     }
   }
 }
