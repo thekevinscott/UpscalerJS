@@ -100,15 +100,19 @@ describe('loadModel browser tests', () => {
       const packageName = 'packageName';
       const version = 'version';
       const modelPath = 'modelPath';
+      let i = 0;
       tf.loadLayersModel.mockImplementation(async () => {
-        throw new Error('next');
+        throw new Error(`next: ${i++}`);
       });
       await expect(() => fetchModel(modelPath, {
         name: packageName,
         version,
       }))
         .rejects
-        .toThrowError(getLoadModelErrorMessage(modelPath));
+        .toThrowError(getLoadModelErrorMessage(modelPath, {
+          name: packageName,
+          version,
+        }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
     });
   });
 
