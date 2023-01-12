@@ -7,6 +7,7 @@ import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { Bundle } from '../../integration/utils/NodeTestRunner';
 
 /***
  * Types
@@ -48,7 +49,7 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-export const bundleEsbuild = async ({ 
+export const bundleEsbuild: Bundle = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,

@@ -8,6 +8,7 @@ import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { Bundle } from '../../integration/utils/NodeTestRunner';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -30,7 +31,7 @@ const PACKAGES = [
   })),
 ];
 
-export const prepareScriptBundleForESM = async ({ verbose = false }: { verbose?: boolean } = {}) => {
+export const prepareScriptBundleForESM: Bundle = async ({ verbose = false } = {}) => {
   await installNodeModules(ROOT, { verbose });
   await installLocalPackages(ROOT, [
     {

@@ -6,13 +6,14 @@ import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
+import { Bundle } from "../../integration/utils/NodeTestRunner";
 
 const ROOT = path.join(__dirname);
 const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
 const MODELS_PATH = path.join(ROOT, '../../../models');
 
-export const prepareScriptBundleForNodeCJS = async () => {
-  await installNodeModules(ROOT);
+export const prepareScriptBundleForNodeCJS: Bundle = async ({ verbose } = {}) => {
+  await installNodeModules(ROOT, { verbose });
   await installLocalPackages(ROOT, [
     {
       src: UPSCALER_PATH,
@@ -22,7 +23,7 @@ export const prepareScriptBundleForNodeCJS = async () => {
       src: path.resolve(MODELS_PATH, packageName),
       name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
     })),
-  ]);
+  ], { verbose });
 };
 
 type Stdout = (data: string) => void;
