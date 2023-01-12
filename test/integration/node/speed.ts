@@ -77,7 +77,7 @@ describe('Node Speed Integration Tests', () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   }, 1000 * 120);
 
-  if (new Date().getTime() > 1673364364086) {
+  if (new Date().getTime() > new Date('February 1, 2023 00:00:00').getTime()) {
     [
       {
         label: 'Simple Model',

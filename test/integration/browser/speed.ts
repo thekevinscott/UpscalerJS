@@ -52,7 +52,8 @@ describe('Speed Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  if (new Date().getTime() > 1673364364086) {
+
+  if (new Date().getTime() > new Date('February 1, 2023 00:00:00').getTime()) {
     [
       {
         label: 'Simple Model',
@@ -183,8 +184,8 @@ describe('Speed Integration Tests', () => {
         rawDuration /= times;
         upscalerJSDuration /= times;
 
-        console.log('raw duration', rawDuration)
-        console.log('upscalerJS Duration', upscalerJSDuration)
+        console.log('patch size: raw duration', rawDuration)
+        console.log('patch size: upscalerJS Duration', upscalerJSDuration)
 
         expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
       });
