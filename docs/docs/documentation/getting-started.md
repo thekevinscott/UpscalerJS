@@ -133,19 +133,19 @@ For a runnable code example, check out [the guide on providing models](/document
 
 :::
 
-For instance, to use `@upscalerjs/esrgan-legacy`, you'd first install it:
+For instance, to use `@upscalerjs/esrgan-thick`, you'd first install it:
 
 ```sh
-npm install @upscalerjs/esrgan-legacy
+npm install @upscalerjs/esrgan-thick
 ```
 
 And then import and provide it:
 
 ```javascript
 import Upscaler from 'upscaler';
-import GANS from '@upscalerjs/esrgan-legacy/gans';
+import x4 from '@upscalerjs/esrgan-thick/4x';
 const upscaler = new Upscaler({
-  model: GANS,
+  model: x4,
 });
 ```
 
