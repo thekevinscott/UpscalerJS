@@ -32,13 +32,24 @@ For runnable code examples, check out [the guide on Script Tag Installation](/do
 
 First, [ensure you've followed the instructions to install Tensorflow.js](https://www.tensorflow.org/js/tutorials/setup).
 
-Then add the following tag to your HTML file:
+Then add the following tags to your HTML file:
 
 ```HTML
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@latest/dist/umd/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
 ```
 
-`Upscaler` will be available globally on your page.
+`Upscaler` will be available globally on your page. To use:
+
+```javascript
+<script type="text/javascript">
+  const upscaler = new Upscaler({
+    model: DefaultUpscalerJSModel,
+  })
+</script>
+```
+
+For a runnable code example, [check out the guide on script tag usage](/documentation/guides/browser/basic-umd).
 
 ### Installation from NPM
 
@@ -48,13 +59,23 @@ You can install UpscalerJS from NPM. Ensure Tensorflow.js is installed alongside
 npm install upscaler @tensorflow/tfjs
 ```
 
-You can install specific models as well:
+To use:
+
+
+```javascript
+import Upscaler from 'upscaler'
+const upscaler = new Upscaler()
+```
+
+You can install specific models with NPM as well:
 
 ```bash
 npm install @upscalerjs/esrgan-thick
 ```
 
 [A full list of official models is available here](/models). You can also use custom models others have trained.
+
+For a runnable code example, [check out the guide on NPM usage](/documentation/guides/browser/basic-npm).
 
 ## Node
 
