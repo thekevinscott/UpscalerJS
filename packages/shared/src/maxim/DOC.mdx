@@ -1,0 +1,76 @@
+---
+title: <% title %>
+description: <% description %>
+sidebar_position: <% snippets/sidebarPosition %>
+sidebar_label: <% key %>
+---
+
+# <% title %>
+
+[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/<% key %>/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/<% key %>)
+
+<% snippets/overview %>
+
+The models were converted from weights provided by the [original MAXIM paper and repository](https://github.com/google-research/maxim). More information on the conversion process can be [found in this repository](https://github.com/upscalerjs/maxim).
+
+## Samples + Demo
+
+Here are some examples of processed images using these models.
+
+import SampleTable from '@site/src/components/sampleTable/sampleTable';
+
+<SampleTable
+  packageName="<% key %>"
+  models={[
+    'index',
+  ]}
+  scales={[
+    1,
+  ]}
+/>
+
+import ModelExample from '@site/src/components/modelExample/modelExample';
+
+<ModelExample model="<% key %>" />
+
+
+## Installation
+
+```
+npm install @upscalerjs/<% key %>
+```
+
+## Usage
+
+Import the model:
+
+```
+import Upscaler from 'upscaler';
+import model from '@upscalerjs/maxim-deblurring';
+
+const upscaler = new Upscaler({
+  model,
+})
+```
+
+## Model Details
+
+This model is unquantized and has a dynamic input size. Image sizes must be a multiple of 64. UpscalerJS will automatically take care of padding and trimming images for you, but if you specify a patch size, ensure that the patch size is a multiple of 64; if not, you will receive a warning and the patch size will be increased to the nearest multiple of 64.
+
+## Additional Models
+
+There are two additional fixed input size models that are derived from a tensorflow port:
+
+- 64: `@upscalerjs/maxim-deblurring/small` - quantized `uint8`, input size of 64
+- 256: `@upscalerjs/maxim-deblurring/medium` - quantized `float16`, input size of 256
+
+To test these models, clone the UpscalerJS repo and inspect the `models/maxim-experiments` folder.
+
+
+## Dataset
+<% dataset %>
+
+
+## License
+
+[MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)

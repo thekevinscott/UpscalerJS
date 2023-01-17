@@ -1,5 +1,5 @@
 import type { ModelDefinitionFn, TF, } from '@upscalerjs/core';
-import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan';
+import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 
 const modelDefinition: ModelDefinitionFn = (tf: TF) => {
@@ -7,7 +7,7 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
 
   return getESRGANModelDefinition({
     scale: SCALE, 
-    path: `models/gans/model.json`,
+    path: 'models/gans/model.json',
     name: NAME,
     version: VERSION,
     meta: {

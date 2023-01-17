@@ -163,7 +163,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: [null, ...tensor.shape],
+        originalImageSize: [null, ...tensor.shape],
       })
     );
     expect(spy).toHaveBeenCalledWith(
@@ -184,7 +184,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: [null, ...tensor.shape],
+        originalImageSize: [null, ...tensor.shape],
         patchSize: 1,
         padding: 0,
       }
@@ -202,7 +202,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: [null, ...tensor.shape],
+        originalImageSize: [null, ...tensor.shape],
         patchSize: 1,
         padding: 0,
       }
@@ -222,7 +222,7 @@ describe('predict', () => {
       },
         modelPackage,
         {
-          imageSize: tensor.shape,
+          originalImageSize: tensor.shape,
           patchSize,
           padding: 0,
         })
@@ -248,7 +248,7 @@ describe('predict', () => {
     },
       modelPackage,
       {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
       })
@@ -281,7 +281,7 @@ describe('predict', () => {
     }, {
       patchSize,
       padding: 0,
-      imageSize: tensor.shape,
+      originalImageSize: tensor.shape,
     })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -307,7 +307,7 @@ describe('predict', () => {
       {
         patchSize,
         padding: 0,
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -340,7 +340,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
       })
@@ -384,7 +384,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
       })
@@ -428,7 +428,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
       })
@@ -461,7 +461,7 @@ describe('predict', () => {
       },
       modelPackage,
       {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
       })
     );
     expect(warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
@@ -476,7 +476,7 @@ describe('predict', () => {
         output: 'base64',
         progressOutput: 'base64',
       }, modelPackage, {
-        imageSize: tensor.shape,
+        originalImageSize: tensor.shape,
       });
 
 
@@ -517,7 +517,7 @@ describe('predict', () => {
         },
         modelPackage,
         {
-          imageSize: tensor.shape,
+          originalImageSize: tensor.shape,
           patchSize,
         }
       );

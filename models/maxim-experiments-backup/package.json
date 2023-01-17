@@ -1,0 +1,126 @@
+{
+  "name": "@upscalerjs/maxim-experiments",
+  "version": "0.1.0",
+  "description": "Experiments",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/models/maxim-experiments/src/index.js",
+      "import": "./dist/esm/models/maxim-experiments/src/index.js"
+    },
+    "./deblurring/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/deblurring/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/deblurring/64.js"
+    },
+    "./deblurring/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/deblurring/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/deblurring/256.js"
+    },
+    "./deraining/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/deraining/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/deraining/64.js"
+    },
+    "./deraining/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/deraining/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/deraining/256.js"
+    },
+    "./denoising/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/denoising/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/denoising/64.js"
+    },
+    "./denoising/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/denoising/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/denoising/256.js"
+    },
+    "./dehazing-indoor/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/dehazing-indoor/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/dehazing-indoor/64.js"
+    },
+    "./dehazing-indoor/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/dehazing-indoor/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/dehazing-indoor/256.js"
+    },
+    "./dehazing-outdoor/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/dehazing-outdoor/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/dehazing-outdoor/64.js"
+    },
+    "./dehazing-outdoor/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/dehazing-outdoor/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/dehazing-outdoor/256.js"
+    },
+    "./enhancement/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/enhancement/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/enhancement/256.js"
+    },
+    "./enhancement/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/enhancement/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/enhancement/64.js"
+    },
+    "./retouching/256": {
+      "require": "./dist/cjs/models/maxim-experiments/src/retouching/256.js",
+      "import": "./dist/esm/models/maxim-experiments/src/retouching/256.js"
+    },
+    "./retouching/64": {
+      "require": "./dist/cjs/models/maxim-experiments/src/retouching/64.js",
+      "import": "./dist/esm/models/maxim-experiments/src/retouching/64.js"
+    }
+  },
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/maxim-experiments --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-experiments",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts maxim-experiments -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "maxim"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^4.6.0"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^4.6.0",
+    "@tensorflow/tfjs-layers": "^4.6.0",
+    "@tensorflow/tfjs": "^4.6.0",
+    "@tensorflow/tfjs-node": "^4.6.0",
+    "@tensorflow/tfjs-node-gpu": "^4.6.0",
+    "seedrandom": "3.0.5"
+  },
+  "@upscalerjs": {
+    "model": {
+      "experimental": true
+    },
+    "assets": {
+      "./deblurring/64": "assets/deblurring/fixture.png",
+      "./deblurring/256": "assets/deblurring/fixture.png",
+      "./deraining/64": "assets/deraining/fixture.png",
+      "./deraining/256": "assets/deraining/fixture.png",
+      "./denoising/64": "assets/denoising/fixture.png",
+      "./denoising/256": "assets/denoising/fixture.png",
+      "./dehazing-indoor/64": "assets/dehazing-indoor/fixture.png",
+      "./dehazing-indoor/256": "assets/dehazing-indoor/fixture.png",
+      "./dehazing-outdoor/64": "assets/dehazing-outdoor/fixture.png",
+      "./dehazing-outdoor/256": "assets/dehazing-outdoor/fixture.png",
+      "./enhancement/256": "assets/enhancement/fixture.png",
+      "./enhancement/64": "assets/enhancement/fixture.png",
+      "./retouching/256": "assets/retouching/fixture.png",
+      "./retouching/64": "assets/retouching/fixture.png"
+    }
+  },
+  "author": "Kevin Scott",
+  "license": "MIT"
+}

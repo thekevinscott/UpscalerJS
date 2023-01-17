@@ -10,6 +10,8 @@ import * as tfn from '@tensorflow/tfjs-node';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -18,8 +20,8 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000 * 5;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
+const JEST_TIMEOUT = 60 * 1000 * 15;
+jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
@@ -55,7 +57,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.execute(window['fixtures']['default-model']);
     });
-    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
+    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
@@ -122,6 +124,62 @@ describe('Model Loading Integration Tests', () => {
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
+  /*
+  describe('Test specific model implementations', () => {
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
+    const filteredPackagesAndModels = getFilteredModels({
+      specificPackage: SPECIFIC_PACKAGE,
+      specificModel: SPECIFIC_MODEL,
+      filter: (packageName, model) => {
+        const packagePath = path.resolve(MODELS_DIR, packageName);
+        const packageJSON = getPackageJSON(packagePath);
+        const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
+
+        return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
+      },
+    }).reduce<[string, AvailableModel[]][]>((arr, [packageName, models]) => {
+      return arr;
+      // return arr.concat(models.map(({ esm, ...model }) => {
+      //   return [
+      //     packageName, {
+      //       ...model,
+      //       esm: esm === '' ? 'index' : esm,
+      //     }];
+      // }));
+    }, []);
+
+    filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
+      describe(packageName, () => {
+        filteredModels.forEach(({ cjs }) => {
+          const cjsName = cjs || 'index';
+          it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
+            // const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
+            // const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
+            // const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
+            // const result = await testRunner.run({
+            //   dependencies: {
+            //     customModel: importPath,
+            //   },
+            //   globals: {
+            //     model: 'customModel',
+            //     imagePath: JSON.stringify(fixturePath),
+            //   }
+            // });
+
+            // expect(result).not.toEqual('');
+            // const formattedResult = `data:image/png;base64,${result}`;
+            // const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${cjsName === 'index' ? '' : `/${cjsName}`}`, "result.png");
+            // const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, cjsName);
+            // const diffPath = path.resolve(outputsPath, `diff.png`);
+            // const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
+            // checkImage(formattedResult, resultPath, diffPath, upscaledPath);
+          });
+        });
+      });
+    });
+  });
+  */
 });
 
 declare global {

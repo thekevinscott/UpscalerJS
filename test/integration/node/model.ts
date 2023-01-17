@@ -80,7 +80,7 @@ describe('Node Model Loading Integration Tests', () => {
         imagePath,
         model,
         fs,
-        usePatchSize = true,
+        usePatchSize = false,
       } = deps;
       console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
 
@@ -128,7 +128,7 @@ describe('Node Model Loading Integration Tests', () => {
       });
       expect(result).not.toEqual('');
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
+      checkImage(formattedResult, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
     });
 
     it("loads a locally exposed model via file:// path", async () => {
@@ -184,7 +184,7 @@ describe('Node Model Loading Integration Tests', () => {
 
               expect(result).not.toEqual('');
               const formattedResult = `data:image/png;base64,${result}`;
-              const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", cjsName, "result.png")
+              const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${cjsName === 'index' ? '' : `/${cjsName}`}`, "result.png");
               const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, cjsName);
               const diffPath = path.resolve(outputsPath, `diff.png`);
               const upscaledPath = path.resolve(outputsPath, `upscaled.png`);

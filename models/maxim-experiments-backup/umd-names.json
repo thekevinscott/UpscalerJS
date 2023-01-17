@@ -1,0 +1,17 @@
+{
+  ".": "MAXIMExperiments",
+  "./deblurring/64": "MAXIMExperimentsDeblurring64",
+  "./deblurring/256": "MAXIMExperimentsDeblurring256",
+  "./deraining/64": "MAXIMExperimentsDeraining64",
+  "./deraining/256": "MAXIMExperimentsDeraining256",
+  "./denoising/64": "MAXIMExperimentsDenoising64",
+  "./denoising/256": "MAXIMExperimentsDenoising256",
+  "./dehazing-indoor/64": "MAXIMExperimentsDehazing-indoor64",
+  "./dehazing-indoor/256": "MAXIMExperimentsDehazing-indoor256",
+  "./dehazing-outdoor/64": "MAXIMExperimentsDehazing-outdoor64",
+  "./dehazing-outdoor/256": "MAXIMExperimentsDehazing-outdoor256",
+  "./enhancement/256": "MAXIMExperimentsEnhancement256",
+  "./enhancement/64": "MAXIMExperimentsEnhancement64",
+  "./retouching/256": "MAXIMExperimentsRetouching256",
+  "./retouching/64": "MAXIMExperimentsRetouching64"
+}

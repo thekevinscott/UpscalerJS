@@ -51,9 +51,9 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     verbose?: boolean;
   } = {}) {
     this.verbose = verbose !== undefined ? verbose : process.env.verbose === 'true';
-    if (this.verbose) {
-      console.log('Running NodeTestRunner in verbose mode.');
-    }
+    // if (this.verbose) {
+    //   console.log('Running NodeTestRunner in verbose mode.');
+    // }
     this.trackTime = trackTime;
     this.dependencies = {
       ...DEFAULT_DEPENDENCIES,

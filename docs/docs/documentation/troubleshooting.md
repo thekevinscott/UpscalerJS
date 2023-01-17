@@ -84,28 +84,6 @@ const upscaler = new Upscaler({
 
 Ensure you pass a valid `path` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
 
-## Missing Model Scale
-
-If you see an error like:
-
-```
-Error: You must provide a "scale" when providing a model definition
-```
-
-You've passed a `null` or `undefined` scale argument in the `model` argument to UpscalerJS:
-
-```javascript
-const upscaler = new Upscaler({
-  model: {
-    scale: null,
-  },
-})
-```
-
-Every model must have an explicit `scale` defined.
-
-Ensure you pass a valid `scale` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
-
 ## Invalid Warmup Value
 
 If you see an error like:

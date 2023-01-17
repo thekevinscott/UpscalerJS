@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+export type { ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;

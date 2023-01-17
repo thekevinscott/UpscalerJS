@@ -6,7 +6,7 @@ import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../l
 import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
@@ -150,6 +150,11 @@ describe('Model Tests', () => {
   });
 
   describe.each(PLATFORMS?.includes('node') ? [[]] : [])('Node', () => {
+    if (USE_GPU) {
+      console.log('**** USING GPU in Node')
+    } else {
+      console.log('**** USING CPU in Node')
+    }
     describe('CJS', () => {
       const main: Main = async (deps) => {
         const {

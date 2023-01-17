@@ -52,7 +52,7 @@ const loadModel = async (packageName: string, modelName: string) => {
 
   const fixture = await getFixture(packageName, modelName);
 
-  const img = await makeImg(fixture, `Original: ${packageName}/${modelName}`, .25);
+  const img = await makeImg(fixture, `Original: ${packageName}/${modelName}`, 1);
   const modelPath = getModelPath(packageName, modelJSON.path);
   const upscaledImg = await upscaleImage({
     ...modelJSON,
