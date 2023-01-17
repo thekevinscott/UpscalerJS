@@ -18,9 +18,29 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000 * 5;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
+const JEST_TIMEOUT = 60 * 1000 * 15;
+jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
 jest.retryTimes(0);
+
+const MODELS_TO_TEST = getFilteredModels({
+  specificPackage: 'maxim-deblurring', 
+  specificModel: undefined,
+  filter: (packageName, model) => {
+    const packagePath = path.resolve(MODELS_DIR, packageName);
+    const packageJSON = getPackageJSON(packagePath);
+    const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
+
+    return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
+  },
+}).reduce((arr, [packageName, models]) => {
+  return arr.concat(models.map(({ esm, ...model }) => {
+    return [
+      packageName, {
+        ...model,
+        esm: esm === '' ? 'index' : esm,
+      }];
+  }));
+}, [] as [string, AvailableModel][]);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

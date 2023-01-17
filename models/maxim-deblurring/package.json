@@ -1,0 +1,68 @@
+{
+  "name": "@upscalerjs/maxim-deblurring",
+  "version": "0.1.0",
+  "description": "Maxim: Deblurring Model",
+  "exports": {
+    "./small": {
+      "require": "./dist/cjs/models/maxim-deblurring/src/small.js",
+      "import": "./dist/esm/models/maxim-deblurring/src/small.js"
+    },
+    "./medium": {
+      "require": "./dist/cjs/models/maxim-deblurring/src/medium.js",
+      "import": "./dist/esm/models/maxim-deblurring/src/medium.js"
+    },
+    "./large": {
+      "require": "./dist/cjs/models/maxim-deblurring/src/large.js",
+      "import": "./dist/esm/models/maxim-deblurring/src/large.js"
+    },
+    ".": {
+      "require": "./dist/cjs/models/maxim-deblurring/src/index.js",
+      "import": "./dist/esm/models/maxim-deblurring/src/index.js"
+    }
+  },
+  "scripts": {
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/maxim-deblurring --config models/scaffolder.ts",
+    "lint:fix": "pnpm lint --fix",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-deblurring",
+    "build": "ts-node ../../scripts/package-scripts/build-model.ts maxim-deblurring -o cjs -o esm -o umd"
+  },
+  "keywords": [
+    "image super resolution",
+    "image upscaling",
+    "image enhancement",
+    "tensorflow.js",
+    "pretrained models",
+    "esrgan"
+  ],
+  "files": [
+    "license",
+    "src/**/*",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "^4.1.0"
+  },
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs-core": "^4.1.0",
+    "@tensorflow/tfjs-layers": "^4.1.0",
+    "@tensorflow/tfjs": "^4.1.0",
+    "@tensorflow/tfjs-node": "^4.1.0",
+    "@tensorflow/tfjs-node-gpu": "^4.1.0",
+    "seedrandom": "3.0.5"
+  },
+  "author": "Kevin Scott",
+  "@upscalerjs": {
+    "models": {
+      "./large": {
+        "supportedPlatforms": ["node"]
+      }
+    }
+  },
+  "license": "MIT"
+}

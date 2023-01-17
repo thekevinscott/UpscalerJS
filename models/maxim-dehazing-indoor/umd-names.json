@@ -1,0 +1,5 @@
+{
+  "./small": "UpscalerJSMaximDehazingIndoorSmall",
+  "./medium": "UpscalerJSMaximDehazingIndoorMedium",
+  "./large": "UpscalerJSMaximDehazingIndoorLarge"
+}

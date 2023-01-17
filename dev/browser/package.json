@@ -1,11 +1,13 @@
 {
-  "name": "@upscalerjs/dev",
+  "name": "@upscalerjs/dev-browser",
   "private": true,
   "scripts": {
-    "dev": "vite --config ./vite.config.ts"
+    "dev": "pnpm run dev:only",
+    "dev:only": "vite --config ./vite.config.ts"
   },
   "devDependencies": {
     "upscaler": "workspace:*",
+    "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-thick": "workspace:*",
     "@upscalerjs/esrgan-slim": "workspace:*",
     "@upscalerjs/esrgan-medium": "workspace:*",

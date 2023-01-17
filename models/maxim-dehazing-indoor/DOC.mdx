@@ -1,0 +1,100 @@
+---
+title: MAXIM Dehazing Indoor
+description: Overview of @upscalerjs/maxim-dehazing-indoor model
+sidebar_position: 11
+sidebar_label: maxim-dehazing-indoor
+---
+
+# MAXIM Dehazing Indoor
+
+[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/maxim-dehazing-indoor/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/maxim-dehazing-indoor)
+
+MAXIM Dehazing Indoor is a collection of models for dehazing indoor images.
+
+The models were converted from weights provided by the [original MAXIM paper and repository](https://github.com/google-research/maxim). More information on the conversion process can be [found in this repository](https://github.com/upscalerjs/maxim).
+
+## Samples + Demo
+
+Here are some examples of processed images using these models.
+
+import SampleTable from '@site/src/components/sampleTable/sampleTable';
+
+<SampleTable
+  packageName="maxim-dehazing-indoor"
+  models={[
+    'small',
+    'medium',
+    'large',
+  ]}
+  scales={[
+    1,
+    1,
+    1,
+  ]}
+/>
+
+import ModelExample from '@site/src/components/modelExample/modelExample';
+
+<ModelExample model="maxim-dehazing-indoor" />
+
+
+## Installation
+
+```
+npm install @upscalerjs/maxim-dehazing-indoor
+```
+
+## Usage
+
+Import a model, specified by its weight:
+
+```
+import Upscaler from 'upscaler';
+import small from '@upscalerjs/maxim-dehazing-indoor/small';
+
+const upscaler = new Upscaler({
+  model: small,
+})
+```
+
+## Available Models
+
+MAXIM Dehazing Indoor ships with three models of differing fidelity.
+
+- small: `@upscalerjs/maxim-dehazing-indoor/small` - quantized `uint8`, input size of 64
+- medium: `@upscalerjs/maxim-dehazing-indoor/medium` - quantized `uint16`, input size of 256
+- large: `@upscalerjs/maxim-dehazing-indoor/large` - unquantized, input size of 256
+
+All models are also exported via the root export:
+
+```
+import Upscaler from 'upscaler';
+import models from '@upscalerjs/maxim-dehazing-indoor';
+
+const upscaler = new Upscaler({
+  model: models.small,
+  // model: models.medium,
+  // model: models.large,
+})
+```
+
+### `small`
+
+This model is quantized to `uint8` and has a fixed input size of 64. Because of the smaller input size, it will release the UI thread more often resulting in a more performant UI, but the overall speed of processing will be higher.
+
+### `medium`
+
+This model is quantized to `uint16` and has a fixed input size of 256. Because of the larger input size, this model will lock the UI thread for longer periods at a time, but the overall speed of processing will be lower.
+
+### `large`
+
+This model is unquantized and has a fixed input size of 256. This model is most appropriate for a GPU-accelerated Node environment, and will struggle to run on most browser hardware.
+
+
+## Dataset
+All weights were trained on the [RESIDE](https://sites.google.com/view/reside-dehaze-datasets/reside-standard?authuser=3D0) dataset.
+
+
+## License
+
+[MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)

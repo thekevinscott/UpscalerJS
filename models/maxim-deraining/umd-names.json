@@ -1,0 +1,5 @@
+{
+  "./small": "UpscalerJSMaximDerainingSmall",
+  "./medium": "UpscalerJSMaximDerainingMedium",
+  "./large": "UpscalerJSMaximDerainingLarge"
+}

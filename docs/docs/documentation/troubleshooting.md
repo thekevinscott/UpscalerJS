@@ -82,28 +82,6 @@ const upscaler = new Upscaler({
 
 Ensure you pass a valid `path` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
 
-## Missing Model Scale
-
-If you see an error like:
-
-```
-Error: You must provide a "scale" when providing a model definition
-```
-
-You've passed a `null` or `undefined` scale argument in the `model` argument to UpscalerJS:
-
-```javascript
-const upscaler = new Upscaler({
-  model: {
-    scale: null,
-  },
-})
-```
-
-Every model must have an explicit `scale` defined.
-
-Ensure you pass a valid `scale` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
-
 ## Invalid Warmup Value
 
 If you see an error like:
@@ -201,3 +179,11 @@ This error implies that the given model does not have an input layer compatible 
 UpscalerJS only supports models whose input layers are set up to accept rank 4 tensors.
 
 If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
+
+## Input size and patch size
+
+If a model is defined with an `inputSize` and you provide an explicit `patchSize`, `patchSize` will be ignored.
+
+This is because the model expects the input to be a specific size, and cannot accept dynamically sized patches.
+
+UpscalerJS will automatically handle padding or slicing the image to fit the expected `inputSize` of the provided model.

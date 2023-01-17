@@ -1,0 +1,23 @@
+{
+  "name": "@upscalerjs/demo.maxim-deblurring",
+  "private": true,
+  "version": "1.0.0-beta.1",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "*"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.2.0",
+    "seedrandom": "^3.0.5",
+    "@upscalerjs/maxim-deblurring": "^0.1.0",
+    "upscaler": "1.0.0-beta.8"
+  },
+  "engines": {
+    "npm": ">8.0.0"
+  }
+}

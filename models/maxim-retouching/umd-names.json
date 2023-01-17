@@ -1,0 +1,5 @@
+{
+  "./small": "UpscalerJSMaximRetouchingSmall",
+  "./medium": "UpscalerJSMaximRetouchingMedium",
+  "./large": "UpscalerJSMaximRetouchingLarge"
+}

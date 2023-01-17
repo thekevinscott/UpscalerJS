@@ -1,4 +1,4 @@
-import { Meta, ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
+import type {  Meta, ModelDefinition, ModelDefinitionFn,  } from '../../core/src/index';
 import type { Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type Inputs = Tensor4D | Tensor4D[];
