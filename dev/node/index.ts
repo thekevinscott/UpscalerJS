@@ -35,33 +35,59 @@ const upscaleImage = async (modelPath: string, imagePath: string, outputPath: st
 }
 
 (async () => {
-  const models = [
-    'deblurring',
-    'denoising',
-    'dehazing-indoor',
-    'dehazing-outdoor',
-    'deraining',
-    'enhancement',
-    'retouching',
-  ];
+  for (const [modelPath, imagePath, outputPath] of [
+    [
+      `../../models/maxim-deblurring/src/large`,
+      `../../models/maxim-deblurring/assets/fixture.png`,
+      `../../tmp/dev-node-outputs/deblurring-large.png`,
+    ],
+    [
+      `../../models/maxim-deblurring/src/small`,
+      `../../models/maxim-deblurring/assets/fixture.png`,
+      `../../tmp/dev-node-outputs/deblurring-small.png`,
+    ],
+    [
+      `../../models/esrgan-slim/src/2x`,
+      `../../models/maxim-deblurring/assets/fixture.png`,
+      `../../tmp/dev-node-outputs/esrgan-slim.png`,
+    ],
+  ]) {
+    console.log('Running', modelPath);
 
-  for (const model of models) {
-    for (const size of [
-      'large',
-      'medium',
-      'small',
-    ]) {
-      console.log('Running', size, model);
-      const modelPath = `../../models/maxim-${model}/src/${size}`;
-      const imagePath = `../../models/maxim-${model}/assets/fixture.png`;
-      const outputPath = `../../models/maxim-${model}/assets/${size}/result.png`;
-
-      mkdirpSync(outputPath.split('/').slice(0, -1).join('/'));
-      const upscaledTensor = await upscaleImage(modelPath, imagePath, outputPath);
-      const upscaledPng = await tf.node.encodePng(upscaledTensor);
-      upscaledTensor.dispose();
-      fs.writeFileSync(outputPath, upscaledPng);
-    }
+    mkdirpSync(outputPath.split('/').slice(0, -1).join('/'));
+    const upscaledTensor = await upscaleImage(modelPath, imagePath, outputPath);
+    const upscaledPng = await tf.node.encodePng(upscaledTensor);
+    upscaledTensor.dispose();
+    fs.writeFileSync(outputPath, upscaledPng);
   }
+
+  // const models = [
+  //   'deblurring',
+  //   // 'denoising',
+  //   // 'dehazing-indoor',
+  //   // 'dehazing-outdoor',
+  //   // 'deraining',
+  //   // 'enhancement',
+  //   // 'retouching',
+  // ];
+
+  // for (const model of models) {
+  //   for (const size of [
+  //     'large',
+  //     // 'medium',
+  //     // 'small',
+  //   ]) {
+  //     console.log('Running', size, model);
+  //     const modelPath = `../../models/maxim-${model}/src/${size}`;
+  //     const imagePath = `../../models/maxim-${model}/assets/fixture.png`;
+  //     const outputPath = `../../models/maxim-${model}/assets/${size}/result.png`;
+
+  //     mkdirpSync(outputPath.split('/').slice(0, -1).join('/'));
+  //     const upscaledTensor = await upscaleImage(modelPath, imagePath, outputPath);
+  //     const upscaledPng = await tf.node.encodePng(upscaledTensor);
+  //     upscaledTensor.dispose();
+  //     fs.writeFileSync(outputPath, upscaledPng);
+  //   }
+  // }
 })();
 

@@ -1,5 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+export type { ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -16,7 +17,9 @@ export interface UpscalerOptions {
 
 export type WarmupSizes = NumericWarmupSizes | WarmupSizesByPatchSize | (NumericWarmupSizes | WarmupSizesByPatchSize)[];
 
-export type ParsedModelDefinition = ModelDefinition;
+export interface ParsedModelDefinition extends Omit<ModelDefinition, 'divisibilityFactor'> {
+  divisibilityFactor?: Range;
+} 
 
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';

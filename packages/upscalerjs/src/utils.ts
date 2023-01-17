@@ -166,8 +166,30 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
   return tensor;
 };
 
-const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
+const modelSupportsDynamicSizes = (batchInputShape: Shape4D) => batchInputShape[1] === -1 && batchInputShape[2] === -1;
 
+const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]) && inputShape[1] > 0 && inputShape[2] > 0;
+
+export const getDivisibleInputShape = (batchInputShape: Shape4D, imageSize: Shape4D, divisibilityFactor: Range): Shape4D => ([
+  batchInputShape[0],
+  Math.ceil(imageSize[1] / divisibilityFactor[0]) * divisibilityFactor[0],
+  Math.ceil(imageSize[2] / divisibilityFactor[1]) * divisibilityFactor[1],
+  batchInputShape[3],
+]);
+
+
+
+/**
+ * A user may provide patch size and padding variables when invoking `execute`.
+ * 
+ * A model definition may further specify a given input shape.
+ * 
+ * This function has a few responsibilities:
+ * - validate that patchSize is valid (i.e., greater than 0 if defined)
+ * - warn if the user is providing a patch size where one is unacceptable (i.e., when a model has defined its own input size)
+ * - if a model has defined its own input size, return the appropriate patch size and padding values
+ * - if a model has not defined its own input size, return the given user variables (which may be undefined)
+ */
 type ParsePatchAndInputSizes = ( modelPackage: ModelPackage, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
 export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (modelPackage, { patchSize, padding, }) => {
   const inputShape = getModelInputShape(modelPackage);
@@ -230,8 +252,9 @@ export const scaleOutput = (range?: Range) => (pixels: tf.Tensor4D): tf.Tensor4D
   return pixels.clipByValue(0, endingRange).mul(endingRange === 1 ? 255 : 1);
 };
 
-export const parseModelDefinition: ParseModelDefinition = (modelDefinition) => ({
+export const parseModelDefinition = (modelDefinition: ModelDefinition): ParsedModelDefinition => ({
   ...modelDefinition,
+  divisibilityFactor: getDivisibilityFactorAsRange(modelDefinition.divisibilityFactor as unknown as any) as unknown as any,
 });
 
 export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
@@ -245,4 +268,22 @@ export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, n
   }
 
   throw GET_INVALID_SHAPED_TENSOR(tensor);
+};
+
+const getDivisibilityFactorAsRange = (divisibilityFactor?: number | Range): undefined | Range => {
+  if (typeof divisibilityFactor === 'number') {
+    return [divisibilityFactor, divisibilityFactor,] as Range;
+  }
+
+  return divisibilityFactor;
+};
+
+export const getPaddedImageSize = (modelPackage: ModelPackage, startingPixels: tf.Tensor4D) => {
+  const imageSize = startingPixels.shape; // the shape of the given image
+  const modelInputShape = getModelInputShape(modelPackage); // the input shape of the model
+  if (modelSupportsDynamicSizes(modelInputShape) && modelPackage.modelDefinition.divisibilityFactor !== undefined) {
+    // TODO: Fix this weird TS import bug
+    return getDivisibleInputShape(modelInputShape, imageSize, modelPackage.modelDefinition.divisibilityFactor as unknown as Range); // the desired padded size of the image
+  }
+  return imageSize;
 };

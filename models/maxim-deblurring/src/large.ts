@@ -8,6 +8,6 @@ export default getMaximDefinition({
   meta: {
     dataset: 'GoPro',
     quantization: null,
-    inputSize: 256,
+    divisibilityFactor: 64,
   },
 });

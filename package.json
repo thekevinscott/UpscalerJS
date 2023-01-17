@@ -23,6 +23,7 @@
     ]
   },
   "scripts": {
+    "build": "pnpm --filter=\"packages/upscalerjs\" run build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
     "docs:start": "pnpm --filter=\"@upscalerjs/docs\" start",

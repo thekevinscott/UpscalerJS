@@ -17,11 +17,11 @@ import {
   scaleIncomingPixels,
   padInput,
   trimInput,
-  getModelInputShape,
   scaleOutput,
   nonNullable,
   getWidthAndHeight,
   parsePatchAndInputSizes,
+  getPaddedImageSize,
  } from './utils';
 import {
   isTensor,
@@ -302,9 +302,9 @@ export async function* processPixels(
   args: PrivateUpscaleArgs,
   modelPackage: ModelPackage,
   {
-    imageSize,
+    originalImageSize,
   }: {
-    imageSize: Shape4D;
+    originalImageSize: Shape4D;
   }
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
@@ -319,8 +319,10 @@ export async function* processPixels(
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
   const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, args);
+	  console.log('patchSize', patchSize);
 
   if (patchSize) {
+
     const [height, width,] = pixels.shape.slice(1);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
@@ -389,10 +391,11 @@ export async function* processPixels(
       colTensor!.dispose();
       yield [upscaledTensor,];
     }
+
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const processedUpscaledTensor = processAndDisposeOfTensor(upscaledTensor!.clone(), trimInput(imageSize, scale));
+    const processedUpscaledTensor = processAndDisposeOfTensor(upscaledTensor!.clone(), trimInput(originalImageSize, scale));
     upscaledTensor?.dispose();
     yield [processedUpscaledTensor,];
 
@@ -408,7 +411,7 @@ export async function* processPixels(
 
   const prediction = executeModel(model, pixels);
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange), trimInput(imageSize, scale));
+  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange), trimInput(originalImageSize, scale));
 
   prediction.dispose();
   yield [postprocessedTensor,];
@@ -457,10 +460,10 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const imageSize = startingPixels.shape;
-  const inputSize = getModelInputShape(modelPackage);
+  const paddedImageSize = getPaddedImageSize(modelPackage, startingPixels);
+  console.log('paddedImageSize', paddedImageSize);
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(inputSize));
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(paddedImageSize));
   yield preprocessedPixels;
 
   const gen = processPixels(
@@ -468,7 +471,7 @@ export async function* upscale(
     args,
     modelPackage,
     {
-      imageSize,
+      originalImageSize: startingPixels.shape,
     }
   );
   let result = await gen.next();

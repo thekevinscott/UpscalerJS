@@ -1,7 +1,7 @@
 import type {  Meta, ModelDefinition, ModelDefinitionFn,  } from '../../../core/src/index';
 import { modelDefinition as sharedModelDefinition, } from './modelDefinition';
-import { registerKernels } from './registerKernels';
-import { registerOps } from './registerOps';
+
+const getDivisibilityFactor = (pathname: string) => pathname.includes('large') ? 64 : undefined;
 
 export const getMaximDefinition = ({
   name,
@@ -14,10 +14,6 @@ export const getMaximDefinition = ({
   meta: Meta;
   path: string;
 }): ModelDefinitionFn => (tf): ModelDefinition => {
-  if ('node' in tf) {
-    registerKernels(tf);
-  }
-  registerOps(tf);
   return {
     ...sharedModelDefinition,
     modelType: 'graph',
@@ -27,5 +23,6 @@ export const getMaximDefinition = ({
       version,
     },
     meta,
+    divisibilityFactor: getDivisibilityFactor(modelPath),
   }
 };
