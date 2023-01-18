@@ -53,7 +53,7 @@ const copyAllModels = () => {
 
 const getFixtures = (): { packageName: string; pathName: string }[] => getAllAvailableModelPackages().map((packageName) => ({
   packageName,
-  pathName: `./models/${packageName}/assets/fixture.png`,
+  pathName: `./models/${packageName}/test/__fixtures__/fixture.png`,
 }));
 
 const getMinifiedScripts = () => {

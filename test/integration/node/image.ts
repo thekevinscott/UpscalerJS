@@ -5,12 +5,13 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { FIXTURES_DIR, MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+
+const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/4x.json');
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small-15.jpg');
-const BAD_IMAGE_FIXTURE_PATH = path.resolve(FIXTURES_DIR, 'flower-small.png');
-const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/4x.json');
+const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');
+const BAD_IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png');
 
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.png');
@@ -66,7 +67,7 @@ describe('Node Image Loading Integration Tests', () => {
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
       'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
-      'flower_tensor': path.resolve(__dirname, '../../__fixtures__', 'flower-small-tensor.json'),
+      'flower_tensor': path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'),
     },
     globals: {
       model: JSON.stringify({
@@ -179,7 +180,7 @@ describe('Node Image Loading Integration Tests', () => {
     it("throws if string provided is an invalid image", async () => {
       await expect(() => testRunner.run({
         globals: {
-          image: JSON.stringify(path.resolve(FIXTURES_DIR, 'bad-image.png')),
+          image: JSON.stringify(path.resolve(IMAGE_FIXTURE_PATH, 'bad-image.png')),
         },
       })).rejects.toThrow();
     });

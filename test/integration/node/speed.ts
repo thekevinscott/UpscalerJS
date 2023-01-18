@@ -2,11 +2,14 @@ import path from 'path';
 import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 const LOWER_THRESHOLD = 20; // in milliseconds
 const UPPER_THRESHOLD = 10; // in milliseconds
+
+const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const main: Main = async (deps) => {
   const FLOWER_SIZE = 16;
@@ -69,7 +72,7 @@ describe('Node Speed Integration Tests', () => {
       'tf': '@tensorflow/tfjs-node',
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
-      'flower': path.resolve(__dirname, '../../__fixtures__', 'flower-small-tensor.json'),
+      'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
   });
 
