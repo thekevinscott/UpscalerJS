@@ -1,7 +1,7 @@
 /****
  * Tests that loading models via CDN works
  */
-import { bundleEsbuild, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';

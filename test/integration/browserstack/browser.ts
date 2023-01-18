@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -49,7 +49,7 @@ describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     // TODO: Not sure how to proxy with Selenium
     // mockCDN: esbuildMockCDN,
-    dist: DIST,
+    dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     port: PORT,
   });

@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
@@ -25,7 +25,7 @@ jest.retryTimes(0);
 describe('Image Format Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     mockCDN: esbuildMockCDN,
-    dist: DIST,
+    dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     verbose: VERBOSE,
     usePNPM: USE_PNPM,

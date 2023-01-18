@@ -334,7 +334,7 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
 export const writeIndex = (target: string, upscalerName: string, imports: Import[] = []) => {
   const importCommands = imports.map(({ paths, packageName, }) => {
     return [
-      `import _fixture_${getHashedName(packageName)} from '../../../../../models/${packageName}/test/__fixtures__/fixture.png';`,
+      `import _fixture_${getHashedName(packageName)} from '../../../../models/${packageName}/test/__fixtures__/fixture.png';`,
     ].concat(paths.map(({ path }) => {
       return `import _${getHashedName(path)} from '${path}';`;
     })).join('\n');
