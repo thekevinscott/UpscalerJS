@@ -13,12 +13,14 @@ import {
   isTensor,
   isProgress,
   isMultiArgTensorProgress,
-  isThreeDimensionalTensor,
-  isFourDimensionalTensor,
   processAndDisposeOfTensor,
   isSingleArgProgress,
  } from './utils';
 import { makeTick, } from './makeTick';
+import {
+  isThreeDimensionalTensor,
+  isFourDimensionalTensor,
+} from '@upscaler/core';
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
@@ -272,7 +274,7 @@ export async function* predict(
     modelDefinition,
   }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  const scale = modelDefinition.scale;
+  const scale = modelDefinition.scale || 1;
 
   if (originalPatchSize && padding === undefined) {
     warn(WARNING_UNDEFINED_PADDING);
@@ -330,7 +332,7 @@ export async function* predict(
               progress(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(squeezedTensor, modelDefinition.outputRange);
               squeezedTensor.dispose();
               progress(percent, src, row, col);
             }
@@ -410,7 +412,12 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess);
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, modelDefinition.inputRange ? t => {
+    if (modelDefinition.inputRange[1] === 1) {
+      return t.mul(1 / 255);
+    }
+    return t;
+  } : undefined);
   yield preprocessedPixels;
 
   const gen = predict(
@@ -440,7 +447,7 @@ export async function* upscale(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels);
+  const base64Src = tensorAsBase64(upscaledPixels, modelDefinition.outputRange);
   upscaledPixels.dispose();
   return base64Src;
 }

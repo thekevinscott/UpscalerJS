@@ -1,8 +1,6 @@
-import type { Tensor, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 import { Inputs, Scale, } from '../types';
-import { clipOutput, } from './clipOutput';
 import { getInput, } from './getInput';
 
 
@@ -50,8 +48,8 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
   };
 
   return {
-    preprocess: (image: Tensor) => tf.mul(image, 1 / 255),
-    postprocess: clipOutput(tf),
+    inputRange: [0, 1,],
+    outputRange: [0, 1,],
     customLayers: [MultiplyBeta, getPixelShuffle(scale),],
     scale,
     channels: 3,

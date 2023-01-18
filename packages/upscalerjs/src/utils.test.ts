@@ -1,25 +1,22 @@
-import * as tf from '@tensorflow/tfjs-node';
+import * as tfn from '@tensorflow/tfjs-node';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 import { 
+  isTensor, 
+  tensorAsClampedArray,
+  processAndDisposeOfTensor,
   getModelDefinitionError,
-  makeIsNDimensionalTensor,
   wrapGenerator, 
   isSingleArgProgress, 
   isMultiArgTensorProgress, 
   isString, 
-  isFourDimensionalTensor, 
-  isThreeDimensionalTensor, 
-  isTensor, 
   isValidModelDefinition,
   warn, 
   isAborted,
   registerCustomLayers,
-  tensorAsClampedArray,
   ERROR_MISSING_MODEL_DEFINITION_PATH,
   ERROR_MISSING_MODEL_DEFINITION_SCALE,
   getModel,
   hasValidChannels,
-  processAndDisposeOfTensor,
   ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
 
@@ -29,20 +26,6 @@ jest.mock('@tensorflow/tfjs', () => ({
     registerClass: jest.fn(),
   },
 }));
-
-describe('makeIsNDimensionalTensor', () => {
-  it('checks for a 1-dimensional tensor', () => {
-    const fn = makeIsNDimensionalTensor<tf.Tensor1D>(1);
-    expect(fn(tf.tensor([1]))).toEqual(true);
-    expect(fn(tf.tensor([[1]]))).toEqual(false);
-  });
-
-  it('checks for a 2-dimensional tensor', () => {
-    const fn = makeIsNDimensionalTensor<tf.Tensor2D>(2);
-    expect(fn(tf.tensor([1]))).toEqual(false);
-    expect(fn(tf.tensor([[1]]))).toEqual(true);
-  });
-});
 
 describe('isValidModelDefinition', () => {
   it('returns false if given an undefined', () => {
@@ -64,26 +47,26 @@ describe('isValidModelDefinition', () => {
 
 describe('registerCustomLayers', () => {
   it('does nothing if no custom layers are specified', () => {
-    tf.serialization.registerClass = jest.fn();
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    tfn.serialization.registerClass = jest.fn();
+    expect(tfn.serialization.registerClass).toHaveBeenCalledTimes(0);
     const modelDefinition: ModelDefinition = {
       path: 'foo',
       scale: 2,
     };
     registerCustomLayers(modelDefinition);
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tfn.serialization.registerClass).toHaveBeenCalledTimes(0);
   });
 
   it('registers custom layers if provided', () => {
-    tf.serialization.registerClass = jest.fn();
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    tfn.serialization.registerClass = jest.fn();
+    expect(tfn.serialization.registerClass).toHaveBeenCalledTimes(0);
     const modelDefinition: ModelDefinition = {
       path: 'foo',
       scale: 2,
       customLayers: ['foo','bar','baz'] as Array<any>,
     };
     registerCustomLayers(modelDefinition);
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(3);
+    expect(tfn.serialization.registerClass).toHaveBeenCalledTimes(3);
   });
 });
 
@@ -257,35 +240,9 @@ describe('isString', () => {
   });
 });
 
-describe('isFourDimensionalTensor', () => {
-  it('returns true if a 4d tensor', () => {
-    expect(isFourDimensionalTensor(tf.tensor([[[[1,],],],]))).toEqual(true);
-  });
-
-  it('returns false for a 3d tensor', () => {
-    expect(isFourDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(false);
-  });
-
-    expect(isFourDimensionalTensor({} as any)).toEqual(false);
-});
-
-describe('isThreeDimensionalTensor', () => {
-  it('returns true if a 3d tensor', () => {
-    expect(isThreeDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(true);
-  });
-
-  it('returns false for a 4d tensor', () => {
-    expect(isThreeDimensionalTensor(tf.tensor([[[[1,],],],]))).toEqual(false);
-  });
-
-  it('defensively handles invalid input', () => {
-    expect(isThreeDimensionalTensor({} as any)).toEqual(false);
-  });
-});
-
 describe('isTensor', () => {
   it('returns true if a tensor', () => {
-    expect(isTensor(tf.tensor([[1,],]))).toEqual(true);
+    expect(isTensor(tfn.tensor([[1,],]))).toEqual(true);
   });
   it('returns false if not a tensor', () => {
     expect(isTensor([] as any)).toEqual(false);
@@ -294,14 +251,24 @@ describe('isTensor', () => {
 
 describe('tensorAsClampedArray', () => {
   it('returns an array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
+    const result = tensorAsClampedArray(tfn.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
     expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255,7,7,7,255,8,8,8,255]);
   });
 
   it('returns a clamped array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
+    const result = tensorAsClampedArray(tfn.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
     expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
+
+  it('multiplies by 255 if the output range ends at 1', () => {
+    const result = tensorAsClampedArray(tfn.tensor([[[-1, .5, 0], [0, 1, 1.5], [.5,.5,.5],[.5,.5,.5]]]), [0, 1])
+    expect(Array.from(result)).toEqual([
+      0,127,0,255,
+      0,255,255,255,
+      127,127,127,255,
+      127,127,127,255,
+    ]);
+  })
 });
 
 describe('getModelDefinitionError', () => {
@@ -344,20 +311,30 @@ describe('getModel', () => {
 
 describe('hasValidChannels', () => {
   it('returns true if a tensor has valid channels', () => {
-    expect(hasValidChannels(tf.ones([4,4,3]))).toEqual(true);
+    expect(hasValidChannels(tfn.ones([4,4,3]))).toEqual(true);
   });
 
   it('returns false if a tensor does not have valid channels', () => {
-    expect(hasValidChannels(tf.ones([4,4,4]))).toEqual(false);
+    expect(hasValidChannels(tfn.ones([4,4,4]))).toEqual(false);
   });
 });
 
 describe('processAndDisposeOfTensor', () => {
+  const makeTensor = (mockDispose: typeof jest.fn, extra: any = {}) => {
+    return jest.fn().mockImplementation(() => {
+      const tensor = {
+        clone: jest.fn().mockImplementation(() => ({
+          ...tensor,
+        })),
+        dispose: mockDispose,
+        ...extra,
+      } as any as tfn.Tensor3D;
+      return tensor;
+    });
+  }
   it('returns a tensor as is if given no process function', () => {
     const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
-    });
+    const mockTensor = makeTensor(mockDispose);
     const mockedTensor = mockTensor();
     const value = processAndDisposeOfTensor(mockedTensor);
     expect(value).toEqual(mockedTensor);
@@ -366,9 +343,7 @@ describe('processAndDisposeOfTensor', () => {
 
   it('processes a tensor and disposes of it if given a process function', () => {
     const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
-    });
+    const mockTensor = makeTensor(mockDispose);
     const process = jest.fn().mockImplementation(() => 'foo');
     const value = processAndDisposeOfTensor(mockTensor(), process);
     expect(value).toEqual('foo');
@@ -378,16 +353,32 @@ describe('processAndDisposeOfTensor', () => {
 
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
     const mockDispose = jest.fn();
-    const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose, isDisposed: () => true } as any as tf.Tensor3D;
+    const mockTensor = makeTensor(mockDispose, {
+      isDisposed: () => true,
     });
-    const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
+    const process = jest.fn().mockImplementation((t: tfn.Tensor3D) => {
       t.dispose();
       return 'foo';
     });
     const value = processAndDisposeOfTensor(mockTensor(), process);
     expect(value).toEqual('foo');
     expect(process).toHaveBeenCalledTimes(1);
+    expect(mockDispose).toHaveBeenCalledTimes(1);
+  });
+
+  it('processes a tensor multiple times if given multiple process functions', () => {
+    const mockDispose = jest.fn();
+    const mockTensor = makeTensor(mockDispose, {
+      value: 1,
+    });
+    const processA = jest.fn().mockImplementation((t) => ({ ...t, value: t.value + 2})); // 3
+    const processB = jest.fn().mockImplementation((t) => ({ ...t, value: t.value * 3})); // 9
+    const processC = jest.fn().mockImplementation((t) => ({ ...t, value: t.value / 2})); // 4.5
+    const value = processAndDisposeOfTensor(mockTensor(), processA, processB, processC);
+    expect(value.value).toEqual(4.5);
+    expect(processA).toHaveBeenCalledTimes(1);
+    expect(processB).toHaveBeenCalledTimes(1);
+    expect(processC).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 });

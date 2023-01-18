@@ -8,18 +8,6 @@ export class AbortError extends Error {
 
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
-type IsTensor<T extends tf.Tensor> = (pixels: tf.Tensor) => pixels is T;
-export function makeIsNDimensionalTensor<T extends tf.Tensor>(rank: number): IsTensor<T> {
-  function fn(pixels: tf.Tensor): pixels is T {
-    try {
-      return pixels.shape.length === rank;
-    } catch (err) { }
-    return false;
-  }
-
-  return fn;
-}
-
 const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
@@ -60,10 +48,6 @@ export const registerCustomLayers = (modelDefinition: ModelDefinition): void => 
   }
 };
 
-export const isFourDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor4D>(4);
-export const isThreeDimensionalTensor = makeIsNDimensionalTensor<tf.Tensor3D>(3);
-export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;
-
 export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };
@@ -101,10 +85,11 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
+export const tensorAsClampedArray = (tensor: tf.Tensor3D, scale: [number, number] = [0, 255,]): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
   const fill = tf.fill([height, width,], 255).expandDims(2);
-  return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
+  const scaledTensor = scale[1] === 1 ? tensor.mul(255) : tensor;
+  return scaledTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
 export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition => {
@@ -123,13 +108,18 @@ export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'ten
   return option;
 }
 
+function nonNullable<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
+
 // this function disposes of any input tensors
 export function processAndDisposeOfTensor<T extends tf.Tensor>(
   tensor: T,
-  processFn?: ProcessFn<T>,
+  ..._processFns: (ProcessFn<T> | undefined)[]
 ): T {
-  if (processFn) {
-    const processedTensor = tf.tidy(() => processFn(tensor));
+  const processFns: ProcessFn<T>[] = _processFns.filter(nonNullable);
+  if (processFns.length) {
+    const processedTensor = tf.tidy(() => processFns.reduce((reducedTensor, processFn) => processFn(reducedTensor), tensor.clone()));
     if (!tensor.isDisposed) {
       tensor.dispose();
     }
@@ -137,3 +127,5 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   }
   return tensor;
 }
+
+export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;

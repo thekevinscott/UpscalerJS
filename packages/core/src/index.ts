@@ -1,7 +1,7 @@
 import type * as tf from '@tensorflow/tfjs';
 import type * as tfNode from '@tensorflow/tfjs-node';
 import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
-import type { Tensor, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
+import type { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tf | typeof tfNode | typeof tfNodeGpu;
 
@@ -15,6 +15,7 @@ type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 
 type MetaValue = string | number | Meta | null | undefined | boolean;
 export type Meta = { [key: string]: MetaValue };
+export type ModelType = 'graph' | 'layers';
 
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
@@ -25,9 +26,17 @@ export interface ModelDefinition {
    */
   path: string;
   /**
-   * The scale of the model. Must match the scale at which the model was trained.
+   * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'
    */
-  scale: number;
+  modelType?: ModelType;
+  /**
+   * The scale of the model. For super resolution models, should match the scale at which the model was trained.
+   */
+  scale?: number;
+  /**
+   * The expected input size of the model. Should be a single number representing a square size.
+   */
+  inputSize?: number;
   /**
    * @hidden
    * 
@@ -52,6 +61,23 @@ export interface ModelDefinition {
    * Custom layers for the model. You can learn more about custom layers [here](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers).
    */
   customLayers?: CustomLayer[];
+  /**
+   * Custom ops for the model. You can learn more about custom ops [here](https://www.tensorflow.org/js/guide/custom_ops_kernels_gradients).
+   */
+  customOps?: ({
+    name: string;
+    op: tf.OpExecutor;
+  })[];
+  /**
+   * Two numbers denoting the range in which the model is expected to output its predictions. Numbers may still fall outside of this range, but 
+   * UpscalerJS will use the range to multiply and clip the values appropriately. Defaults to [0, 255].
+   */
+  outputRange?: [number, number];
+
+  /**
+   * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
+   */
+  inputRange?: [number, number];
 
   /**
    * @hidden
@@ -62,3 +88,17 @@ export interface ModelDefinition {
 export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
+
+export type IsTensor<T extends tf.Tensor> = (pixels: Tensor) => pixels is T;
+export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTensor<T> {
+  function fn(pixels: Tensor): pixels is T {
+    try {
+      return pixels.shape.length === rank;
+    } catch (err) { }
+    return false;
+  }
+
+  return fn;
+}
+export const isFourDimensionalTensor = makeIsNDimensionalTensor<Tensor4D>(4);
+export const isThreeDimensionalTensor = makeIsNDimensionalTensor<Tensor3D>(3);
