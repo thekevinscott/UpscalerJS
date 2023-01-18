@@ -57,7 +57,7 @@ describe('Image Format Integration Tests', () => {
             scale: 4,
           },
         });
-        return upscaler.upscale(window['flower']);
+        return upscaler.upscale(window['fixtures']['pixel-upsampler']);
       });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -71,7 +71,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.onload = function () {
           upscaler.upscale(img).then(resolve);
         }
@@ -89,7 +89,7 @@ describe('Image Format Integration Tests', () => {
         });
         const img = document.createElement('img');
         img.id = 'img';
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         document.body.append(img);
         img.onload = () => {
           upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
@@ -107,7 +107,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img);
@@ -141,7 +141,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
@@ -176,7 +176,7 @@ describe('Image Format Integration Tests', () => {
             scale: 4,
           },
         });
-        return upscaler.upscale(window['flower'], {
+        return upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 4,
           padding: 2,
         });

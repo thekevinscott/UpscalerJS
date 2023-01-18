@@ -84,7 +84,7 @@ describe('Browser Integration Tests', () => {
             scale: 4,
           },
         });
-        const data = upscaler.upscale(window['flower']);
+        const data = upscaler.upscale(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
       }, {}, {
@@ -100,7 +100,7 @@ describe('Browser Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
+    fixtures: Record<string, string>;
     tf: typeof tf;
   }
 }

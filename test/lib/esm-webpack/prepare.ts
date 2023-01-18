@@ -3,7 +3,7 @@ import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -45,6 +45,14 @@ export const prepareScriptBundleForESM: Bundle = async ({ verbose = false } = {}
   ], { verbose});
 };
 
+const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => arr.concat({
+  packageName,
+  paths: models.map(({ name, path }) => ({
+    name,
+    path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
+  })),
+}), [] as Import[]);
+
 export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): Promise<void> => new Promise(async (resolve, reject) => {
   rimraf.sync(DIST);
   copyFixtures(DIST, {
@@ -53,7 +61,7 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
   });
 
   const entryFile = path.join(ROOT, 'src/index.js');
-  await writeIndex(entryFile, LOCAL_UPSCALER_NAME);
+  await writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   if (verbose) {
     console.log('Wrote index file for webpack');
   }
