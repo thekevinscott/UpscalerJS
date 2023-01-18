@@ -1,8 +1,9 @@
 import yargs from 'yargs';
 import path from 'path';
-import { mkdirp, readFileSync, writeFile } from 'fs-extra';
+import { copySync, cp, cpSync, mkdirp, readFileSync, writeFile } from 'fs-extra';
 import { getString } from './prompt/getString';
 import { MODELS_DIR, ROOT_DIR } from './utils/constants';
+import execute from './utils/execute';
 
 /****
  * Type Definitions
@@ -66,7 +67,7 @@ const TS_CONFIG_UMD = {
  */
 const writeModelFile = async (name: string, data: string) => {
   await mkdirp(path.dirname(name));
-  await writeFile(name, data);
+  await writeFile(name, data.trim());
 }
 
 const createNpmIgnore = (): string => [
@@ -265,31 +266,69 @@ export default getModelDefinition;
 
 `.trim();
 
-const getFilesToCreate = (name: string, description: string, UMDName?: string): [string, string][] => ([
-  ['LICENSE', createLicense()],
-  ['.npmignore', createNpmIgnore()],
-  ['.gitignore', createGitIgnore()],
-  ['package.json', createPackageJSON(name, description)],
-  ['tsconfig.cjs.json', JSON.stringify(TS_CONFIG_CJS, null, 2)],
-  ['tsconfig.esm.json', JSON.stringify(TS_CONFIG_ESM, null, 2)],
-  ['tsconfig.umd.json', JSON.stringify(TS_CONFIG_UMD, null, 2)],
-  ['tsconfig.json', JSON.stringify(TS_CONFIG, null, 2)],
-  ['umd-names.json', createNewUMDNames(UMDName)],
-  ['src/utils/clipOutput.ts', createClipOutput()],
-  ['src/utils/getModelDefinition.ts', createGetModelDefinition()],
-]);
+const createIndexFile = (modelName: string) => `
+import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { NAME, VERSION, } from './constants.generated';
+// import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
+// import { PostProcess, TF, } from '@upscalerjs/core';
+
+const SCALE = 2;
+
+// const modelDefinition: ModelDefinitionFn = tf => ({
+const modelDefinition: ModelDefinitionFn = () => ({
+  scale: SCALE,
+  channels: 3,
+  path: 'models/${modelName}/model.json',
+  packageInformation: {
+    name: NAME,
+    version: VERSION,
+  },
+  meta: {
+  },
+});
+
+export default modelDefinition;
+`;
+
+const getFilesToCreate = (name: string, description: string, UMDName?: string, modelFolder = ''): [string, string][] => {
+  const filesToCreate: [string, string][] = [
+    ['LICENSE', createLicense()],
+    ['.npmignore', createNpmIgnore()],
+    ['.gitignore', createGitIgnore()],
+    ['package.json', createPackageJSON(name, description)],
+    ['tsconfig.cjs.json', JSON.stringify(TS_CONFIG_CJS, null, 2)],
+    ['tsconfig.esm.json', JSON.stringify(TS_CONFIG_ESM, null, 2)],
+    ['tsconfig.umd.json', JSON.stringify(TS_CONFIG_UMD, null, 2)],
+    ['tsconfig.json', JSON.stringify(TS_CONFIG, null, 2)],
+    ['umd-names.json', createNewUMDNames(UMDName)],
+    // ['src/utils/clipOutput.ts', createClipOutput()],
+    // ['src/utils/getModelDefinition.ts', createGetModelDefinition()],
+  ];
+
+  if (modelFolder) {
+    filesToCreate.push(['src/index.ts', createIndexFile(modelFolder)]);
+  }
+  return filesToCreate;
+};
 
 /****
  * Main function
  */
-const createNewModelFolder = async (name: string, description: string, UMDName?: string): Promise<void> => {
+const createNewModelFolder = async (name: string, description: string, UMDName?: string, modelFolder = ''): Promise<void> => {
   const base = path.resolve(MODELS_DIR, name);
   await mkdirp(base);
   await Promise.all([
     mkdirp(path.resolve(base, 'models')),
     mkdirp(path.resolve(base, 'src')),
   ]);
-  await Promise.all(getFilesToCreate(name, description, UMDName).map(([name, data]) => writeModelFile(path.resolve(base, name), data)));
+  let modelFolderName = modelFolder.split('/').pop();
+  if (modelFolderName) {
+    const targetFolder = path.resolve(base, 'models', modelFolderName);
+    copySync(modelFolder, targetFolder, { overwrite: false });
+  }
+  await Promise.all(getFilesToCreate(name, description, UMDName, modelFolderName).map(([name, data]) => writeModelFile(path.resolve(base, name), data)));
+  await execute('pnpm install', { cwd: base });
+  await execute('pnpm build', { cwd: base });
 };
 
 export default createNewModelFolder;
@@ -298,7 +337,7 @@ export default createNewModelFolder;
  * Functions to expose the main function as a CLI tool
  */
 
-type Answers = { name: string; description: string; UMDName: string }
+type Answers = { name: string; description: string; UMDName: string; modelFolder: string }
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('create new model folder', 'create folder', yargs => {
@@ -307,6 +346,7 @@ const getArgs = async (): Promise<Answers> => {
     }).options({
       description: { type: 'string' },
       umdName: { type: 'string' },
+      modelFolder: { type: 'string' },
     });
   })
     .help()
@@ -315,18 +355,19 @@ const getArgs = async (): Promise<Answers> => {
   const name = await getString('What is the name of the model folder you wish to create?', argv._[0]);
   const description = await getString('What is the description of the model', argv.description);
   const UMDName = await getString('What do you want to use for the UMD name', argv.umdName);
+  const modelFolder = (await getString('Do you wish to copy a model folder in? If so, provide its path', argv.modelFolder)).trim();
 
   return {
     name,
     description,
     UMDName,
+    modelFolder,
   }
 }
 
 if (require.main === module) {
   (async () => {
-    const { name, description, UMDName } = await getArgs();
-    createNewModelFolder(name, description, UMDName);
-    console.log('** Make sure to cd to your folder, and run "pnpm install && pnpm build"');
+    const { name, description, UMDName, modelFolder } = await getArgs();
+    await createNewModelFolder(name, description, UMDName, modelFolder);
   })();
 }
