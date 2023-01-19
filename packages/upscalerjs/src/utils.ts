@@ -76,10 +76,10 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = (tensor: tf.Tensor3D, scale: [number, number] = [0, 255,]): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
+export const tensorAsClampedArray = (tensor: tf.Tensor3D, range: [number, number] = [0, 255,]): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
   const fill = tf.fill([height, width,], 255).expandDims(2);
-  const scaledTensor = scale[1] === 1 ? tensor.mul(255) : tensor;
+  const scaledTensor = range[1] === 1 ? tensor.mul(255) : tensor;
   return scaledTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
@@ -116,5 +116,3 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   }
   return tensor;
 }
-
-export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;

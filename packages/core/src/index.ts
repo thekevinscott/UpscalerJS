@@ -29,11 +29,7 @@ export interface ModelDefinition {
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
-  scale?: number;
-  /**
-   * The expected input size of the model. Should be a single number representing a square size.
-   */
-  inputSize?: number;
+  scale: number;
   /**
    * @hidden
    * 

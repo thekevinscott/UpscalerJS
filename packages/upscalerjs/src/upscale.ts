@@ -21,10 +21,6 @@ import {
   isFourDimensionalTensor,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
-import {
-  isThreeDimensionalTensor,
-  isFourDimensionalTensor,
-} from '@upscaler/core';
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
@@ -278,7 +274,7 @@ export async function* predict(
     modelDefinition,
   }: ModelPackage
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  const scale = modelDefinition.scale || 1;
+  const scale = modelDefinition.scale;
 
   if (originalPatchSize && padding === undefined) {
     warn(WARNING_UNDEFINED_PADDING);
