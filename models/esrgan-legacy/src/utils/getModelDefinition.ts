@@ -1,4 +1,4 @@
-import { ModelDefinition, PostProcess, } from '@upscalerjs/core';
+import { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 
 const getModelDefinition = (scale: 2 | 3 | 4, modelPath: string, extra: Partial<ModelDefinition> = {}): ModelDefinition => ({
