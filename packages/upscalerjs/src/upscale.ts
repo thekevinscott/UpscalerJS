@@ -19,6 +19,7 @@ import {
   isTensor,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  isValidRange,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 
@@ -412,7 +413,7 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, modelDefinition.inputRange ? t => {
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, isValidRange(modelDefinition.inputRange) ? t => {
     if (modelDefinition.inputRange[1] === 1) {
       return t.mul(1 / 255);
     }

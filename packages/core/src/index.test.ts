@@ -8,6 +8,8 @@ import {
   isValidModelDefinition,
   ModelDefinition,
   hasValidChannels,
+  isNumber,
+  isValidRange,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -101,5 +103,49 @@ describe('hasValidChannels', () => {
 
   it('returns false if a tensor does not have valid channels', () => {
     expect(hasValidChannels(tf.ones([4,4,4]))).toEqual(false);
+  });
+});
+
+describe('isNumber', () => {
+  it('returns true if it gets a number', () => {
+    expect(isNumber(1)).toEqual(true);
+  });
+
+  it('returns false if a tensor does not have valid channels', () => {
+    expect(isNumber('foo')).toEqual(false);
+  });
+});
+
+describe('isValidRange', () => {
+  it('returns false if it gets undefined', () => {
+    expect(isValidRange(undefined)).toEqual(false);
+  });
+
+  it('returns false if it gets a number', () => {
+    expect(isValidRange(1)).toEqual(false);
+  });
+
+  it('returns false if it gets a string', () => {
+    expect(isValidRange('foo')).toEqual(false);
+  });
+
+  it('returns false if it gets an empty array', () => {
+    expect(isValidRange([])).toEqual(false);
+  });
+
+  it('returns false if it gets an array with one number', () => {
+    expect(isValidRange([1])).toEqual(false);
+  });
+
+  it('returns false if it gets an array with three numbers', () => {
+    expect(isValidRange([1,2,3])).toEqual(false);
+  });
+
+  it('returns false if it gets an array with a number and a string', () => {
+    expect(isValidRange([1,'foo'])).toEqual(false);
+  });
+
+  it('returns true if it gets an array with two numbers', () => {
+    expect(isValidRange([1,2])).toEqual(true);
   });
 });

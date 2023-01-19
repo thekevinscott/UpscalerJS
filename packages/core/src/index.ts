@@ -12,9 +12,11 @@ export interface PackageInformation {
   version: string;
 }
 
-type CustomLayer = Parameters<typeof serialization.registerClass>[0];
+type Range = [number, number];
 
+type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 type MetaValue = string | number | Meta | null | undefined | boolean;
+
 export type Meta = { [key: string]: MetaValue };
 export type ModelType = 'graph' | 'layers';
 
@@ -57,12 +59,12 @@ export interface ModelDefinition {
   /**
    * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
    */
-  inputRange?: [number, number];
+  inputRange?: Range;
   /**
    * Two numbers denoting the range in which the model is expected to output its predictions. Numbers may still fall outside of this range, but 
    * UpscalerJS will use the range to multiply and clip the values appropriately. Defaults to [0, 255].
    */
-  outputRange?: [number, number];
+  outputRange?: Range;
   /**
    * @hidden
    */
@@ -97,3 +99,6 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
 };
 
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
+
+export const isNumber = (el: unknown): el is number => typeof el === 'number';
+export const isValidRange = (range: unknown): range is Range => Array.isArray(range) && range.length === 2 && range.every(isNumber);
