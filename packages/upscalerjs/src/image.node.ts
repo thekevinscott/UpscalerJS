@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, tensorAsClampedArray, hasValidChannels, } from './utils';
+import { tensorAsClampedArray, } from './utils';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
 import { CheckValidEnvironment, } from './types';
 
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(

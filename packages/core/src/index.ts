@@ -1,9 +1,10 @@
-import type * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs-core';
+import type * as tfBrowser from '@tensorflow/tfjs';
 import type * as tfNode from '@tensorflow/tfjs-node';
 import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import type { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
-export type TF = typeof tf | typeof tfNode | typeof tfNodeGpu;
+export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
 export interface PackageInformation {
@@ -63,7 +64,7 @@ export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
 
-export type IsTensor<T extends tf.Tensor> = (pixels: Tensor) => pixels is T;
+export type IsTensor<T extends tfBrowser.Tensor> = (pixels: Tensor) => pixels is T;
 export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTensor<T> {
   function fn(pixels: Tensor): pixels is T {
     try {
@@ -76,3 +77,14 @@ export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTens
 }
 export const isFourDimensionalTensor = makeIsNDimensionalTensor<Tensor4D>(4);
 export const isThreeDimensionalTensor = makeIsNDimensionalTensor<Tensor3D>(3);
+export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;
+export const isString = (el: unknown): el is string => typeof el === 'string';
+
+export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
+  if (modelDefinition === undefined) {
+    return false;
+  }
+  return Boolean(modelDefinition.path && modelDefinition.scale);
+};
+
+export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
