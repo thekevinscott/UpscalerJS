@@ -1,4 +1,4 @@
-import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
+import type { Tensor4D, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, TF, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
