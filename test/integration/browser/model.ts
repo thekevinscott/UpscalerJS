@@ -212,13 +212,13 @@ describe('Model Loading Integration Tests', () => {
 
       MODELS_TO_TEST.map(({ packageName, esmName, umdName }) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-          const result = await umdTestRunner.page.evaluate(([umdName]) => {
+          const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
             const upscaler = new window['Upscaler']({
               model,
             });
-            return upscaler.upscale(<HTMLImageElement>document.getElementById(`fixture-${packageName}`));
-          }, [umdName]);
+            return upscaler.upscale(window['fixtures'][packageName]);
+          }, [umdName, packageName]);
           checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
         });
       });
