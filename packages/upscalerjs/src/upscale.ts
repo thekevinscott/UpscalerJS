@@ -10,12 +10,16 @@ import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from 
 import {
   wrapGenerator,
   warn,
-  isTensor,
   isProgress,
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
  } from './utils';
+import {
+  isTensor,
+  isThreeDimensionalTensor,
+  isFourDimensionalTensor,
+ } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 import {
   isThreeDimensionalTensor,

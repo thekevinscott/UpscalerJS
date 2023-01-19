@@ -6,8 +6,6 @@ export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
 }
 
-export const isString = (el: unknown): el is string => typeof el === 'string';
-
 const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
@@ -32,13 +30,6 @@ export function getModelDefinitionError(modelDefinition: ModelDefinition): Error
 
   return new Error(ERROR_MODEL_DEFINITION_BUG);
 }
-
-export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
-  if (modelDefinition === undefined) {
-    return false;
-  }
-  return Boolean(modelDefinition.path && modelDefinition.scale);
-};
 
 export const registerCustomLayers = (modelDefinition: ModelDefinition): void => {
   if (modelDefinition.customLayers) {
@@ -97,8 +88,6 @@ export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
   /* eslint-disable @typescript-eslint/no-unsafe-return */
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
 };
-
-export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
 
 export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'tensor'): undefined | 'base64' | 'tensor' {
   if (option === 'src') {

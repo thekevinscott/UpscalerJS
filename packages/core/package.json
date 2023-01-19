@@ -1,20 +1,32 @@
 {
   "name": "@upscalerjs/core",
   "version": "1.0.0-beta.11",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "types": "./dist/cjs/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    }
+  },
   "files": [
-    ".npmrc",
     "LICENSE",
     "dist/**/*"
   ],
   "scripts": {
+    "test": "jest --config jestconfig.json",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core",
-    "build": "tsc"
+
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm validate:build",
+    "build:esm": "pnpm --filter @upscalerjs/scripts build:core browser -o esm",
+    "build:cjs": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
   },
   "dependencies": {
     "@tensorflow/tfjs-core": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.3"
   }
 }

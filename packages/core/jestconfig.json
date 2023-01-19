@@ -1,0 +1,12 @@
+{
+  "transform": {
+    "^.+\\.(t|j)sx?$": "ts-jest"
+  },
+  "testEnvironment": "node",
+  "collectCoverage": true,
+  "coveragePathIgnorePatterns": [
+    "node_modules"
+  ],
+  "testRegex": "test\\.ts$",
+  "moduleFileExtensions": ["js", "ts"]
+}
