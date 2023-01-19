@@ -13,7 +13,7 @@ import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__/flower-small-tensor.json'), 'utf-8'));
+const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'), 'utf-8'));
 
 const TRACK_TIME = false;
 const VERBOSE = false;
@@ -152,7 +152,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
+      const data = fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
