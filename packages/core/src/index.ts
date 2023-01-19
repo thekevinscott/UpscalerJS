@@ -55,6 +55,15 @@ export interface ModelDefinition {
    */
   customLayers?: CustomLayer[];
   /**
+   * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
+   */
+  inputRange?: [number, number];
+  /**
+   * Two numbers denoting the range in which the model is expected to output its predictions. Numbers may still fall outside of this range, but 
+   * UpscalerJS will use the range to multiply and clip the values appropriately. Defaults to [0, 255].
+   */
+  outputRange?: [number, number];
+  /**
    * @hidden
    */
   meta?: Meta;

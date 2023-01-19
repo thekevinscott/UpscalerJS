@@ -17,8 +17,7 @@
     "test": "jest --config jestconfig.json",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core",
-
+    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' ",
     "build": "pnpm build:esm && pnpm build:cjs && pnpm validate:build",
     "build:esm": "pnpm --filter @upscalerjs/scripts build:core browser -o esm",
     "build:cjs": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
