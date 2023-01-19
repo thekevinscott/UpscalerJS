@@ -82,8 +82,8 @@ export const isHTMLImageElement = (pixels: Input): pixels is HTMLImageElement =>
   }
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
-  const arr = tensorAsClampedArray(tensor);
+export const tensorAsBase64 = (tensor: tf.Tensor3D, scale?: [number, number]): string => {
+  const arr = tensorAsClampedArray(tensor, scale);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
   imageData.data.set(arr);

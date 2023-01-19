@@ -83,8 +83,8 @@ export const getImageAsTensor = async (
   throw getInvalidTensorError(tensor);
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
-  const arr = tensorAsClampedArray(tensor);
+export const tensorAsBase64 = (tensor: tf.Tensor3D, scale?: [number, number]): string => {
+  const arr = tensorAsClampedArray(tensor, scale);
   return Buffer.from(arr).toString('base64');
 };
 
