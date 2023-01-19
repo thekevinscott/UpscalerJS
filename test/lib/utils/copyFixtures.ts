@@ -14,10 +14,10 @@ export const copyFixtures = (dist: string, { verbose, includeFixtures = true, in
   if (includeFixtures) {
     getAllAvailableModelPackages().map(packageName => {
       if (verbose) {
-        console.log(`Copying ${packageName} model asset fixtures`);
+        console.log(`Copying ${packageName} model test folder fixtures`);
       }
-      const srcDir = path.resolve(MODELS_DIR, packageName, 'assets');
-      const destDir = path.resolve(dist, 'models', packageName, 'assets');
+      const srcDir = path.resolve(MODELS_DIR, packageName, 'test');
+      const destDir = path.resolve(dist, 'models', packageName, 'test');
       copySync(srcDir, destDir, { overwrite: true });
     });
   }

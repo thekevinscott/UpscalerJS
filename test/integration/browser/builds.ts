@@ -60,7 +60,7 @@ describe('Build Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(<HTMLImageElement>document.getElementById('fixture-pixel-upsampler'));
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -73,7 +73,7 @@ describe('Build Integration Tests', () => {
       const upscaler = new Upscaler({
         model: pixelUpsampler,
       });
-      return upscaler.upscale(<HTMLImageElement>document.getElementById('fixture-pixel-upsampler'));
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });

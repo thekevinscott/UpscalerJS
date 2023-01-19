@@ -13,7 +13,7 @@ import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
+const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__/flower-small-tensor.json'), 'utf-8'));
 
 const TRACK_TIME = false;
 const VERBOSE = false;

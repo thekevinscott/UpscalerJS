@@ -12,7 +12,7 @@ export const DIST = path.join(UMD_ROOT, 'dist');
 const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 
-const getContent = (scriptsToInclude: string[], fixturesToInclude: { packageName: string; pathName: string }[]) => `
+const getContent = (scriptsToInclude: string[], fixturesToInclude: Record<string, string>) => `
 <html>
   <head>
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
@@ -23,7 +23,9 @@ const getContent = (scriptsToInclude: string[], fixturesToInclude: { packageName
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@${getTFJSVersion()}/dist/tf.min.js"></script>
     ${scriptsToInclude.map(script => `<script src="${script}"></script>`)}
     <script src="/upscaler.min.js"></script>
-    ${fixturesToInclude.map(({ pathName, packageName }) => `<script src="${pathName}" id="fixture-${packageName}"></script>`)}
+    <script type="text/javascript">
+      window['fixtures'] = ${JSON.stringify(fixturesToInclude, null, 2)}
+    </script>
   </body>
 </html>
 `;
@@ -51,10 +53,10 @@ const copyAllModels = () => {
   });
 };
 
-const getFixtures = (): { packageName: string; pathName: string }[] => getAllAvailableModelPackages().map((packageName) => ({
-  packageName,
-  pathName: `./models/${packageName}/test/__fixtures__/fixture.png`,
-}));
+const getFixtures = (): Record<string, string> => getAllAvailableModelPackages().reduce((obj, packageName) => ({
+  ...obj,
+  packageName: `./models/${packageName}/test/__fixtures__/fixture.png`,
+}), {} as Record<string, string>);
 
 const getMinifiedScripts = () => {
   return getAllAvailableModelPackages().reduce((scripts, packageName) => {
