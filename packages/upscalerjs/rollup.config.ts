@@ -36,6 +36,7 @@ export const outputOptions: OutputOptions = {
   format: 'umd',
   globals: {
     '@tensorflow/tfjs': 'tf',
+    '@tensorflow/tfjs-core': 'tf',
     '@upscalerjs/default-model': getModelUmdName(),
   },
 };
