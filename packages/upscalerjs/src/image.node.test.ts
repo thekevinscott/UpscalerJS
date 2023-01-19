@@ -36,8 +36,6 @@ jest.setTimeout(1000);
 
 const readFileSync = mockFn(_readFileSync);
 
-const SRC = path.resolve(__dirname);
-// const FIXTURES = path.resolve(SRC, '../../../test/__fixtures__');
 const PORT = 8099;
 
 const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
