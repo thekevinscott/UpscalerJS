@@ -1,5 +1,6 @@
 import { YieldedIntermediaryValue, } from './types';
-import { AbortError, isAborted, isTensor, } from './utils';
+import { AbortError, isAborted, } from './utils';
+import { isTensor, } from '@upscalerjs/core';
 import { tf, } from './dependencies.generated';
 
 type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;

@@ -21,7 +21,8 @@ import {
   GET_UNDEFINED_TENSORS_ERROR,
 } from './upscale';
 import { checkValidEnvironment as _checkValidEnvironment, tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
-import { wrapGenerator, isTensor as _isTensor, AbortError, } from './utils';
+import { wrapGenerator, AbortError, } from './utils';
+import { isTensor as _isTensor, } from '@upscalerjs/core';
 import { ModelDefinition } from "@upscalerjs/core";
 import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
@@ -35,8 +36,8 @@ jest.mock('./image.generated', () => {
     checkValidEnvironment: jest.fn(checkValidEnvironment),
   };
 });
-jest.mock('./utils', () => {
-  const { isTensor, ...rest} = jest.requireActual('./utils');
+jest.mock('@upscalerjs/core', () => {
+  const { isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
   return {
     ...rest,
     isTensor: jest.fn(isTensor),

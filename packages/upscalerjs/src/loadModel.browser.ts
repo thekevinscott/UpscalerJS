@@ -3,9 +3,11 @@ import type { ModelDefinition, } from '@upscalerjs/core';
 import type { ModelPackage, PackageInformation, } from './types';
 import {
   getModelDefinitionError,
-  isValidModelDefinition,
   registerCustomLayers,
 } from './utils';
+import {
+  isValidModelDefinition,
+} from '@upscalerjs/core';
 
 type CDN = 'jsdelivr' | 'unpkg';
 
