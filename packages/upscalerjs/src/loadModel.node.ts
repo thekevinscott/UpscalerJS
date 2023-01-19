@@ -1,9 +1,12 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, } from './utils';
+import { getModelDefinitionError, registerCustomLayers, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from 'types';
+import {
+  isValidModelDefinition,
+} from '@upscalerjs/core';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';

@@ -10,18 +10,27 @@ import path from 'path';
 import { resolver as _resolver } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
-  isValidModelDefinition as _isValidModelDefinition,
   getModelDefinitionError as _getModelDefinitionError,
   registerCustomLayers as _registerCustomLayers,
 } from './utils';
+import {
+  isValidModelDefinition as _isValidModelDefinition,
+} from '@upscalerjs/core';
 jest.mock('./utils', () => {
-  const { getModuleFolder, getModelDefinitionError, isValidModelDefinition, registerCustomLayers, ...rest } = jest.requireActual('./utils');
+  const { getModuleFolder, getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
   return {
     ...rest,
     registerCustomLayers: jest.fn(registerCustomLayers),
-    isValidModelDefinition: jest.fn(isValidModelDefinition),
     getModelDefinitionError: jest.fn(getModelDefinitionError),
     getModuleFolder: jest.fn(getModuleFolder),
+  }
+});
+
+jest.mock('@upscalerjs/core', () => {
+  const { isValidModelDefinition, ...rest } = jest.requireActual('@upscalerjs/core');
+  return {
+    ...rest,
+    isValidModelDefinition: jest.fn(isValidModelDefinition),
   }
 });
 jest.mock('./resolver', () => {

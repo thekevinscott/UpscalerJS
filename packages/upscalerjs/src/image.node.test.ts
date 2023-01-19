@@ -11,12 +11,12 @@ import {
 import { mockFn } from '../../../test/lib/shared/mockers';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import {
   hasValidChannels as _hasValidChannels,
-} from './utils'
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-jest.mock('./utils', () => {
-  const { hasValidChannels, ...rest } = jest.requireActual('./utils');
+} from '@upscalerjs/core'
+jest.mock('@upscalerjs/core', () => {
+  const { hasValidChannels, ...rest } = jest.requireActual('@upscalerjs/core');
   return { 
     ...rest,
     hasValidChannels: jest.fn(hasValidChannels),

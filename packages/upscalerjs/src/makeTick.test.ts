@@ -1,6 +1,8 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { 
   isTensor as _isTensor, 
+} from '@upscalerjs/core';
+import { 
   AbortError,
 } from './utils';
 import { makeTick } from './makeTick';
@@ -8,8 +10,8 @@ import { mockFn } from '../../../test/lib/shared/mockers';
 
 const isTensor = mockFn(_isTensor);
 
-jest.mock('./utils', () => {
-  const { isTensor, ...rest} = jest.requireActual('./utils');
+jest.mock('@upscalerjs/core', () => {
+  const { isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
   return {
     ...rest,
     isTensor: jest.fn(isTensor),
