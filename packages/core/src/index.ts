@@ -55,15 +55,6 @@ export interface ModelDefinition {
    */
   customLayers?: CustomLayer[];
   /**
-   * Two numbers denoting the range in which the model is expected to output its predictions. Numbers may still fall outside of this range, but 
-   * UpscalerJS will use the range to multiply and clip the values appropriately. Defaults to [0, 255].
-   */
-  outputRange?: [number, number];
-  /**
-   * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
-   */
-  inputRange?: [number, number];
-  /**
    * @hidden
    */
   meta?: Meta;
@@ -72,3 +63,28 @@ export interface ModelDefinition {
 export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
+
+export type IsTensor<T extends tfBrowser.Tensor> = (pixels: Tensor) => pixels is T;
+export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTensor<T> {
+  function fn(pixels: Tensor): pixels is T {
+    try {
+      return pixels.shape.length === rank;
+    } catch (err) { }
+    return false;
+  }
+
+  return fn;
+}
+export const isFourDimensionalTensor = makeIsNDimensionalTensor<Tensor4D>(4);
+export const isThreeDimensionalTensor = makeIsNDimensionalTensor<Tensor3D>(3);
+export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;
+export const isString = (el: unknown): el is string => typeof el === 'string';
+
+export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
+  if (modelDefinition === undefined) {
+    return false;
+  }
+  return Boolean(modelDefinition.path && modelDefinition.scale);
+};
+
+export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
