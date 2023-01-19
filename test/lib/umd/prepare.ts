@@ -24,7 +24,7 @@ const getContent = (scriptsToInclude: string[], fixturesToInclude: Record<string
     ${scriptsToInclude.map(script => `<script src="${script}"></script>`)}
     <script src="/upscaler.min.js"></script>
     <script type="text/javascript">
-      window['fixtures'] = ${JSON.stringify(fixturesToInclude, null, 2)}
+${`window['fixtures'] = ${JSON.stringify(fixturesToInclude, null, 2)}`.split('\n').map(line => `      ${line}`).join('\n')}
     </script>
   </body>
 </html>
@@ -55,7 +55,7 @@ const copyAllModels = () => {
 
 const getFixtures = (): Record<string, string> => getAllAvailableModelPackages().reduce((obj, packageName) => ({
   ...obj,
-  packageName: `./models/${packageName}/test/__fixtures__/fixture.png`,
+  [packageName]: `/models/${packageName}/test/__fixtures__/fixture.png`,
 }), {} as Record<string, string>);
 
 const getMinifiedScripts = () => {
