@@ -11,9 +11,12 @@ import {
 } from './loadModel.browser';
 import {
   registerCustomLayers as _registerCustomLayers,
-  isValidModelDefinition as _isValidModelDefinition,
   getModelDefinitionError as _getModelDefinitionError,
 } from './utils';
+
+import {
+  isValidModelDefinition as _isValidModelDefinition,
+} from '@upscalerjs/core';
 
 jest.mock('./loadModel.browser', () => {
   const { ...rest } = jest.requireActual('./loadModel.browser');
@@ -23,12 +26,19 @@ jest.mock('./loadModel.browser', () => {
 });
 
 jest.mock('./utils', () => {
-  const { getModelDefinitionError, isValidModelDefinition, registerCustomLayers, ...rest } = jest.requireActual('./utils');
+  const { getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
   return {
     ...rest,
     registerCustomLayers: jest.fn(registerCustomLayers),
-    isValidModelDefinition: jest.fn(isValidModelDefinition),
     getModelDefinitionError: jest.fn(getModelDefinitionError),
+  }
+});
+
+jest.mock('@upscalerjs/core', () => {
+  const { isValidModelDefinition, ...rest } = jest.requireActual('@upscalerjs/core');
+  return {
+    ...rest,
+    isValidModelDefinition: jest.fn(isValidModelDefinition),
   }
 });
 
