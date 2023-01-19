@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
 import { CheckValidEnvironment, } from './types';
 import { tensorAsClampedArray, } from './utils';
-import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscaler/core';
+import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
 
 const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =
   'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-base64';
