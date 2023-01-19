@@ -15,7 +15,7 @@ import {
   hasValidChannels as _hasValidChannels,
 } from '@upscalerjs/core'
 jest.mock('@upscalerjs/core', () => {
-  const { hasValidChannels, ...rest } = jest.requireActual('./utils');
+  const { hasValidChannels, ...rest } = jest.requireActual('@upscalerjs/core');
   return { 
     ...rest,
     hasValidChannels: jest.fn(hasValidChannels),
