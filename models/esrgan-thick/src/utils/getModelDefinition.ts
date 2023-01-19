@@ -52,7 +52,6 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
     outputRange: [0, 1,],
     customLayers: [MultiplyBeta, getPixelShuffle(scale),],
     scale,
-    channels: 3,
     path: `models/${scale}x/model.json`,
     packageInformation: {
       name: NAME,

@@ -4,7 +4,6 @@ const SCALE = 2;
 
 export default {
   scale: SCALE,
-  channels: 3,
   path: `models/model.json`,
   packageInformation: {
     name: NAME,
