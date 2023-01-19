@@ -413,12 +413,13 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, isValidRange(modelDefinition.inputRange) ? t => {
-    if (modelDefinition.inputRange[1] === 1) {
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, t => {
+    const { inputRange, } = modelDefinition;
+    if (isValidRange(inputRange) && modelDefinition.inputRange?.[1] === 1) {
       return t.mul(1 / 255);
     }
     return t;
-  } : undefined);
+  });
   yield preprocessedPixels;
 
   const gen = predict(
