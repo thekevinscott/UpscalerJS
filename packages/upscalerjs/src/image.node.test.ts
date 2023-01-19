@@ -13,8 +13,8 @@ import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
 import {
   hasValidChannels as _hasValidChannels,
-} from './utils'
-jest.mock('./utils', () => {
+} from '@upscalerjs/core'
+jest.mock('@upscalerjs/core', () => {
   const { hasValidChannels, ...rest } = jest.requireActual('./utils');
   return { 
     ...rest,
