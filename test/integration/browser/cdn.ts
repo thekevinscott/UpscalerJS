@@ -1,7 +1,7 @@
 /****
  * Tests that loading models via CDN works
  */
-import { bundleEsbuild, DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -129,7 +129,6 @@ describe('CDN Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
     tf: typeof tf;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;

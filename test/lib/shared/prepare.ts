@@ -332,16 +332,22 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
 };
 
 export const writeIndex = (target: string, upscalerName: string, imports: Import[] = []) => {
-  const importCommands = imports.map(({ paths }) => paths.map(({ path }) => {
-    return `import _${getHashedName(path)} from '${path}';`;
-  }).join('\n')).join('\n');
-  const windowDefinitions = imports.map(({ packageName: packageName, paths }) => `window['${packageName}'] = {
+  const importCommands = imports.map(({ paths, packageName, }) => {
+    return [
+      `import _fixture_${getHashedName(packageName)} from '../../../../models/${packageName}/test/__fixtures__/fixture.png';`,
+    ].concat(paths.map(({ path }) => {
+      return `import _${getHashedName(path)} from '${path}';`;
+    })).join('\n');
+  }).join('\n');
+  const windowDefinitions = imports.map(({ packageName, paths }) => `window['${packageName}'] = {
 ${paths.map(({ path, name }) => `  '${name}': _${getHashedName(path)},`).join('\n')}
 }`).join('\n');
+  const fixtureDefinitions = `window['fixtures'] = {
+${imports.map(({ packageName }) => `  '${packageName}': _fixture_${getHashedName(packageName)},`).join('\n')}
+}`;
   const contents = `
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from '${upscalerName}';
-import flower from '../../../__fixtures__/flower-small.png';
 
 /*** Auto-generated import commands ***/
 ${importCommands}
@@ -349,8 +355,10 @@ ${importCommands}
 /*** Auto-generated window definition commands ***/
 ${windowDefinitions}
 
+/*** Auto-generated fixture import commands ***/
+${fixtureDefinitions}
+
 window.tf = tf;
-window.flower = flower;
 window.Upscaler = Upscaler;
 document.title = document.title + '| Loaded';
 document.body.querySelector('#output').innerHTML = document.title;

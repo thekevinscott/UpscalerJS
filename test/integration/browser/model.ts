@@ -2,7 +2,7 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { readFileSync } from 'fs-extra';
 import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
@@ -73,7 +73,7 @@ describe('Model Loading Integration Tests', () => {
   it("loads the default model", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']();
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['default-model']);
     });
     checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
   });
@@ -83,7 +83,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['4x'],
       });
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -96,7 +96,7 @@ describe('Model Loading Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -109,7 +109,7 @@ describe('Model Loading Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -178,7 +178,7 @@ describe('Model Loading Integration Tests', () => {
             const upscaler = new window['Upscaler']({
               model: modelDefinition,
             });
-            return upscaler.upscale(window['flower']);
+            return upscaler.upscale(window['fixtures'][packageName]);
           }, [packageName, esmName]);
           checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
         });
@@ -212,13 +212,13 @@ describe('Model Loading Integration Tests', () => {
 
       MODELS_TO_TEST.map(({ packageName, esmName, umdName }) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
-          const result = await umdTestRunner.page.evaluate(([umdName]) => {
+          const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
             const upscaler = new window['Upscaler']({
               model,
             });
-            return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
-          }, [umdName]);
+            return upscaler.upscale(window['fixtures'][packageName]);
+          }, [umdName, packageName]);
           checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
         });
       });
@@ -230,8 +230,8 @@ describe('Model Loading Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
     tf: typeof tf;
+    fixtures: Record<string, string>;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;
     PixelUpsampler2x: ModelDefinition;
