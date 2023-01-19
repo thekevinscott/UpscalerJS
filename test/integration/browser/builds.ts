@@ -60,7 +60,7 @@ describe('Build Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -73,7 +73,7 @@ describe('Build Integration Tests', () => {
       const upscaler = new Upscaler({
         model: pixelUpsampler,
       });
-      return upscaler.upscale(<HTMLImageElement>document.getElementById('flower'));
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -91,7 +91,7 @@ describe('Build Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -100,7 +100,7 @@ describe('Build Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
+    fixtures: Record<string, string>;
     tf: typeof tf;
     PixelUpsampler4x: ModelDefinition; 
   }

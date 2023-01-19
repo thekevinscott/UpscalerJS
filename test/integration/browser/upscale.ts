@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -22,7 +22,7 @@ jest.retryTimes(0);
 describe('Upscale Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     mockCDN: esbuildMockCDN,
-    dist: DIST,
+    dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     verbose: VERBOSE,
     usePNPM: USE_PNPM,
@@ -53,7 +53,7 @@ describe('Upscale Integration Tests', () => {
           scale: 4,
         },
       });
-      return upscaler.upscale(window['flower']);
+      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -77,7 +77,7 @@ describe('Upscale Integration Tests', () => {
 
         let startTime = new Date().getTime();
         window['durations'] = [];
-        upscaler.upscale(window['flower'], {
+        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 4,
           padding: 2,
           output: 'base64',
@@ -147,7 +147,7 @@ describe('Upscale Integration Tests', () => {
           },
         };
         Array(3).fill('').forEach(() => {
-          upscaler.upscale(window['flower'], options).then(() => {
+          upscaler.upscale(window['fixtures']['pixel-upsampler'], options).then(() => {
             window['called'] = true;
             resolve('this should not be called');
           }).catch((err: Error) => {
@@ -196,7 +196,7 @@ describe('Upscale Integration Tests', () => {
             }
           },
         };
-        window['upscaler'].upscale(window['flower'], options).then(() => {
+        window['upscaler'].upscale(window['fixtures']['pixel-upsampler'], options).then(() => {
           window['called'] = true;
           resolve('this should not be called');
         }).catch((err: Error) => {
@@ -206,7 +206,7 @@ describe('Upscale Integration Tests', () => {
       expect(errMessage).toEqual('The upscale request received an abort signal');
 
       const result = await page().evaluate(() => {
-        return window['upscaler'].upscale(window['flower']);
+        return window['upscaler'].upscale(window['fixtures']['pixel-upsampler']);
       });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -222,7 +222,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progressRates: Array<number> = [];
-        upscaler.upscale(window['flower'], {
+        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 8,
           padding: 2,
           output: 'base64',
@@ -247,7 +247,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgStringProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
-        upscaler.upscale(window['flower'], {
+        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 12,
           padding: 2,
           output: 'base64',
@@ -269,7 +269,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgTensorProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
-        upscaler.upscale(window['flower'], {
+        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 12,
           padding: 2,
           output: 'tensor',
@@ -292,7 +292,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgStringProgress = (rate, slice, row, col) => {
           progressRates.push([row, col]);
         };
-        upscaler.upscale(window['flower'], {
+        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 8,
           padding: 0,
           progress,
@@ -314,7 +314,7 @@ declare global {
   interface Window {
     Upscaler: typeof Upscaler;
     upscaler: Upscaler;
-    flower: string;
+    fixtures: Record<string, string>;
     tf: typeof tf;
     called: boolean;
     durations: Array<any>;

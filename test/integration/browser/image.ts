@@ -2,7 +2,7 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
@@ -13,7 +13,7 @@ import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../__fixtures__/flower-small-tensor.json'), 'utf-8'));
+const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'), 'utf-8'));
 
 const TRACK_TIME = false;
 const VERBOSE = false;
@@ -25,7 +25,7 @@ jest.retryTimes(0);
 describe('Image Format Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     mockCDN: esbuildMockCDN,
-    dist: DIST,
+    dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     verbose: VERBOSE,
     usePNPM: USE_PNPM,
@@ -57,7 +57,7 @@ describe('Image Format Integration Tests', () => {
             scale: 4,
           },
         });
-        return upscaler.upscale(window['flower']);
+        return upscaler.upscale(window['fixtures']['pixel-upsampler']);
       });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -71,7 +71,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.onload = function () {
           upscaler.upscale(img).then(resolve);
         }
@@ -89,7 +89,7 @@ describe('Image Format Integration Tests', () => {
         });
         const img = document.createElement('img');
         img.id = 'img';
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         document.body.append(img);
         img.onload = () => {
           upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
@@ -107,7 +107,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img);
@@ -141,7 +141,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const img = new Image();
-        img.src = window['flower'];
+        img.src = window['fixtures']['pixel-upsampler'];
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
@@ -152,7 +152,7 @@ describe('Image Format Integration Tests', () => {
     });
 
     it("upscales a base64 png path", async () => {
-      const data = fs.readFileSync(path.resolve(__dirname, "../../__fixtures__", 'flower-small.png')).toString('base64');
+      const data = fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
@@ -176,7 +176,7 @@ describe('Image Format Integration Tests', () => {
             scale: 4,
           },
         });
-        return upscaler.upscale(window['flower'], {
+        return upscaler.upscale(window['fixtures']['pixel-upsampler'], {
           patchSize: 4,
           padding: 2,
         });

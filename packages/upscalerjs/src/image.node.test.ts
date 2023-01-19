@@ -11,6 +11,7 @@ import {
 import { mockFn } from '../../../test/lib/shared/mockers';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import {
   hasValidChannels as _hasValidChannels,
 } from '@upscalerjs/core'
@@ -35,8 +36,6 @@ jest.setTimeout(1000);
 
 const readFileSync = mockFn(_readFileSync);
 
-const SRC = path.resolve(__dirname);
-const FIXTURES = path.resolve(SRC, '../../../test/__fixtures__');
 const PORT = 8099;
 
 const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
@@ -51,7 +50,7 @@ const stopServer = (server: http.Server): Promise<void | undefined | Error> => n
   }
 });
 
-const FLOWER = path.resolve(FIXTURES, 'flower-small.jpg');
+const FLOWER = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small.jpg');
 const image = readFileSync(FLOWER);
 
 describe('Image', () => {
@@ -60,7 +59,7 @@ describe('Image', () => {
     readFileSync.mockClear();
   });
   beforeAll(async () => {
-    server = await startServer(PORT, FIXTURES);
+    server = await startServer(PORT);
   });
   afterEach(() => {
     hasValidChannels.mockClear();

@@ -23,8 +23,9 @@ export interface BundleOpts {
 /***
  * Constants
  */
-const ROOT = path.join(__dirname);
-export const DIST = path.join(ROOT, '/dist');
+const ESBUILD_ROOT = path.join(__dirname);
+const ESBUILD_SIR = path.resolve(ESBUILD_ROOT, 'src');
+export const ESBUILD_DIST = path.join(ESBUILD_ROOT, '/dist');
 
 const PACKAGES = [
   ...getAllAvailableModelPackages().map(packageName => ({
@@ -56,19 +57,19 @@ export const bundleEsbuild: Bundle = async ({
   skipCopyFixtures = false,
   usePNPM = false,
 }: BundleOpts = {}) => {
-  const entryFile = path.join(ROOT, 'src/index.js');
+  const entryFile = path.resolve(ESBUILD_SIR, 'index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   if (skipInstallNodeModules !== true) {
     if (verbose) {
       console.log('installing node modules');
     }
-    await installNodeModules(ROOT, { verbose });
+    await installNodeModules(ESBUILD_ROOT, { verbose });
   }
   if (skipInstallLocalPackages !== true) {
     if (verbose) {
       console.log('installing local packages');
     }
-    await installLocalPackages(ROOT, [
+    await installLocalPackages(ESBUILD_ROOT, [
       {
         src: UPSCALER_DIR,
         name: LOCAL_UPSCALER_NAME,
@@ -86,7 +87,7 @@ export const bundleEsbuild: Bundle = async ({
     if (verbose) {
       console.log('copying local fixtures');
     }
-    copyFixtures(DIST, {
+    copyFixtures(ESBUILD_DIST, {
       includeFixtures: false,
       includeModels: true,
     });
@@ -101,7 +102,7 @@ export const bundleEsbuild: Bundle = async ({
     loader: {
       '.png': 'file',
     },
-    outdir: DIST,
+    outdir: ESBUILD_DIST,
     // watch: {
     //   onRebuild(error, result) {
     //     if (error) {
@@ -113,9 +114,9 @@ export const bundleEsbuild: Bundle = async ({
     // },
   });
   // buildResult.stop();
-  fs.copyFileSync(path.join(ROOT, 'src/index.html'), path.join(DIST, 'index.html'))
+  fs.copyFileSync(path.join(ESBUILD_ROOT, 'src/index.html'), path.join(ESBUILD_DIST, 'index.html'))
   try {
-    fs.symlinkSync(path.resolve(ROOT, 'node_modules'), path.join(DIST, 'node_modules'));
+    fs.symlinkSync(path.resolve(ESBUILD_ROOT, 'node_modules'), path.join(ESBUILD_DIST, 'node_modules'));
   } catch(err) {}
 };
 

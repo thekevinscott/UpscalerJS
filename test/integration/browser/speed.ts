@@ -1,7 +1,7 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { bundleEsbuild, DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -79,7 +79,7 @@ describe('Speed Integration Tests', () => {
             const upscaler = new window['Upscaler']({
               model: (window as any)[packageName][modelName],
             });
-            const flower = window['flower'];
+            const fixturePath = window['fixtures'][packageName];
             const waitForImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
               const img = new Image();
               img.src = src;
@@ -89,8 +89,8 @@ describe('Speed Integration Tests', () => {
               const start = performance.now();
               return fn().then(() => r(performance.now() - start));
             })
-            return waitForImage(flower).then(img => {
-              const flowerPixels = tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
+            return waitForImage(fixturePath).then(img => {
+              const fixturePixels = tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
               return Promise.all([
                 upscaler.getModel(),
                 upscaler.warmup([{
@@ -99,11 +99,11 @@ describe('Speed Integration Tests', () => {
                 }]),
               ]).then(([{ model }]) => {
                 return measure(() => new Promise(r => {
-                  tf.tidy(() => model.predict(flowerPixels));
+                  tf.tidy(() => model.predict(fixturePixels));
                   r(undefined);
                 })).then(rawDuration => {
                   let output: undefined | tf.Tensor = undefined;
-                  return measure(() => upscaler.upscale(flowerPixels, {
+                  return measure(() => upscaler.upscale(fixturePixels, {
                     output: 'tensor',
                   })).then(upscalerJSDuration => {
                     if (output !== undefined) {
@@ -132,7 +132,7 @@ describe('Speed Integration Tests', () => {
             const upscaler = new window['Upscaler']({
               model: (window as any)[packageName][modelName],
             });
-            const flower = window['flower'];
+            const fixturePath = window['fixtures'][packageName];
             const waitForImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
               const img = new Image();
               img.src = src;
@@ -142,8 +142,8 @@ describe('Speed Integration Tests', () => {
               const start = performance.now();
               return fn().then(() => r(performance.now() - start));
             })
-            return waitForImage(flower).then(img => {
-              const flowerPixels = tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
+            return waitForImage(fixturePath).then(img => {
+              const fixturePixels = tf.browser.fromPixels(img).expandDims(0) as tf.Tensor4D;
               return Promise.all([
                 upscaler.getModel(),
                 upscaler.warmup([{
@@ -154,13 +154,13 @@ describe('Speed Integration Tests', () => {
                 return measure(() => new Promise(r => {
                   tf.tidy(() => {
                     for (let i = 0; i < times; i++) {
-                      model.predict(flowerPixels);
+                      model.predict(fixturePixels);
                     }
                   });
                   r(undefined);
                 })).then(rawDuration => {
                   let output: undefined | tf.Tensor = undefined;
-                  return measure(() => upscaler.upscale(flowerPixels, {
+                  return measure(() => upscaler.upscale(fixturePixels, {
                     output: 'tensor',
                     patchSize,
                     padding: 0,
@@ -201,8 +201,7 @@ describe('Speed Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
-    flower128: string;
+    fixtures: Record<string, string>;
     tf: typeof tf;
     'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;

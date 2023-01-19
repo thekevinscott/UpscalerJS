@@ -48,7 +48,7 @@ describe('Node Model Loading Integration Tests', () => {
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
       'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
-      'flower': path.resolve(__dirname, '../../__fixtures__', 'flower-small-tensor.json'),
+      'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
   });
   beforeAll(async () => {

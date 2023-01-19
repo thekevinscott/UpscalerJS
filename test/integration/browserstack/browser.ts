@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -49,7 +49,7 @@ describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     // TODO: Not sure how to proxy with Selenium
     // mockCDN: esbuildMockCDN,
-    dist: DIST,
+    dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     port: PORT,
   });
@@ -84,7 +84,7 @@ describe('Browser Integration Tests', () => {
             scale: 4,
           },
         });
-        const data = upscaler.upscale(window['flower']);
+        const data = upscaler.upscale(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
       }, {}, {
@@ -100,7 +100,7 @@ describe('Browser Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    flower: string;
+    fixtures: Record<string, string>;
     tf: typeof tf;
   }
 }

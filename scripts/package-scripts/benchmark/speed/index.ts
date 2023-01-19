@@ -1,6 +1,6 @@
 import Upscaler from 'upscaler';
 import webdriver from 'selenium-webdriver';
-import { bundleEsbuild, DIST } from '../../../../test/lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
@@ -94,7 +94,7 @@ const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server
     }
     const [bsLocal, server] = await Promise.all([
       startBrowserstack(),
-      startServer(PORT, DIST),
+      startServer(PORT, ESBUILD_DIST),
     ]);
     if (opts.verbose) {
       console.log('Successfully started local browserstack and local server')

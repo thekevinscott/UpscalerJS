@@ -12,7 +12,7 @@ export const DIST = path.join(UMD_ROOT, 'dist');
 const UPSCALER_PATH = path.join(UMD_ROOT, '../../../packages/upscalerjs')
 const MODELS_PATH = path.join(UMD_ROOT, '../../../models/');
 
-const getContent = (scriptsToInclude: string[]) => `
+const getContent = (scriptsToInclude: string[], fixturesToInclude: Record<string, string>) => `
 <html>
   <head>
     <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
@@ -23,7 +23,9 @@ const getContent = (scriptsToInclude: string[]) => `
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@${getTFJSVersion()}/dist/tf.min.js"></script>
     ${scriptsToInclude.map(script => `<script src="${script}"></script>`)}
     <script src="/upscaler.min.js"></script>
-    <img src="./flower-small.png" id="flower"/>
+    <script type="text/javascript">
+${`window['fixtures'] = ${JSON.stringify(fixturesToInclude, null, 2)}`.split('\n').map(line => `      ${line}`).join('\n')}
+    </script>
   </body>
 </html>
 `;
@@ -51,6 +53,11 @@ const copyAllModels = () => {
   });
 };
 
+const getFixtures = (): Record<string, string> => getAllAvailableModelPackages().reduce((obj, packageName) => ({
+  ...obj,
+  [packageName]: `/models/${packageName}/test/__fixtures__/fixture.png`,
+}), {} as Record<string, string>);
+
 const getMinifiedScripts = () => {
   return getAllAvailableModelPackages().reduce((scripts, packageName) => {
     const models = getAllAvailableModels(packageName);
@@ -76,9 +83,10 @@ export const prepareScriptBundleForUMD = async () => {
   copyAllModels();
 
   const scriptsToInclude = getMinifiedScripts();
+  const fixturesToInclude = getFixtures();
 
   copyFixtures(DIST);
-  writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude));
+  writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude, fixturesToInclude));
 };
 
 export const mockCDN: MockCDN = (port, model, pathToModel) => [
