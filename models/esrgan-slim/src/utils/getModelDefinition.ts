@@ -5,7 +5,6 @@ import { clipOutput, } from './clipOutput';
 
 const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => tf => ({
   scale,
-  channels: 3,
   path: `models/${scale}x/model.json`,
   packageInformation: {
     name: NAME,
