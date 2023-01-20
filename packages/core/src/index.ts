@@ -5,6 +5,7 @@ import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import type { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
+export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
 export interface PackageInformation {
@@ -59,7 +60,7 @@ export interface ModelDefinition {
    */
   customOps?: ({
     name: string;
-    op: tf.OpExecutor;
+    op: OpExecutor;
   })[];
   /**
    * @hidden
