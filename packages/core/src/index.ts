@@ -34,6 +34,10 @@ export interface ModelDefinition {
    */
   path: string;
   /**
+   * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'
+   */
+  modelType?: ModelType;
+  /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
   scale: number;
@@ -100,8 +104,13 @@ export const isThreeDimensionalTensor = makeIsNDimensionalTensor<Tensor3D>(3);
 export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
+export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);
+
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
   if (modelDefinition === undefined) {
+    return false;
+  }
+  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
     return false;
   }
   return Boolean(modelDefinition.path && modelDefinition.scale);

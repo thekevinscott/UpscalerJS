@@ -3,6 +3,7 @@ import type { ModelDefinition, } from '@upscalerjs/core';
 import type { ModelPackage, PackageInformation, } from './types';
 import {
   getModelDefinitionError,
+  loadTfModel,
   registerCustomLayers,
 } from './utils';
 import {
@@ -31,7 +32,11 @@ export const getLoadModelErrorMessage = (modelPath: string, packageInformation: 
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
-export const fetchModel = async (modelPath: string, packageInformation?: PackageInformation): Promise<tf.LayersModel> => {
+export const fetchModel = async ({
+  path: modelPath,
+  modelType,
+  packageInformation,
+}: ModelDefinition): Promise<tf.LayersModel | tf.GraphModel> => {
   if (packageInformation) {
     const errs: Errors = [];
     for (let i = 0; i < CDNS.length; i++) {
@@ -39,7 +44,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
       const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
       try {
         const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
-        return await tf.loadLayersModel(url);
+        return await loadTfModel(url, modelType);
       } catch (err: unknown) {
         // there was an issue with the CDN, try another
         errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
@@ -47,7 +52,7 @@ export const fetchModel = async (modelPath: string, packageInformation?: Package
     }
     throw getLoadModelErrorMessage(modelPath, packageInformation, errs);
   }
-  return await tf.loadLayersModel(modelPath);
+  return await loadTfModel(modelPath, modelType);
 };
 
 export const loadModel = async (
@@ -56,7 +61,7 @@ export const loadModel = async (
   if (isValidModelDefinition(modelDefinition)) {
     registerCustomLayers(modelDefinition);
 
-    const model = await fetchModel(modelDefinition.path, modelDefinition.packageInformation);
+    const model = await fetchModel(modelDefinition);
 
     return {
       model,
