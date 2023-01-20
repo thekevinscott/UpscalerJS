@@ -27,7 +27,7 @@ const callExec = (cmd: string, {
     spawnedProcess.stderr?.on('data', stderr);
   }
 
-  if (stdout === undefined || stdout === true || verbose) {
+  if (stdout === undefined || stdout === true) {
     spawnedProcess.stdout?.pipe(process.stdout);
   } else if (!!stdout) {
     spawnedProcess.stdout?.on('data', stdout);
