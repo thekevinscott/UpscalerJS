@@ -55,6 +55,13 @@ export interface ModelDefinition {
    */
   customLayers?: CustomLayer[];
   /**
+   * Custom ops for the model. You can learn more about custom ops [here](https://www.tensorflow.org/js/guide/custom_ops_kernels_gradients).
+   */
+  customOps?: ({
+    name: string;
+    op: tf.OpExecutor;
+  })[];
+  /**
    * @hidden
    */
   meta?: Meta;

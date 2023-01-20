@@ -1,6 +1,9 @@
-import * as tf from '@tensorflow/tfjs-node';
-import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
+import { Tensor3D, } from '@tensorflow/tfjs-node';
+import { tf as _tf, } from './dependencies.generated';
+import { mock } from '../../../test/lib/shared/mockers';
 import { 
+  tensorAsClampedArray,
+  processAndDisposeOfTensor,
   getModelDefinitionError,
   wrapGenerator, 
   isSingleArgProgress, 
@@ -8,43 +11,91 @@ import {
   warn, 
   isAborted,
   registerCustomLayers,
-  tensorAsClampedArray,
   ERROR_MISSING_MODEL_DEFINITION_PATH,
-  ERROR_MISSING_MODEL_DEFINITION_SCALE,
   getModel,
-  processAndDisposeOfTensor,
   ERROR_MODEL_DEFINITION_BUG,
+  ERROR_MISSING_MODEL_DEFINITION_SCALE,
 } from './utils';
+import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
-jest.mock('@tensorflow/tfjs', () => ({
-  ...(jest.requireActual('@tensorflow/tfjs') ),
-  serialization: {
-    registerClass: jest.fn(),
-  },
-}));
+jest.mock('./dependencies.generated', () => {
+  const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
+  return {
+    ...dependencies,
+    tf: {
+      ...tf,
+      registerOp: jest.fn(),
+      serialization: {
+        registerClass: jest.fn(),
+      },
+    },
+  };
+});
+
+const tf = mock(_tf);
+const tfSerialization = mock(_tf.serialization);
 
 describe('registerCustomLayers', () => {
+  afterEach(() => {
+    tfSerialization.registerClass.mockClear();
+    tf.registerOp.mockClear();
+  });
+
   it('does nothing if no custom layers are specified', () => {
-    tf.serialization.registerClass = jest.fn();
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    tfSerialization.registerClass = jest.fn();
+    tf.registerOp = jest.fn();
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tf.registerOp).toHaveBeenCalledTimes(0);
     const modelDefinition: ModelDefinition = {
       path: 'foo',
       scale: 2,
     };
     registerCustomLayers(modelDefinition);
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tf.registerOp).toHaveBeenCalledTimes(0);
   });
 
   it('registers custom layers if provided', () => {
-    tf.serialization.registerClass = jest.fn();
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(0);
+    tfSerialization.registerClass = jest.fn();
+    tf.registerOp = jest.fn();
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tf.registerOp).toHaveBeenCalledTimes(0);
     const modelDefinition: ModelDefinition = {
       path: 'foo',
       scale: 2,
       customLayers: ['foo','bar','baz'] as Array<any>,
     };
     registerCustomLayers(modelDefinition);
-    expect(tf.serialization.registerClass).toHaveBeenCalledTimes(3);
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(3);
+    expect(tf.registerOp).toHaveBeenCalledTimes(0);
+  });
+
+  it('registers custom ops if provided', () => {
+    tfSerialization.registerClass = jest.fn();
+    tf.registerOp = jest.fn();
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tf.registerOp).toHaveBeenCalledTimes(0);
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      scale: 2,
+      customOps: [
+        {
+          name: 'foo',
+          op: () => {},
+        },
+        {
+          name: 'bar',
+          op: () => {},
+        },
+        {
+          name: 'baz',
+          op: () => {},
+        },
+      ]
+    };
+    registerCustomLayers(modelDefinition);
+    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
+    expect(tf.registerOp).toHaveBeenCalledTimes(3);
   });
 });
 
@@ -262,7 +313,7 @@ describe('processAndDisposeOfTensor', () => {
   it('returns a tensor as is if given no process function', () => {
     const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as Tensor3D;
     });
     const mockedTensor = mockTensor();
     const value = processAndDisposeOfTensor(mockedTensor);
@@ -273,7 +324,7 @@ describe('processAndDisposeOfTensor', () => {
   it('processes a tensor and disposes of it if given a process function', () => {
     const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose } as any as tf.Tensor3D;
+      return { dispose: mockDispose } as any as Tensor3D;
     });
     const process = jest.fn().mockImplementation(() => 'foo');
     const value = processAndDisposeOfTensor(mockTensor(), process);
@@ -285,9 +336,9 @@ describe('processAndDisposeOfTensor', () => {
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
     const mockDispose = jest.fn();
     const mockTensor = jest.fn().mockImplementation(() => {
-      return { dispose: mockDispose, isDisposed: () => true } as any as tf.Tensor3D;
+      return { dispose: mockDispose, isDisposed: () => true } as any as Tensor3D;
     });
-    const process = jest.fn().mockImplementation((t: tf.Tensor3D) => {
+    const process = jest.fn().mockImplementation((t: Tensor3D) => {
       t.dispose();
       return 'foo';
     });
