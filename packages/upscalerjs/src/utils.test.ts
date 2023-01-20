@@ -1,5 +1,5 @@
-import { Tensor3D, } from '@tensorflow/tfjs-node';
-import { OpExecutor } from '@tensorflow/tfjs-node';
+import { GraphModel, Tensor3D, } from '@tensorflow/tfjs-node';
+import { tensor, OpExecutor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock } from '../../../test/lib/shared/mockers';
 import { 
@@ -16,6 +16,8 @@ import {
   getModel,
   ERROR_MODEL_DEFINITION_BUG,
   ERROR_MISSING_MODEL_DEFINITION_SCALE,
+  ERROR_INVALID_MODEL_TYPE,
+  loadTfModel,
 } from './utils';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
@@ -26,6 +28,8 @@ jest.mock('./dependencies.generated', () => {
     tf: {
       ...tf,
       registerOp: jest.fn(),
+      loadLayersModel: jest.fn(),
+      loadGraphModel: jest.fn(),
       serialization: {
         registerClass: jest.fn(),
       },
@@ -79,15 +83,15 @@ describe('registerCustomLayers', () => {
     const customOps: { name: string; op: OpExecutor }[] = [
       {
         name: 'foo',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
       {
         name: 'bar',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
       {
         name: 'baz',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
     ];
     const modelDefinition: ModelDefinition = {
@@ -263,12 +267,12 @@ describe('isMultiArgProgress', () => {
 
 describe('tensorAsClampedArray', () => {
   it('returns an array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
+    const result = tensorAsClampedArray(tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
     expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255,7,7,7,255,8,8,8,255]);
   });
 
   it('returns a clamped array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
+    const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
     expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
 });
@@ -282,6 +286,11 @@ describe('getModelDefinitionError', () => {
   it('returns an error if scale is not provided', () => {
     const err = getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition);
     expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
+  });
+
+  it('returns an error if invalid model type is provided', () => {
+    const err = getModelDefinitionError({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
+    expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
   });
 
   it('returns a generic error otherwise', () => {
@@ -412,5 +421,39 @@ describe('processAndDisposeOfTensor', () => {
     expect(processB).toHaveBeenCalledTimes(1);
     expect(processC).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('loadTfModel', () => {
+  afterEach(() => {
+    tf.loadLayersModel.mockClear();
+    tf.loadGraphModel.mockClear();
+  });
+
+  it('loads a graph model if graph is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('foo', 'graph');
+    expect(model).toEqual('graph');
+    expect(tf.loadLayersModel).not.toHaveBeenCalled();
+    expect(tf.loadGraphModel).toHaveBeenCalled();
+  });
+
+  it('loads a layers model if layer is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('bar', 'layers');
+    expect(model).toEqual('layers');
+    expect(tf.loadLayersModel).toHaveBeenCalled();
+    expect(tf.loadGraphModel).not.toHaveBeenCalled();
+  });
+
+  it('loads a layers model if no argument is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('bar');
+    expect(model).toEqual('layers');
+    expect(tf.loadLayersModel).toHaveBeenCalled();
+    expect(tf.loadGraphModel).not.toHaveBeenCalled();
   });
 });
