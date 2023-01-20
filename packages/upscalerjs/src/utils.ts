@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, TF, ModelType, } from '@upscalerjs/core';
+import { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, ModelType, isValidModelType, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -20,7 +20,7 @@ export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
 ].join('\n');
 export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
-  `You've provided an invalid model type: ${modelType}. Accepted types are "layers" and "graph".`,
+  `You've provided an invalid model type: ${JSON.stringify(modelType)}. Accepted types are "layers" and "graph".`,
   `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
 ].join('\n'));
 export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
