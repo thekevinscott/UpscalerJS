@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, } from '@upscalerjs/core';
+import type { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, TF, ModelType, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -9,6 +9,7 @@ export class AbortError extends Error {
 const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
+const ERROR_INVALID_MODEL_TYPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#invalid-model-type';
 
 export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
   'You must provide a "path" when providing a model definition',
@@ -18,6 +19,10 @@ export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
   'You must provide a "scale" for a model definition',
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
 ].join('\n');
+export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
+  `You've provided an invalid model type: ${modelType}. Accepted types are "layers" and "graph".`,
+  `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
+].join('\n'));
 export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
 
 export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
@@ -26,6 +31,9 @@ export function getModelDefinitionError(modelDefinition: ModelDefinition): Error
   }
   if (!modelDefinition.scale) {
     return new Error(ERROR_MISSING_MODEL_DEFINITION_SCALE);
+  }
+  if (!isValidModelType(modelDefinition.modelType)) {
+    return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition.modelType));
   }
 
   return new Error(ERROR_MODEL_DEFINITION_BUG);
@@ -115,4 +123,14 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
     return processedTensor;
   }
   return tensor;
+}
+
+export async function loadTfModel(modelPath: string, modelType: 'graph'): Promise<tf.GraphModel>;
+export async function loadTfModel(modelPath: string, modelType?: 'layers'): Promise<tf.LayersModel>;
+export async function loadTfModel(modelPath: string, modelType?: ModelType) {
+  if (modelType === 'graph') {
+    return tf.loadGraphModel(modelPath);
+  }
+
+  return tf.loadLayersModel(modelPath);
 }

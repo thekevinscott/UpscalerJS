@@ -34,6 +34,10 @@ export interface ModelDefinition {
    */
   path: string;
   /**
+   * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'
+   */
+  modelType?: ModelType;
+  /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
   scale: number;
@@ -104,6 +108,9 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     return false;
   }
+  if (!isValidModelType(modelDefinition.modelType)) {
+    return false;
+  }
   return Boolean(modelDefinition.path && modelDefinition.scale);
 };
 
@@ -111,3 +118,5 @@ export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.sli
 
 export const isNumber = (el: unknown): el is number => typeof el === 'number';
 export const isValidRange = (range: unknown): range is Range => Array.isArray(range) && range.length === 2 && range.every(isNumber);
+
+export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);

@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { getModelDefinitionError, registerCustomLayers, } from './utils';
+import { getModelDefinitionError, loadTfModel, registerCustomLayers, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from 'types';
 import {
@@ -42,7 +42,7 @@ export const loadModel = async (
     registerCustomLayers(modelDefinition);
 
     const modelPath = getModelPath(modelDefinition);
-    const model = await tf.loadLayersModel(modelPath);
+    const model = await loadTfModel(modelPath, modelDefinition.modelType);
 
     return {
       model,

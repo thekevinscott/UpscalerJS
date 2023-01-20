@@ -1,4 +1,4 @@
-import { Tensor3D, } from '@tensorflow/tfjs-node';
+import { GraphModel, Tensor3D, } from '@tensorflow/tfjs-node';
 import { OpExecutor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock } from '../../../test/lib/shared/mockers';
@@ -16,6 +16,8 @@ import {
   getModel,
   ERROR_MODEL_DEFINITION_BUG,
   ERROR_MISSING_MODEL_DEFINITION_SCALE,
+  ERROR_INVALID_MODEL_TYPE,
+  loadTfModel,
 } from './utils';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
@@ -26,6 +28,8 @@ jest.mock('./dependencies.generated', () => {
     tf: {
       ...tf,
       registerOp: jest.fn(),
+      loadLayersModel: jest.fn(),
+      loadGraphModel: jest.fn(),
       serialization: {
         registerClass: jest.fn(),
       },
@@ -284,6 +288,11 @@ describe('getModelDefinitionError', () => {
     expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   });
 
+  it('returns an error if invalid model type is provided', () => {
+    const err = getModelDefinitionError({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
+    expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
+  });
+
   it('returns a generic error otherwise', () => {
     const err = getModelDefinitionError({ path: 'foo', scale: 2 });
     expect(err.message).toEqual(ERROR_MODEL_DEFINITION_BUG);
@@ -348,5 +357,39 @@ describe('processAndDisposeOfTensor', () => {
     expect(value).toEqual('foo');
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('loadTfModel', () => {
+  afterEach(() => {
+    tf.loadLayersModel.mockClear();
+    tf.loadGraphModel.mockClear();
+  });
+
+  it('loads a graph model if graph is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('foo', 'graph');
+    expect(model).toEqual('graph');
+    expect(tf.loadLayersModel).not.toHaveBeenCalled();
+    expect(tf.loadGraphModel).toHaveBeenCalled();
+  });
+
+  it('loads a layers model if layer is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('bar', 'layers');
+    expect(model).toEqual('layers');
+    expect(tf.loadLayersModel).toHaveBeenCalled();
+    expect(tf.loadGraphModel).not.toHaveBeenCalled();
+  });
+
+  it('loads a layers model if no argument is specified', async () => {
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    const model = await loadTfModel('bar');
+    expect(model).toEqual('layers');
+    expect(tf.loadLayersModel).toHaveBeenCalled();
+    expect(tf.loadGraphModel).not.toHaveBeenCalled();
   });
 });

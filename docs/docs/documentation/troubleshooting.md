@@ -164,3 +164,24 @@ upscaler.upscale(tensor, {
 _Note: If you've neglected to provide an `output` argument and you're running the browser version of UpscalerJS, you will need to explicitly provide the `output` argument. This is because the default argument is `base64`._
 
 For an example, [check out the guide on web workers](/documentation/guides/browser/performance/webworker).
+
+## Invalid Model Type
+
+Acceptable model types include:
+
+- `layers` (default)
+- `graph`
+
+[These correspond to the model types supported by Tensorflow.js](https://js.tensorflow.org/api/latest/#Models-Loading).
+
+If you don't know what kind of model you have, you may be able to inspect your `model.json`. If the JSON file has an entry like below, it's a `layers` model:
+
+```json
+{"format": "layers-model", 
+```
+
+If it has an entry like below, it's a `graph` model:
+
+```json
+{"format": "graph-model", 
+```
