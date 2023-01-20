@@ -1,5 +1,6 @@
 import { Tensor3D, } from '@tensorflow/tfjs-node';
-import { tf, tf as _tf, } from './dependencies.generated';
+import { OpExecutor } from '@tensorflow/tfjs-node';
+import { tf as _tf, } from './dependencies.generated';
 import { mock } from '../../../test/lib/shared/mockers';
 import { 
   tensorAsClampedArray,
@@ -75,7 +76,7 @@ describe('registerCustomLayers', () => {
     tf.registerOp = jest.fn();
     expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
     expect(tf.registerOp).toHaveBeenCalledTimes(0);
-    const customOps: { name: string; op: tf.OpExecutor }[] = [
+    const customOps: { name: string; op: OpExecutor }[] = [
       {
         name: 'foo',
         op: () => tf.tensor([]),
