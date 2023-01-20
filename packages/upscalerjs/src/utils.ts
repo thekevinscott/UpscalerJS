@@ -113,8 +113,9 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   ..._processFns: (ProcessFn<T> | undefined)[]
 ): T {
   const processFns: ProcessFn<T>[] = _processFns.filter(nonNullable);
+
   if (processFns.length) {
-    const processedTensor = tf.tidy(() => processFns.reduce((reducedTensor, processFn) => processFn(reducedTensor), tensor.clone()));
+    const processedTensor = tf.tidy(() => processFns.reduce((reducedTensor, processFn) => processFn(reducedTensor), tensor));
     if (!tensor.isDisposed) {
       tensor.dispose();
     }
