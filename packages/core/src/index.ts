@@ -14,7 +14,7 @@ export interface PackageInformation {
 }
 
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
-export type Range = [number, number]
+export type Range = [number, number,];
 
 type MetaValue = string | number | Meta | null | undefined | boolean;
 export type Meta = { [key: string]: MetaValue };
