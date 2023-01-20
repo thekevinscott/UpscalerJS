@@ -80,7 +80,7 @@ describe('loadModel browser tests', () => {
           path: 'foo',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo');
+        expect(loadTfModel).toBeCalledWith('foo', undefined);
       });
 
       it('loads the given model path as a graph model if there is no package info', async () => {
@@ -201,7 +201,7 @@ describe('loadModel browser tests', () => {
       const result = await loadModel(modelDefinition);
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, undefined);
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 
