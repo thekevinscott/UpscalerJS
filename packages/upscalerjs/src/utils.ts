@@ -102,13 +102,19 @@ export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'ten
   return option;
 }
 
+function nonNullable<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}
+
 // this function disposes of any input tensors
 export function processAndDisposeOfTensor<T extends tf.Tensor>(
   tensor: T,
-  processFn?: ProcessFn<T>,
+  ..._processFns: (ProcessFn<T> | undefined)[]
 ): T {
-  if (processFn) {
-    const processedTensor = tf.tidy(() => processFn(tensor));
+  const processFns: ProcessFn<T>[] = _processFns.filter(nonNullable);
+
+  if (processFns.length) {
+    const processedTensor = tf.tidy(() => processFns.reduce((reducedTensor, processFn) => processFn(reducedTensor), tensor));
     if (!tensor.isDisposed) {
       tensor.dispose();
     }
