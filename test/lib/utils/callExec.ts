@@ -4,14 +4,14 @@ type StdOut = (chunk: string) => void;
 type StdErr = (chunk: string) => void;
 
 const callExec = (cmd: string, {
-  verbose,
+  verbose = false,
   ...options
 }: {
   encoding?: 'buffer' | null;
   verbose?: boolean;
 } & ExecOptions = {}, stdout?: StdOut | boolean, stderr: StdErr | boolean = true): Promise<void> => new Promise((resolve, reject) => {
   if (verbose) {
-    console.log(`Executing: ${cmd}`);
+    console.log(`Running command: ${cmd}`);
   }
   const spawnedProcess = exec(cmd, options, (error) => {
     if (error) {
@@ -21,10 +21,10 @@ const callExec = (cmd: string, {
     }
   });
 
-  if ((!!stderr && typeof stderr !== 'boolean')) {
-    spawnedProcess.stderr?.on('data', stderr);
-  } else if (stderr === true || verbose) {
+  if (stderr === true || verbose) {
     spawnedProcess.stderr?.pipe(process.stderr);
+  } else if (!!stderr && typeof stderr !== 'boolean') {
+    spawnedProcess.stderr?.on('data', stderr);
   }
 
   if (stdout === undefined || stdout === true || verbose) {
