@@ -127,8 +127,8 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
 
 export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   if (modelType === 'graph') {
-    return tf.loadGraphModel(modelPath);
+    return await tf.loadGraphModel(modelPath);
   }
 
-  return tf.loadLayersModel(modelPath);
+  return await tf.loadLayersModel(modelPath);
 }

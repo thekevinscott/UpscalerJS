@@ -104,6 +104,8 @@ export const isThreeDimensionalTensor = makeIsNDimensionalTensor<Tensor3D>(3);
 export const isTensor = (input: unknown): input is tf.Tensor => input instanceof tf.Tensor;
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
+export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);
+
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
   if (modelDefinition === undefined) {
     return false;
@@ -118,5 +120,3 @@ export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.sli
 
 export const isNumber = (el: unknown): el is number => typeof el === 'number';
 export const isValidRange = (range: unknown): range is Range => Array.isArray(range) && range.length === 2 && range.every(isNumber);
-
-export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);
