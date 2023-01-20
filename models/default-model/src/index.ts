@@ -1,8 +1,9 @@
+import { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 2;
 
-export default {
+const modelDefinition: ModelDefinition = {
   scale: SCALE,
   path: `models/model.json`,
   packageInformation: {
@@ -25,3 +26,5 @@ export default {
   },
   outputRange: [0, 255,],
 };
+
+export default modelDefinition;
