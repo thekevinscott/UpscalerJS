@@ -67,12 +67,12 @@ export interface ModelDefinition {
    */
   customOps?: CustomOp[];
   /**
-   * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
-   */
+    * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
+    */
   inputRange?: Range;
   /**
-   * Two numbers denoting the range in which the model is expected to output its predictions. Numbers may still fall outside of this range, but 
-   * UpscalerJS will use the range to multiply and clip the values appropriately. Defaults to [0, 255].
+   * Two numbers denoting the range in which the model is expected to output its predictions. Numbers can still fall outside of this range, but 
+   * UpscalerJS will use the range to clip the values appropriately. Defaults to [0, 255].
    */
   outputRange?: Range;
   /**

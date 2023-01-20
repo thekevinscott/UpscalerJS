@@ -55,7 +55,6 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
 
   const modelDefinition: ModelDefinition = {
     scale: SCALE,
-    channels: 3,
     path: 'models/gans/model.json',
     packageInformation: {
       name: NAME,
