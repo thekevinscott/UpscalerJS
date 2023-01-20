@@ -1,9 +1,8 @@
-import { tf, } from './dependencies.generated';
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
 import { getModelDefinitionError, loadTfModel, registerCustomLayers, } from './utils';
 import { resolver, } from './resolver';
-import { ModelPackage, } from 'types';
+import { ModelPackage, } from './types';
 import {
   isValidModelDefinition,
 } from '@upscalerjs/core';

@@ -68,7 +68,7 @@ export type Layer = tf.layers.Layer;
 export type { PackageInformation, ProcessFn, } from '@upscalerjs/core';
 
 export interface ModelPackage {
-  model: tf.LayersModel;
+  model: tf.LayersModel | tf.GraphModel;
   modelDefinition: ModelDefinition;
 }
 

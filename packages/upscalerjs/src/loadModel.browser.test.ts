@@ -12,6 +12,7 @@ import {
 import {
   registerCustomLayers as _registerCustomLayers,
   getModelDefinitionError as _getModelDefinitionError,
+  loadTfModel as _loadTfModel,
 } from './utils';
 
 import {
@@ -26,11 +27,12 @@ jest.mock('./loadModel.browser', () => {
 });
 
 jest.mock('./utils', () => {
-  const { getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
+  const { loadTfModel, getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
   return {
     ...rest,
     registerCustomLayers: jest.fn(registerCustomLayers),
     getModelDefinitionError: jest.fn(getModelDefinitionError),
+    loadTfModel: jest.fn(loadTfModel),
   }
 });
 
@@ -49,6 +51,7 @@ jest.mock('./dependencies.generated', () => {
     tf: {
       ...tf,
       loadLayersModel: jest.fn(),
+      loadGraphModel: jest.fn(),
     }
   }
 });
@@ -57,72 +60,117 @@ const tf = mock(_tf);
 const getModelDefinitionError = mockFn(_getModelDefinitionError);
 const isValidModelDefinition = mockFn(_isValidModelDefinition);
 const registerCustomLayers = mockFn(_registerCustomLayers);
+const loadTfModel = mockFn(_loadTfModel);
 
 describe('loadModel browser tests', () => {
   beforeEach(() => {
     registerCustomLayers.mockClear();
     getModelDefinitionError.mockClear();
     isValidModelDefinition.mockClear();
+    loadTfModel.mockClear();
     tf.loadLayersModel.mockClear();
+    tf.loadGraphModel.mockClear();
   });
 
   describe('fetchModel', () => {
-    it('loads the given model path if there is no package info', async () => {
-      expect(tf.loadLayersModel).toBeCalledTimes(0);
-      await fetchModel('foo');
-      expect(tf.loadLayersModel).toBeCalledTimes(1);
-      expect(tf.loadLayersModel).toBeCalledWith('foo');
+    describe('No package info', () => {
+      it('loads the given model path if there is no package info', async () => {
+        expect(loadTfModel).toBeCalledTimes(0);
+        await fetchModel({
+          path: 'foo',
+        } as ModelDefinition);
+        expect(loadTfModel).toBeCalledTimes(1);
+        expect(loadTfModel).toBeCalledWith('foo');
+      });
+
+      it('loads the given model path as a graph model if there is no package info', async () => {
+        expect(loadTfModel).toBeCalledTimes(0);
+        await fetchModel({
+          path: 'foo',
+          modelType: 'graph'
+        } as ModelDefinition);
+        expect(loadTfModel).toBeCalledTimes(1);
+        expect(loadTfModel).toBeCalledWith('foo', 'graph');
+      });
     });
 
-    it('attempts to load a model from a CDN if given package information', async () => {
-      const packageName = 'packageName';
-      const version = 'version';
-      const modelPath = 'modelPath';
-      expect(tf.loadLayersModel).toBeCalledTimes(0);
-      await fetchModel(modelPath, {
-        name: packageName,
-        version,
+    describe('Package info', () => {
+      it('attempts to load a model from a CDN if given package information', async () => {
+        const packageName = 'packageName';
+        const version = 'version';
+        const modelPath = 'modelPath';
+        expect(loadTfModel).toBeCalledTimes(0);
+        await fetchModel({
+          path: modelPath,
+          packageInformation: {
+            name: packageName,
+            version,
+          },
+        } as ModelDefinition);
+        expect(loadTfModel).toBeCalledTimes(1);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), undefined);
       });
-      expect(tf.loadLayersModel).toBeCalledTimes(1);
-      expect(tf.loadLayersModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath));
-    });
 
-    it('attempts to load a model from a subsequent CDN if a prior one fails', async () => {
-      const packageName = 'packageName';
-      const version = 'version';
-      const modelPath = 'modelPath';
-      tf.loadLayersModel.mockImplementation(async (url: string | io.IOHandler) => {
-        if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
-          throw new Error('next');
-        }
-        return 'foo' as unknown as LayersModel;
+      it('attempts to load a graph model from a CDN if given package information', async () => {
+        const packageName = 'packageName';
+        const version = 'version';
+        const modelPath = 'modelPath';
+        expect(loadTfModel).toBeCalledTimes(0);
+        await fetchModel({
+          path: modelPath,
+          packageInformation: {
+            name: packageName,
+            version,
+          },
+          modelType: 'graph',
+        } as ModelDefinition);
+        expect(loadTfModel).toBeCalledTimes(1);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
       });
-      expect(tf.loadLayersModel).toBeCalledTimes(0);
-      await fetchModel(modelPath, {
-        name: packageName,
-        version,
-      });
-      expect(tf.loadLayersModel).toBeCalledTimes(2);
-      expect(tf.loadLayersModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath));
-    });
 
-    it('throws if all attempts to fetch a model fail', async () => {
-      const packageName = 'packageName';
-      const version = 'version';
-      const modelPath = 'modelPath';
-      let i = 0;
-      tf.loadLayersModel.mockImplementation(async () => {
-        throw new Error(`next: ${i++}`);
+      it('attempts to load a model from a subsequent CDN if a prior one fails', async () => {
+        const packageName = 'packageName';
+        const version = 'version';
+        const modelPath = 'modelPath';
+        loadTfModel.mockImplementation(async (url: string | io.IOHandler) => {
+          if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
+            throw new Error('next');
+          }
+          return 'foo' as unknown as LayersModel;
+        });
+        expect(loadTfModel).toBeCalledTimes(0);
+        await fetchModel({
+          path: modelPath,
+          packageInformation: {
+            name: packageName,
+            version,
+          }
+        } as ModelDefinition);
+        expect(loadTfModel).toBeCalledTimes(2);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), undefined);
       });
-      await expect(() => fetchModel(modelPath, {
-        name: packageName,
-        version,
-      }))
-        .rejects
-        .toThrowError(getLoadModelErrorMessage(modelPath, {
-          name: packageName,
-          version,
-        }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
+
+      it('throws if all attempts to fetch a model fail', async () => {
+        const packageName = 'packageName';
+        const version = 'version';
+        const modelPath = 'modelPath';
+        let i = 0;
+        loadTfModel.mockImplementation(async () => {
+          throw new Error(`next: ${i++}`);
+        });
+        await expect(() => fetchModel({
+          path: modelPath,
+          packageInformation: {
+            name: packageName,
+            version,
+          },
+        } as ModelDefinition))
+          .rejects
+          .toThrowError(getLoadModelErrorMessage(modelPath, {
+            name: packageName,
+            version,
+          }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
+      });
     });
   });
 
@@ -141,8 +189,8 @@ describe('loadModel browser tests', () => {
     it('loads a model successfully', async () => {
       isValidModelDefinition.mockImplementation(() => true);
       const model = 'foo' as unknown as LayersModel;
-      tf.loadLayersModel.mockImplementation(async () => model);
-      expect(tf.loadLayersModel).toHaveBeenCalledTimes(0);
+      loadTfModel.mockImplementation(async () => model);
+      expect(loadTfModel).toHaveBeenCalledTimes(0);
       expect(registerCustomLayers).toHaveBeenCalledTimes(0);
 
       const modelDefinition: ModelDefinition = {
@@ -152,8 +200,8 @@ describe('loadModel browser tests', () => {
 
       const result = await loadModel(modelDefinition);
 
-      expect(tf.loadLayersModel).toHaveBeenCalledTimes(1);
-      expect(tf.loadLayersModel).toHaveBeenCalledWith(modelDefinition.path);
+      expect(loadTfModel).toHaveBeenCalledTimes(1);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path);
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 

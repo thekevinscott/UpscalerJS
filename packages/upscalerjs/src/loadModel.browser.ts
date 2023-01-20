@@ -36,7 +36,7 @@ export const fetchModel = async ({
   path: modelPath,
   modelType,
   packageInformation,
-}: ModelDefinition): Promise<tf.LayersModel> => {
+}: ModelDefinition): Promise<tf.LayersModel | tf.GraphModel> => {
   if (packageInformation) {
     const errs: Errors = [];
     for (let i = 0; i < CDNS.length; i++) {
@@ -52,7 +52,7 @@ export const fetchModel = async ({
     }
     throw getLoadModelErrorMessage(modelPath, packageInformation, errs);
   }
-  return await tf.loadLayersModel(modelPath);
+  return await loadTfModel(modelPath, modelType);
 };
 
 export const loadModel = async (

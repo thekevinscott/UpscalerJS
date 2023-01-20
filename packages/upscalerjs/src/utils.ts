@@ -32,7 +32,7 @@ export function getModelDefinitionError(modelDefinition: ModelDefinition): Error
   if (!modelDefinition.scale) {
     return new Error(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   }
-  if (!isValidModelType(modelDefinition.modelType)) {
+  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
     return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition.modelType));
   }
 
@@ -125,8 +125,6 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   return tensor;
 }
 
-export async function loadTfModel(modelPath: string, modelType: 'graph'): Promise<tf.GraphModel>;
-export async function loadTfModel(modelPath: string, modelType?: 'layers'): Promise<tf.LayersModel>;
 export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   if (modelType === 'graph') {
     return tf.loadGraphModel(modelPath);

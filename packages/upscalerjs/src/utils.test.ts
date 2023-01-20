@@ -1,5 +1,5 @@
 import { GraphModel, Tensor3D, } from '@tensorflow/tfjs-node';
-import { OpExecutor } from '@tensorflow/tfjs-node';
+import { tensor, OpExecutor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock } from '../../../test/lib/shared/mockers';
 import { 
@@ -83,15 +83,15 @@ describe('registerCustomLayers', () => {
     const customOps: { name: string; op: OpExecutor }[] = [
       {
         name: 'foo',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
       {
         name: 'bar',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
       {
         name: 'baz',
-        op: () => tf.tensor([]),
+        op: () => tensor([]),
       },
     ];
     const modelDefinition: ModelDefinition = {
@@ -267,12 +267,12 @@ describe('isMultiArgProgress', () => {
 
 describe('tensorAsClampedArray', () => {
   it('returns an array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
+    const result = tensorAsClampedArray(tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
     expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255,7,7,7,255,8,8,8,255]);
   });
 
   it('returns a clamped array', () => {
-    const result = tensorAsClampedArray(tf.tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
+    const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
     expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
 });
