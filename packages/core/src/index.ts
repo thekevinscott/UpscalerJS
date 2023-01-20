@@ -108,7 +108,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     return false;
   }
-  if (!isValidModelType(modelDefinition.modelType)) {
+  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
     return false;
   }
   return Boolean(modelDefinition.path && modelDefinition.scale);

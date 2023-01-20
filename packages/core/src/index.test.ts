@@ -91,6 +91,10 @@ describe('isValidModelDefinition', () => {
     expect(isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toEqual(false);
   });
 
+  it('returns false if given invalid model type', () => {
+    expect(isValidModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition )).toEqual(false);
+  });
+
   it('returns true if given scale and path', () => {
     expect(isValidModelDefinition({ path: 'foo', scale: 2 })).toEqual(true);
   });
