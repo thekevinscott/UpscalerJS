@@ -21,9 +21,9 @@ const callExec = (cmd: string, {
     }
   });
 
-  if ((!!stderr && typeof stderr !== 'boolean') || verbose) {
+  if ((!!stderr && typeof stderr !== 'boolean')) {
     spawnedProcess.stderr?.on('data', stderr);
-  } else if (stderr === true) {
+  } else if (stderr === true || verbose) {
     spawnedProcess.stderr?.pipe(process.stderr);
   }
 
