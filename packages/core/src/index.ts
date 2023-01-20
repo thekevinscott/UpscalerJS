@@ -22,6 +22,11 @@ export type ModelType = 'graph' | 'layers';
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
 
+export interface CustomOp {
+  name: string;
+  op: OpExecutor;
+}
+
 export interface ModelDefinition {
   /**
    * Path to a model.json file.
@@ -58,10 +63,7 @@ export interface ModelDefinition {
   /**
    * Custom ops for the model. You can learn more about custom ops [here](https://www.tensorflow.org/js/guide/custom_ops_kernels_gradients).
    */
-  customOps?: ({
-    name: string;
-    op: OpExecutor;
-  })[];
+  customOps?: CustomOp[];
   /**
    * @hidden
    */
