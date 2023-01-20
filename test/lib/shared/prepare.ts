@@ -54,11 +54,12 @@ const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, 
  */
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
-export const installNodeModules = (cwd: string, { verbose = false }: Opts = {}) => {
-  const cmd = `npm install ${verbose ? '' : '--silent'} --no-audit`;
+export const installNodeModules = (cwd: string, { useYarn = false, verbose = false }: Opts & { useYarn?: boolean }= {}) => {
+  const cmd = useYarn ? `yarn ${verbose ? '' : '--silent'}` : `npm install ${verbose ? '' : '--silent'} --no-audit`;
   try {
     return callExec(cmd, {
       cwd,
+      verbose,
     });
   } catch (err) {
     console.error(`Error with cwd: ${cwd} and command: ${cmd}`);
@@ -81,6 +82,7 @@ const installRemoteDependencies = async (dest: string, remoteDependencies: Depen
     }
     await callExec(cmd, {
       cwd: dest,
+      verbose,
     })
   }
 };
@@ -165,6 +167,7 @@ const npmPack = async (src: string, { verbose }: Opts = {}): Promise<string> => 
   let outputName = '';
   await callExec(`npm pack --ignore-scripts ${verbose ? '' : '--quiet'}`, {
     cwd: src,
+    verbose,
   }, chunk => {
     outputName = chunk;
   });
@@ -190,6 +193,7 @@ const pnpmPack = async (src: string, target: string, { verbose, }: Opts = {}): P
   let outputName = '';
   await callExec(`pnpm pack --pack-destination ${target} ${verbose === false ? '--silent' : ''}`, {
     cwd: src,
+    verbose,
   }, chunk => {
     outputName = chunk;
   });
@@ -323,6 +327,7 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
 
         await callExec(`mv ${unpackedFolder} ${dest}`, {
           cwd: tmp,
+          verbose: opts.verbose,
         });
       }
     } catch (err: unknown) {
