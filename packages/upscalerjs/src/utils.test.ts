@@ -312,61 +312,102 @@ describe('getModel', () => {
 });
 
 describe('processAndDisposeOfTensor', () => {
-  const makeTensor = (mockDispose: typeof jest.fn, extra: any = {}) => {
-    return jest.fn().mockImplementation(() => {
-      const tensor = {
-        clone: jest.fn().mockImplementation(() => ({
-          ...tensor,
-        })),
-        dispose: mockDispose,
-        ...extra,
-      } as any as Tensor3D;
-      return tensor;
-    });
-  };
+  let tensorIndex = 0;
+  class MockTensor {
+    name = `tensor-${tensorIndex++}`;
+    isDisposed = false;
+
+    value?: number;
+    mockDispose: typeof jest.fn = jest.fn().mockImplementation(() => {});
+
+    constructor({
+      mockDispose,
+      value,
+    }: {
+      mockDispose?: typeof jest.fn;
+      value?: number;
+    }) {
+      if (mockDispose) {
+        this.mockDispose = mockDispose;
+      }
+      this.value = value;
+    }
+
+    dispose() {
+      this.isDisposed = true;
+      return this.mockDispose();
+    }
+
+    add(value: number) {
+      if (!this.value) {
+        throw new Error('No value');
+      }
+      return new MockTensor({
+        mockDispose: this.mockDispose,
+        value: this.value + value,
+      });
+    }
+
+    mul(value: number) {
+      if (!this.value) {
+        throw new Error('No value');
+      }
+      return new MockTensor({
+        mockDispose: this.mockDispose,
+        value: this.value * value,
+      });
+    }
+
+    div(value: number) {
+      if (!this.value) {
+        throw new Error('No value');
+      }
+      return new MockTensor({
+        mockDispose: this.mockDispose,
+        value: this.value / value,
+      });
+    }
+  }
 
   it('returns a tensor as is if given no process function', () => {
     const mockDispose = jest.fn();
-    const mockTensor = makeTensor(mockDispose);
-    const mockedTensor = mockTensor();
-    const value = processAndDisposeOfTensor(mockedTensor);
-    expect(value).toEqual(mockedTensor);
+    const mockedTensor = new MockTensor({ mockDispose });
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D);
+    expect(returnedTensor).toEqual(mockedTensor);
     expect(mockDispose).not.toHaveBeenCalled();
   });
 
   it('processes a tensor and disposes of it if given a process function', () => {
     const mockDispose = jest.fn();
-    const mockTensor = makeTensor(mockDispose);
-    const process = jest.fn().mockImplementation(() => 'foo');
-    const value = processAndDisposeOfTensor(mockTensor(), process);
-    expect(value).toEqual('foo');
+    const process = jest.fn().mockImplementation(t => t); // return the tensor through
+    const mockedTensor = new MockTensor({ mockDispose });
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
+    expect(returnedTensor).toEqual(mockedTensor);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
     const mockDispose = jest.fn();
-    const mockTensor = makeTensor(mockDispose);
+    const mockedTensor = new MockTensor({ mockDispose });
     const process = jest.fn().mockImplementation((t: Tensor3D) => {
       t.dispose();
-      return 'foo';
+      return t;
     });
-    const value = processAndDisposeOfTensor(mockTensor(), process);
-    expect(value).toEqual('foo');
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
+    expect(returnedTensor).toEqual(mockedTensor);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
   });
 
   it('processes a tensor multiple times if given multiple process functions', () => {
     const mockDispose = jest.fn();
-    const mockTensor = makeTensor(mockDispose, {
-      value: 1,
-    });
-    const processA = jest.fn().mockImplementation((t) => ({ ...t, value: t.value + 2})); // 3
-    const processB = jest.fn().mockImplementation((t) => ({ ...t, value: t.value * 3})); // 9
-    const processC = jest.fn().mockImplementation((t) => ({ ...t, value: t.value / 2})); // 4.5
-    const value = processAndDisposeOfTensor(mockTensor(), processA, processB, processC);
-    expect(value.value).toEqual(4.5);
+    const mockedTensor = new MockTensor({ mockDispose, value: 1 });
+    const processA = jest.fn().mockImplementation((t) => t.add(2)); // 3
+    const processB = jest.fn().mockImplementation((t) => t.mul(3)); // 9
+    const processC = jest.fn().mockImplementation((t) => t.div(2)); // 4.5
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, processA, processB, processC);
+    expect(returnedTensor.value).toEqual(4.5);
     expect(processA).toHaveBeenCalledTimes(1);
     expect(processB).toHaveBeenCalledTimes(1);
     expect(processC).toHaveBeenCalledTimes(1);
