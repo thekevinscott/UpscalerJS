@@ -331,7 +331,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
           }
           throw new Error('unimplemented');
         }).join(' | '),
-      }
+      };
     }
 
     console.error(_type);

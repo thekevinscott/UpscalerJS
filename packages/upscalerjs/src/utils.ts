@@ -37,6 +37,12 @@ export const registerCustomLayers = (modelDefinition: ModelDefinition): void => 
       tf.serialization.registerClass(layer);
     });
   }
+
+  if (modelDefinition.customOps) {
+    modelDefinition.customOps.forEach(({ name, op, }) => {
+      tf.registerOp(name, op);
+    });
+  }
 };
 
 export const warn = (msg: string | string[]): void => {

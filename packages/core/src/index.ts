@@ -5,6 +5,7 @@ import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import type { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
+export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
 export interface PackageInformation {
@@ -20,6 +21,11 @@ export type ModelType = 'graph' | 'layers';
 
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
+
+export interface CustomOp {
+  name: string;
+  op: OpExecutor;
+}
 
 export interface ModelDefinition {
   /**
@@ -54,6 +60,10 @@ export interface ModelDefinition {
    * Custom layers for the model. You can learn more about custom layers [here](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers).
    */
   customLayers?: CustomLayer[];
+  /**
+   * Custom ops for the model. You can learn more about custom ops [here](https://www.tensorflow.org/js/guide/custom_ops_kernels_gradients).
+   */
+  customOps?: CustomOp[];
   /**
    * @hidden
    */
