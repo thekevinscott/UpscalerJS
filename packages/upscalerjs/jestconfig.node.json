@@ -1,6 +1,6 @@
 {
   "transform": {
-    "^.+\\.(t)sx?$": "ts-jest"
+    "^.+\\.(tj)sx?$": "ts-jest"
   },
   "testEnvironment": "node",
   "collectCoverage": true,

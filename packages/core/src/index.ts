@@ -13,11 +13,10 @@ export interface PackageInformation {
   version: string;
 }
 
-type Range = [number, number];
-
 type CustomLayer = Parameters<typeof serialization.registerClass>[0];
-type MetaValue = string | number | Meta | null | undefined | boolean;
+export type Range = [number, number,];
 
+type MetaValue = string | number | Meta | null | undefined | boolean;
 export type Meta = { [key: string]: MetaValue };
 export type ModelType = 'graph' | 'layers';
 

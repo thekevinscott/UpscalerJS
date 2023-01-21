@@ -13,7 +13,7 @@ const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
 const MODELS_PATH = path.join(ROOT, '../../../models');
 
 export const prepareScriptBundleForNodeCJS: Bundle = async ({ verbose } = {}) => {
-  await installNodeModules(ROOT, { verbose, useYarn: true });
+  await installNodeModules(ROOT, { verbose });
   await installLocalPackages(ROOT, [
     {
       src: UPSCALER_PATH,

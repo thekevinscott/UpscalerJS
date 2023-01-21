@@ -20,7 +20,6 @@ import {
   isTensor,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
-  isValidRange,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 
