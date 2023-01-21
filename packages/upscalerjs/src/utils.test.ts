@@ -18,6 +18,7 @@ import {
   ERROR_MISSING_MODEL_DEFINITION_SCALE,
   ERROR_INVALID_MODEL_TYPE,
   loadTfModel,
+  scaleIncomingPixels,
 } from './utils';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
@@ -470,4 +471,21 @@ describe('loadTfModel', () => {
     expect(tf.loadLayersModel).toHaveBeenCalled();
     expect(tf.loadGraphModel).not.toHaveBeenCalled();
   });
+});
+
+describe('scaleIncomingPixels', () => {
+  it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
+    const result = scaleIncomingPixels()(tf.tensor4d([[[[0,.5,1]]]]));
+    expect(result.dataSync()).toEqual([0,.5,1]);
+  }));
+
+  it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
+    const result = scaleIncomingPixels([0,1])(tf.tensor4d([[[[0,.5,1]]]]));
+    expect(result.dataSync()).toEqual([0,.5,1]);
+  }));
+
+  it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
+    const result = scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]]));
+    expect(result.dataSync()).toEqual([0,.5,1]);
+  }));
 });
