@@ -45,7 +45,7 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
 const ERROR_INVALID_TENSOR_PREDICTED_URL = 
   'https://upscalerjs.com/documentation/troubleshooting#invalid-predicted-tensor';
 export const ERROR_INVALID_TENSOR_PREDICTED = (tensor: tf.Tensor) => [
-  `The tensor returned by the model was not a valid rank-4 tensor. It\'s shape is ${JSON.stringify(tensor.shape)}.}`,
+  `The tensor returned by the model was not a valid rank-4 tensor. It's shape is ${JSON.stringify(tensor.shape)}.}`,
   'UpscalerJS only supports models returning valid image-like data in four dimensional form.',
   `For more information, see ${ERROR_INVALID_TENSOR_PREDICTED_URL}.`,
 ].join('\n');
