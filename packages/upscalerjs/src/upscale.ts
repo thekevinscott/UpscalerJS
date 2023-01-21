@@ -14,6 +14,7 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
+  scaleIncomingPixels,
  } from './utils';
 import {
   isTensor,
@@ -413,13 +414,7 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, t => {
-    const { inputRange, } = modelDefinition;
-    if (isValidRange(inputRange) && modelDefinition.inputRange?.[1] === 1) {
-      return t.mul(1 / 255);
-    }
-    return t;
-  });
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange));
   yield preprocessedPixels;
 
   const gen = predict(

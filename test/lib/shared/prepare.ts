@@ -54,8 +54,27 @@ const PACKAGE_PATHS: Map<string, string> = findAllPackages(ROOT_DIR, [DOCS_DIR, 
  */
 export const getHashedName = (data: string) => `${crypto.createHash('md5').update(data).digest("hex")}`;
 
-export const installNodeModules = (cwd: string, { useYarn = false, verbose = false }: Opts & { useYarn?: boolean }= {}) => {
-  const cmd = useYarn ? `yarn ${verbose ? '' : '--silent'}` : `npm install ${verbose ? '' : '--silent'} --no-audit`;
+const npmInstall = (cwd: string, {
+  verbose = false,
+  ignorePackageLock = false,
+  shouldSaveModuleToPackageJSON = false,
+  shouldAudit = false,
+  dependencies = [],
+}: {
+  verbose?: boolean;
+  shouldSaveModuleToPackageJSON?: boolean;
+  ignorePackageLock?: boolean;
+  shouldAudit?: boolean;
+  dependencies?: string[];
+}) => {
+  const cmd = [
+    `npm install`,
+    verbose === false && '--silent',
+    `--audit ${shouldAudit ? 'true' : 'false'}`,
+    `--save ${shouldSaveModuleToPackageJSON ? 'true' : 'false'}`,
+    `--package-lock ${ignorePackageLock ? 'false' : 'true'}`,
+    ...dependencies
+  ].filter(Boolean).join(' ');
   try {
     return callExec(cmd, {
       cwd,
@@ -65,25 +84,24 @@ export const installNodeModules = (cwd: string, { useYarn = false, verbose = fal
     console.error(`Error with cwd: ${cwd} and command: ${cmd}`);
     throw err;
   }
-};
+}
+
+export const installNodeModules = (cwd: string, { verbose = false }: Opts = {}) => npmInstall(cwd, {
+  verbose,
+  ignorePackageLock: true,
+});
 
 const installRemoteDependencies = async (dest: string, remoteDependencies: Dependency, { verbose = false }: Opts = {}) => {
   if (Object.keys(remoteDependencies).length) {
     const dependenciesToInstall = Object.entries(remoteDependencies).map(([dependency, version]) => {
       return `${dependency}@${version}`;
-    }).join(' ');
-    const cmd = [
-      'npm install --no-save',
-      verbose === false ? '--silent --no-audit' : '',
-      dependenciesToInstall,
-    ].filter(Boolean).join(' ')
-    if (verbose) {
-      console.log('NPM INSTALL CMD:', cmd);
-    }
-    await callExec(cmd, {
-      cwd: dest,
+    });
+    return npmInstall(dest, {
       verbose,
-    })
+      shouldSaveModuleToPackageJSON: false,
+      ignorePackageLock: true,
+      dependencies: dependenciesToInstall,
+    });
   }
 };
 

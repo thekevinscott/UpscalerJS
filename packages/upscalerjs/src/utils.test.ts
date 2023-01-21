@@ -18,6 +18,7 @@ import {
   ERROR_MISSING_MODEL_DEFINITION_SCALE,
   ERROR_INVALID_MODEL_TYPE,
   loadTfModel,
+  scaleIncomingPixels,
 } from './utils';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
@@ -361,6 +362,13 @@ describe('processAndDisposeOfTensor', () => {
       return this.mockDispose();
     }
 
+    clone() {
+      return new MockTensor({
+        mockDispose: this.mockDispose,
+        value: this.value,
+      });
+    }
+
     add(value: number) {
       if (!this.value) {
         throw new Error('No value');
@@ -400,14 +408,23 @@ describe('processAndDisposeOfTensor', () => {
     expect(mockDispose).not.toHaveBeenCalled();
   });
 
+  it('does not dispose of tensor if no transformations are done to that tensor', () => {
+    const mockDispose = jest.fn();
+    const mockedTensor = new MockTensor({ mockDispose });
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, t => t);
+    expect(returnedTensor).toEqual(mockedTensor);
+    expect(mockDispose).not.toHaveBeenCalled();
+  });
+
   it('processes a tensor and disposes of it if given a process function', () => {
     const mockDispose = jest.fn();
-    const process = jest.fn().mockImplementation(t => t); // return the tensor through
+    const process = jest.fn().mockImplementation(t => t.clone()); // return the tensor through
     const mockedTensor = new MockTensor({ mockDispose });
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
-    expect(returnedTensor).toEqual(mockedTensor);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
+    expect(mockedTensor.isDisposed).toEqual(true);
+    expect(returnedTensor.isDisposed).toEqual(false);
   });
 
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
@@ -470,4 +487,21 @@ describe('loadTfModel', () => {
     expect(tf.loadLayersModel).toHaveBeenCalled();
     expect(tf.loadGraphModel).not.toHaveBeenCalled();
   });
+});
+
+describe('scaleIncomingPixels', () => {
+  it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
+    expect(result).toEqual([0,.5,1]);
+  }));
+
+  it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
+    expect(result).toEqual([0,.5,1]);
+  }));
+
+  it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
+    expect(result).toEqual([0,.5,1]);
+  }));
 });
