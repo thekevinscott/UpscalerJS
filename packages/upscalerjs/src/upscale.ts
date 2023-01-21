@@ -332,7 +332,7 @@ export async function* predict(
               progress(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(squeezedTensor, modelDefinition.outputRange);
               squeezedTensor.dispose();
               progress(percent, src, row, col);
             }
@@ -442,7 +442,7 @@ export async function* upscale(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels);
+  const base64Src = tensorAsBase64(upscaledPixels, modelDefinition.outputRange);
   upscaledPixels.dispose();
   return base64Src;
 }
