@@ -140,7 +140,7 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   return await tf.loadLayersModel(modelPath);
 }
 
-export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D) => tf.tidy(() => {
+export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => tf.tidy(() => {
   if (isValidRange(range) && range[1] === 255) {
     return tf.mul(tensor, 1 / 255);
   }
