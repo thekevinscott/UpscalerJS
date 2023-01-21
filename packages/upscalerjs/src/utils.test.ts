@@ -362,6 +362,13 @@ describe('processAndDisposeOfTensor', () => {
       return this.mockDispose();
     }
 
+    clone() {
+      return new MockTensor({
+        mockDispose: this.mockDispose,
+        value: this.value,
+      });
+    }
+
     add(value: number) {
       if (!this.value) {
         throw new Error('No value');
@@ -401,14 +408,23 @@ describe('processAndDisposeOfTensor', () => {
     expect(mockDispose).not.toHaveBeenCalled();
   });
 
+  it('does not dispose of tensor if no transformations are done to that tensor', () => {
+    const mockDispose = jest.fn();
+    const mockedTensor = new MockTensor({ mockDispose });
+    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, t => t);
+    expect(returnedTensor).toEqual(mockedTensor);
+    expect(mockDispose).not.toHaveBeenCalled();
+  });
+
   it('processes a tensor and disposes of it if given a process function', () => {
     const mockDispose = jest.fn();
-    const process = jest.fn().mockImplementation(t => t); // return the tensor through
+    const process = jest.fn().mockImplementation(t => t.clone()); // return the tensor through
     const mockedTensor = new MockTensor({ mockDispose });
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
-    expect(returnedTensor).toEqual(mockedTensor);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
+    expect(mockedTensor.isDisposed).toEqual(true);
+    expect(returnedTensor.isDisposed).toEqual(false);
   });
 
   it('processes a tensor and does not dispose of it if it is already disposed', () => {

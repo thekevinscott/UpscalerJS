@@ -415,7 +415,6 @@ export async function* upscale(
 
   const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange));
   yield preprocessedPixels;
-  yield preprocessedPixels;
 
   const gen = predict(
     preprocessedPixels,
