@@ -124,7 +124,7 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
 
   if (processFns.length) {
     const processedTensor = tf.tidy(() => processFns.reduce((reducedTensor, processFn) => processFn(reducedTensor), tensor));
-    if (!tensor.isDisposed) {
+    if (!tensor.isDisposed && tensor !== processedTensor) {
       tensor.dispose();
     }
     return processedTensor;
@@ -139,3 +139,10 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
 
   return await tf.loadLayersModel(modelPath);
 }
+
+export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
+  if (isValidRange(range) && range[1] === 255) {
+    return tf.mul(tensor, 1 / 255);
+  }
+  return tensor;
+};
