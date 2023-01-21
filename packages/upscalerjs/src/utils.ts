@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import { ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, ModelType, isValidModelType, } from '@upscalerjs/core';
+import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -90,10 +90,11 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
+export const tensorAsClampedArray = (tensor: tf.Tensor3D, range?: Range): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
   const fill = tf.fill([height, width,], 255).expandDims(2);
-  return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
+  const resizedTensor = isValidRange(range) && range[1] === 1 ? tensor.mul(255) : tensor;
+  return resizedTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
 export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition => {
