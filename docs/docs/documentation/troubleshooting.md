@@ -141,6 +141,14 @@ Examples of such environments include web workers and the like (e.g., Cloudflare
 
 To get around this error, pass your data into UpscalerJS as a tensor. For an example, [check out the guide on web workers](/documentation/guides/browser/performance/webworker).
 
+## Invalid Predicted Tensor
+
+UpscalerJS only supports models that return rank 4 tensors representing image-like data.
+
+You may see this message if you're using a custom model that returns a rank 3 image, or non-image-like data (like text).
+
+If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
+
 ## Environment disallows Base64
 
 If you see an error like:

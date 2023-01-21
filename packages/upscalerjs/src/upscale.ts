@@ -22,6 +22,7 @@ import {
   isFourDimensionalTensor,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
+import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
 
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
@@ -40,6 +41,23 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   'The "progress" callback was provided but "patchSize" was not defined.',
   'Without a "patchSize", the "progress" callback will never be called.',
   `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
+].join('\n');
+
+const ERROR_INVALID_TENSOR_PREDICTED_URL = 
+  'https://upscalerjs.com/documentation/troubleshooting#invalid-predicted-tensor';
+export const ERROR_INVALID_TENSOR_PREDICTED = (tensor: tf.Tensor) => [
+  `The tensor returned by the model was not a valid rank-4 tensor. It's shape is ${JSON.stringify(tensor.shape)}.}`,
+  'UpscalerJS only supports models returning valid image-like data in four dimensional form.',
+  `For more information, see ${ERROR_INVALID_TENSOR_PREDICTED_URL}.`,
+].join('\n');
+
+const ERROR_INVALID_MODEL_PREDICTION_URL = 
+  'https://upscalerjs.com/documentation/troubleshooting#invalid-model-prediction';
+
+export const ERROR_INVALID_MODEL_PREDICTION = [
+  'The model output was not a valid tensor. UpscalerJS only supports models returning valid tensors.',
+  'This is likely an error with the model itself, not UpscalerJS.',
+  `For more information, see ${ERROR_INVALID_MODEL_PREDICTION_URL}.`,
 ].join('\n');
 
 export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error(
@@ -266,6 +284,18 @@ export const getPercentageComplete = (row: number, col: number, columns: number,
   return percent;
 };
 
+export const executeModel = (model: LayersModel | GraphModel, pixels: tf.Tensor4D): tf.Tensor4D => {
+  const predictedPixels = model.predict(pixels);
+  if (!isTensor(predictedPixels)) {
+    throw new Error(ERROR_INVALID_MODEL_PREDICTION);
+  }
+  if (isFourDimensionalTensor(predictedPixels)) {
+    return predictedPixels;
+  }
+
+  throw new Error(ERROR_INVALID_TENSOR_PREDICTED(predictedPixels));
+};
+
 /* eslint-disable @typescript-eslint/require-await */
 export async function* predict(
   pixels: tf.Tensor4D,
@@ -307,7 +337,7 @@ export async function* predict(
           [-1, size[0], size[1],],
         );
         yield [upscaledTensor, colTensor, slicedPixels,];
-        const prediction = model.predict(slicedPixels) as tf.Tensor4D;
+        const prediction = executeModel(model, slicedPixels);
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
 
@@ -365,9 +395,9 @@ export async function* predict(
     warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   }
 
-  const pred = model.predict(pixels) as tf.Tensor4D;
-  yield [pred,];
-  const postprocessedTensor = processAndDisposeOfTensor(pred, modelDefinition.postprocess);
+  const prediction = executeModel(model, pixels);
+  yield [prediction,];
+  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
 
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
