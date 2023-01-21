@@ -19,10 +19,13 @@ import {
   GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
+  executeModel,
+  ERROR_INVALID_MODEL_PREDICTION,
+  ERROR_INVALID_TENSOR_PREDICTED,
 } from './upscale';
 import { checkValidEnvironment as _checkValidEnvironment, tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
 import { wrapGenerator, AbortError, } from './utils';
-import { isTensor as _isTensor, } from '@upscalerjs/core';
+import { isFourDimensionalTensor as _isFourDimensionalTensor, isTensor as _isTensor, } from '@upscalerjs/core';
 import { ModelDefinition } from "@upscalerjs/core";
 import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
@@ -37,16 +40,18 @@ jest.mock('./image.generated', () => {
   };
 });
 jest.mock('@upscalerjs/core', () => {
-  const { isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
+  const { isFourDimensionalTensor, isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
   return {
     ...rest,
     isTensor: jest.fn(isTensor),
+    isFourDimensionalTensor: jest.fn(isFourDimensionalTensor),
   };
 });
 
 const tensorAsBase64 = mockFn(_tensorAsBase64);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 const isTensor = mockFn(_isTensor);
+const isFourDimensionalTensor = mockFn(_isFourDimensionalTensor);
 const checkValidEnvironment = mockFn(_checkValidEnvironment);
 
 describe('getPercentageComplete', () => {
@@ -1802,5 +1807,43 @@ describe('getWidthAndHeight', () => {
 
   it('returns width and height for a 3d tensor', () => {
     expect(getWidthAndHeight(tf.zeros([1,2,3]) as tf.Tensor3D)).toEqual([1,2]);
+  });
+});
+
+describe('executeModel', () => {
+  afterEach(() => {
+    isTensor.mockClear();
+    isFourDimensionalTensor.mockClear();
+  });
+  it('throws if the model does not return a valid tensor', () => {
+    const model = {
+      predict: () => 'foo',
+    } as any as tf.LayersModel;
+    isTensor.mockImplementation(() => false);
+    expect(() => executeModel(model, 'foo' as any as tf.Tensor4D)).toThrow(ERROR_INVALID_MODEL_PREDICTION);
+  });
+
+  it('throws if the model does not return a valid rank 4 tensor', () => {
+    const tensor = {
+      shape: [1,1,1],
+    } as any as tf.Tensor3D;
+    const model = {
+      predict: () => tensor,
+    } as any as tf.LayersModel;
+    isTensor.mockImplementation(() => true);
+    isFourDimensionalTensor.mockImplementation(() => false);
+    expect(() => executeModel(model, 'foo' as any as tf.Tensor4D)).toThrow(ERROR_INVALID_TENSOR_PREDICTED(tensor));
+  });
+
+  it('returns a valid 4d tensor', () => {
+    const tensor = {
+      shape: [1,1,1,1],
+    } as any as tf.Tensor4D;
+    const model = {
+      predict: () => tensor,
+    } as any as tf.LayersModel;
+    isTensor.mockImplementation(() => true);
+    isFourDimensionalTensor.mockImplementation(() => true);
+    expect(executeModel(model, 'foo' as any as tf.Tensor4D)).toEqual(tensor);
   });
 });
