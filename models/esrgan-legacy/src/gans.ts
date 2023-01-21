@@ -64,11 +64,7 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
       dataset: 'div2k',
     },
     inputRange: [0, 255,],
-    postprocess: (output: Tensor) => tf.tidy(() => {
-      const clippedValue = (output).clipByValue(0, 1);
-      output.dispose();
-      return tf.mul(clippedValue, 255);
-    }),
+    outputRange: [0, 1,],
     customLayers: [MultiplyBeta, PixelShuffle,],
   };
 
