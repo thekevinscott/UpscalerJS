@@ -1266,6 +1266,36 @@ describe('predict', () => {
     expect(console.warn).not.toHaveBeenCalled();
   });
 
+  it('should invoke progress callback with percent and a rescaled slice if given an output range', async () => {
+    console.warn = jest.fn();
+    const mockResponse = 'foobarbaz1';
+    tensorAsBase64.mockImplementation(() => mockResponse);
+    const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
+    const patchSize = 2;
+    const progress = jest.fn((_1: any, _2: any) => {});
+    await wrapGenerator(
+      predict(tensor, {
+        patchSize,
+        padding: 0,
+        progress,
+        output: 'base64',
+        progressOutput: 'base64',
+      }, {
+        ...modelPackage,
+        modelDefinition: {
+          ...modelPackage.modelDefinition,
+          outputRange: [0,1],
+        },
+      })
+    );
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
+    expect(tensorAsBase64).toHaveBeenCalledWith(expect.anything(), [0, 1]);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+
   it('should invoke progress callback with percent, slice, row, and col', async () => {
     console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
@@ -1550,6 +1580,11 @@ describe('predict', () => {
 });
 
 describe('upscale', () => {
+  afterEach(() => {
+    getImageAsTensor.mockClear();
+    tensorAsBase64.mockClear();
+  });
+
   it('should return a base64 string by default', async () => {
     const img: tf.Tensor3D = tf.tensor([
       [
@@ -1574,6 +1609,37 @@ describe('upscale', () => {
       modelDefinition: { scale: 2, } as ModelDefinition,
     }));
     expect(result).toEqual('foobarbaz4');
+    expect(tensorAsBase64).toHaveBeenCalled();
+  });
+
+  it('should return a base64 string that has been rescaled if given an output range', async () => {
+    const img: tf.Tensor3D = tf.tensor([
+      [
+        [1, 1, 1,],
+        [2, 2, 2,],
+      ],
+      [
+        [3, 3, 3,],
+        [4, 4, 4,],
+      ],
+    ]);
+    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
+    const model = {
+      predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
+    } as unknown as tf.LayersModel;
+    tensorAsBase64.mockImplementation(() => 'foobarbaz4');
+    const result = await wrapGenerator(upscale(img, {
+      output: 'base64',
+      progressOutput: 'base64',
+    }, {
+      model,
+      modelDefinition: {
+        scale: 2,
+        outputRange: [0, 1],
+      } as ModelDefinition,
+    }));
+    expect(result).toEqual('foobarbaz4');
+    expect(tensorAsBase64).toHaveBeenCalledWith(expect.anything(), [0,1]);
   });
 
   it('should return a tensor if specified', async () => {

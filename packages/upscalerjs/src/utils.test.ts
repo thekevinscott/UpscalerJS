@@ -275,6 +275,20 @@ describe('tensorAsClampedArray', () => {
     const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
     expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
   });
+
+  it('returns an expanded clamped array, if output range is 0-1', () => {
+    const result = tensorAsClampedArray(tensor([[
+      [-1, .5, 1], 
+      [1.1, .25, .75], 
+      [.5, .5, .5],
+      [-100, 100, 1]
+    ,]]), [0,1]);
+    expect(Array.from(result)).toEqual([
+      0,127.5,255,255,
+      255,63.75,191.25,255,
+      127.5,127.5,127.5,255,
+      0,255,255,255]);
+  });
 });
 
 describe('getModelDefinitionError', () => {
