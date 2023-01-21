@@ -8,8 +8,8 @@ import {
   isValidModelDefinition,
   ModelDefinition,
   hasValidChannels,
-  isNumber,
   isValidRange,
+  isNumber,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({

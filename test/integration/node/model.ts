@@ -51,7 +51,6 @@ describe('Node Model Loading Integration Tests', () => {
       'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
   });
-
   beforeAll(async () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   });
