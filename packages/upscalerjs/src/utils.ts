@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, Shape4D, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
+import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
+import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, isShape4D, Shape4D, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -137,8 +137,15 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
 
 export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
 
+const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
+  if (isLayersModel(model)) {
+    return model.layers[0].batchInputShape;
+  }
+  return model.inputs[0].shape;
+};
+
 export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D => {
-  const batchInputShape = isLayersModel(model) ? model.layers[0].batchInputShape : model.executor.graph.inputs[0].attrParams.shape.value;
+  const batchInputShape = getBatchInputShape(model);
   if (isShape4D(batchInputShape)) {
     return batchInputShape;
   }
@@ -153,20 +160,24 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
   return tensor;
 };
 
+const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [number, number, number, number] => isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
+
 export const parsePatchAndInputSizes = (
-  {
-    inputSize,
-  }: ModelDefinition,
+  model: tf.LayersModel | tf.GraphModel,
   {
     patchSize,
     padding,
   }: UpscaleArgs): Pick<UpscaleArgs, 'patchSize' | 'padding'> => {
-  if (inputSize !== undefined && patchSize !== undefined) {
+    const inputShape = getInputShape(model);
+  if (isInputSizeDefined(inputShape) && patchSize !== undefined) {
     warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
   }
-  if (inputSize) {
+  if (isInputSizeDefined(inputShape)) {
+    if (inputShape[1] !== inputShape[2]) {
+      throw new Error('Input shape must be square');
+    }
     return {
-      patchSize: inputSize - (padding || 0) * 2,
+      patchSize: inputShape[1] - (padding || 0) * 2,
       padding,
     };
   }
@@ -176,12 +187,13 @@ export const parsePatchAndInputSizes = (
   };
 };
 
-export const padInput = (inputSize?: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
-  const [_, pixelsHeight, pixelsWidth,] = pixels.shape;
-  if (inputSize[1] && inputSize[2] && (inputSize[1] > pixelsHeight || inputSize[2] > pixelsWidth)) {
+export const padInput = (inputShape?: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
+  const pixelsHeight = pixels.shape[1];
+  const pixelsWidth = pixels.shape[2];
+  if (isInputSizeDefined(inputShape) && (inputShape[1] > pixelsHeight || inputShape[2] > pixelsWidth)) {
     return tf.tidy(() => {
-      const height = Math.max(pixelsHeight, inputSize[1]);
-      const width = Math.max(pixelsWidth, inputSize[2]);
+      const height = Math.max(pixelsHeight, inputShape[1]);
+      const width = Math.max(pixelsWidth, inputShape[2]);
       const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]) as tf.Tensor4D;
       const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]) as tf.Tensor4D;
       const topTensor = tf.concat([pixels, rightTensor,], 2);

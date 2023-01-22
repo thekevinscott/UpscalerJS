@@ -5,7 +5,6 @@ import type {
   BASE64,
   TENSOR,
   YieldedIntermediaryValue,
-  Shape4D,
  } from './types';
 import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
 import {
@@ -24,6 +23,7 @@ import {
   isTensor,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  Shape4D,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
