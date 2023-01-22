@@ -173,10 +173,14 @@ describe('isShape4D', () => {
   });
 
   it('returns false if given an array of not all numbers', () => {
-    expect(isShape4D([1,2,3,'foo'])).toEqual(false);
+    expect(isShape4D([1,null,3,'foo'])).toEqual(false);
   });
 
   it('returns true if given an array of all numbers', () => {
     expect(isShape4D([1,2,3,4])).toEqual(false);
+  });
+
+  it('returns true if given an array containing nulls', () => {
+    expect(isShape4D([null, null, null, 3])).toEqual(false);
   });
 });

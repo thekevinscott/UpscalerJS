@@ -28,13 +28,13 @@ export interface CustomOp {
   op: OpExecutor;
 }
 
-export type Shape4D = [number, number, number, number];
+export type Shape4D = [null | number, number, number, number];
 export const isShape4D = (shape?: unknown): shape is Shape4D => {
   if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
     return false;
   }
   for (const val of shape) {
-    if (typeof val !== 'number') {
+    if (val !== null && typeof val !== 'number') {
       return false;
     }
   }

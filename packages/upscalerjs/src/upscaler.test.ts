@@ -65,6 +65,9 @@ describe('Upscaler', () => {
         },
         model: {
           predict: jest.fn(() => _tf.ones([1,2,2,3])),
+          inputs: [{
+            shape: [null, null, null, 3],
+          }]
         } as unknown as LayersModel,
       };
     });

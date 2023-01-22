@@ -1,6 +1,7 @@
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
 import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, isShape4D, Shape4D, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
+import { isLayersModel, } from './isLayersModel';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -135,8 +136,6 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   return await tf.loadLayersModel(modelPath);
 }
 
-export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
-
 const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
   if (isLayersModel(model)) {
     return model.layers[0].batchInputShape;
@@ -160,7 +159,7 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
   return tensor;
 };
 
-const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [number, number, number, number] => isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
+const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
 
 export const parsePatchAndInputSizes = (
   model: tf.LayersModel | tf.GraphModel,
@@ -213,9 +212,7 @@ export const trimInput = (
   const height = imageSize[1] * scale;
   const width = imageSize[2] * scale;
   if (height < pixels.shape[1] || width < pixels.shape[2]) {
-    return tf.tidy(() => {
-      return tf.slice(pixels, [0, 0, 0,], [1, height, width, 3,]);
-    });
+    return tf.tidy(() => tf.slice(pixels, [0, 0, 0,], [1, height, width, 3,]));
   }
   return pixels;
 };
