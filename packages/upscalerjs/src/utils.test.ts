@@ -19,6 +19,7 @@ import {
   ERROR_INVALID_MODEL_TYPE,
   loadTfModel,
   scaleIncomingPixels,
+  isLayersModel,
 } from './utils';
 import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
@@ -504,4 +505,13 @@ describe('scaleIncomingPixels', () => {
     const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
     expect(result).toEqual([0,.5,1]);
   }));
+});
+
+describe('isLayersModel', () => {
+  it('returns true if given a layers model', () => {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+    model.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
+    expect(isLayersModel(model)).toEqual(true);
+  });
 });
