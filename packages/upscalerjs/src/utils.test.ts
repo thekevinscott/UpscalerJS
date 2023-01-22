@@ -1,7 +1,7 @@
 import { GraphModel, Tensor3D, Tensor4D, ones } from '@tensorflow/tfjs-node';
 import { tensor, OpExecutor } from '@tensorflow/tfjs-node';
-import { tf as _tf, } from './dependencies.generated';
-import { mock } from '../../../test/lib/shared/mockers';
+import { tf, tf as _tf, } from './dependencies.generated';
+import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import { 
   tensorAsClampedArray,
   processAndDisposeOfTensor,
@@ -22,8 +22,11 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   padInput,
   trimInput,
+  isLayersModel as _isLayersModel,
+  getInputShape,
+  ERROR_WITH_MODEL_INPUT_SHAPE,
 } from './utils';
-import { CustomOp, ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
+import { isShape4D as _isShape4D, CustomOp, ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
 jest.mock('./dependencies.generated', () => {
   const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
@@ -41,8 +44,18 @@ jest.mock('./dependencies.generated', () => {
   };
 });
 
+jest.mock('@upscalerjs/core', () => {
+  const { ...core } = jest.requireActual('@upscalerjs/core');
+  return {
+    ...core,
+    isShape4D: jest.fn(),
+  };
+});
+
 const tf = mock(_tf);
 const tfSerialization = mock(_tf.serialization);
+const isLayersModel = mockFn(_isLayersModel);
+const isShape4D = mockFn(_isShape4D);
 
 describe('registerCustomLayers', () => {
   afterEach(() => {
@@ -587,5 +600,56 @@ describe('trimInput', () => {
     const result = trimInput([1, 4, 2, 3], 1)(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 4, 2, 3]);
+  });
+});
+
+describe('isLayersModel', () => {
+  it('returns true if given a layers model', () => {
+    const model = tf.sequential();
+    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+    model.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
+    expect(isLayersModel(model)).toEqual(true);
+  });
+});
+
+describe('getInputShape', () => {
+  afterEach(() => {
+    isLayersModel.mockClear();
+    isShape4D.mockClear();
+  })
+
+  it('returns layers model input shape if it is a layers model', () => {
+    isLayersModel.mockImplementation(() => true);
+    expect(getInputShape({
+      layers: [{
+        batchInputShape: [1, 2, 3, 4],
+      }],
+    } as any as tf.LayersModel).toEqual([1,2,3,4]));
+  });
+
+  it('returns graph model input shape if it is a layers model', () => {
+    isLayersModel.mockImplementation(() => false);
+    expect(getInputShape({
+      executor: {
+        graph: {
+          inputs: [{
+            attrParams: {
+              shape: {
+                value: [1, 2, 3, 4],
+              }
+            },
+          }],
+        },
+      }
+    } as any as tf.LayersModel).toEqual([1, 2, 3, 4]));
+  });
+
+  it('throws if a model returns a non rank 4 shape', () => {
+    isLayersModel.mockImplementation(() => true);
+    expect(() => getInputShape({
+      layers: [{
+        batchInputShape: [1, 2, 3, 4, 5],
+      }],
+    } as any as tf.LayersModel)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1,2,3,4,5]));
   });
 });

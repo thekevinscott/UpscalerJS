@@ -10,6 +10,7 @@ const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_INVALID_MODEL_TYPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#invalid-model-type';
 const WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL = 'https://upscalerjs.com/documentation/troubleshooting#input-size-and-patch-size';
+const ERROR_WITH_MODEL_INPUT_SHAPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#error-with-model-input-shape';
 
 export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
   'You must provide a "path" when providing a model definition',
@@ -24,6 +25,10 @@ export const WARNING_INPUT_SIZE_AND_PATCH_SIZE = [
   'You have provided a patchSize, but the model definition already includes an input size.',
   'Your patchSize will be ignored.',
   `For more information, see ${WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL}.`,
+].join('\n');
+export const ERROR_WITH_MODEL_INPUT_SHAPE = (inputShape?: unknown) => [
+  `Expected model to have a rank-4 compatible input shape. Instead got: ${JSON.stringify(inputShape)}.`,
+  `For more information, see ${ERROR_WITH_MODEL_INPUT_SHAPE_URL}.`,
 ].join('\n');
 
 export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
@@ -99,7 +104,7 @@ export function getModel(modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
   /* eslint-disable @typescript-eslint/no-unsafe-call */
   /* eslint-disable @typescript-eslint/no-unsafe-return */
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
-};
+}
 
 function nonNullable<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined;
@@ -130,13 +135,15 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   return await tf.loadLayersModel(modelPath);
 }
 
+export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
+
 export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D => {
-  const batchInputShape = isLayersModel(model) ? model.layers[0].batchInputShape : model.executor.graph.inputs[0].attrParams.shape.value
+  const batchInputShape = isLayersModel(model) ? model.layers[0].batchInputShape : model.executor.graph.inputs[0].attrParams.shape.value;
   if (isShape4D(batchInputShape)) {
     return batchInputShape;
   }
 
-  throw new Error('Unexpected shape found for model: ')
+  throw new Error(ERROR_WITH_MODEL_INPUT_SHAPE(batchInputShape));
 };
 
 export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
