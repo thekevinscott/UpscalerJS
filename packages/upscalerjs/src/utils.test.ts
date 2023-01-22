@@ -572,19 +572,19 @@ describe('padInput', () => {
 describe('trimInput', () => {
   it('just returns the input if width and height are equal to pixels shape', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(trimInput([1, 4, 4, 3], 1, t)).toEqual(t);
+    expect(trimInput([1, 4, 4, 3], 1)(t)).toEqual(t);
   });
 
   it('returns a sliced image if image height is smaller than pixels height', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 2, 4, 3], 1, t);
+    const result = trimInput([1, 2, 4, 3], 1)(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 2, 4, 3]);
   });
 
   it('returns a sliced image if image width is smaller than pixels width', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 4, 2, 3], 1, t);
+    const result = trimInput([1, 4, 2, 3], 1)(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 4, 2, 3]);
   });

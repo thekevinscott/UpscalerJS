@@ -186,9 +186,10 @@ export const padInput = (inputSize?: Shape4D) => (pixels: tf.Tensor4D): tf.Tenso
 };
 
 export const trimInput = (
+  imageSize: Shape4D,
   scale: number,
+) => (
   pixels: tf.Tensor4D
-  imageSize?: Shape4D,
 ): tf.Tensor4D => {
   const height = imageSize[1] * scale;
   const width = imageSize[2] * scale;

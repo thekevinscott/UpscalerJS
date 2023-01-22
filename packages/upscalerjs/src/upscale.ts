@@ -394,7 +394,7 @@ export async function* predict(
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const squeezedTensor = processAndDisposeOfTensor(upscaledTensor!, t => trimInput(imageSize, scale, t)).squeeze() as tf.Tensor3D;
+    const squeezedTensor = processAndDisposeOfTensor(upscaledTensor!, trimInput(imageSize, scale)).squeeze() as tf.Tensor3D;
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     return squeezedTensor;
   }
@@ -405,7 +405,7 @@ export async function* predict(
 
   const prediction = model.predict(pixels) as tf.Tensor4D;
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess, t => trimInput(imageSize, scale, t));
+  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess, trimInput(imageSize, scale));
 
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
