@@ -28,6 +28,19 @@ export interface CustomOp {
   op: OpExecutor;
 }
 
+export type Shape4D = [number, number, number, number];
+export const isShape4D = (shape?: unknown): shape is Shape4D => {
+  if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
+    return false;
+  }
+  for (const val of shape) {
+    if (typeof val !== 'number') {
+      return false;
+    }
+  }
+  return true;
+};
+
 export interface ModelDefinition {
   /**
    * Path to a model.json file.
@@ -41,10 +54,6 @@ export interface ModelDefinition {
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
   scale?: number;
-  /**
-   * The expected input size of the model. Should be a single number representing a square size.
-   */
-  inputSize?: number;
   /**
    * @hidden
    * 

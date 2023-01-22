@@ -10,6 +10,7 @@ import {
   hasValidChannels,
   isValidRange,
   isNumber,
+  isShape4D,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -151,5 +152,31 @@ describe('isValidRange', () => {
 
   it('returns true if it gets an array with two numbers', () => {
     expect(isValidRange([1,2])).toEqual(true);
+  });
+});
+
+describe('isShape4D', () => {
+  it('returns false if given an undefined', () => {
+    expect(isShape4D(undefined)).toEqual(false);
+  });
+
+  it('returns false if given a non-array', () => {
+    expect(isShape4D(2)).toEqual(false);
+  });
+
+  it('returns false if given an array of 3 numbers', () => {
+    expect(isShape4D([1,2,3])).toEqual(false);
+  });
+
+  it('returns false if given an array of 5 numbers', () => {
+    expect(isShape4D([1,2,3,4,5])).toEqual(false);
+  });
+
+  it('returns false if given an array of not all numbers', () => {
+    expect(isShape4D([1,2,3,'foo'])).toEqual(false);
+  });
+
+  it('returns true if given an array of all numbers', () => {
+    expect(isShape4D([1,2,3,4])).toEqual(false);
   });
 });

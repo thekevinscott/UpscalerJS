@@ -18,6 +18,7 @@ import {
   scaleIncomingPixels,
   padInput,
   trimInput,
+  getInputShape,
  } from './utils';
 import {
   isTensor,
@@ -451,8 +452,9 @@ export async function* upscale(
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
+  const inputSize = getInputShape(model);
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange), padInput(modelDefinition));
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange), padInput(inputSize));
   yield preprocessedPixels;
 
   const gen = predict(

@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, Shape4D, } from './types';
-import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
+import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
+import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, Shape4D, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -130,6 +130,15 @@ export async function loadTfModel(modelPath: string, modelType?: ModelType) {
   return await tf.loadLayersModel(modelPath);
 }
 
+export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D => {
+  const batchInputShape = isLayersModel(model) ? model.layers[0].batchInputShape : model.executor.graph.inputs[0].attrParams.shape.value
+  if (isShape4D(batchInputShape)) {
+    return batchInputShape;
+  }
+
+  throw new Error('Unexpected shape found for model: ')
+};
+
 export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
   if (isValidRange(range) && range[1] === 255) {
     return tf.mul(tensor, 1 / 255);
@@ -160,14 +169,12 @@ export const parsePatchAndInputSizes = (
   };
 };
 
-export const padInput = ({
-  inputSize,
-}: ModelDefinition) => (pixels: tf.Tensor4D): tf.Tensor4D => {
+export const padInput = (inputSize?: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const [_, pixelsHeight, pixelsWidth,] = pixels.shape;
-  if (inputSize && inputSize > Math.min(pixelsHeight, pixelsWidth)) {
+  if (inputSize[1] && inputSize[2] && (inputSize[1] > pixelsHeight || inputSize[2] > pixelsWidth)) {
     return tf.tidy(() => {
-      const height = Math.max(pixelsHeight, inputSize);
-      const width = Math.max(pixelsWidth, inputSize);
+      const height = Math.max(pixelsHeight, inputSize[1]);
+      const width = Math.max(pixelsWidth, inputSize[2]);
       const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]) as tf.Tensor4D;
       const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]) as tf.Tensor4D;
       const topTensor = tf.concat([pixels, rightTensor,], 2);
@@ -179,9 +186,9 @@ export const padInput = ({
 };
 
 export const trimInput = (
-  imageSize: Shape4D,
   scale: number,
   pixels: tf.Tensor4D
+  imageSize?: Shape4D,
 ): tf.Tensor4D => {
   const height = imageSize[1] * scale;
   const width = imageSize[2] * scale;
