@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
+import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, Shape4D, } from './types';
 import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
 
 export class AbortError extends Error {
@@ -8,29 +8,27 @@ export class AbortError extends Error {
 
 const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
   'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
-const ERROR_MISSING_MODEL_DEFINITION_SCALE_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-model-scale';
 const ERROR_INVALID_MODEL_TYPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#invalid-model-type';
+const WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL = 'https://upscalerjs.com/documentation/troubleshooting#input-size-and-patch-size';
 
 export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
   'You must provide a "path" when providing a model definition',
   `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_PATH_URL}.`,
-].join('\n');
-export const ERROR_MISSING_MODEL_DEFINITION_SCALE = [
-  'You must provide a "scale" for a model definition',
-  `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_SCALE_URL}.`,
 ].join('\n');
 export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
   `You've provided an invalid model type: ${JSON.stringify(modelType)}. Accepted types are "layers" and "graph".`,
   `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
 ].join('\n'));
 export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
+export const WARNING_INPUT_SIZE_AND_PATCH_SIZE = [
+  'You have provided a patchSize, but the model definition already includes an input size.',
+  'Your patchSize will be ignored.',
+  `For more information, see ${WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL}.`,
+].join('\n');
 
 export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
   if (!modelDefinition.path) {
     return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
-  }
-  if (!modelDefinition.scale) {
-    return new Error(ERROR_MISSING_MODEL_DEFINITION_SCALE);
   }
   if (!isValidModelType(modelDefinition.modelType || 'layers')) {
     return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition.modelType));
@@ -88,7 +86,7 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
   return result.value;
 }
 
-export function isModelDefinitionFn (modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
+export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
 export const tensorAsClampedArray = (tensor: tf.Tensor3D, range?: Range): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
@@ -97,7 +95,7 @@ export const tensorAsClampedArray = (tensor: tf.Tensor3D, range?: Range): Uint8A
   return resizedTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
-export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition => {
+export function getModel(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
   /* eslint-disable @typescript-eslint/no-unsafe-call */
   /* eslint-disable @typescript-eslint/no-unsafe-return */
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
@@ -139,4 +137,58 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
   return tensor;
 };
 
-export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
+export const parsePatchAndInputSizes = (
+  {
+    inputSize,
+  }: ModelDefinition,
+  {
+    patchSize,
+    padding,
+  }: UpscaleArgs): Pick<UpscaleArgs, 'patchSize' | 'padding'> => {
+  if (inputSize !== undefined && patchSize !== undefined) {
+    warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+  }
+  if (inputSize) {
+    return {
+      patchSize: inputSize - (padding || 0) * 2,
+      padding,
+    };
+  }
+  return {
+    patchSize,
+    padding,
+  };
+};
+
+export const padInput = ({
+  inputSize,
+}: ModelDefinition) => (pixels: tf.Tensor4D): tf.Tensor4D => {
+  const [_, pixelsHeight, pixelsWidth,] = pixels.shape;
+  if (inputSize && inputSize > Math.min(pixelsHeight, pixelsWidth)) {
+    return tf.tidy(() => {
+      const height = Math.max(pixelsHeight, inputSize);
+      const width = Math.max(pixelsWidth, inputSize);
+      const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]) as tf.Tensor4D;
+      const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]) as tf.Tensor4D;
+      const topTensor = tf.concat([pixels, rightTensor,], 2);
+      const final = tf.concat([topTensor, bottomTensor,], 1);
+      return final;
+    });
+  }
+  return pixels;
+};
+
+export const trimInput = (
+  imageSize: Shape4D,
+  scale: number,
+  pixels: tf.Tensor4D
+): tf.Tensor4D => {
+  const height = imageSize[1] * scale;
+  const width = imageSize[2] * scale;
+  if (height < pixels.shape[1] || width < pixels.shape[2]) {
+    return tf.tidy(() => {
+      return tf.slice(pixels, [0, 0, 0,], [1, height, width, 3,]);
+    });
+  }
+  return pixels;
+};

@@ -1,3 +1,5 @@
+import { ModelDefinition, } from "@upscalerjs/core";
+import { parsePatchAndInputSizes, } from "./utils";
 import { BASE64, UpscaleArgs, TENSOR, PrivateUpscaleArgs, } from "./types";
 
 const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
@@ -7,10 +9,15 @@ const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   return 'tensor';
 };
 
-export function getUpscaleOptions(options: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
+export function getUpscaleOptions(modelDefinition: ModelDefinition, {
+  output,
+  progressOutput,
+  ...options
+}: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
   return {
     ...options,
-    output: getOutputOption(options.output),
-    progressOutput: getOutputOption(options.progressOutput || options.output),
+    ...parsePatchAndInputSizes(modelDefinition, options),
+    output: getOutputOption(output),
+    progressOutput: getOutputOption(progressOutput || output),
   };
 }

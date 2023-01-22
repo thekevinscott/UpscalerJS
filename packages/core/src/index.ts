@@ -40,7 +40,11 @@ export interface ModelDefinition {
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
-  scale: number;
+  scale?: number;
+  /**
+   * The expected input size of the model. Should be a single number representing a square size.
+   */
+  inputSize?: number;
   /**
    * @hidden
    * 
@@ -88,7 +92,7 @@ export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
 
-export type IsTensor<T extends tfBrowser.Tensor> = (pixels: Tensor) => pixels is T;
+export type IsTensor<T extends tf.Tensor> = (pixels: Tensor) => pixels is T;
 export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTensor<T> {
   function fn(pixels: Tensor): pixels is T {
     try {

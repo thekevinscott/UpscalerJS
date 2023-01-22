@@ -5,6 +5,7 @@ import type {
   BASE64,
   TENSOR,
   YieldedIntermediaryValue,
+  Shape4D,
  } from './types';
 import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
 import {
@@ -15,6 +16,8 @@ import {
   processAndDisposeOfTensor,
   isSingleArgProgress,
   scaleIncomingPixels,
+  padInput,
+  trimInput,
  } from './utils';
 import {
   isTensor,
@@ -303,9 +306,14 @@ export async function* predict(
   {
     model,
     modelDefinition,
-  }: ModelPackage
+  }: ModelPackage,
+  {
+    imageSize,
+  }: {
+    imageSize: Shape4D;
+  }
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  const scale = modelDefinition.scale;
+  const scale = modelDefinition.scale || 1;
 
   if (originalPatchSize && padding === undefined) {
     warn(WARNING_UNDEFINED_PADDING);
@@ -385,9 +393,8 @@ export async function* predict(
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const squeezedTensor = upscaledTensor!.squeeze() as tf.Tensor3D;
+    const squeezedTensor = processAndDisposeOfTensor(upscaledTensor!, t => trimInput(imageSize, scale, t)).squeeze() as tf.Tensor3D;
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    upscaledTensor!.dispose();
     return squeezedTensor;
   }
 
@@ -395,9 +402,9 @@ export async function* predict(
     warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   }
 
-  const prediction = executeModel(model, pixels);
+  const prediction = model.predict(pixels) as tf.Tensor4D;
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
+  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess, t => trimInput(imageSize, scale, t));
 
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
@@ -443,7 +450,9 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange));
+  const imageSize = startingPixels.shape;
+
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange), padInput(modelDefinition));
   yield preprocessedPixels;
 
   const gen = predict(
@@ -452,6 +461,9 @@ export async function* upscale(
     {
       model,
       modelDefinition,
+    },
+    {
+      imageSize,
     }
   );
   let result = await gen.next();
