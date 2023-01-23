@@ -248,9 +248,6 @@ export class PerformanceBenchmarker extends Benchmarker {
         }
       }
     }
-      }
-    }
-    progressBar.end();
     for (const dataset of this.datasets) {
       const numberOfFiles = countsByDataset.get(dataset.name);
       if (numberOfFiles === undefined) {
@@ -411,7 +408,7 @@ export class PerformanceBenchmarker extends Benchmarker {
     }
   }
 
-  async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[], packageNames?: string[]): Promise<BenchmarkedResult[]> {
+  public async retrieveResults(metrics: string[], cropSize?: number, modelNames?: string[], packageNames?: string[]): Promise<BenchmarkedResult[]> {
     const modelResults: {
       name: string;
       packageName: string;

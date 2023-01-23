@@ -146,9 +146,10 @@ declare global {
   }
 }
 
-async function poolWithProgress<T>(arr: T, cb: (el: T) => Promise<void | any>, concurrent = 1) => {
+type CB<T> = (el: T) => Promise<void | any>;
+export async function poolWithProgress<T>(arr: T[], cb: CB<T>, concurrent = 1): Promise<void> {
   const progressBar = new ProgressBar(arr.length);
-  for await (const _ of asyncPool(concurrent, models, cb)) {
+  for await (const _ of asyncPool(concurrent, arr, cb)) {
     progressBar.update();
   }
   progressBar.end();
