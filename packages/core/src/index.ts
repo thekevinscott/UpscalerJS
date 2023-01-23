@@ -31,12 +31,10 @@ export interface CustomOp {
 export type Shape4D = [null | number, number, number, number];
 export const isShape4D = (shape?: unknown): shape is Shape4D => {
   if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
-    console.log('naw!')
     return false;
   }
   for (const val of shape) {
     if (val !== null && typeof val !== 'number') {
-      console.log(val, 'naw')
       return false;
     }
   }
