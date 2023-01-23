@@ -1,7 +1,7 @@
-import { GraphModel, Tensor3D, } from '@tensorflow/tfjs-node';
-import { tensor, OpExecutor } from '@tensorflow/tfjs-node';
+import { GraphModel, Tensor3D, Tensor4D, ones } from '@tensorflow/tfjs-node';
+import { LayersModel, tensor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
-import { mock } from '../../../test/lib/shared/mockers';
+import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import { 
   tensorAsClampedArray,
   processAndDisposeOfTensor,
@@ -15,13 +15,20 @@ import {
   ERROR_MISSING_MODEL_DEFINITION_PATH,
   getModel,
   ERROR_MODEL_DEFINITION_BUG,
-  ERROR_MISSING_MODEL_DEFINITION_SCALE,
   ERROR_INVALID_MODEL_TYPE,
   loadTfModel,
   scaleIncomingPixels,
-  isLayersModel,
+  parsePatchAndInputSizes,
+  WARNING_INPUT_SIZE_AND_PATCH_SIZE,
+  padInput,
+  trimInput,
+  getInputShape,
+  ERROR_WITH_MODEL_INPUT_SHAPE,
 } from './utils';
-import { ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
+import {
+  isLayersModel as _isLayersModel,
+} from './isLayersModel';
+import { isShape4D as _isShape4D, CustomOp, ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
 
 jest.mock('./dependencies.generated', () => {
   const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
@@ -39,8 +46,26 @@ jest.mock('./dependencies.generated', () => {
   };
 });
 
+jest.mock('./isLayersModel', () => {
+  const { isLayersModel, ...rest } = jest.requireActual('./isLayersModel');
+  return {
+    ...rest,
+    isLayersModel: jest.fn().mockImplementation(isLayersModel),
+  };
+});
+
+jest.mock('@upscalerjs/core', () => {
+  const { isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
+  return {
+    ...core,
+    isShape4D: jest.fn().mockImplementation(isShape4D),
+  };
+});
+
 const tf = mock(_tf);
 const tfSerialization = mock(_tf.serialization);
+const isLayersModel = mockFn(_isLayersModel);
+const isShape4D = mockFn(_isShape4D);
 
 describe('registerCustomLayers', () => {
   afterEach(() => {
@@ -82,7 +107,7 @@ describe('registerCustomLayers', () => {
     tf.registerOp = jest.fn();
     expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
     expect(tf.registerOp).toHaveBeenCalledTimes(0);
-    const customOps: { name: string; op: OpExecutor }[] = [
+    const customOps: CustomOp[] = [
       {
         name: 'foo',
         op: () => tensor([]),
@@ -299,11 +324,6 @@ describe('getModelDefinitionError', () => {
     expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
   });
 
-  it('returns an error if scale is not provided', () => {
-    const err = getModelDefinitionError({ path: 'foo', scale: undefined } as unknown as ModelDefinition);
-    expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_SCALE);
-  });
-
   it('returns an error if invalid model type is provided', () => {
     const err = getModelDefinitionError({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
     expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
@@ -507,11 +527,147 @@ describe('scaleIncomingPixels', () => {
   }));
 });
 
-describe('isLayersModel', () => {
-  it('returns true if given a layers model', () => {
-    const model = tf.sequential();
-    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
-    model.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
-    expect(isLayersModel(model)).toEqual(true);
+describe('parsePatchAndInputSizes', () => {
+  const origWarn = console.warn;
+
+  beforeEach(() => {
+    isLayersModel.mockImplementation(() => true);
+    isShape4D.mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    console.warn = origWarn;
+    isLayersModel.mockClear();
+    isShape4D.mockClear();
+  });
+
+  it('passes patchSize and padding through unadulterated', () => {
+    expect(parsePatchAndInputSizes({
+      layers: [{
+        batchInputShape: [null, null, null, 3],
+      }],
+    } as any as LayersModel, { patchSize: 9, padding: 8 })).toEqual({
+      patchSize: 9,
+      padding: 8,
+    })
+  })
+
+  it('warns if provided an inputSize and patchSize', () => {
+    const fn = jest.fn();
+    console.warn = fn;
+    warn('foo');
+    parsePatchAndInputSizes({
+      layers: [{
+        batchInputShape: [null, 9, 9, 3],
+      }],
+    } as any as LayersModel, { patchSize: 9, padding: 8 });
+    expect(fn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+  });
+});
+
+describe('padInput', () => {
+  beforeEach(() => {
+    isShape4D.mockImplementation(() => true);
+  });
+
+  afterEach(() => {
+    isShape4D.mockClear();
+  });
+
+  it('just returns the input if no inputSize is specified', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    expect(padInput()(t)).toEqual(t);
+  });
+
+  it('just returns the input if inputSize is less than the shape of the tensor', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    expect(padInput([null, 2, 2, 3])(t)).toEqual(t);
+  });
+
+  it('just returns the input if inputSize is equal to the width of the tensor', () => {
+    const t = ones([1, 4, 8, 3]) as Tensor4D;
+    expect(padInput([null, 4, 4, 3])(t)).toEqual(t);
+  });
+
+  it('just returns the input if inputSize is equal to the height of the tensor', () => {
+    const t = ones([1, 8, 4, 3]) as Tensor4D;
+    expect(padInput([null, 4, 4, 3])(t)).toEqual(t);
+  });
+
+  it('returns an image with padding if input size is greater than image', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    const result = padInput([null, 6, 6, 3])(t);
+    expect(result).not.toEqual(t);
+    expect(result.shape).toEqual([1, 6, 6, 3]);
+  });
+
+  it('returns an image with padding if input size is greater than the height', () => {
+    const t = ones([1, 4, 8, 3]) as Tensor4D;
+    const result = padInput([null, 6, 6, 3])(t);
+    expect(result).not.toEqual(t);
+    expect(result.shape).toEqual([1, 6, 8, 3]);
+  });
+
+  it('returns an image with padding if input size is greater than the width', () => {
+    const t = ones([1, 8, 4, 3]) as Tensor4D;
+    const result = padInput([null, 6, 6, 3])(t);
+    expect(result).not.toEqual(t);
+    expect(result.shape).toEqual([1, 8, 6, 3]);
+  });
+});
+
+describe('trimInput', () => {
+  it('just returns the input if width and height are equal to pixels shape', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    expect(trimInput([1, 4, 4, 3], 1)(t)).toEqual(t);
+  });
+
+  it('returns a sliced image if image height is smaller than pixels height', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    const result = trimInput([1, 2, 4, 3], 1)(t);
+    expect(result).not.toEqual(t);
+    expect(result.shape).toEqual([1, 2, 4, 3]);
+  });
+
+  it('returns a sliced image if image width is smaller than pixels width', () => {
+    const t = ones([1, 4, 4, 3]) as Tensor4D;
+    const result = trimInput([1, 4, 2, 3], 1)(t);
+    expect(result).not.toEqual(t);
+    expect(result.shape).toEqual([1, 4, 2, 3]);
+  });
+});
+
+describe('getInputShape', () => {
+  afterEach(() => {
+    isLayersModel.mockClear();
+    isShape4D.mockClear();
+  });
+
+  it('returns layers model input shape if it is a layers model', () => {
+    isLayersModel.mockImplementation(() => true);
+    expect(getInputShape({
+      layers: [{
+        batchInputShape: [1, 2, 3, 4],
+      }],
+    } as any as LayersModel)).toEqual([1,2,3,4]);
+  });
+
+  it('returns graph model input shape if it is a layers model', () => {
+    isLayersModel.mockImplementation(() => false);
+    expect(getInputShape({
+      inputs: [{
+        shape: [1, 2, 3, 4],
+      }],
+    } as any as GraphModel)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('throws if a model returns a non rank 4 shape', () => {
+    isShape4D.mockImplementation(() => false);
+    isLayersModel.mockImplementation(() => true);
+    expect(() => getInputShape({
+      layers: [{
+        batchInputShape: [1, 2, 3, 4, 5],
+      }],
+    } as any as LayersModel)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1,2,3,4,5]));
   });
 });

@@ -137,7 +137,7 @@ export class Upscaler {
   ) {
     await this._ready;
     const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, getUpscaleOptions(options), {
+    return cancellableUpscale(image, getUpscaleOptions(model, options), {
       model,
       modelDefinition,
       signal: this._abortController.signal,

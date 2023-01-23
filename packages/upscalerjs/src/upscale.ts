@@ -15,11 +15,15 @@ import {
   processAndDisposeOfTensor,
   isSingleArgProgress,
   scaleIncomingPixels,
+  padInput,
+  trimInput,
+  getInputShape,
  } from './utils';
 import {
   isTensor,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  Shape4D,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
@@ -303,9 +307,14 @@ export async function* predict(
   {
     model,
     modelDefinition,
-  }: ModelPackage
+  }: ModelPackage,
+  {
+    imageSize,
+  }: {
+    imageSize: Shape4D;
+  }
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
-  const scale = modelDefinition.scale;
+  const scale = modelDefinition.scale || 1;
 
   if (originalPatchSize && padding === undefined) {
     warn(WARNING_UNDEFINED_PADDING);
@@ -385,9 +394,13 @@ export async function* predict(
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const squeezedTensor = upscaledTensor!.squeeze() as tf.Tensor3D;
+    const processedUpscaledTensor = processAndDisposeOfTensor(upscaledTensor!.clone(), trimInput(imageSize, scale));
+    upscaledTensor?.dispose();
+    yield [processedUpscaledTensor,];
+
+    const squeezedTensor = processedUpscaledTensor!.squeeze() as tf.Tensor3D;
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    upscaledTensor!.dispose();
+    processedUpscaledTensor!.dispose();
     return squeezedTensor;
   }
 
@@ -395,9 +408,12 @@ export async function* predict(
     warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   }
 
-  const prediction = executeModel(model, pixels);
+  const prediction = model.predict(pixels) as tf.Tensor4D;
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction, modelDefinition.postprocess);
+  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, trimInput(imageSize, scale));
+
+  prediction.dispose();
+  yield [postprocessedTensor,];
 
   // https://github.com/tensorflow/tfjs/issues/1125
   /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
@@ -405,6 +421,98 @@ export async function* predict(
   postprocessedTensor.dispose();
   return squeezedTensor;
 }
+
+// /* eslint-disable @typescript-eslint/require-await */
+// export async function* predict2(
+//   pixels: tf.Tensor4D,
+//   { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs,
+//   {
+//     model,
+//     modelDefinition,
+//   }: ModelPackage,
+//   {
+//     imageSize,
+//   }: {
+//     imageSize: Shape4D;
+//   }
+// ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
+//   if (patchSize) {
+//     const [height, width,] = pixels.shape.slice(1);
+//     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+//     yield;
+//     let upscaledTensor: undefined | tf.Tensor4D;
+//     const total = rows * columns;
+//     for (let row = 0; row < rows; row++) {
+//       let colTensor: undefined | tf.Tensor4D;
+//       yield [colTensor, upscaledTensor,];
+//       for (let col = 0; col < columns; col++) {
+//         const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
+//           row,
+//           col,
+//           patchSize,
+//           padding,
+//           height,
+//           width,
+//         });
+//         yield [upscaledTensor, colTensor,];
+//         const slicedPixels = pixels.slice(
+//           [0, origin[0], origin[1],],
+//           [-1, size[0], size[1],],
+//         );
+//         yield [upscaledTensor, colTensor, slicedPixels,];
+//         const prediction = executeModel(model, slicedPixels);
+//         slicedPixels.dispose();
+//         yield [upscaledTensor, colTensor, prediction,];
+
+//         const startSlice = [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,];
+//         const endSlice = [-1, sliceSize[0] * scale, sliceSize[1] * scale,];
+//         const slicedPrediction = prediction.slice(
+//           startSlice, endSlice,
+//         );
+//         prediction.dispose();
+//         yield [upscaledTensor, colTensor, slicedPrediction,];
+//         const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess);
+//         yield [upscaledTensor, colTensor, processedPrediction,];
+
+//         if (progress !== undefined && isProgress(progress)) {
+//           const percent = getPercentageComplete(row, col, columns, total);
+//           if (isSingleArgProgress(progress)) {
+//             progress(percent);
+//           } else {
+//             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+//             const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
+//             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
+//               // because we are returning a tensor, we cannot safely dispose of it
+//               progress(percent, squeezedTensor, row, col);
+//             } else {
+//               // because we are returning a string, we can safely dispose of our tensor
+//               const src = tensorAsBase64(squeezedTensor, modelDefinition.outputRange);
+//               squeezedTensor.dispose();
+//               progress(percent, src, row, col);
+//             }
+//           }
+//         }
+//         yield [upscaledTensor, colTensor, processedPrediction,];
+
+//         colTensor = concatTensors<tf.Tensor4D>([colTensor, processedPrediction,], 2);
+//         processedPrediction.dispose();
+//         yield [upscaledTensor, colTensor,];
+//       }
+
+//       upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
+
+//       /* eslint-disable @typescript-eslint/no-non-null-assertion */
+//       colTensor!.dispose();
+//       yield [upscaledTensor,];
+//     }
+//     // https://github.com/tensorflow/tfjs/issues/1125
+//     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+//     /* eslint-disable @typescript-eslint/no-non-null-assertion */
+//     const squeezedTensor = tf.tidy(() => processAndDisposeOfTensor(upscaledTensor!, trimInput(imageSize, scale)).squeeze() as tf.Tensor3D);
+//     /* eslint-disable @typescript-eslint/no-non-null-assertion */
+//     return squeezedTensor;
+//   }
+// }
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
@@ -443,7 +551,10 @@ export async function* upscale(
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange));
+  const imageSize = startingPixels.shape;
+  const inputSize = getInputShape(model);
+
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange), padInput(inputSize));
   yield preprocessedPixels;
 
   const gen = predict(
@@ -452,6 +563,9 @@ export async function* upscale(
     {
       model,
       modelDefinition,
+    },
+    {
+      imageSize,
     }
   );
   let result = await gen.next();

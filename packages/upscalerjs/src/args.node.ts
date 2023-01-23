@@ -1,4 +1,6 @@
+import { parsePatchAndInputSizes, } from "./utils";
 import { BASE64, UpscaleArgs, TENSOR, PrivateUpscaleArgs, } from "./types";
+import { tf, } from "./dependencies.generated";
 
 const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   if (output === 'base64') {
@@ -7,10 +9,15 @@ const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   return 'tensor';
 };
 
-export function getUpscaleOptions(options: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
+export function getUpscaleOptions(model: tf.LayersModel | tf.GraphModel, {
+  output,
+  progressOutput,
+  ...options
+}: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
   return {
     ...options,
-    output: getOutputOption(options.output),
-    progressOutput: getOutputOption(options.progressOutput || options.output),
+    ...parsePatchAndInputSizes(model, options),
+    output: getOutputOption(output),
+    progressOutput: getOutputOption(progressOutput || output),
   };
 }

@@ -28,6 +28,19 @@ export interface CustomOp {
   op: OpExecutor;
 }
 
+export type Shape4D = [null | number, number, number, number];
+export const isShape4D = (shape?: unknown): shape is Shape4D => {
+  if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
+    return false;
+  }
+  for (const val of shape) {
+    if (val !== null && typeof val !== 'number') {
+      return false;
+    }
+  }
+  return true;
+};
+
 export interface ModelDefinition {
   /**
    * Path to a model.json file.
@@ -40,7 +53,7 @@ export interface ModelDefinition {
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
-  scale: number;
+  scale?: number;
   /**
    * @hidden
    * 
@@ -88,7 +101,7 @@ export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
 
-export type IsTensor<T extends tfBrowser.Tensor> = (pixels: Tensor) => pixels is T;
+export type IsTensor<T extends tf.Tensor> = (pixels: Tensor) => pixels is T;
 export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTensor<T> {
   function fn(pixels: Tensor): pixels is T {
     try {
