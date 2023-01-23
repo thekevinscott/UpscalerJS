@@ -1,8 +1,8 @@
 import Upscaler from '../../packages/upscalerjs/src/index';
-import model from '../../models/esrgan-legacy/src/div2k/4x';
+import model from '../../models/esrgan-legacy/src/gans';
 import flower from './flower.png';
 import * as tf from '@tensorflow/tfjs';
-const MODEL = '/models/esrgan-legacy/models/div2k/4x/model.json';
+const MODEL = '/models/esrgan-legacy/models/gans/model.json';
 
 const status = document.getElementById('status')!;
 

@@ -63,7 +63,7 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     meta: {
       dataset: 'div2k',
     },
-    inputRange: [0, 1,],
+    inputRange: [0, 255,],
     postprocess: (output: Tensor) => tf.tidy(() => {
       const clippedValue = (output).clipByValue(0, 1);
       output.dispose();
