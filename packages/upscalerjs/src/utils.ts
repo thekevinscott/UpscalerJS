@@ -97,7 +97,7 @@ export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn):
 export const tensorAsClampedArray = (tensor: tf.Tensor3D, range?: Range): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
   const fill = tf.fill([height, width,], 255).expandDims(2);
-  const resizedTensor = tensor.mul(isValidRange(range) && range[1] === 1 ? 255 : 1);
+  const resizedTensor = tensor.clipByValue(0, 1).mul(isValidRange(range) && range[1] === 1 ? 255 : 1);
   return resizedTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
