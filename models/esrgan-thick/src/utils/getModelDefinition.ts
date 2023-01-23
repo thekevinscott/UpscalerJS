@@ -3,7 +3,6 @@ import { NAME, VERSION, } from '../constants.generated';
 import { Inputs, Scale, } from '../types';
 import { getInput, } from './getInput';
 
-
 // skipcq: js-0108
 const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => (tf): ModelDefinition => {
   const Layer = tf.layers.Layer;
