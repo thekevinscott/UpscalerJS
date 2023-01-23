@@ -1,9 +1,8 @@
-import { ModelDefinitionFn, } from '@upscalerjs/core';
-import { clipOutput, } from './utils/clipOutput';
+import { ModelDefinition, } from '@upscalerjs/core';
 import getModelDefinition from './utils/getModelDefinition';
 
 const SCALE = 2;
 
-const modelDefinition: ModelDefinitionFn = tf => getModelDefinition(SCALE, 'psnr-small', clipOutput(tf));
+const modelDefinition: ModelDefinition = getModelDefinition(SCALE, 'psnr-small');
 
 export default modelDefinition;
