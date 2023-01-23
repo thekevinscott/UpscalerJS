@@ -1,4 +1,4 @@
-import type { Tensor4D, } from '@tensorflow/tfjs-core';
+import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, TF, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
@@ -63,13 +63,8 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     meta: {
       dataset: 'div2k',
     },
-    inputRange: [0, 255,],
-    // outputRange: [0, 1,],
-    postprocess: (output: Tensor) => tf.tidy(() => {
-      const clippedValue = (output).clipByValue(0, 1);
-      output.dispose();
-      return tf.mul(clippedValue, 255);
-    }),
+    inputRange: [0, 1,],
+    outputRange: [0, 1,],
     customLayers: [MultiplyBeta, PixelShuffle,],
   };
 
