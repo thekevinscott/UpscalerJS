@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
 import { tensorAsClampedArray, } from './utils';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, Range, } from '@upscalerjs/core';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
 import { CheckValidEnvironment, } from './types';
 
 export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
@@ -83,8 +83,8 @@ export const getImageAsTensor = async (
   throw getInvalidTensorError(tensor);
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D, outputRange?: Range): string => {
-  const arr = tensorAsClampedArray(tensor, outputRange);
+export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
+  const arr = tensorAsClampedArray(tensor);
   return Buffer.from(arr).toString('base64');
 };
 

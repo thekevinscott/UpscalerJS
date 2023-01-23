@@ -18,6 +18,7 @@ import {
   padInput,
   trimInput,
   getInputShape,
+  scaleOutput,
  } from './utils';
 import {
   isTensor,
@@ -357,7 +358,7 @@ export async function* predict(
         );
         prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction,];
-        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess);
+        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange));
         yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
@@ -372,7 +373,7 @@ export async function* predict(
               progress(percent, squeezedTensor, row, col);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = tensorAsBase64(squeezedTensor, modelDefinition.outputRange);
+              const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
               progress(percent, src, row, col);
             }
@@ -410,7 +411,7 @@ export async function* predict(
 
   const prediction = model.predict(pixels) as tf.Tensor4D;
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, trimInput(imageSize, scale));
+  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange), trimInput(imageSize, scale));
 
   prediction.dispose();
   yield [postprocessedTensor,];
@@ -495,7 +496,7 @@ export async function* upscale(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels, modelDefinition.outputRange);
+  const base64Src = tensorAsBase64(upscaledPixels);
   upscaledPixels.dispose();
   return base64Src;
 }

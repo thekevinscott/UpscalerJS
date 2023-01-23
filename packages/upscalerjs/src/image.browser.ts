@@ -1,7 +1,7 @@
 import { tf, } from './dependencies.generated';
 import { CheckValidEnvironment, } from './types';
 import { tensorAsClampedArray, } from './utils';
-import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, Range, } from '@upscalerjs/core';
+import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
 
 const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =
   'https://upscalerjs.com/documentation/troubleshooting#environment-disallows-base64';
@@ -82,8 +82,8 @@ export const isHTMLImageElement = (pixels: Input): pixels is HTMLImageElement =>
   }
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D, outputRange?: Range): string => {
-  const arr = tensorAsClampedArray(tensor, outputRange);
+export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
+  const arr = tensorAsClampedArray(tensor);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
   imageData.data.set(arr);
