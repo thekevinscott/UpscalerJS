@@ -153,7 +153,7 @@ export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D =>
 };
 
 export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
-  if (isValidRange(range) && range[1] === 255) {
+  if (isValidRange(range) && range[1] === 1) {
     return tf.mul(tensor, 1 / 255);
   }
   return tensor;

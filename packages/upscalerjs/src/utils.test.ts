@@ -512,17 +512,17 @@ describe('loadTfModel', () => {
 
 describe('scaleIncomingPixels', () => {
   it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
-    expect(result).toEqual([0,.5,1]);
+    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    expect(result).toEqual([0, 127, 255]);
   }));
 
   it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
-    expect(result).toEqual([0,.5,1]);
+    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    expect(result).toEqual([0, 127, 255]);
   }));
 
   it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
+    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
     expect(result).toEqual([0,.5,1]);
   }));
 });
