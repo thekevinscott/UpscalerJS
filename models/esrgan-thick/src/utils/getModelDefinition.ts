@@ -1,9 +1,7 @@
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 import { Inputs, Scale, } from '../types';
-import { clipOutput, } from './clipOutput';
 import { getInput, } from './getInput';
-
 
 // skipcq: js-0108
 const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => (tf): ModelDefinition => {
@@ -50,7 +48,7 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
 
   return {
     inputRange: [0, 1,],
-    postprocess: clipOutput(tf),
+    outputRange: [0, 1,],
     customLayers: [MultiplyBeta, getPixelShuffle(scale),],
     scale,
     path: `models/${scale}x/model.json`,
