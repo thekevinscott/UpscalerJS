@@ -1,4 +1,3 @@
-import type { Tensor, } from '@tensorflow/tfjs-core';
 import type { ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 import { Inputs, Scale, } from '../types';
