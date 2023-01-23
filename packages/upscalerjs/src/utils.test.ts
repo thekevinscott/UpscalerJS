@@ -24,11 +24,18 @@ import {
   trimInput,
   getInputShape,
   ERROR_WITH_MODEL_INPUT_SHAPE,
+  scaleOutput,
 } from './utils';
 import {
   isLayersModel as _isLayersModel,
 } from './isLayersModel';
-import { isShape4D as _isShape4D, CustomOp, ModelDefinition, ModelDefinitionFn } from '@upscalerjs/core';
+import {
+  isValidRange as _isValidRange,
+  isShape4D as _isShape4D,
+  CustomOp,
+  ModelDefinition,
+  ModelDefinitionFn,
+ } from '@upscalerjs/core';
 
 jest.mock('./dependencies.generated', () => {
   const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
@@ -55,10 +62,11 @@ jest.mock('./isLayersModel', () => {
 });
 
 jest.mock('@upscalerjs/core', () => {
-  const { isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
+  const { isValidRange, isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
   return {
     ...core,
     isShape4D: jest.fn().mockImplementation(isShape4D),
+    isValidRange: jest.fn().mockImplementation(isValidRange),
   };
 });
 
@@ -66,6 +74,7 @@ const tf = mock(_tf);
 const tfSerialization = mock(_tf.serialization);
 const isLayersModel = mockFn(_isLayersModel);
 const isShape4D = mockFn(_isShape4D);
+const isValidRange = mockFn(_isValidRange);
 
 describe('registerCustomLayers', () => {
   afterEach(() => {
@@ -294,27 +303,13 @@ describe('isMultiArgProgress', () => {
 
 describe('tensorAsClampedArray', () => {
   it('returns an array', () => {
-    const result = tensorAsClampedArray(tensor([[[2, 2, 3], [2, 1, 4], [5,5,5],[6,6,6], [7,7,7],[8,8,8]]]))
-    expect(Array.from(result)).toEqual([2,2,3,255,2,1,4,255,5,5,5,255,6,6,6,255,7,7,7,255,8,8,8,255]);
+    const result = tensorAsClampedArray(tensor([[[2, 2, 3], [2, 1, 4], [5, 5, 5], [6, 6, 6], [7, 7, 7], [8, 8, 8]]]))
+    expect(Array.from(result)).toEqual([2, 2, 3, 255, 2, 1, 4, 255, 5, 5, 5, 255, 6, 6, 6, 255, 7, 7, 7, 255, 8, 8, 8, 255]);
   });
 
   it('returns a clamped array', () => {
-    const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500,5,5],[6,6,6]]]))
-    expect(Array.from(result)).toEqual([0,2,3,255,255,1,4,255,255,5,5,255,6,6,6,255]);
-  });
-
-  it('returns an expanded clamped array, if output range is 0-1', () => {
-    const result = tensorAsClampedArray(tensor([[
-      [-1, .5, 1], 
-      [1.1, .25, .75], 
-      [.5, .5, .5],
-      [-100, 100, 1]
-    ,]]), [0,1]);
-    expect(Array.from(result)).toEqual([
-      0,127.5,255,255,
-      255,63.75,191.25,255,
-      127.5,127.5,127.5,255,
-      0,255,255,255]);
+    const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500, 5, 5], [6, 6, 6]]]))
+    expect(Array.from(result)).toEqual([0, 2, 3, 255, 255, 1, 4, 255, 255, 5, 5, 255, 6, 6, 6, 255]);
   });
 });
 
@@ -512,17 +507,17 @@ describe('loadTfModel', () => {
 
 describe('scaleIncomingPixels', () => {
   it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
-    expect(result).toEqual([0,.5,1]);
+    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    expect(result).toEqual([0, 127, 255]);
   }));
 
   it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0,.5,1]]]])).dataSync());
-    expect(result).toEqual([0,.5,1]);
+    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    expect(result).toEqual([0, 127, 255]);
   }));
 
   it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
+    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
     expect(result).toEqual([0,.5,1]);
   }));
 });
@@ -669,5 +664,29 @@ describe('getInputShape', () => {
         batchInputShape: [1, 2, 3, 4, 5],
       }],
     } as any as LayersModel)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1,2,3,4,5]));
+  });
+});
+
+describe('scaleOutput', () => {
+  afterEach(() => {
+    isValidRange.mockClear();
+  });
+
+  it('returns tensor unadulterated if input shape is not valid', () => {
+    isValidRange.mockImplementation(() => false);
+    const tensor = ones([1, 2, 2, 1]) as Tensor4D;
+    expect(scaleOutput()(tensor)).toEqual(tensor);
+  });
+
+  it('returns same tensor values if input shape is 0-255', () => {
+    isValidRange.mockImplementation(() => true);
+    const tensor = ones([1, 2, 2, 1]) as Tensor4D;
+    expect(Array.from(scaleOutput([0, 255])(tensor).dataSync())).toEqual(Array.from(tensor.dataSync()));
+  });
+
+  it('returns multiplied tensor values if input shape is 0-1', () => {
+    isValidRange.mockImplementation(() => true);
+    const tensor = ones([1, 2, 2, 1]) as Tensor4D;
+    expect(Array.from(scaleOutput([0, 1])(tensor).dataSync())).toEqual([255, 255, 255, 255,]);
   });
 });

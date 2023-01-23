@@ -1307,7 +1307,6 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
     expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
     expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
-    expect(tensorAsBase64).toHaveBeenCalledWith(expect.anything(), [0, 1]);
     expect(console.warn).not.toHaveBeenCalled();
   });
 
@@ -1678,7 +1677,6 @@ describe('upscale', () => {
       } as ModelDefinition,
     }));
     expect(result).toEqual('foobarbaz4');
-    expect(tensorAsBase64).toHaveBeenCalledWith(expect.anything(), [0,1]);
   });
 
   it('should return a tensor if specified', async () => {

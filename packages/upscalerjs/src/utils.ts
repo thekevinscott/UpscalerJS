@@ -94,11 +94,10 @@ export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>
 
 export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export const tensorAsClampedArray = (tensor: tf.Tensor3D, range?: Range): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
+export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32Array | Int32Array => tf.tidy(() => {
   const [height, width,] = tensor.shape;
   const fill = tf.fill([height, width,], 255).expandDims(2);
-  const resizedTensor = isValidRange(range) && range[1] === 1 ? tensor.mul(255) : tensor;
-  return resizedTensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
+  return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
 export function getModel(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
@@ -153,7 +152,7 @@ export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D =>
 };
 
 export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
-  if (isValidRange(range) && range[1] === 255) {
+  if (isValidRange(range) && range[1] === 1) {
     return tf.mul(tensor, 1 / 255);
   }
   return tensor;
@@ -213,6 +212,13 @@ export const trimInput = (
   const width = imageSize[2] * scale;
   if (height < pixels.shape[1] || width < pixels.shape[2]) {
     return tf.tidy(() => tf.slice(pixels, [0, 0, 0,], [1, height, width, 3,]));
+  }
+  return pixels;
+};
+
+export const scaleOutput = (range?: Range) => (pixels: tf.Tensor4D): tf.Tensor4D => {
+  if (isValidRange(range) && range[1] === 1) {
+    return pixels.clipByValue(0, 1).mul(255);
   }
   return pixels;
 };

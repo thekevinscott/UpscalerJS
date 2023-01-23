@@ -63,8 +63,8 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     meta: {
       dataset: 'div2k',
     },
-    outputRange: [0, 1,],
     inputRange: [0, 1,],
+    outputRange: [0, 1,],
     customLayers: [MultiplyBeta, PixelShuffle,],
   };
 
