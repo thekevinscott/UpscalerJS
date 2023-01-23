@@ -1188,7 +1188,9 @@ describe('predict', () => {
     const result = await wrapGenerator(predict(tensor.expandDims(0), {
       output: 'base64',
       progressOutput: 'base64',
-    }, modelPackage));
+    }, modelPackage, {
+      imageSize: [null, ...tensor.shape],
+    }));
     expect(spy).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3,],
@@ -1206,8 +1208,9 @@ describe('predict', () => {
         padding: 0,
         output: 'base64',
         progressOutput: 'base64',
-      },
-      modelPackage,
+      }, modelPackage, {
+        imageSize: [null, ...tensor.shape],
+      }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1221,8 +1224,9 @@ describe('predict', () => {
         padding: 0,
         output: 'base64',
         progressOutput: 'base64',
-      },
-      modelPackage,
+      }, modelPackage, {
+        imageSize: [null, ...tensor.shape],
+      }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1239,7 +1243,9 @@ describe('predict', () => {
         progress,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.25);
     expect(progress).toHaveBeenCalledWith(0.5);
@@ -1262,7 +1268,9 @@ describe('predict', () => {
         progress,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
@@ -1291,6 +1299,8 @@ describe('predict', () => {
           ...modelPackage.modelDefinition,
           outputRange: [0,1],
         },
+      }, {
+        imageSize: tensor.shape,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -1315,7 +1325,9 @@ describe('predict', () => {
         progress,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
@@ -1346,7 +1358,9 @@ describe('predict', () => {
         progress,
         output: 'tensor',
         progressOutput: 'tensor',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
@@ -1386,7 +1400,9 @@ describe('predict', () => {
         progress,
         output: 'tensor',
         progressOutput: 'tensor',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
@@ -1426,7 +1442,9 @@ describe('predict', () => {
         progress,
         output: 'base64',
         progressOutput: 'tensor',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
       expect.objectContaining({
@@ -1454,7 +1472,9 @@ describe('predict', () => {
         patchSize,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
@@ -1467,7 +1487,9 @@ describe('predict', () => {
         output: 'base64',
         progressOutput: 'base64',
         progress: () => { },
-      }, modelPackage)
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      })
     );
     expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
@@ -1480,12 +1502,15 @@ describe('predict', () => {
       const gen = predict(tensor, {
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage);
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      });
 
 
       let currentExpectationIndex = 0;
       const expectations = [
-        1, //   yield [pred,];
+        1, //   yield [prediction,];
+        1, //   yield [postprocessedTensor,];
       ];
       let result = await gen.next();
       while (!result.done) {
@@ -1516,7 +1541,9 @@ describe('predict', () => {
         patchSize,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage);
+      }, modelPackage, {
+        imageSize: tensor.shape,
+      });
 
       let currentExpectationIndex = 0;
       const expectations = [
@@ -1560,7 +1587,8 @@ describe('predict', () => {
             [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
             [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-          [1, '// 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
+          [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [upscaledTensor,];',],
+          [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [processedUpscaledTensor,];',],
       ];
       let result = await gen.next();
       while (!result.done) {
@@ -1604,6 +1632,9 @@ describe('upscale', () => {
     getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     tensorAsBase64.mockImplementation(() => 'foobarbaz4');
     const result = await wrapGenerator(upscale(img, {
@@ -1631,6 +1662,9 @@ describe('upscale', () => {
     getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: jest.fn(() => tf.ones([1, 2, 2, 3,])),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     tensorAsBase64.mockImplementation(() => 'foobarbaz4');
     const result = await wrapGenerator(upscale(img, {
@@ -1662,6 +1696,9 @@ describe('upscale', () => {
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
       predict: jest.fn(() => upscaledTensor.clone()),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
     const result = await wrapGenerator(upscale(img, { output: 'tensor', progressOutput: 'tensor', }, { 
@@ -1691,6 +1728,9 @@ describe('cancellableUpscale', () => {
           .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
           .expandDims(0);
       }),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     const controller = new AbortController();
     const progress = jest.fn((rate) => {
@@ -1732,6 +1772,9 @@ describe('cancellableUpscale', () => {
           .fill([patchSize * scale, patchSize * scale, 3,], pixel.dataSync()[0])
           .expandDims(0);
       }),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     const controller = new AbortController();
     const progress = jest.fn((rate) => {
@@ -1775,6 +1818,9 @@ describe('cancellableUpscale', () => {
       .expandDims(0);
     const model = {
       predict: jest.fn(() => predictedPixels.clone()),
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as unknown as tf.LayersModel;
     const result = await cancellableUpscale(img, {
       patchSize,
@@ -1818,6 +1864,9 @@ describe('executeModel', () => {
   it('throws if the model does not return a valid tensor', () => {
     const model = {
       predict: () => 'foo',
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as any as tf.LayersModel;
     isTensor.mockImplementation(() => false);
     expect(() => executeModel(model, 'foo' as any as tf.Tensor4D)).toThrow(ERROR_INVALID_MODEL_PREDICTION);
@@ -1829,6 +1878,9 @@ describe('executeModel', () => {
     } as any as tf.Tensor3D;
     const model = {
       predict: () => tensor,
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as any as tf.LayersModel;
     isTensor.mockImplementation(() => true);
     isFourDimensionalTensor.mockImplementation(() => false);
@@ -1841,6 +1893,9 @@ describe('executeModel', () => {
     } as any as tf.Tensor4D;
     const model = {
       predict: () => tensor,
+      inputs: [{
+        shape: [null, null, null, 3],
+      }]
     } as any as tf.LayersModel;
     isTensor.mockImplementation(() => true);
     isFourDimensionalTensor.mockImplementation(() => true);

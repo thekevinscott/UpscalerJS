@@ -193,3 +193,11 @@ If it has an entry like below, it's a `graph` model:
 ```json
 {"format": "graph-model", 
 ```
+
+## Error with Model Input Shape
+
+This error implies that the given model does not have an input layer compatible with a rank 4 tensor. It may be expected a rank 3 tensor, or something else entirely.
+
+UpscalerJS only supports models whose input layers are set up to accept rank 4 tensors.
+
+If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
