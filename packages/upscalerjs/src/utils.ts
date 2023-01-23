@@ -103,14 +103,6 @@ export const getModel = (modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
 };
 
-export function parseUpscaleOutput(key: string, option?: 'base64' | 'src' | 'tensor'): undefined | 'base64' | 'tensor' {
-  if (option === 'src') {
-    console.warn(`You have provided "src" as an option to ${key}. You should switch this to "base64". "src" is deprecated and will be removed in a future version.`);
-    return 'base64';
-  }
-  return option;
-}
-
 function nonNullable<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined;
 }
@@ -146,3 +138,5 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
   }
   return tensor;
 };
+
+export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
