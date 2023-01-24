@@ -1,7 +1,8 @@
+import { ModelDefinition, } from '@upscalerjs/core';
 import getModelDefinition from '../utils/getModelDefinition';
 
 const SCALE = 3;
 
-export default getModelDefinition(SCALE, `div2k/${SCALE}x`, {
-  outputRange: [0, 255,],
-});
+const modelDefinition: ModelDefinition = getModelDefinition(SCALE, `div2k/${SCALE}x`);
+
+export default modelDefinition;

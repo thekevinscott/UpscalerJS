@@ -672,21 +672,21 @@ describe('scaleOutput', () => {
     isValidRange.mockClear();
   });
 
-  it('returns tensor unadulterated if input shape is not valid', () => {
+  it('returns tensor unchanged if input shape is not valid', () => tf.tidy(() => {
     isValidRange.mockImplementation(() => false);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
-    expect(scaleOutput()(tensor)).toEqual(tensor);
-  });
+    expect(Array.from(scaleOutput()(tensor).dataSync())).toEqual(Array.from(tensor.dataSync()));
+  }));
 
-  it('returns same tensor values if input shape is 0-255', () => {
+  it('returns same tensor values if input shape is 0-255', () => tf.tidy(() => {
     isValidRange.mockImplementation(() => true);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput([0, 255])(tensor).dataSync())).toEqual(Array.from(tensor.dataSync()));
-  });
+  }));
 
-  it('returns multiplied tensor values if input shape is 0-1', () => {
+  it('returns multiplied tensor values if input shape is 0-1', () => tf.tidy(() => {
     isValidRange.mockImplementation(() => true);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput([0, 1])(tensor).dataSync())).toEqual([255, 255, 255, 255,]);
-  });
+  }));
 });
