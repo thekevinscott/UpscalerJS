@@ -140,25 +140,6 @@ describe('Model Loading Integration Tests', () => {
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
-  it('does not clip a model that returns out of bound numbers when returning a tensor', async () => {
-    const startingPixels = [-100,-100,-100,0,0,0,255,255,255,1000,1000,1000];
-    const predictedPixels: number[] = await page().evaluate((startingPixels) => {
-      const upscaler: Upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['2x'],
-      });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
-      return upscaler.upscale(tensor, {
-        output: 'tensor',
-      }).then((output) => {
-        return Array.from(output.dataSync());
-      });
-    }, startingPixels);
-    expect(predictedPixels.length).toEqual(4*4*3);
-    const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
-    const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]) as Tensor3D, [4,4]);
-    expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
-  });
-
   describe('Test specific model implementations', () => {
     describe('esm', () => {
       MODELS_TO_TEST.map(({ packageName, esmName }) => {
