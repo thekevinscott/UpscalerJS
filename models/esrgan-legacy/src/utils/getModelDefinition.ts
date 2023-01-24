@@ -11,6 +11,8 @@ const getModelDefinition = (scale: 2 | 3 | 4, modelPath: string): ModelDefinitio
   meta: {
     dataset: 'div2k',
   },
+  inputRange: [0, 255,],
+  outputRange: [0, 255,],
 });
 
 export default getModelDefinition;
