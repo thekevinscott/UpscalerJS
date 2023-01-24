@@ -218,9 +218,5 @@ export const trimInput = (
 
 export const scaleOutput = (range?: Range) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const endingRange = isValidRange(range) ? range[1] : 255;
-  return pixels.clipByValue(0, endingRange).mul(255);
-  // if (isValidRange(range) && range[1] === 1) {
-  //   return pixels.clipByValue(0, 1).mul(255);
-  // }
-  // return pixels;
+  return pixels.clipByValue(0, endingRange).mul(endingRange === 1 ? 255 : 1);
 };
