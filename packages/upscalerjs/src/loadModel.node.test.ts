@@ -13,9 +13,12 @@ import {
   getModelDefinitionError as _getModelDefinitionError,
   registerCustomLayers as _registerCustomLayers,
   loadTfModel as _loadTfModel,
+  ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
 import {
   isValidModelDefinition as _isValidModelDefinition,
+  ModelDefinitionValidationError,
+  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 jest.mock('./utils', () => {
   const { loadTfModel, getModuleFolder, getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
@@ -114,9 +117,10 @@ describe('loadModel.node', () => {
   describe('loadModel', () => {
     it('throws if given an undefined model definition', async () => {
       resolver.mockImplementation(getResolver(() => './node_modules/baz'));
-      const error = 'some error';
-      getModelDefinitionError.mockImplementation(() => new Error(error))
-      isValidModelDefinition.mockImplementation(() => false);
+      const error = ERROR_MODEL_DEFINITION_BUG;
+      isValidModelDefinition.mockImplementation(() => {
+        throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
+      });
 
       await expect(loadModel({} as ModelDefinition))
         .rejects
