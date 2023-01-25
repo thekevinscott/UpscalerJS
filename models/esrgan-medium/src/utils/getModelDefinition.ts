@@ -1,9 +1,8 @@
-import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 import { Scale, } from '../types';
-import { clipOutput, } from './clipOutput';
 
-const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitionFn => tf => ({
+const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinition => ({
   scale,
   path: `models/${scale}x/model.json`,
   packageInformation: {
@@ -24,7 +23,8 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
     dataset: 'div2k',
     modelFileName,
   },
-  postprocess: clipOutput(tf),
+  inputRange: [0,255,],
+  outputRange: [0,255,],
 });
 
 export default getModelDefinition;

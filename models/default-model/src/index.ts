@@ -1,17 +1,9 @@
-import type { Tensor, Tensor4D, } from '@tensorflow/tfjs-core';
-import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { ModelDefinition, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
-import { PostProcess, TF, } from '@upscalerjs/core';
 
 const SCALE = 2;
 
-const clipOutput = (tf: TF): PostProcess => (output: Tensor) => tf.tidy<Tensor4D>(() => {
-  const clippedValue = output.clipByValue(0, 255);
-  output.dispose();
-  return clippedValue as Tensor4D;
-});
-
-const modelDefinition: ModelDefinitionFn = tf => ({
+const modelDefinition: ModelDefinition = {
   scale: SCALE,
   path: `models/model.json`,
   packageInformation: {
@@ -32,7 +24,8 @@ const modelDefinition: ModelDefinitionFn = tf => ({
     dataset: 'div2k',
     modelFileName: 'rdn-C1-D2-G4-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch494',
   },
-  postprocess: clipOutput(tf),
-});
+  inputRange: [0, 255,],
+  outputRange: [0, 255,],
+};
 
 export default modelDefinition;
