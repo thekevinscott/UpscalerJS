@@ -13,6 +13,7 @@ import {
   registerCustomLayers as _registerCustomLayers,
   getModelDefinitionError as _getModelDefinitionError,
   loadTfModel as _loadTfModel,
+  ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
 
 import {
@@ -176,7 +177,7 @@ describe('loadModel browser tests', () => {
 
   describe('loadModel', () => {
     it('throws if not a valid model definition', async () => {
-      const e = new Error('foo');
+      const e = new Error(ERROR_MODEL_DEFINITION_BUG);
       isValidModelDefinition.mockImplementation(() => false);
       getModelDefinitionError.mockImplementation(() => e);
 
