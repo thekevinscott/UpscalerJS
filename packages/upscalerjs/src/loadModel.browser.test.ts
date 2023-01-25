@@ -1,4 +1,4 @@
-import type { io, LayersModel } from '@tensorflow/tfjs';
+import type { GraphModel, io, LayersModel } from '@tensorflow/tfjs';
 import { ModelDefinition } from '@upscalerjs/core';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
@@ -186,7 +186,7 @@ describe('loadModel browser tests', () => {
       })).rejects.toThrowError(e);
     });
 
-    it('loads a model successfully', async () => {
+    it('loads a valid layers model successfully', async () => {
       isValidModelDefinition.mockImplementation(() => true);
       const model = 'foo' as unknown as LayersModel;
       loadTfModel.mockImplementation(async () => model);
@@ -196,12 +196,40 @@ describe('loadModel browser tests', () => {
       const modelDefinition: ModelDefinition = {
         path: 'foo',
         scale: 2,
+        modelType: 'layers',
       };
 
       const result = await loadModel(modelDefinition);
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, undefined);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
+      expect(registerCustomLayers).toHaveBeenCalledTimes(1);
+      expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
+
+      expect(result).toStrictEqual({
+        modelDefinition,
+        model,
+      });
+    });
+
+    it('loads a valid graph model successfully', async () => {
+      isValidModelDefinition.mockImplementation(() => true);
+      const model = 'foo' as unknown as GraphModel;
+      tf.loadLayersModel.mockImplementation(async () => 'layers model' as any);
+      tf.loadGraphModel.mockImplementation(async () => model);
+      expect(tf.loadLayersModel).toHaveBeenCalledTimes(0);
+      expect(registerCustomLayers).toHaveBeenCalledTimes(0);
+
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        scale: 2,
+        modelType: 'graph',
+      };
+
+      const result = await loadModel(modelDefinition);
+
+      expect(loadTfModel).toHaveBeenCalledTimes(1);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 

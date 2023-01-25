@@ -49,6 +49,7 @@ jest.mock('./dependencies.generated', () => {
     tf: {
       ...tf,
       loadLayersModel: jest.fn(),
+      loadGraphModel: jest.fn(),
     }
   }
 });
@@ -122,18 +123,18 @@ describe('loadModel.node', () => {
         .toThrow(error);
     });
 
-    it('loads a valid model', async () => {
+    it('loads a valid layers model', async () => {
       resolver.mockImplementation(getResolver(() => './node_modules/baz'));
       isValidModelDefinition.mockImplementation(() => true);
       registerCustomLayers.mockImplementation(() => { });
       loadTfModel.mockImplementation(async () => 'layers model' as any);
 
       const path = 'foo';
-      const modelDefinition: ModelDefinition = { path, scale: 2 };
+      const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
       const response = await loadModel(modelDefinition);
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(path, undefined);
+      expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
         modelDefinition,

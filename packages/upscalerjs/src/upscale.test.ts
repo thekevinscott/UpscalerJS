@@ -40,7 +40,7 @@ jest.mock('./image.generated', () => {
   };
 });
 jest.mock('@upscalerjs/core', () => {
-  const { isFourDimensionalTensor, isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
+  const { isFourDimensionalTensor, isTensor, ...rest } = jest.requireActual('@upscalerjs/core');
   return {
     ...rest,
     isTensor: jest.fn(isTensor),
@@ -1209,8 +1209,8 @@ describe('predict', () => {
         output: 'base64',
         progressOutput: 'base64',
       }, modelPackage, {
-        imageSize: [null, ...tensor.shape],
-      }
+      imageSize: [null, ...tensor.shape],
+    }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1225,8 +1225,8 @@ describe('predict', () => {
         output: 'base64',
         progressOutput: 'base64',
       }, modelPackage, {
-        imageSize: [null, ...tensor.shape],
-      }
+      imageSize: [null, ...tensor.shape],
+    }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1260,7 +1260,7 @@ describe('predict', () => {
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    const progress = jest.fn((_1: any, _2: any) => {});
+    const progress = jest.fn((_1: any, _2: any) => { });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
@@ -1285,7 +1285,7 @@ describe('predict', () => {
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    const progress = jest.fn((_1: any, _2: any) => {});
+    const progress = jest.fn((_1: any, _2: any) => { });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
@@ -1297,7 +1297,7 @@ describe('predict', () => {
         ...modelPackage,
         modelDefinition: {
           ...modelPackage.modelDefinition,
-          outputRange: [0,1],
+          outputRange: [0, 1],
         },
       }, {
         imageSize: tensor.shape,
@@ -1316,7 +1316,7 @@ describe('predict', () => {
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => {});
+    const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => { });
     await wrapGenerator(
       predict(tensor, {
         patchSize,
@@ -1526,7 +1526,7 @@ describe('predict', () => {
       tf.tidy(() => checkStartingTensorAgainstUpscaledTensor(tensor, result.value as tf.Tensor4D));
       (result.value as tf.Tensor).dispose();
       expect(currentExpectationIndex === expectations.length);
-      
+
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
 
@@ -1548,56 +1548,56 @@ describe('predict', () => {
       const expectations = [
         [0, '// yield',],
 
-          [0, '// row loop 0 // yield',],
+        [0, '// row loop 0 // yield',],
 
-            [0, '// row loop 0, col loop 0 // 0 transitory tensors, 0 col tensor // yield [colTensor, upscaledTensor,]; ',],
-            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
-            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, prediction,];',],
-            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
-            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [1, '// row loop 0, col loop 0 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
+        [0, '// row loop 0, col loop 0 // 0 transitory tensors, 0 col tensor // yield [colTensor, upscaledTensor,]; ',],
+        [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+        [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, prediction,];',],
+        [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+        [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [1, '// row loop 0, col loop 0 // 1 transitory tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [1, '// row loop 0, col loop 0 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
-            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
-            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, prediction,];',],
-            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
-            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
+        [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
+        [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+        [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, prediction,];',],
+        [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+        [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [2, '// row loop 0, col loop 1 // 1 transitory tensor, 1 col tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [1, '// row loop 0, col loop 1 // 0 transitory tensors, 1 col tensor // yield [upscaledTensor, colTensor,];',],
 
-          [1, '// row loop 0 end // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
+        [1, '// row loop 0 end // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor,];',],
 
-          [1, '// row loop 1 // yield [colTensor, upscaledTensor,];',],
+        [1, '// row loop 1 // yield [colTensor, upscaledTensor,];',],
 
-            [1, '// row loop 1, col loop 1 // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
-            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
-            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
-            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
-            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+        [1, '// row loop 1, col loop 1 // 0 transitory tensors, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+        [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+        [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+        [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+        [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [2, '// row loop 1, col loop 1 // 1 transitory tensor, 0 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-            [2, '// row loop 1, col loop 1 // 0 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
-            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
-            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
-            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
-            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
-            [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+        [2, '// row loop 1, col loop 1 // 0 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
+        [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPixels,];',],
+        [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, prediction,];',],
+        [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, processedPrediction,];',],
+        [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [3, '// row loop 1, col loop 1 // 1 transitory tensor, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor, slicedPrediction,];',],
+        [2, '// row loop 1, col loop 1 // 0 transitory tensors, 1 col tensor, 1 row tensor // yield [upscaledTensor, colTensor,];',],
 
-          [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [upscaledTensor,];',],
-          [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [processedUpscaledTensor,];',],
+        [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [upscaledTensor,];',],
+        [1, '// 0 transitory tensors, 0 col tensor, 1 tensor // yield [processedUpscaledTensor,];',],
       ];
       let result = await gen.next();
       while (!result.done) {
-        const [expectation,expectationKey] = expectations[currentExpectationIndex];
+        const [expectation, expectationKey] = expectations[currentExpectationIndex];
         const memory = tf.memory();
         const countedTensors = memory.numTensors - startingTensors
         // console.log('|', countedTensors, '|', expectation, '|', 'for', currentExpectationIndex, 'index', '|', result.value);
         try {
-        expect(countedTensors).toEqual(expectation);
-        } catch(err) {
+          expect(countedTensors).toEqual(expectation);
+        } catch (err) {
           throw new Error(`Expected ${expectation}, received ${countedTensors} for ${expectationKey}`);
         }
         currentExpectationIndex++;
@@ -1605,7 +1605,7 @@ describe('predict', () => {
       }
       (result.value as tf.Tensor).dispose();
       expect(currentExpectationIndex === expectations.length);
-      
+
       expect(tf.memory().numTensors).toEqual(startingTensors);
     });
   });
@@ -1699,9 +1699,9 @@ describe('upscale', () => {
       }]
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
-    const result = await wrapGenerator(upscale(img, { output: 'tensor', progressOutput: 'tensor', }, { 
-      model, 
-      modelDefinition: { scale: 2, } as ModelDefinition, 
+    const result = await wrapGenerator(upscale(img, { output: 'tensor', progressOutput: 'tensor', }, {
+      model,
+      modelDefinition: { scale: 2, } as ModelDefinition,
     }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
@@ -1747,8 +1747,8 @@ describe('cancellableUpscale', () => {
       progress,
       signal: controller.signal,
     }, {
-      model, 
-      modelDefinition: { scale, } as ModelDefinition, 
+      model,
+      modelDefinition: { scale, } as ModelDefinition,
       signal: new AbortController().signal,
     }))
       .rejects
@@ -1790,8 +1790,8 @@ describe('cancellableUpscale', () => {
       output: 'base64',
       progressOutput: 'base64',
     }, {
-      model, 
-      modelDefinition: { scale, } as ModelDefinition, 
+      model,
+      modelDefinition: { scale, } as ModelDefinition,
       signal: controller.signal,
     }))
       .rejects
@@ -1836,21 +1836,21 @@ describe('cancellableUpscale', () => {
 
 describe('getWidthAndHeight', () => {
   it('throws if given a too small tensor', () => {
-    const t = tf.zeros([2,2]) as unknown as tf.Tensor3D;
+    const t = tf.zeros([2, 2]) as unknown as tf.Tensor3D;
     expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
   });
 
   it('throws if given a too large tensor', () => {
-    const t = tf.zeros([2,2,2,2,2]) as unknown as tf.Tensor3D;
+    const t = tf.zeros([2, 2, 2, 2, 2]) as unknown as tf.Tensor3D;
     expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
   });
 
   it('returns width and height for a 4d tensor', () => {
-    expect(getWidthAndHeight(tf.zeros([1,2,3,4]) as tf.Tensor4D)).toEqual([2,3]);
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3, 4]) as tf.Tensor4D)).toEqual([2, 3]);
   });
 
   it('returns width and height for a 3d tensor', () => {
-    expect(getWidthAndHeight(tf.zeros([1,2,3]) as tf.Tensor3D)).toEqual([1,2]);
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3]) as tf.Tensor3D)).toEqual([1, 2]);
   });
 });
 
@@ -1872,7 +1872,7 @@ describe('executeModel', () => {
 
   it('throws if the model does not return a valid rank 4 tensor', () => {
     const tensor = {
-      shape: [1,1,1],
+      shape: [1, 1, 1],
     } as any as tf.Tensor3D;
     const model = {
       predict: () => tensor,
@@ -1887,7 +1887,7 @@ describe('executeModel', () => {
 
   it('returns a valid 4d tensor', () => {
     const tensor = {
-      shape: [1,1,1,1],
+      shape: [1, 1, 1, 1],
     } as any as tf.Tensor4D;
     const model = {
       predict: () => tensor,
