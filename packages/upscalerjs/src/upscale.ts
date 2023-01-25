@@ -5,7 +5,6 @@ import type {
   BASE64,
   TENSOR,
   YieldedIntermediaryValue,
-  Shape4D,
  } from './types';
 import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
 import {
