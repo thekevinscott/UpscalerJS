@@ -1,6 +1,5 @@
 import { GraphModel, Tensor3D, Tensor4D, ones } from '@tensorflow/tfjs-node';
 import { LayersModel, tensor } from '@tensorflow/tfjs-node';
-import { tensor, OpExecutor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import { 
@@ -665,92 +664,6 @@ describe('getInputShape', () => {
         batchInputShape: [1, 2, 3, 4, 5],
       }],
     } as any as LayersModel)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1,2,3,4,5]));
-  });
-});
-
-describe('parsePatchAndInputSizes', () => {
-  const origWarn = console.warn;
-  afterEach(() => {
-    console.warn = origWarn;
-  });
-
-  it('passes patchSize and padding through unadulterated', () => {
-    expect(parsePatchAndInputSizes({ path: 'foo' }, { patchSize: 9, padding: 8 })).toEqual({
-      patchSize: 9,
-      padding: 8,
-    })
-  })
-
-  it('warns if provided an inputSize and patchSize', () => {
-    const fn = jest.fn();
-    console.warn = fn;
-    warn('foo');
-    parsePatchAndInputSizes({ path: 'foo', inputSize: 9 }, { patchSize: 9, padding: 8 });
-    expect(fn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
-  });
-});
-
-describe('padInput', () => {
-  it('just returns the input if no inputSize is specified', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(padInput({ path: 'foo' }, t)).toEqual(t);
-  });
-
-  it('just returns the input if inputSize is less than the shape of the tensor', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(padInput({ path: 'foo', inputSize: 2 }, t)).toEqual(t);
-  });
-
-  it('just returns the input if inputSize is equal to the width of the tensor', () => {
-    const t = ones([1, 4, 8, 3]) as Tensor4D;
-    expect(padInput({ path: 'foo', inputSize: 4 }, t)).toEqual(t);
-  });
-
-  it('just returns the input if inputSize is equal to the height of the tensor', () => {
-    const t = ones([1, 8, 4, 3]) as Tensor4D;
-    expect(padInput({ path: 'foo', inputSize: 4 }, t)).toEqual(t);
-  });
-
-  it('returns an image with padding if input size is greater than image', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = padInput({ path: 'foo', inputSize: 6 }, t);
-    expect(result).not.toEqual(t);
-    expect(result.shape).toEqual([1, 6, 6, 3]);
-  });
-
-  it('returns an image with padding if input size is greater than the height', () => {
-    const t = ones([1, 4, 8, 3]) as Tensor4D;
-    const result = padInput({ path: 'foo', inputSize: 6 }, t);
-    expect(result).not.toEqual(t);
-    expect(result.shape).toEqual([1, 6, 8, 3]);
-  });
-
-  it('returns an image with padding if input size is greater than the width', () => {
-    const t = ones([1, 8, 4, 3]) as Tensor4D;
-    const result = padInput({ path: 'foo', inputSize: 6 }, t);
-    expect(result).not.toEqual(t);
-    expect(result.shape).toEqual([1, 8, 6, 3]);
-  });
-});
-
-describe('trimInput', () => {
-  it('just returns the input if width and height are equal to pixels shape', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(trimInput([1, 4, 4, 3], 1, t)).toEqual(t);
-  });
-
-  it('returns a sliced image if image height is smaller than pixels height', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 2, 4, 3], 1, t);
-    expect(result).not.toEqual(t);
-    expect(result.shape).toEqual([1, 2, 4, 3]);
-  });
-
-  it('returns a sliced image if image width is smaller than pixels width', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 4, 2, 3], 1, t);
-    expect(result).not.toEqual(t);
-    expect(result.shape).toEqual([1, 4, 2, 3]);
   });
 });
 

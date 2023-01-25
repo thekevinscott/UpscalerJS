@@ -134,7 +134,7 @@ describe('loadModel.node', () => {
 
       const response = await loadModel(modelDefinition);
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(path, undefined);
+      expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
         modelDefinition,
