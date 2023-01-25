@@ -1,7 +1,8 @@
 import { tf, } from './dependencies.generated';
-import type { ModelDefinition, } from '@upscalerjs/core';
+import { ModelDefinition, ModelDefinitionValidationError, } from '@upscalerjs/core';
 import type { ModelPackage, PackageInformation, } from './types';
 import {
+  ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
   loadTfModel,
   registerCustomLayers,
@@ -58,7 +59,8 @@ export const fetchModel = async ({
 export const loadModel = async (
   modelDefinition: ModelDefinition,
 ): Promise<ModelPackage> => {
-  if (isValidModelDefinition(modelDefinition)) {
+  try {
+    isValidModelDefinition(modelDefinition);
     registerCustomLayers(modelDefinition);
 
     const model = await fetchModel(modelDefinition);
@@ -67,7 +69,7 @@ export const loadModel = async (
       model,
       modelDefinition,
     };
-  } else {
-    throw getModelDefinitionError(modelDefinition);
+  } catch(err: unknown) {
+    throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 };

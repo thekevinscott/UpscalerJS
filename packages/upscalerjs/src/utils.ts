@@ -1,6 +1,17 @@
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
-import { Range, ModelDefinitionFn, ModelDefinition, ModelDefinitionObjectOrFn, isShape4D, Shape4D, ProcessFn, ModelType, isValidModelType, isValidRange, } from '@upscalerjs/core';
+import { 
+  Range, 
+  ModelDefinitionFn, 
+  ModelDefinition, 
+  ModelDefinitionObjectOrFn, 
+  isShape4D, 
+  Shape4D, 
+  ProcessFn, 
+  ModelType, 
+  isValidRange, 
+  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+} from '@upscalerjs/core';
 import { isLayersModel, } from './isLayersModel';
 
 export class AbortError extends Error {
@@ -32,12 +43,12 @@ export const ERROR_WITH_MODEL_INPUT_SHAPE = (inputShape?: unknown) => [
   `For more information, see ${ERROR_WITH_MODEL_INPUT_SHAPE_URL}.`,
 ].join('\n');
 
-export function getModelDefinitionError(modelDefinition: ModelDefinition): Error {
-  if (!modelDefinition.path) {
-    return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
-  }
-  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
-    return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition.modelType));
+export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
+  switch(error) {
+    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH:
+      return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
+    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
+      return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
   }
 
   return new Error(ERROR_MODEL_DEFINITION_BUG);
