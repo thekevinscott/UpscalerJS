@@ -228,9 +228,8 @@ describe('loadModel browser tests', () => {
 
       const result = await loadModel(modelDefinition);
 
-      expect(tf.loadLayersModel).not.toHaveBeenCalled();
-      expect(tf.loadGraphModel).toHaveBeenCalledTimes(1);
-      expect(tf.loadGraphModel).toHaveBeenCalledWith(modelDefinition.path);
+      expect(loadTfModel).toHaveBeenCalledTimes(1);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 
