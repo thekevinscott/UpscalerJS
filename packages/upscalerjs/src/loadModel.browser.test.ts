@@ -202,7 +202,7 @@ describe('loadModel browser tests', () => {
       const result = await loadModel(modelDefinition);
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, undefined);
+      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
       expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 
