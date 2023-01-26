@@ -1,9 +1,10 @@
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { getModelDefinitionError, loadTfModel, registerCustomLayers, } from './utils';
+import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, registerCustomLayers, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from './types';
 import {
+  ModelDefinitionValidationError,
   isValidModelDefinition,
 } from '@upscalerjs/core';
 
@@ -37,7 +38,8 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefi
 export const loadModel = async (
   modelDefinition: ModelDefinition,
 ): Promise<ModelPackage> => {
-  if (isValidModelDefinition(modelDefinition)) {
+  try {
+    isValidModelDefinition(modelDefinition);
     registerCustomLayers(modelDefinition);
 
     const modelPath = getModelPath(modelDefinition);
@@ -47,7 +49,7 @@ export const loadModel = async (
       model,
       modelDefinition,
     };
-  } else {
-    throw getModelDefinitionError(modelDefinition);
+  } catch(err: unknown) {
+    throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 };

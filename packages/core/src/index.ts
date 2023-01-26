@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs-core';
 import type * as tfBrowser from '@tensorflow/tfjs';
 import type * as tfNode from '@tensorflow/tfjs-node';
 import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
-import type { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
+import { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
 export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
@@ -119,14 +119,32 @@ export const isString = (el: unknown): el is string => typeof el === 'string';
 
 export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);
 
+export enum MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE {
+  UNDEFINED = 'undefined',
+  INVALID_MODEL_TYPE = 'invalidModelType',
+  MISSING_PATH = 'missingPath',
+}
+
+export class ModelDefinitionValidationError extends Error {
+  type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE;
+
+  constructor(type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE) {
+    super(type);
+    this.type = type;
+  }
+}
+
 export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
   if (modelDefinition === undefined) {
-    return false;
+    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
   }
   if (!isValidModelType(modelDefinition.modelType || 'layers')) {
-    return false;
+    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   }
-  return Boolean(modelDefinition.path && modelDefinition.scale);
+  if (!modelDefinition.path) {
+    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
+  }
+  return true;
 };
 
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;

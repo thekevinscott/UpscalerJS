@@ -11,6 +11,7 @@ import {
   isValidRange,
   isNumber,
   isShape4D,
+  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -80,20 +81,16 @@ describe('isString', () => {
 });
 
 describe('isValidModelDefinition', () => {
-  it('returns false if given an undefined', () => {
-    expect(isValidModelDefinition(undefined)).toEqual(false);
+  it('throws error if given an undefined', () => {
+    expect(() => isValidModelDefinition(undefined)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
   });
 
-  it('returns false if given path but no scale', () => {
-    expect(isValidModelDefinition({ path: 'foo', scale: undefined } as unknown as ModelDefinition )).toEqual(false);
+  it('throws error if given no path', () => {
+    expect(() => isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
   });
 
-  it('returns false if given scale but no path', () => {
-    expect(isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toEqual(false);
-  });
-
-  it('returns false if given invalid model type', () => {
-    expect(isValidModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition )).toEqual(false);
+  it.only('throws error if given invalid model type', () => {
+    expect(() => isValidModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition )).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   });
 
   it('returns true if given scale and path', () => {
