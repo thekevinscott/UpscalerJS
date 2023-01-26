@@ -49,9 +49,9 @@ export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK
       return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
     case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
       return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
+    default:
+      return new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-
-  return new Error(ERROR_MODEL_DEFINITION_BUG);
 }
 
 export const registerCustomLayers = (modelDefinition: ModelDefinition): void => {
