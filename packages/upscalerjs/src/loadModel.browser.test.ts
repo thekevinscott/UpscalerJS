@@ -18,6 +18,8 @@ import {
 
 import {
   isValidModelDefinition as _isValidModelDefinition,
+  ModelDefinitionValidationError,
+  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 
 jest.mock('./loadModel.browser', () => {
@@ -178,7 +180,9 @@ describe('loadModel browser tests', () => {
   describe('loadModel', () => {
     it('throws if not a valid model definition', async () => {
       const e = new Error(ERROR_MODEL_DEFINITION_BUG);
-      isValidModelDefinition.mockImplementation(() => false);
+      isValidModelDefinition.mockImplementation(() => {
+        throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
+      });
       getModelDefinitionError.mockImplementation(() => e);
 
       await expect(() => loadModel({
