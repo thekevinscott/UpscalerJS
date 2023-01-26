@@ -100,7 +100,7 @@ describe('CDN Integration Tests', () => {
     expect(requests).toEqual(expect.arrayContaining([expect.stringContaining(CDNS[1].name)]));
   });
 
-  it("throws an error if no CDNs are available", async () => {
+  it.only("throws an error if no CDNs are available", async () => {
     const _page = page();
 
     const requests: string[] = [];

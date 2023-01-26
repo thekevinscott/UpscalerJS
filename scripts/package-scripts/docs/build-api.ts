@@ -18,6 +18,7 @@ interface Definitions {
   types: Record<string, DecRef>;
   classes: Record<string, DecRef>;
   functions: Record<string, DecRef>;
+  enums: Record<string, DecRef>;
 }
 
 interface ExpandedProjectReflection extends Omit<ProjectReflection, 'children'> {
@@ -189,6 +190,8 @@ const getKindStringKey = (kindString: string = '') => {
       return 'classes';
     case 'Function':
       return 'functions';
+    case 'Enumeration':
+      return 'enums';
     default:
       throw new Error(`Unexpected kind string: ${kindString}`);
   }
@@ -217,6 +220,7 @@ const getChildren = (projectReflection: ExpandedProjectReflection): Definitions 
     interfaces: [] as DecRef[],
     types: [] as DecRef[],
     classes: [] as DecRef[],
+    enums: [] as DecRef[],
   });
 
   return {
@@ -226,6 +230,7 @@ const getChildren = (projectReflection: ExpandedProjectReflection): Definitions 
     types: getAsObj<DecRef>(parsedChildren.types, i => i.name),
     interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
     classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
+    enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
   };
 };
 
