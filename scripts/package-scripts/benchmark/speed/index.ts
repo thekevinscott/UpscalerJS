@@ -1,6 +1,5 @@
-import Upscaler from 'upscaler';
-import webdriver from 'selenium-webdriver';
 import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare';
+// import type Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
@@ -39,7 +38,8 @@ const sequelize = new Sequelize({
 
 declare global {
   interface Window {
-    Upscaler: typeof Upscaler;
+    Upscaler: any;
+    // Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
   }
@@ -76,10 +76,20 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, resultsOnly?: boolean) => {
+const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, packages: string[], resultsOnly?: boolean) => {
   if (resultsOnly === true) {
-      await fn();
+    await fn();
   } else {
+    if (opts.verbose) {
+      console.log('Running prebuild');
+    }
+    await prebuild({
+      packages,
+      ...opts,
+    });
+    if (opts.verbose) {
+      console.log('Completed prebuild');
+    }
     if (opts.skipBundle !== true) {
       if (opts.verbose) {
         console.log('bundling')
@@ -451,10 +461,6 @@ const benchmarkSpeed = async (
   forceModelRebuild?: boolean;
   verbose?: boolean;
 }) => setupSpeedBenchmarking(async (bsLocal, server) => {
-  await prebuild('browser', {
-    packages,
-    ...opts,
-  });
   const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
   await benchmarker.initialize();
   if (resultsOnly !== true) {
@@ -499,7 +505,7 @@ const benchmarkSpeed = async (
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
   }
-}, opts, resultsOnly);
+}, opts, packages, resultsOnly);
 
 /****
  * Functions to expose the main function as a CLI tool

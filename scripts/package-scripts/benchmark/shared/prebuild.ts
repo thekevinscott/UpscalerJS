@@ -2,11 +2,13 @@ import buildModels from '../../build-model';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
 import buildUpscaler from '../../build-upscaler';
 
-const getOutputFormats = (platform: 'node' | 'browser'): ('cjs' | 'esm' | 'umd')[] => {
-  return ['cjs'];
+const getOutputFormats = (): ('cjs' | 'esm' | 'umd')[] => {
+  return ['cjs', 'esm', 'umd'];
 }
 
-export const prebuild = async (platform: 'node' | 'browser', {
+const platforms = ['node-gpu', 'node', 'browser'];
+
+export const prebuild = async ({
   packages,
   skipBuild,
   skipModelBuild,
@@ -20,7 +22,10 @@ export const prebuild = async (platform: 'node' | 'browser', {
   verbose?: boolean;
 }) => {
   if (skipModelBuild !== true) {
-    const outputFormats = getOutputFormats(platform);
+    if (verbose) {
+      console.log('Building models')
+    }
+    const outputFormats = getOutputFormats();
     const modelPackages = getAllAvailableModelPackages().filter(pkg => {
       if (packages === undefined) {
         return true;
@@ -33,14 +38,17 @@ export const prebuild = async (platform: 'node' | 'browser', {
     });
     if (verbose) {
       console.log([
-        `** built models: ${platform}`,
+        `** built models`,
         ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
       ].join('\n'));
     }
   }
 
   if (skipBuild !== true) {
-    const platformsToBuild: ('node' | 'node-gpu')[] = ['node', 'node-gpu'];
+    const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = ['browser', 'node', 'node-gpu'];
+    if (verbose) {
+      console.log('Building upscaler for platforms', platformsToBuild)
+    }
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
@@ -49,7 +57,7 @@ export const prebuild = async (platform: 'node' | 'browser', {
     }
     if (verbose) {
       console.log([
-        `** built upscaler: ${platform}`,
+        `** built upscaler`,
         ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
       ].join('\n'));
     }

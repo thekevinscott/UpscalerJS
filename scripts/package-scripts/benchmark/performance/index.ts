@@ -305,7 +305,7 @@ const benchmarkPerformance = async (
     forceModelRebuild?: boolean;
     verbose?: boolean;
 }) => {
-  await prebuild('node', {
+  await prebuild({
     packages,
     skipBuild,
     skipModelBuild,

@@ -40,16 +40,16 @@ export const loadModel = async (
 ): Promise<ModelPackage> => {
   try {
     isValidModelDefinition(modelDefinition);
-    registerCustomLayers(modelDefinition);
-
-    const modelPath = getModelPath(modelDefinition);
-    const model = await loadTfModel(modelPath, modelDefinition.modelType);
-
-    return {
-      model,
-      modelDefinition,
-    };
   } catch(err: unknown) {
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
+  registerCustomLayers(modelDefinition);
+
+  const modelPath = getModelPath(modelDefinition);
+  const model = await loadTfModel(modelPath, modelDefinition.modelType);
+
+  return {
+    model,
+    modelDefinition,
+  };
 };

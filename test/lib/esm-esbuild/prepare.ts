@@ -50,7 +50,7 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
-export const bundleEsbuild: Bundle = async ({ 
+export const bundleEsbuild: Bundle<BundleOpts> = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,
@@ -58,7 +58,9 @@ export const bundleEsbuild: Bundle = async ({
   usePNPM = false,
 }: BundleOpts = {}) => {
   const entryFile = path.resolve(ESBUILD_SIR, 'index.js');
-  writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
+  writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports, {
+    verbose,
+  });
   if (skipInstallNodeModules !== true) {
     if (verbose) {
       console.log('installing node modules');
@@ -94,7 +96,7 @@ export const bundleEsbuild: Bundle = async ({
   }
 
   if (verbose) {
-    console.log('bundle');
+    console.log(`bundle the code for entry file ${entryFile}`);
   }
   const buildResult = await build({
     entryPoints: [entryFile],

@@ -78,9 +78,14 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    this._ready = new Promise<void>((resolve) => {
-      void this.warmup(this._opts.warmupSizes).then(resolve); // skipcq: js-0098
+    const gotteNmodel = getModel(this._opts.model || DEFAULT_MODEL);
+    this._model = loadModel(gotteNmodel);
+    this._ready = new Promise<void>(async (resolve) => {
+      await this._model;
+      await cancellableWarmup(this._model, (this._opts.warmupSizes || []), undefined, {
+        signal: this._abortController.signal,
+      });
+      resolve();
     });
   }
 
