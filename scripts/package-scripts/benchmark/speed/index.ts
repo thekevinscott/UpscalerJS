@@ -1,5 +1,5 @@
 import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare';
-// import type Upscaler from 'upscaler';
+import type Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
@@ -38,8 +38,7 @@ const sequelize = new Sequelize({
 
 declare global {
   interface Window {
-    Upscaler: any;
-    // Upscaler: typeof Upscaler;
+    Upscaler: typeof Upscaler;
     flower: string;
     tf: typeof tf;
   }
