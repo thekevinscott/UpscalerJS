@@ -67,7 +67,7 @@ export class UpscalerModel extends Model {
       this.modelDefinition = modelDefinition;
     }
     const pkg = await this.package;
-    console.log(`** Hydrated model ${this.name} in package ${pkg.name}`);
+    // console.log(`** Hydrated model ${this.name} in package ${pkg.name}`);
   }
 
   get package() {
@@ -161,23 +161,28 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
     const modelDefinitionFn = (await import(pathToModel)).default;
     const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
 
+    const modelPath = path.resolve(modelPackageFolder, modelDefinition.path);
     const model = {
+      ...modelDefinition,
       // provide the explicit path to avoid going through the package discovery process (which
       // won't work because of pnpm's local linking)
-      ...modelDefinition,
-      path: tf.io.fileSystem(path.resolve(modelPackageFolder, modelDefinition.path)),
+      path: tf.io.fileSystem(modelPath) as any as string,
     }
     try {
       const upscaler = new Upscaler({
-        // TODO: Need to pull in the Upscaler type definitions for Node, for which
-        // we need ESM Node code
-        model: model as any,
+        model,
       });
       await upscaler.getModel();
       return upscaler;
-    } catch (err) {
-      console.error('Error instantiating upscaler for model definition', model);
-      throw err;
+    } catch (err: unknown) {
+      throw new Error([
+      `Error instantiating upscaler:`,
+      JSON.stringify(Object.entries(model).reduce((obj, [key, val]) => ({
+        ...obj,
+        [key]: val || 'undefined',
+      }), {} as any), null, 2),
+      err instanceof Error ? err.message : JSON.stringify(err),
+      ].join('\n\n'));
     }
   }
 };
@@ -196,7 +201,7 @@ const getPathToModel = (modelPackageFolder?: string, importPath?: string, value?
   try {
     return path.resolve(modelPackageFolder, importPath);
   } catch (err) {
-    console.log(modelPackageFolder, importPath);
+    console.error(modelPackageFolder, importPath);
     throw err;
   }
 }

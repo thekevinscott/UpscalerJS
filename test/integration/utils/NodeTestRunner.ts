@@ -1,7 +1,7 @@
 import { timeit } from "./timeit";
 import { GetScriptContents, testNodeScript as runNodeScript } from "../../lib/node/prepare";
 
-export type Bundle = (opts?: { verbose?: boolean }) => Promise<void>;
+export type Bundle<T = {}> = (opts?: T & { verbose?: boolean }) => Promise<void>;
 
 export type Dependencies = Record<string, string>;
 export type DefinedDependencies = Record<string, any>;

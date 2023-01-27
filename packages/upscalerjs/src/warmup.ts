@@ -52,6 +52,7 @@ export async function* warmup(
       (t: tf.Tensor4D) => model.predict(t) as tf.Tensor4D,
       modelDefinition.postprocess,
     ].filter(Boolean);
+
     for (let i = 0; i < fns.length; i++) {
       const fn = fns[i];
       dummyTensor = processAndDisposeOfTensor(dummyTensor, fn);

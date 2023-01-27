@@ -354,11 +354,21 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
   })
 };
 
-export const writeIndex = (target: string, upscalerName: string, imports: Import[] = []) => {
+export const writeIndex = (target: string, upscalerName: string, imports: Import[] = [], {
+  verbose,
+}: Omit<Opts, 'usePNPM'> = {}) => {
+  const fixtureSet = new Set<string>();
   const importCommands = imports.map(({ paths, packageName, }) => {
-    return [
-      `import _fixture_${getHashedName(packageName)} from '../../../../models/${packageName}/test/__fixtures__/fixture.png';`,
-    ].concat(paths.map(({ path }) => {
+    const pathToFixture = `../../../../models/${packageName}/test/__fixtures__/fixture.png`;
+    const resolvedPathToFixture = path.resolve(target, '../', pathToFixture);
+    const baseImports = [];
+    if (existsSync(resolvedPathToFixture)) {
+      fixtureSet.add(packageName);
+      baseImports.push(`import _fixture_${getHashedName(packageName)} from '${pathToFixture}';`);
+    } else if (verbose) {
+      console.log(`File path does not exist for fixture: ${resolvedPathToFixture}`);
+    }
+    return baseImports.concat(paths.map(({ path }) => {
       return `import _${getHashedName(path)} from '${path}';`;
     })).join('\n');
   }).join('\n');
@@ -366,7 +376,7 @@ export const writeIndex = (target: string, upscalerName: string, imports: Import
 ${paths.map(({ path, name }) => `  '${name}': _${getHashedName(path)},`).join('\n')}
 }`).join('\n');
   const fixtureDefinitions = `window['fixtures'] = {
-${imports.map(({ packageName }) => `  '${packageName}': _fixture_${getHashedName(packageName)},`).join('\n')}
+${imports.filter(({ packageName }) => fixtureSet.has(packageName)).map(({ packageName }) => `  '${packageName}': _fixture_${getHashedName(packageName)},`).join('\n')}
 }`;
   const contents = `
 import * as tf from '@tensorflow/tfjs';

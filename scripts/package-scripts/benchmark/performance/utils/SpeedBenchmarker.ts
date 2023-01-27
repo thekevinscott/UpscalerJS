@@ -7,7 +7,6 @@ import { Device } from './Device';
 import { CreationAttributes, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
 import { BrowserOption, getBrowserstackAccessKey, getDriver, printLogs, startBrowserstack, stopBrowserstack, takeScreenshot } from "../../../utils/browserStack";
-import { UpscalerOptions } from 'upscaler/dist/browser/esm/types';
 import type webdriver from 'selenium-webdriver';
 import { Benchmarker } from "./Benchmarker";
 import { UpscalerModel } from "./UpscalerModel";
@@ -37,6 +36,7 @@ export interface BenchmarkedSpeedResult {
   times: number;
   size: number;
 
+  experimental: boolean;
   packageName: string;
   modelName: string;
   scale: number;
@@ -261,7 +261,7 @@ export class SpeedBenchmarker extends Benchmarker {
     const devices = this.devices;
 
     const query = `
-          SELECT 
+          SELECT
           AVG(m.value) as duration,
           COUNT(m.value) as times,
           m.size,
@@ -274,6 +274,7 @@ export class SpeedBenchmarker extends Benchmarker {
           d.real_mobile as deviceIsRealMobile,
 
           p.name as packageName,
+          p.experimental,
           um.name as modelName,
           um.scale as scale,
           um.meta as meta
@@ -341,11 +342,13 @@ const benchmarkDevice = async (driver: webdriver.WebDriver, capabilities: Browse
   } catch (err: unknown) {
     if (err instanceof Error) {
       if (!err.message.includes('Failed to link vertex and fragment shaders')) {
-        console.error('An error from benchmark model:', err);
+        console.error(`\n\nAn error from benchmark model, attempt ${attempts}, for capabilities ${JSON.stringify(capabilities)} for model ${modelDefinition.packageName}/${modelDefinition.modelName}:`, err,'\n');
       }
     } else {
       throw err;
     }
+
+    await driver.navigate().refresh();
     return await benchmarkDevice(driver, capabilities, modelDefinition, times, attempts + 1, err);
   }
 }
@@ -392,11 +395,12 @@ const benchmarkModel: BenchmarkModel = async (
   }: ExecuteScriptOpts) => {
     const info = document.createElement('p');
     document.body.append(info);
-    const log = (msg: string) => {
+    const log = (...msg: string[]) => {
       const span = document.createElement('span');
-      span.innerHTML = `${msg} | `;
+      span.innerHTML = `${msg.join(', ')} | `;
       info.appendChild(span);
     }
+    console.log = log;
     try {
       log(`${new Date()}`);
       const tf = window['tf'];
@@ -414,7 +418,7 @@ const benchmarkModel: BenchmarkModel = async (
       const upscaleDurations: number[] = [];
       log(`0: Loading model ${packageName} and ${modelName}`);
       const pkg = window[packageName];
-      log('2: got package');
+      log('1: got package');
       let model = pkg[modelName];
       log('2: got model');
       if (!model) {
@@ -424,7 +428,8 @@ const benchmarkModel: BenchmarkModel = async (
         model = model(tf);
         log('3: ran model');
       }
-      const upscalerOpts: UpscalerOptions = {
+      log(model.customLayers)
+      const upscalerOpts = {
         model: {
           ...model,
           packageInformation: undefined,
@@ -434,16 +439,16 @@ const benchmarkModel: BenchmarkModel = async (
       };
       log('4: created opts');
       const Upscaler = window['Upscaler'];
-      log('5: got Upscaler reference');
+      console.log('5: got Upscaler reference');
       try {
         const upscaler = new Upscaler(upscalerOpts);
-        log('6: got new upscaler');
+        console.log('6: got new upscaler')
         const input = tf.zeros([1, size, size, 3]) as tf.Tensor4D;
         log('7: made new tensor');
-        const [warmupDuration, _] = await timeIt(() => upscaler.warmup([{
+        const [warmupDuration, _] = await timeIt(() => upscaler.warmup({
           patchSize: size,
           padding: 0,
-        }]));
+        }));
         log('8: warmed up model');
         for (let i = 0; i < times; i++) {
           log(`9: times: ${i}`);
@@ -480,7 +485,8 @@ const benchmarkModel: BenchmarkModel = async (
       throw err;
     }
   }, optionsForDriver, {
-    timeout: 30000 * 4 * 2, // 240 seconds max
+    pollTime: 500,
+    timeout: 30000 * 2 * 2, // 120 seconds max
   });
   await printLogs(driver, capabilities);
   return result;

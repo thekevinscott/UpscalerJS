@@ -1,6 +1,5 @@
-import Upscaler from 'upscaler';
-import webdriver from 'selenium-webdriver';
 import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare';
+import type Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
@@ -76,10 +75,20 @@ const startBrowserstack = async () => {
   return bsLocal;
 }
 
-const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, resultsOnly?: boolean) => {
+const setupSpeedBenchmarking = async (fn: (bsLocal?: Local, server?: http.Server) => Promise<void>, { useNPM, ...opts}: SetupSpeedBenchmarkingOpts, packages: string[], resultsOnly?: boolean) => {
   if (resultsOnly === true) {
-      await fn();
+    await fn();
   } else {
+    if (opts.verbose) {
+      console.log('Running prebuild');
+    }
+    await prebuild({
+      packages,
+      ...opts,
+    });
+    if (opts.verbose) {
+      console.log('Completed prebuild');
+    }
     if (opts.skipBundle !== true) {
       if (opts.verbose) {
         console.log('bundling')
@@ -196,7 +205,8 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     ].map(table => `DROP TABLE IF EXISTS ${table}`),
     `CREATE TABLE packages (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL UNIQUE
+      name TEXT NOT NULL UNIQUE,
+      experimental BOOL NOT NULL
     )`,
     `CREATE TABLE models (
       id INTEGER PRIMARY KEY,
@@ -229,13 +239,13 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     const query = queries[i];
     await sequelize.query(query);
   }
-  const packages = new Set<string>();
+  const packages = new Map<string, { packageName: string; experimental: boolean }>();
   const models = new Map<string, { packageName: string; modelName: string; scale: number; meta: Record<string, string | number>}>();
   const devices = new Map<string, {
     device?: string; deviceOs?: string; deviceOsVersion?: string; deviceBrowserName?: string; deviceBrowserVersion?: string; deviceIsRealMobile?: boolean;
   }>();
-  for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile } of results) {
-    packages.add(packageName);
+  for (const { packageName, modelName, scale, meta, device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile, experimental } of results) {
+    packages.set(packageName, { packageName, experimental });
     models.set(`${packageName}-${modelName}`, {
       packageName,
       modelName,
@@ -248,13 +258,14 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
       device, deviceOs, deviceOsVersion, deviceBrowserName, deviceBrowserVersion, deviceIsRealMobile
     });
   }
-  
-  for (const packageName of Array.from(packages)) {
+
+  for (const [_, { packageName, experimental }] of packages) {
     await sequelize.query(`
-      INSERT INTO packages (name) VALUES (:name)
+      INSERT OR IGNORE INTO packages (name, experimental) VALUES (:name, :experimental)
     `, {
       replacements: {
         name: packageName,
+        experimental,
       },
       type: QueryTypes.INSERT,
     });
@@ -449,10 +460,6 @@ const benchmarkSpeed = async (
   forceModelRebuild?: boolean;
   verbose?: boolean;
 }) => setupSpeedBenchmarking(async (bsLocal, server) => {
-  await prebuild('browser', {
-    packages,
-    ...opts,
-  });
   const benchmarker = new SpeedBenchmarker(bsLocal, server, SCREENSHOT_DIR);
   await benchmarker.initialize();
   if (resultsOnly !== true) {
@@ -497,7 +504,7 @@ const benchmarkSpeed = async (
   if (outputCSV) {
     writeResultsToOutput(results, outputCSV);
   }
-}, opts, resultsOnly);
+}, opts, packages, resultsOnly);
 
 /****
  * Functions to expose the main function as a CLI tool
