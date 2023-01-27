@@ -486,8 +486,7 @@ const benchmarkModel: BenchmarkModel = async (
     }
   }, optionsForDriver, {
     pollTime: 500,
-    timeout: 30000,
-    // timeout: 30000 * 4 * 2, // 240 seconds max
+    timeout: 30000 * 2 * 2, // 120 seconds max
   });
   await printLogs(driver, capabilities);
   return result;
