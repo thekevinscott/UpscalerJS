@@ -195,7 +195,6 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
     throw new Error('No results found');
   }
 
-
   const queries = [
     ...[
       'packages',
@@ -261,11 +260,11 @@ const saveResults = async (results: BenchmarkedSpeedResult[]) => {
 
   for (const [_, { packageName, experimental }] of packages) {
     await sequelize.query(`
-      INSERT OR IGNORE INTO packages (name, experimental) VALUES (:name, :experimental)
+      INSERT INTO packages (name, experimental) VALUES (:name, :experimental)
     `, {
       replacements: {
         name: packageName,
-        experimental,
+        experimental: experimental || 0,
       },
       type: QueryTypes.INSERT,
     });
