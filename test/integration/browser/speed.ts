@@ -13,6 +13,7 @@ const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
+const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('March 1, 2023 00:00:00');
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);
@@ -52,9 +53,8 @@ describe('Speed Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  const dateAtWhichSpeedTestsTakeEffect = new Date('February 1, 2023 00:00:00');
-  if (new Date().getTime() > dateAtWhichSpeedTestsTakeEffect.getTime()) {
-    console.log('The date is after', dateAtWhichSpeedTestsTakeEffect, 'running speed tests!');
+  if (new Date().getTime() > DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT.getTime()) {
+    console.log('The date is after', DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT, 'running speed tests!');
     [
       {
         label: 'Simple Model',
