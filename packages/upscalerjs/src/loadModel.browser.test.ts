@@ -10,7 +10,6 @@ import {
   loadModel,
 } from './loadModel.browser';
 import {
-  registerCustomLayers as _registerCustomLayers,
   getModelDefinitionError as _getModelDefinitionError,
   loadTfModel as _loadTfModel,
   ERROR_MODEL_DEFINITION_BUG,
@@ -30,10 +29,9 @@ jest.mock('./loadModel.browser', () => {
 });
 
 jest.mock('./utils', () => {
-  const { loadTfModel, getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
+  const { loadTfModel, getModelDefinitionError, ...rest } = jest.requireActual('./utils');
   return {
     ...rest,
-    registerCustomLayers: jest.fn(registerCustomLayers),
     getModelDefinitionError: jest.fn(getModelDefinitionError),
     loadTfModel: jest.fn(loadTfModel),
   }
@@ -62,12 +60,10 @@ jest.mock('./dependencies.generated', () => {
 const tf = mock(_tf);
 const getModelDefinitionError = mockFn(_getModelDefinitionError);
 const isValidModelDefinition = mockFn(_isValidModelDefinition);
-const registerCustomLayers = mockFn(_registerCustomLayers);
 const loadTfModel = mockFn(_loadTfModel);
 
 describe('loadModel browser tests', () => {
   beforeEach(() => {
-    registerCustomLayers.mockClear();
     getModelDefinitionError.mockClear();
     isValidModelDefinition.mockClear();
     loadTfModel.mockClear();
@@ -196,7 +192,6 @@ describe('loadModel browser tests', () => {
       const model = 'foo' as unknown as LayersModel;
       loadTfModel.mockImplementation(async () => model);
       expect(loadTfModel).toHaveBeenCalledTimes(0);
-      expect(registerCustomLayers).toHaveBeenCalledTimes(0);
 
       const modelDefinition: ModelDefinition = {
         path: 'foo',
@@ -208,8 +203,6 @@ describe('loadModel browser tests', () => {
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
-      expect(registerCustomLayers).toHaveBeenCalledTimes(1);
-      expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 
       expect(result).toStrictEqual({
         modelDefinition,
@@ -223,7 +216,6 @@ describe('loadModel browser tests', () => {
       tf.loadLayersModel.mockImplementation(async () => 'layers model' as any);
       tf.loadGraphModel.mockImplementation(async () => model);
       expect(tf.loadLayersModel).toHaveBeenCalledTimes(0);
-      expect(registerCustomLayers).toHaveBeenCalledTimes(0);
 
       const modelDefinition: ModelDefinition = {
         path: 'foo',
@@ -235,8 +227,6 @@ describe('loadModel browser tests', () => {
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
-      expect(registerCustomLayers).toHaveBeenCalledTimes(1);
-      expect(registerCustomLayers).toHaveBeenCalledWith(modelDefinition);
 
       expect(result).toStrictEqual({
         modelDefinition,

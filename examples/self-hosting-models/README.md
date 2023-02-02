@@ -46,25 +46,51 @@ We can further specify our model with additional configuration options:
 ```javascript
 import Upscaler from 'upscaler'
 
-class CustomLayer extends Layer {
-  call(inputs: Inputs) {
-    ... some definition ...
-  }
-
-  static className = 'CustomLayer'
-}
-
 const upscaler = new Upscaler({
   model: {
     scale: 2,
     path: '/model.json',
     preprocess: input => tf.tidy(() => tf.mul(input, 1 / 255)),
     postprocess: output => tf.tidy(() => output.clipByValue(0, 255)),
-    customLayers: [CustomLayer]
   }
 })
 ```
 
 `preprocess` and `postprocess` are functions called on the input and output tensors, respectively.
 
-[`customLayers` allows us to define custom layers for our model](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers). We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/src/utils/getModelDefinition.ts#L14).
+The model can also define a function that returns a `ModelDefinition`, which can be helpful for defining custom layers and ops:
+
+```javascript
+import Upscaler from 'upscaler'
+
+const getModelDefinition = (
+  /**
+   * tf refers to the currently active Tensorflow.js library, which may be 
+   * @tensorflow/tfjs, @tensorflow/tfjs-node, or @tensorflow/tfjs-node-gpu.
+   **/
+  tf,
+) => {
+  class CustomLayer extends Layer {
+    call(inputs: Inputs) {
+      ... some definition ...
+    }
+
+    static className = 'CustomLayer'
+  }
+
+  tf.serialization.registerClass(CustomLayer);
+  
+  return {
+    scale: 2,
+    path: '/model.json',
+    preprocess: input => tf.tidy(() => tf.mul(input, 1 / 255)),
+    postprocess: output => tf.tidy(() => output.clipByValue(0, 255)),
+  }
+}
+
+const upscaler = new Upscaler({
+  model: getModelDefinition,
+})
+```
+
+We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/src/utils/getModelDefinition.ts#L14).

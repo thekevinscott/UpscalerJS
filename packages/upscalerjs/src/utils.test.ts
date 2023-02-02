@@ -11,7 +11,6 @@ import {
   isMultiArgTensorProgress, 
   warn, 
   isAborted,
-  registerCustomLayers,
   ERROR_MISSING_MODEL_DEFINITION_PATH,
   getModel,
   ERROR_MODEL_DEFINITION_BUG,
@@ -32,7 +31,6 @@ import {
 import {
   isValidRange as _isValidRange,
   isShape4D as _isShape4D,
-  CustomOp,
   ModelDefinition,
   ModelDefinitionFn,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
@@ -47,9 +45,6 @@ jest.mock('./dependencies.generated', () => {
       registerOp: jest.fn(),
       loadLayersModel: jest.fn(),
       loadGraphModel: jest.fn(),
-      serialization: {
-        registerClass: jest.fn(),
-      },
     },
   };
 });
@@ -72,75 +67,9 @@ jest.mock('@upscalerjs/core', () => {
 });
 
 const tf = mock(_tf);
-const tfSerialization = mock(_tf.serialization);
 const isLayersModel = mockFn(_isLayersModel);
 const isShape4D = mockFn(_isShape4D);
 const isValidRange = mockFn(_isValidRange);
-
-describe('registerCustomLayers', () => {
-  afterEach(() => {
-    tfSerialization.registerClass.mockClear();
-    tf.registerOp.mockClear();
-  });
-
-  it('does nothing if no custom layers are specified', () => {
-    tfSerialization.registerClass = jest.fn();
-    tf.registerOp = jest.fn();
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
-    expect(tf.registerOp).toHaveBeenCalledTimes(0);
-    const modelDefinition: ModelDefinition = {
-      path: 'foo',
-      scale: 2,
-    };
-    registerCustomLayers(modelDefinition);
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
-    expect(tf.registerOp).toHaveBeenCalledTimes(0);
-  });
-
-  it('registers custom layers if provided', () => {
-    tfSerialization.registerClass = jest.fn();
-    tf.registerOp = jest.fn();
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
-    expect(tf.registerOp).toHaveBeenCalledTimes(0);
-    const modelDefinition: ModelDefinition = {
-      path: 'foo',
-      scale: 2,
-      customLayers: ['foo','bar','baz'] as Array<any>,
-    };
-    registerCustomLayers(modelDefinition);
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(3);
-    expect(tf.registerOp).toHaveBeenCalledTimes(0);
-  });
-
-  it('registers custom ops if provided', () => {
-    tfSerialization.registerClass = jest.fn();
-    tf.registerOp = jest.fn();
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
-    expect(tf.registerOp).toHaveBeenCalledTimes(0);
-    const customOps: CustomOp[] = [
-      {
-        name: 'foo',
-        op: () => tensor([]),
-      },
-      {
-        name: 'bar',
-        op: () => tensor([]),
-      },
-      {
-        name: 'baz',
-        op: () => tensor([]),
-      },
-    ];
-    const modelDefinition: ModelDefinition = {
-      path: 'foo',
-      scale: 2,
-      customOps,
-    };
-    registerCustomLayers(modelDefinition);
-    expect(tfSerialization.registerClass).toHaveBeenCalledTimes(0);
-    expect(tf.registerOp).toHaveBeenCalledTimes(3);
-  });
-});
 
 describe('isAborted', () => {
   it('handles an undefined signal', () => {

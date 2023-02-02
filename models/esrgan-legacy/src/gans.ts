@@ -53,6 +53,10 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     static className = 'PixelShuffle';
   }
 
+  [MultiplyBeta, PixelShuffle,].forEach((layer) => {
+    tf.serialization.registerClass(layer);
+  });
+
   const modelDefinition: ModelDefinition = {
     scale: SCALE,
     path: 'models/gans/model.json',
@@ -65,7 +69,6 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     },
     inputRange: [0, 1,],
     outputRange: [0, 1,],
-    customLayers: [MultiplyBeta, PixelShuffle,],
   };
 
   return modelDefinition;

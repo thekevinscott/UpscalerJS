@@ -11,7 +11,6 @@ import { resolver as _resolver } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
   getModelDefinitionError as _getModelDefinitionError,
-  registerCustomLayers as _registerCustomLayers,
   loadTfModel as _loadTfModel,
   ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
@@ -21,10 +20,9 @@ import {
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 jest.mock('./utils', () => {
-  const { loadTfModel, getModuleFolder, getModelDefinitionError, registerCustomLayers, ...rest } = jest.requireActual('./utils');
+  const { loadTfModel, getModuleFolder, getModelDefinitionError, ...rest } = jest.requireActual('./utils');
   return {
     ...rest,
-    registerCustomLayers: jest.fn(registerCustomLayers),
     getModelDefinitionError: jest.fn(getModelDefinitionError),
     getModuleFolder: jest.fn(getModuleFolder),
     loadTfModel: jest.fn(loadTfModel),
@@ -61,7 +59,6 @@ const tf = mock(_tf);
 const resolver = mockFn(_resolver);
 const getModelDefinitionError = mockFn(_getModelDefinitionError);
 const isValidModelDefinition = mockFn(_isValidModelDefinition);
-const registerCustomLayers = mockFn(_registerCustomLayers);
 const loadTfModel = mockFn(_loadTfModel);
 
 const getResolver = (fn: () => string) => (fn) as unknown as typeof require.resolve;
@@ -70,7 +67,6 @@ describe('loadModel.node', () => {
   beforeEach(() => {
     getModelDefinitionError.mockClear();
     isValidModelDefinition.mockClear();
-    registerCustomLayers.mockClear();
     resolver.mockClear();
     tf.loadLayersModel.mockClear();
   });
@@ -130,14 +126,12 @@ describe('loadModel.node', () => {
     it('loads a valid layers model', async () => {
       resolver.mockImplementation(getResolver(() => './node_modules/baz'));
       isValidModelDefinition.mockImplementation(() => true);
-      registerCustomLayers.mockImplementation(() => { });
       loadTfModel.mockImplementation(async () => 'layers model' as any);
 
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
       const response = await loadModel(modelDefinition);
-      expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
@@ -148,14 +142,12 @@ describe('loadModel.node', () => {
     it('loads a valid graph model', async () => {
       resolver.mockImplementation(getResolver(() => './node_modules/baz'));
       isValidModelDefinition.mockImplementation(() => true);
-      registerCustomLayers.mockImplementation(() => { });
       loadTfModel.mockImplementation(async () => 'graph model' as any);
 
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'graph' };
 
       const response = await loadModel(modelDefinition);
-      expect(registerCustomLayers).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(path, 'graph');
       expect(response).toEqual({
         model: 'graph model',
