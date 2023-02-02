@@ -45,9 +45,6 @@ jest.mock('./dependencies.generated', () => {
       registerOp: jest.fn(),
       loadLayersModel: jest.fn(),
       loadGraphModel: jest.fn(),
-      serialization: {
-        registerClass: jest.fn(),
-      },
     },
   };
 });
@@ -70,7 +67,6 @@ jest.mock('@upscalerjs/core', () => {
 });
 
 const tf = mock(_tf);
-const tfSerialization = mock(_tf.serialization);
 const isLayersModel = mockFn(_isLayersModel);
 const isShape4D = mockFn(_isShape4D);
 const isValidRange = mockFn(_isValidRange);
