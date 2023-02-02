@@ -8,6 +8,7 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 const LOWER_THRESHOLD = 20; // in milliseconds
 const UPPER_THRESHOLD = 10; // in milliseconds
+const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('March 1, 2023 00:00:00');
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -80,9 +81,8 @@ describe('Node Speed Integration Tests', () => {
     await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   }, 1000 * 120);
 
-  const dateAtWhichSpeedTestsTakeEffect = new Date('February 1, 2023 00:00:00');
-  if (new Date().getTime() > dateAtWhichSpeedTestsTakeEffect.getTime()) {
-    console.log('The date is after', dateAtWhichSpeedTestsTakeEffect, 'running speed tests!');
+  if (new Date().getTime() > DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT.getTime()) {
+    console.log('The date is after', DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT, 'running speed tests!');
     [
       {
         label: 'Simple Model',
