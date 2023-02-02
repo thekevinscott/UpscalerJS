@@ -188,7 +188,6 @@ type Size = 'rdn' | 'rrdn';
 const getModelDefinition = (scale: 2 | 3 | 4 | 8, architecture: Size, modelPath: string, meta = {}): ModelDefinitionFn => tf => {
   let preprocess: ModelDefinition['preprocess'];
   let postprocess: ModelDefinition['postprocess'] = clipOutput(tf);
-  let customLayers: ModelDefinition['customLayers'];
   if (architecture === 'rrdn') {
     const Layer = tf.layers.Layer;
     const BETA = 0.2;
@@ -238,7 +237,11 @@ const getModelDefinition = (scale: 2 | 3 | 4 | 8, architecture: Size, modelPath:
 
       static className = 'PixelShuffle';
     }
-    customLayers = [MultiplyBeta, PixelShuffle,];
+
+    [MultiplyBeta, PixelShuffle,].forEach((layer) => {
+      tf.serialization.registerClass(layer);
+    });
+
     preprocess = (image: Tensor) => tf.mul(image, 1 / 255);
     postprocess = (output: Tensor) => tf.tidy(() => {
       const clippedValue = (output).clipByValue(0, 1);
@@ -258,7 +261,6 @@ const getModelDefinition = (scale: 2 | 3 | 4 | 8, architecture: Size, modelPath:
     meta,
     preprocess,
     postprocess,
-    customLayers,
   };
 };
 

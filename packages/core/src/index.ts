@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs-core';
 import type * as tfBrowser from '@tensorflow/tfjs';
 import type * as tfNode from '@tensorflow/tfjs-node';
 import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
-import { Tensor, Tensor3D, Tensor4D, serialization, } from '@tensorflow/tfjs-core';
+import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
 export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
@@ -13,7 +13,6 @@ export interface PackageInformation {
   version: string;
 }
 
-type CustomLayer = Parameters<typeof serialization.registerClass>[0];
 export type Range = [number, number,];
 
 type MetaValue = string | number | Meta | null | undefined | boolean;
@@ -22,11 +21,6 @@ export type ModelType = 'graph' | 'layers';
 
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
-
-export interface CustomOp {
-  name: string;
-  op: OpExecutor;
-}
 
 export type Shape4D = [null | number, number, number, number];
 export const isShape4D = (shape?: unknown): shape is Shape4D => {
@@ -74,14 +68,6 @@ export interface ModelDefinition {
    * A function that processes the input image after being run through model inference. For example, you may need to convert floats to 0-255 integers.
    */
   postprocess?: PostProcess;
-  /**
-   * Custom layers for the model. You can learn more about custom layers [here](https://www.tensorflow.org/js/guide/models_and_layers#custom_layers).
-   */
-  customLayers?: CustomLayer[];
-  /**
-   * Custom ops for the model. You can learn more about custom ops [here](https://www.tensorflow.org/js/guide/custom_ops_kernels_gradients).
-   */
-  customOps?: CustomOp[];
   /**
     * Two numbers denoting the range in which the model expects number to be in the range of. Defaults to [0, 255].
     */

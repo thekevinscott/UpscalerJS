@@ -428,7 +428,6 @@ const benchmarkModel: BenchmarkModel = async (
         model = model(tf);
         log('3: ran model');
       }
-      log(model.customLayers)
       const upscalerOpts = {
         model: {
           ...model,

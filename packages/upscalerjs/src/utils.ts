@@ -54,20 +54,6 @@ export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK
   }
 }
 
-export const registerCustomLayers = (modelDefinition: ModelDefinition): void => {
-  if (modelDefinition.customLayers) {
-    modelDefinition.customLayers.forEach((layer) => {
-      tf.serialization.registerClass(layer);
-    });
-  }
-
-  if (modelDefinition.customOps) {
-    modelDefinition.customOps.forEach(({ name, op, }) => {
-      tf.registerOp(name, op);
-    });
-  }
-};
-
 export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
 };

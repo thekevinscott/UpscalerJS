@@ -5,7 +5,6 @@ import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
   loadTfModel,
-  registerCustomLayers,
 } from './utils';
 import {
   isValidModelDefinition,
@@ -64,7 +63,6 @@ export const loadModel = async (
   } catch(err: unknown) {
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-  registerCustomLayers(modelDefinition);
 
   const model = await fetchModel(modelDefinition);
 

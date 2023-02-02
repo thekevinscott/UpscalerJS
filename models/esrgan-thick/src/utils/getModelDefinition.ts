@@ -46,10 +46,13 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
     return PixelShuffle;
   };
 
+  [MultiplyBeta, getPixelShuffle(scale),].forEach((layer) => {
+    tf.serialization.registerClass(layer);
+  });
+
   return {
     inputRange: [0, 1,],
     outputRange: [0, 1,],
-    customLayers: [MultiplyBeta, getPixelShuffle(scale),],
     scale,
     path: `models/${scale}x/model.json`,
     packageInformation: {

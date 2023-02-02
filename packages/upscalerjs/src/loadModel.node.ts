@@ -1,6 +1,6 @@
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, registerCustomLayers, } from './utils';
+import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from './types';
 import {
@@ -43,7 +43,6 @@ export const loadModel = async (
   } catch(err: unknown) {
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-  registerCustomLayers(modelDefinition);
 
   const modelPath = getModelPath(modelDefinition);
   const model = await loadTfModel(modelPath, modelDefinition.modelType);
