@@ -12,7 +12,7 @@
   "dependencies": {
     "@tensorflow/tfjs": "^4.1.0",
     "seedrandom": "^3.0.5",
-    "upscaler": "1.0.0-beta.13"
+    "upscaler": "1.0.0-beta.14"
   },
   "engines": {
     "npm": ">8.0.0"
