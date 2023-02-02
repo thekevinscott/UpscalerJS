@@ -48,6 +48,7 @@ const usePackages = (databasePath: string) => {
     SELECT p.id, p.name FROM packages p 
     WHERE 1=1
     /* AND p.name != 'default-model' */
+    AND p.name != 'esrgan-experiments'
     GROUP BY p.name
   `)
 

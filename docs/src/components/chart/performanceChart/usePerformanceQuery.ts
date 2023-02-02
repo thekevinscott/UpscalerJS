@@ -34,6 +34,7 @@ const PERFORMANCE_QUERY = `
   LEFT JOIN models m ON r.modelId = m.id
   LEFT JOIN packages p ON m.packageId = p.id
   WHERE 1=1
+  AND p.name != 'esrgan-experiments'
 `;
 
 export const usePerformanceQuery = (databasePath: string, opts: {
