@@ -304,24 +304,24 @@ export const executeModel = (model: LayersModel | GraphModel, pixels: tf.Tensor4
 /* eslint-disable @typescript-eslint/require-await */
 export async function* predict(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: originalPatchSize, padding, progressOutput, }: PrivateUpscaleArgs,
+  { output, progress, patchSize: patchSize, padding, progressOutput, }: PrivateUpscaleArgs,
   {
     model,
     modelDefinition,
   }: ModelPackage,
   {
     imageSize,
+    inputSize,
   }: {
     imageSize: Shape4D;
+    inputSize?: Shape4D;
   }
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const scale = modelDefinition.scale || 1;
 
-  if (originalPatchSize && padding === undefined) {
+  if (inputSize === undefined && patchSize && padding === undefined) {
     warn(WARNING_UNDEFINED_PADDING);
   }
-
-  const patchSize = originalPatchSize;
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
@@ -475,6 +475,7 @@ export async function* upscale(
     },
     {
       imageSize,
+      inputSize,
     }
   );
   let result = await gen.next();

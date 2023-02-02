@@ -1478,6 +1478,24 @@ describe('predict', () => {
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 
+  it('should not warn if provided an input size without padding', async () => {
+    console.warn = jest.fn();
+    tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
+    const patchSize = 2;
+    await wrapGenerator(
+      predict(tensor, {
+        patchSize,
+        output: 'base64',
+        progressOutput: 'base64',
+      }, modelPackage, {
+        imageSize: tensor.shape,
+        inputSize: [null, 3, 256, 256],
+      })
+    );
+
+    expect(console.warn).not.toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+  });
+
   it('should warn if provided a progress callback without patchSize', async () => {
     console.warn = jest.fn();
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
