@@ -11,17 +11,6 @@ pagination_prev: null
 
 There are a number of models available for use with UpscalerJS. In most cases, these models must be explicitly installed alongside UpscalerJS.
 
-## Charts
-
-You can see a comparison of performance and speed measurements for all models:
-
-- [Performance Benchmarks](/models/Benchmarks/Performance)
-- [Speed Benchmarks](/models/Benchmarks/Speed)
-
-## Models
-
-You can view additional information about each model at its documentation page:
-
 - [esrgan-slim](/models/available/esrgan-slim)
 - [esrgan-medium](/models/available/esrgan-medium)
 - [esrgan-thick](/models/available/esrgan-thick)
