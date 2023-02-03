@@ -163,7 +163,7 @@ importers:
       webpack: 5.73.0_vesxedskkah2qshu52mhcrxdlu
       yargs: 17.6.2
 
-  dev:
+  dev/browser:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@types/stats.js': ^0.17.0
@@ -180,16 +180,15 @@ importers:
       stats.js: 0.17.0
     devDependencies:
       '@types/stats.js': 0.17.0
-      '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
-      '@upscalerjs/esrgan-medium': link:../models/esrgan-medium
-      '@upscalerjs/esrgan-slim': link:../models/esrgan-slim
-      '@upscalerjs/esrgan-thick': link:../models/esrgan-thick
+      '@upscalerjs/esrgan-legacy': link:../../models/esrgan-legacy
+      '@upscalerjs/esrgan-medium': link:../../models/esrgan-medium
+      '@upscalerjs/esrgan-slim': link:../../models/esrgan-slim
+      '@upscalerjs/esrgan-thick': link:../../models/esrgan-thick
       seedrandom: 3.0.5
-      upscaler: link:../packages/upscalerjs
+      upscaler: link:../../packages/upscalerjs
       vite: 3.1.5
 
-<<<<<<< HEAD
-  dev/public/models:
+  dev/browser/public/models:
     specifiers:
       '@types/fs-extra': ^9.0.13
       '@types/mkdirp': ^1.0.2
@@ -209,7 +208,7 @@ importers:
       typescript: 4.8.3
       uglify-js: 3.16.2
 
-  dev/public/models/default-model:
+  dev/browser/public/models/default-model:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -219,7 +218,7 @@ importers:
       '@upscalerjs/core': workspace:*
       seedrandom: 3.0.5
     dependencies:
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.1.0
@@ -228,7 +227,7 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  dev/public/models/default-model/demo:
+  dev/browser/public/models/default-model/demo:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@upscalerjs/default-model': 1.0.0-beta.7
@@ -243,7 +242,7 @@ importers:
     devDependencies:
       vite: 3.1.5
 
-  dev/public/models/esrgan-legacy:
+  dev/browser/public/models/esrgan-legacy:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -253,7 +252,7 @@ importers:
       '@upscalerjs/core': workspace:*
       seedrandom: 3.0.5
     dependencies:
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.1.0
@@ -262,7 +261,7 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  dev/public/models/esrgan-legacy/demo:
+  dev/browser/public/models/esrgan-legacy/demo:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@upscalerjs/esrgan-legacy': 1.0.0-beta.9
@@ -271,13 +270,13 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-legacy': link:../../../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-legacy': link:../../../../../../models/esrgan-legacy
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
       vite: 3.1.5
 
-  dev/public/models/esrgan-medium:
+  dev/browser/public/models/esrgan-medium:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -287,7 +286,7 @@ importers:
       '@upscalerjs/core': workspace:*
       seedrandom: 3.0.5
     dependencies:
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.1.0
@@ -296,7 +295,7 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  dev/public/models/esrgan-medium/demo:
+  dev/browser/public/models/esrgan-medium/demo:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@upscalerjs/esrgan-medium': 1.0.0-beta.7
@@ -305,13 +304,13 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-medium': link:../../../../../models/esrgan-medium
+      '@upscalerjs/esrgan-medium': link:../../../../../../models/esrgan-medium
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
       vite: 3.1.5
 
-  dev/public/models/esrgan-slim:
+  dev/browser/public/models/esrgan-slim:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -321,7 +320,7 @@ importers:
       '@upscalerjs/core': workspace:*
       seedrandom: 3.0.5
     dependencies:
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.1.0
@@ -330,7 +329,7 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  dev/public/models/esrgan-slim/demo:
+  dev/browser/public/models/esrgan-slim/demo:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@upscalerjs/esrgan-slim': 1.0.0-beta.7
@@ -339,13 +338,13 @@ importers:
       vite: '*'
     dependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-slim': link:../../../../../models/esrgan-slim
+      '@upscalerjs/esrgan-slim': link:../../../../../../models/esrgan-slim
       seedrandom: 3.0.5
       upscaler: 1.0.0-beta.8_@tensorflow+tfjs@4.1.0
     devDependencies:
       vite: 3.1.5
 
-  dev/public/models/esrgan-thick:
+  dev/browser/public/models/esrgan-thick:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -355,7 +354,7 @@ importers:
       '@upscalerjs/core': workspace:*
       seedrandom: 3.0.5
     dependencies:
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-core': 4.1.0
@@ -364,7 +363,7 @@ importers:
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-  dev/public/models/esrgan-thick/demo:
+  dev/browser/public/models/esrgan-thick/demo:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@upscalerjs/esrgan-thick': 1.0.0-beta.7
@@ -379,7 +378,7 @@ importers:
     devDependencies:
       vite: 3.1.5
 
-  dev/public/models/pixel-upsampler:
+  dev/browser/public/models/pixel-upsampler:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -391,15 +390,13 @@ importers:
     dependencies:
       '@tensorflow/tfjs-core': 4.1.0
       '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
-      '@upscalerjs/core': link:../../../../packages/core
+      '@upscalerjs/core': link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
 
-=======
->>>>>>> 23fb8d4 (Working through getting experiments working)
   docs:
     specifiers:
       '@algolia/client-search': ^4.14.2
@@ -480,10 +477,6 @@ importers:
       sql-wasm: 1.1.4
       sql.js: 1.8.0
       stream-browserify: 3.0.0
-<<<<<<< HEAD
-=======
-      tensor-as-base64: 0.3.0
->>>>>>> 23fb8d4 (Working through getting experiments working)
       upscaler: link:../packages/upscalerjs
     devDependencies:
       '@algolia/client-search': 4.14.2
@@ -593,25 +586,6 @@ importers:
       uglify-js: 3.15.4
 
   models/default-model:
-    specifiers:
-      '@tensorflow/tfjs': ^4.1.0
-      '@tensorflow/tfjs-core': ^4.1.0
-      '@tensorflow/tfjs-layers': ^4.1.0
-      '@tensorflow/tfjs-node': ^4.1.0
-      '@tensorflow/tfjs-node-gpu': ^4.1.0
-      '@upscalerjs/core': workspace:*
-      seedrandom: 3.0.5
-    dependencies:
-      '@upscalerjs/core': link:../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-core': 4.1.0
-      '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
-      '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
-      seedrandom: 3.0.5
-
-  models/esrgan-experiments:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0
       '@tensorflow/tfjs-core': ^4.1.0
@@ -760,7 +734,7 @@ importers:
 
   packages/upscalerjs-wrapper:
     specifiers:
-      upscaler: 1.0.0-beta.13
+      upscaler: 1.0.0-beta.14
     dependencies:
       upscaler: link:../upscalerjs
 
@@ -802,7 +776,7 @@ importers:
       glob: 8.0.3
       sequelize: 6.23.1_sqlite3@5.1.1
       sqlite3: 5.1.1
-      typedoc: 0.23.21
+      typedoc: 0.23.21_typescript@4.8.3
       upscaler: link:../packages/upscalerjs
     devDependencies:
       '@types/cli-table': 0.3.0
@@ -4135,6 +4109,22 @@ packages:
     dependencies:
       '@tensorflow/tfjs-core': 4.1.0
 
+  /@tensorflow/tfjs-core/3.21.0:
+    resolution: {integrity: sha512-YSfsswOqWfd+M4bXIhT3hwtAb+IV8+ODwIxwdFR/7jTAPZP1wMVnSlpKnXHAN64HFOiP+Tm3HmKusEZ0+09A0w==}
+    engines: {yarn: '>= 1.3.2'}
+    dependencies:
+      '@types/long': 4.0.2
+      '@types/offscreencanvas': 2019.3.0
+      '@types/seedrandom': 2.4.30
+      '@types/webgl-ext': 0.0.30
+      '@webgpu/types': 0.1.16
+      long: 4.0.0
+      node-fetch: 2.6.7
+      seedrandom: 3.0.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@tensorflow/tfjs-core/4.1.0:
     resolution: {integrity: sha512-zERD4xtxNq3dV3+wPEMi2HWSV68FA8WucSAogzErp38/q98Byv9G1x8DhxQ+jowTcqN4srGWcBfK59jYwjlAvA==}
     engines: {yarn: '>= 1.3.2'}
@@ -4952,7 +4942,6 @@ packages:
     resolution: {integrity: sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==}
     dev: true
 
-<<<<<<< HEAD
   /@upscalerjs/core/1.0.0-beta.6:
     resolution: {integrity: sha512-8k0C3TJw0bBg1rD34edPtlocBdhYSh+/jeZkmjmyj7MFacBwekpg3+ve03/exgZ5ufINB60+5nuuNN4qivZLXw==}
     dependencies:
@@ -5002,8 +4991,6 @@ packages:
       - encoding
     dev: false
 
-=======
->>>>>>> 23fb8d4 (Working through getting experiments working)
   /@webassemblyjs/ast/1.11.1:
     resolution: {integrity: sha512-ukBh14qFLjxTQNTXocdyksN5QdM28S1CxHt2rdskFyL+xFV7VremuBLVbmCePj+URalXBENx/9Lm7lnhihtCSw==}
     dependencies:
@@ -5094,6 +5081,10 @@ packages:
     dependencies:
       '@webassemblyjs/ast': 1.11.1
       '@xtuc/long': 4.2.2
+
+  /@webgpu/types/0.1.16:
+    resolution: {integrity: sha512-9E61voMP4+Rze02jlTXud++Htpjyyk8vw5Hyw9FGRrmhHQg2GqbuOfwf5Klrb8vTxc2XWI3EfO7RUHMpxTj26A==}
+    dev: false
 
   /@webgpu/types/0.1.21:
     resolution: {integrity: sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==}
@@ -5215,8 +5206,10 @@ packages:
       indent-string: 5.0.0
     dev: true
 
-  /ajv-formats/2.1.1:
+  /ajv-formats/2.1.1_ajv@8.11.0:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -13722,7 +13715,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.11.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1_ajv@8.11.0
       ajv-keywords: 5.1.0_ajv@8.11.0
 
   /scriptjs/2.5.9:
@@ -14603,15 +14596,6 @@ packages:
       unique-string: 3.0.0
     dev: true
 
-<<<<<<< HEAD
-=======
-  /tensor-as-base64/0.3.0:
-    resolution: {integrity: sha512-HxBzss8EijZmPzStCWNd4+KaSf5g5fpc2wWAKuunCoZ24XJmTuigSKZZolt9yY6eICduE2UPOII9o8JFSn8YlA==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^3.18.0
-    dev: false
-
->>>>>>> 23fb8d4 (Working through getting experiments working)
   /term-size/2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
@@ -14965,19 +14949,6 @@ packages:
       typedoc: 0.23.21_typescript@4.8.3
     dev: true
 
-  /typedoc/0.23.21:
-    resolution: {integrity: sha512-VNE9Jv7BgclvyH9moi2mluneSviD43dCE9pY8RWkO88/DrEgJZk9KpUk7WO468c9WWs/+aG6dOnoH7ccjnErhg==}
-    engines: {node: '>= 14.14'}
-    hasBin: true
-    peerDependencies:
-      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
-    dependencies:
-      lunr: 2.3.9
-      marked: 4.2.5
-      minimatch: 5.1.1
-      shiki: 0.11.1
-    dev: false
-
   /typedoc/0.23.21_typescript@4.8.3:
     resolution: {integrity: sha512-VNE9Jv7BgclvyH9moi2mluneSviD43dCE9pY8RWkO88/DrEgJZk9KpUk7WO468c9WWs/+aG6dOnoH7ccjnErhg==}
     engines: {node: '>= 14.14'}
@@ -14990,7 +14961,6 @@ packages:
       minimatch: 5.1.1
       shiki: 0.11.1
       typescript: 4.8.3
-    dev: true
 
   /typescript/4.8.3:
     resolution: {integrity: sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==}
@@ -15235,6 +15205,19 @@ packages:
       semver: 7.3.8
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
+
+  /upscaler/1.0.0-beta.8_@tensorflow+tfjs@4.1.0:
+    resolution: {integrity: sha512-iCGlZcC5dssGwKaYq7wjg1qXd0KoJZoe+3ZerfBy2uZY3fXkLLmoiSI90B7e+bL/eJKwWxptTsB9wm8xh/jq4Q==}
+    engines: {node: '>=16.0'}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.0.0
+    dependencies:
+      '@tensorflow/tfjs': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.8
+      '@upscalerjs/default-model': 1.0.0-beta.6_@tensorflow+tfjs@4.1.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /uri-js/4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

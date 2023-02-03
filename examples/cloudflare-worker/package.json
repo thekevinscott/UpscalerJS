@@ -23,7 +23,7 @@
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.2.9",
-    "upscaler": "*"
+    "upscaler": "1.0.0-beta.14"
   },
   "engines": {
     "npm": ">8.0.0"
