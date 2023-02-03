@@ -35,6 +35,9 @@
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-legacy",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd",
+    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o esm",
+    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs",
+    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o umd",
     "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-legacy"
   },
   "keywords": [

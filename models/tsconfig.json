@@ -11,6 +11,13 @@
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
+    "noFallthroughCasesInSwitch": true,
+    "rootDirs": ["./src", "../../shared/src"],
+    "paths": {
+      "@shared/*": ["../../shared/src/*"]
+    }
+  },
+  "references": [
+    { "path": "./shared/src/" }
+  ]
 }

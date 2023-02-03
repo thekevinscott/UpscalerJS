@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "@upscalerjs/core": "workspace:*",
+    "@tensorflow/tfjs-core": "^4.1.0"
+  }
+}
