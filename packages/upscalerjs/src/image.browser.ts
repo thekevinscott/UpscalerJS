@@ -102,9 +102,7 @@ const checkIfValidEnvironment = (errFn: () => Error) => {
   try {
     (new Image() && 'createElement' in document) === true; // skipcq: JS-0354
   } catch(err) {
-    const error = errFn();
-    console.log(error);
-    throw error;
+    throw errFn();
   }
 };
 
