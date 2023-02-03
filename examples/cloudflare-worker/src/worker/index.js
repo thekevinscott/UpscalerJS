@@ -4,10 +4,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-// import model from '@upscalerjs/esrgan-slim/4x';
-import model from '@upscalerjs/esrgan-thick/4x';
-
-tf.setBackend('cpu');
+import model from '@upscalerjs/esrgan-slim/4x';
 
 const upscale = async (input) => {
   await tf.ready();

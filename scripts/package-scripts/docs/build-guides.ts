@@ -1,8 +1,7 @@
 import path from 'path';
-import { existsSync, mkdirp, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
+import { copyFile, copyFileSync, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 import { JSONSchema } from '../utils/packages';
-import { writeFileSync } from 'fs';
 import fm from 'front-matter';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 
@@ -60,17 +59,19 @@ const getFrontmatter = (key: string): ExampleContent => {
     ...frontmatter
   } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
 
+  const codeEmbed = code_embed !== false ? {
+    params: getDefaultCodeEmbedParameters(category),
+    type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
+    url: `/examples/${key}`,
+    ...code_embed,
+  } : {};
+
   return {
     frontmatter: {
       category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
       hide_table_of_contents: true,
       ...frontmatter,
-      code_embed: {
-        params: getDefaultCodeEmbedParameters(category),
-        type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
-        url: `/examples/${key}`,
-        ...code_embed,
-      },
+      code_embed: codeEmbed,
     },
     title,
   }
@@ -141,8 +142,22 @@ const parseContents = async (key: string, frontmatter: FrontMatter = {}) => {
     '---',
     ...frontmatterContents,
     '---',
+    '',
     contents,
   ].filter(Boolean).join('\n');
+}
+
+const copyAssets = async (targetDir: string, key: string) => {
+  const srcAssetsDir = path.resolve(EXAMPLES_DIR, key, 'assets');
+  if (existsSync(srcAssetsDir)) {
+    const targetAssetsDir = path.resolve(targetDir, 'assets');
+    await mkdirp(targetAssetsDir);
+    const assets = await readdir(srcAssetsDir);
+    await Promise.all(assets.map(async asset => {
+      const assetPath = path.resolve(srcAssetsDir, asset);
+      await copyFile(assetPath, path.resolve(targetAssetsDir, asset));
+    }));
+  }
 }
 
 const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<string, ExampleContent>, dest: string) => {
@@ -165,7 +180,13 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
     if (parent !== undefined && typeof parent !== 'string') {
       throw new Error(`Parent is not of type string: ${parent}`);
     }
-    const targetPath = path.resolve(...[dest, category.toLowerCase(), parent, `${key}.md`].filter(Boolean));
+    const targetDir = path.resolve(...[dest, category.toLowerCase(), parent].filter(Boolean));
+
+    // copy assets
+    await copyAssets(targetDir, key);
+
+    // write readme
+    const targetPath = path.resolve(targetDir, `${key}.md`);
     await mkdirp(path.dirname(targetPath));
     const fileContents = await parseContents(key, frontmatter);
     await writeFile(targetPath, fileContents, 'utf-8');
