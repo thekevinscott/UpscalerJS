@@ -1,4 +1,5 @@
 {
+  "name": "@upscalerjs/shared",
   "private": true,
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
