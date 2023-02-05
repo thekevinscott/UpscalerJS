@@ -15,8 +15,8 @@
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o esm",
     "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs",
+    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o esm",
     "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o umd",
     "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
   },
