@@ -12,10 +12,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "rootDirs": ["./src", "../../shared/src"],
+    "rootDirs": ["./src", "../../../packages/shared/src"],
     "paths": {
-      "@upscalerjs/shared/*": ["../../shared/src/*"]
+      "@upscalerjs/shared/*": ["../../../packages/shared/src/*"]
     }
   },
-  "references": [{ "path": "./shared/src/" }]
 }

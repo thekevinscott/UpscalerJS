@@ -4,8 +4,8 @@
   "description": "ESRGAN Default Model for Upscaler.js",
   "exports": {
     ".": {
-      "require": "./dist/cjs/default-model/src/index.js",
-      "import": "./dist/esm/default-model/src/index.js"
+      "require": "./dist/cjs/models/default-model/src/index.js",
+      "import": "./dist/esm/models/default-model/src/index.js"
     }
   },
   "scripts": {
