@@ -1,5 +1,16 @@
 {
   "extends": "../tsconfig.json",
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.test.ts"],
+  "compilerOptions": {
+    "rootDirs": ["./src", "../../../packages/shared/src"],
+    "paths": {
+      "@upscalerjs/shared/*": ["../../../packages/shared/src/*"]
+    }
+  },
+  "references": [
+    {
+      "@upscalerjs/shared": "../../../packages/shared/src"
+    }
+  ],
 }

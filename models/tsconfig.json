@@ -14,7 +14,12 @@
     "noFallthroughCasesInSwitch": true,
     "rootDirs": ["./src", "../../../packages/shared/src"],
     "paths": {
-      "@upscalerjs/shared/*": ["../../../packages/shared/src/*"]
+      "@shared/*": ["../../../packages/shared/src/*"]
     }
   },
+  "references": [
+    {
+      "@shared": "../../../packages/shared/src"
+    }
+  ],
 }
