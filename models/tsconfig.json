@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDirs": ["./src"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
@@ -13,12 +12,6 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "rootDirs": ["./src", "../../shared/src"],
-    "paths": {
-      "@upscalerjs/shared/*": ["../../shared/src/*"]
-    }
+    "rootDirs": ["./src", "../../../packages/shared/src"],
   },
-  "references": [
-    { "path": "./shared/src/" }
-  ]
 }

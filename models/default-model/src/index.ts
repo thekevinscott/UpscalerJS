@@ -1,9 +1,10 @@
-import { getESRGANModelDefinition, } from '@shared/esrgan';
+import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 2;
 
-export default getESRGANModelDefinition({
+const modelDefinition: ModelDefinitionFn = getESRGANModelDefinition({
   scale: SCALE,
   name: NAME,
   version: VERSION,
@@ -23,3 +24,5 @@ export default getESRGANModelDefinition({
     modelFileName: 'rdn-C1-D2-G4-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch494',
   },
 });
+
+export default modelDefinition;
