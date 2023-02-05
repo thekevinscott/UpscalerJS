@@ -16,6 +16,7 @@ import { DEFAULT_OUTPUT_FORMATS, getOutputFormats } from './prompt/getOutputForm
 import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
 import { babelTransform } from './utils/babelTransform';
 import { MODELS_DIR } from './utils/constants';
+import { replaceTscAliasPaths } from 'tsc-alias';
 
 /***
  * Types
@@ -53,6 +54,10 @@ const buildESM = async (modelFolder: string, opts: Opts = {}) => {
     console.log(`Compiling typescript for ESM in folder ${modelFolder}`)
   }
   await compileTypescript(modelFolder, 'esm');
+
+  replaceTscAliasPaths({
+    configFile: path.resolve(modelFolder, 'tsconfig.esm.json'),
+  });
 };
 
 /****
@@ -63,6 +68,7 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 }
 
 const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
+  const modelFolderName = modelFolder.split('/').pop() || '';
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
   if (opts.forceRebuild !== true && existsSync(DIST)) {
@@ -81,6 +87,9 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     console.log(`Compiling typescript for UMD in folder ${modelFolder}`)
   }
   await compileTypescript(modelFolder, 'umd');
+  replaceTscAliasPaths({
+    configFile: path.resolve(modelFolder, 'tsconfig.umd.json'),
+  });
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
@@ -92,7 +101,8 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     }
     const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
-    const input = path.resolve(TMP, 'default-model/src', filename);
+    // const input = path.resolve(TMP, filename);
+    const input = path.resolve(TMP, modelFolderName, 'src', filename);
 
     if (!existsSync(input)) {
       throw new Error(`The file ${input} does not exist; cannot call roll up`);
@@ -141,6 +151,9 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
     console.log(`Compiling typescript for CJS for ${modelFolder}`);
   }
   await compileTypescript(modelFolder, 'cjs');
+  replaceTscAliasPaths({
+    configFile: path.resolve(modelFolder, 'tsconfig.cjs.json'),
+  });
   if (opts.verbose) {
     console.log(`Babel transforming for CJS for ${modelFolder}`);
   }
