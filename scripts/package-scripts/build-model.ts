@@ -101,7 +101,8 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     }
     const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
-    const input = path.resolve(TMP, modelFolderName, 'src', filename);
+    const input = path.resolve(TMP, filename);
+    // const input = path.resolve(TMP, modelFolderName, 'src', filename);
 
     if (!existsSync(input)) {
       throw new Error(`The file ${input} does not exist; cannot call roll up`);
