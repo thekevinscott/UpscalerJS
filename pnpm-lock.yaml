@@ -216,6 +216,7 @@ importers:
       '@tensorflow/tfjs-node': ^4.1.0
       '@tensorflow/tfjs-node-gpu': ^4.1.0
       '@upscalerjs/core': workspace:*
+      '@upscalerjs/shared': workspace:*
       seedrandom: 3.0.5
     dependencies:
       '@upscalerjs/core': link:../../../../../packages/core
@@ -225,6 +226,7 @@ importers:
       '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
       '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/shared': link:../../../../../models/shared
       seedrandom: 3.0.5
 
   dev/browser/public/models/default-model/demo:
@@ -396,6 +398,14 @@ importers:
       '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
+
+  dev/browser/public/models/shared:
+    specifiers:
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@upscalerjs/core': workspace:*
+    dependencies:
+      '@tensorflow/tfjs-core': 4.1.0
+      '@upscalerjs/core': link:../../../../../packages/core
 
   docs:
     specifiers:
@@ -593,6 +603,7 @@ importers:
       '@tensorflow/tfjs-node': ^4.1.0
       '@tensorflow/tfjs-node-gpu': ^4.1.0
       '@upscalerjs/core': workspace:*
+      '@upscalerjs/shared': workspace:*
       seedrandom: 3.0.5
     dependencies:
       '@upscalerjs/core': link:../../packages/core
@@ -602,6 +613,7 @@ importers:
       '@tensorflow/tfjs-layers': 4.1.0_npjwttp6o2hhjgfcmiedqvkgoa
       '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
+      '@upscalerjs/shared': link:../shared
       seedrandom: 3.0.5
 
   models/esrgan-legacy:
@@ -698,6 +710,14 @@ importers:
       '@tensorflow/tfjs-node': 4.1.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.1.0_seedrandom@3.0.5
       seedrandom: 3.0.5
+
+  models/shared:
+    specifiers:
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@upscalerjs/core': workspace:*
+    dependencies:
+      '@tensorflow/tfjs-core': 4.1.0
+      '@upscalerjs/core': link:../../packages/core
 
   packages/core:
     specifiers:
