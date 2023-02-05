@@ -42,7 +42,6 @@
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
-    "@upscalerjs/shared": "workspace:*",
     "@tensorflow/tfjs-core": "^4.1.0",
     "@tensorflow/tfjs-layers": "^4.1.0",
     "@tensorflow/tfjs": "^4.1.0",
