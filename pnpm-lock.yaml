@@ -708,6 +708,14 @@ importers:
     devDependencies:
       '@types/jest': 29.0.3
 
+  packages/shared:
+    specifiers:
+      '@tensorflow/tfjs-core': ^4.1.0
+      '@upscalerjs/core': workspace:*
+    dependencies:
+      '@tensorflow/tfjs-core': 4.1.0
+      '@upscalerjs/core': link:../core
+
   packages/upscalerjs:
     specifiers:
       '@tensorflow/tfjs': ^4.1.0

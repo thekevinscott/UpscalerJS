@@ -1,15 +1,14 @@
-import { ModelDefinition, } from '@upscalerjs/core';
+import { ModelDefinitionFn, } from '@upscalerjs/core';
+import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 2;
 
-const modelDefinition: ModelDefinition = {
+const modelDefinition: ModelDefinitionFn = getESRGANModelDefinition({
   scale: SCALE,
+  name: NAME,
+  version: VERSION,
   path: `models/model.json`,
-  packageInformation: {
-    name: NAME,
-    version: VERSION,
-  },
   meta: {
     C: 1,
     D: 2,
@@ -24,8 +23,6 @@ const modelDefinition: ModelDefinition = {
     dataset: 'div2k',
     modelFileName: 'rdn-C1-D2-G4-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch494',
   },
-  inputRange: [0, 255,],
-  outputRange: [0, 255,],
-};
+});
 
 export default modelDefinition;

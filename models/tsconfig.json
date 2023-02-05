@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDirs": ["./src"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,
@@ -12,6 +11,15 @@
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  }
+    "noFallthroughCasesInSwitch": true,
+    "rootDirs": ["./src", "../../../packages/shared/src"],
+    "paths": {
+      "@shared/*": ["../../../packages/shared/src/*"]
+    }
+  },
+  "references": [
+    {
+      "@shared": "../../../packages/shared/src"
+    }
+  ],
 }
