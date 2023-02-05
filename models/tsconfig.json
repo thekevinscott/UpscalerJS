@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDirs": ["./src"],
     "skipLibCheck": true,
     "esModuleInterop": true,
     "strict": true,

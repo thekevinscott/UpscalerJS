@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig.umd.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist/tmp",
   },
