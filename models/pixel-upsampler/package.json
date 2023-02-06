@@ -12,20 +12,20 @@
   },
   "exports": {
     "./2x": {
-      "require": "./dist/cjs/models/pixel-upsampler/src/2x.js",
-      "import": "./dist/esm/models/pixel-upsampler/src/2x.js"
+      "require": "./dist/cjs/2x.js",
+      "import": "./dist/esm/2x.js"
     },
     "./3x": {
-      "require": "./dist/cjs/models/pixel-upsampler/src/3x.js",
-      "import": "./dist/esm/models/pixel-upsampler/src/3x.js"
+      "require": "./dist/cjs/3x.js",
+      "import": "./dist/esm/3x.js"
     },
     "./4x": {
-      "require": "./dist/cjs/models/pixel-upsampler/src/4x.js",
-      "import": "./dist/esm/models/pixel-upsampler/src/4x.js"
+      "require": "./dist/cjs/4x.js",
+      "import": "./dist/esm/4x.js"
     },
     ".": {
-      "require": "./dist/cjs/models/pixel-upsampler/src/index.js",
-      "import": "./dist/esm/models/pixel-upsampler/src/index.js"
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
     }
   },
   "files": [
