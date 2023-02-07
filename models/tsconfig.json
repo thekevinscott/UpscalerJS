@@ -13,13 +13,5 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "rootDirs": ["./src", "../../../packages/shared/src"],
-    "paths": {
-      "@shared/*": ["../../../packages/shared/src/*"]
-    }
   },
-  "references": [
-    {
-      "@shared": "../../../packages/shared/src"
-    }
-  ],
 }
