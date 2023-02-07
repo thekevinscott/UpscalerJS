@@ -67,6 +67,18 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
+const getTypescriptFileOutputPath = (modelFolder: string) => {
+  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
+
+  const indexDefinition = exports['.']['import'].split('dist/esm/').pop();
+
+  if (!indexDefinition) {
+    throw new Error(`Could not parse exports from package.json for model folder ${modelFolder}}`);
+  }
+
+  return indexDefinition.split('/').slice(0, -1);
+};
+
 const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const modelFolderName = modelFolder.split('/').pop() || '';
   const TMP = path.resolve(modelFolder, 'dist/tmp');
@@ -101,7 +113,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
     }
     const filename = `${exportName === '.' ? 'index' : exportName}.js`;
     const FILE_DIST = path.resolve(DIST, path.dirname(filename));
-    const input = (modelFolderName === 'default-model') ? path.resolve(TMP, 'models', modelFolderName, 'src', filename) : path.resolve(TMP, filename);
+    const input = path.resolve(TMP, ...getTypescriptFileOutputPath(modelFolder), filename)
 
     if (!existsSync(input)) {
       throw new Error(`The file ${input} does not exist; cannot call roll up`);
