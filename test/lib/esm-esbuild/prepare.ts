@@ -24,7 +24,7 @@ export interface BundleOpts {
  * Constants
  */
 const ESBUILD_ROOT = path.join(__dirname);
-const ESBUILD_SIR = path.resolve(ESBUILD_ROOT, 'src');
+const ESBUILD_SRC = path.resolve(ESBUILD_ROOT, 'src');
 export const ESBUILD_DIST = path.join(ESBUILD_ROOT, '/dist');
 
 const PACKAGES = [
@@ -50,14 +50,19 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
   })),
 }), [] as Import[]);
 
+
+/***
+ * Functions
+ */
+
 export const bundleEsbuild: Bundle<BundleOpts> = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,
   skipCopyFixtures = false,
   usePNPM = false,
-}: BundleOpts = {}) => {
-  const entryFile = path.resolve(ESBUILD_SIR, 'index.js');
+} = {}) => {
+  const entryFile = path.resolve(ESBUILD_SRC, 'index.js');
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports, {
     verbose,
   });

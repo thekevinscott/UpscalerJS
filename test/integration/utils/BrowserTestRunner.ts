@@ -13,8 +13,6 @@ const DEFAULT_PORT = 8098;
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
 
-const cachedBundles = new Set();
-
 export class BrowserTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
@@ -270,20 +268,14 @@ export class BrowserTestRunner {
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
     const opts = this._makeOpts();
-    const bundleIfNotCached = async () => {
-      if (
-        this._cacheBundling === false ||
-        (this._cacheBundling === true && cachedBundles.has(bundle.name) !== true)
-      ) {
-        await bundle(opts);
-      }
+    const _bundle = async () => {
+      await bundle(opts);
       return this.startServer();
     };
     await Promise.all([
-      bundleIfNotCached(),
+      _bundle(),
       this.startBrowser(),
     ]);
-    cachedBundles.add(bundle.name);
   }
 
   @catchFailures()

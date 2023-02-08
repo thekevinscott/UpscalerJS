@@ -1,5 +1,6 @@
 import { timeit } from "./timeit";
 import { GetScriptContents, testNodeScript as runNodeScript } from "../../lib/node/prepare";
+import { Opts } from '../../lib/shared/prepare';
 
 export type Bundle<T = {}> = (opts?: T & { verbose?: boolean }) => Promise<void>;
 
@@ -28,22 +29,21 @@ export class NodeTestRunner<T extends DefinedDependencies> {
   main?: Main<T>;
   globals: Globals;
   verbose?: boolean;
-  bundleOnce: boolean;
+  private _cacheBundling?: boolean;
 
   constructor({
     trackTime = false,
     dependencies = {},
     main,
     globals = {},
-    bundleOnce = true,
+    cacheBundling = true,
   }: {
     trackTime?: boolean;
     main?: Main<T>,
     dependencies?: Dependencies;
     globals?: Globals;
-    bundleOnce?: boolean;
+    cacheBundling?: boolean;
   } = {}) {
-    this.bundleOnce = bundleOnce;
     this.verbose = process.env.verbose === 'true';
     if (this.verbose) {
       console.log('Running NodeTestRunner in verbose mode.');
@@ -57,6 +57,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
       ...globals,
     }
     this.main = main;
+    this._cacheBundling = cacheBundling;
   }
 
   /****
@@ -98,15 +99,20 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     }
   }
 
+  private _makeOpts(): Opts {
+    return {
+      verbose: this.verbose,
+    }
+  }
+
   /****
    * Jest lifecycle methods
    */
 
   @timeit<[Bundle], NodeTestRunner<T>>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
-    await bundle({
-      verbose: this.verbose,
-    });
+    const opts = this._makeOpts();
+    await bundle(opts);
   }
 }
 
