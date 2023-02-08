@@ -1,5 +1,5 @@
 import { ModelDefinition, } from '@upscalerjs/core';
-import _getModelDefinitionDEPRECATED from '../utils/getModelDefinition';
+import _getModelDefinitionDEPRECATED from '../utils/getModelDefinitionDeprecated';
 
 const SCALE = 3;
 
