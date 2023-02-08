@@ -7,30 +7,63 @@ import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/u
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
 import { Bundle } from "../../integration/utils/NodeTestRunner";
+import { MODELS_DIR, UPSCALER_DIR } from "../../../scripts/package-scripts/utils/constants";
 
-const ROOT = path.join(__dirname);
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs');
-const MODELS_PATH = path.join(ROOT, '../../../models');
+/***
+ * Types
+ */
+export interface BundleOpts {
+  verbose?: boolean;
+  skipInstallNodeModules?: boolean;
+  skipInstallLocalPackages?: boolean;
+  usePNPM?: boolean;
+}
 
-export const prepareScriptBundleForNodeCJS: Bundle = async ({ verbose } = {}) => {
-  await installNodeModules(ROOT, { verbose });
-  await installLocalPackages(ROOT, [
-    {
-      src: UPSCALER_PATH,
-      name: LOCAL_UPSCALER_NAME,
-    },
-    ...getAllAvailableModelPackages().map(packageName => ({
-      src: path.resolve(MODELS_PATH, packageName),
-      name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
-    })),
-  ], { verbose });
+/***
+ * Constants
+ */
+const NODE_ROOT = path.join(__dirname);
+
+/***
+ * Functions
+ */
+export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({ 
+  verbose = false, 
+  skipInstallNodeModules = false, 
+  skipInstallLocalPackages = false,
+  usePNPM = false,
+}: BundleOpts = {}) => {
+  if (skipInstallNodeModules !== true) {
+    if (verbose) {
+      console.log('installing node modules');
+    }
+    await installNodeModules(NODE_ROOT, { verbose });
+  }
+  if (skipInstallLocalPackages !== true) {
+    if (verbose) {
+      console.log('installing local packages');
+    }
+    await installLocalPackages(NODE_ROOT, [
+      {
+        src: UPSCALER_DIR,
+        name: LOCAL_UPSCALER_NAME,
+      },
+      ...getAllAvailableModelPackages().map(packageName => ({
+        src: path.resolve(MODELS_DIR, packageName),
+        name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+      })),
+    ], { 
+      verbose,
+      usePNPM,
+     });
+  }
 };
 
 type Stdout = (data: string) => void;
 type Stderr = (data: string) => void;
 export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdout) => {
   await callExec(`node "./src/${file}"`, {
-    cwd: ROOT
+    cwd: NODE_ROOT
   }, stdout);
 };
 
@@ -47,7 +80,7 @@ interface ExecuteNodeScriptOpts {
 type ExecuteNodeScript = (fileName: string, opts?: ExecuteNodeScriptOpts) => Promise<void>;
 export const executeNodeScript: ExecuteNodeScript = async (fileName: string, { stdout, stderr } = {}) => {
   await callExec(`node "${fileName}"`, {
-    cwd: ROOT
+    cwd: NODE_ROOT
   }, stdout, stderr);
 };
 
@@ -89,7 +122,7 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
       console.log(`tmpDir is ${tmpDir}`);
     }
   }, {
-    rootDir: path.resolve(ROOT, './tmp'),
+    rootDir: path.resolve(NODE_ROOT, './tmp'),
     removeTmpDir,
   });
   return data;
