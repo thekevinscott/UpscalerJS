@@ -1,8 +1,8 @@
-import { ModelDefinitionFn, } from '@upscalerjs/core';
-import getModelDefinition from '../getModelDefinition';
+import { ModelDefinition, } from '@upscalerjs/core';
+import _getModelDefinitionDEPRECATED from '../utils/getModelDefinition';
 
 const SCALE = 2;
 
-const modelDefinition: ModelDefinitionFn = getModelDefinition(SCALE, `div2k/${SCALE}x`);
+const modelDefinition: ModelDefinition = _getModelDefinitionDEPRECATED(SCALE, `div2k/${SCALE}x`);
 
 export default modelDefinition;
