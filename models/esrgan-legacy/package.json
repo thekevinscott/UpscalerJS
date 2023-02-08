@@ -4,28 +4,28 @@
   "description": "ESRGAN Legacy Models for Upscaler.js",
   "exports": {
     "./div2k/2x": {
-      "require": "./dist/cjs/div2k/2x.js",
-      "import": "./dist/esm/div2k/2x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/2x.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/2x.js"
     },
     "./div2k/3x": {
-      "require": "./dist/cjs/div2k/3x.js",
-      "import": "./dist/esm/div2k/3x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/3x.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/3x.js"
     },
     "./div2k/4x": {
-      "require": "./dist/cjs/div2k/4x.js",
-      "import": "./dist/esm/div2k/4x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/4x.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/4x.js"
     },
     "./psnr-small": {
-      "require": "./dist/cjs/psnr-small.js",
-      "import": "./dist/esm/psnr-small.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/psnr-small.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/psnr-small.js"
     },
     "./gans": {
-      "require": "./dist/cjs/gans.js",
-      "import": "./dist/esm/gans.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/gans.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/gans.js"
     },
     ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/index.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/index.js"
     }
   },
   "scripts": {
