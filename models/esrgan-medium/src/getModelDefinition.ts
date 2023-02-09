@@ -15,7 +15,7 @@ const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinitio
     T: 10,
     architecture: "rdn",
     patchSize: scale === 3 ? 129 : 128,
-    size: 'slim',
+    size: 'medium',
     artifactReducing: false,
     sharpening: false,
     dataset: 'div2k',

@@ -1,5 +1,6 @@
 import type { Tensor4D, } from '@tensorflow/tfjs-core';
-import type { ModelDefinition, ModelDefinitionFn, TF, } from '@upscalerjs/core';
+import type { ModelDefinitionFn, TF, } from '@upscalerjs/core';
+import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 
 const modelDefinition: ModelDefinitionFn = (tf: TF) => {
@@ -57,21 +58,16 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
     tf.serialization.registerClass(layer);
   });
 
-  const modelDefinition: ModelDefinition = {
-    scale: SCALE,
-    path: 'models/gans/model.json',
-    packageInformation: {
-      name: NAME,
-      version: VERSION,
-    },
+  return getESRGANModelDefinition({
+    scale: SCALE, 
+    path: `models/gans/model.json`,
+    name: NAME,
+    version: VERSION,
     meta: {
       dataset: 'div2k',
+      architecture: "rrdn",
     },
-    inputRange: [0, 1,],
-    outputRange: [0, 1,],
-  };
-
-  return modelDefinition;
+  })(tf);
 };
 
 export default modelDefinition;
