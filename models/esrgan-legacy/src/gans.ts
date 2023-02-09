@@ -3,6 +3,10 @@ import type { ModelDefinition, ModelDefinitionFn, TF, } from '@upscalerjs/core';
 import { NAME, VERSION, } from './constants.generated';
 
 const modelDefinition: ModelDefinitionFn = (tf: TF) => {
+  /** For some reason, the below custom registered layers
+   * are required even though we're redefining them in the shared esrgan
+   * package. I'm not sure why this is the case, but it's a workaround.
+   */
   const Layer = tf.layers.Layer;
   const SCALE = 4;
   const BETA = 0.2;
