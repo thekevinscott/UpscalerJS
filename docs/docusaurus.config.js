@@ -9,7 +9,7 @@ const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   staticDirectories: [
-    'assets', 
+    'assets',
     'node_modules/sql.js/dist',
   ],
   title: 'UpscalerJS',
@@ -217,6 +217,7 @@ const config = {
         //... other Algolia params
       },
     }),
+  scripts: [{ src: 'https://plausible.io/js/script.js', defer: true, 'data-domain': 'upscalerjs.com' },],
 };
 
 module.exports = config;
