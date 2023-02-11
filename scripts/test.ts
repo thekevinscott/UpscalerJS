@@ -46,8 +46,8 @@ const getAllTestFiles = (platform: Platform): string[] => {
   return files.map(file => file.split('/').pop() || '');
 };
 
-const getDependencies = async (platform: Platform, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  const filePath = path.resolve(TEST_DIR, 'integration', `${platform}.dependencies.ts`);
+const getDependencies = async (platform: Platform, runner: 'browserstack' | 'local', ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
+  const filePath = path.resolve(TEST_DIR, 'integration', `${runner === 'browserstack' ? 'browserstack' : platform}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
 
   const sharedDependenciesSet = new Set<Bundle>();
@@ -125,7 +125,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   }
 
   if (skipBundle !== true) {
-    const dependencies = await getDependencies(platform, ...positionalArgs);
+    const dependencies = await getDependencies(platform, runner, ...positionalArgs);
     if (dependencies.length === 0) {
       throw new Error('One day there may be no defined dependencies, but today is not that day.')
     }
