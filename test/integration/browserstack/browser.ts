@@ -1,10 +1,11 @@
 /****
  * Tests that different browsers all upscale correctly
  */
+import fs from 'fs';
 import path from 'path';
-import webdriver from 'selenium-webdriver';
+import webdriver, { logging } from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -44,6 +45,7 @@ const browserOptions = getBrowserOptions(option => {
   return true;
 });
 
+
 describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     // TODO: Not sure how to proxy with Selenium
@@ -54,7 +56,7 @@ describe('Browser Integration Tests', () => {
   });
 
   beforeAll(async function browserBeforeAll() {
-    testRunner.beforeAll();
+    testRunner.beforeAll(bundleEsbuild);
   }, 20000);
 
   afterAll(async function browserAfterAll() {
