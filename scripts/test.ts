@@ -115,6 +115,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, ...positionalArgs);
+    console.log(dependencies);
     const durations: number[] = [];
     for (const dependency of dependencies) {
       const start = performance.now();
