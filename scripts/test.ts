@@ -49,6 +49,7 @@ const getDependencies = async (platform: Platform, ...specificFiles: (number | s
   console.log('get deps for platform', platform)
   const filePath = path.resolve(TEST_DIR, 'integration', `${platform}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
+  console.log('shared deps for file', sharedDependencies);
 
   const sharedDependenciesSet = new Set<Bundle>();
 

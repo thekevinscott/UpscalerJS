@@ -234,13 +234,17 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Build Upscaler, Models, and Bundle'
-        run: pnpm test:integration:browserstack --ci --skipTest --verbose
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
+      - name: 'Build Upscaler'
+        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
+
+      - name: 'Build Models'
+        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+
+      - name: 'Bundle'
+        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --skipBundle --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browserstack --ci --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -273,13 +277,17 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Build Upscaler, Models, and Bundle'
-        run: pnpm test:integration:browser --ci --verbose --skipTest
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
+      - name: 'Build Upscaler'
+        run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
+
+      - name: 'Build Models'
+        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+
+      - name: 'Bundle'
+        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --skipUpscalerBuild --skipModelBuild --skipBundle --ci
+        run: pnpm test:integration:browser --ci --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
