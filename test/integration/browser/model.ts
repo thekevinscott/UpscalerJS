@@ -54,6 +54,10 @@ describe('Model Loading Integration Tests', () => {
   });
   const page = () => testRunner.page;
 
+  beforeAll(async function beforeAll() {
+    await testRunner.beforeAll();
+  }, 60000);
+
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();
   }, 10000);
@@ -170,6 +174,10 @@ describe('Model Loading Integration Tests', () => {
         dist: UMD_DIST,
         port: UMD_PORT,
       });
+
+      beforeAll(async function modelBeforeAll() {
+        await umdTestRunner.beforeAll();
+      }, 20000);
 
       afterAll(async function modelAfterAll() {
         await umdTestRunner.afterAll();

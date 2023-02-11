@@ -31,6 +31,10 @@ describe('Speed Integration Tests', () => {
 
   let pages: puppeteer.Page[] = [];
 
+  beforeAll(async function beforeAll() {
+    await testRunner.beforeAll();
+  }, 60000);
+
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();
   }, 10000);

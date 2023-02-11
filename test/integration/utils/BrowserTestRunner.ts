@@ -266,10 +266,12 @@ export class BrowserTestRunner {
 
   @catchFailures()
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
-  async beforeAll(bundle: Bundle) {
+  async beforeAll(bundle?: Bundle) {
     const opts = this._makeOpts();
     const _bundle = async () => {
-      await bundle(opts);
+      if (bundle) {
+        await bundle(opts);
+      }
       return this.startServer();
     };
     await Promise.all([

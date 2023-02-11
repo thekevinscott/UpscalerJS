@@ -35,6 +35,10 @@ describe('CDN Integration Tests', () => {
     return testRunner.page;
   }
 
+  beforeAll(async function beforeAll() {
+    await testRunner.beforeAll();
+  }, 60000);
+
   afterAll(async function modelAfterAll() {
     await testRunner.afterAll();
   }, 10000);

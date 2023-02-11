@@ -32,6 +32,10 @@ describe('Image Format Integration Tests', () => {
   });
   const page = (): puppeteer.Page => testRunner.page;
 
+  beforeAll(async function beforeAll() {
+    await testRunner.beforeAll();
+  }, 60000);
+
   afterAll(async function imageAfterAll() {
     await testRunner.afterAll();
   }, 10000);
