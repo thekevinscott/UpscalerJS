@@ -149,5 +149,8 @@
       "@tensorflow/tfjs-node": "^4.1.0",
       "@tensorflow/tfjs-node-gpu": "^4.1.0"
     }
+  },
+  "dependencies": {
+    "html-webpack-plugin": "^5.5.0"
   }
 }
