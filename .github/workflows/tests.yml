@@ -234,13 +234,13 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Test Setup'
+      - name: 'Build Upscaler, Models, and Bundle'
         run: pnpm test:integration:browserstack --ci --skipTest --verbose
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --skipBundle --skipBuild --skipModelBuild
+        run: pnpm test:integration:browserstack --ci --skipBundle --skipUpscalerBuild --skipModelBuild
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -273,13 +273,13 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Test Setup'
+      - name: 'Build Upscaler, Models, and Bundle'
         run: pnpm test:integration:browser --ci --verbose --skipTest
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --skipBuild --skipModelBuild --skipBundle --ci
+        run: pnpm test:integration:browser --skipUpscalerBuild --skipModelBuild --skipBundle --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -306,11 +306,17 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Test Setup'
-        run: pnpm test:integration:node --ci --verbose --skipTest
+      - name: 'Build Upscaler'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
+
+      - name: 'Build Models'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+
+      - name: 'Bundle'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --skipBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:node --ci --skipUpscalerBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'
@@ -345,7 +351,7 @@ jobs:
         run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks --skipBuild --skipModelBuild
+        run: pnpm test:memory-leaks --skipUpscalerBuild --skipModelBuild
 
   build-docs:
     name: 'Build Documentation'

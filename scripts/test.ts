@@ -61,14 +61,14 @@ const getDependencies = async (platform: Platform, ...files: (number | string)[]
 const test = async (platform: Platform, runner: Runner, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipBuild,
+  skipUpscalerBuild,
   skipModelBuild,
   forceModelRebuild,
   skipBundle,
   skipTest,
 }: {
   browserstackAccessKey?: string;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -99,7 +99,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     }
   }
 
-  if (skipBuild !== true) {
+  if (skipUpscalerBuild !== true) {
     const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
 
     const durations: number[] = [];
@@ -158,7 +158,7 @@ interface Args {
   platform: Platform;
   runner: Runner;
   skipBundle?: boolean;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   kind?: string;
@@ -202,7 +202,7 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
-    skipBuild: { type: 'boolean' },
+    skipUpscalerBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
@@ -238,7 +238,7 @@ if (require.main === module) {
       positionalArgs,
       browserstackAccessKey,
       verbose,
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       forceModelRebuild,
       skipBundle,
@@ -246,7 +246,7 @@ if (require.main === module) {
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
       browserstackAccessKey,
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       verbose,
       skipBundle,
