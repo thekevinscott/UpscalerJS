@@ -88,15 +88,27 @@ function shouldPrintLogs (entry: webdriver.logging.Entry, capabilities: BrowserO
  */
 export const getBrowserstackAccessKey = () => getEnv().BROWSERSTACK_ACCESS_KEY;
 
-export const startBrowserstack = async (key?: string, bs?: browserstack.Local): Promise<Browserstack> => new Promise((resolve, reject) => {
+export const startBrowserstack = async ({
+  key,
+  bs,
+  verbose = true,
+}: {
+  key?: string;
+  bs?: browserstack.Local;
+  verbose?: boolean;
+}): Promise<Browserstack> => new Promise((resolve, reject) => {
   if (!key) {
     throw new Error('A key must be passed to start up the local browserstack service');
   }
   if (!bs) {
-    console.log('Start browserstack with a branch new object')
+    if (verbose) {
+      console.log('Start browserstack with a brand new object')
+    }
     bs = new browserstack.Local();
   } else {
-    console.log('Start browserstack with an existing object')
+    if (verbose) {
+      console.log('Start browserstack with an existing object')
+    }
   }
   bs.start({
     key,
@@ -110,7 +122,9 @@ export const startBrowserstack = async (key?: string, bs?: browserstack.Local): 
     if (!bs || bs.isRunning() !== true) {
       throw new Error('Browserstack failed to start');
     }
-    console.log('Browserstack started');
+    if (verbose) {
+      console.log('Browserstack started');
+    }
     resolve(bs);
   });
 });
