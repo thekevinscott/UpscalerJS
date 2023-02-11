@@ -66,10 +66,11 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
     console.log('Wrote index file for webpack');
   }
 
+  // TODO: Fix conflicting types here
   const htmlWebpackPlugin: WebpackPluginInstance = new HtmlWebpackPlugin({
     title: 'UpscalerJS Integration Test: ESM via Webpack',
     template: path.resolve(__dirname, './src/index.html'),
-  });
+  }) as any as WebpackPluginInstance;
 
   const config: Configuration = {
     mode: 'production',
