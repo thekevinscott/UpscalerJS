@@ -69,7 +69,7 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
   const htmlWebpackPlugin: WebpackPluginInstance = new HtmlWebpackPlugin({
     title: 'UpscalerJS Integration Test: ESM via Webpack',
     template: path.resolve(__dirname, './src/index.html'),
-  })
+  });
 
   const config: Configuration = {
     mode: 'production',
