@@ -47,10 +47,8 @@ const getAllTestFiles = (platform: Platform): string[] => {
 };
 
 const getDependencies = async (platform: Platform, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  console.log('get deps for platform', platform)
   const filePath = path.resolve(TEST_DIR, 'integration', `${platform}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
-  console.log('shared deps for file', sharedDependencies);
 
   const sharedDependenciesSet = new Set<Bundle>();
 
@@ -58,7 +56,6 @@ const getDependencies = async (platform: Platform, ...specificFiles: (number | s
 
   for (const file of files) {
     const fileName = `${file}`.split('.').slice(0, -1).join('.');
-    console.log(sharedDependencies);
     if (!sharedDependencies[fileName]) {
       throw new Error(`File ${fileName} does not have any shared dependencies defined.`);
     }
@@ -129,7 +126,6 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, ...positionalArgs);
-    console.log('deps', dependencies);
     if (dependencies.length === 0) {
       throw new Error('One day there may be no defined dependencies, but today is not that day.')
     }

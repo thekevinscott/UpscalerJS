@@ -244,7 +244,7 @@ jobs:
         run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -287,7 +287,7 @@ jobs:
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --ci --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -324,7 +324,7 @@ jobs:
         run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'

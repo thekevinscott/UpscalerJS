@@ -1,7 +1,7 @@
 import path from 'path';
 import rimraf from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
-import webpack from 'webpack';
+import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
@@ -66,15 +66,17 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
     console.log('Wrote index file for webpack');
   }
 
-  const compiler = webpack({
+  const htmlWebpackPlugin: WebpackPluginInstance = new HtmlWebpackPlugin({
+    title: 'UpscalerJS Integration Test: ESM via Webpack',
+    template: path.resolve(__dirname, './src/index.html'),
+  })
+
+  const config: Configuration = {
     mode: 'production',
     context: ROOT,
     entry: entryFile,
     stats: 'errors-only',
-    plugins: [new HtmlWebpackPlugin({
-      title: 'UpscalerJS Integration Test: ESM via Webpack',
-      template: path.resolve(__dirname, './src/index.html'),
-    })],
+    plugins: [htmlWebpackPlugin],
     output: {
       path: DIST,
     },
@@ -86,7 +88,9 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
         },
       ],
     },
-  });
+  }
+
+  const compiler = webpack(config);
 
   if (verbose) {
     console.log('Running webpack compiler');

@@ -114,7 +114,6 @@
     "fast-folder-size": "^1.7.1",
     "fs-extra": "^10.1.0",
     "heapdump": "^0.3.15",
-    "html-webpack-plugin": "^5.5.0",
     "inquirer": "^8.2.4",
     "jest": "^29.0.0",
     "jest-canvas-mock": "^2.4.0",
