@@ -5,6 +5,7 @@
 import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
+import { sync } from 'glob';
 import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
@@ -40,11 +41,18 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
-const getDependencies = async (platform: Platform, ...files: (number | string)[]): Promise<Bundle[]> => {
+const getAllTestFiles = (platform: Platform): string[] => {
+  return sync(path.resolve(TEST_DIR, 'integration', platform, `**/*.ts`));
+};
+
+const getDependencies = async (platform: Platform, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
+  console.log('get deps for platform', platform)
   const filePath = path.resolve(TEST_DIR, 'integration', `${platform}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
 
   const sharedDependenciesSet = new Set<Bundle>();
+
+  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform);
 
   for (const file of files) {
     const fileName = `${file}`.split('.').slice(0, -1).join('.');
@@ -115,7 +123,10 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, ...positionalArgs);
-    console.log(dependencies);
+    console.log('deps', dependencies);
+    if (dependencies.length === 0) {
+      throw new Error('One day there may be no defined dependencies, but today is not that day.')
+    }
     const durations: number[] = [];
     for (const dependency of dependencies) {
       const start = performance.now();
