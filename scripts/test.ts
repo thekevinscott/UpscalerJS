@@ -42,7 +42,8 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
 });
 
 const getAllTestFiles = (platform: Platform): string[] => {
-  return sync(path.resolve(TEST_DIR, 'integration', platform, `**/*.ts`));
+  const files: string[] = sync(path.resolve(TEST_DIR, 'integration', platform, `**/*.ts`));
+  return files.map(file => file.split('/').pop() || '');
 };
 
 const getDependencies = async (platform: Platform, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -57,6 +58,10 @@ const getDependencies = async (platform: Platform, ...specificFiles: (number | s
 
   for (const file of files) {
     const fileName = `${file}`.split('.').slice(0, -1).join('.');
+    console.log(sharedDependencies);
+    if (!sharedDependencies[fileName]) {
+      throw new Error(`File ${fileName} does not have any shared dependencies defined.`);
+    }
     sharedDependencies[fileName].forEach((fn: Bundle) => {
       sharedDependenciesSet.add(fn);
     });
