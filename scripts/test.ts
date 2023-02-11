@@ -13,6 +13,7 @@ import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { TEST_DIR } from './package-scripts/utils/constants';
+import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
  * Types
  */
@@ -39,6 +40,21 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
+const getDependencies = async (platform: Platform, ...files: (number | string)[]): Promise<Bundle[]> => {
+  const filePath = path.resolve(TEST_DIR, 'integration', `${platform}.dependencies.ts`);
+  const { default: sharedDependencies } = await import(filePath);
+
+  const sharedDependenciesSet = new Set<Bundle>();
+
+  for (const file of files) {
+    const fileName = `${file}`.split('.').slice(0, -1).join('.');
+    sharedDependencies[fileName].forEach((fn: Bundle) => {
+      sharedDependenciesSet.add(fn);
+    });
+  }
+  return Array.from(sharedDependenciesSet);
+}
+
 /****
  * Main function
  */
@@ -48,12 +64,16 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   skipBuild,
   skipModelBuild,
   forceModelRebuild,
+  skipBundle,
+  skipTest,
 }: {
   browserstackAccessKey?: string;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
+  skipBundle?: boolean;
+  skipTest?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
@@ -93,21 +113,39 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     ].join('\n'));
   }
 
-  const args = [
-    'pnpm',
-    'jest',
-    '--config',
-    path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`),
-    '--detectOpenHandles',
-    // argv.watch ? '--watch' : undefined,
-    ...positionalArgs,
-  ].filter(Boolean).map(arg => `${arg}`);
-  const code = await runTTYProcess(args[0], args.slice(1), { verbose });
-  if (bsLocal !== undefined) {
-    await stopBrowserstack(bsLocal);
+  if (skipBundle !== true) {
+    const dependencies = await getDependencies(platform, ...positionalArgs);
+    const durations: number[] = [];
+    for (const dependency of dependencies) {
+      const start = performance.now();
+      await dependency({
+        verbose,
+      });
+      durations.push(performance.now() - start);
+    }
+    console.log([
+      `** ran shared dependencies: ${platform}`,
+      ...dependencies.map((fn, i) => `  - ${fn.name} in ${durations?.[i]} ms`),
+    ].join('\n'));
   }
-  if (code !== null) {
-    process.exit(code);
+
+  if (skipTest !== true) {
+    const args = [
+      'pnpm',
+      'jest',
+      '--config',
+      path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`),
+      '--detectOpenHandles',
+      // argv.watch ? '--watch' : undefined,
+      ...positionalArgs,
+    ].filter(Boolean).map(arg => `${arg}`);
+    const code = await runTTYProcess(args[0], args.slice(1), { verbose });
+    if (bsLocal !== undefined) {
+      await stopBrowserstack(bsLocal);
+    }
+    if (code !== null) {
+      process.exit(code);
+    }
   }
 }
 
@@ -118,6 +156,7 @@ interface Args {
   watch?: boolean;
   platform: Platform;
   runner: Runner;
+  skipBundle?: boolean;
   skipBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
@@ -125,6 +164,9 @@ interface Args {
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
   verbose?: boolean;
+
+  // this is an option only for CI; lets us separate out our build step from our test step
+  skipTest?: boolean;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -161,6 +203,8 @@ const getArgs = async (): Promise<Args> => {
     platform: { type: 'string', demandOption: true },
     skipBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
+    skipBundle: { type: 'boolean' },
+    skipTest: { type: 'boolean' },
     forceModelRebuild: { type: 'boolean' },
     kind: { type: 'string' },
     verbose: { type: 'boolean' },
@@ -196,13 +240,17 @@ if (require.main === module) {
       skipBuild,
       skipModelBuild,
       forceModelRebuild,
+      skipBundle,
+      skipTest,
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
       browserstackAccessKey,
       skipBuild,
       skipModelBuild,
       verbose,
+      skipBundle,
       forceModelRebuild,
+      skipTest,
     });
   })();
 }

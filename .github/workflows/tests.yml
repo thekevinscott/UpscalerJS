@@ -234,8 +234,13 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
+      - name: 'Test Setup'
+        run: pnpm test:integration:browserstack --ci --skipTest --verbose
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci
+        run: pnpm test:integration:browserstack --ci --skipBundle --skipBuild --skipModelBuild
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -268,20 +273,13 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Build models'
-        run: pnpm --filter './models/*' build
-
-      - name: 'Build Upscaler dependencies'
-        run: 'pnpm --filter="upscaler" build:dependencies'
-
-      - name: 'Build'
-        run: 'pnpm --filter="upscaler" build:only'
-
-      - name: 'Build models'
-        run: 'pnpm model:build esrgan-slim -o cjs -o esm -o umd && pnpm model:build esrgan-medium -o cjs -o esm -o umd && pnpm model:build esrgan-thick -o cjs -o esm -o umd && pnpm model:build esrgan-legacy -o cjs -o esm -o umd'
+      - name: 'Test Setup'
+        run: pnpm test:integration:browser --ci --verbose --skipTest
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --skipBuild --skipModelBuild --verbose --ci
+        run: pnpm test:integration:browser --skipBuild --skipModelBuild --skipBundle --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -308,8 +306,11 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
+      - name: 'Test Setup'
+        run: pnpm test:integration:node --ci --verbose --skipTest
+
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci
+        run: pnpm test:integration:node --ci --skipBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'

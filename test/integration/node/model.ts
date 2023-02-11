@@ -1,6 +1,5 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
@@ -50,9 +49,6 @@ describe('Node Model Loading Integration Tests', () => {
       'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
       'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
-  });
-  beforeAll(async () => {
-    await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   });
 
   it("loads the default model", async () => {
