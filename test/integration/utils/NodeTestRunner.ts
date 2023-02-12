@@ -107,8 +107,10 @@ export class NodeTestRunner<T extends DefinedDependencies> {
 
   @timeit<[Bundle], NodeTestRunner<T>>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
-    const opts = this._makeOpts();
-    await bundle(opts);
+    if (bundle) {
+      const opts = this._makeOpts();
+      await bundle(opts);
+    }
   }
 }
 

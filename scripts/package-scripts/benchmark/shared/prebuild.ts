@@ -10,13 +10,13 @@ const platforms = ['node-gpu', 'node', 'browser'];
 
 export const prebuild = async ({
   packages,
-  skipBuild,
+  skipUpscalerBuild,
   skipModelBuild,
   forceModelRebuild,
   verbose,
 }: {
   packages?: string[];
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -44,7 +44,7 @@ export const prebuild = async ({
     }
   }
 
-  if (skipBuild !== true) {
+  if (skipUpscalerBuild !== true) {
     const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = ['browser', 'node', 'node-gpu'];
     if (verbose) {
       console.log('Building upscaler for platforms', platformsToBuild)
