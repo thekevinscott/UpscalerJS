@@ -57,7 +57,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (runner === 'browserstack') {
-    bsLocal = await startBrowserstack(browserstackAccessKey);
+    bsLocal = await startBrowserstack({ key: browserstackAccessKey });
     process.on('exit', async () => {
       if (bsLocal !== undefined && bsLocal.isRunning()) {
         await stopBrowserstack(bsLocal);

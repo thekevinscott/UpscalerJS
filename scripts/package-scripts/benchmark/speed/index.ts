@@ -71,7 +71,8 @@ const closeServer = (server: http.Server) => new Promise<void>((resolve, reject)
 
 const startBrowserstack = async () => {
   const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
-  const bsLocal = await _startBrowserstack(BROWSERSTACK_ACCESS_KEY);
+  const bsLocal = await _startBrowserstack({ key: BROWSERSTACK_ACCESS_KEY });
+  
   return bsLocal;
 }
 

@@ -186,7 +186,10 @@ export class SpeedBenchmarker extends Benchmarker {
         }
         const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
         console.log('attempt to start browser stack')
-        await startBrowserstack(BROWSERSTACK_ACCESS_KEY, this.bsLocal);
+        await startBrowserstack({
+          key: BROWSERSTACK_ACCESS_KEY, 
+          bs: this.bsLocal,
+        });
         console.log('started browserstack')
         return await setupAndGetDriver(capabilities, attempts + 1);
       }
