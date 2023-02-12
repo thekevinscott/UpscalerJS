@@ -25,7 +25,7 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
 
 (async function main() {
   const argv = await yargs(process.argv.slice(2)).options({
-    skipBuild: { type: 'boolean' },
+    skipUpscalerBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
   }).argv;
 
@@ -38,7 +38,7 @@ const runProcess = (command: string, args: Array<string> = []): Promise<null | n
       ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
     ].join('\n'));
   }
-  if (argv.skipBuild !== true) {
+  if (argv.skipUpscalerBuild !== true) {
     const platformsToBuild: ('browser')[] = ['browser'];
     console.log(`** built upscaler: browser`)
 

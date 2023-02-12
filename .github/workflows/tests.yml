@@ -281,7 +281,7 @@ jobs:
         run: 'pnpm model:build esrgan-slim -o cjs -o esm -o umd && pnpm model:build esrgan-medium -o cjs -o esm -o umd && pnpm model:build esrgan-thick -o cjs -o esm -o umd && pnpm model:build esrgan-legacy -o cjs -o esm -o umd'
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --skipBuild --skipModelBuild --verbose --ci
+        run: pnpm test:integration:browser --skipUpscalerBuild --skipModelBuild --verbose --ci
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -344,7 +344,7 @@ jobs:
         run: 'pnpm --filter="upscaler" build:only'
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks --skipBuild --skipModelBuild
+        run: pnpm test:memory-leaks --skipUpscalerBuild --skipModelBuild
 
   build-docs:
     name: 'Build Documentation'

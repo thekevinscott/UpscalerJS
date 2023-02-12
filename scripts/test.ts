@@ -45,12 +45,12 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
 const test = async (platform: Platform, runner: Runner, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipBuild,
+  skipUpscalerBuild,
   skipModelBuild,
   forceModelRebuild,
 }: {
   browserstackAccessKey?: string;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -79,7 +79,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
     }
   }
 
-  if (skipBuild !== true) {
+  if (skipUpscalerBuild !== true) {
     const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
 
     const durations: number[] = [];
@@ -118,7 +118,7 @@ interface Args {
   watch?: boolean;
   platform: Platform;
   runner: Runner;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   kind?: string;
@@ -159,7 +159,7 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string', demandOption: true },
-    skipBuild: { type: 'boolean' },
+    skipUpscalerBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
     forceModelRebuild: { type: 'boolean' },
     kind: { type: 'string' },
@@ -193,13 +193,13 @@ if (require.main === module) {
       positionalArgs,
       browserstackAccessKey,
       verbose,
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       forceModelRebuild,
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
       browserstackAccessKey,
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       verbose,
       forceModelRebuild,
