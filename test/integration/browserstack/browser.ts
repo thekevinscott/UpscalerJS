@@ -45,7 +45,6 @@ const browserOptions = getBrowserOptions(option => {
   return true;
 });
 
-
 describe('Browser Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     // TODO: Not sure how to proxy with Selenium
