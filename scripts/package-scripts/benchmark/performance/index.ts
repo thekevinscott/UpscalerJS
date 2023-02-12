@@ -288,7 +288,7 @@ const benchmarkPerformance = async (
     useGPU = false,
     outputCSV,
     skipDisplayResults,
-    skipBuild,
+    skipUpscalerBuild,
     skipModelBuild,
     forceModelRebuild,
     verbose,
@@ -300,14 +300,14 @@ const benchmarkPerformance = async (
     useGPU?: boolean;
     outputCSV?: string
     skipDisplayResults?: boolean;
-    skipBuild?: boolean;
+    skipUpscalerBuild?: boolean;
     skipModelBuild?: boolean;
     forceModelRebuild?: boolean;
     verbose?: boolean;
 }) => {
   await prebuild({
     packages,
-    skipBuild,
+    skipUpscalerBuild,
     skipModelBuild,
     forceModelRebuild,
     verbose,
@@ -378,7 +378,7 @@ interface Answers {
   useGPU?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -459,7 +459,7 @@ const getArgs = async (): Promise<Answers> => {
       metric: { type: 'string' },
       outputCSV: { type: 'string' },
       skipDisplayResults: { type: 'boolean' },
-      skipBuild: { type: 'boolean' },
+      skipUpscalerBuild: { type: 'boolean' },
       skipModelBuild: { type: 'boolean' },
       forceModelRebuild: { type: 'boolean' },
       verbose: { type: 'boolean' },
@@ -497,7 +497,7 @@ const getArgs = async (): Promise<Answers> => {
 if (require.main === module) {
   (async () => {
     const {
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       forceModelRebuild,
       cacheDir,
@@ -515,7 +515,7 @@ if (require.main === module) {
       useGPU: args.useGPU,
       outputCSV: args.outputCSV,
       skipDisplayResults: args.skipDisplayResults,
-      skipBuild,
+      skipUpscalerBuild,
       skipModelBuild,
       forceModelRebuild,
       verbose,

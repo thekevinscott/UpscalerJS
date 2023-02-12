@@ -455,7 +455,7 @@ const benchmarkSpeed = async (
   outputCSV?: string;
   resultsOnly?: boolean;
   skipDisplayResults?: boolean;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -516,7 +516,7 @@ interface Answers extends SetupSpeedBenchmarkingOpts {
   resultsOnly?: boolean;
   outputCSV?: string;
   skipDisplayResults?: boolean;
-  skipBuild?: boolean;
+  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -561,7 +561,7 @@ const getArgs = async (): Promise<Answers> => {
       skipBundle: { type: 'boolean' },
       skipInstallNodeModules: { type: 'boolean' },
       useNPM: { type: 'boolean' },
-      skipBuild: { type: 'boolean' },
+      skipUpscalerBuild: { type: 'boolean' },
       skipModelBuild: { type: 'boolean' },
       forceModelRebuild: { type: 'boolean' },
       verbose: { type: 'boolean' },

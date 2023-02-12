@@ -42,9 +42,9 @@ const getExampleInfo = (examplePath: string) => {
  * Main function
  */
 
-const getProcessCommand = (platform: Platform, exampleName: string, skipBuild?: boolean) => {
+const getProcessCommand = (platform: Platform, exampleName: string, skipUpscalerBuild?: boolean) => {
   const startCommand = ['pnpm', '--filter', exampleName, 'start']
-  if (skipBuild) {
+  if (skipUpscalerBuild) {
     return startCommand;
   }
   return [
@@ -53,7 +53,7 @@ const getProcessCommand = (platform: Platform, exampleName: string, skipBuild?: 
   ];
 };
 
-const startExample = async (example: string, skipBuild?: boolean) => {
+const startExample = async (example: string, skipUpscalerBuild?: boolean) => {
   const examplePath = path.resolve(EXAMPLES_DIR, example);
   try {
     fs.accessSync(examplePath);
@@ -65,7 +65,7 @@ const startExample = async (example: string, skipBuild?: boolean) => {
   // get package name from directory
   const { platform } = getExampleInfo(examplePath);
 
-  if (skipBuild !== true) {
+  if (skipUpscalerBuild !== true) {
     await buildUpscaler(platform);
     console.log(`** built upscaler: ${platform}`)
   }
@@ -81,22 +81,22 @@ const startExample = async (example: string, skipBuild?: boolean) => {
 /****
  * Functions to expose the main function as a CLI tool
  */
-type Answers = { exampleDirectory: string, skipBuild?: boolean }
+type Answers = { exampleDirectory: string, skipUpscalerBuild?: boolean }
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs(process.argv.slice(2)).options({
-    skipBuild: { type: 'boolean' },
+    skipUpscalerBuild: { type: 'boolean' },
   }).help().argv;
 
   const exampleDirectory = await getString('Which hdf5 model do you want to build?', argv._[0]);
 
-  return { exampleDirectory, skipBuild: argv.skipBuild };
+  return { exampleDirectory, skipUpscalerBuild: argv.skipUpscalerBuild };
 }
 
 if (require.main === module) {
   (async () => {
-    const { exampleDirectory, skipBuild } = await getArgs();
+    const { exampleDirectory, skipUpscalerBuild } = await getArgs();
 
-    await startExample(exampleDirectory, skipBuild);
+    await startExample(exampleDirectory, skipUpscalerBuild);
   })();
 }
