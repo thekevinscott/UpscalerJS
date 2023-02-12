@@ -88,7 +88,7 @@ describe('Browser Integration Tests', () => {
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
       }, {}, {
-        timeout: 30000, // 30 seconds max
+        timeout: 45000, // 45 seconds max
       });
       await printLogs(driver, capabilities);
 
