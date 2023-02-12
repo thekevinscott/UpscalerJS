@@ -1,6 +1,5 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS, GetScriptContents, testNodeScript } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
@@ -52,9 +51,6 @@ describe('Node Platforms Integration Tests', () => {
         scale: 4,
       }),
     },
-  });
-  beforeAll(async () => {
-    await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   });
 
   [

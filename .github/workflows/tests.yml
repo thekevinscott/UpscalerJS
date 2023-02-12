@@ -308,8 +308,17 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
+      - name: 'Build Upscaler'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
+
+      - name: 'Build Models'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+
+      - name: 'Bundle'
+        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci
+        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'

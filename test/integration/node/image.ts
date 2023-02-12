@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';
-import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
@@ -75,9 +74,6 @@ describe('Node Image Loading Integration Tests', () => {
         scale: 4,
       }),
     },
-  });
-  beforeAll(async () => {
-    await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
   });
 
   describe('Uint8Array', () => {

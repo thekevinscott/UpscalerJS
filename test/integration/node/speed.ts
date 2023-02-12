@@ -1,5 +1,4 @@
 import path from 'path';
-import { prepareScriptBundleForNodeCJS } from '../../lib/node/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
@@ -76,10 +75,6 @@ describe('Node Speed Integration Tests', () => {
       'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
   });
-
-  beforeAll(async () => {
-    await testRunner.beforeAll(prepareScriptBundleForNodeCJS);
-  }, 1000 * 120);
 
   if (new Date().getTime() > DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT.getTime()) {
     console.log('The date is after', DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT, 'running speed tests!');
