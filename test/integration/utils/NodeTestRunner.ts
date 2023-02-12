@@ -29,20 +29,17 @@ export class NodeTestRunner<T extends DefinedDependencies> {
   main?: Main<T>;
   globals: Globals;
   verbose?: boolean;
-  private _cacheBundling?: boolean;
 
   constructor({
     trackTime = false,
     dependencies = {},
     main,
     globals = {},
-    cacheBundling = true,
   }: {
     trackTime?: boolean;
     main?: Main<T>,
     dependencies?: Dependencies;
     globals?: Globals;
-    cacheBundling?: boolean;
   } = {}) {
     this.verbose = process.env.verbose === 'true';
     if (this.verbose) {
@@ -57,7 +54,6 @@ export class NodeTestRunner<T extends DefinedDependencies> {
       ...globals,
     }
     this.main = main;
-    this._cacheBundling = cacheBundling;
   }
 
   /****
@@ -111,8 +107,10 @@ export class NodeTestRunner<T extends DefinedDependencies> {
 
   @timeit<[Bundle], NodeTestRunner<T>>('beforeAll scaffolding')
   async beforeAll(bundle: Bundle) {
-    const opts = this._makeOpts();
-    await bundle(opts);
+    if (bundle) {
+      const opts = this._makeOpts();
+      await bundle(opts);
+    }
   }
 }
 
