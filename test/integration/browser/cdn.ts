@@ -1,7 +1,7 @@
 /****
  * Tests that loading models via CDN works
  */
-import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
@@ -36,7 +36,7 @@ describe('CDN Integration Tests', () => {
   }
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundleEsbuild);
+    await testRunner.beforeAll();
   }, 60000);
 
   afterAll(async function modelAfterAll() {

@@ -2,9 +2,9 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { bundleEsbuild, ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import { readFileSync } from 'fs-extra';
-import { prepareScriptBundleForUMD, DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
@@ -55,7 +55,7 @@ describe('Model Loading Integration Tests', () => {
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {
-    await testRunner.beforeAll(bundleEsbuild);
+    await testRunner.beforeAll();
   }, 60000);
 
   afterAll(async function modelAfterAll() {
@@ -176,7 +176,7 @@ describe('Model Loading Integration Tests', () => {
       });
 
       beforeAll(async function modelBeforeAll() {
-        await umdTestRunner.beforeAll(prepareScriptBundleForUMD);
+        await umdTestRunner.beforeAll();
       }, 20000);
 
       afterAll(async function modelAfterAll() {
