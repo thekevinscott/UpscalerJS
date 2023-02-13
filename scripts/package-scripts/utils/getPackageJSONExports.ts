@@ -15,13 +15,32 @@ const shouldIncludeExportName = (exportName: string) => {
   return true;
 }
 
-export const getPackageJSONExports = (modelFolder: string): Array<string> => {
+export type PackageJSONExport = string | {
+  require: string;
+  import: string;
+};
+
+const isPackageJSONExports = (exports: unknown): exports is {
+  [index: string]: PackageJSONExport;
+} => {
+  if (typeof exports !== 'object' || exports === null) {
+    return false;
+  };
+  return Object.entries(exports).reduce((isValid, [exportName, exportValue]) => {
+    return isValid === false ? false : typeof exportValue === 'string' || (typeof exportValue === 'object' && 'require' in exportValue && 'import' in exportValue);
+  }, true);
+}
+
+export const getPackageJSONExports = (modelFolder: string): Array<[string, PackageJSONExport]> => {
   const packageJSONPath = path.resolve(modelFolder, 'package.json');
   const packageJSON = fs.readFileSync(packageJSONPath, 'utf8');
   const { exports } = JSON.parse(packageJSON);
-  const keys = Object.keys(exports);
-  if (keys.length === 1) {
-    return keys;
+  if (isPackageJSONExports(exports)) {
+    const entries = Object.entries(exports);
+    if (entries.length === 1) {
+      return entries;
+    }
+    return entries.filter(([exportName]) => shouldIncludeExportName(exportName));
   }
-  return Object.keys(exports).filter(shouldIncludeExportName);
+  throw new Error(`Invalid exports field in package json for ${modelFolder}}: ${JSON.stringify(exports)}`);
 };

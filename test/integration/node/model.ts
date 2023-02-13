@@ -1,7 +1,7 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
@@ -79,21 +79,46 @@ describe('Node Model Loading Integration Tests', () => {
   describe('Test specific model implementations', () => {
     const SPECIFIC_PACKAGE: string | undefined = undefined;
     const SPECIFIC_MODEL: string | undefined = undefined;
-    getAllAvailableModelPackages().filter(m => SPECIFIC_PACKAGE === undefined || m === SPECIFIC_PACKAGE).map(packageName => {
+    const filteredPackagesAndModels = getAllAvailableModelPackages().reduce((arr, packageName) => {
+      const models = getAllAvailableModels(packageName);
+      return arr.concat(models.map(model => {
+        return [packageName, model];
+      }));
+    }, [] as ([string, AvailableModel])[]).filter(([packageName, model]) => {
+      if (SPECIFIC_PACKAGE !== undefined) {
+        return packageName !== SPECIFIC_PACKAGE;
+      }
+      if (SPECIFIC_MODEL !== undefined) {
+        return model.esm === SPECIFIC_MODEL;
+      }
+      if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && model.cjs === "8x") {
+        return false;
+      }
+      return true;
+    });
+    if (filteredPackagesAndModels.length === 0) {
+      const allPackages = getAllAvailableModelPackages().map(packageName => {
+        return [
+          `- ${packageName}`,
+          ...getAllAvailableModels(packageName).map(m => `  - ${m.esm}`),
+        ].join('\n');
+      });
+      throw new Error([
+        'No models were found for filter',
+        'Available models:',
+        ...allPackages,
+      ].join('\n'));
+    }
+    const filteredPackagesAndModelsObj = filteredPackagesAndModels.reduce((obj, [packageName, model]) => ({
+      ...obj,
+      [packageName]: (obj[packageName] || []).concat([model]),
+    }), {} as Record<string, AvailableModel[]>);
+    Object.entries(filteredPackagesAndModelsObj).forEach(([packageName, filteredModels]) => {
       describe(packageName, () => {
-        const models = getAllAvailableModels(packageName);
-        models.filter(m => {
-          if (SPECIFIC_MODEL !== undefined) {
-            return m.esm === SPECIFIC_MODEL;
-          }
-          if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && m.cjs === "8x") {
-            return false;
-          }
-          return true;
-        }).forEach(({ cjs }) => {
+        filteredModels.forEach(({ cjs }) => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
-            const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}${cjsName === 'index' ? '' : `/${cjsName}`}`;
+            const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
             const result = await testRunner.run({
               dependencies: {
                 customModel: importPath,

@@ -1,6 +1,6 @@
 import { readdirSync, lstatSync, readFileSync, existsSync } from 'fs-extra';
 import path from 'path';
-import { getPackageJSONExports } from './getPackageJSONExports';
+import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports';
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');
@@ -14,19 +14,29 @@ export const getAllAvailableModelPackages = (): Array<string> => readdirSync(MOD
   return !EXCLUDED.includes(file) && lstatSync(modelDir).isDirectory() && existsSync(path.resolve(modelDir, 'package.json'));
 });
 
-export const getAllAvailableModels = (packageName: string) => {
+export interface AvailableModel {
+  export: string;
+  esm: string;
+  cjs: string;
+  umd: string;
+  pathName: string | PackageJSONExport;
+}
+
+export const getAllAvailableModels = (packageName: string): AvailableModel[] => {
   const modelPackageDir = path.resolve(MODELS_DIR, packageName);
   const umdNames = jsonParse(path.resolve(modelPackageDir, 'umd-names.json'));
-  return getPackageJSONExports(modelPackageDir).map(key => {
+  return getPackageJSONExports(modelPackageDir).map(([key, pathName]) => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
       throw new Error(`No UMD name defined for ${key}`);
     }
-    return {
+    const availableModel: AvailableModel = {
       export: key,
       esm: key.substring(2),
       cjs: key.substring(2),
       umd: umdName,
+      pathName,
     };
+    return availableModel;
   });
 };
