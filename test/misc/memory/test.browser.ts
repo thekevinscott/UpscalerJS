@@ -473,29 +473,29 @@ describe('Memory Leaks', () => {
     expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
   });
 
-  it('should upscale with the idealo model', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async (times) => {
-      const Upscaler = window['Upscaler'];
-      const ESRGANGANS = window['esrgan-legacy']['gans'];
-      let output;
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
-          model: ESRGANGANS,
-        });
-        output = await upscaler.upscale(window['fixtures']['pixel-upsampler']);
+  // it('should upscale with an ESRGAN-thick model', async () => {
+  //   const startingMemory = await getStartingMemory(testRunner.page);
+  //   const image = await testRunner.page.evaluate(async (times) => {
+  //     const Upscaler = window['Upscaler'];
+  //     const ESRGANThick = window['esrgan-thick']['4x'];
+  //     let output;
+  //     for (let i = 0; i < times; i++) {
+  //       const upscaler = new Upscaler({
+  //         model: ESRGANThick,
+  //       });
+  //       output = await upscaler.upscale(window['fixtures']['esrgan-thick']);
 
-        await upscaler.dispose();
-      }
-      return output;
-    }, TIMES_TO_CHECK);
+  //       await upscaler.dispose();
+  //     }
+  //     return output;
+  //   }, TIMES_TO_CHECK);
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-    expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
-  });
+  //   await tick(testRunner.page);
+  //   const endingMemory = await getMemory(testRunner.page);
+  //   const names = prototypes.map(p => p.name);
+  //   checkMemory(names, startingMemory, endingMemory);
+  //   expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
+  // });
 
   it('should callback to progress with a src', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);

@@ -67,10 +67,35 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
+const getIndexDefinition = (exports: Record<string, any>, modelFolder: string) => {
+  console.log(exports);
+  if (!exports) {
+    throw new Error(`No exports defined in package.json for ${modelFolder}`)
+  }
+  if (!exports['.']) {
+    throw new Error(`No index export defined in package.json for ${modelFolder}. The exports were ${JSON.stringify(exports, null, 2)}`)
+  }
+
+  let indexDefinition = exports['.'].import || exports['.'].require || exports['.'];
+
+  if (!indexDefinition) {
+    throw new Error(`No index definition found in package.json for ${modelFolder}. Nothing defined for '.'. Exports: ${JSON.stringify(exports, null, 2)}`);
+  }
+
+  indexDefinition = indexDefinition.default || indexDefinition;
+
+  if (!indexDefinition || typeof indexDefinition !== 'string') {
+    throw new Error(`Bad index definition for ${modelFolder}, expected a string: ${JSON.stringify(indexDefinition, null, 2)}`)
+  }
+
+  return indexDefinition;
+}
+
 const getTypescriptFileOutputPath = (modelFolder: string) => {
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
 
-  const indexDefinition = exports['.']['import'].split('dist/esm/').pop();
+  const indexDefinition = getIndexDefinition(exports, modelFolder).split('dist/esm/').pop();
+  console.log(indexDefinition);
 
   if (!indexDefinition) {
     throw new Error(`Could not parse exports from package.json for model folder ${modelFolder}}`);
@@ -106,7 +131,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
   for (let i = 0; i < files.length; i++) {
-    const exportName = files[i];
+    const [exportName] = files[i];
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`);

@@ -15635,7 +15635,7 @@
             ]
           },
           {
-            "class_name": "PixelShuffle",
+            "class_name": "PixelShuffle4x",
             "config": {
               "name": "pixel_shuffle_10",
               "trainable": true,
