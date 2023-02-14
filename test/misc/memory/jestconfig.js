@@ -25,7 +25,7 @@ module.exports = {
   ...jestconfig,
   "setupFilesAfterEnv": [path.resolve(TEST_ROOT, "jest.setup.ts")],
   setupFiles: [],
-  projects: ['<rootDir>/**/test.*.ts',],
+  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(tsx?)$",
   roots: [
     "<rootDir>",
   ],
