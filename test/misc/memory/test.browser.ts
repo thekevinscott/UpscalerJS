@@ -676,6 +676,11 @@ declare global {
     pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
+    'pixel-upsampler': Record<string, ModelDefinition>;
     'esrgan-legacy': Record<string, ModelDefinition>;
+    'esrgan-slim': Record<string, ModelDefinition>;
+    'esrgan-medium': Record<string, ModelDefinition>;
+    'esrgan-thick': Record<string, ModelDefinition>;
+    'default-model': Record<string, ModelDefinition>;
   }
 }
