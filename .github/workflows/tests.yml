@@ -350,17 +350,17 @@ jobs:
       - name: 'Install dependencies'
         run: pnpm liteinstall
 
-      - name: 'Build models'
-        run: pnpm --filter './models/*' build
+      - name: 'Build Upscaler'
+        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
 
-      - name: 'Build Upscaler dependencies'
-        run: 'pnpm --filter="upscaler" build:dependencies'
+      - name: 'Build Models'
+        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
-      - name: 'Build'
-        run: 'pnpm --filter="upscaler" build:only'
+      - name: 'Bundle'
+        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:memory-leaks --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   build-docs:
     name: 'Build Documentation'

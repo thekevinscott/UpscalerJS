@@ -79,6 +79,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   forceModelRebuild,
   skipBundle,
   skipTest,
+  memoryTest,
 }: {
   browserstackAccessKey?: string;
   skipUpscalerBuild?: boolean;
@@ -87,6 +88,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
+  memoryTest?: boolean,
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (skipTest !== true && runner === 'browserstack') {
@@ -143,21 +145,23 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
       durations.push(performance.now() - start);
     }
     console.log([
-      `** ran shared dependencies: ${platform}`,
+      `** bundled: ${platform}`,
       ...dependencies.map((fn, i) => `  - ${fn.name} in ${durations?.[i]} ms`),
     ].join('\n'));
   }
 
   if (skipTest !== true) {
+    const jestConfigPath = path.resolve(TEST_DIR, memoryTest ? 'misc/memory/jestconfig.js' : `jestconfig.${platform}.${runner}.js`);
     const args = [
       'pnpm',
       'jest',
       '--config',
-      path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`),
+      jestConfigPath,
       '--detectOpenHandles',
       // argv.watch ? '--watch' : undefined,
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
+
     const code = await runTTYProcess(args[0], args.slice(1), { verbose });
     if (bsLocal !== undefined) {
       await stopBrowserstack(bsLocal);
@@ -183,6 +187,7 @@ interface Args {
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
   verbose?: boolean;
+  memoryTest?: boolean;
 
   // this is an option only for CI; lets us separate out our build step from our test step
   skipTest?: boolean;
@@ -227,6 +232,7 @@ const getArgs = async (): Promise<Args> => {
     forceModelRebuild: { type: 'boolean' },
     kind: { type: 'string' },
     verbose: { type: 'boolean' },
+    memoryTest: { type: 'boolean' },
   }).argv;
   const platform = getPlatform(argv.platform);
   const runner = getRunner(argv.kind);
@@ -254,22 +260,10 @@ if (require.main === module) {
       platform,
       runner,
       positionalArgs,
-      browserstackAccessKey,
-      verbose,
-      skipUpscalerBuild,
-      skipModelBuild,
-      forceModelRebuild,
-      skipBundle,
-      skipTest,
+      ...args
     } = await getArgs();
     await test(platform, runner, positionalArgs, {
-      browserstackAccessKey,
-      skipUpscalerBuild,
-      skipModelBuild,
-      verbose,
-      skipBundle,
-      forceModelRebuild,
-      skipTest,
+      ...args,
     });
   })();
 }
