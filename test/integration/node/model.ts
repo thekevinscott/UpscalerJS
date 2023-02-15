@@ -1,9 +1,10 @@
+import fs from 'fs';
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -16,14 +17,15 @@ const main: Main = async (deps) => {
     Upscaler,
     tf,
     base64ArrayBuffer,
-    flower,
+    imagePath,
     model,
   } = deps;
+
   const upscaler = new Upscaler({
     model,
   });
-  const bytes = new Uint8Array(flower);
-  const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
+
+  const tensor = tf.node.decodeImage(fs.readFileSync(imagePath)).dataSync();
   const result = await upscaler.upscale(tensor, {
     output: 'tensor',
     patchSize: 64,
@@ -47,14 +49,16 @@ describe('Node Model Loading Integration Tests', () => {
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
       'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
-      'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
     },
   });
 
   it("loads the default model", async () => {
     const result = await testRunner.run({
+      dependencies: {
+      },
       globals: {
         model: 'undefined',
+        imagePath: path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png'),
       },
     });
     expect(result).not.toEqual('');
@@ -64,6 +68,9 @@ describe('Node Model Loading Integration Tests', () => {
 
   it("loads a locally exposed model via file:// path", async () => {
     const result = await testRunner.run({
+      dependencies: {
+        imagePath: path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png'),
+      },
       globals: {
         model: JSON.stringify({
           path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/4x/4x.json'),
@@ -77,8 +84,8 @@ describe('Node Model Loading Integration Tests', () => {
   });
 
   describe('Test specific model implementations', () => {
-    const SPECIFIC_PACKAGE: string | undefined = undefined;
-    const SPECIFIC_MODEL: string | undefined = undefined;
+    const SPECIFIC_PACKAGE: string | undefined = 'maxim-deblurring';
+    const SPECIFIC_MODEL: string | undefined = 'small';
     const filteredPackagesAndModels = getAllAvailableModelPackages().reduce((arr, packageName) => {
       const models = getAllAvailableModels(packageName);
       return arr.concat(models.map(model => {
@@ -119,19 +126,24 @@ describe('Node Model Loading Integration Tests', () => {
           const cjsName = cjs || 'index';
           it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
             const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
+            const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
             const result = await testRunner.run({
               dependencies: {
                 customModel: importPath,
               },
               globals: {
                 model: 'customModel',
+                imagePath: path.resolve(modelPackageDir, 'fixture.png'),
               }
             });
 
             expect(result).not.toEqual('');
             const formattedResult = `data:image/png;base64,${result}`;
-            checkImage(formattedResult, path.resolve(MODELS_DIR, packageName, "test/__fixtures__", cjsName, "result.png"), `${cjsName}/diff.png`, `${cjsName}/upscaled.png`);
-          });
+            const fixturePath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", cjsName, "result.png")
+            const diffPath = path.resolve(TMP_DIR, 'test-output/diff', `${packageName}/${cjsName}/diff.png`);
+            const upscaledPath = path.resolve(TMP_DIR, 'test-output/diff', `${packageName}/${cjsName}/upscaled.png`);
+            checkImage(formattedResult, fixturePath, diffPath, upscaledPath);
+          }, 60000 * 4); // 4 minutes per model
         });
       });
     });
