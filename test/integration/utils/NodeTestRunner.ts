@@ -1,6 +1,7 @@
 import { timeit } from "./timeit";
-import { GetScriptContents, testNodeScript as runNodeScript } from "../../lib/node/prepare";
-import { Opts } from '../../lib/shared/prepare';
+import path from 'path';
+import { GetScriptContents, NODE_ROOT, testNodeScript as runNodeScript } from "../../lib/node/prepare";
+import { getHashedName, Opts } from '../../lib/shared/prepare';
 
 export type Bundle<T = {}> = (opts?: T & { verbose?: boolean }) => Promise<void>;
 
@@ -65,7 +66,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     main,
     globals = {},
   }: TestOpts<T>, {
-    removeTmpDir = true, // set to false if you need to inspect the Node output files
+    removeTmpDir = false, // set to false if you need to inspect the Node output files
   } = {}) {
     const _main = main || this.main;
     if (!_main) {
@@ -87,6 +88,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
       return await runNodeScript(contents, {
         removeTmpDir,
         testName,
+        rootDir: path.resolve(NODE_ROOT, './tmp', getHashedName(`${Math.random()}`)),
       });
     } catch(err: any) {
       const message = err.message;

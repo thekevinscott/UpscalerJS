@@ -22,7 +22,7 @@ export interface BundleOpts {
 /***
  * Constants
  */
-const NODE_ROOT = path.join(__dirname);
+export const NODE_ROOT = path.join(__dirname);
 
 /***
  * Functions
@@ -89,12 +89,14 @@ interface TestNodeScriptOpts {
   logExtra?: boolean;
   removeTmpDir?: boolean;
   testName?: string;
+  rootDir?: string;
 }
 type TestNodeScript = (getScriptContents: GetScriptContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
 export const testNodeScript: TestNodeScript = async (getScriptContents, {
   logExtra = true,
   removeTmpDir,
   testName,
+  rootDir = path.resolve(NODE_ROOT, './tmp'),
 } = {}) => {
   let data;
   await withTmpDir(async tmpDir => {
@@ -122,7 +124,7 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
       console.log(`tmpDir is ${tmpDir}`);
     }
   }, {
-    rootDir: path.resolve(NODE_ROOT, './tmp'),
+    rootDir,
     removeTmpDir,
   });
   return data;

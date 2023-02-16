@@ -3,8 +3,7 @@ import rimraf from 'rimraf';
 import fs from 'fs';
 import { mkdirpSync } from 'fs-extra';
 import { getHashedName } from './getHashedName';
-
-const ROOT = path.join(__dirname, '../../..');
+import { TMP_DIR } from './constants';
 
 interface WithTmpDirOpts {
   rootDir?: string;
@@ -30,7 +29,7 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir }
   }
 };
 
-export const makeTmpDir = (root = path.resolve(ROOT, 'tmp')): string => {
+export const makeTmpDir = (root = TMP_DIR): string => {
   const folder = path.resolve(root, getHashedName(`${Math.random()}`));
   mkdirpSync(folder);
   if (!fs.existsSync(folder)) {
