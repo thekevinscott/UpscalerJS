@@ -71,10 +71,14 @@ const writeModelFile = async (name: string, data: string) => {
 }
 
 const createNpmIgnore = (): string => [
+  'assets',
   'src',
   'yarn-error.log',
   'node_modules',
   'test',
+  'demo',
+  'DOC.mdx',
+  'models.dvc',
 ].join('\n');
 
 const createGitIgnore = () => [
