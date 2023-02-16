@@ -40,3 +40,66 @@ export const getAllAvailableModels = (packageName: string): AvailableModel[] => 
     return availableModel;
   });
 };
+
+export const getFilteredModels = ({
+  specificModel,
+  specificPackage,
+  filter = () => true,
+  includeExperimental = false,
+}: {
+  specificPackage?: string;
+  specificModel?: string;
+  filter?: (packageName: string, model: AvailableModel) => boolean;
+  includeExperimental?: boolean;
+}) => {
+  const filteredPackagesAndModels = getAllAvailableModelPackages().reduce((arr, packageName) => {
+    const models = getAllAvailableModels(packageName);
+    return arr.concat(models.map(model => {
+      return [packageName, model];
+    }));
+  }, [] as ([string, AvailableModel])[])
+
+  .filter(([packageName, model]) => {
+    if (includeExperimental) {
+      return true;
+    }
+    const packageJSON = JSON.parse(readFileSync(path.resolve(MODELS_DIR, packageName, 'package.json'), 'utf-8'));
+    const experimental = packageJSON['@upscalerjs']?.['model']?.['experimental'];
+    return !experimental;
+  })
+  .filter(([packageName, model]) => {
+    if (specificPackage !== undefined) {
+      return packageName === specificPackage;
+    }
+    return true;
+  })
+  .filter(([_, model]) => {
+    if (specificModel !== undefined) {
+      return model.esm === specificModel;
+    }
+    return true;
+  })
+  .filter(([packageName, model]) => {
+    return filter(packageName, model);
+  });
+  if (filteredPackagesAndModels.length === 0) {
+    const allPackages = getAllAvailableModelPackages().map(packageName => {
+      return [
+        `- ${packageName}`,
+        ...getAllAvailableModels(packageName).map(m => `  - ${m.esm}`),
+      ].join('\n');
+    });
+    throw new Error([
+      'No models were found for filter',
+      'Available models:',
+      ...allPackages,
+    ].join('\n'));
+  }
+
+  const filteredPackagesAndModelsObj = filteredPackagesAndModels.reduce((obj, [packageName, model]) => ({
+    ...obj,
+    [packageName]: (obj[packageName] || []).concat([model]),
+  }), {} as Record<string, AvailableModel[]>);
+
+  return Object.entries(filteredPackagesAndModelsObj);
+};

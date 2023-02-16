@@ -95,7 +95,6 @@ const getTypescriptFileOutputPath = (modelFolder: string) => {
   const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
 
   const indexDefinition = getIndexDefinition(exports, modelFolder).split('dist/esm/').pop();
-  console.log(indexDefinition);
 
   if (!indexDefinition) {
     throw new Error(`Could not parse exports from package.json for model folder ${modelFolder}}`);

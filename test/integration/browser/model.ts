@@ -9,7 +9,7 @@ import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
@@ -25,22 +25,20 @@ const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
-const MODELS_TO_TEST = getAllAvailableModelPackages().filter(packageName => {
-  const packageJSON = JSON.parse(readFileSync(path.resolve(MODELS_DIR, packageName, 'package.json'), 'utf-8'));
-  const experimental = packageJSON['@upscalerjs']?.['model']?.['experimental'];
-  return !experimental;
-}).reduce((arr, packageName) => {
-  return arr.concat(getAllAvailableModels(packageName).filter(({ esm }) => {
-    if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && esm === "8x") {
+const MODELS_TO_TEST = getFilteredModels({
+  specificPackage: undefined, 
+  specificModel: undefined,
+  filter: (packageName, model) => {
+    if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && model.cjs === "8x") {
       return false;
     }
     return true;
-  }).map(({ esm: esmName, umd: umdName }) => ({
-    packageName,
-    esmName: esmName || 'index',
-    umdName
-  })));
-}, [] as { packageName: string; esmName: string; umdName: string }[]);
+  },
+}).reduce((arr, [packageName, models]) => {
+  return arr.concat(models.map(model => {
+    return [packageName, model];
+  }))
+}, [] as [string, AvailableModel][]);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
@@ -142,7 +140,7 @@ describe('Model Loading Integration Tests', () => {
 
   describe('Test specific model implementations', () => {
     describe('esm', () => {
-      MODELS_TO_TEST.map(({ packageName, esmName }) => {
+      MODELS_TO_TEST.map(([ packageName, { esm: esmName } ]) => {
         it(`upscales with ${packageName}/${esmName} as esm`, async () => {
           await testRunner.navigateToServer('| Loaded');
           const result = await page().evaluate(([packageName, modelName]) => {
@@ -191,7 +189,7 @@ describe('Model Loading Integration Tests', () => {
         await umdTestRunner.afterEach();
       });
 
-      MODELS_TO_TEST.map(({ packageName, esmName, umdName }) => {
+      MODELS_TO_TEST.map(([ packageName, { esm: esmName, umd: umdName }]) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
