@@ -12,7 +12,7 @@ import * as tfn from '@tensorflow/tfjs-node';
 import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -189,7 +189,8 @@ describe('Model Loading Integration Tests', () => {
         await umdTestRunner.afterEach();
       });
 
-      MODELS_TO_TEST.map(([ packageName, { esm: esmName, umd: umdName }]) => {
+      MODELS_TO_TEST.map(([ packageName, { esm, umd: umdName }]) => {
+        const esmName = esm === '' ? 'index' : esm;
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
@@ -198,7 +199,11 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(window['fixtures'][packageName]);
           }, [umdName, packageName]);
-          checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
+          const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
+          const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser', packageName, esmName);
+          const diffPath = path.resolve(outputsPath, `diff.png`);
+          const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
+          checkImage(result, resultPath, diffPath, upscaledPath);
         });
       });
     });

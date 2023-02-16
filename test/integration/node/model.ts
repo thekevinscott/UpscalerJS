@@ -121,8 +121,9 @@ describe('Node Model Loading Integration Tests', () => {
             expect(result).not.toEqual('');
             const formattedResult = `data:image/png;base64,${result}`;
             const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", cjsName, "result.png")
-            const diffPath = path.resolve(TMP_DIR, 'test-output/diff', `${packageName}/${cjsName}/diff.png`);
-            const upscaledPath = path.resolve(TMP_DIR, 'test-output/diff', `${packageName}/${cjsName}/upscaled.png`);
+            const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, cjsName);
+            const diffPath = path.resolve(outputsPath, `diff.png`);
+            const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
             checkImage(formattedResult, resultPath, diffPath, upscaledPath);
           }, 60000 * 4); // 4 minutes per model
         });
