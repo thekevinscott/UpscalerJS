@@ -66,7 +66,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     main,
     globals = {},
   }: TestOpts<T>, {
-    removeTmpDir = false, // set to false if you need to inspect the Node output files
+    removeTmpDir = true, // set to false if you need to inspect the Node output files
   } = {}) {
     const _main = main || this.main;
     if (!_main) {
