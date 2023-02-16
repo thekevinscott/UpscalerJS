@@ -221,6 +221,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Checkout Models'
+        uses: iterative/setup-dvc@v1
+        run : dvc pull
+
       - uses: pnpm/action-setup@v2.0.1
         with:
           version: 7
@@ -265,6 +269,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Checkout Models'
+        uses: iterative/setup-dvc@v1
+        run : dvc pull
+
       - uses: pnpm/action-setup@v2.0.1
         with:
           version: 7
@@ -302,6 +310,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Checkout Models'
+        uses: iterative/setup-dvc@v1
+        run : dvc pull
+
       - uses: pnpm/action-setup@v2.0.1
         with:
           version: 7
@@ -337,6 +349,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'Checkout Models'
+        uses: iterative/setup-dvc@v1
+        run : dvc pull
+
       - uses: pnpm/action-setup@v2.0.1
         with:
           version: 7
@@ -371,6 +387,10 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        uses: iterative/setup-dvc@v1
+        run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
         with:
