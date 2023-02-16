@@ -35,9 +35,13 @@ const MODELS_TO_TEST = getFilteredModels({
     return true;
   },
 }).reduce((arr, [packageName, models]) => {
-  return arr.concat(models.map(model => {
-    return [packageName, model];
-  }))
+  return arr.concat(models.map(({ esm, ...model }) => {
+    return [
+      packageName, {
+        ...model,
+        esm: esm === '' ? 'index' : esm,
+      }];
+  }));
 }, [] as [string, AvailableModel][]);
 
 describe('Model Loading Integration Tests', () => {
@@ -159,7 +163,11 @@ describe('Model Loading Integration Tests', () => {
             });
             return upscaler.upscale(window['fixtures'][packageName]);
           }, [packageName, esmName]);
-          checkImage(result, path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', esmName, "result.png"), 'diff.png');
+          const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
+          const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/umd', packageName, esmName);
+          const diffPath = path.resolve(outputsPath, `diff.png`);
+          const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
+          checkImage(result, resultPath, diffPath, upscaledPath);
         });
       });
     });
@@ -189,8 +197,7 @@ describe('Model Loading Integration Tests', () => {
         await umdTestRunner.afterEach();
       });
 
-      MODELS_TO_TEST.map(([ packageName, { esm, umd: umdName }]) => {
-        const esmName = esm === '' ? 'index' : esm;
+      MODELS_TO_TEST.map(([ packageName, { esm: esmName, umd: umdName }]) => {
         it(`upscales with ${packageName}/${esmName} as umd`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
@@ -200,7 +207,7 @@ describe('Model Loading Integration Tests', () => {
             return upscaler.upscale(window['fixtures'][packageName]);
           }, [umdName, packageName]);
           const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
-          const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser', packageName, esmName);
+          const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/esm', packageName, esmName);
           const diffPath = path.resolve(outputsPath, `diff.png`);
           const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
           checkImage(result, resultPath, diffPath, upscaledPath);
