@@ -226,7 +226,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
@@ -279,7 +279,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
@@ -325,7 +325,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
@@ -370,7 +370,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
@@ -414,7 +414,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
