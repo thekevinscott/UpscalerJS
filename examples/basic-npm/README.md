@@ -2,17 +2,6 @@
 
 Demonstrates a basic implementation of UpscalerJS for the browser.
 
-<BlockComponent
-block={{
-  owner: "thekevinscott",
-  repo: "upscalerjs",
-  id: "example",
-  type: "file",
-  title: "Example"
-  entry: "index.js"
-}}
-/>
-
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic-npm?file=index.js&title=UpscalerJS: Basic Implementation">Open example in Stackblitz</a>.
 
 ## Getting Started
