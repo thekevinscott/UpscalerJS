@@ -321,7 +321,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull
+        run : dvc pull -v
         timeout-minutes: 2
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
