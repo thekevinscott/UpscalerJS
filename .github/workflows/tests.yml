@@ -218,11 +218,13 @@ jobs:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        uses: iterative/setup-dvc@v1
         run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
@@ -266,11 +268,13 @@ jobs:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        uses: iterative/setup-dvc@v1
         run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
@@ -307,11 +311,13 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        uses: iterative/setup-dvc@v1
         run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
@@ -346,11 +352,13 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        uses: iterative/setup-dvc@v1
         run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
@@ -385,11 +393,13 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        uses: iterative/setup-dvc@v1
         run : dvc pull
 
       - uses: pnpm/action-setup@v2.0.1
