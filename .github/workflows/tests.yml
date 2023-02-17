@@ -323,6 +323,9 @@ jobs:
       - name: 'Checkout Models'
         run : dvc pull
         timeout-minutes: 2
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
 
       - uses: pnpm/action-setup@v2.0.1
         with:
