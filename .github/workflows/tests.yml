@@ -226,6 +226,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull
+        timeout-minutes: 5
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -276,6 +277,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull
+        timeout-minutes: 5
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -307,6 +309,7 @@ jobs:
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     strategy:
       matrix:
         node-version: [16]
@@ -319,6 +322,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull
+        timeout-minutes: 2
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -360,6 +364,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull
+        timeout-minutes: 5
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -401,6 +406,7 @@ jobs:
 
       - name: 'Checkout Models'
         run : dvc pull
+        timeout-minutes: 5
 
       - uses: pnpm/action-setup@v2.0.1
         with:
