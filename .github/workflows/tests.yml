@@ -225,8 +225,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull
-        timeout-minutes: 5
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 2
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -276,8 +278,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull
-        timeout-minutes: 5
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 2
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -309,7 +313,6 @@ jobs:
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
-    timeout-minutes: 2
     strategy:
       matrix:
         node-version: [16]
@@ -321,7 +324,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull -v
+        run : dvc pull -v -r gdrive-service-account
         timeout-minutes: 2
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
@@ -366,8 +369,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull
-        timeout-minutes: 5
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 2
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -408,8 +413,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 'Checkout Models'
-        run : dvc pull
-        timeout-minutes: 5
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 2
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:

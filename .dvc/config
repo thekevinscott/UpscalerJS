@@ -3,6 +3,9 @@
     autostage = true
 ['remote "gdrive"']
     url = gdrive://1tGm1wnv7pAhbSuy4u9Ci61xA8WD3DXXr
-    gdrive_use_service_account = true
+    gdrive_use_service_account = false
 ['remote "s3"']
     url = s3://upscalerjs/models
+['remote "gdrive-service-account"']
+    url = gdrive://1tGm1wnv7pAhbSuy4u9Ci61xA8WD3DXXr
+    gdrive_use_service_account = true
