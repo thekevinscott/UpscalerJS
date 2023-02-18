@@ -218,8 +218,17 @@ jobs:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 5
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -262,8 +271,17 @@ jobs:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 5
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -299,8 +317,18 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 5
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -334,8 +362,17 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 5
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:
@@ -369,8 +406,17 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Setup DVC'
+        uses: iterative/setup-dvc@v1
+      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+
+      - name: 'Checkout Models'
+        run : dvc pull -v -r gdrive-service-account
+        timeout-minutes: 5
+        env:
+          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - uses: pnpm/action-setup@v2.0.1
         with:

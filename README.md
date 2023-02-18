@@ -7,37 +7,32 @@
 <a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
 
 
-UpscalerJS is a tool for increasing image resolution in Javascript via a [Neural Network](https://github.com/thekevinscott/upscalerjs-models) up to 4x.
+UpscalerJS is a tool for enhancing images in Javascript using Neural Networks. UpscalerJS features models enabling the following:
 
-![Demo](assets/demo.gif)
+- Super Resolution
+- Deblurring
+- Denoising
+- Deraining
+- Dehazing
+- Low Light Enhancement
+- Retouching
+- Inpainting (soon!)
 
-[A live demo is here](https://upscaler.ai).
+![Demo](docs/assets/assets/demo.png)
+
+[A live demo is here](https://upscalerjs.com/demo).
 
 ## Announcement
-
 
 [A beta version of `1.0.0`](http://npmjs.com/package/upscaler) was released on 7/15/22. [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192) about what's included.
 
 If you are migrating from `<=0.12`, and you are using a custom model, [you will need to modify how you load models](https://upscalerjs.com/#/?id=instantiation). If you are using the default model (e.g., not providing a `model` argument) then no changes are needed.
 
 
-## Examples
+## Guides
 
-You can [view runnable code examples](https://github.com/thekevinscott/UpscalerJS/tree/master/examples) on CodeSandbox.
+You can [view runnable code examples](https://upscalerjs.com/documentation/guides/). You can also find the [guides here on Github](https://github.com/thekevinscott/UpscalerJS/tree/main/examples).
 
-To run an example locally, navigate to the relevant folder and run:
-
-```
-pnpm start
-```
-
-If you are developing UpscalerJS locally and wish to run an example during development, use the following command:
-
-```
-pnpm example {folder-name-of-example}
-```
-
-This will automatically start a watcher in the example folder, as well as set the local UpscalerJS package to build in the background.
 
 ## Quick Start
 
@@ -52,6 +47,10 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 ## Documentation
 
 [View the docs here.](https://upscalerjs.com)
+
+## Developing
+
+If cloning the repo, [ensure that `dvc` is installed](http://dvc.orgv). `dvc` is used to manage the model files and has git pre-hooks enabled.
 
 ## License
 
