@@ -1,4 +1,4 @@
-name: Setup
+name: Setup PNPM
 description: "Sets up PNPM"
 runs:
   using: "composite"

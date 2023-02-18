@@ -280,23 +280,16 @@ jobs:
       matrix:
         node-version: [16]
     steps:
-      - name: 'Setup DVC'
-        uses: iterative/setup-dvc@v1
-      
       - name: 'Checkout repository'
         uses: actions/checkout@v2
-
-      - name: 'Checkout Models'
-        run : dvc pull -v -r gdrive-service-account
-        timeout-minutes: 5
-        env:
-          GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
 
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
