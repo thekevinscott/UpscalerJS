@@ -38,7 +38,7 @@ export const DIRECTORIES: Record<string, { directory: string, multiple?: boolean
   [EXAMPLES]: { directory: EXAMPLES_DIR, multiple: true },
   [TEST]: { directory: TEST_DIR, multiple: true },
   [WRAPPER]: { directory: WRAPPER_DIR },
-  [DEV]: { directory: DEV_DIR },
+  [DEV]: { directory: DEV_DIR, multiple: true },
   [DOCS]: { directory: DOCS_DIR, multiple: true },
 }
 
