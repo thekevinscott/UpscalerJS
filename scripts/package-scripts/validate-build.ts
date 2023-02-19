@@ -51,6 +51,7 @@ const validateBuild = async (packageName: string, include: string[] = []): Promi
     ...extractAllFilesFromPackageJSON(packagePath),
     ...include,
   ].map(file => path.resolve(packagePath, file)));
+  console.log('files', files);
   files.forEach(file => {
     if (!fs.existsSync(path.resolve(UPSCALER_JS_DIST, file))) {
       const existingFiles = fs.readdirSync(UPSCALER_JS_DIST);
@@ -103,6 +104,7 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     const argv = await getArgs();
+    console.log('****** validate build', argv);
     const checkedFiles = await validateBuild(argv.src, argv.include);
     console.log([
       'The following files are present: ',
