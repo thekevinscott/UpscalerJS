@@ -1,0 +1,7 @@
+name: 'PNPM Lite Install'
+on: 
+  workflow_call:
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
