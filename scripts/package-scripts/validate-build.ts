@@ -53,7 +53,8 @@ const validateBuild = async (packageName: string, include: string[] = []): Promi
   ].map(file => path.resolve(packagePath, file)));
   files.forEach(file => {
     if (!fs.existsSync(path.resolve(UPSCALER_JS_DIST, file))) {
-      throw new Error(`File ${file} was not built or does not exist`);
+      const existingFiles = fs.readdirSync(UPSCALER_JS_DIST);
+      throw new Error(`File ${file} was not built or does not exist. Existing files include: \n${existingFiles.map(f => ` - ${f}`).join('\n')}`);
     }
   });
   return files;
