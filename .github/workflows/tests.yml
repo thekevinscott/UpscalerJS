@@ -8,17 +8,10 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
 
+    steps:
       - name: 'Setup'
         uses: ./.github/workflows/pnpm-lite-install.yml
-
-
 
       - name: 'Lint'
         run: 'pnpm lint'
