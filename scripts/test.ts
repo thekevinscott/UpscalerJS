@@ -41,25 +41,28 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
-const getFolder = (platform: Platform, runner: Runner) => runner === 'browserstack' ? 'browserstack' : platform;
+const getFolder = (platform: Platform, runner: Runner, memoryTest?: boolean) => memoryTest ? 'memory' : runner === 'browserstack' ? 'browserstack' : platform;
 
-const getAllTestFiles = (platform: Platform, runner: Runner): string[] => {
+const getAllTestFiles = (platform: Platform, runner: Runner, memoryTest?: boolean): string[] => {
+  if (memoryTest) {
+    return ['test.browser'];
+  }
   const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner), `**/*.ts`));
   return files.map(file => file.split('/').pop() || '');
 };
 
-const getDependencies = async (platform: Platform, runner: Runner, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner)}.dependencies.ts`);
+const getDependencies = async (platform: Platform, runner: Runner, memoryTest?: boolean, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
+  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, memoryTest)}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
 
   const sharedDependenciesSet = new Set<Bundle>();
 
-  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner);
+  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, memoryTest);
 
   for (const file of files) {
-    const fileName = `${file}`.split('.').slice(0, -1).join('.');
+    const fileName = `${file}`.split('.ts')[0];
     if (!sharedDependencies[fileName]) {
-      throw new Error(`File ${fileName} does not have any shared dependencies defined.`);
+      throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
     }
     sharedDependencies[fileName].forEach((fn: Bundle) => {
       sharedDependenciesSet.add(fn);
@@ -132,7 +135,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   }
 
   if (skipBundle !== true) {
-    const dependencies = await getDependencies(platform, runner, ...positionalArgs);
+    const dependencies = await getDependencies(platform, runner, memoryTest, ...positionalArgs);
     if (dependencies.length === 0) {
       throw new Error('One day there may be no defined dependencies, but today is not that day.')
     }
