@@ -12,8 +12,34 @@ runs:
     - name: 'Setup DVC'
       uses: iterative/setup-dvc@v1
 
+    - name: Restore cached output
+      id: cache-output-restore
+      uses: actions/cache/restore@v3
+      with:
+        path: dvc-cache-dir
+        key: dvc-cache-dir
+
+    - name: 'Set Cache Dir'
+      shell: bash
+      run: dvc cache dir dvc-cache-dir
+
+    - name: 'Set Cache Shared to Group'
+      shell: bash
+      run: dvc config cache.shared group
+
+    - name: 'Set Cache Type to Symlink'
+      shell: bash
+      run: dvc config cache.type hardlink,symlink
+
     - name: 'Checkout Models'
       shell: bash
       run : dvc pull -v -r gdrive-service-account
       env:
         GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
+
+    - name: Save Cache
+      id: cache-output-save
+      uses: actions/cache/save@v3
+      with:
+        path: dvc-cache-dir
+        key: ${{ steps.cache-output-restore.outputs.cache-primary-key }}
