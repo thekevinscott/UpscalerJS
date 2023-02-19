@@ -48,10 +48,17 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
         src: UPSCALER_DIR,
         name: LOCAL_UPSCALER_NAME,
       },
-      ...getAllAvailableModelPackages().map(packageName => ({
-        src: path.resolve(MODELS_DIR, packageName),
-        name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
-      })),
+      ...getAllAvailableModelPackages().map(packageName => {
+        const modelsFolder = path.resolve(MODELS_DIR, packageName, 'models');
+        const modelFiles = fs.readdirSync(modelsFolder);
+        if (modelFiles.length === 0) {
+          throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${packageName}?`);
+        }
+        return {
+          src: path.resolve(MODELS_DIR, packageName),
+          name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+        };
+      }),
     ], { 
       verbose,
       usePNPM,

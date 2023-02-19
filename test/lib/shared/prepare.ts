@@ -1,5 +1,5 @@
 import { Dependency } from '@schemastore/package';
-import { symlink, remove, existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
+import { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } from 'fs-extra';
 import path from 'path';
 import rimraf from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
@@ -38,6 +38,7 @@ export interface Import {
  * Constants
  */
 
+const SHOULD_SYMLINK_LOCAL_PACKAGES = false;
 const ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE = .5;
 const CONCURRENT_ASYNC_THREADS = 1;
 
@@ -330,13 +331,9 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
     try {
 
       const size = await fastFolderSize(src);
-      if (size > Math.round(1024 * 1024 * 1024 * ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE)) { // anything over x gigs
-        const packageName = src.split('models/').filter(Boolean).pop();
-        if (!packageName) {
-          throw new Error(`There was an error pulling a package name from the src ${src}`)
-        }
+      if (SHOULD_SYMLINK_LOCAL_PACKAGES || size > Math.round(1024 * 1024 * 1024 * ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE)) { // anything over x gigs
+        await mkdirp(dest.split('/').slice(0, -1).join('/'));
         await symlink(src, dest);
-        await buildModels([packageName]);
       } else {
         const unpackedFolder = await packAndTar(src, tmp, opts);
 
@@ -349,7 +346,7 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
         });
       }
     } catch (err: unknown) {
-      throw new Error(`Failed to pack local package ${src}. ${err instanceof Error ? `Error was: ${err.message}` : ''}`);
+      throw new Error(`Failed to install local package ${src}. ${err instanceof Error ? `Error was: ${err.message}` : ''}`);
     }
   })
 };
