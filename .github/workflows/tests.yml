@@ -15,7 +15,7 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup'
+      - name: 'Setup PNPM'
         uses: ./.github/actions/setup
 
       - name: 'Lint'

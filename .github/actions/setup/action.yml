@@ -1,4 +1,5 @@
 name: Setup
+description: "Sets up PNPM"
 runs:
   using: "composite"
   steps:
@@ -24,4 +25,5 @@ runs:
           ${{ runner.os }}-pnpm-store-
 
     - name: Install dependencies
+      shell: bash
       run: pnpm liteinstall
