@@ -29,7 +29,7 @@ runs:
 
     - name: 'Set Cache Type to Symlink'
       shell: bash
-      run: dvc config cache.type symlink
+      run: dvc config cache.type hardlink,symlink
 
     - name: 'Checkout Models'
       shell: bash
