@@ -41,15 +41,15 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
-const getFolder = (platform: Platform, runner: Runner) => runner === 'browserstack' ? 'browserstack' : platform;
+const getFolder = (platform: Platform, runner: Runner, memoryTest?: boolean) => memoryTest ? 'memory' : runner === 'browserstack' ? 'browserstack' : platform;
 
 const getAllTestFiles = (platform: Platform, runner: Runner): string[] => {
   const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner), `**/*.ts`));
   return files.map(file => file.split('/').pop() || '');
 };
 
-const getDependencies = async (platform: Platform, runner: Runner, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner)}.dependencies.ts`);
+const getDependencies = async (platform: Platform, runner: Runner, memoryTest?: boolean, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
+  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, memoryTest)}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
 
   const sharedDependenciesSet = new Set<Bundle>();
@@ -132,7 +132,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   }
 
   if (skipBundle !== true) {
-    const dependencies = await getDependencies(platform, runner, ...positionalArgs);
+    const dependencies = await getDependencies(platform, runner, memoryTest, ...positionalArgs);
     if (dependencies.length === 0) {
       throw new Error('One day there may be no defined dependencies, but today is not that day.')
     }
