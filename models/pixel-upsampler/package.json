@@ -29,6 +29,7 @@
     }
   },
   "files": [
+    "assets/**/*",
     "license",
     "models/**/*",
     "dist/**/*"

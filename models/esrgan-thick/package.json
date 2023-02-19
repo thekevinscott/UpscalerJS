@@ -47,7 +47,6 @@
   "files": [
     "assets/**/*",
     "license",
-    "src/**/*",
     "models/**/*",
     "dist/**/*"
   ],
