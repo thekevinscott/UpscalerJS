@@ -1,0 +1,19 @@
+name: Setup DVC
+description: "Sets up DVC"
+
+inputs:
+  gdrive_credentials_data:  # id of input
+    description: 'Path to GDrive Credentials Data'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'Setup DVC'
+      uses: iterative/setup-dvc@v1
+
+    - name: 'Checkout Models'
+      shell: bash
+      run : dvc pull -v -r gdrive-service-account
+      env:
+        GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
