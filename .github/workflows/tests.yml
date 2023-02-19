@@ -290,6 +290,8 @@ jobs:
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
