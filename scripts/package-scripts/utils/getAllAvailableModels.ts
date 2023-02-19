@@ -4,7 +4,7 @@ import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExport
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');
-const EXCLUDED = ['dist', 'types', 'node_modules', 'docs'];
+const EXCLUDED = ['dist', 'types', 'node_modules', 'docs', 'esrgan-experiments'];
 
 const jsonParse = (fileName: string) => JSON.parse(readFileSync(fileName, 'utf-8'))
 
