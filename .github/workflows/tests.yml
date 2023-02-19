@@ -15,18 +15,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -41,18 +36,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -73,18 +63,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -107,18 +92,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -142,15 +122,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
         run: pnpm liteinstall
@@ -175,18 +153,13 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -230,18 +203,13 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
 
       - name: 'Build Upscaler'
@@ -283,18 +251,13 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -330,18 +293,13 @@ jobs:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -374,18 +332,13 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          # cache: 'pnpm'
 
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -418,14 +371,13 @@ jobs:
         env:
           GDRIVE_CREDENTIALS_DATA : ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 7
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
         working-directory: ./docs
