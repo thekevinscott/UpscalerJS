@@ -38,6 +38,7 @@ export const getESRGANModelDefinition = ({
     return {
       scale,
       path,
+      modelType: 'layers',
       packageInformation: {
         name,
         version,
@@ -102,6 +103,7 @@ export const getESRGANModelDefinition = ({
   return {
     scale,
     path,
+    modelType: 'layers',
     packageInformation: {
       name,
       version,

@@ -43,7 +43,7 @@ export interface ModelDefinition {
   /**
    * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'
    */
-  modelType?: ModelType;
+  modelType: ModelType;
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
