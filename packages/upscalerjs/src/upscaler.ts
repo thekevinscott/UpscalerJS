@@ -50,9 +50,10 @@ export class Upscaler {
   _model: Promise<ModelPackage>;
 
   /**
-   * @hidden
+   * Resolves once the model is loaded and warmed up.
+   * If there is an error during model load, that error will be exposed on this promise.
    */
-  _ready: Promise<void>;
+  ready: Promise<void>;
 
   /**
    * @hidden
@@ -79,8 +80,10 @@ export class Upscaler {
       ...opts,
     };
     this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
-    this._ready = cancellableWarmup(this._model, (this._opts.warmupSizes || []), undefined, {
-      signal: this._abortController.signal,
+    this.ready = new Promise((resolve, reject) => {
+      this._model.then(() => cancellableWarmup(this._model, (this._opts.warmupSizes || []), undefined, {
+        signal: this._abortController.signal,
+      })).then(resolve).catch(reject);
     });
   }
 
@@ -135,7 +138,7 @@ export class Upscaler {
     image: Input,
     options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
-    await this._ready;
+    await this.ready;
     const { model, modelDefinition, } = await this._model;
     return cancellableUpscale(image, getUpscaleOptions(model, options), {
       model,
@@ -161,7 +164,7 @@ export class Upscaler {
    * @param options A set of warm up arguments.
    */
   warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
-    await this._ready;
+    await this.ready;
     return cancellableWarmup(this._model, warmupSizes, options, {
       signal: this._abortController.signal,
     });
@@ -191,7 +194,7 @@ export class Upscaler {
    * ```
    */
   dispose = async (): Promise<void> => {
-    await this._ready;
+    await this.ready;
     const { model, } = await this._model;
     model.dispose();
   };
