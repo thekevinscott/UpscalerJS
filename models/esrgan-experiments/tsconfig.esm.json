@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.cjs.json",
+  "include": [
+    "src/**/*.ts"
+  ],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist/esm"
+  }
+}

@@ -8,6 +8,7 @@ coverage
 local.log
 browserstack.err
 .env
+env
 log
 results
 credentials.yml
