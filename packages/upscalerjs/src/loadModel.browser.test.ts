@@ -80,7 +80,7 @@ describe('loadModel browser tests', () => {
           modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', undefined);
+        expect(loadTfModel).toBeCalledWith('foo', 'layers');
       });
 
       it('loads the given model path as a graph model if there is no package info', async () => {
@@ -109,7 +109,7 @@ describe('loadModel browser tests', () => {
           modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), undefined);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
       });
 
       it('attempts to load a graph model from a CDN if given package information', async () => {
