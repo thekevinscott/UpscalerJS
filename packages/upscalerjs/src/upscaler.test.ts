@@ -120,6 +120,20 @@ describe('Upscaler', () => {
 
   });
 
+  it('can handle a failing loadModel', (done) => {
+    loadModel.mockImplementation(async () => {
+      await new Promise(r => setTimeout(r));
+      throw new Error('Fail!')
+    });
+    const upscaler = new Upscaler();
+    upscaler.ready.then(() => {
+      throw new Error('incorrectly written test');
+    }).catch(err => {
+      expect(err.message).toEqual('Fail!');
+      done();
+    });
+  });
+
   describe('warmups', () => {
     it('calls warmup from constructor', async () => {
       const modelDefinitionPromise = new Promise<{
