@@ -84,7 +84,7 @@ describe('Browser Integration Tests', () => {
             modelType: 'layers',
           },
         });
-        const data = upscaler.upscale(window['fixtures']['pixel-upsampler']);
+        const data = upscaler.execute(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
       }, {}, {

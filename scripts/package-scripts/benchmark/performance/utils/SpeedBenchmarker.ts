@@ -454,7 +454,7 @@ const benchmarkModel: BenchmarkModel = async (
         log('8: warmed up model');
         for (let i = 0; i < times; i++) {
           log(`9: times: ${i}`);
-          const [upscaleDuration, tensor] = await timeIt(() => upscaler.upscale(input, {
+          const [upscaleDuration, tensor] = await timeIt(() => upscaler.execute(input, {
             patchSize: size,
             output: 'tensor',
           }));

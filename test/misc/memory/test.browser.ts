@@ -271,7 +271,7 @@ describe('Memory Leaks', () => {
           const upscaler = new Upscaler({
           model: window['pixel-upsampler']['4x'],
           });
-          image = await upscaler.upscale(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
           await upscaler.dispose();
         }
@@ -299,7 +299,7 @@ describe('Memory Leaks', () => {
               preprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.upscale(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
           await upscaler.dispose();
         }
@@ -327,7 +327,7 @@ describe('Memory Leaks', () => {
               postprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.upscale(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
           await upscaler.dispose();
         }
@@ -356,7 +356,7 @@ describe('Memory Leaks', () => {
               postprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.upscale(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
           await upscaler.dispose();
         }
@@ -385,7 +385,7 @@ describe('Memory Leaks', () => {
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        const tensor = await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        const tensor = await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'tensor',
         });
 
@@ -426,7 +426,7 @@ describe('Memory Leaks', () => {
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        output = await upscaler.upscale(window['src']!);
+        output = await upscaler.execute(window['src']!);
 
         await upscaler.dispose();
       }
@@ -456,7 +456,7 @@ describe('Memory Leaks', () => {
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        output = await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        output = await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 5,
           padding: 0,
         });
@@ -483,7 +483,7 @@ describe('Memory Leaks', () => {
   //       const upscaler = new Upscaler({
   //         model: ESRGANThick,
   //       });
-  //       output = await upscaler.upscale(window['fixtures']['esrgan-thick']);
+  //       output = await upscaler.execute(window['fixtures']['esrgan-thick']);
 
   //       await upscaler.dispose();
   //     }
@@ -508,7 +508,7 @@ describe('Memory Leaks', () => {
             ...window['pixel-upsampler']['4x'],
           },
         });
-        await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
           patchSize: 14,
           padding: 2,
@@ -540,7 +540,7 @@ describe('Memory Leaks', () => {
             ...window['pixel-upsampler']['4x'],
           },
         });
-        await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
           progressOutput: 'tensor',
           patchSize: 14,
@@ -580,7 +580,7 @@ describe('Memory Leaks', () => {
             ...window['pixel-upsampler']['4x'],
           },
         });
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
           signal: abortController.signal,
         }).catch(() => {
@@ -608,7 +608,7 @@ describe('Memory Leaks', () => {
           },
         });
         try {
-          await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+          await upscaler.execute(window['fixtures']['pixel-upsampler'], {
             output: 'base64',
             signal: abortController.signal,
             patchSize: 14,
@@ -643,7 +643,7 @@ describe('Memory Leaks', () => {
           },
         });
         try {
-          await upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+          await upscaler.execute(window['fixtures']['pixel-upsampler'], {
             output: 'tensor',
             signal: abortController.signal,
             patchSize: 14,

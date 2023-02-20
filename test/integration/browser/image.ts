@@ -58,7 +58,7 @@ describe('Image Format Integration Tests', () => {
             modelType: 'layers',
           },
         });
-        return upscaler.upscale(window['fixtures']['pixel-upsampler']);
+        return upscaler.execute(window['fixtures']['pixel-upsampler']);
       });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -75,7 +75,7 @@ describe('Image Format Integration Tests', () => {
         const img = new Image();
         img.src = window['fixtures']['pixel-upsampler'];
         img.onload = function () {
-          upscaler.upscale(img).then(resolve);
+          upscaler.execute(img).then(resolve);
         }
       }), []);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
@@ -95,7 +95,7 @@ describe('Image Format Integration Tests', () => {
         img.src = window['fixtures']['pixel-upsampler'];
         document.body.append(img);
         img.onload = () => {
-          upscaler.upscale(<HTMLImageElement>document.getElementById('img')).then(resolve);
+          upscaler.execute(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
       }));
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
@@ -115,7 +115,7 @@ describe('Image Format Integration Tests', () => {
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img);
-          upscaler.upscale(tensor).then(resolve);
+          upscaler.execute(tensor).then(resolve);
         }
       }));
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
@@ -132,7 +132,7 @@ describe('Image Format Integration Tests', () => {
         });
         const bytes = new Uint8Array(pixels);
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
-        upscaler.upscale(tensor).then(resolve);
+        upscaler.execute(tensor).then(resolve);
       }), flowerPixels);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -151,7 +151,7 @@ describe('Image Format Integration Tests', () => {
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
-          upscaler.upscale(<tf.Tensor4D>tensor).then(resolve);
+          upscaler.execute(<tf.Tensor4D>tensor).then(resolve);
         }
       }));
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
@@ -168,7 +168,7 @@ describe('Image Format Integration Tests', () => {
             modelType: 'layers',
           },
         });
-        return upscaler.upscale(src);
+        return upscaler.execute(src);
       }, originalImage);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -184,7 +184,7 @@ describe('Image Format Integration Tests', () => {
             modelType: 'layers',
           },
         });
-        return upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        return upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 4,
           padding: 2,
         });

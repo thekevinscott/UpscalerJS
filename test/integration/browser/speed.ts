@@ -103,7 +103,7 @@ describe('Speed Integration Tests', () => {
                   r(undefined);
                 })).then(rawDuration => {
                   let output: undefined | tf.Tensor = undefined;
-                  return measure(() => upscaler.upscale(fixturePixels, {
+                  return measure(() => upscaler.execute(fixturePixels, {
                     output: 'tensor',
                   })).then(upscalerJSDuration => {
                     if (output !== undefined) {
@@ -160,7 +160,7 @@ describe('Speed Integration Tests', () => {
                   r(undefined);
                 })).then(rawDuration => {
                   let output: undefined | tf.Tensor = undefined;
-                  return measure(() => upscaler.upscale(fixturePixels, {
+                  return measure(() => upscaler.execute(fixturePixels, {
                     output: 'tensor',
                     patchSize,
                     padding: 0,

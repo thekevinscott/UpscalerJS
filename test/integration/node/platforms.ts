@@ -22,7 +22,7 @@ const main: Main = async (deps) => {
   });
   const bytes = new Uint8Array(flower);
   const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
-  const result = await upscaler.upscale(tensor, {
+  const result = await upscaler.execute(tensor, {
     output: 'tensor',
     patchSize: 64,
     padding: 6,

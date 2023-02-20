@@ -68,7 +68,7 @@ onmessage = async ({ data: { type, data } }) => {
     } = data;
     const input = tf.tensor3d(pixels, shape);
     try {
-      await upscaler.upscale(input, {
+      await upscaler.execute(input, {
         output: 'tensor',
         patchSize,
         padding,

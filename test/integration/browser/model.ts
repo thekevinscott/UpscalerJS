@@ -75,7 +75,7 @@ describe('Model Loading Integration Tests', () => {
   it("loads the default model", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']();
-      return upscaler.upscale(window['fixtures']['default-model']);
+      return upscaler.execute(window['fixtures']['default-model']);
     });
     checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
   });
@@ -85,7 +85,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['4x'],
       });
-      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
+      return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -99,7 +99,7 @@ describe('Model Loading Integration Tests', () => {
           modelType: 'layers',
         },
       });
-      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
+      return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -113,7 +113,7 @@ describe('Model Loading Integration Tests', () => {
           modelType: 'layers',
         },
       });
-      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
+      return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -131,7 +131,7 @@ describe('Model Loading Integration Tests', () => {
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
       });
-      return upscaler.upscale(tensor).then((output) => {
+      return upscaler.execute(tensor).then((output) => {
         return loadImage(output);
       }).then((img: HTMLImageElement) => {
         const predictedPixels = tf.browser.fromPixels(img);
@@ -163,7 +163,7 @@ describe('Model Loading Integration Tests', () => {
             const upscaler = new window['Upscaler']({
               model: modelDefinition,
             });
-            return upscaler.upscale(window['fixtures'][packageName]);
+            return upscaler.execute(window['fixtures'][packageName]);
           }, [packageName, esmName]);
           const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
           const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/umd', packageName, esmName);
@@ -206,7 +206,7 @@ describe('Model Loading Integration Tests', () => {
             const upscaler = new window['Upscaler']({
               model,
             });
-            return upscaler.upscale(window['fixtures'][packageName]);
+            return upscaler.execute(window['fixtures'][packageName]);
           }, [umdName, packageName]);
           const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
           const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/esm', packageName, esmName);

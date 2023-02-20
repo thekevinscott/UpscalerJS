@@ -95,11 +95,11 @@ describe('Upscaler', () => {
     });
 
     const upscaler = new Upscaler();
-    upscaler.upscale('foo');
+    upscaler.execute('foo');
     await tick();
-    upscaler.upscale('foo');
+    upscaler.execute('foo');
     await tick();
-    upscaler.upscale('foo');
+    upscaler.execute('foo');
     await tick();
   }), 100);
 

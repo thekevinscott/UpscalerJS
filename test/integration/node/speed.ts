@@ -56,7 +56,7 @@ const main: Main = async (deps) => {
         }
       });
     })) / TIMES;
-    upscalerJSDurations = (await time(async () => await upscaler.upscale(input, { output: 'tensor', patchSize, padding: 0 }))) / TIMES;
+    upscalerJSDurations = (await time(async () => await upscaler.execute(input, { output: 'tensor', patchSize, padding: 0 }))) / TIMES;
   }
 
   input.dispose();

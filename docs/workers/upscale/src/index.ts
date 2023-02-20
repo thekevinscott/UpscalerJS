@@ -30,7 +30,7 @@ const upscale = async (t: tf.Tensor4D) => {
     }
   });
 
-  const upscaledSrc = await upscaler.upscale(t, {
+  const upscaledSrc = await upscaler.execute(t, {
     output: 'tensor',
   });
   return Array.from(upscaledSrc.dataSync());
