@@ -51,6 +51,7 @@ describe('Upscale Integration Tests', () => {
         model: {
           path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
+          modelType: 'layers',
         },
       });
       return upscaler.upscale(window['fixtures']['pixel-upsampler']);
@@ -66,6 +67,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
           warmupSizes: [{
             patchSize: 4,
@@ -120,6 +122,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
           warmupSizes: [{
             patchSize: 4,
@@ -179,6 +182,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
           warmupSizes: [{
             patchSize: 4,
@@ -219,6 +223,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const progressRates: Array<number> = [];
@@ -242,6 +247,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const progress: MultiArgStringProgress = (rate, slice) => {
@@ -264,6 +270,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const progress: MultiArgTensorProgress = (rate, slice) => {
@@ -286,6 +293,7 @@ describe('Upscale Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const progressRates: Array<[number, number]> = [];

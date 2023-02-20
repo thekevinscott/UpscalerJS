@@ -57,6 +57,7 @@ describe('Build Integration Tests', () => {
         model: {
           path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
+          modelType: 'layers',
         },
       });
       return upscaler.upscale(window['fixtures']['pixel-upsampler']);
@@ -85,6 +86,7 @@ describe('Build Integration Tests', () => {
         model: {
           path: '/models/pixel-upsampler/models/4x/4x.json',
           scale: 4,
+          modelType: 'layers',
         },
       });
       return upscaler.upscale(window['fixtures']['pixel-upsampler']);

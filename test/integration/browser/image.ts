@@ -55,6 +55,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         return upscaler.upscale(window['fixtures']['pixel-upsampler']);
@@ -68,6 +69,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const img = new Image();
@@ -85,6 +87,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const img = document.createElement('img');
@@ -104,6 +107,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const img = new Image();
@@ -123,6 +127,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const bytes = new Uint8Array(pixels);
@@ -138,6 +143,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         const img = new Image();
@@ -159,6 +165,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         return upscaler.upscale(src);
@@ -174,6 +181,7 @@ describe('Image Format Integration Tests', () => {
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
             scale: 4,
+            modelType: 'layers',
           },
         });
         return upscaler.upscale(window['fixtures']['pixel-upsampler'], {
