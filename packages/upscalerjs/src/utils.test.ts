@@ -245,7 +245,7 @@ describe('tensorAsClampedArray', () => {
 
 describe('getModelDefinitionError', () => {
   it('returns an error if path is not provided', () => {
-    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
+    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH, { path: 'foo', scale: 2, modelType: 'foo', } as unknown as ModelDefinition);
     expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
   });
 
@@ -263,6 +263,7 @@ describe('getModelDefinitionError', () => {
 describe('getModel', () => {
   it('returns model definition', () => {
     const modelDefinition: ModelDefinition = {
+      modelType: 'layers',
       path: 'foo',
       scale: 2,
     };
@@ -274,6 +275,7 @@ describe('getModel', () => {
     const modelDefinition: ModelDefinition = {
       path: 'foo',
       scale: 2,
+      modelType: 'layers',
     };
     const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
 

@@ -74,7 +74,14 @@ describe('cancellableWarmup', () => {
     async (args) => {
       const fakeModel = getFakeModel();
       const model = new Promise<ModelPackage>((resolve) =>
-        resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
+        resolve({
+          model: fakeModel,
+          modelDefinition: {
+            modelType: 'layers',
+            path: 'foo',
+            scale: 2,
+          },
+        }),
       );
       await expect(cancellableWarmup(model, args as any, undefined, {
         signal: new AbortController().signal,
@@ -87,7 +94,14 @@ describe('cancellableWarmup', () => {
   it('does nothing if provided an empty array', async () => {
     const fakeModel = getFakeModel();
     const model = new Promise<ModelPackage>((resolve) =>
-      resolve({ model: fakeModel, modelDefinition: { path: 'foo', scale: 2, }, }),
+        resolve({
+          model: fakeModel,
+          modelDefinition: {
+            modelType: 'layers',
+            path: 'foo',
+            scale: 2,
+          },
+        }),
     );
     await cancellableWarmup(model, [], undefined, {
       signal: new AbortController().signal,
@@ -101,7 +115,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            modelType: 'layers',
+            path: 'foo', 
+            scale: 2, 
+          },
         }),
       );
       await cancellableWarmup(model, [[20, 10,],], undefined, {
@@ -119,7 +137,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            modelType: 'layers',
+            path: 'foo', 
+            scale: 2, 
+          },
         }),
       );
       await cancellableWarmup(model, [
@@ -147,7 +169,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            path: 'foo', 
+            scale: 2, 
+            modelType: 'layers',
+          },
         }),
       );
       await cancellableWarmup(model, [{ patchSize: 10, },], undefined, {
@@ -165,7 +191,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            path: 'foo', 
+            scale: 2, 
+            modelType: 'layers',
+          },
         }),
       );
       await cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], undefined, {
@@ -202,7 +232,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            path: 'foo', 
+            scale: 2, 
+            modelType: 'layers',
+          },
         }),
       );
       await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
@@ -232,7 +266,11 @@ describe('cancellableWarmup', () => {
       const model = new Promise<ModelPackage>((resolve) =>
         resolve({
           model: fakeModel,
-          modelDefinition: { path: 'foo', scale: 2, },
+          modelDefinition: { 
+            path: 'foo', 
+            scale: 2, 
+            modelType: 'layers',
+          },
         }),
       );
       await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
@@ -257,7 +295,11 @@ describe('Warmup', () => {
     const modelPackage = new Promise<ModelPackage>((resolve) =>
       resolve({
         model: fakeModel,
-        modelDefinition: { path: 'foo', scale: 2, },
+        modelDefinition: { 
+          path: 'foo', 
+          scale: 2, 
+          modelType: 'layers',
+        },
       }),
     );
     const gen = warmup(modelPackage, [{ patchSize: 10, },]);
@@ -297,7 +339,12 @@ describe('Warmup', () => {
     const modelPackage = new Promise<ModelPackage>((resolve) =>
       resolve({
         model: fakeModel,
-        modelDefinition: { path: 'foo', scale: 2, preprocess, },
+        modelDefinition: { 
+          path: 'foo', 
+          scale: 2, 
+          preprocess, 
+          modelType: 'layers',
+        },
       }),
     );
     const gen = warmup(modelPackage, [{ patchSize: 10, },]);
@@ -338,7 +385,12 @@ describe('Warmup', () => {
     const modelPackage = new Promise<ModelPackage>((resolve) =>
       resolve({
         model: fakeModel,
-        modelDefinition: { path: 'foo', scale: 2, postprocess, },
+        modelDefinition: { 
+          path: 'foo', 
+          scale: 2, 
+          postprocess, 
+          modelType: 'layers',
+        },
       }),
     );
     const gen = warmup(modelPackage, [{ patchSize: 10, },]);
@@ -380,7 +432,13 @@ describe('Warmup', () => {
     const modelPackage = new Promise<ModelPackage>((resolve) =>
       resolve({
         model: fakeModel,
-        modelDefinition: { path: 'foo', scale: 2, preprocess, postprocess, },
+        modelDefinition: { 
+          path: 'foo',
+          scale: 2,
+          preprocess,
+          postprocess,
+          modelType: 'layers',
+        },
       }),
     );
     const gen = warmup(modelPackage, [{ patchSize: 10, },]);
@@ -421,7 +479,11 @@ describe('Warmup', () => {
     const modelPackage = new Promise<ModelPackage>((resolve) =>
       resolve({
         model: fakeModel,
-        modelDefinition: { path: 'foo', scale: 2, },
+        modelDefinition: {
+          path: 'foo',
+          scale: 2,
+          modelType: 'layers',
+      },
       }),
     );
     const patchSizeWarmUp: WarmupSizesByPatchSize = { patchSize: 10, };

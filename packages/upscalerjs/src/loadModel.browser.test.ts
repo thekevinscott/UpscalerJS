@@ -77,9 +77,10 @@ describe('loadModel browser tests', () => {
         expect(loadTfModel).toBeCalledTimes(0);
         await fetchModel({
           path: 'foo',
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', undefined);
+        expect(loadTfModel).toBeCalledWith('foo', 'layers');
       });
 
       it('loads the given model path as a graph model if there is no package info', async () => {
@@ -105,9 +106,10 @@ describe('loadModel browser tests', () => {
             name: packageName,
             version,
           },
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), undefined);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
       });
 
       it('attempts to load a graph model from a CDN if given package information', async () => {
@@ -143,10 +145,11 @@ describe('loadModel browser tests', () => {
           packageInformation: {
             name: packageName,
             version,
-          }
+          },
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), undefined);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
       });
 
       it('throws if all attempts to fetch a model fail', async () => {
@@ -163,6 +166,7 @@ describe('loadModel browser tests', () => {
             name: packageName,
             version,
           },
+          modelType: 'layers',
         } as ModelDefinition))
           .rejects
           .toThrowError(getLoadModelErrorMessage(modelPath, {
@@ -184,6 +188,7 @@ describe('loadModel browser tests', () => {
       await expect(() => loadModel({
         path: 'foo',
         scale: 2,
+        modelType: 'layers',
       })).rejects.toThrowError(e);
     });
 

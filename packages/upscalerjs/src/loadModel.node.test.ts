@@ -96,7 +96,11 @@ describe('loadModel.node', () => {
   describe('getModelPath', () => {
     it('returns model path if given no package information', () => {
       resolver.mockImplementation(getResolver(() => ''));
-      expect(getModelPath({ path: 'foo', scale: 2 })).toEqual('foo');
+      expect(getModelPath({ 
+        path: 'foo', 
+        scale: 2,
+        modelType: 'layers',
+       })).toEqual('foo');
     });
 
     it('returns model path if given package information', () => {
@@ -105,7 +109,10 @@ describe('loadModel.node', () => {
         packageInformation: {
           name: 'baz',
           version: '1.0.0',
-        }, path: 'some-model', scale: 2
+        }, 
+        path: 'some-model',
+        scale: 2,
+        modelType: 'layers',
       })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/default-model', 'some-model')}`);
     });
   });

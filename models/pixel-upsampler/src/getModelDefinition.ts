@@ -4,6 +4,7 @@ import { NAME, VERSION, } from './constants.generated';
 const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
   scale,
   path: `models/${scale}x/${scale}x.json`,
+  modelType: 'layers',
   packageInformation: {
     name: NAME,
     version: VERSION,

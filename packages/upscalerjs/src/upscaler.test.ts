@@ -61,6 +61,7 @@ describe('Upscaler', () => {
       return {
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: {
@@ -110,6 +111,7 @@ describe('Upscaler', () => {
     loadModel.mockImplementation(async () => ({
       modelDefinition: {
         path: 'foo',
+        modelType: 'layers',
         scale: 2,
       },
       model: mockModel as unknown as LayersModel,
@@ -128,6 +130,7 @@ describe('Upscaler', () => {
       }>(resolve => resolve({
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: 'foo' as unknown as LayersModel,
@@ -150,6 +153,7 @@ describe('Upscaler', () => {
       }>(resolve => resolve({
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: 'foo' as unknown as LayersModel,
@@ -169,6 +173,7 @@ describe('Upscaler', () => {
       }>(resolve => resolve({
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: 'foo' as unknown as LayersModel,
@@ -188,6 +193,7 @@ describe('Upscaler', () => {
       }>(resolve => resolve({
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: 'foo' as unknown as LayersModel,
@@ -207,6 +213,7 @@ describe('Upscaler', () => {
       }>(resolve => resolve({
         modelDefinition: {
           path: 'foo',
+          modelType: 'layers',
           scale: 2,
         },
         model: 'foo' as unknown as LayersModel,
