@@ -77,6 +77,7 @@ describe('loadModel browser tests', () => {
         expect(loadTfModel).toBeCalledTimes(0);
         await fetchModel({
           path: 'foo',
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith('foo', undefined);
@@ -105,6 +106,7 @@ describe('loadModel browser tests', () => {
             name: packageName,
             version,
           },
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), undefined);
@@ -143,7 +145,8 @@ describe('loadModel browser tests', () => {
           packageInformation: {
             name: packageName,
             version,
-          }
+          },
+          modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
         expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), undefined);
@@ -163,6 +166,7 @@ describe('loadModel browser tests', () => {
             name: packageName,
             version,
           },
+          modelType: 'layers',
         } as ModelDefinition))
           .rejects
           .toThrowError(getLoadModelErrorMessage(modelPath, {
