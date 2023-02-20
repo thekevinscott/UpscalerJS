@@ -188,6 +188,7 @@ describe('loadModel browser tests', () => {
       await expect(() => loadModel({
         path: 'foo',
         scale: 2,
+        modelType: 'layers',
       })).rejects.toThrowError(e);
     });
 
