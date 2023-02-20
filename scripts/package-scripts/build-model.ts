@@ -25,6 +25,7 @@ import { replaceTscAliasPaths } from 'tsc-alias';
 interface Opts {
   verbose?: boolean;
   forceRebuild?: boolean;
+  skipCheckModelsExist?: boolean;
 }
 
 /****
@@ -68,7 +69,6 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
 }
 
 const getIndexDefinition = (exports: Record<string, any>, modelFolder: string) => {
-  console.log(exports);
   if (!exports) {
     throw new Error(`No exports defined in package.json for ${modelFolder}`)
   }
@@ -104,7 +104,6 @@ const getTypescriptFileOutputPath = (modelFolder: string) => {
 };
 
 const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
-  const modelFolderName = modelFolder.split('/').pop() || '';
   const TMP = path.resolve(modelFolder, 'dist/tmp');
   const DIST = path.resolve(modelFolder, 'dist/umd');
   if (opts.forceRebuild !== true && existsSync(DIST)) {
@@ -206,7 +205,13 @@ const buildModel = async (
 ) => {
   const start = performance.now();
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
-  const DIST = path.resolve(MODEL_ROOT, 'dist')
+  if (opts.skipCheckModelsExist !== true) {
+    const modelsFolder = path.resolve(MODELS_DIR, model, 'models');
+    const modelFiles = fs.readdirSync(modelsFolder);
+    if (modelFiles.length === 0) {
+      throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${model}?`);
+    }
+  }
   if (opts.verbose) {
     console.log(`Scaffolding dependencies for model ${model}`);
   }
@@ -264,6 +269,7 @@ interface Answers {
   models: Array<string>;
   outputFormats: Array<OutputFormat>;
   verbose?: boolean;
+  skipCheckModelsExist?: boolean;
 }
 
 const getArgs = async (): Promise<Answers> => {
@@ -279,6 +285,9 @@ const getArgs = async (): Promise<Answers> => {
     }).option('v', {
       alias: 'verbose',
       type: 'boolean',
+    }).option('s', {
+      alias: 'skipCheckModelsExist',
+      type: 'boolean',
     });
   })
     .help()
@@ -293,14 +302,16 @@ const getArgs = async (): Promise<Answers> => {
     models,
     outputFormats,
     verbose: ifDefined('v', 'boolean'),
+    skipCheckModelsExist: ifDefined('skipCheckModelsExist', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
-    const { models, outputFormats, verbose } = await getArgs();
+    const { models, outputFormats, verbose, skipCheckModelsExist } = await getArgs();
     await buildModels(models, outputFormats, {
       verbose,
+      skipCheckModelsExist,
     });
   })();
 }
