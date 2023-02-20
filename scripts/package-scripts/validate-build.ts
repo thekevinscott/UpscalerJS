@@ -2,6 +2,7 @@ import path from 'path';
 import yargs from 'yargs';
 import fs from 'fs';
 import { getPackageJSON, JSONSchema } from './utils/packages';
+import { sync } from 'glob';
 
 const ROOT = path.resolve(__dirname, '../..');
 const UPSCALER_JS = path.resolve(ROOT, 'packages/upscalerjs');
@@ -30,7 +31,7 @@ const getObjAsArray = (obj: Partial<JSONSchema>): string[] => {
   }, [] as string[]);
 };
 
-const extractAllFilesFromPackageJSON = (packagePath: string): string[] => {
+export const extractAllFilesFromPackageJSON = (packagePath: string): string[] => {
   const packageJSON = getPackageJSON(packagePath);
   return getObjAsArray(getKeysOfObj(packageJSON, [
     'exports',
@@ -45,18 +46,26 @@ const extractAllFilesFromPackageJSON = (packagePath: string): string[] => {
  * Main function
  */
 
-const validateBuild = async (packageName: string, include: string[] = []): Promise<Set<string>> => {
+const validateBuild = async (packageName: string, include: string[] = [], {
+  includeFilesFromPackageJSON = true,
+}: {
+  includeFilesFromPackageJSON?: Boolean;
+} = { }): Promise<Set<string>> => {
   const packagePath = path.resolve(ROOT, packageName);
   const files = new Set([
-    ...extractAllFilesFromPackageJSON(packagePath),
+    ...(includeFilesFromPackageJSON ? extractAllFilesFromPackageJSON(packagePath) : []),
     ...include,
   ].map(file => path.resolve(packagePath, file)));
   const packageDistPath = path.resolve(packagePath, 'dist');
   files.forEach(file => {
     if (!fs.existsSync(path.resolve(packageDistPath, file))) {
-      const existingFiles = fs.readdirSync(packageDistPath);
+      const existingFiles: string[] = sync(path.resolve(packageDistPath, '**/*'));
       console.log('files that we checked', files);
-      throw new Error(`File ${file} was not built or does not exist. Existing files include: \n${existingFiles.map(f => ` - ${f}`).join('\n')}`);
+      throw new Error([
+        `File ${file} was not built or does not exist.`,
+        `Existing files include: \n${existingFiles.map(f => ` - ${f}`).join('\n')}`,
+        `Files we are checking include: \n${Array.from(files).map(f => ` - ${f}`).join('\n')}`,
+      ].join('\n'));
     }
   });
   return files;

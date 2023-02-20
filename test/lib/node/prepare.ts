@@ -1,13 +1,14 @@
 import callExec from "../utils/callExec";
 import fs from 'fs';
 import path from 'path';
-import { installLocalPackages, installNodeModules } from "../shared/prepare";
+import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare";
 import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
 import { Bundle } from "../../integration/utils/NodeTestRunner";
 import { MODELS_DIR, UPSCALER_DIR } from "../../../scripts/package-scripts/utils/constants";
+import validateBuild, { extractAllFilesFromPackageJSON } from "../../../scripts/package-scripts/validate-build";
 
 /***
  * Types
@@ -35,20 +36,25 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
 }: BundleOpts = {}) => {
   if (skipInstallNodeModules !== true) {
     if (verbose) {
-      console.log('installing node modules');
+      console.log('Installing node modules');
     }
     await installNodeModules(NODE_ROOT, { verbose });
   }
   if (skipInstallLocalPackages !== true) {
     if (verbose) {
-      console.log('installing local packages');
+      console.log('Installing local packages');
     }
     await installLocalPackages(NODE_ROOT, [
       {
         src: UPSCALER_DIR,
         name: LOCAL_UPSCALER_NAME,
+        callback: async ({ moduleFolder }) => {
+          const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
+          await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
+          console.log(`successfully built upscaler in ${moduleFolder}`);
+        },
       },
-      ...getAllAvailableModelPackages().map(packageName => {
+      ...getAllAvailableModelPackages().map((packageName): DependencyDefinition => {
         const modelsFolder = path.resolve(MODELS_DIR, packageName, 'models');
         const modelFiles = fs.readdirSync(modelsFolder);
         if (modelFiles.length === 0) {
@@ -57,6 +63,11 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
         return {
           src: path.resolve(MODELS_DIR, packageName),
           name: path.join(LOCAL_UPSCALER_NAMESPACE, packageName),
+          callback: async ({ moduleFolder }) => {
+            const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
+            await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
+            console.log(`successfully built ${packageName} in ${moduleFolder}`);
+          },
         };
       }),
     ], { 

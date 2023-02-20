@@ -17,6 +17,7 @@ import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
 import { babelTransform } from './utils/babelTransform';
 import { MODELS_DIR } from './utils/constants';
 import { replaceTscAliasPaths } from 'tsc-alias';
+import asyncPool from "tiny-async-pool";
 
 /***
  * Types
@@ -27,6 +28,11 @@ interface Opts {
   forceRebuild?: boolean;
   skipCheckModelsExist?: boolean;
 }
+
+/***
+ * Constants
+ */
+const CONCURRENT_ASYNC_THREADS = 3;
 
 /****
  * Utility functions
@@ -252,7 +258,11 @@ export const buildModels = async (
   }
 
   const start = performance.now();
-  const durations = await Promise.all(models.map(model => buildModel(model, outputFormats, opts)))
+
+  const durations: number[] = [];
+  for await (const duration of asyncPool(CONCURRENT_ASYNC_THREADS, models, (model: string) => buildModel(model, outputFormats, opts))) {
+    durations.push(duration);
+  }
   if (opts.verbose) {
     console.log(`Built models in ${performance.now() - start}`)
   }

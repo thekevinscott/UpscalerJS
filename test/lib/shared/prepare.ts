@@ -24,9 +24,12 @@ export interface Opts {
   usePNPM?: boolean;
 }
 
-type DependencyDefinition = {
+export type DependencyDefinition = {
   src: string;
   name: string;
+  callback?: (opts: {
+    moduleFolder: string;
+  }) => (Promise<void> | void);
 }
 
 export interface Import {
@@ -118,18 +121,28 @@ const installLocalDependencies = async (dest: string, dependencies: DependencyDe
   }
 
   const NODE_MODULES = path.resolve(dest, 'node_modules');
+  const durations = [];
 
-  const progress = async (i: number) => {
-    const { src, name } = dependencies[i];
+  const installLocalDependency = async (i: number) => {
+    const { src, name, callback } = dependencies[i];
 
     if (opts.verbose) {
       console.log(`**** Installing local dependency ${name}, ${i + 1} of ${dependencies.length} total dependenc${dependencies.length === 1 ? 'y' : 'ies'}`);
     }
     const moduleFolder = path.resolve(NODE_MODULES, name);
-    await installLocalPackageWithNewName(src, moduleFolder, name, opts);
+    const duration = await installLocalPackageWithNewName(src, moduleFolder, name, opts);
+    if (callback) {
+      await callback({
+        moduleFolder,
+      });
+    }
+    return duration;
   };
 
-  for await (const _ of asyncPool(CONCURRENT_ASYNC_THREADS, Array(dependencies.length).fill('').map((_, i) => i), progress)) { }
+  for await (const duration of asyncPool(CONCURRENT_ASYNC_THREADS, Array(dependencies.length).fill('').map((_, i) => i), installLocalDependency)) {
+    durations.push(duration);
+  }
+  return durations;
 };
 
 const buildDependencyTree = (dependencies: DependencyDefinition[]): {
@@ -170,7 +183,8 @@ export const installLocalPackages = async (dest: string, dependencies: Dependenc
   await installLocalDependencies(dest, dependencies, localDependencies, opts);
 }
 
-const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, opts: Opts = {}) => {
+const installLocalPackageWithNewName = async (src: string, dest: string, localNameForPackage: string, opts: Opts = {}): Promise<number> => {
+  const start = performance.now();
   const timeoutTime = 12000;
   const timer = setTimeout(() => {
     console.log(`It is taking over ${timeoutTime}ms to install the local package ${localNameForPackage}`);
@@ -180,6 +194,7 @@ const installLocalPackageWithNewName = async (src: string, dest: string, localNa
   const packageJSON = getPackageJSON(dest)
   packageJSON.name = localNameForPackage;
   writePackageJSON(dest, packageJSON)
+  return performance.now() - start;
 }
 
 const npmPack = async (src: string, { verbose }: Opts = {}): Promise<string> => {
