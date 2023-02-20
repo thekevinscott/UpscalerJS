@@ -149,7 +149,7 @@ describe('loadModel browser tests', () => {
           modelType: 'layers',
         } as ModelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), undefined);
+        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
       });
 
       it('throws if all attempts to fetch a model fail', async () => {
