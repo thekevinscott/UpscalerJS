@@ -94,7 +94,11 @@ describe('isValidModelDefinition', () => {
   });
 
   it('returns true if given scale and path', () => {
-    expect(isValidModelDefinition({ path: 'foo', scale: 2 })).toEqual(true);
+    expect(isValidModelDefinition({ 
+      path: 'foo', 
+      scale: 2,
+      modelType: 'layers',
+     })).toEqual(true);
   });
 });
 
