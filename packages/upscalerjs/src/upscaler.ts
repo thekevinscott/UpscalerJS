@@ -86,7 +86,9 @@ export class Upscaler {
 
 
   /**
-   * Upscales a given image.
+   * Processes a given image through a specified neural network.
+   * 
+   * Alias for [`upscale`](upscale).
    * 
    * ```javascript
    * const upscaler = new Upscaler();

@@ -43,6 +43,7 @@ const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
   'constructor', 
   'upscale',
+  'execute',
   'warmup',
   'abort',
   'dispose',
@@ -711,10 +712,28 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     sources,
   } = method;
 
+  if (name === 'upscale') {
+    return [
+      [
+        '---',
+        `title: ${name}`,
+        `sidebar_position: ${i}`,
+        `sidebar_label: ${name}`,
+        '---',
+      ].join('\n'),
+
+      `# ${name}`,
+      `Alias for [\`execute\`](execute)`,
+    ].filter(Boolean).join('\n\n');
+
+  }
+
   if (!sources?.length) {
     throw new Error(`No sources found for ${name}`);
   }
   if (!signatures?.length) {
+    const { type, ...m } = method;
+    console.log(JSON.stringify(m, null, 2))
     throw new Error(`No signatures found in ${name}`);
   }
   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
