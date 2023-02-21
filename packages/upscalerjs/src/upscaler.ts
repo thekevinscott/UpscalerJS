@@ -6,7 +6,7 @@
  * ```typescript
  * import Upscaler from 'upscaler';
  * const upscaler = new Upscaler();
- * upscaler.upscale(img).then(src => {
+ * upscaler.execute(img).then(src => {
  *   // display the src
  * });
  * ```
@@ -87,15 +87,18 @@ export class Upscaler {
     });
   }
 
+
   /**
-   * Upscales a given image.
+   * Processes a given image through a specified neural network. 
+   * 
+   * Alias for [`upscale`](upscale).
    * 
    * ```javascript
    * const upscaler = new Upscaler();
    * const image = new Image();
    * image.src = '/some/path/to/image.png';
    * 
-   * upscaler.upscale(image, {
+   * upscaler.execute(image, {
    *   output: 'base64',
    *   patchSize: 64,
    *   padding: 2,
@@ -111,30 +114,30 @@ export class Upscaler {
    * @param options A set of upscaling arguments.
    * @returns an upscaled image.
    */
-  public async upscale(
+  public async execute(
     image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgStringProgress; progressOutput: BASE64 },
   ): Promise<tf.Tensor3D>;
-  public async upscale(
+  public async execute(
     image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgTensorProgress; progressOutput: TENSOR },
   ): Promise<string>;
-  public async upscale(
+  public async execute(
     image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output: TENSOR; progress?: MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D>;
-  public async upscale(
+  public async execute(
     image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: BASE64; progress?: MultiArgStringProgress; progressOutput?: unknown },
   ): Promise<string>;
-  public async upscale(
+  public async execute(
     image: Input,
     options: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: TENSOR | BASE64; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ): Promise<tf.Tensor3D | string>;
-  public async upscale(
+  public async execute(
     image: Input,
   ): Promise<string>;
-  public async upscale(
+  public async execute(
     image: Input,
     options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
@@ -146,6 +149,11 @@ export class Upscaler {
       signal: this._abortController.signal,
     });
   }
+
+  /**
+   * Alias for execute.
+   */
+  upscale = this.execute.bind(this);
 
   /**
    * Warms up an Upscaler instance. For more info, [see the guide on warming up](/documentation/guides/browser/performance/warmup).

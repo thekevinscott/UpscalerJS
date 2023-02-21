@@ -27,7 +27,7 @@ const main: Main = async (deps) => {
 
   const imageData = fs.readFileSync(imagePath);
   const tensor = tf.node.decodeImage(imageData).slice([0, 0, 0], [-1, -1, 3]); // discard alpha channel, if exists
-  const result = await upscaler.upscale(tensor, {
+  const result = await upscaler.execute(tensor, {
     output: 'tensor',
     patchSize: 64,
     padding: 6,

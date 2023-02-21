@@ -42,7 +42,7 @@ const main: Main = async (deps) => {
   const upscaler = new Upscaler({
     model,
   });
-  const result = await upscaler.upscale(image, {
+  const result = await upscaler.execute(image, {
     patchSize,
     padding,
   });

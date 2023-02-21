@@ -54,7 +54,7 @@ describe('Upscale Integration Tests', () => {
           modelType: 'layers',
         },
       });
-      return upscaler.upscale(window['fixtures']['pixel-upsampler']);
+      return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
   });
@@ -79,7 +79,7 @@ describe('Upscale Integration Tests', () => {
 
         let startTime = new Date().getTime();
         window['durations'] = [];
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 4,
           padding: 2,
           output: 'base64',
@@ -150,7 +150,7 @@ describe('Upscale Integration Tests', () => {
           },
         };
         Array(3).fill('').forEach(() => {
-          upscaler.upscale(window['fixtures']['pixel-upsampler'], options).then(() => {
+          upscaler.execute(window['fixtures']['pixel-upsampler'], options).then(() => {
             window['called'] = true;
             resolve('this should not be called');
           }).catch((err: Error) => {
@@ -200,7 +200,7 @@ describe('Upscale Integration Tests', () => {
             }
           },
         };
-        window['upscaler'].upscale(window['fixtures']['pixel-upsampler'], options).then(() => {
+        window['upscaler'].execute(window['fixtures']['pixel-upsampler'], options).then(() => {
           window['called'] = true;
           resolve('this should not be called');
         }).catch((err: Error) => {
@@ -210,7 +210,7 @@ describe('Upscale Integration Tests', () => {
       expect(errMessage).toEqual('The upscale request received an abort signal');
 
       const result = await page().evaluate(() => {
-        return window['upscaler'].upscale(window['fixtures']['pixel-upsampler']);
+        return window['upscaler'].execute(window['fixtures']['pixel-upsampler']);
       });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
@@ -227,7 +227,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progressRates: Array<number> = [];
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 8,
           padding: 2,
           output: 'base64',
@@ -253,7 +253,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgStringProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 12,
           padding: 2,
           output: 'base64',
@@ -276,7 +276,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgTensorProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 12,
           padding: 2,
           output: 'tensor',
@@ -300,7 +300,7 @@ describe('Upscale Integration Tests', () => {
         const progress: MultiArgStringProgress = (rate, slice, row, col) => {
           progressRates.push([row, col]);
         };
-        upscaler.upscale(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(window['fixtures']['pixel-upsampler'], {
           patchSize: 8,
           padding: 0,
           progress,

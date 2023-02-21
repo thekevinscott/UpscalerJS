@@ -43,6 +43,7 @@ const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
   'constructor', 
   'upscale',
+  'execute',
   'warmup',
   'abort',
   'dispose',
@@ -238,20 +239,25 @@ const getSummary = (comment?: Comment) => {
   return comment?.summary.map(({ text }) => text).join('');
 }
 
-const getTextSummary = (comment?: Comment) => {
+const getTextSummary = (name: string, comment?: Comment) => {
   if (comment === undefined) {
     return {};
   }
   const { summary, blockTags } = comment;
-  const { text, code } = summary.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item.kind]: item.text.trim(),
-    }
-  }, {
-    text: '',
-    code: '',
-  });
+  const expectedCodeSnippet = summary.pop();
+  if (expectedCodeSnippet?.kind !== 'code') {
+    throw new Error(`Expected code snippet not found for ${name}`);
+  }
+  // const { text, code } = summary.reduce((obj, item) => {
+  //   return {
+  //     ...obj,
+  //     [item.kind]: item.text.trim(),
+  //   }
+  // }, {
+  //   text: '',
+  //   code: '',
+  // });
+  const text = summary.map(({ text }) => text).join('');
   return {
     blockTags: blockTags?.reduce((obj, blockTag) => {
       return {
@@ -260,7 +266,7 @@ const getTextSummary = (comment?: Comment) => {
       };
     }, {}),
     description: text.trim(),
-    code,
+    code: expectedCodeSnippet,
   }
 };
 
@@ -711,10 +717,28 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     sources,
   } = method;
 
+  if (name === 'upscale') {
+    return [
+      [
+        '---',
+        `title: ${name}`,
+        `sidebar_position: ${i}`,
+        `sidebar_label: ${name}`,
+        '---',
+      ].join('\n'),
+
+      `# ${name}`,
+      `Alias for [\`execute\`](execute)`,
+    ].filter(Boolean).join('\n\n');
+
+  }
+
   if (!sources?.length) {
     throw new Error(`No sources found for ${name}`);
   }
   if (!signatures?.length) {
+    const { type, ...m } = method;
+    console.log(JSON.stringify(m, null, 2))
     throw new Error(`No signatures found in ${name}`);
   }
   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
@@ -723,7 +747,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   //   throw new Error(`No comment found in method ${name}`);
   // }
 
-  const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
+  const { description, code: codeSnippet, blockTags } = getTextSummary(name, comment);
   let source;
   try {
     source = getSource(sources);
