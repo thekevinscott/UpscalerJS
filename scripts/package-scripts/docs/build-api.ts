@@ -239,20 +239,25 @@ const getSummary = (comment?: Comment) => {
   return comment?.summary.map(({ text }) => text).join('');
 }
 
-const getTextSummary = (comment?: Comment) => {
+const getTextSummary = (name: string, comment?: Comment) => {
   if (comment === undefined) {
     return {};
   }
   const { summary, blockTags } = comment;
-  const { text, code } = summary.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item.kind]: item.text.trim(),
-    }
-  }, {
-    text: '',
-    code: '',
-  });
+  const expectedCodeSnippet = summary.pop();
+  if (expectedCodeSnippet?.kind !== 'code') {
+    throw new Error(`Expected code snippet not found for ${name}`);
+  }
+  // const { text, code } = summary.reduce((obj, item) => {
+  //   return {
+  //     ...obj,
+  //     [item.kind]: item.text.trim(),
+  //   }
+  // }, {
+  //   text: '',
+  //   code: '',
+  // });
+  const text = summary.map(({ text }) => text).join('');
   return {
     blockTags: blockTags?.reduce((obj, blockTag) => {
       return {
@@ -261,7 +266,7 @@ const getTextSummary = (comment?: Comment) => {
       };
     }, {}),
     description: text.trim(),
-    code,
+    code: expectedCodeSnippet,
   }
 };
 
@@ -742,7 +747,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   //   throw new Error(`No comment found in method ${name}`);
   // }
 
-  const { description, code: codeSnippet, blockTags } = getTextSummary(comment);
+  const { description, code: codeSnippet, blockTags } = getTextSummary(name, comment);
   let source;
   try {
     source = getSource(sources);
