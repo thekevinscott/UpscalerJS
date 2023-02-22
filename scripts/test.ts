@@ -144,6 +144,9 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
       const start = performance.now();
       await dependency({
         verbose,
+        // skipInstallNodeModules: true,
+        // skipInstallLocalPackages: true,
+        // skipCopyFixtures: true,
       });
       durations.push(performance.now() - start);
     }

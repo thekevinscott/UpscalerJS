@@ -1,9 +1,14 @@
 import { timeit } from "./timeit";
 import path from 'path';
-import { GetScriptContents, NODE_ROOT, testNodeScript as runNodeScript } from "../../lib/node/prepare";
+import { GetScriptContents, NODE_ROOT, runNodeScript as runNodeScript } from "../../lib/node/prepare";
 import { getHashedName, Opts } from '../../lib/shared/prepare';
 
-export type Bundle<T = {}> = (opts?: T & { verbose?: boolean }) => Promise<void>;
+export type Bundle<T = {}> = (opts?: T & {
+  verbose?: boolean;
+  skipInstallNodeModules?: boolean;
+  skipInstallLocalPackages?: boolean;
+  skipCopyFixtures?: boolean;
+ }) => Promise<void>;
 
 export type Dependencies = Record<string, string>;
 export type DefinedDependencies = Record<string, any>;
@@ -89,6 +94,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
         removeTmpDir,
         testName,
         rootDir: path.resolve(NODE_ROOT, './tmp', getHashedName(`${Math.random()}`)),
+        verbose: this.verbose,
       });
     } catch(err: any) {
       const message = err.message;

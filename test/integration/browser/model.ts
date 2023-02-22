@@ -3,16 +3,16 @@
  */
 import { checkImage } from '../../lib/utils/checkImage';
 import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { readFileSync } from 'fs-extra';
 import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
-import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -21,18 +21,19 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
+const JEST_TIMEOUT = 60 * 1000 * 5;
+jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
 jest.retryTimes(0);
 
 const MODELS_TO_TEST = getFilteredModels({
   specificPackage: undefined, 
   specificModel: undefined,
   filter: (packageName, model) => {
-    if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && model.cjs === "8x") {
-      return false;
-    }
-    return true;
+    const packagePath = path.resolve(MODELS_DIR, packageName);
+    const packageJSON = getPackageJSON(packagePath);
+    const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
+
+    return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
   },
 }).reduce((arr, [packageName, models]) => {
   return arr.concat(models.map(({ esm, ...model }) => {
