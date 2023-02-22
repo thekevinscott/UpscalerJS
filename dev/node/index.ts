@@ -1,9 +1,11 @@
+import { ModelDefinitionFn } from "../../packages/core/src";
+
 const fs = require('fs');
 const tf = require('@tensorflow/tfjs-node-gpu');
 const Upscaler = require('../../packages/upscalerjs/dist/node-gpu/cjs/index.js').default;
 const { mkdirpSync } = require("fs-extra");
 
-const getModel = (model: (tf: any) => any) => {
+const getModel = (model: ModelDefinitionFn) => {
   const { packageInformation, ...rest } = model(tf);
   return {
     ...rest,
@@ -31,7 +33,8 @@ const upscaleImage = async (modelPath: string, imagePath: string, outputPath: st
 
 (async () => {
   const models = [
-    'esrgan',
+    'esrgan-slim',
+    'esrgan-medium',
     // 'deblurring',
     // 'denoising',
     // 'dehazing-indoor',
@@ -46,19 +49,18 @@ const upscaleImage = async (modelPath: string, imagePath: string, outputPath: st
       // // 'large', 
       // // 'medium', 
       // 'small',
-      'slim',
-      'medium',
+      '4x',
+      '8x',
     ]) {
       console.log('Running', size, model);
       // const modelPath = `../../models/maxim-${model}/src/${size}`;
       // const imagePath = `../../models/maxim-${model}/test/__fixtures__/fixture.png`;
       // const outputPath = `../../models/maxim-${model}/test/__fixtures__/${size}/result.png`;
       
-      const modelName = [model, size].join('-');
-      const modelPath = `../../models/${modelName}/src/8x`;
-      const imagePath = `../../models/${modelName}/test/__fixtures__/fixture.png`;
-      const outputPath = `../../models/${modelName}/test/__fixtures__/8x/result.png`;
-      mkdirpSync('output');
+      const modelPath = `../../models/${model}/src/${size}`;
+      const imagePath = `../../models/${model}/test/__fixtures__/fixture.png`;
+      const outputPath = `../../models/${model}/test/__fixtures__/${size}/result.png`;
+      mkdirpSync(outputPath.split('/').slice(0, -1).join('/'));
       await upscaleImage(modelPath, imagePath, outputPath);
     }
   }
