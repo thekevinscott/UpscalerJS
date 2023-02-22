@@ -9,7 +9,6 @@ const getModel = (model: ModelDefinitionFn) => {
   const { packageInformation, ...rest } = model(tf);
   return {
     ...rest,
-    scale: 1,
     path: tf.io.fileSystem(`../../models/${packageInformation?.name.split('/').pop()}/${rest.path}`),
   };
 }
@@ -22,13 +21,14 @@ const upscaleImage = async (modelPath: string, imagePath: string, outputPath: st
 
   const imageBuffer = fs.readFileSync(imagePath);
   const tensor = tf.node.decodeImage(imageBuffer).slice([0, 0, 0], [-1, -1, 3]);
+  if (tensor.shape[0] !== 16 || tensor.shape[1] !== 16) {
+    throw new Error('Incoming tensor shape is not 16')
+  }
   const start = performance.now();
   const upscaledTensor = await upscaler.upscale(tensor);
   console.log(`Duration for ${outputPath}: ${((performance.now() - start) / 1000).toFixed(2)}s`);
   tensor.dispose();
-  const upscaledPng = await tf.node.encodePng(upscaledTensor);
-  fs.writeFileSync(outputPath, upscaledPng);
-  upscaledTensor.dispose();
+  return upscaledTensor;
 }
 
 (async () => {
@@ -61,7 +61,14 @@ const upscaleImage = async (modelPath: string, imagePath: string, outputPath: st
       const imagePath = `../../models/${model}/test/__fixtures__/fixture.png`;
       const outputPath = `../../models/${model}/test/__fixtures__/${size}/result.png`;
       mkdirpSync(outputPath.split('/').slice(0, -1).join('/'));
-      await upscaleImage(modelPath, imagePath, outputPath);
+      const upscaledTensor = await upscaleImage(modelPath, imagePath, outputPath);
+      const expectedShape = size === '4x' ? 64 : 128;
+      if (upscaledTensor.shape[0] !== expectedShape || upscaledTensor.shape[1] !== expectedShape) {
+        throw new Error(`Mismatch, shape is ${JSON.stringify(upscaledTensor.shape)}`)
+      }
+      const upscaledPng = await tf.node.encodePng(upscaledTensor);
+      upscaledTensor.dispose();
+      fs.writeFileSync(outputPath, upscaledPng);
     }
   }
 })();
