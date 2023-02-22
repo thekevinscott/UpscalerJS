@@ -4,12 +4,13 @@ import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/co
 import { AvailableModel, getAllAvailableModelPackages, getAllAvailableModels, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
+const JEST_TIMEOUT = 60 * 1000 * 5;
+jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
 
 const main: Main = async (deps) => {
   const {
@@ -20,6 +21,7 @@ const main: Main = async (deps) => {
     model,
     fs,
   } = deps;
+  console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
 
   const upscaler = new Upscaler({
     model,
@@ -31,6 +33,7 @@ const main: Main = async (deps) => {
     output: 'tensor',
     patchSize: 64,
     padding: 6,
+    progress: console.log,
   });
   tensor.dispose();
   // because we are requesting a tensor, it is possible that the tensor will
@@ -94,10 +97,11 @@ describe('Node Model Loading Integration Tests', () => {
       specificPackage: SPECIFIC_PACKAGE, 
       specificModel: SPECIFIC_MODEL,
       filter: (packageName, model) => {
-        if (['esrgan-slim', 'esrgan-medium'].includes(packageName) && model.cjs === "8x") {
-          return false;
-        }
-        return true;
+        const packagePath = path.resolve(MODELS_DIR, packageName);
+        const packageJSON = getPackageJSON(packagePath);
+        const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
+
+        return supportedPlatforms === undefined || supportedPlatforms.includes('node');
       },
     });
     filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
@@ -125,7 +129,7 @@ describe('Node Model Loading Integration Tests', () => {
             const diffPath = path.resolve(outputsPath, `diff.png`);
             const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
             checkImage(formattedResult, resultPath, diffPath, upscaledPath);
-          }, 60000 * 4); // 4 minutes per model
+          });
         });
       });
     });

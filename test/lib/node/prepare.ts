@@ -108,13 +108,15 @@ interface TestNodeScriptOpts {
   removeTmpDir?: boolean;
   testName?: string;
   rootDir?: string;
+  verbose?: boolean;
+  logStderr?: boolean;
 }
-type TestNodeScript = (getScriptContents: GetScriptContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
-export const testNodeScript: TestNodeScript = async (getScriptContents, {
-  logExtra = true,
+type RunNodeScript = (getScriptContents: GetScriptContents, opts?: TestNodeScriptOpts) => Promise<Buffer | undefined>;
+export const runNodeScript: RunNodeScript = async (getScriptContents, {
   removeTmpDir,
   testName,
   rootDir = path.resolve(NODE_ROOT, './tmp'),
+  verbose = false,
 } = {}) => {
   let data;
   await withTmpDir(async tmpDir => {
@@ -127,14 +129,9 @@ export const testNodeScript: TestNodeScript = async (getScriptContents, {
     }
     await executeNodeScript(fileName, {
       stdout: chunk => {
-        if (logExtra) {
+        if (verbose) {
           console.log('[PAGE]', chunk);
         }
-      },
-      stderr: chunk => {
-        // if (logExtra) {
-        //   console.log('[PAGE]', chunk);
-        // }
       },
     });
     data = fs.readFileSync(dataFile);

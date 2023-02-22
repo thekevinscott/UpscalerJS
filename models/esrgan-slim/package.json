@@ -65,5 +65,12 @@
     "seedrandom": "3.0.5"
   },
   "author": "Kevin Scott",
+  "@upscalerjs": {
+    "models": {
+      "./8x": {
+        "supportedPlatforms": ["node"]
+      }
+    }
+  },
   "license": "MIT"
 }

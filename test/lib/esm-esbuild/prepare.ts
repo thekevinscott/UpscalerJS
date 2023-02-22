@@ -8,6 +8,7 @@ import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { Bundle } from '../../integration/utils/NodeTestRunner';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 /***
  * Types
@@ -44,7 +45,14 @@ const PACKAGES = [
 
 const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) => arr.concat({
   packageName,
-  paths: models.map(({ name, path }) => ({
+  paths: models.filter(({ name }) => {
+    // If a model package has defined supported platforms for its models, only
+    // include those models that are supported in a browser
+    const packagePath = path.resolve(MODELS_DIR, packageName);
+    const packageJSON = getPackageJSON(packagePath);
+    const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[`./${name}`]?.supportedPlatforms;
+    return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
+  }).map(({ name, path }) => ({
     name,
     path: [LOCAL_UPSCALER_NAMESPACE, packageName, name === 'index' ? '' : '', path].filter(Boolean).join('/'),
   })),
@@ -63,6 +71,9 @@ export const bundleEsbuild: Bundle<BundleOpts> = async ({
   usePNPM = false,
 } = {}) => {
   const entryFile = path.resolve(ESBUILD_SRC, 'index.js');
+  if (verbose) {
+    console.log(JSON.stringify(indexImports, null, 2));
+  }
   writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports, {
     verbose,
   });
@@ -120,6 +131,9 @@ export const bundleEsbuild: Bundle<BundleOpts> = async ({
     //   },
     // },
   });
+  if (verbose) {
+    console.log(`successfully bundled the code for entry file ${entryFile}`);
+  }
   // buildResult.stop();
   fs.copyFileSync(path.join(ESBUILD_ROOT, 'src/index.html'), path.join(ESBUILD_DIST, 'index.html'))
   try {
