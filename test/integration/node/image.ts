@@ -10,7 +10,7 @@ const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');
-const BAD_IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png');
+const FOUR_CHANNEL_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png');
 
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.png');
@@ -87,10 +87,10 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it('throws if given 4-channel Uint8Array', async () => {
-      const mockedTensor = tf.node.decodeImage(fs.readFileSync(BAD_IMAGE_FIXTURE_PATH));
+      const mockedTensor = tf.node.decodeImage(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
       await expect(() => testRunner.run({
         globals: {
-          image: `new Uint8Array(fs.readFileSync('${BAD_IMAGE_FIXTURE_PATH}'))`,
+          image: `new Uint8Array(fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}'))`,
         },
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
@@ -107,10 +107,10 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it("throws if a Buffer has invalid channels", async () => {
-      const mockedTensor = tf.node.decodeImage(fs.readFileSync(BAD_IMAGE_FIXTURE_PATH));
+      const mockedTensor = tf.node.decodeImage(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
       await expect(() => testRunner.run({
         globals: {
-          image: `fs.readFileSync('${BAD_IMAGE_FIXTURE_PATH}')`,
+          image: `fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}')`,
         },
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
