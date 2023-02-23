@@ -105,3 +105,21 @@ ul {
     }
   }
 }
+
+
+article[itemprop="blogPost"] {
+  font-size: 80%;
+
+  h2 {
+    font-size: 2.0rem;
+  }
+
+  &.margin-bottom--xl {
+    margin-bottom: 3rem !important;
+
+  }
+
+  footer.docusaurus-mt-lg {
+    margin-top: 1rem;
+  }
+}

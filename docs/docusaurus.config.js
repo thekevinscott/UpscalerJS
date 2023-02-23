@@ -62,6 +62,12 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
         },
+        blog: {
+          routeBasePath: '/news',
+          blogTitle: 'UpscalerJS News',
+          blogDescription: 'News about upcoming models, features, and releases of UpscalerJS',
+          postsPerPage: 'ALL',
+        },
       }),
     ],
   ],
@@ -100,7 +106,7 @@ const config = {
             position: 'left',
             label: 'Models',
           },
-          // { to: '/blog', label: 'News', position: 'left' },
+          { to: '/news', label: 'News', position: 'left' },
           // {
           //   to: 'support',
           //   label: 'Support',
