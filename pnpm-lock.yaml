@@ -442,10 +442,6 @@ importers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.9
       '@types/sql.js': ^1.4.4
-      '@upscalerjs/core': workspace:*
-      '@upscalerjs/esrgan-medium': workspace:*
-      '@upscalerjs/esrgan-slim': workspace:*
-      '@upscalerjs/esrgan-thick': workspace:*
       chart.js: ^4.0.1
       classnames: ^2.3.1
       clsx: ^1.2.1
@@ -477,7 +473,7 @@ importers:
       typedoc: ^0.23.20
       typedoc-plugin-markdown: ^3.13.4
       typescript: ^4.8.3
-      upscaler: workspace:*
+      upscaler: 1.0.0-beta.14
       webpack: ^5.73.0
     dependencies:
       '@docusaurus/core': 2.3.1_35jgz3mn7b4mnvmqc6b74nvtei
@@ -485,10 +481,6 @@ importers:
       '@docusaurus/theme-common': 2.3.1_35jgz3mn7b4mnvmqc6b74nvtei
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
-      '@upscalerjs/core': link:../packages/core
-      '@upscalerjs/esrgan-medium': link:../models/esrgan-medium
-      '@upscalerjs/esrgan-slim': link:../models/esrgan-slim
-      '@upscalerjs/esrgan-thick': link:../models/esrgan-thick
       chart.js: 4.0.1
       classnames: 2.3.2
       clsx: 1.2.1
