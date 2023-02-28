@@ -49,6 +49,7 @@
     "test:integration:browserstack": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
     "test:integration:browser": "pnpm --filter @upscalerjs/scripts test:integration:browser",
     "test:integration:node": "pnpm --filter @upscalerjs/scripts test:integration:node",
+    "test:model": "pnpm --filter @upscalerjs/scripts test:model",
     "test:memory-leaks": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
     "test:unit": "pnpm --filter upscaler test:unit",
     "test:unit:browser:playwright": "pnpm --filter upscaler test:unit:browser:playwright",
