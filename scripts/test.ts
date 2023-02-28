@@ -19,6 +19,7 @@ import { Bundle } from '../test/integration/utils/NodeTestRunner';
  * Types
  */
 type Platform = 'browser' | 'node';
+type TargetPlatform = 'browser' | 'node' | 'node-gpu';
 type Runner = 'local' | 'browserstack';
 type Kind = 'integration' | 'memory' | 'model';
 
@@ -26,7 +27,13 @@ type Kind = 'integration' | 'memory' | 'model';
  * Utility Functions & Classes
  */
 
-const getOutputFormats = (target: Platform): Array<OutputFormat> => {
+const getOutputFormats = (target: Platform | Platform[]): Array<OutputFormat> => {
+  if (Array.isArray(target)) {
+    if (target.includes('browser')) {
+      return DEFAULT_OUTPUT_FORMATS;
+    }
+    return ['cjs'];
+  }
   if (target === 'browser') {
     // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find default
     return DEFAULT_OUTPUT_FORMATS;
@@ -42,40 +49,78 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
-const getFolder = (platform: Platform, runner: Runner, kind: Kind) => kind === 'memory' ? 'memory' : runner === 'browserstack' ? 'browserstack' : platform;
+const getFolder = (platform: Platform, runner: Runner, kind: Kind) => {
+  if (kind === 'memory') {
+    return 'memory';
+  }
+  if (kind === 'model') {
+    return 'model';
+  }
+  if (runner === 'browserstack') {
+    return 'browserstack';
+  }
+  return platform;
+};
 
 const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
   if (kind === 'memory') {
     return ['test.browser'];
   }
+  if (kind === 'model') {
+    return ['model'];
+  }
   const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
   return files.map(file => file.split('/').pop() || '');
 };
 
-const getDependencies = async (platform: Platform, runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
-  const { default: sharedDependencies } = await import(filePath);
-
+const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
   const sharedDependenciesSet = new Set<Bundle>();
 
-  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
+  const platforms = ([] as Platform[]).concat(_platforms);
 
-  for (const file of files) {
-    const fileName = `${file}`.split('.ts')[0];
-    if (!sharedDependencies[fileName]) {
-      throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
+  await Promise.all(platforms.map(async (platform: Platform) => {
+    const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
+    const { default: sharedDependencies } = await import(filePath);
+
+    const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
+
+    for (const file of files) {
+      const fileName = `${file}`.split('.ts')[0];
+      if (!sharedDependencies[fileName]) {
+        throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
+      }
+      sharedDependencies[fileName].forEach((fn: Bundle) => {
+        sharedDependenciesSet.add(fn);
+      });
     }
-    sharedDependencies[fileName].forEach((fn: Bundle) => {
-      sharedDependenciesSet.add(fn);
-    });
-  }
+  }));
   return Array.from(sharedDependenciesSet);
+};
+
+const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
+  if (kind === 'memory') {
+    return path.resolve(TEST_DIR, 'misc/memory/jestconfig.js');
+  }
+  if (kind === 'model') {
+    return path.resolve(TEST_DIR, 'jestconfig.model.js');
+  }
+  if (Array.isArray(platform)) {
+    throw new Error(`An array of platforms was provided, but test kind does not support multiple platforms. Please provide an explicit platform`);
+  }
+  return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
+};
+
+const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] => {
+  if (Array.isArray(platform)) {
+    return ['browser', 'node', 'node-gpu'];
+  }
+  return platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
 }
 
 /****
  * Main function
  */
-const test = async (platform: Platform, runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
+const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
   skipUpscalerBuild,
@@ -83,6 +128,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
   forceModelRebuild,
   skipBundle,
   skipTest,
+  useGPU,
 }: {
   browserstackAccessKey?: string;
   skipUpscalerBuild?: boolean;
@@ -91,6 +137,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
+  useGPU?: boolean,
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (skipTest !== true && runner === 'browserstack') {
@@ -120,7 +167,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
   }
 
   if (skipUpscalerBuild !== true) {
-    const platformsToBuild: ('browser' | 'node' | 'node-gpu')[] = platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
+    const platformsToBuild = getPlatformsToBuild(platform);
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
@@ -156,7 +203,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
   }
 
   if (skipTest !== true) {
-    const jestConfigPath = path.resolve(TEST_DIR, kind === 'memory' ? 'misc/memory/jestconfig.js' : `jestconfig.${platform}.${runner}.js`);
+    const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const args = [
       'pnpm',
       'jest',
@@ -167,7 +214,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
 
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose });
+    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
     if (bsLocal !== undefined) {
       await stopBrowserstack(bsLocal);
     }
@@ -182,7 +229,7 @@ const test = async (platform: Platform, runner: Runner, kind: Kind, positionalAr
  */
 interface Args {
   watch?: boolean;
-  platform: Platform;
+  platform: Platform | Platform[];
   skipBundle?: boolean;
   skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
@@ -192,6 +239,7 @@ interface Args {
   browserstackAccessKey?: string;
   verbose?: boolean;
   kind: Kind;
+  useGPU?: boolean;
 
   // this is an option only for CI; lets us separate out our build step from our test step
   skipTest?: boolean;
@@ -201,11 +249,15 @@ const isValidPlatform = (platform?: string): platform is Platform => {
   return platform !== undefined && ['browser', 'node'].includes(platform);
 }
 
-const getPlatform = (argPlatform: string): Platform => {
+const getPlatform = (kind: Kind, argPlatform?: string): Platform | Platform[] => {
   const platform = argPlatform?.trim();
 
   if (isValidPlatform(platform)) {
     return platform;
+  }
+
+  if (kind === 'model') {
+    return ['browser', 'node'];
   }
 
   throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
@@ -240,7 +292,7 @@ const getArgs = async (): Promise<Args> => {
 
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
-    platform: { type: 'string', demandOption: true },
+    platform: { type: 'string' },
     skipUpscalerBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
@@ -249,10 +301,11 @@ const getArgs = async (): Promise<Args> => {
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },
+    useGPU: { type: 'boolean' },
   }).argv;
-  const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.runner);
   const kind = getKind(argv.kind);
+  const platform = getPlatform(kind, argv.platform);
+  const runner = getRunner(argv.runner);
   let positionalArgs = argv._;
   if (!Array.isArray(positionalArgs)) {
     positionalArgs = [positionalArgs];

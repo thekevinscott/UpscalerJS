@@ -21,6 +21,7 @@
     "test:integration:browser": "pnpm __run_command ./test.ts --platform browser",
     "test:integration:node": "pnpm __run_command ./test.ts --platform node",
     "test:memory-leaks": "pnpm __run_command ./test.ts --memoryTest --platform browser",
+    "test:model": "pnpm __run_command ./test.ts --kind model",
     "update:version": "pnpm __run_command ./package-scripts/update-version.ts",
     "update:tfjs": "pnpm __run_command ./package-scripts/update-tfjs.ts",
     "update:dependency": "pnpm __run_command ./package-scripts/update-dependency.ts",
