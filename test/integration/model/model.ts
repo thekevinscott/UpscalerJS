@@ -27,7 +27,7 @@ jest.retryTimes(0);
 
 
 if (PLATFORMS?.includes('browser')) {
-  const MODELS_TO_TEST = getFilteredModels({
+  const filteredPackagesAndModels = getFilteredModels({
     specificPackage: undefined,
     specificModel: undefined,
     filter: (packageName, model) => {
@@ -37,17 +37,9 @@ if (PLATFORMS?.includes('browser')) {
 
       return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
     },
-  }).reduce((arr, [packageName, models]) => {
-    return arr.concat(models.map(({ esm, ...model }) => {
-      return [
-        packageName, {
-          ...model,
-          esm: esm === '' ? 'index' : esm,
-        }];
-    }));
-  }, [] as [string, AvailableModel][]);
+  });
 
-  describe('Browser Model Loading Integration Tests', () => {
+  describe('Browser ESM Model Tests', () => {
     const testRunner = new BrowserTestRunner({
       name: 'esm',
       mockCDN: esbuildMockCDN,
@@ -75,62 +67,69 @@ if (PLATFORMS?.includes('browser')) {
       await testRunner.afterEach();
     });
 
-    describe('esm', () => {
-      MODELS_TO_TEST.map(([packageName, { esm: esmName }]) => {
-        it(`${packageName}/${esmName}`, async () => {
-          await testRunner.navigateToServer('| Loaded');
-          const result = await page().evaluate(([packageName, modelName]) => {
-            if (!modelName) {
-              throw new Error(`No model name found for package ${packageName}`);
-            }
-            // TODO: window fails to be typed correctly in CI
-            // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
-            // Locally it works fine
-            const modelDefinition = (window as any)[packageName][modelName];
-            if (!modelDefinition) {
-              throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
-            }
-            const upscaler = new window['Upscaler']({
-              model: modelDefinition,
-            });
-            return upscaler.execute(window['fixtures'][packageName]);
-          }, [packageName, esmName]);
-          const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
-          const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/umd', packageName, esmName);
-          const diffPath = path.resolve(outputsPath, `diff.png`);
-          const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
-          checkImage(result, resultPath, diffPath, upscaledPath);
+    filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
+      describe(packageName, () => {
+        filteredModels.forEach(({ esm,  }) => {
+          const esmName = esm || 'index';
+          it(esmName, async () => {
+            await testRunner.navigateToServer('| Loaded');
+            const result = await page().evaluate(([packageName, modelName]) => {
+              if (!modelName) {
+                throw new Error(`No model name found for package ${packageName}`);
+              }
+              // TODO: window fails to be typed correctly in CI
+              // https://github.com/thekevinscott/UpscalerJS/runs/7176553596?check_suite_focus=true#step:7:60
+              // Locally it works fine
+              const modelDefinition = (window as any)[packageName][modelName];
+              if (!modelDefinition) {
+                throw new Error(`No model definition found for package name ${packageName} and model name ${modelName}`);
+              }
+              const upscaler = new window['Upscaler']({
+                model: modelDefinition,
+              });
+              return upscaler.execute(window['fixtures'][packageName]);
+            }, [packageName, esmName]);
+            const resultPath = path.resolve(MODELS_DIR, packageName, "test/__fixtures__", esmName, "result.png")
+            const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/browser/umd', packageName, esmName);
+            const diffPath = path.resolve(outputsPath, `diff.png`);
+            const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
+            checkImage(result, resultPath, diffPath, upscaledPath);
+          });
         });
       });
     });
+  });
 
-    describe('umd', () => {
-      const UMD_PORT = 8096;
-      const umdTestRunner = new BrowserTestRunner({
-        name: 'umd',
-        mockCDN: umdMockCDN,
-        dist: UMD_DIST,
-        port: UMD_PORT,
-      });
+  describe('Browser UMD Model Tests', () => {
+    const UMD_PORT = 8096;
+    const umdTestRunner = new BrowserTestRunner({
+      name: 'umd',
+      mockCDN: umdMockCDN,
+      dist: UMD_DIST,
+      port: UMD_PORT,
+    });
 
-      beforeAll(async function modelBeforeAll() {
-        await umdTestRunner.beforeAll();
-      }, 20000);
+    beforeAll(async function modelBeforeAll() {
+      await umdTestRunner.beforeAll();
+    }, 20000);
 
-      afterAll(async function modelAfterAll() {
-        await umdTestRunner.afterAll();
-      }, 30000);
+    afterAll(async function modelAfterAll() {
+      await umdTestRunner.afterAll();
+    }, 30000);
 
-      beforeEach(async function beforeEach() {
-        await umdTestRunner.beforeEach(null);
-      });
+    beforeEach(async function beforeEach() {
+      await umdTestRunner.beforeEach(null);
+    });
 
-      afterEach(async function afterEach() {
-        await umdTestRunner.afterEach();
-      });
+    afterEach(async function afterEach() {
+      await umdTestRunner.afterEach();
+    });
 
-      MODELS_TO_TEST.map(([packageName, { esm: esmName, umd: umdName }]) => {
-        it(`${packageName}/${esmName}`, async () => {
+    filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
+      describe(packageName, () => {
+        filteredModels.forEach(({ esm, umd: umdName }) => {
+          const esmName = esm || 'index';
+          it(esmName, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
             const upscaler = new window['Upscaler']({
@@ -143,10 +142,10 @@ if (PLATFORMS?.includes('browser')) {
           const diffPath = path.resolve(outputsPath, `diff.png`);
           const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
           checkImage(result, resultPath, diffPath, upscaledPath);
+          });
         });
       });
     });
-
   });
 }
 
@@ -183,7 +182,7 @@ if (PLATFORMS?.includes('node')) {
     return base64ArrayBuffer(upscaledImage);
   };
 
-  describe('Node Model Loading Integration Tests', () => {
+  describe('Node CJS Model Tests', () => {
     const testRunner = new NodeTestRunner({
       main,
       trackTime: false,
@@ -208,7 +207,7 @@ if (PLATFORMS?.includes('node')) {
       describe(packageName, () => {
         filteredModels.forEach(({ cjs }) => {
           const cjsName = cjs || 'index';
-          it(`${packageName}/${cjsName}`, async () => {
+          it(cjsName, async () => {
             const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
             const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
             const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
