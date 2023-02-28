@@ -49,6 +49,7 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
+    "@upscalerjs/default-model": "1.0.0-beta.12",
     "@upscalerjs/esrgan-legacy": "1.0.0-beta.9",
     "@upscalerjs/esrgan-slim": "1.0.0-beta.7",
     "@upscalerjs/esrgan-medium": "1.0.0-beta.7",
