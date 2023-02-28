@@ -191,7 +191,7 @@ interface Args {
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
   verbose?: boolean;
-  kind?: Kind;
+  kind: Kind;
 
   // this is an option only for CI; lets us separate out our build step from our test step
   skipTest?: boolean;
