@@ -77,7 +77,7 @@ if (PLATFORMS?.includes('browser')) {
 
     describe('esm', () => {
       MODELS_TO_TEST.map(([packageName, { esm: esmName }]) => {
-        it(`upscales with ${packageName}/${esmName} as esm`, async () => {
+        it(`${packageName}/${esmName}`, async () => {
           await testRunner.navigateToServer('| Loaded');
           const result = await page().evaluate(([packageName, modelName]) => {
             if (!modelName) {
@@ -130,7 +130,7 @@ if (PLATFORMS?.includes('browser')) {
       });
 
       MODELS_TO_TEST.map(([packageName, { esm: esmName, umd: umdName }]) => {
-        it(`upscales with ${packageName}/${esmName} as umd`, async () => {
+        it(`${packageName}/${esmName}`, async () => {
           const result = await umdTestRunner.page.evaluate(([umdName, packageName]) => {
             const model: ModelDefinition = (<any>window)[umdName];
             const upscaler = new window['Upscaler']({
@@ -208,7 +208,7 @@ if (PLATFORMS?.includes('node')) {
       describe(packageName, () => {
         filteredModels.forEach(({ cjs }) => {
           const cjsName = cjs || 'index';
-          it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
+          it(`${packageName}/${cjsName}`, async () => {
             const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
             const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
             const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
