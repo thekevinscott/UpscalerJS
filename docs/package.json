@@ -49,12 +49,12 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
-    "@upscalerjs/default-model": "1.0.0-beta.13",
-    "@upscalerjs/esrgan-legacy": "1.0.0-beta.10",
-    "@upscalerjs/esrgan-slim": "1.0.0-beta.8",
-    "@upscalerjs/esrgan-medium": "1.0.0-beta.8",
-    "@upscalerjs/esrgan-thick": "1.0.0-beta.11",
-    "upscaler": "1.0.0-beta.14"
+    "@upscalerjs/default-model": "workspace:*",
+    "@upscalerjs/esrgan-legacy": "workspace:*",
+    "@upscalerjs/esrgan-slim": "workspace:*",
+    "@upscalerjs/esrgan-medium": "workspace:*",
+    "@upscalerjs/esrgan-thick": "workspace:*",
+    "upscaler": "workspace:*"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
