@@ -20,6 +20,7 @@ import { Bundle } from '../test/integration/utils/NodeTestRunner';
  */
 type Platform = 'browser' | 'node';
 type Runner = 'local' | 'browserstack';
+type Kind = 'integration' | 'memory' | 'model';
 
 /****
  * Utility Functions & Classes
@@ -41,23 +42,23 @@ const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Pro
   });
 });
 
-const getFolder = (platform: Platform, runner: Runner, memoryTest?: boolean) => memoryTest ? 'memory' : runner === 'browserstack' ? 'browserstack' : platform;
+const getFolder = (platform: Platform, runner: Runner, kind: Kind) => kind === 'memory' ? 'memory' : runner === 'browserstack' ? 'browserstack' : platform;
 
-const getAllTestFiles = (platform: Platform, runner: Runner, memoryTest?: boolean): string[] => {
-  if (memoryTest) {
+const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
+  if (kind === 'memory') {
     return ['test.browser'];
   }
-  const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner), `**/*.ts`));
+  const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
   return files.map(file => file.split('/').pop() || '');
 };
 
-const getDependencies = async (platform: Platform, runner: Runner, memoryTest?: boolean, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
-  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, memoryTest)}.dependencies.ts`);
+const getDependencies = async (platform: Platform, runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
+  const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
   const { default: sharedDependencies } = await import(filePath);
 
   const sharedDependenciesSet = new Set<Bundle>();
 
-  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, memoryTest);
+  const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
 
   for (const file of files) {
     const fileName = `${file}`.split('.ts')[0];
@@ -74,7 +75,7 @@ const getDependencies = async (platform: Platform, runner: Runner, memoryTest?: 
 /****
  * Main function
  */
-const test = async (platform: Platform, runner: Runner, positionalArgs: (string | number)[], {
+const test = async (platform: Platform, runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
   skipUpscalerBuild,
@@ -82,7 +83,6 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   forceModelRebuild,
   skipBundle,
   skipTest,
-  memoryTest,
 }: {
   browserstackAccessKey?: string;
   skipUpscalerBuild?: boolean;
@@ -91,7 +91,6 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
-  memoryTest?: boolean,
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (skipTest !== true && runner === 'browserstack') {
@@ -135,7 +134,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   }
 
   if (skipBundle !== true) {
-    const dependencies = await getDependencies(platform, runner, memoryTest, ...positionalArgs);
+    const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     if (dependencies.length === 0) {
       throw new Error('One day there may be no defined dependencies, but today is not that day.')
     }
@@ -157,7 +156,7 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
   }
 
   if (skipTest !== true) {
-    const jestConfigPath = path.resolve(TEST_DIR, memoryTest ? 'misc/memory/jestconfig.js' : `jestconfig.${platform}.${runner}.js`);
+    const jestConfigPath = path.resolve(TEST_DIR, kind === 'memory' ? 'misc/memory/jestconfig.js' : `jestconfig.${platform}.${runner}.js`);
     const args = [
       'pnpm',
       'jest',
@@ -184,16 +183,15 @@ const test = async (platform: Platform, runner: Runner, positionalArgs: (string 
 interface Args {
   watch?: boolean;
   platform: Platform;
-  runner: Runner;
   skipBundle?: boolean;
   skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
-  kind?: string;
+  runner: Runner;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
   verbose?: boolean;
-  memoryTest?: boolean;
+  kind: Kind;
 
   // this is an option only for CI; lets us separate out our build step from our test step
   skipTest?: boolean;
@@ -213,9 +211,21 @@ const getPlatform = (argPlatform: string): Platform => {
   throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
 }
 
+const isValidKind = (kind?: string): kind is undefined | Kind => {
+  return kind === undefined ? true : ['integration', 'memory', 'model'].includes(kind);
+};
+
+const getKind = (kind?: string): Kind => {
+  if (isValidKind(kind)) {
+    return kind === undefined ? 'integration' : kind;
+
+  }
+  throw new Error(`Unsupported kind provided: ${kind}. You must pass either 'integration', 'memory', or 'model'.`)
+};
+
 const isValidRunner = (runner?: string): runner is undefined | Runner => {
   return runner === undefined ? true : ['local', 'browserstack'].includes(runner);
-}
+};
 
 const getRunner = (runner?: string): Runner => {
   if (isValidRunner(runner)) {
@@ -236,12 +246,13 @@ const getArgs = async (): Promise<Args> => {
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
     forceModelRebuild: { type: 'boolean' },
-    kind: { type: 'string' },
+    runner: { type: 'string' },
     verbose: { type: 'boolean' },
-    memoryTest: { type: 'boolean' },
+    kind: { type: 'string' },
   }).argv;
   const platform = getPlatform(argv.platform);
-  const runner = getRunner(argv.kind);
+  const runner = getRunner(argv.runner);
+  const kind = getKind(argv.kind);
   let positionalArgs = argv._;
   if (!Array.isArray(positionalArgs)) {
     positionalArgs = [positionalArgs];
@@ -254,6 +265,7 @@ const getArgs = async (): Promise<Args> => {
     browserstackAccessKey: BROWSERSTACK_ACCESS_KEY,
     platform,
     runner,
+    kind,
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
     forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
@@ -266,9 +278,10 @@ if (require.main === module) {
       platform,
       runner,
       positionalArgs,
+      kind,
       ...args
     } = await getArgs();
-    await test(platform, runner, positionalArgs, {
+    await test(platform, runner, kind, positionalArgs, {
       ...args,
     });
   })();
