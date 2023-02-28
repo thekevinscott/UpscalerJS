@@ -442,6 +442,7 @@ importers:
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.9
       '@types/sql.js': ^1.4.4
+      '@upscalerjs/default-model': 1.0.0-beta.12
       '@upscalerjs/esrgan-legacy': 1.0.0-beta.9
       '@upscalerjs/esrgan-medium': 1.0.0-beta.7
       '@upscalerjs/esrgan-slim': 1.0.0-beta.7
@@ -485,6 +486,7 @@ importers:
       '@docusaurus/theme-common': 2.3.1_35jgz3mn7b4mnvmqc6b74nvtei
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
+      '@upscalerjs/default-model': link:../models/default-model
       '@upscalerjs/esrgan-legacy': link:../models/esrgan-legacy
       '@upscalerjs/esrgan-medium': link:../models/esrgan-medium
       '@upscalerjs/esrgan-slim': link:../models/esrgan-slim
