@@ -1,0 +1,30 @@
+{
+  "name": "@upscalerjs/examples.electron",
+  "private": true,
+  "version": "1.0.0-beta.10",
+  "description": "Demonstration of Electron integration with UpscalerJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": 1
+      }
+    }
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.2.0",
+    "seedrandom": "^3.0.5",
+    "upscaler": "1.0.0-beta.14"
+  },
+  "engines": {
+    "npm": ">8.0.0"
+  },
+  "devDependencies": {
+    "electron": "^23.1.1"
+  }
+}
