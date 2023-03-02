@@ -15,7 +15,8 @@
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
     "docusaurus:start": "docusaurus start --host 0.0.0.0",
     "build:only": "docusaurus build",
-    "build": "pnpm build:dependencies && concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm build:only",
+    "build": "concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm build:only",
+    "_build_old_": "pnpm build:dependencies && concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm build:only",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -49,12 +50,12 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
-    "@upscalerjs/default-model": "workspace:*",
-    "@upscalerjs/esrgan-legacy": "workspace:*",
-    "@upscalerjs/esrgan-slim": "workspace:*",
-    "@upscalerjs/esrgan-medium": "workspace:*",
-    "@upscalerjs/esrgan-thick": "workspace:*",
-    "upscaler": "workspace:*"
+    "@upscalerjs/default-model": "*",
+    "@upscalerjs/esrgan-legacy": "*",
+    "@upscalerjs/esrgan-slim": "*",
+    "@upscalerjs/esrgan-medium": "*",
+    "@upscalerjs/esrgan-thick": "*",
+    "upscaler": "*"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
