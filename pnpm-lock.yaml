@@ -485,7 +485,7 @@ importers:
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-medium': link:../models/esrgan-medium
+      '@upscalerjs/esrgan-medium': 1.0.0-beta.9_@tensorflow+tfjs@4.2.0
       chart.js: 4.0.1
       classnames: 2.3.2
       clsx: 1.2.1
@@ -506,7 +506,7 @@ importers:
       sql-wasm: 1.1.4
       sql.js: 1.8.0
       stream-browserify: 3.0.0
-      upscaler: link:../packages/upscalerjs
+      upscaler: 1.0.0-beta.16_@tensorflow+tfjs@4.2.0
     devDependencies:
       '@algolia/client-search': 4.14.2
       '@docusaurus/module-type-aliases': 2.3.1_x6334374xk575tqfnnaggrljq4
@@ -537,9 +537,9 @@ importers:
       upscaler: latest
     dependencies:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
-      '@upscalerjs/esrgan-thick': link:../../../../../models/esrgan-thick
+      '@upscalerjs/esrgan-thick': 1.0.0-beta.11_@tensorflow+tfjs@4.2.0
       seedrandom: 3.0.5
-      upscaler: link:../../../../../packages/upscalerjs
+      upscaler: 1.0.0-beta.16_@tensorflow+tfjs@4.2.0
 
   docs/workers/image-search:
     specifiers:
@@ -5067,6 +5067,17 @@ packages:
       - encoding
     dev: false
 
+  /@upscalerjs/default-model/1.0.0-beta.14_@tensorflow+tfjs@4.2.0:
+    resolution: {integrity: sha512-h7BiWOeSzAXNZcL5XTw5EGsQGcREBzxh8/UYUKHzdZfKd89OLuN0DG5nCWJsIe2aEL1XgrsNnDxUr9CmxC656A==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.14
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@upscalerjs/default-model/1.0.0-beta.6_@tensorflow+tfjs@4.2.0:
     resolution: {integrity: sha512-i0RWCxY83v1nfP/LK5kvvrqbhIZWr1VWtI6zaap86EUwduEgYTOKA9PWVNet3Hf977X4ocSJAFB/jizkhS8JAw==}
     peerDependencies:
@@ -5111,6 +5122,17 @@ packages:
       - encoding
     dev: false
 
+  /@upscalerjs/esrgan-medium/1.0.0-beta.9_@tensorflow+tfjs@4.2.0:
+    resolution: {integrity: sha512-y36qZNIcXvw0YcCvadbMWKL9VF6gWxHlP9Kv57c3CYMDIv24UusqMSEdJZSkM0wC/xoP36LuoBvLbbumlQNk0g==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.14
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@upscalerjs/esrgan-slim/1.0.0-beta.7_@tensorflow+tfjs@4.2.0:
     resolution: {integrity: sha512-uCuuGXdFNN/hx2Lm4uCEzGARFbFWsT+FDl+b5EH5q3Sfy+x2l+CQ5a/9FvMKpbScJKbj6d/bU6gyyxvFVoA3zw==}
     peerDependencies:
@@ -5118,6 +5140,17 @@ packages:
     dependencies:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
       '@upscalerjs/core': 1.0.0-beta.8
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upscalerjs/esrgan-thick/1.0.0-beta.11_@tensorflow+tfjs@4.2.0:
+    resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -15150,6 +15183,19 @@ packages:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
       '@upscalerjs/core': 1.0.0-beta.14
       '@upscalerjs/default-model': 1.0.0-beta.12_@tensorflow+tfjs@4.2.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /upscaler/1.0.0-beta.16_@tensorflow+tfjs@4.2.0:
+    resolution: {integrity: sha512-/ccCpszl4gRhNJaVdlALYcBu5+XfGUZbp4N7rjrCasJ2KUu6+vFT8NsclBc61rhrbJOQNv2IkthVGYLcE6BhJA==}
+    engines: {node: '>=16.0'}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
+      '@upscalerjs/core': 1.0.0-beta.14
+      '@upscalerjs/default-model': 1.0.0-beta.14_@tensorflow+tfjs@4.2.0
     transitivePeerDependencies:
       - encoding
     dev: false
