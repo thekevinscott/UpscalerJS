@@ -438,6 +438,7 @@ importers:
       '@docusaurus/types': ^2.3.1
       '@mdx-js/react': ^1.6.22
       '@shoelace-style/shoelace': 2.0.0-beta.80
+      '@tensorflow/tfjs': ^4.2.0
       '@tsconfig/docusaurus': ^1.0.5
       '@types/react': ^18.0.17
       '@types/react-dom': ^18.0.9
@@ -468,6 +469,7 @@ importers:
       react-twitter-embed: ^4.0.4
       sass: ^1.56.1
       sass-loader: ^13.0.2
+      seedrandom: 3.0.5
       sql-wasm: ^1.1.4
       sql.js: ^1.8.0
       stream-browserify: ^3.0.0
@@ -482,6 +484,7 @@ importers:
       '@docusaurus/theme-common': 2.3.1_35jgz3mn7b4mnvmqc6b74nvtei
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@shoelace-style/shoelace': 2.0.0-beta.80
+      '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
       '@upscalerjs/esrgan-medium': link:../models/esrgan-medium
       chart.js: 4.0.1
       classnames: 2.3.2
@@ -499,6 +502,7 @@ importers:
       react-icons: 4.7.1_react@17.0.2
       react-loading: 2.0.3_at7mkepldmzoo6silmqc5bca74
       react-twitter-embed: 4.0.4_sfoxds7t5ydpegc3knd667wn6m
+      seedrandom: 3.0.5
       sql-wasm: 1.1.4
       sql.js: 1.8.0
       stream-browserify: 3.0.0
