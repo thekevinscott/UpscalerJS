@@ -31,6 +31,7 @@
     "@docusaurus/theme-common": "^2.3.1",
     "@mdx-js/react": "^1.6.22",
     "@shoelace-style/shoelace": "2.0.0-beta.80",
+    "@upscalerjs/esrgan-medium": "1.0.0-beta.8",
     "chart.js": "^4.0.1",
     "classnames": "^2.3.1",
     "clsx": "^1.2.1",
@@ -50,8 +51,7 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
-    "@upscalerjs/esrgan-medium": "1.0.0-beta.8",
-    "upscaler": "workspace:*"
+    "upscaler": "1.0.0-beta.14"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
