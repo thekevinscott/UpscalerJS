@@ -474,7 +474,7 @@ importers:
       typedoc: ^0.23.20
       typedoc-plugin-markdown: ^3.13.4
       typescript: ^4.8.3
-      upscaler: workspace:*
+      upscaler: 1.0.0-beta.15
       webpack: ^5.73.0
     dependencies:
       '@docusaurus/core': 2.3.1_35jgz3mn7b4mnvmqc6b74nvtei
