@@ -245,8 +245,8 @@ importers:
   dev/browser/public/models/esrgan-experiments:
     specifiers:
       '@tensorflow/tfjs': ^4.2.0
-      '@tensorflow/tfjs-core': ^4.1.0
-      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.2.0
+      '@tensorflow/tfjs-layers': ^4.2.0
       '@tensorflow/tfjs-node': ^4.2.0
       '@tensorflow/tfjs-node-gpu': ^4.2.0
       '@upscalerjs/core': workspace:*
@@ -636,8 +636,8 @@ importers:
   models/esrgan-experiments:
     specifiers:
       '@tensorflow/tfjs': ^4.2.0
-      '@tensorflow/tfjs-core': ^4.1.0
-      '@tensorflow/tfjs-layers': ^4.1.0
+      '@tensorflow/tfjs-core': ^4.2.0
+      '@tensorflow/tfjs-layers': ^4.2.0
       '@tensorflow/tfjs-node': ^4.2.0
       '@tensorflow/tfjs-node-gpu': ^4.2.0
       '@upscalerjs/core': workspace:*
@@ -646,8 +646,8 @@ importers:
       '@upscalerjs/core': link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs': 4.2.0_seedrandom@3.0.5
-      '@tensorflow/tfjs-core': 4.1.0
-      '@tensorflow/tfjs-layers': 4.2.0_npjwttp6o2hhjgfcmiedqvkgoa
+      '@tensorflow/tfjs-core': 4.2.0
+      '@tensorflow/tfjs-layers': 4.2.0_tkoh6rxfpzme3tc2ndqbqcrg7y
       '@tensorflow/tfjs-node': 4.2.0_seedrandom@3.0.5
       '@tensorflow/tfjs-node-gpu': 4.2.0_seedrandom@3.0.5
       seedrandom: 3.0.5
@@ -4212,22 +4212,6 @@ packages:
       - encoding
     dev: false
 
-  /@tensorflow/tfjs-core/4.1.0:
-    resolution: {integrity: sha512-zERD4xtxNq3dV3+wPEMi2HWSV68FA8WucSAogzErp38/q98Byv9G1x8DhxQ+jowTcqN4srGWcBfK59jYwjlAvA==}
-    engines: {yarn: '>= 1.3.2'}
-    dependencies:
-      '@types/long': 4.0.2
-      '@types/offscreencanvas': 2019.7.0
-      '@types/seedrandom': 2.4.30
-      '@types/webgl-ext': 0.0.30
-      '@webgpu/types': 0.1.21
-      long: 4.0.0
-      node-fetch: 2.6.7
-      seedrandom: 3.0.5
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /@tensorflow/tfjs-core/4.2.0:
     resolution: {integrity: sha512-uuHkiWVC8b00ngFbHvAV7J7haRlN/9PEdeenCi0CzBjgKd7aN25wPWaoN0TSQcU+GT4FJ8mofMZ9VBYZ/s/WLg==}
     engines: {yarn: '>= 1.3.2'}
@@ -4256,14 +4240,6 @@ packages:
       string_decoder: 1.3.0
     transitivePeerDependencies:
       - encoding
-
-  /@tensorflow/tfjs-layers/4.2.0_npjwttp6o2hhjgfcmiedqvkgoa:
-    resolution: {integrity: sha512-SO0KTmCFOjrW+PlP9nKYXz07XGFq6uE7am9yH2bRaRPWpEeaKT/+k0C9vFMxI/GzRwY8AK4sLe4U+jE1mhYxGw==}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.2.0
-    dependencies:
-      '@tensorflow/tfjs-core': 4.1.0
-    dev: true
 
   /@tensorflow/tfjs-layers/4.2.0_tkoh6rxfpzme3tc2ndqbqcrg7y:
     resolution: {integrity: sha512-SO0KTmCFOjrW+PlP9nKYXz07XGFq6uE7am9yH2bRaRPWpEeaKT/+k0C9vFMxI/GzRwY8AK4sLe4U+jE1mhYxGw==}
