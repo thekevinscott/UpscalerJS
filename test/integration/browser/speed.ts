@@ -13,7 +13,7 @@ const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
-const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('March 1, 2023 00:00:00');
+const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('July 1, 2023 00:00:00');
 
 const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);

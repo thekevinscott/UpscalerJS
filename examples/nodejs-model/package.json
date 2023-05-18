@@ -10,8 +10,8 @@
     "dev": "node src/index.js localhost 8080"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^4.2.0",
-    "@tensorflow/tfjs-node": "^4.2.0",
+    "@tensorflow/tfjs": "^4.5.0",
+    "@tensorflow/tfjs-node": "^4.5.0",
     "@upscalerjs/esrgan-thick": "1.0.0-beta.11",
     "express": "4.18.2",
     "seedrandom": "3.0.5",

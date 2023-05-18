@@ -15,8 +15,8 @@
     "wrangler:start": "npx wrangler dev"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^4.2.0",
-    "@tensorflow/tfjs-core": "^4.2.0",
+    "@tensorflow/tfjs": "^4.5.0",
+    "@tensorflow/tfjs-core": "^4.5.0",
     "@upscalerjs/esrgan-slim": "^1.0.0-beta.7",
     "@upscalerjs/esrgan-thick": "^1.0.0-beta.10",
     "aws-sdk": "^2.1291.0",
