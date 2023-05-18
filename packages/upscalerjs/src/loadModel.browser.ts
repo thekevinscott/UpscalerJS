@@ -65,12 +65,14 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  const parsedModelDefinition = parseModelDefinition(modelDefinition);
+  // TODO: Why is the linter complaining about the type of parseModelDefinition?
+  type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
+  const parsedModelDefinition = (parseModelDefinition as ParseModelDefinition)(modelDefinition);
 
   const model = await fetchModel(parsedModelDefinition);
 
   return {
     model,
-    modelDefinition,
+    modelDefinition: parsedModelDefinition,
   };
 };

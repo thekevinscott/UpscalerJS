@@ -17,7 +17,7 @@ export const getMissingMatchesError = (moduleEntryPoint: string): Error => new E
   `No matches could be found for module entry point ${moduleEntryPoint}`
 );
 
-const DIST_REGEXP = new RegExp('(.*)dist');
+const DIST_REGEXP = new RegExp('(.*)dist'); // skipcq: js-0115
 export const getModuleFolder = (name: string): string => {
   const moduleEntryPoint = resolver(name);
   const match = moduleEntryPoint.match(DIST_REGEXP)?.pop();
@@ -44,13 +44,15 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  const parsedModelDefinition = parseModelDefinition(modelDefinition);
+  // TODO: Why is the linter complaining about the type of parseModelDefinition?
+  type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
+  const parsedModelDefinition = (parseModelDefinition as ParseModelDefinition)(modelDefinition);
 
   const modelPath = getModelPath(parsedModelDefinition);
   const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);
 
   return {
     model,
-    modelDefinition,
+    modelDefinition: parsedModelDefinition,
   };
 };

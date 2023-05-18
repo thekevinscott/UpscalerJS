@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, ParsedModelDefinition, } from './types';
+import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
 import { 
   Range, 
   ModelDefinitionFn, 
@@ -11,6 +11,7 @@ import {
   ModelType, 
   isValidRange, 
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+  ParsedModelDefinition,
 } from '@upscalerjs/core';
 import { isLayersModel, } from './isLayersModel';
 
@@ -218,4 +219,8 @@ export const scaleOutput = (range?: Range) => (pixels: tf.Tensor4D): tf.Tensor4D
   return pixels.clipByValue(0, endingRange).mul(endingRange === 1 ? 255 : 1);
 };
 
-export const parseModelDefinition = (modelDefinition: ModelDefinition): ParsedModelDefinition => modelDefinition;
+export const parseModelDefinition: ParseModelDefinition = (modelDefinition) => ({
+  ...modelDefinition,
+});
+
+export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
