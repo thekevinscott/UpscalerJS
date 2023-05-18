@@ -10,7 +10,7 @@
     "@upscalerjs/workers.shared": "workspace:*",
     "typescript": "^4.7.4",
     "upscaler": "workspace:*",
-    "wrangler": "^2.10.0"
+    "wrangler": "^3.0.0"
   },
   "private": true,
   "scripts": {
