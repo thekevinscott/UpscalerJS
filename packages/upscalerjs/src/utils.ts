@@ -150,13 +150,13 @@ const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
   return model.inputs[0].shape;
 };
 
-export const getInputShape = ({ model, }: ModelPackage): Shape4D => {
+export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
   const batchInputShape = getBatchInputShape(model);
-  if (isShape4D(batchInputShape)) {
-    return batchInputShape;
+  if (!isShape4D(batchInputShape)) {
+    throw new Error(ERROR_WITH_MODEL_INPUT_SHAPE(batchInputShape));
   }
 
-  throw new Error(ERROR_WITH_MODEL_INPUT_SHAPE(batchInputShape));
+  return batchInputShape;
 };
 
 export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.Tensor4D => {
@@ -170,14 +170,16 @@ const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number,
 
 type ParsePatchAndInputSizes = ( modelPackage: ModelPackage, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
 export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (modelPackage, { patchSize, padding, }) => {
-  const inputShape = getInputShape(modelPackage);
+  const inputShape = getModelInputShape(modelPackage);
   if (patchSize !== undefined && patchSize <= 0) {
     throw GET_INVALID_PATCH_SIZE(patchSize);
   }
-  if (isInputSizeDefined(inputShape) && patchSize !== undefined) {
-    warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
-  }
   if (isInputSizeDefined(inputShape)) {
+    if (patchSize !== undefined) {
+      warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+    }
+
+    // TODO: Not all input shapes must be square
     if (inputShape[1] !== inputShape[2]) {
       throw new Error('Input shape must be square');
     }

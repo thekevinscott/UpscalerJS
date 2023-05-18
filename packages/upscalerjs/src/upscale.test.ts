@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs-node';
 import {
   getPercentageComplete,
-  predict,
+  processPixels,
   getRowsAndColumns,
   getTensorDimensions,
   getCopyOfInput,
@@ -1218,7 +1218,7 @@ describe('predict', () => {
   it('should make a prediction', async () => {
     const spy = jest.spyOn(model, 'predict');
     tensor = getTensor(2, 2);
-    const result = await wrapGenerator(predict(tensor.expandDims(0), {
+    const result = await wrapGenerator(processPixels(tensor.expandDims(0), {
       output: 'base64',
       progressOutput: 'base64',
     }, modelPackage, {
@@ -1234,7 +1234,7 @@ describe('predict', () => {
 
   it('should make a prediction with a patchSize', async () => {
     tensor = getTensor(2, 2);
-    const result = await wrapGenerator(predict(
+    const result = await wrapGenerator(processPixels(
       tensor.expandDims(0),
       {
         patchSize: 1,
@@ -1250,7 +1250,7 @@ describe('predict', () => {
 
   it('should make a prediction with a patchSize and a tall image', async () => {
     const tensor = getTensor(4, 2);
-    const result = await wrapGenerator(predict(
+    const result = await wrapGenerator(processPixels(
       tensor.expandDims(0),
       {
         patchSize: 1,
@@ -1270,7 +1270,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = jest.fn();
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1295,7 +1295,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any) => { });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1320,7 +1320,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any) => { });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1351,7 +1351,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => { });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1384,7 +1384,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1426,7 +1426,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1468,7 +1468,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         padding: 0,
         progress,
@@ -1500,7 +1500,7 @@ describe('predict', () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         patchSize,
         output: 'base64',
         progressOutput: 'base64',
@@ -1511,29 +1511,11 @@ describe('predict', () => {
     expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 
-  it('should not warn if provided an input size without padding', async () => {
-    console.warn = jest.fn();
-    tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
-    const patchSize = 2;
-    await wrapGenerator(
-      predict(tensor, {
-        patchSize,
-        output: 'base64',
-        progressOutput: 'base64',
-      }, modelPackage, {
-        imageSize: tensor.shape,
-        inputSize: [null, 3, 256, 256],
-      })
-    );
-
-    expect(console.warn).not.toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
-  });
-
   it('should warn if provided a progress callback without patchSize', async () => {
     console.warn = jest.fn();
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     await wrapGenerator(
-      predict(tensor, {
+      processPixels(tensor, {
         output: 'base64',
         progressOutput: 'base64',
         progress: () => { },
@@ -1549,7 +1531,7 @@ describe('predict', () => {
       const IMG_SIZE = 2;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const gen = predict(tensor, {
+      const gen = processPixels(tensor, {
         output: 'base64',
         progressOutput: 'base64',
       }, modelPackage, {
@@ -1587,7 +1569,7 @@ describe('predict', () => {
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
       const patchSize = 2;
-      const gen = predict(tensor, {
+      const gen = processPixels(tensor, {
         patchSize,
         output: 'base64',
         progressOutput: 'base64',

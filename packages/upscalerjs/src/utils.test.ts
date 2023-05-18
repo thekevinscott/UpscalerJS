@@ -22,7 +22,7 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   padInput,
   trimInput,
-  getInputShape,
+  getModelInputShape,
   ERROR_WITH_MODEL_INPUT_SHAPE,
   scaleOutput,
   getWidthAndHeight,
@@ -594,7 +594,7 @@ describe('getInputShape', () => {
 
   it('returns layers model input shape if it is a layers model', () => {
     isLayersModel.mockImplementation(() => true);
-    expect(getInputShape({
+    expect(getModelInputShape({
       model: {
         layers: [{
           batchInputShape: [1, 2, 3, 4],
@@ -605,7 +605,7 @@ describe('getInputShape', () => {
 
   it('returns graph model input shape if it is a layers model', () => {
     isLayersModel.mockImplementation(() => false);
-    expect(getInputShape({
+    expect(getModelInputShape({
       model: {
         inputs: [{
           shape: [1, 2, 3, 4],
@@ -617,7 +617,7 @@ describe('getInputShape', () => {
   it('throws if a model returns a non rank 4 shape', () => {
     isShape4D.mockImplementation(() => false);
     isLayersModel.mockImplementation(() => true);
-    expect(() => getInputShape({
+    expect(() => getModelInputShape({
       model: {
         layers: [{
           batchInputShape: [1, 2, 3, 4, 5],
