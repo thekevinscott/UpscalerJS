@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "upscaler": "workspace:*",
-    "@tensorflow/tfjs-node-gpu": "^4.1.0",
+    "@tensorflow/tfjs-node-gpu": "^4.5.0",
     "seedrandom": "3.0.5",
     "ts-node": "^10.9.1"
   },

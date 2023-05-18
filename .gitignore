@@ -32,3 +32,4 @@ tmp
 .nyc_output
 output.json
 service-account.json
+.pnpm-store
