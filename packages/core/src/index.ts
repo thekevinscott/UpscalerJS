@@ -83,8 +83,6 @@ export interface ModelDefinition {
   meta?: Meta;
 }
 
-export type ParsedModelDefinition = ModelDefinition;
-
 export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
