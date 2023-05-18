@@ -142,10 +142,9 @@ export class Upscaler {
     options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
     await this.ready;
-    const { model, modelDefinition, } = await this._model;
-    return cancellableUpscale(image, getUpscaleOptions(model, options), {
-      model,
-      modelDefinition,
+    const modelPackage = await this._model;
+    return cancellableUpscale(image, getUpscaleOptions(modelPackage, options), {
+      ...modelPackage,
       signal: this._abortController.signal,
     });
   }
