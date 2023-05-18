@@ -143,7 +143,7 @@ export class Upscaler {
   ) {
     await this.ready;
     const modelPackage = await this._model;
-    return cancellableUpscale(image, getUpscaleOptions(modelPackage, options), {
+    return cancellableUpscale(image, getUpscaleOptions(options), {
       ...modelPackage,
       signal: this._abortController.signal,
     });

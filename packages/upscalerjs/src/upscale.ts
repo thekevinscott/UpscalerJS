@@ -17,10 +17,11 @@ import {
   scaleIncomingPixels,
   padInput,
   trimInput,
-  getInputShape,
+  getModelInputShape,
   scaleOutput,
   nonNullable,
   getWidthAndHeight,
+  parsePatchAndInputSizes,
  } from './utils';
 import {
   isTensor,
@@ -296,26 +297,28 @@ export const executeModel = (model: LayersModel | GraphModel, pixels: tf.Tensor4
 };
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* predict(
+export async function* processPixels(
   pixels: tf.Tensor4D,
-  { output, progress, patchSize: patchSize, padding, progressOutput, }: PrivateUpscaleArgs,
-  {
-    model,
-    modelDefinition,
-  }: ModelPackage,
+  args: PrivateUpscaleArgs,
+  modelPackage: ModelPackage,
   {
     imageSize,
-    inputSize,
   }: {
     imageSize: Shape4D;
-    inputSize?: Shape4D;
   }
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
+  const { model, modelDefinition, } = modelPackage;
+  const { output, progress, progressOutput, } = args;
   const scale = modelDefinition.scale || 1;
 
-  if (inputSize === undefined && patchSize && padding === undefined) {
+  if (args.patchSize !== undefined && args.padding === undefined) {
+    // warn the user about possible tiling effects if patch size is provided without padding
     warn(WARNING_UNDEFINED_PADDING);
   }
+
+  // retrieve the patch size and padding. If the model definition has defined its own input shape,
+  // then that input shape will override the user's variables.
+  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, args);
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
@@ -403,7 +406,7 @@ export async function* predict(
     warn(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   }
 
-  const prediction = model.predict(pixels) as tf.Tensor4D;
+  const prediction = executeModel(model, pixels);
   yield [prediction,];
   const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange), trimInput(imageSize, scale));
 
@@ -455,18 +458,17 @@ export async function* upscale(
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
-  const inputSize = getInputShape(modelPackage);
+  const inputSize = getModelInputShape(modelPackage);
 
   const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(inputSize));
   yield preprocessedPixels;
 
-  const gen = predict(
+  const gen = processPixels(
     preprocessedPixels,
     args,
     modelPackage,
     {
       imageSize,
-      inputSize,
     }
   );
   let result = await gen.next();
