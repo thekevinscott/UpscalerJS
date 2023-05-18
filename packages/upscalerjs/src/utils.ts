@@ -51,6 +51,9 @@ export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error
   )}`,
 );
 
+export const GET_INVALID_PATCH_SIZE = (patchSize: number): Error => new Error([
+  `Invalid patch size: ${patchSize}. Patch size must be greater than 0.`,
+].join(''));
 
 export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
   switch(error) {
@@ -165,13 +168,12 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
 
 const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
 
-export const parsePatchAndInputSizes = (
-  model: tf.LayersModel | tf.GraphModel,
-  {
-    patchSize,
-    padding,
-  }: UpscaleArgs): Pick<UpscaleArgs, 'patchSize' | 'padding'> => {
-    const inputShape = getInputShape(model);
+type ParsePatchAndInputSizes = ( model: tf.LayersModel | tf.GraphModel, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
+export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (model, { patchSize, padding, }) => {
+  const inputShape = getInputShape(model);
+  if (patchSize !== undefined && patchSize <= 0) {
+    throw GET_INVALID_PATCH_SIZE(patchSize);
+  }
   if (isInputSizeDefined(inputShape) && patchSize !== undefined) {
     warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
   }
