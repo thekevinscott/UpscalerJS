@@ -27,6 +27,7 @@ import {
   scaleOutput,
   getWidthAndHeight,
   GET_INVALID_SHAPED_TENSOR,
+  GET_INVALID_PATCH_SIZE,
 } from './utils';
 import {
   isLayersModel as _isLayersModel,
@@ -492,6 +493,15 @@ describe('parsePatchAndInputSizes', () => {
       }],
     } as any as LayersModel, { patchSize: 9, padding: 8 });
     expect(fn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+  });
+
+  it('throws if given invalid patch size', () => {
+    const patchSize = -1;
+    expect(() => parsePatchAndInputSizes({
+      layers: [{
+        batchInputShape: [null, null, null, 3],
+      }],
+    } as any as LayersModel, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 });
 

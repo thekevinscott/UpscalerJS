@@ -1118,9 +1118,7 @@ describe('getRowsAndColumns', () => {
   });
 
   it('throws if returning an invalid column', () => {
-    getWidthAndHeight.mockImplementationOnce(() => {
-      return [2, -3];
-    });
+    getWidthAndHeight.mockImplementationOnce(() => [2, -3]);
 
     const img: tf.Tensor4D = tf.tensor(
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
