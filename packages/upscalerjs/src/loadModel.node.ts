@@ -1,6 +1,6 @@
 import path from 'path';
-import type { ModelDefinition, } from "@upscalerjs/core";
-import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, } from './utils';
+import type { ParsedModelDefinition, ModelDefinition, } from "@upscalerjs/core";
+import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, parseModelDefinition, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from './types';
 import {
@@ -17,7 +17,7 @@ export const getMissingMatchesError = (moduleEntryPoint: string): Error => new E
   `No matches could be found for module entry point ${moduleEntryPoint}`
 );
 
-const DIST_REGEXP = new RegExp('(.*)dist');
+const DIST_REGEXP = new RegExp('(.*)dist'); // skipcq: js-0115
 export const getModuleFolder = (name: string): string => {
   const moduleEntryPoint = resolver(name);
   const match = moduleEntryPoint.match(DIST_REGEXP)?.pop();
@@ -27,7 +27,7 @@ export const getModuleFolder = (name: string): string => {
   return match;
 };
 
-export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
+export const getModelPath = ({ packageInformation, path: modelPath, }: ParsedModelDefinition): string => {
   if (packageInformation) {
     const moduleFolder = getModuleFolder(packageInformation.name);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
@@ -44,11 +44,15 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  const modelPath = getModelPath(modelDefinition);
-  const model = await loadTfModel(modelPath, modelDefinition.modelType);
+  // TODO: Why is the linter complaining about the type of parseModelDefinition?
+  type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
+  const parsedModelDefinition = (parseModelDefinition as ParseModelDefinition)(modelDefinition);
+
+  const modelPath = getModelPath(parsedModelDefinition);
+  const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);
 
   return {
     model,
-    modelDefinition,
+    modelDefinition: parsedModelDefinition,
   };
 };

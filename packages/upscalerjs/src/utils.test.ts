@@ -3,6 +3,7 @@ import { LayersModel, tensor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import { 
+  parseModelDefinition,
   tensorAsClampedArray,
   processAndDisposeOfTensor,
   getModelDefinitionError,
@@ -621,4 +622,16 @@ describe('scaleOutput', () => {
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput([0, 1])(tensor).dataSync())).toEqual([255, 255, 255, 255,]);
   }));
+});
+
+describe('parseModelDefinition', () => {
+  it('parses a model definition cleanly', () => {
+    const modelDefinition: ModelDefinition = {
+      modelType: 'layers',
+      path: 'foo',
+      scale: 2,
+    };
+    expect(parseModelDefinition(modelDefinition)).toEqual(modelDefinition);
+
+  });
 });
