@@ -124,12 +124,11 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   return tensor;
 }
 
-export async function loadTfModel(modelPath: string, modelType: ModelType = 'layers') {
+export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ? tf.GraphModel : tf.LayersModel>>(modelPath: string, modelType?: M): R {
   if (modelType === 'graph') {
-    return await tf.loadGraphModel(modelPath);
+    return tf.loadGraphModel(modelPath) as R;
   }
-
-  return await tf.loadLayersModel(modelPath);
+  return tf.loadLayersModel(modelPath) as R;
 }
 
 const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
