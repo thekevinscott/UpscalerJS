@@ -1,5 +1,5 @@
 import { GraphModel, Tensor3D, Tensor4D, ones } from '@tensorflow/tfjs-node';
-import { LayersModel, tensor } from '@tensorflow/tfjs-node';
+import { tensor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import { 
@@ -39,6 +39,7 @@ import {
   ModelDefinitionFn,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
  } from '@upscalerjs/core';
+import { ModelPackage } from './types';
 
 jest.mock('./dependencies.generated', () => {
   const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
@@ -473,35 +474,43 @@ describe('parsePatchAndInputSizes', () => {
   });
 
   it('passes patchSize and padding through unadulterated', () => {
-    expect(parsePatchAndInputSizes({
-      layers: [{
-        batchInputShape: [null, null, null, 3],
-      }],
-    } as any as LayersModel, { patchSize: 9, padding: 8 })).toEqual({
+    const modelPackage = {
+      model: {
+        layers: [{
+          batchInputShape: [null, null, null, 3],
+        }],
+      },
+    } as ModelPackage;
+    expect(parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 })).toEqual({
       patchSize: 9,
       padding: 8,
     })
-  })
+  });
 
   it('warns if provided an inputSize and patchSize', () => {
     const fn = jest.fn();
     console.warn = fn;
     warn('foo');
-    parsePatchAndInputSizes({
-      layers: [{
-        batchInputShape: [null, 9, 9, 3],
-      }],
-    } as any as LayersModel, { patchSize: 9, padding: 8 });
+    const modelPackage: ModelPackage = {
+      model: {
+        layers: [{
+          batchInputShape: [null, 9, 9, 3],
+        }],
+      },
+    } as ModelPackage;
+    parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 });
     expect(fn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
   });
 
   it('throws if given invalid patch size', () => {
     const patchSize = -1;
     expect(() => parsePatchAndInputSizes({
-      layers: [{
-        batchInputShape: [null, null, null, 3],
-      }],
-    } as any as LayersModel, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+      model: {
+        layers: [{
+          batchInputShape: [null, null, null, 3],
+        }],
+      }
+    } as ModelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 });
 
@@ -586,29 +595,35 @@ describe('getInputShape', () => {
   it('returns layers model input shape if it is a layers model', () => {
     isLayersModel.mockImplementation(() => true);
     expect(getInputShape({
-      layers: [{
-        batchInputShape: [1, 2, 3, 4],
-      }],
-    } as any as LayersModel)).toEqual([1,2,3,4]);
+      model: {
+        layers: [{
+          batchInputShape: [1, 2, 3, 4],
+        }],
+      },
+    } as ModelPackage)).toEqual([1, 2, 3, 4]);
   });
 
   it('returns graph model input shape if it is a layers model', () => {
     isLayersModel.mockImplementation(() => false);
     expect(getInputShape({
-      inputs: [{
-        shape: [1, 2, 3, 4],
-      }],
-    } as any as GraphModel)).toEqual([1, 2, 3, 4]);
+      model: {
+        inputs: [{
+          shape: [1, 2, 3, 4],
+        }],
+      }
+    } as ModelPackage)).toEqual([1, 2, 3, 4]);
   });
 
   it('throws if a model returns a non rank 4 shape', () => {
     isShape4D.mockImplementation(() => false);
     isLayersModel.mockImplementation(() => true);
     expect(() => getInputShape({
-      layers: [{
-        batchInputShape: [1, 2, 3, 4, 5],
-      }],
-    } as any as LayersModel)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1,2,3,4,5]));
+      model: {
+        layers: [{
+          batchInputShape: [1, 2, 3, 4, 5],
+        }],
+      }
+    } as ModelPackage)).toThrow(ERROR_WITH_MODEL_INPUT_SHAPE([1, 2, 3, 4, 5]));
   });
 });
 

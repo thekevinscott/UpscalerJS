@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { ParsedModelDefinition, Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
+import type { ParsedModelDefinition, Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, ModelPackage, } from './types';
 import { 
   Range, 
   ModelDefinitionFn, 
@@ -150,7 +150,7 @@ const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
   return model.inputs[0].shape;
 };
 
-export const getInputShape = (model: tf.GraphModel | tf.LayersModel): Shape4D => {
+export const getInputShape = ({ model, }: ModelPackage): Shape4D => {
   const batchInputShape = getBatchInputShape(model);
   if (isShape4D(batchInputShape)) {
     return batchInputShape;
@@ -168,9 +168,9 @@ export const scaleIncomingPixels = (range?: Range) => (tensor: tf.Tensor4D): tf.
 
 const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
 
-type ParsePatchAndInputSizes = ( model: tf.LayersModel | tf.GraphModel, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
-export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (model, { patchSize, padding, }) => {
-  const inputShape = getInputShape(model);
+type ParsePatchAndInputSizes = ( modelPackage: ModelPackage, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
+export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (modelPackage, { patchSize, padding, }) => {
+  const inputShape = getInputShape(modelPackage);
   if (patchSize !== undefined && patchSize <= 0) {
     throw GET_INVALID_PATCH_SIZE(patchSize);
   }

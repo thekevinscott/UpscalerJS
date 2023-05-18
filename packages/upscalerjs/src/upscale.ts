@@ -448,25 +448,22 @@ export async function* upscale(
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
-  { model, modelDefinition, }: ModelPackage,
-  ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D> {
+  modelPackage: ModelPackage,
+): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D> {
   const parsedInput = getCopyOfInput(input);
   const startingPixels = await getImageAsTensor(parsedInput);
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
-  const inputSize = getInputShape(model);
+  const inputSize = getInputShape(modelPackage);
 
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelDefinition.preprocess, scaleIncomingPixels(modelDefinition.inputRange), padInput(inputSize));
+  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(inputSize));
   yield preprocessedPixels;
 
   const gen = predict(
     preprocessedPixels,
     args,
-    {
-      model,
-      modelDefinition,
-    },
+    modelPackage,
     {
       imageSize,
       inputSize,
