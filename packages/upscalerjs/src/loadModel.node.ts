@@ -1,8 +1,8 @@
 import path from 'path';
-import type { ParsedModelDefinition, ModelDefinition, } from "@upscalerjs/core";
+import type { ModelDefinition, } from "@upscalerjs/core";
 import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, parseModelDefinition, } from './utils';
 import { resolver, } from './resolver';
-import { ModelPackage, } from './types';
+import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   ModelDefinitionValidationError,
   isValidModelDefinition,
@@ -44,9 +44,7 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  // TODO: Why is the linter complaining about the type of parseModelDefinition?
-  type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
-  const parsedModelDefinition = (parseModelDefinition as ParseModelDefinition)(modelDefinition);
+  const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
   const modelPath = getModelPath(parsedModelDefinition);
   const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);

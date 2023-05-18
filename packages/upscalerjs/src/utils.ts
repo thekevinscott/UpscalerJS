@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
+import type { ParsedModelDefinition, Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, UpscaleArgs, } from './types';
 import { 
   Range, 
   ModelDefinitionFn, 
@@ -11,7 +11,6 @@ import {
   ModelType, 
   isValidRange, 
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-  ParsedModelDefinition,
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
 } from '@upscalerjs/core';

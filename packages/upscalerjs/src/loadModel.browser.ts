@@ -1,6 +1,6 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, ParsedModelDefinition, ModelDefinitionValidationError, } from '@upscalerjs/core';
-import type { ModelPackage, PackageInformation, } from './types';
+import { ModelDefinition, ModelDefinitionValidationError, ModelType, } from '@upscalerjs/core';
+import type { ParsedModelDefinition, ModelPackage, PackageInformation, } from './types';
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
@@ -33,11 +33,13 @@ export const getLoadModelErrorMessage = (modelPath: string, packageInformation: 
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
-export const fetchModel = async ({
+export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>({
   path: modelPath,
   modelType,
   packageInformation,
-}: ParsedModelDefinition): Promise<tf.LayersModel | tf.GraphModel> => {
+}: {
+  modelType: M;
+} & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
   if (packageInformation) {
     const errs: Errors = [];
     for (let i = 0; i < CDNS.length; i++) {
@@ -54,7 +56,7 @@ export const fetchModel = async ({
     throw getLoadModelErrorMessage(modelPath, packageInformation, errs);
   }
   return await loadTfModel(modelPath, modelType);
-};
+}
 
 export const loadModel = async (
   modelDefinition: ModelDefinition,
@@ -65,9 +67,7 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  // TODO: Why is the linter complaining about the type of parseModelDefinition?
-  type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
-  const parsedModelDefinition = (parseModelDefinition as ParseModelDefinition)(modelDefinition);
+  const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
   const model = await fetchModel(parsedModelDefinition);
 

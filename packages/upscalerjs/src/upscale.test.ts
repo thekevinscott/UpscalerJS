@@ -1118,8 +1118,7 @@ describe('getRowsAndColumns', () => {
   });
 
   it('throws if returning an invalid column', () => {
-    getWidthAndHeight.mockImplementationOnce(function fatboy () {
-      console.log("&&&&&&& YAS")
+    getWidthAndHeight.mockImplementationOnce(() => {
       return [2, -3];
     });
 
