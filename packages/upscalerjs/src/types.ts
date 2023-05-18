@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+import type { ModelDefinitionObjectOrFn, ModelDefinition, ParsedModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -69,7 +69,7 @@ export type { PackageInformation, ProcessFn, } from '@upscalerjs/core';
 
 export interface ModelPackage {
   model: tf.LayersModel | tf.GraphModel;
-  modelDefinition: ModelDefinition;
+  modelDefinition: ParsedModelDefinition;
 }
 
 export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;

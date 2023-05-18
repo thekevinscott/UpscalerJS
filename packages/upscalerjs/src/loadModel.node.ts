@@ -1,6 +1,6 @@
 import path from 'path';
-import type { ModelDefinition, } from "@upscalerjs/core";
-import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, } from './utils';
+import type { ParsedModelDefinition, ModelDefinition, } from "@upscalerjs/core";
+import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, parseModelDefinition, } from './utils';
 import { resolver, } from './resolver';
 import { ModelPackage, } from './types';
 import {
@@ -27,7 +27,7 @@ export const getModuleFolder = (name: string): string => {
   return match;
 };
 
-export const getModelPath = ({ packageInformation, path: modelPath, }: ModelDefinition): string => {
+export const getModelPath = ({ packageInformation, path: modelPath, }: ParsedModelDefinition): string => {
   if (packageInformation) {
     const moduleFolder = getModuleFolder(packageInformation.name);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
@@ -44,8 +44,10 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  const modelPath = getModelPath(modelDefinition);
-  const model = await loadTfModel(modelPath, modelDefinition.modelType);
+  const parsedModelDefinition = parseModelDefinition(modelDefinition);
+
+  const modelPath = getModelPath(parsedModelDefinition);
+  const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);
 
   return {
     model,

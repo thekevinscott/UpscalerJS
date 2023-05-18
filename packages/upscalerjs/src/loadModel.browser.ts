@@ -1,10 +1,11 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, ModelDefinitionValidationError, } from '@upscalerjs/core';
+import { ModelDefinition, ParsedModelDefinition, ModelDefinitionValidationError, } from '@upscalerjs/core';
 import type { ModelPackage, PackageInformation, } from './types';
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
   loadTfModel,
+  parseModelDefinition,
 } from './utils';
 import {
   isValidModelDefinition,
@@ -36,7 +37,7 @@ export const fetchModel = async ({
   path: modelPath,
   modelType,
   packageInformation,
-}: ModelDefinition): Promise<tf.LayersModel | tf.GraphModel> => {
+}: ParsedModelDefinition): Promise<tf.LayersModel | tf.GraphModel> => {
   if (packageInformation) {
     const errs: Errors = [];
     for (let i = 0; i < CDNS.length; i++) {
@@ -64,7 +65,9 @@ export const loadModel = async (
     throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
-  const model = await fetchModel(modelDefinition);
+  const parsedModelDefinition = parseModelDefinition(modelDefinition);
+
+  const model = await fetchModel(parsedModelDefinition);
 
   return {
     model,
