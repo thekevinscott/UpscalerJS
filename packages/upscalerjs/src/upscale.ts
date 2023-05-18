@@ -19,10 +19,11 @@ import {
   trimInput,
   getInputShape,
   scaleOutput,
+  nonNullable,
+  getWidthAndHeight,
  } from './utils';
 import {
   isTensor,
-  isThreeDimensionalTensor,
   isFourDimensionalTensor,
   Shape4D,
  } from '@upscalerjs/core';
@@ -65,24 +66,13 @@ export const ERROR_INVALID_MODEL_PREDICTION = [
   `For more information, see ${ERROR_INVALID_MODEL_PREDICTION_URL}.`,
 ].join('\n');
 
-export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error(
-  `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
-    tensor.shape,
-  )}`,
-);
+export const GET_INVALID_ROW_OR_COLUMN = (kind: 'rows' | 'columns', num: number, patchSize: number, dim: number) => new Error([
+    `Invalid ${kind} generated: ${num}. Should be greater than 0.`,
+    `Patch size was: ${patchSize}`,
+    `${kind === 'rows' ? 'Height' : 'Width'} was: ${dim}`,
+].join(' '));
 
 export const GET_UNDEFINED_TENSORS_ERROR = () => new Error('No defined tensors were passed to concatTensors');
-
-export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
-  if (isFourDimensionalTensor(tensor)) {
-    return [tensor.shape[1], tensor.shape[2],];
-  }
-  if (isThreeDimensionalTensor(tensor)) {
-    return [tensor.shape[0], tensor.shape[1],];
-  }
-
-  throw GET_INVALID_SHAPED_TENSOR(tensor);
-};
 
 export const getRowsAndColumns = (
   pixels: tf.Tensor3D | tf.Tensor4D,
@@ -93,9 +83,19 @@ export const getRowsAndColumns = (
 } => {
   const [height, width,] = getWidthAndHeight(pixels);
 
+  const rows = Math.ceil(height / patchSize);
+  const columns = Math.ceil(width / patchSize);
+
+  if (rows <= 0) {
+    throw GET_INVALID_ROW_OR_COLUMN('rows', rows, patchSize, height);
+  }
+  if (columns <= 0) {
+    throw GET_INVALID_ROW_OR_COLUMN('columns', columns, patchSize, width);
+  }
+
   return {
-    rows: Math.ceil(height / patchSize),
-    columns: Math.ceil(width / patchSize),
+    rows,
+    columns,
   };
 };
 
@@ -268,13 +268,7 @@ export const getTensorDimensions = ({
 };
 
 export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T | undefined>, axis = 0): T {
-  const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = [];
-  for (let i = 0; i < tensors.length; i++) {
-    const tensor = tensors[i];
-    if (tensor !== undefined) {
-      definedTensors.push(tensor);
-    }
-  }
+  const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = tensors.filter(nonNullable);
   if (definedTensors.length === 0) {
     throw GET_UNDEFINED_TENSORS_ERROR();
   }
@@ -325,6 +319,7 @@ export async function* predict(
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
+    console.log(getRowsAndColumns);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
     let upscaledTensor: undefined | tf.Tensor4D;

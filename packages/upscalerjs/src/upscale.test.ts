@@ -10,8 +10,6 @@ import {
   cancellableUpscale,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
-  getWidthAndHeight,
-  GET_INVALID_SHAPED_TENSOR,
   GetTensorDimensionsOpts,
   GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
@@ -22,9 +20,14 @@ import {
   executeModel,
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
+  GET_INVALID_ROW_OR_COLUMN,
 } from './upscale';
 import { checkValidEnvironment as _checkValidEnvironment, tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
-import { wrapGenerator, AbortError, } from './utils';
+import {
+  getWidthAndHeight as _getWidthAndHeight,
+  wrapGenerator,
+  AbortError,
+} from './utils';
 import { isFourDimensionalTensor as _isFourDimensionalTensor, isTensor as _isTensor, } from '@upscalerjs/core';
 import { ModelDefinition } from "@upscalerjs/core";
 import { ModelPackage, } from './types';
@@ -48,11 +51,20 @@ jest.mock('@upscalerjs/core', () => {
   };
 });
 
+jest.mock('./utils', () => {
+  const { getWidthAndHeight, ...rest } = jest.requireActual('./utils');
+  return {
+    ...rest,
+    getWidthAndHeight: jest.fn(getWidthAndHeight),
+  };
+});
+
 const tensorAsBase64 = mockFn(_tensorAsBase64);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 const isTensor = mockFn(_isTensor);
 const isFourDimensionalTensor = mockFn(_isFourDimensionalTensor);
 const checkValidEnvironment = mockFn(_checkValidEnvironment);
+const getWidthAndHeight = mockFn(_getWidthAndHeight);
 
 describe('getPercentageComplete', () => {
   it.each([
@@ -1095,6 +1107,30 @@ describe('getTensorDimensions', () => {
 });
 
 describe('getRowsAndColumns', () => {
+
+  it('throws if returning an invalid row', () => {
+    const img: tf.Tensor4D = tf.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [1, 2, 2, 3,],
+    );
+
+    expect(() => getRowsAndColumns(img, -1)).toThrow(GET_INVALID_ROW_OR_COLUMN('rows', -2, -1, 2));
+  });
+
+  it('throws if returning an invalid column', () => {
+    getWidthAndHeight.mockImplementationOnce(function fatboy () {
+      console.log("&&&&&&& YAS")
+      return [2, -3];
+    });
+
+    const img: tf.Tensor4D = tf.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [1, 2, 2, 3,],
+    );
+
+    expect(() => getRowsAndColumns(img, 1)).toThrow(GET_INVALID_ROW_OR_COLUMN('columns', -3, 1, -3));
+  });
+
   it('gets rows and columns', () => {
     const img: tf.Tensor4D = tf.tensor(
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
@@ -1162,7 +1198,7 @@ describe('predict', () => {
     }
   });
 
-  const getWidthAndHeight = (img: tf.Tensor3D | tf.Tensor4D) => {
+  const getWidthAndHeightOfImg = (img: tf.Tensor3D | tf.Tensor4D) => {
     if (img.shape.length === 4) {
       return [img.shape[1], img.shape[2]];
     }
@@ -1173,7 +1209,7 @@ describe('predict', () => {
     if (!img) {
       throw new Error('No starting tensor provided.')
     }
-    const [height, width] = getWidthAndHeight(img);
+    const [height, width] = getWidthAndHeightOfImg(img);
     const resizedOriginal = tf.image.resizeNearestNeighbor(img, [height * scale, width * scale]).expandDims(0);
     expect(resizedOriginal.dataSync()).toEqual(result?.dataSync());
   });
@@ -1849,26 +1885,6 @@ describe('cancellableUpscale', () => {
       signal: controller.signal,
     });
     expect(result).toEqual(mockResponse);
-  });
-});
-
-describe('getWidthAndHeight', () => {
-  it('throws if given a too small tensor', () => {
-    const t = tf.zeros([2, 2]) as unknown as tf.Tensor3D;
-    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
-  });
-
-  it('throws if given a too large tensor', () => {
-    const t = tf.zeros([2, 2, 2, 2, 2]) as unknown as tf.Tensor3D;
-    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
-  });
-
-  it('returns width and height for a 4d tensor', () => {
-    expect(getWidthAndHeight(tf.zeros([1, 2, 3, 4]) as tf.Tensor4D)).toEqual([2, 3]);
-  });
-
-  it('returns width and height for a 3d tensor', () => {
-    expect(getWidthAndHeight(tf.zeros([1, 2, 3]) as tf.Tensor3D)).toEqual([1, 2]);
   });
 });
 

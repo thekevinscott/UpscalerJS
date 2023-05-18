@@ -12,6 +12,8 @@ import {
   isValidRange, 
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
   ParsedModelDefinition,
+  isThreeDimensionalTensor,
+  isFourDimensionalTensor,
 } from '@upscalerjs/core';
 import { isLayersModel, } from './isLayersModel';
 
@@ -43,6 +45,13 @@ export const ERROR_WITH_MODEL_INPUT_SHAPE = (inputShape?: unknown) => [
   `Expected model to have a rank-4 compatible input shape. Instead got: ${JSON.stringify(inputShape)}.`,
   `For more information, see ${ERROR_WITH_MODEL_INPUT_SHAPE_URL}.`,
 ].join('\n');
+
+export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error(
+  `Invalid shape provided to getWidthAndHeight, expected tensor of rank 3 or 4: ${JSON.stringify(
+    tensor.shape,
+  )}`,
+);
+
 
 export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
   switch(error) {
@@ -104,7 +113,7 @@ export function getModel(modelDefinition: ModelDefinitionObjectOrFn): ModelDefin
   return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
 }
 
-function nonNullable<T>(value: T): value is NonNullable<T> {
+export function nonNullable<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined;
 }
 
@@ -223,3 +232,14 @@ export const parseModelDefinition: ParseModelDefinition = (modelDefinition) => (
 });
 
 export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition;
+
+export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, number] => {
+  if (isFourDimensionalTensor(tensor)) {
+    return [tensor.shape[1], tensor.shape[2],];
+  }
+  if (isThreeDimensionalTensor(tensor)) {
+    return [tensor.shape[0], tensor.shape[1],];
+  }
+
+  throw GET_INVALID_SHAPED_TENSOR(tensor);
+};
