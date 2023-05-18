@@ -1,4 +1,4 @@
-import { parsePatchAndInputSizes, } from "./utils";
+import { validateOptions, } from "./utils";
 import { BASE64, UpscaleArgs, TENSOR, PrivateUpscaleArgs, } from "./types";
 import { tf, } from "./dependencies.generated";
 
@@ -15,8 +15,7 @@ export function getUpscaleOptions(model: tf.LayersModel | tf.GraphModel, {
   ...options
 }: Omit<UpscaleArgs, 'output' | 'progressOutput'> & { output?: unknown; progressOutput?: unknown } = {}): PrivateUpscaleArgs {
   return {
-    ...options,
-    ...parsePatchAndInputSizes(model, options),
+    ...validateOptions(options, model),
     output: getOutputOption(output),
     progressOutput: getOutputOption(progressOutput || output),
   };

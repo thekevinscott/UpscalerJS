@@ -52,6 +52,10 @@ export const GET_INVALID_SHAPED_TENSOR = (tensor: tf.Tensor): Error => new Error
   )}`,
 );
 
+export const GET_INVALID_PATCH_SIZE = (patchSize: number): Error => new Error([
+  `Invalid patch size provided: ${patchSize}. Patch size must be greater than 0.`,
+].join(' '));
+
 
 export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
   switch(error) {
@@ -242,4 +246,16 @@ export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D): [number, n
   }
 
   throw GET_INVALID_SHAPED_TENSOR(tensor);
+};
+
+export const validateOptions = ({ patchSize, ...options }: Omit<UpscaleArgs, 'output' | 'progressOutput'>, model: tf.LayersModel | tf.GraphModel,) => {
+  if (patchSize !== undefined && patchSize <= 0) {
+    throw GET_INVALID_PATCH_SIZE(patchSize);
+  }
+
+  return {
+    ...options,
+    patchSize,
+    ...parsePatchAndInputSizes(model, options),
+  };
 };

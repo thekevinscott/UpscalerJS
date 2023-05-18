@@ -319,7 +319,6 @@ export async function* predict(
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
-    console.log(getRowsAndColumns);
     const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
     yield;
     let upscaledTensor: undefined | tf.Tensor4D;

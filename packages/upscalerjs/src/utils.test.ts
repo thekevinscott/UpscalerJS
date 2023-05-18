@@ -27,6 +27,8 @@ import {
   scaleOutput,
   getWidthAndHeight,
   GET_INVALID_SHAPED_TENSOR,
+  validateOptions,
+  GET_INVALID_PATCH_SIZE,
 } from './utils';
 import {
   isLayersModel as _isLayersModel,
@@ -655,5 +657,22 @@ describe('getWidthAndHeight', () => {
 
   it('returns width and height for a 3d tensor', () => {
     expect(getWidthAndHeight(tf.zeros([1, 2, 3]) as _tf.Tensor3D)).toEqual([1, 2]);
+  });
+});
+
+describe('validateOptions', () => {
+  it('throws if given an invalid patch size', () => {
+    const patchSize = -1;
+    expect(() => validateOptions({
+      patchSize,
+    }, {} as any as _tf.LayersModel)).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+  });
+
+  it('returns valid options', () => {
+    expect(() => validateOptions({
+      patchSize: 1,
+    }, {} as any as _tf.LayersModel)).toEqual({
+      patchSize: 1,
+    });
   });
 });
