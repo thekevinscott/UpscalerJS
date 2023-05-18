@@ -25,6 +25,8 @@ import {
   getInputShape,
   ERROR_WITH_MODEL_INPUT_SHAPE,
   scaleOutput,
+  getWidthAndHeight,
+  GET_INVALID_SHAPED_TENSOR,
 } from './utils';
 import {
   isLayersModel as _isLayersModel,
@@ -633,5 +635,25 @@ describe('parseModelDefinition', () => {
     };
     expect(parseModelDefinition(modelDefinition)).toEqual(modelDefinition);
 
+  });
+});
+
+describe('getWidthAndHeight', () => {
+  it('throws if given a too small tensor', () => {
+    const t = tf.zeros([2, 2]) as unknown as _tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
+  });
+
+  it('throws if given a too large tensor', () => {
+    const t = tf.zeros([2, 2, 2, 2, 2]) as unknown as _tf.Tensor3D;
+    expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t));
+  });
+
+  it('returns width and height for a 4d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3, 4]) as _tf.Tensor4D)).toEqual([2, 3]);
+  });
+
+  it('returns width and height for a 3d tensor', () => {
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3]) as _tf.Tensor3D)).toEqual([1, 2]);
   });
 });
