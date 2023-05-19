@@ -23,7 +23,7 @@
     ]
   },
   "scripts": {
-    "build": "pnpm build",
+    "build": "pnpm --filter=\"upscaler\" build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
     "preinstall": "npx only-allow pnpm",

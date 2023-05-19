@@ -2,7 +2,9 @@ import type { LayersModel } from '@tensorflow/tfjs-node';
 import * as tf from '@tensorflow/tfjs-node';
 import { getInvalidValueError, cancellableWarmup, warmup, getSizesAsArray, isNumericWarmupSize, isWarmupSizeByPatchSize } from './warmup';
 import { ModelPackage, NumericWarmupSizes, WarmupSizesByPatchSize } from './types';
-import { AbortError } from './utils';
+import { 
+  AbortError,
+} from './errors-and-warnings';
 import { PostProcess, PreProcess } from '@upscalerjs/core';
 
 const getFakeModel = () => {

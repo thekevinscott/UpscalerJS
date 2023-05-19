@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { tf, } from './dependencies.generated';
-import { tensorAsClampedArray, } from './utils';
+import { tensorAsClampedArray, } from './tensor-utils';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
 import { CheckValidEnvironment, } from './types';
 

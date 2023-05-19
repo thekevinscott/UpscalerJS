@@ -14,15 +14,17 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
+  getModelInputShape,
+  nonNullable,
+  parsePatchAndInputSizes,
+} from './utils';
+import {
   scaleIncomingPixels,
   padInput,
   trimInput,
-  getModelInputShape,
   scaleOutput,
-  nonNullable,
   getWidthAndHeight,
-  parsePatchAndInputSizes,
- } from './utils';
+} from './tensor-utils';
 import {
   isTensor,
   isFourDimensionalTensor,
@@ -30,50 +32,18 @@ import {
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
-
-const WARNING_UNDEFINED_PADDING_URL =
-  'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
-
-export const WARNING_UNDEFINED_PADDING = [
-  '"padding" is undefined, but "patchSize" is explicitly defined.',
-  'Without padding, patches of images often have visible artifacting at the seams. Defining an explicit padding will resolve the artifacting.',
-  `For more information, see ${WARNING_UNDEFINED_PADDING_URL}.`,
-  'To hide this warning, pass an explicit padding of "0".',
-].join('\n');
-
-const WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL =
-  'https://upscalerjs.com/documentation/troubleshooting#progress-specified-without-patch-size';
-
-export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
-  'The "progress" callback was provided but "patchSize" was not defined.',
-  'Without a "patchSize", the "progress" callback will never be called.',
-  `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
-].join('\n');
-
-const ERROR_INVALID_TENSOR_PREDICTED_URL = 
-  'https://upscalerjs.com/documentation/troubleshooting#invalid-predicted-tensor';
-export const ERROR_INVALID_TENSOR_PREDICTED = (tensor: tf.Tensor) => [
-  `The tensor returned by the model was not a valid rank-4 tensor. It's shape is ${JSON.stringify(tensor.shape)}.}`,
-  'UpscalerJS only supports models returning valid image-like data in four dimensional form.',
-  `For more information, see ${ERROR_INVALID_TENSOR_PREDICTED_URL}.`,
-].join('\n');
-
-const ERROR_INVALID_MODEL_PREDICTION_URL = 
-  'https://upscalerjs.com/documentation/troubleshooting#invalid-model-prediction';
-
-export const ERROR_INVALID_MODEL_PREDICTION = [
-  'The model output was not a valid tensor. UpscalerJS only supports models returning valid tensors.',
-  'This is likely an error with the model itself, not UpscalerJS.',
-  `For more information, see ${ERROR_INVALID_MODEL_PREDICTION_URL}.`,
-].join('\n');
-
-export const GET_INVALID_ROW_OR_COLUMN = (kind: 'rows' | 'columns', num: number, patchSize: number, dim: number) => new Error([
-    `Invalid ${kind} generated: ${num}. Should be greater than 0.`,
-    `Patch size was: ${patchSize}`,
-    `${kind === 'rows' ? 'Height' : 'Width'} was: ${dim}`,
-].join(' '));
-
-export const GET_UNDEFINED_TENSORS_ERROR = () => new Error('No defined tensors were passed to concatTensors');
+import {
+  ERROR_INVALID_MODEL_PREDICTION,
+  ERROR_INVALID_TENSOR_PREDICTED,
+  GET_INVALID_ROW_OR_COLUMN,
+  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
+  GET_UNDEFINED_TENSORS_ERROR,
+  WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
+} from './errors-and-warnings';
 
 export const getRowsAndColumns = (
   pixels: tf.Tensor3D | tf.Tensor4D,
@@ -173,12 +143,6 @@ export interface GetTensorDimensionsOpts {
   width: number;
   padding?: number;
 }
-
-export const GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED = new Error('Row is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED = new Error('Column is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED = new Error('Patch Size is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED = new Error('Height is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED = new Error('Width is undefined');
 
 export const getTensorDimensions = ({
   row,
@@ -293,7 +257,7 @@ export const executeModel = (model: LayersModel | GraphModel, pixels: tf.Tensor4
     return predictedPixels;
   }
 
-  throw new Error(ERROR_INVALID_TENSOR_PREDICTED(predictedPixels));
+  throw new Error(ERROR_INVALID_TENSOR_PREDICTED(predictedPixels.shape));
 };
 
 /* eslint-disable @typescript-eslint/require-await */
@@ -310,11 +274,6 @@ export async function* processPixels(
   const { model, modelDefinition, } = modelPackage;
   const { output, progress, progressOutput, } = args;
   const scale = modelDefinition.scale || 1;
-
-  if (args.patchSize !== undefined && args.padding === undefined) {
-    // warn the user about possible tiling effects if patch size is provided without padding
-    warn(WARNING_UNDEFINED_PADDING);
-  }
 
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
