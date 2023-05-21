@@ -10,7 +10,7 @@ import {
 } from './loadModel.browser';
 import {
   loadTfModel as _loadTfModel,
-} from './utils';
+} from './model-utils';
 
 import {
   getModelDefinitionError as _getModelDefinitionError,
@@ -31,8 +31,8 @@ jest.mock('./loadModel.browser', () => {
   }
 });
 
-jest.mock('./utils', () => {
-  const { loadTfModel, ...rest } = jest.requireActual('./utils');
+jest.mock('./model-utils', () => {
+  const { loadTfModel, ...rest } = jest.requireActual('./model-utils');
   return {
     ...rest,
     loadTfModel: jest.fn(loadTfModel),

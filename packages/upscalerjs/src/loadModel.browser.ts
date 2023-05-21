@@ -4,7 +4,7 @@ import type { ParsedModelDefinition, ModelPackage, PackageInformation, } from '.
 import {
   loadTfModel,
   parseModelDefinition,
-} from './utils';
+} from './model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,

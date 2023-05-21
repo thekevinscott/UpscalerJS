@@ -31,7 +31,7 @@ import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
 import type { Input, } from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
-import { getModel, } from './utils';
+import { getModel, } from './model-utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
