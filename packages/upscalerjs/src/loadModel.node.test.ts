@@ -11,21 +11,31 @@ import { resolver as _resolver } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
   getModelDefinitionError as _getModelDefinitionError,
-  loadTfModel as _loadTfModel,
   ERROR_MODEL_DEFINITION_BUG,
+} from './errors-and-warnings';
+import {
+  loadTfModel as _loadTfModel,
 } from './utils';
 import {
   isValidModelDefinition as _isValidModelDefinition,
   ModelDefinitionValidationError,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
+
 jest.mock('./utils', () => {
-  const { loadTfModel, getModuleFolder, getModelDefinitionError, ...rest } = jest.requireActual('./utils');
+  const { loadTfModel, getModuleFolder, ...rest } = jest.requireActual('./utils');
+  return {
+    ...rest,
+    getModuleFolder: jest.fn(getModuleFolder),
+    loadTfModel: jest.fn(loadTfModel),
+  }
+});
+
+jest.mock('./errors-and-warnings', () => {
+  const { getModelDefinitionError, ...rest } = jest.requireActual('./errors-and-warnings');
   return {
     ...rest,
     getModelDefinitionError: jest.fn(getModelDefinitionError),
-    getModuleFolder: jest.fn(getModuleFolder),
-    loadTfModel: jest.fn(loadTfModel),
   }
 });
 

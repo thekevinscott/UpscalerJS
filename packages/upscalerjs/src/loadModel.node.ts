@@ -1,12 +1,16 @@
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { ERROR_MODEL_DEFINITION_BUG, getModelDefinitionError, loadTfModel, parseModelDefinition, } from './utils';
+import { loadTfModel, parseModelDefinition, } from './utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   ModelDefinitionValidationError,
   isValidModelDefinition,
 } from '@upscalerjs/core';
+import {
+  ERROR_MODEL_DEFINITION_BUG,
+  getModelDefinitionError,
+} from './errors-and-warnings';
 
 // const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
 //   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';

@@ -8,28 +8,39 @@ import {
   concatTensors,
   upscale,
   cancellableUpscale,
+  GetTensorDimensionsOpts,
+  executeModel,
+} from './upscale';
+import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
-  GetTensorDimensionsOpts,
   GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
-  executeModel,
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
   GET_INVALID_ROW_OR_COLUMN,
-} from './upscale';
-import { checkValidEnvironment as _checkValidEnvironment, tensorAsBase64 as _tensorAsBase64, getImageAsTensor as _getImageAsTensor, } from './image.generated';
+  AbortError,
+} from './errors-and-warnings';
+import {
+  checkValidEnvironment as _checkValidEnvironment,
+  tensorAsBase64 as _tensorAsBase64,
+  getImageAsTensor as _getImageAsTensor,
+} from './image.generated';
+import {
+  wrapGenerator,
+} from './utils';
 import {
   getWidthAndHeight as _getWidthAndHeight,
-  wrapGenerator,
-  AbortError,
-} from './utils';
-import { isFourDimensionalTensor as _isFourDimensionalTensor, isTensor as _isTensor, } from '@upscalerjs/core';
-import { ModelDefinition } from "@upscalerjs/core";
+} from './tensor-utils';
+import {
+  ModelDefinition,
+  isFourDimensionalTensor as _isFourDimensionalTensor,
+  isTensor as _isTensor,
+} from '@upscalerjs/core';
 import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
@@ -51,8 +62,8 @@ jest.mock('@upscalerjs/core', () => {
   };
 });
 
-jest.mock('./utils', () => {
-  const { getWidthAndHeight, ...rest } = jest.requireActual('./utils');
+jest.mock('./tensor-utils', () => {
+  const { getWidthAndHeight, ...rest } = jest.requireActual('./tensor-utils');
   return {
     ...rest,
     getWidthAndHeight: jest.fn(getWidthAndHeight),
@@ -1895,7 +1906,7 @@ describe('executeModel', () => {
     } as any as tf.LayersModel;
     isTensor.mockImplementation(() => true);
     isFourDimensionalTensor.mockImplementation(() => false);
-    expect(() => executeModel(model, 'foo' as any as tf.Tensor4D)).toThrow(ERROR_INVALID_TENSOR_PREDICTED(tensor));
+    expect(() => executeModel(model, 'foo' as any as tf.Tensor4D)).toThrow(ERROR_INVALID_TENSOR_PREDICTED(tensor.shape));
   });
 
   it('returns a valid 4d tensor', () => {

@@ -1,5 +1,4 @@
 import type { GraphModel, io, LayersModel } from '@tensorflow/tfjs';
-import { ModelDefinition } from '@upscalerjs/core';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
 import {
@@ -10,12 +9,16 @@ import {
   loadModel,
 } from './loadModel.browser';
 import {
-  getModelDefinitionError as _getModelDefinitionError,
   loadTfModel as _loadTfModel,
-  ERROR_MODEL_DEFINITION_BUG,
 } from './utils';
 
 import {
+  getModelDefinitionError as _getModelDefinitionError,
+  ERROR_MODEL_DEFINITION_BUG,
+} from './errors-and-warnings';
+
+import {
+  ModelDefinition,
   isValidModelDefinition as _isValidModelDefinition,
   ModelDefinitionValidationError,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
@@ -29,11 +32,18 @@ jest.mock('./loadModel.browser', () => {
 });
 
 jest.mock('./utils', () => {
-  const { loadTfModel, getModelDefinitionError, ...rest } = jest.requireActual('./utils');
+  const { loadTfModel, ...rest } = jest.requireActual('./utils');
+  return {
+    ...rest,
+    loadTfModel: jest.fn(loadTfModel),
+  }
+});
+
+jest.mock('./errors-and-warnings', () => {
+  const { getModelDefinitionError, ...rest } = jest.requireActual('./errors-and-warnings');
   return {
     ...rest,
     getModelDefinitionError: jest.fn(getModelDefinitionError),
-    loadTfModel: jest.fn(loadTfModel),
   }
 });
 

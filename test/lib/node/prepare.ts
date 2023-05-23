@@ -118,7 +118,7 @@ export const runNodeScript: RunNodeScript = async (getScriptContents, {
   rootDir = path.resolve(NODE_ROOT, './tmp'),
   verbose = false,
 } = {}) => {
-  let data;
+  let data: undefined | Buffer;
   await withTmpDir(async tmpDir => {
     const dataFile = path.join(tmpDir, getHashedName(`${Math.random()}`));
     const contentOutput = getScriptContents(dataFile).trim();

@@ -1,7 +1,8 @@
 import { YieldedIntermediaryValue, } from './types';
-import { AbortError, isAborted, } from './utils';
+import { isAborted, } from './utils';
 import { isTensor, } from '@upscalerjs/core';
 import { tf, } from './dependencies.generated';
+import { AbortError, } from './errors-and-warnings';
 
 type TickFunction = (result?: YieldedIntermediaryValue) => Promise<void>;
 export const makeTick = (signal: AbortSignal, awaitNextFrame?: boolean): TickFunction => async result => {

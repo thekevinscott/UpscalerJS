@@ -41,13 +41,15 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     dependencies = {},
     main,
     globals = {},
+    verbose,
   }: {
     trackTime?: boolean;
     main?: Main<T>,
     dependencies?: Dependencies;
     globals?: Globals;
+    verbose?: boolean;
   } = {}) {
-    this.verbose = process.env.verbose === 'true';
+    this.verbose = verbose !== undefined ? verbose : process.env.verbose === 'true';
     if (this.verbose) {
       console.log('Running NodeTestRunner in verbose mode.');
     }
@@ -72,7 +74,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     globals = {},
   }: TestOpts<T>, {
     removeTmpDir = true, // set to false if you need to inspect the Node output files
-  } = {}) {
+  } = {}): Promise<Buffer | undefined> {
     const _main = main || this.main;
     if (!_main) {
       throw new Error('No main function defined');

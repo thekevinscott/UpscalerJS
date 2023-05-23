@@ -4,7 +4,7 @@ import {
 } from '@upscalerjs/core';
 import { 
   AbortError,
-} from './utils';
+} from './errors-and-warnings';
 import { makeTick } from './makeTick';
 import { mockFn } from '../../../test/lib/shared/mockers';
 

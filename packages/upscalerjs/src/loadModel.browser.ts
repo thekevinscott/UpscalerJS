@@ -2,11 +2,13 @@ import { tf, } from './dependencies.generated';
 import { ModelDefinition, ModelDefinitionValidationError, ModelType, } from '@upscalerjs/core';
 import type { ParsedModelDefinition, ModelPackage, PackageInformation, } from './types';
 import {
-  ERROR_MODEL_DEFINITION_BUG,
-  getModelDefinitionError,
   loadTfModel,
   parseModelDefinition,
 } from './utils';
+import {
+  ERROR_MODEL_DEFINITION_BUG,
+  getModelDefinitionError,
+} from './errors-and-warnings';
 import {
   isValidModelDefinition,
 } from '@upscalerjs/core';
