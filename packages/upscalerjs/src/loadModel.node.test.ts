@@ -15,15 +15,15 @@ import {
 } from './errors-and-warnings';
 import {
   loadTfModel as _loadTfModel,
-} from './utils';
+} from './model-utils';
 import {
   isValidModelDefinition as _isValidModelDefinition,
   ModelDefinitionValidationError,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 
-jest.mock('./utils', () => {
-  const { loadTfModel, getModuleFolder, ...rest } = jest.requireActual('./utils');
+jest.mock('./model-utils', () => {
+  const { loadTfModel, getModuleFolder, ...rest } = jest.requireActual('./model-utils');
   return {
     ...rest,
     getModuleFolder: jest.fn(getModuleFolder),

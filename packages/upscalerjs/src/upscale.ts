@@ -14,10 +14,12 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
-  getModelInputShape,
   nonNullable,
-  parsePatchAndInputSizes,
 } from './utils';
+import {
+  getModelInputShape,
+  parsePatchAndInputSizes,
+} from './model-utils';
 import {
   scaleIncomingPixels,
   padInput,

@@ -1,6 +1,6 @@
 import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
-import { loadTfModel, parseModelDefinition, } from './utils';
+import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
