@@ -119,9 +119,16 @@ const getArgs = async (): Promise<Answers> => {
   }
 }
 
-if (require.main === module) {
-  (async () => {
-    const args = await getArgs();
-    await buildCore(args.outputFormats, undefined, { verbose: args.verbose });
-  })();
+const main = async () => {
+  const args = await getArgs();
+  await buildCore(args.outputFormats, undefined, { verbose: args.verbose });
 }
+
+// if (require.main === module) {
+//   main();
+// }
+
+// TODO: Enable script to be imported, check if the file is main
+(async () => {
+  await main();
+})();

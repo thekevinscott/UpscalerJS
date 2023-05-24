@@ -232,7 +232,11 @@ export async function* upscale(
 
   const gen = processPixels(
     preprocessedPixels,
-    args,
+    {
+      output: args.output,
+      progressOutput: args.progressOutput,
+      progress: args.progress,
+    },
     modelPackage,
     {
       imageSize,

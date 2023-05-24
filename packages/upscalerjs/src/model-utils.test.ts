@@ -7,6 +7,7 @@ import {
   loadTfModel,
   parsePatchAndInputShapes,
   getModelInputShape,
+  getPatchSizeAsMultiple,
 } from './model-utils';
 import {
   warn as _warn,
@@ -33,6 +34,7 @@ import {
   getModelDefinitionError,
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
   GET_INVALID_PATCH_SIZE_AND_PADDING,
+  GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
 } from './errors-and-warnings';
 
 jest.mock('./dependencies.generated', () => {
@@ -176,6 +178,25 @@ describe('parsePatchAndInputShapes', () => {
       }
     } as ModelPackage;
     expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('warns if given a patch size but no padding', () => {
+    const model = {
+      layers: [{
+        batchInputShape: [null, null, null, 3],
+      }],
+    } as _tf.LayersModel;
+    const modelPackage: ModelPackage = {
+      modelDefinition: {
+        modelType: 'layers',
+        path: 'foo',
+      },
+      model,
+    };
+    parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
+    expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+      expect(warn).toHaveBeenCalledTimes(1);
   });
 
   it('throws if given invalid patch size and padding', () => {
@@ -202,6 +223,7 @@ describe('parsePatchAndInputShapes', () => {
       } as ModelPackage;
       parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 2 }, [ null, 9, 9, 3]);
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+      expect(warn).toHaveBeenCalledTimes(1);
     });
 
     it('throws if input size is not square', () => {
@@ -213,6 +235,7 @@ describe('parsePatchAndInputShapes', () => {
         },
       } as ModelPackage;
       expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [ null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+      expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     });
 
     it('returns the appropriate patch size', () => {
@@ -229,6 +252,155 @@ describe('parsePatchAndInputShapes', () => {
         modelInputShape: [null, 9, 9, 3],
       });
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('divisibilityFactor', () => {
+    it('returns the appropriate input shape if patch size is undefined and image size is a multiple', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 4,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {}, [null, 4, 4, 3])).toEqual({
+        patchSize: undefined,
+        padding: undefined,
+        modelInputShape: [null, 4, 4, 3],
+      });
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('returns the appropriate input shape if patch size is undefined', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 4,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {}, [null, 3, 3, 3])).toEqual({
+        patchSize: undefined,
+        padding: undefined,
+        modelInputShape: [null, 4, 4, 3],
+      });
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('returns the appropriate input shape if patch size is defined and a multiple of divisibility factor', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 4,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {
+        patchSize: 8,
+      }, [null, 3, 3, 3])).toEqual({
+        patchSize: 8,
+        padding: undefined,
+        modelInputShape: [null, 8, 8, 3],
+      });
+      expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns the appropriate input shape if patch size is defined and not a multiple of divisibility factor', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 4,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {
+        patchSize: 7,
+      }, [null, 3, 3, 3])).toEqual({
+        patchSize: 8,
+        padding: undefined,
+        modelInputShape: [null, 8, 8, 3],
+      });
+      expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+      expect(warn).toHaveBeenCalledWith(GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(7, 4, 8));
+      expect(warn).toHaveBeenCalledTimes(2);
+    });
+
+    it('returns the appropriate input shape if patch size and padding are defined and a multiple of divisibility factor', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 4,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {
+        patchSize: 4,
+        padding: 1,
+      }, [null, 3, 3, 3])).toEqual({
+        patchSize: 4,
+        padding: 1,
+        modelInputShape: [null, 4, 4, 3],
+      });
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('returns the appropriate input shape if patch size and padding are defined and not a multiple of divisibility factor', () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        divisibilityFactor: 5,
+      };
+      const modelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, null, null, 3],
+          }],
+        },
+        modelDefinition,
+      } as ModelPackage;
+      expect(parsePatchAndInputShapes(modelPackage, {
+        patchSize: 4,
+        padding: 1,
+      }, [null, 3, 3, 3])).toEqual({
+        patchSize: 5,
+        padding: 1,
+        modelInputShape: [null, 5, 5, 3],
+      });
+      expect(warn).toHaveBeenCalledWith(GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(4, 5, 5));
+      expect(warn).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -250,6 +422,7 @@ describe('parsePatchAndInputShapes', () => {
       padding: 1,
       modelInputShape: [null, null, null, 3],
     })
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('warns if provided a patch size without padding', () => {
@@ -316,5 +489,23 @@ describe('parseModelDefinition', () => {
     };
     expect(parseModelDefinition(modelDefinition)).toEqual(modelDefinition);
 
+  });
+});
+
+describe('getPatchSizeAsMultiple', () => {
+  it('returns patch size if divisibility factor is equal to it', () => {
+    expect(getPatchSizeAsMultiple(2, 2)).toEqual(2);
+  });
+
+  it('returns patch size if divisibility factor factors into it', () => {
+    expect(getPatchSizeAsMultiple(2, 4)).toEqual(4);
+  });
+
+  it('returns increased patch size if it is smaller than divisibility factor', () => {
+    expect(getPatchSizeAsMultiple(2, 1)).toEqual(2);
+  });
+
+  it('returns increased patch size if it is smaller than a multiple of divisibility factor', () => {
+    expect(getPatchSizeAsMultiple(2, 3)).toEqual(4);
   });
 });

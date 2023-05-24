@@ -16,6 +16,7 @@ import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
+  GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
 } from '../../../packages/upscalerjs/src/errors-and-warnings';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
@@ -688,6 +689,255 @@ describe('Node Model Loading Integration Tests', () => {
           expect(progressResults[1].row).toEqual(0);
           expect(progressResults[1].col).toEqual(1);
           expect(warnings.length).toEqual(0);
+        });
+      });
+    });
+
+    describe('Models with divisibility factors', () => {
+      it("loads an image that is a multiple", async () => {
+        const {
+          upscaledImage: [
+            upscaledData,
+            upscaledShape,
+          ],
+          expectedImage: [
+            expectedData,
+            expectedShape,
+          ],
+          progressResults,
+          warnings,
+        } = await run({
+          imageInputSize: [8, 8],
+          scale: 2,
+          batchInputShape: [null, null, null, 3],
+          model: {
+            divisibilityFactor: 4,
+          },
+        });
+        expect(upscaledShape).toEqual(expectedShape);
+        expect(upscaledData).toEqual(expectedData);
+        expect(progressResults.length).toEqual(0);
+        expect(warnings.length).toEqual(1); // warn about progress being present without patch size
+        expect(warnings[0][0]).toEqual(WARNING_PROGRESS_WITHOUT_PATCH_SIZE)
+      });
+
+      it("loads an image that is smaller than the divisibility", async () => {
+        // expect the image to be padded and then trimmed
+        const {
+          upscaledImage: [
+            upscaledData,
+            upscaledShape,
+          ],
+          expectedImage: [
+            expectedData,
+            expectedShape,
+          ],
+          progressResults,
+          warnings,
+        } = await run({
+          imageInputSize: [3, 3],
+          scale: 2,
+          batchInputShape: [null, null, null, 3],
+          model: {
+            divisibilityFactor: 4,
+          },
+        });
+        expect(upscaledShape).toEqual(expectedShape);
+        expect(upscaledData).toEqual(expectedData);
+        expect(progressResults.length).toEqual(0);
+        expect(warnings.length).toEqual(1); // warn about progress being present without patch size
+        expect(warnings[0][0]).toEqual(WARNING_PROGRESS_WITHOUT_PATCH_SIZE)
+      });
+
+      it("loads an image that is larger than the minimum divisibility, but not fully divisible", async () => {
+        // expect the image to be padded and then trimmed
+        const {
+          upscaledImage: [
+            upscaledData,
+            upscaledShape,
+          ],
+          expectedImage: [
+            expectedData,
+            expectedShape,
+          ],
+          progressResults,
+          warnings,
+        } = await run({
+          imageInputSize: [5, 5],
+          scale: 2,
+          batchInputShape: [null, null, null, 3],
+          model: {
+            divisibilityFactor: 4,
+          },
+        });
+        expect(upscaledShape).toEqual(expectedShape);
+        expect(upscaledData).toEqual(expectedData);
+        expect(progressResults.length).toEqual(0);
+        expect(warnings.length).toEqual(1); // warn about progress being present without patch size
+        expect(warnings[0][0]).toEqual(WARNING_PROGRESS_WITHOUT_PATCH_SIZE)
+      });
+
+      describe('Patch sizes', () => {
+        it("loads an image with a patch size equal to divisibility", async () => {
+          const {
+            upscaledImage: [
+              upscaledData,
+              upscaledShape,
+            ],
+            expectedImage: [
+              expectedData,
+              expectedShape,
+            ],
+            progressResults,
+            warnings,
+          } = await run({
+            imageInputSize: [5, 5],
+            scale: 2,
+            batchInputShape: [null, null, null, 3],
+            patchSize: 4,
+            padding: 0,
+            model: {
+              divisibilityFactor: 4,
+            },
+          });
+          expect(upscaledShape).toEqual(expectedShape);
+          expect(upscaledData).toEqual(expectedData);
+          expect(progressResults.length).toEqual(4);
+          expect(progressResults[0].amount).toEqual(.25);
+          expect(progressResults[0].row).toEqual(0);
+          expect(progressResults[0].col).toEqual(0);
+          expect(progressResults[1].amount).toEqual(.5);
+          expect(progressResults[1].row).toEqual(0);
+          expect(progressResults[1].col).toEqual(1);
+          expect(progressResults[2].amount).toEqual(.75);
+          expect(progressResults[2].row).toEqual(1);
+          expect(progressResults[2].col).toEqual(0);
+          expect(progressResults[3].amount).toEqual(1);
+          expect(progressResults[3].row).toEqual(1);
+          expect(progressResults[3].col).toEqual(1);
+          expect(warnings).toEqual([]);
+        });
+
+        it("loads an image with a patch size equal to a multiple of divisibility", async () => {
+          const {
+            upscaledImage: [
+              upscaledData,
+              upscaledShape,
+            ],
+            expectedImage: [
+              expectedData,
+              expectedShape,
+            ],
+            progressResults,
+            warnings,
+          } = await run({
+            imageInputSize: [9, 9],
+            scale: 2,
+            batchInputShape: [null, null, null, 3],
+            patchSize: 8,
+            padding: 0,
+            model: {
+              divisibilityFactor: 4,
+            },
+          });
+          expect(upscaledShape).toEqual(expectedShape);
+          expect(upscaledData).toEqual(expectedData);
+          expect(progressResults.length).toEqual(4);
+          expect(progressResults[0].amount).toEqual(.25);
+          expect(progressResults[0].row).toEqual(0);
+          expect(progressResults[0].col).toEqual(0);
+          expect(progressResults[1].amount).toEqual(.5);
+          expect(progressResults[1].row).toEqual(0);
+          expect(progressResults[1].col).toEqual(1);
+          expect(progressResults[2].amount).toEqual(.75);
+          expect(progressResults[2].row).toEqual(1);
+          expect(progressResults[2].col).toEqual(0);
+          expect(progressResults[3].amount).toEqual(1);
+          expect(progressResults[3].row).toEqual(1);
+          expect(progressResults[3].col).toEqual(1);
+          expect(warnings).toEqual([]);
+        });
+
+        it("loads an image with a patch size smaller than a multiple of divisibility", async () => {
+          const patchSize = 3;
+          const divisibilityFactor = 4;
+          const {
+            upscaledImage: [
+              upscaledData,
+              upscaledShape,
+            ],
+            expectedImage: [
+              expectedData,
+              expectedShape,
+            ],
+            progressResults,
+            warnings,
+          } = await run({
+            imageInputSize: [5, 5],
+            scale: 2,
+            batchInputShape: [null, null, null, 3],
+            patchSize,
+            model: {
+              divisibilityFactor,
+            },
+          });
+          expect(upscaledShape).toEqual(expectedShape);
+          expect(upscaledData).toEqual(expectedData);
+          expect(progressResults.length).toEqual(4);
+          expect(progressResults[0].amount).toEqual(.25);
+          expect(progressResults[0].row).toEqual(0);
+          expect(progressResults[0].col).toEqual(0);
+          expect(progressResults[1].amount).toEqual(.5);
+          expect(progressResults[1].row).toEqual(0);
+          expect(progressResults[1].col).toEqual(1);
+          expect(progressResults[2].amount).toEqual(.75);
+          expect(progressResults[2].row).toEqual(1);
+          expect(progressResults[2].col).toEqual(0);
+          expect(progressResults[3].amount).toEqual(1);
+          expect(progressResults[3].row).toEqual(1);
+          expect(progressResults[3].col).toEqual(1);
+          expect(warnings).toEqual([[
+            WARNING_UNDEFINED_PADDING,
+          ],[
+            GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(patchSize, divisibilityFactor, divisibilityFactor),
+          ]]);
+        });
+
+        it("loads an image with a patch size larger than a multiple of divisibility", async () => {
+          const patchSize = 5;
+          const divisibilityFactor = 4;
+          const expectedPatchSize = 8;
+          const {
+            upscaledImage: [
+              upscaledData,
+              upscaledShape,
+            ],
+            expectedImage: [
+              expectedData,
+              expectedShape,
+            ],
+            progressResults,
+            warnings,
+          } = await run({
+            imageInputSize: [5, 5],
+            scale: 2,
+            batchInputShape: [null, null, null, 3],
+            patchSize,
+            model: {
+              divisibilityFactor,
+            },
+          });
+          expect(upscaledShape).toEqual(expectedShape);
+          expect(upscaledData).toEqual(expectedData);
+          expect(progressResults.length).toEqual(1);
+          expect(progressResults[0].amount).toEqual(1);
+          expect(progressResults[0].row).toEqual(0);
+          expect(progressResults[0].col).toEqual(0);
+          expect(warnings).toEqual([[
+            WARNING_UNDEFINED_PADDING,
+          ],[
+            GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(patchSize, divisibilityFactor, expectedPatchSize),
+          ]]);
         });
       });
     });

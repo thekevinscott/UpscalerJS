@@ -217,3 +217,25 @@ Some models have fixed input shapes that require images be of a certain shape.
 For these models, `patchSize` and `padding` variables will be ignored.
 
 Please omit these variables for these models.
+
+## Patch Size Indivisible by Divisibility Factor
+
+Some models define a `divisibilityFactor`, or a number for which all images must be a multiple.
+
+For example, a `divisibilityFactor` of `64` and an image size of `65,65` would have to operate on a padded image of `128,128`. (The final image would be `65,65`, as UpscalerJS handles the padding and trimming of the image behind the scenes for you.)
+
+This warning means that you are passing in a `patchSize` argument incompatible with the model's `divisibilityFactor`. For instance, with a `divisibilityFactor` of `64`, invalid `patchSize` arguments would include `32`, `65`, or `127`. Valid `patchSize` arguments would include `64` or `128`.
+
+To get rid of this warning, update your `patchSize` argument to be a multiple of the `divisibilityFactor`.
+
+## Patch Size Plus Padding Indivisible by Divisibility Factor
+
+This error is identical to the above, except that the final `patchSize` is equivalent to `patchSize` + `padding` * 2, and this final number must be equal to or a multiple of the model's `divisibilityFactor`.
+
+For example, for a model with a `divisibilityFactor` of `64` and a `patchSize` of `126`, a valid `padding` value would be `1`:
+
+```
+126 + (1 * 2) = 128 // 128 is divisible by 64
+```
+
+To get rid of this warning, update your `patchSize` and `padding` arguments to result in a multiple of the `divisibilityFactor`.
