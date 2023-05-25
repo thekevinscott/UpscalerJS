@@ -13,7 +13,6 @@ import {
 } from './upscale';
 import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
-  WARNING_UNDEFINED_PADDING,
   GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
@@ -1190,7 +1189,7 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
-  const modelDefinition = { scale: 2, } as ModelDefinition;
+  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers'};
 
   const SCALE = 2;
   const model = tf.sequential();
@@ -1529,23 +1528,6 @@ describe('predict', () => {
       expect.any(Number),
     );
     expect(warn).not.toHaveBeenCalled();
-  });
-
-  it('should warn if provided a patchSize without padding', async () => {
-    tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
-    const patchSize = 2;
-    await wrapGenerator(processPixels(
-      tensor, {
-      output: 'base64',
-      progressOutput: 'base64',
-    },
-      modelPackage,
-      {
-        imageSize: tensor.shape,
-        patchSize,
-      })
-    );
-    expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 
   it('should warn if provided a progress callback without patchSize', async () => {

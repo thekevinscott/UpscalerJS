@@ -269,21 +269,14 @@ export async function* processPixels(
   modelPackage: ModelPackage,
   {
     imageSize,
-    patchSize: _patchSize,
-    padding: _padding,
+    patchSize,
+    padding,
   }: {
     imageSize: Shape4D;
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
   const scale = modelDefinition.scale || 1;
-
-  // retrieve the patch size and padding. If the model definition has defined its own input shape,
-  // then that input shape will override the user's variables.
-  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, {
-    patchSize: _patchSize,
-    padding: _padding,
-  });
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
@@ -425,6 +418,11 @@ export async function* upscale(
   const imageSize = startingPixels.shape;
   const inputSize = getModelInputShape(modelPackage);
 
+    // retrieve the patch size and padding. If the model definition has defined its own input shape,
+  // then that input shape will override the user's variables.
+  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, args);
+
+
   const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(inputSize));
   yield preprocessedPixels;
 
@@ -434,8 +432,8 @@ export async function* upscale(
     modelPackage,
     {
       imageSize,
-      patchSize: args.patchSize,
-      padding: args.padding,
+      patchSize,
+      padding,
     }
   );
   let result = await gen.next();
