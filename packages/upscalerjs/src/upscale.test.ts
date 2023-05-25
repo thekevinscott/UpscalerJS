@@ -1189,7 +1189,7 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
-  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers'};
+  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers', };
 
   const SCALE = 2;
   const model = tf.sequential();
@@ -1206,7 +1206,12 @@ describe('predict', () => {
 
   let tensor: undefined | tf.Tensor3D | tf.Tensor4D;
 
+  beforeEach(() => {
+    warn.mockImplementation(() => {});
+  });
+
   afterEach(() => {
+    warn.mockClear();
     if (tensor !== undefined) {
       tensor.dispose();
     }

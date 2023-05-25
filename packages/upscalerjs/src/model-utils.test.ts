@@ -29,6 +29,7 @@ import {
   GET_INVALID_PATCH_SIZE,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   getModelDefinitionError,
+  MODEL_INPUT_SIZE_MUST_BE_SQUARE,
 } from './errors-and-warnings';
 
 jest.mock('./dependencies.generated', () => {
@@ -152,12 +153,66 @@ describe('parsePatchAndInputSizes', () => {
   beforeEach(() => {
     isLayersModel.mockImplementation(() => true);
     isShape4D.mockImplementation(() => true);
+    warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
     isLayersModel.mockClear();
     isShape4D.mockClear();
     warn.mockClear();
+  });
+
+  it('throws if given invalid patch size', () => {
+    const patchSize = -1;
+    const modelPackage = {
+      model: {
+        layers: [{
+          batchInputShape: [null, null, null, 3],
+        }],
+      }
+    } as ModelPackage;
+    expect(() => parsePatchAndInputSizes(modelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+  });
+
+  describe('Input size', () => {
+    it('warns if provided an inputSize and patchSize', () => {
+      const modelPackage: ModelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, 9, 9, 3],
+          }],
+        },
+      } as ModelPackage;
+      parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 });
+      expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+    });
+
+    it('throws if input size is not square', () => {
+      const modelPackage: ModelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, 9, 8, 3],
+          }],
+        },
+      } as ModelPackage;
+      expect(() => parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 })).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+    });
+
+    it('returns the appropriate patch size', () => {
+      const modelPackage: ModelPackage = {
+        model: {
+          layers: [{
+            batchInputShape: [null, 9, 9, 3],
+          }],
+        },
+      } as ModelPackage;
+      expect(parsePatchAndInputSizes(modelPackage, { patchSize: 3, padding: 1 })).toEqual({
+        patchSize: 7,
+        padding: 1,
+        // inputShape: [null, 9, 9, 3],
+      });
+      expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+    });
   });
 
   it('passes patchSize and padding through unadulterated', () => {
@@ -172,29 +227,6 @@ describe('parsePatchAndInputSizes', () => {
       patchSize: 9,
       padding: 8,
     })
-  });
-
-  it('warns if provided an inputSize and patchSize', () => {
-    const modelPackage: ModelPackage = {
-      model: {
-        layers: [{
-          batchInputShape: [null, 9, 9, 3],
-        }],
-      },
-    } as ModelPackage;
-    parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 });
-    expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
-  });
-
-  it('throws if given invalid patch size', () => {
-    const patchSize = -1;
-    expect(() => parsePatchAndInputSizes({
-      model: {
-        layers: [{
-          batchInputShape: [null, null, null, 3],
-        }],
-      }
-    } as ModelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 });
 
