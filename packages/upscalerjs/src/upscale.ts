@@ -265,21 +265,25 @@ export const executeModel = (model: LayersModel | GraphModel, pixels: tf.Tensor4
 /* eslint-disable @typescript-eslint/require-await */
 export async function* processPixels(
   pixels: tf.Tensor4D,
-  args: PrivateUpscaleArgs,
+  { output, progress, progressOutput, }: Pick<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'>,
   modelPackage: ModelPackage,
   {
     imageSize,
+    patchSize: _patchSize,
+    padding: _padding,
   }: {
     imageSize: Shape4D;
-  }
+  } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
-  const { output, progress, progressOutput, } = args;
   const scale = modelDefinition.scale || 1;
 
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
-  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, args);
+  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, {
+    patchSize: _patchSize,
+    padding: _padding,
+  });
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
@@ -430,6 +434,8 @@ export async function* upscale(
     modelPackage,
     {
       imageSize,
+      patchSize: args.patchSize,
+      padding: args.padding,
     }
   );
   let result = await gen.next();
