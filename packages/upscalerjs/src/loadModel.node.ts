@@ -12,11 +12,6 @@ import {
   getModelDefinitionError,
 } from './errors-and-warnings';
 
-// const ERROR_URL_EXPLICIT_SCALE_REQUIRED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-must-provide-an-explicit-scale';
-// const ERROR_URL_EXPLICIT_SCALE_DISALLOWED =
-//   'https://thekevinscott.github.io/UpscalerJS/#/?id=you-are-requesting-the-pretrained-model-but-are-providing-an-explicit-scale';
-
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
 );
