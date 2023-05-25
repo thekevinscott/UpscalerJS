@@ -434,6 +434,8 @@ export async function* upscale(
     modelPackage,
     {
       imageSize,
+      patchSize: args.patchSize,
+      padding: args.padding,
     }
   );
   let result = await gen.next();

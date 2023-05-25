@@ -1852,6 +1852,7 @@ describe('cancellableUpscale', () => {
     } as unknown as tf.LayersModel;
     const controller = new AbortController();
     const progress = jest.fn((rate) => {
+      console.log('yo!', rate)
       if (rate === .5) {
         controller.abort();
       }
