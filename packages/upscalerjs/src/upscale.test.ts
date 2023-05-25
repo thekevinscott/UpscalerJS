@@ -1189,7 +1189,7 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
-  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers'};
+  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers', };
 
   const SCALE = 2;
   const model = tf.sequential();
