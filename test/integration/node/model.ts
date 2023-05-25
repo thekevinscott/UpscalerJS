@@ -10,10 +10,15 @@ import {
   MultiArgStringProgress,
 } from '../../../packages/upscalerjs/src/types';
 import {
+  ModelDefinition,
+} from '../../../packages/core/src';
+import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
+  GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
 } from '../../../packages/upscalerjs/src/errors-and-warnings';
+import {  } from 'upscaler';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -212,6 +217,7 @@ describe('Node Model Loading Integration Tests', () => {
         modelJSON,
         weightsPath,
         weightsName,
+        model,
       } = deps;
       const warnings: string[][] = [];
       console.warn = (...msg) => warnings.push(msg);
@@ -221,10 +227,7 @@ describe('Node Model Loading Integration Tests', () => {
       const WEIGHT_PATH = path.join(MODEL_DIR, weightsName);
       fs.writeFileSync(MODEL_JSON_PATH, JSON.stringify(modelJSON));
       fs.copyFileSync(weightsPath, WEIGHT_PATH);
-      const model = {
-        path: 'file://' + MODEL_JSON_PATH,
-        scale,
-      };
+      model['path'] = 'file://' + MODEL_JSON_PATH;
       if (VERBOSE) {
         console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
       }
@@ -299,12 +302,14 @@ describe('Node Model Loading Integration Tests', () => {
       padding,
       scale = 2,
       batchInputShape = [ null, null, null, 3 ],
+      model = {},
     }: {
       imageInputSize: [number, number];
       patchSize?: number;
       padding?: number;
       scale?: number;
       batchInputShape?: (null | number)[];
+      model?: Partial<ModelDefinition>;
     }): Promise<{
       upscaledImage: [number[], number[]];
       expectedImage: [number[], number[]];
@@ -319,6 +324,10 @@ describe('Node Model Loading Integration Tests', () => {
           patchSize,
           padding,
           ...makeModelAndWeights(scale, batchInputShape),
+          model: JSON.stringify({
+            ...model,
+            scale,
+          }),
         },
       });
       return JSON.parse(result?.toString() || '');
