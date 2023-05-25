@@ -149,6 +149,14 @@ You may see this message if you're using a custom model that returns a rank 3 im
 
 If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
 
+## Invalid Model Prediction
+
+UpscalerJS only supports models that return rank 4 tensors representing image-like data.
+
+You may see this message if you're using a custom model that returns a non-tensor.
+
+If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
+
 ## Environment disallows Base64
 
 If you see an error like:
@@ -201,3 +209,11 @@ This error implies that the given model does not have an input layer compatible 
 UpscalerJS only supports models whose input layers are set up to accept rank 4 tensors.
 
 If you believe this is in error, or you have a particular use case you think would be appropriate for UpscalerJS, [please open a Github issue](https://github.com/thekevinscott/UpscalerJS/issues/new/choose).
+
+## Input Size and Patch Size
+
+Some models have fixed input shapes that require images be of a certain shape.
+
+For these models, `patchSize` and `padding` variables will be ignored.
+
+Please omit these variables for these models.
