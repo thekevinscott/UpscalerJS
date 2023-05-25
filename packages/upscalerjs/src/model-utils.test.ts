@@ -9,7 +9,7 @@ import {
   getModelInputShape,
 } from './model-utils';
 import {
-  warn,
+  warn as _warn,
 } from './utils';
 import {
   isLayersModel as _isLayersModel,
@@ -52,6 +52,14 @@ jest.mock('./isLayersModel', () => {
   };
 });
 
+jest.mock('./utils', () => {
+  const { warn, ...rest } = jest.requireActual('./utils');
+  return {
+    ...rest,
+    warn: jest.fn().mockImplementation(warn),
+  };
+});
+
 jest.mock('@upscalerjs/core', () => {
   const { isValidRange, isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
   return {
@@ -64,6 +72,7 @@ jest.mock('@upscalerjs/core', () => {
 const tf = mock(_tf);
 const isLayersModel = mockFn(_isLayersModel);
 const isShape4D = mockFn(_isShape4D);
+const warn = mockFn(_warn);
 
 describe('getModelDefinitionError', () => {
   it('returns an error if path is not provided', () => {
@@ -140,17 +149,15 @@ describe('loadTfModel', () => {
 });
 
 describe('parsePatchAndInputSizes', () => {
-  const origWarn = console.warn;
-
   beforeEach(() => {
     isLayersModel.mockImplementation(() => true);
     isShape4D.mockImplementation(() => true);
   });
 
   afterEach(() => {
-    console.warn = origWarn;
     isLayersModel.mockClear();
     isShape4D.mockClear();
+    warn.mockClear();
   });
 
   it('passes patchSize and padding through unadulterated', () => {
@@ -168,9 +175,6 @@ describe('parsePatchAndInputSizes', () => {
   });
 
   it('warns if provided an inputSize and patchSize', () => {
-    const fn = jest.fn();
-    console.warn = fn;
-    warn('foo');
     const modelPackage: ModelPackage = {
       model: {
         layers: [{
@@ -179,7 +183,7 @@ describe('parsePatchAndInputSizes', () => {
       },
     } as ModelPackage;
     parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 });
-    expect(fn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
+    expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
   });
 
   it('throws if given invalid patch size', () => {
