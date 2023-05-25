@@ -2,21 +2,20 @@ import { tf, } from './dependencies.generated';
 import { 
   Range, 
   Shape4D, 
-  isShape4D, 
   isValidRange, 
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
+  isFixedShape4D,
+  FixedShape4D,
 } from '@upscalerjs/core';
 import {
   GET_INVALID_SHAPED_TENSOR,
 } from './errors-and-warnings';
 
-export const isInputSizeDefined = (inputShape?: Shape4D): inputShape is [null | number, number, number, number] => Boolean(inputShape) && isShape4D(inputShape) && Boolean(inputShape[1]) && Boolean(inputShape[2]);
-
-export const padInput = (inputShape?: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
+export const padInput = (inputShape: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const pixelsHeight = pixels.shape[1];
   const pixelsWidth = pixels.shape[2];
-  if (isInputSizeDefined(inputShape) && (inputShape[1] > pixelsHeight || inputShape[2] > pixelsWidth)) {
+  if (isFixedShape4D(inputShape) && (inputShape[1] > pixelsHeight || inputShape[2] > pixelsWidth)) {
     return tf.tidy(() => {
       const height = Math.max(pixelsHeight, inputShape[1]);
       const width = Math.max(pixelsWidth, inputShape[2]);
@@ -31,7 +30,7 @@ export const padInput = (inputShape?: Shape4D) => (pixels: tf.Tensor4D): tf.Tens
 };
 
 export const trimInput = (
-  imageSize: Shape4D,
+  imageSize: FixedShape4D,
   scale: number,
 ) => (
   pixels: tf.Tensor4D

@@ -5,7 +5,7 @@ import {
   parseModelDefinition,
   getModel,
   loadTfModel,
-  parsePatchAndInputSizes,
+  parsePatchAndInputShapes,
   getModelInputShape,
 } from './model-utils';
 import {
@@ -16,6 +16,7 @@ import {
 } from './isLayersModel';
 import {
   isShape4D as _isShape4D,
+  isFixedShape4D as _isFixedShape4D,
   ModelDefinition,
   ModelDefinitionFn,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
@@ -62,16 +63,18 @@ jest.mock('./utils', () => {
 });
 
 jest.mock('@upscalerjs/core', () => {
-  const { isValidRange, isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
+  const { isValidRange, isFixedShape4D, isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
   return {
     ...core,
     isShape4D: jest.fn().mockImplementation(isShape4D),
+    isFixedShape4D: jest.fn().mockImplementation(isFixedShape4D),
     isValidRange: jest.fn().mockImplementation(isValidRange),
   };
 });
 
 const tf = mock(_tf);
 const isLayersModel = mockFn(_isLayersModel);
+const isFixedShape4D = mockFn(_isFixedShape4D);
 const isShape4D = mockFn(_isShape4D);
 const warn = mockFn(_warn);
 
@@ -149,16 +152,15 @@ describe('loadTfModel', () => {
   });
 });
 
-describe('parsePatchAndInputSizes', () => {
+describe('parsePatchAndInputShapes', () => {
   beforeEach(() => {
     isLayersModel.mockImplementation(() => true);
-    isShape4D.mockImplementation(() => true);
     warn.mockImplementation(() => {});
   });
 
   afterEach(() => {
     isLayersModel.mockClear();
-    isShape4D.mockClear();
+    isFixedShape4D.mockClear();
     warn.mockClear();
   });
 
@@ -171,7 +173,7 @@ describe('parsePatchAndInputSizes', () => {
         }],
       }
     } as ModelPackage;
-    expect(() => parsePatchAndInputSizes(modelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+    expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 
   describe('Input size', () => {
@@ -183,7 +185,7 @@ describe('parsePatchAndInputSizes', () => {
           }],
         },
       } as ModelPackage;
-      parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 });
+      parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 });
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     });
 
@@ -195,7 +197,7 @@ describe('parsePatchAndInputSizes', () => {
           }],
         },
       } as ModelPackage;
-      expect(() => parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 })).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 })).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
     });
 
     it('returns the appropriate patch size', () => {
@@ -206,31 +208,37 @@ describe('parsePatchAndInputSizes', () => {
           }],
         },
       } as ModelPackage;
-      expect(parsePatchAndInputSizes(modelPackage, { patchSize: 3, padding: 1 })).toEqual({
+      expect(parsePatchAndInputShapes(modelPackage, { patchSize: 3, padding: 1 })).toEqual({
         patchSize: 7,
         padding: 1,
-        // inputShape: [null, 9, 9, 3],
+        modelInputShape: [null, 9, 9, 3],
       });
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     });
   });
 
   it('passes patchSize and padding through unadulterated', () => {
-    const modelPackage = {
-      model: {
-        layers: [{
-          batchInputShape: [null, null, null, 3],
-        }],
+    const model = {
+      layers: [{
+        batchInputShape: [null, null, null, 3],
+      }],
+    } as _tf.LayersModel;
+    const modelPackage: ModelPackage = {
+      modelDefinition: {
+        modelType: 'layers',
+        path: 'foo',
       },
-    } as ModelPackage;
-    expect(parsePatchAndInputSizes(modelPackage, { patchSize: 9, padding: 8 })).toEqual({
+      model,
+    };
+    expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 })).toEqual({
       patchSize: 9,
       padding: 8,
+      modelInputShape: [null, null, null, 3],
     })
   });
 });
 
-describe('getInputShape', () => {
+describe('getModelInputShape', () => {
   afterEach(() => {
     isLayersModel.mockClear();
     isShape4D.mockClear();
@@ -282,5 +290,3 @@ describe('parseModelDefinition', () => {
 
   });
 });
-
-

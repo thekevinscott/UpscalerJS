@@ -11,7 +11,7 @@ import {
 } from './tensor-utils';
 import {
   isValidRange as _isValidRange,
-  isShape4D as _isShape4D,
+  isFixedShape4D as _isFixedShape4D,
  } from '@upscalerjs/core';
 import {
   GET_INVALID_SHAPED_TENSOR,
@@ -31,30 +31,25 @@ jest.mock('./dependencies.generated', () => {
 });
 
 jest.mock('@upscalerjs/core', () => {
-  const { isValidRange, isShape4D, ...core } = jest.requireActual('@upscalerjs/core');
+  const { isValidRange, isFixedShape4D, ...core } = jest.requireActual('@upscalerjs/core');
   return {
     ...core,
-    isShape4D: jest.fn().mockImplementation(isShape4D),
+    isFixedShape4D: jest.fn().mockImplementation(isFixedShape4D),
     isValidRange: jest.fn().mockImplementation(isValidRange),
   };
 });
 
 const tf = mock(_tf);
-const isShape4D = mockFn(_isShape4D);
+const isFixedShape4D = mockFn(_isFixedShape4D);
 const isValidRange = mockFn(_isValidRange);
 
 describe('padInput', () => {
   beforeEach(() => {
-    isShape4D.mockImplementation(() => true);
+    isFixedShape4D.mockImplementation(() => true);
   });
 
   afterEach(() => {
-    isShape4D.mockClear();
-  });
-
-  it('just returns the input if no inputSize is specified', () => {
-    const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(padInput()(t)).toEqual(t);
+    isFixedShape4D.mockClear();
   });
 
   it('just returns the input if inputSize is less than the shape of the tensor', () => {

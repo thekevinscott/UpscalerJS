@@ -17,8 +17,7 @@ import {
   nonNullable,
 } from './utils';
 import {
-  getModelInputShape,
-  parsePatchAndInputSizes,
+  parsePatchAndInputShapes,
 } from './model-utils';
 import {
   scaleIncomingPixels,
@@ -30,7 +29,7 @@ import {
 import {
   isTensor,
   isFourDimensionalTensor,
-  Shape4D,
+  FixedShape4D,
  } from '@upscalerjs/core';
 import { makeTick, } from './makeTick';
 import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
@@ -272,7 +271,7 @@ export async function* processPixels(
     patchSize,
     padding,
   }: {
-    imageSize: Shape4D;
+    imageSize: FixedShape4D;
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
@@ -350,7 +349,10 @@ export async function* processPixels(
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    const processedUpscaledTensor = processAndDisposeOfTensor(upscaledTensor!.clone(), trimInput(imageSize, scale));
+    const processedUpscaledTensor = processAndDisposeOfTensor(
+      upscaledTensor!.clone(),
+      trimInput(imageSize, scale)
+    );
     upscaledTensor?.dispose();
     yield [processedUpscaledTensor,];
 
@@ -366,7 +368,12 @@ export async function* processPixels(
 
   const prediction = executeModel(model, pixels);
   yield [prediction,];
-  const postprocessedTensor = processAndDisposeOfTensor(prediction.clone(), modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange), trimInput(imageSize, scale));
+  const postprocessedTensor = processAndDisposeOfTensor(
+    prediction.clone(),
+    modelDefinition.postprocess,
+    scaleOutput(modelDefinition.outputRange),
+    trimInput(imageSize, scale)
+  );
 
   prediction.dispose();
   yield [postprocessedTensor,];
@@ -416,14 +423,17 @@ export async function* upscale(
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
-  const inputSize = getModelInputShape(modelPackage);
 
-    // retrieve the patch size and padding. If the model definition has defined its own input shape,
+  // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
-  const { patchSize, padding, } = parsePatchAndInputSizes(modelPackage, args);
+  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args);
 
-
-  const preprocessedPixels = processAndDisposeOfTensor(startingPixels, modelPackage.modelDefinition.preprocess, scaleIncomingPixels(modelPackage.modelDefinition.inputRange), padInput(inputSize));
+  const preprocessedPixels = processAndDisposeOfTensor(
+    startingPixels,
+    modelPackage.modelDefinition.preprocess,
+    scaleIncomingPixels(modelPackage.modelDefinition.inputRange),
+    padInput(modelInputShape),
+  );
   yield preprocessedPixels;
 
   const gen = processPixels(
