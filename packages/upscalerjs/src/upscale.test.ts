@@ -32,6 +32,7 @@ import {
 } from './image.generated';
 import {
   wrapGenerator,
+  warn as _warn,
 } from './utils';
 import {
   getWidthAndHeight as _getWidthAndHeight,
@@ -43,6 +44,14 @@ import {
 } from '@upscalerjs/core';
 import { ModelPackage, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
+
+jest.mock('./utils', () => {
+  const { warn, ...rest } = jest.requireActual('./utils');
+  return {
+    ...rest,
+    warn: jest.fn(warn),
+  };
+});
 
 jest.mock('./image.generated', () => {
   const { tensorAsBase64, getImageAsTensor, checkValidEnvironment, ...rest } = jest.requireActual('./image.generated');
@@ -76,6 +85,7 @@ const isTensor = mockFn(_isTensor);
 const isFourDimensionalTensor = mockFn(_isFourDimensionalTensor);
 const checkValidEnvironment = mockFn(_checkValidEnvironment);
 const getWidthAndHeight = mockFn(_getWidthAndHeight);
+const warn = mockFn(_warn);
 
 describe('getPercentageComplete', () => {
   it.each([
@@ -1180,7 +1190,6 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
-  const origWarn = console.warn;
   const modelDefinition = { scale: 2, } as ModelDefinition;
 
   const SCALE = 2;
@@ -1199,8 +1208,6 @@ describe('predict', () => {
   let tensor: undefined | tf.Tensor3D | tf.Tensor4D;
 
   afterEach(() => {
-    console.warn = origWarn;
-
     if (tensor !== undefined) {
       tensor.dispose();
     }
@@ -1276,7 +1283,6 @@ describe('predict', () => {
   });
 
   it('should callback with progress on patchSize', async () => {
-    console.warn = jest.fn();
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = jest.fn();
@@ -1295,11 +1301,10 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5);
     expect(progress).toHaveBeenCalledWith(0.75);
     expect(progress).toHaveBeenCalledWith(1);
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with percent and slice', async () => {
-    console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
@@ -1320,11 +1325,10 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
     expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
     expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with percent and a rescaled slice if given an output range', async () => {
-    console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
@@ -1351,11 +1355,10 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
     expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
     expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with percent, slice, row, and col', async () => {
-    console.warn = jest.fn();
     const mockResponse = 'foobarbaz1';
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
@@ -1376,11 +1379,10 @@ describe('predict', () => {
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
     expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
     expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with slice as tensor, if output is a tensor, for a tall image', async () => {
-    console.warn = jest.fn();
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz2';
     tensor = getTensor(4, 2).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
@@ -1419,11 +1421,10 @@ describe('predict', () => {
       expect.any(Number),
       expect.any(Number),
     );
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with slice as tensor, if output is a tensor, for a wide image', async () => {
-    console.warn = jest.fn();
     tensor = getTensor(2, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const getSlice = (t: tf.Tensor, x: number, y: number) => tf.tidy(() => t.slice([0, x, y], [1, patchSize, patchSize]) as tf.Tensor3D);
@@ -1461,11 +1462,10 @@ describe('predict', () => {
       expect.any(Number),
       expect.any(Number),
     );
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should invoke progress callback with slice as tensor, if output is a string but progressOutput is tensor', async () => {
-    console.warn = jest.fn();
     tensor = getTensor(4, 2).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const getSlice = (t: tf.Tensor, x: number, y: number) => tf.tidy(() => t.slice([0, x, y], [1, patchSize, patchSize]) as tf.Tensor3D);
@@ -1503,11 +1503,10 @@ describe('predict', () => {
       expect.any(Number),
       expect.any(Number),
     );
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it('should warn if provided a patchSize without padding', async () => {
-    console.warn = jest.fn();
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     await wrapGenerator(
@@ -1519,11 +1518,10 @@ describe('predict', () => {
         imageSize: tensor.shape,
       })
     );
-    expect(console.warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+    expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
   });
 
   it('should warn if provided a progress callback without patchSize', async () => {
-    console.warn = jest.fn();
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     await wrapGenerator(
       processPixels(tensor, {
@@ -1534,7 +1532,7 @@ describe('predict', () => {
         imageSize: tensor.shape,
       })
     );
-    expect(console.warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
+    expect(warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
   });
 
   describe('memory cleanup in predict', () => {
@@ -1575,7 +1573,6 @@ describe('predict', () => {
     });
 
     it('should clear up all memory while running predict with patch size', async () => {
-      console.warn = jest.fn();
       const IMG_SIZE = 4;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
