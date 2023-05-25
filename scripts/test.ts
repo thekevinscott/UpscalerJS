@@ -129,6 +129,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   skipBundle,
   skipTest,
   useGPU,
+  watch,
 }: {
   browserstackAccessKey?: string;
   skipUpscalerBuild?: boolean;
@@ -138,6 +139,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   skipBundle?: boolean;
   skipTest?: boolean;
   useGPU?: boolean,
+  watch?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (skipTest !== true && runner === 'browserstack') {
@@ -210,9 +212,10 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       '--config',
       jestConfigPath,
       '--detectOpenHandles',
-      // argv.watch ? '--watch' : undefined,
+      watch ? '--watch' : undefined,
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
+    console.log('args', args);
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
     if (bsLocal !== undefined) {
