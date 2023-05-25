@@ -13,7 +13,6 @@ import {
 } from './upscale';
 import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
-  WARNING_UNDEFINED_PADDING,
   GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
   GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
@@ -1190,7 +1189,7 @@ describe('getRowsAndColumns', () => {
 });
 
 describe('predict', () => {
-  const modelDefinition = { scale: 2, } as ModelDefinition;
+  const modelDefinition: ModelDefinition = { scale: 2, path: 'foo', modelType: 'layers'};
 
   const SCALE = 2;
   const model = tf.sequential();
