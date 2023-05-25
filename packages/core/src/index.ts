@@ -31,7 +31,7 @@ export const isShape4D = (shape?: unknown): shape is Shape4D => {
   if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
     return false;
   }
-  return true;
+  return shape.every((value) => value === null || typeof value === 'number');
 };
 
 export const isFixedShape4D = (shape?: unknown): shape is FixedShape4D => isShape4D(shape) && shape[1] !== null && shape[2] !== null;
