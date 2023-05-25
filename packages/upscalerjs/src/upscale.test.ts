@@ -1607,13 +1607,18 @@ describe('predict', () => {
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
       const patchSize = 2;
-      const gen = processPixels(tensor, {
-        patchSize,
-        output: 'base64',
-        progressOutput: 'base64',
-      }, modelPackage, {
-        imageSize: tensor.shape,
-      });
+      const gen = processPixels(
+        tensor,
+        {
+          output: 'base64',
+          progressOutput: 'base64',
+        },
+        modelPackage,
+        {
+          imageSize: tensor.shape,
+          patchSize,
+        }
+      );
 
       let currentExpectationIndex = 0;
       const expectations = [
