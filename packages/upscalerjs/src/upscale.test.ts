@@ -1206,7 +1206,12 @@ describe('predict', () => {
 
   let tensor: undefined | tf.Tensor3D | tf.Tensor4D;
 
+  beforeEach(() => {
+    warn.mockImplementation(() => {});
+  });
+
   afterEach(() => {
+    warn.mockClear();
     if (tensor !== undefined) {
       tensor.dispose();
     }
