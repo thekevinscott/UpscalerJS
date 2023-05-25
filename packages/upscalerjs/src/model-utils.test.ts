@@ -173,7 +173,7 @@ describe('parsePatchAndInputShapes', () => {
         }],
       }
     } as ModelPackage;
-    expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 })).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+    expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 
   describe('Input size', () => {
@@ -185,7 +185,7 @@ describe('parsePatchAndInputShapes', () => {
           }],
         },
       } as ModelPackage;
-      parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 });
+      parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3]);
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     });
 
@@ -197,7 +197,7 @@ describe('parsePatchAndInputShapes', () => {
           }],
         },
       } as ModelPackage;
-      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 })).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
     });
 
     it('returns the appropriate patch size', () => {
@@ -208,7 +208,7 @@ describe('parsePatchAndInputShapes', () => {
           }],
         },
       } as ModelPackage;
-      expect(parsePatchAndInputShapes(modelPackage, { patchSize: 3, padding: 1 })).toEqual({
+      expect(parsePatchAndInputShapes(modelPackage, { patchSize: 3, padding: 1 }, [ null, 9, 9, 3])).toEqual({
         patchSize: 7,
         padding: 1,
         modelInputShape: [null, 9, 9, 3],
@@ -230,7 +230,7 @@ describe('parsePatchAndInputShapes', () => {
       },
       model,
     };
-    expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 })).toEqual({
+    expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3])).toEqual({
       patchSize: 9,
       padding: 8,
       modelInputShape: [null, null, null, 3],

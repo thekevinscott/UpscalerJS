@@ -426,13 +426,13 @@ export async function* upscale(
 
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
-  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args);
+  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args, imageSize);
 
   const preprocessedPixels = processAndDisposeOfTensor(
     startingPixels,
     modelPackage.modelDefinition.preprocess,
     scaleIncomingPixels(modelPackage.modelDefinition.inputRange),
-    padInput(modelInputShape),
+    modelInputShape ? padInput(modelInputShape) : undefined,
   );
   yield preprocessedPixels;
 
