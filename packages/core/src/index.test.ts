@@ -12,6 +12,8 @@ import {
   isNumber,
   isShape4D,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+  isFixedShape4D,
+  isDynamicShape4D,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -183,5 +185,65 @@ describe('isShape4D', () => {
 
   it('returns true if given an array containing nulls', () => {
     expect(isShape4D([null, null, null, 3])).toEqual(true);
+  });
+});
+
+describe('isFixedShape4D', () => {
+  it('returns false if given an undefined', () => {
+    expect(isFixedShape4D(undefined)).toEqual(false);
+  });
+
+  it('returns false if given a non-array', () => {
+    expect(isFixedShape4D(2)).toEqual(false);
+  });
+
+  it('returns false if given an array of 3 numbers', () => {
+    expect(isFixedShape4D([1,2,3])).toEqual(false);
+  });
+
+  it('returns false if given an array of 5 numbers', () => {
+    expect(isFixedShape4D([1,2,3,4,5])).toEqual(false);
+  });
+
+  it('returns false if given an array of not all numbers', () => {
+    expect(isFixedShape4D([1,null,3,'foo'])).toEqual(false);
+  });
+
+  it('returns true if given an array of all numbers', () => {
+    expect(isFixedShape4D([1,2,3,4])).toEqual(true);
+  });
+
+  it('returns false if given an array containing nulls', () => {
+    expect(isFixedShape4D([null, null, null, 3])).toEqual(false);
+  });
+});
+
+describe('isDynamicShape4D', () => {
+  it('returns false if given an undefined', () => {
+    expect(isDynamicShape4D(undefined)).toEqual(false);
+  });
+
+  it('returns false if given a non-array', () => {
+    expect(isDynamicShape4D(2)).toEqual(false);
+  });
+
+  it('returns false if given an array of 3 numbers', () => {
+    expect(isDynamicShape4D([1,2,3])).toEqual(false);
+  });
+
+  it('returns false if given an array of 5 numbers', () => {
+    expect(isDynamicShape4D([1,2,3,4,5])).toEqual(false);
+  });
+
+  it('returns false if given an array of not all numbers', () => {
+    expect(isDynamicShape4D([1,null,3,'foo'])).toEqual(false);
+  });
+
+  it('returns false if given an array of all numbers', () => {
+    expect(isDynamicShape4D([1,2,3,4])).toEqual(false);
+  });
+
+  it('returns true if given an array containing nulls', () => {
+    expect(isDynamicShape4D([null, null, null, 3])).toEqual(true);
   });
 });
