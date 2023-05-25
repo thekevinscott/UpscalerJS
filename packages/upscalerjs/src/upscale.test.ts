@@ -1236,12 +1236,17 @@ describe('predict', () => {
   it('should make a prediction', async () => {
     const spy = jest.spyOn(model, 'predict');
     tensor = getTensor(2, 2);
-    const result = await wrapGenerator(processPixels(tensor.expandDims(0), {
-      output: 'base64',
-      progressOutput: 'base64',
-    }, modelPackage, {
-      imageSize: [null, ...tensor.shape],
-    }));
+    const result = await wrapGenerator(processPixels(
+      tensor.expandDims(0),
+      {
+        output: 'base64',
+        progressOutput: 'base64',
+      },
+      modelPackage,
+      {
+        imageSize: [null, ...tensor.shape],
+      })
+    );
     expect(spy).toHaveBeenCalledWith(
       expect.objectContaining({
         shape: [1, 2, 2, 3,],
@@ -1255,13 +1260,15 @@ describe('predict', () => {
     const result = await wrapGenerator(processPixels(
       tensor.expandDims(0),
       {
-        patchSize: 1,
-        padding: 0,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage, {
-      imageSize: [null, ...tensor.shape],
-    }
+      },
+      modelPackage,
+      {
+        imageSize: [null, ...tensor.shape],
+        patchSize: 1,
+        padding: 0,
+      }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1271,13 +1278,15 @@ describe('predict', () => {
     const result = await wrapGenerator(processPixels(
       tensor.expandDims(0),
       {
-        patchSize: 1,
-        padding: 0,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage, {
-      imageSize: [null, ...tensor.shape],
-    }
+      },
+      modelPackage,
+      {
+        imageSize: [null, ...tensor.shape],
+        patchSize: 1,
+        padding: 0,
+      }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
   });
@@ -1288,14 +1297,16 @@ describe('predict', () => {
     const progress = jest.fn();
     await wrapGenerator(
       processPixels(tensor, {
-        patchSize,
-        padding: 0,
         progress,
         output: 'base64',
         progressOutput: 'base64',
-      }, modelPackage, {
-        imageSize: tensor.shape,
-      })
+      },
+        modelPackage,
+        {
+          imageSize: tensor.shape,
+          patchSize,
+          padding: 0,
+        })
     );
     expect(progress).toHaveBeenCalledWith(0.25);
     expect(progress).toHaveBeenCalledWith(0.5);
@@ -1310,15 +1321,17 @@ describe('predict', () => {
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any) => { });
-    await wrapGenerator(
-      processPixels(tensor, {
+    await wrapGenerator(processPixels(
+      tensor, {
+      progress,
+      output: 'base64',
+      progressOutput: 'base64',
+    },
+      modelPackage,
+      {
+        imageSize: tensor.shape,
         patchSize,
         padding: 0,
-        progress,
-        output: 'base64',
-        progressOutput: 'base64',
-      }, modelPackage, {
-        imageSize: tensor.shape,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
@@ -1334,22 +1347,23 @@ describe('predict', () => {
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any) => { });
-    await wrapGenerator(
-      processPixels(tensor, {
-        patchSize,
-        padding: 0,
+    await wrapGenerator(processPixels(
+      tensor,
+      {
         progress,
         output: 'base64',
         progressOutput: 'base64',
       }, {
-        ...modelPackage,
-        modelDefinition: {
-          ...modelPackage.modelDefinition,
-          outputRange: [0, 1],
-        },
-      }, {
-        imageSize: tensor.shape,
-      })
+      ...modelPackage,
+      modelDefinition: {
+        ...modelPackage.modelDefinition,
+        outputRange: [0, 1],
+      },
+    }, {
+      patchSize,
+      padding: 0,
+      imageSize: tensor.shape,
+    })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
     expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
@@ -1364,14 +1378,16 @@ describe('predict', () => {
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => { });
-    await wrapGenerator(
-      processPixels(tensor, {
+    await wrapGenerator(processPixels(
+      tensor, {
+      progress,
+      output: 'base64',
+      progressOutput: 'base64',
+    },
+      modelPackage,
+      {
         patchSize,
         padding: 0,
-        progress,
-        output: 'base64',
-        progressOutput: 'base64',
-      }, modelPackage, {
         imageSize: tensor.shape,
       })
     );
@@ -1396,15 +1412,18 @@ describe('predict', () => {
         throw new Error(`Unexpected rate: ${rate}`);
       }
     });
-    await wrapGenerator(
-      processPixels(tensor, {
-        patchSize,
-        padding: 0,
+    await wrapGenerator(processPixels(
+      tensor,
+      {
         progress,
         output: 'tensor',
         progressOutput: 'tensor',
-      }, modelPackage, {
+      },
+      modelPackage,
+      {
         imageSize: tensor.shape,
+        patchSize,
+        padding: 0,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -1437,15 +1456,18 @@ describe('predict', () => {
         throw new Error(`Unexpected rate: ${rate}`);
       }
     });
-    await wrapGenerator(
-      processPixels(tensor, {
-        patchSize,
-        padding: 0,
+    await wrapGenerator(processPixels(
+      tensor,
+      {
         progress,
         output: 'tensor',
         progressOutput: 'tensor',
-      }, modelPackage, {
+      },
+      modelPackage,
+      {
         imageSize: tensor.shape,
+        patchSize,
+        padding: 0,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -1478,15 +1500,18 @@ describe('predict', () => {
         throw new Error(`Unexpected rate: ${rate}`);
       }
     });
-    await wrapGenerator(
-      processPixels(tensor, {
-        patchSize,
-        padding: 0,
+    await wrapGenerator(processPixels(
+      tensor,
+      {
         progress,
         output: 'base64',
         progressOutput: 'tensor',
-      }, modelPackage, {
+      },
+      modelPackage,
+      {
         imageSize: tensor.shape,
+        patchSize,
+        padding: 0,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -1509,13 +1534,15 @@ describe('predict', () => {
   it('should warn if provided a patchSize without padding', async () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    await wrapGenerator(
-      processPixels(tensor, {
-        patchSize,
-        output: 'base64',
-        progressOutput: 'base64',
-      }, modelPackage, {
+    await wrapGenerator(processPixels(
+      tensor, {
+      output: 'base64',
+      progressOutput: 'base64',
+    },
+      modelPackage,
+      {
         imageSize: tensor.shape,
+        patchSize,
       })
     );
     expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
@@ -1523,12 +1550,15 @@ describe('predict', () => {
 
   it('should warn if provided a progress callback without patchSize', async () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
-    await wrapGenerator(
-      processPixels(tensor, {
+    await wrapGenerator(processPixels(
+      tensor,
+      {
         output: 'base64',
         progressOutput: 'base64',
         progress: () => { },
-      }, modelPackage, {
+      },
+      modelPackage,
+      {
         imageSize: tensor.shape,
       })
     );
