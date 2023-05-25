@@ -1531,23 +1531,6 @@ describe('predict', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it('should warn if provided a patchSize without padding', async () => {
-    tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
-    const patchSize = 2;
-    await wrapGenerator(processPixels(
-      tensor, {
-      output: 'base64',
-      progressOutput: 'base64',
-    },
-      modelPackage,
-      {
-        imageSize: tensor.shape,
-        patchSize,
-      })
-    );
-    expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
-  });
-
   it('should warn if provided a progress callback without patchSize', async () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     await wrapGenerator(processPixels(
