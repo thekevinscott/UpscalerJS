@@ -8,9 +8,6 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
 } from './errors-and-warnings';
-import {
-  isInputSizeDefined,
-} from './tensor-utils';
 
 import {
   ModelDefinition,
@@ -18,7 +15,8 @@ import {
   ModelDefinitionObjectOrFn,
   isShape4D, 
   Shape4D, 
-  ModelType, 
+  ModelType,
+  isFixedShape4D, 
 } from '@upscalerjs/core';
 import type {
   ModelPackage,
@@ -66,23 +64,29 @@ export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
   return batchInputShape;
 };
 
-type ParsePatchAndInputSizes = ( modelPackage: ModelPackage, args: UpscaleArgs) => Pick<UpscaleArgs, 'patchSize' | 'padding'>;
-export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (modelPackage, { patchSize, padding, }) => {
-  const inputShape = getModelInputShape(modelPackage);
+type ParsePatchAndInputShapes = (
+  modelPackage: ModelPackage, 
+  args: UpscaleArgs,
+) => {
+  modelInputShape: Shape4D;
+} & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
+export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }) => {
+  const modelInputShape = getModelInputShape(modelPackage);
   if (patchSize !== undefined && patchSize <= 0) {
     throw GET_INVALID_PATCH_SIZE(patchSize);
   }
-  if (isInputSizeDefined(inputShape)) {
+  if (isFixedShape4D(modelInputShape)) {
     if (patchSize !== undefined) {
       warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     }
 
-    if (inputShape[1] !== inputShape[2]) {
+    if (modelInputShape[1] !== modelInputShape[2]) {
       throw MODEL_INPUT_SIZE_MUST_BE_SQUARE;
     }
     return {
-      patchSize: inputShape[1] - (padding || 0) * 2,
+      patchSize: modelInputShape[1] - (padding || 0) * 2,
       padding,
+      modelInputShape,
     };
   }
 
@@ -91,9 +95,9 @@ export const parsePatchAndInputSizes: ParsePatchAndInputSizes = (modelPackage, {
     warn(WARNING_UNDEFINED_PADDING);
   }
 
-
   return {
     patchSize,
     padding,
+    modelInputShape,
   };
 };

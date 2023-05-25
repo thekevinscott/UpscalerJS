@@ -22,18 +22,20 @@ export type ModelType = 'graph' | 'layers';
 export type PreProcess = ProcessFn<Tensor4D>;
 export type PostProcess = ProcessFn<Tensor4D>;
 
-export type Shape4D = [null | number, number, number, number];
+// A model's input shape where height and width are fixed numbers
+export type FixedShape4D = [null | number, number, number, number];
+// A model's input shape where height and width can be anything
+export type DynamicShape4D = [null | number, null, null, number];
+export type Shape4D = FixedShape4D | DynamicShape4D;
 export const isShape4D = (shape?: unknown): shape is Shape4D => {
   if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
     return false;
   }
-  for (const val of shape) {
-    if (val !== null && typeof val !== 'number') {
-      return false;
-    }
-  }
-  return true;
+  return shape.every((value) => value === null || typeof value === 'number');
 };
+
+export const isFixedShape4D = (shape?: unknown): shape is FixedShape4D => isShape4D(shape) && shape[1] !== null && shape[2] !== null;
+export const isDynamicShape4D = (shape?: unknown): shape is DynamicShape4D => isShape4D(shape) && shape[1] === null && shape[2] === null;
 
 export interface ModelDefinition {
   /**
