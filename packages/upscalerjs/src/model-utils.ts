@@ -16,7 +16,8 @@ import {
   isShape4D, 
   Shape4D, 
   ModelType,
-  isFixedShape4D, 
+  isFixedShape4D,
+  FixedShape4D, 
 } from '@upscalerjs/core';
 import type {
   ModelPackage,
@@ -65,10 +66,11 @@ export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
 };
 
 type ParsePatchAndInputShapes = (
-  modelPackage: ModelPackage, 
+  modelPackage: ModelPackage,
   args: UpscaleArgs,
+  imageSize: FixedShape4D,
 ) => {
-  modelInputShape: Shape4D;
+  modelInputShape?: Shape4D;
 } & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
 export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }) => {
   const modelInputShape = getModelInputShape(modelPackage);
