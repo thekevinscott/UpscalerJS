@@ -283,7 +283,7 @@ describe('getTensorDimensions', () => {
     );
   });
 
-  it('gets tensor dimensions for a larger patch size', () => {
+  it('gets tensor dimensions for patch size larger than image size', () => {
     testGetTensorDimensions(
       {
         width: 2,

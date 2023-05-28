@@ -104,20 +104,16 @@ export const getTensorDimensions = ({
 }: GetTensorDimensionsOpts) => {
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
-  if (row === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED;
-  }
-  if (col === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED;
-  }
-  if (patchSize === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED;
-  }
-  if (height === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED;
-  }
-  if (width === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED;
+  for (const [arg, err] of [
+    [row, GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,],
+    [col, GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,],
+    [patchSize, GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,],
+    [height, GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,],
+    [width, GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,],
+  ]) {
+    if (arg === undefined) {
+      throw err;
+    }
   }
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
