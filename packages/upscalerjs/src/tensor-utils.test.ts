@@ -333,12 +333,7 @@ describe('getTensorDimensions', () => {
     const sliceSize: [number, number] = [2, 2,];
     const size: [number, number] = [2, 2,];
     testGetTensorDimensions(
-      {
-        width: 4,
-        height: 4,
-        patchSize: 2,
-        padding: 0,
-      },
+      { width: 4, height: 4, patchSize: 2, padding: 0, },
       [
         {
           row: 0,

@@ -1,6 +1,7 @@
 import { Upscaler, } from './upscaler';
-import { getRowsAndColumns, getTensorDimensions, } from './upscale';
+import { getRowsAndColumns, } from './upscale';
 import { AbortError, } from './errors-and-warnings';
+import { getTensorDimensions, } from './tensor-utils';
 
 (
   Upscaler as typeof Upscaler & {
