@@ -3,7 +3,6 @@ import {
   getPercentageComplete,
   processPixels,
   getRowsAndColumns,
-  getCopyOfInput,
   upscale,
   cancellableUpscale,
   executeModel,
