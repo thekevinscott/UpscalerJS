@@ -136,18 +136,29 @@ export const checkAndAdjustStartingPosition = (
   dimension: number,
   origin: [number, number],
   sliceOrigin: [number, number],
-): void => {
+): [
+  [number, number],
+  [number, number],
+] => {
+  const newOrigin: [number, number] = [...origin];
+  const newSliceOrigin: [number, number] = [...sliceOrigin];
+
   // check that our origin is not off the board.
   if (origin[dimension] < 0) {
     // first, find out how much it overhangs
     const amount = 0 - origin[dimension];
 
     // then, increase origin by that amount (could also just set it to 0.)
-    origin[dimension] += amount;
+    newOrigin[dimension] += amount;
 
     // and increase sliceOrigin to accommodate
-    sliceOrigin[dimension] -= amount;
+    newSliceOrigin[dimension] -= amount;
   }
+
+  return [
+    newOrigin,
+    newSliceOrigin,
+  ];
 };
 
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
@@ -184,22 +195,28 @@ export const getTensorDimensions = ({
   ];
   for (const [arg, err, ] of errChecks) { if (arg === undefined) { throw err; } }
 
-  let yPatchSize = patchSize;
-  let xPatchSize = patchSize;
-  if (yPatchSize > height) {
-    yPatchSize = height;
-  }
-  if (xPatchSize > width) {
-    xPatchSize = width;
-  }
-  const origin: [number, number] = [
-    row * patchSize - padding,
-    col * patchSize - padding,
-  ];
-  const sliceOrigin: [number, number] = [padding, padding,];
+  const yPatchSize = patchSize > height ? height : patchSize;
+  const xPatchSize = patchSize > width ? width : patchSize;
 
-  checkAndAdjustStartingPosition(0, origin, sliceOrigin);
-  checkAndAdjustStartingPosition(1, origin, sliceOrigin);
+  const [origin, sliceOrigin] = [0, 1].reduce(([
+    origin,
+    sliceOrigin,
+  ], dim) => checkAndAdjustStartingPosition(
+    dim,
+    origin,
+    sliceOrigin,
+  ), [
+    // initial origin
+    [
+      row * patchSize - padding,
+      col * patchSize - padding,
+    ],
+    // initial slice origin
+    [padding, padding,]
+  ] as [
+    [number, number],
+    [number, number],
+  ]);
 
   const endPosition: [number, number] = [
     origin[0] + yPatchSize + padding * 2,

@@ -1195,30 +1195,35 @@ describe('getCopyOfInput', () => {
 });
 
 describe('checkAndAdjustStartingPosition', () => {
-  it('does not alter a starting position if not off the board', () => {
-    const dimension = 0;
-    const origin: [number, number] = [0,0];
-    const sliceOrigin: [number, number] = [2,2];
-    checkAndAdjustStartingPosition(dimension, origin, sliceOrigin);
-    expect(origin).toEqual([0,0])
-    expect(sliceOrigin).toEqual([2,2]);
-  });
-
-  it('alters starting position if off the board', () => {
-    const dimension = 0;
-    const origin: [number, number] = [-1,-1];
-    const sliceOrigin: [number, number] = [2,2];
-    checkAndAdjustStartingPosition(dimension, origin, sliceOrigin);
-    expect(origin).toEqual([0,-1])
-    expect(sliceOrigin).toEqual([1,2]);
-  });
-
-  it('alters starting position if off the board for a different dimension', () => {
-    const dimension = 1;
-    const origin: [number, number] = [-1,-1];
-    const sliceOrigin: [number, number] = [2,2];
-    checkAndAdjustStartingPosition(dimension, origin, sliceOrigin);
-    expect(origin).toEqual([-1, 0])
-    expect(sliceOrigin).toEqual([2,1]);
-  });
+  const testCases: [number, [number, number],[number, number],[number, number],[number, number]][] = [
+    [
+      0,
+      [0,0],
+      [2,2],
+      [0,0],
+      [2,2],
+    ],
+    [
+      0,
+      [-1, -1],
+      [2, 2],
+      [0, -1],
+      [1, 2],
+    ],
+    [
+      1,
+      [-1, -1],
+      [2, 2],
+      [-1, 0],
+      [2, 1],
+    ],
+  ];
+  test.each(testCases)(
+    "dimension: %p | origin: %p | %sliceOrigin: %p | expectedOrigin: %p | expectedSliceOrigin: %p",
+    (dimension, origin, sliceOrigin, expectedOrigin, expectedSliceOrigin) => {
+      expect(checkAndAdjustStartingPosition(dimension, origin, sliceOrigin)).toEqual([
+        expectedOrigin,
+        expectedSliceOrigin,
+      ]);
+    });
 })
