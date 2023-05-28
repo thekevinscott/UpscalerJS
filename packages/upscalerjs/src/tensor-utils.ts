@@ -20,7 +20,7 @@ import {
 } from './errors-and-warnings';
 import {
   nonNullable,
-} from 'utils';
+} from './utils';
 import {
   Input,
 } from './image.generated';

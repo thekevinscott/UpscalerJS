@@ -268,36 +268,8 @@ describe('getTensorDimensions', () => {
   };
 
   test.each<[IOpts, IExpectation[]]>([
-    [{
-      width: 2,
-      height: 2,
-      patchSize: 2,
-      padding: 0,
-    }, [
-      {
-        row: 0,
-        col: 0,
-        expectation: {
-          origin: [0, 0,],
-          size: [2, 2,],
-          sliceSize: [2, 2,],
-        },
-      },
-    ]],
-  ])(
-    "gets tensor dimensions for args %p",
-    (args, expected) => {
-      testGetTensorDimensions(args, expected);
-    });
-
-  it('gets tensor dimensions for a fully-covered patch size', () => {
-    testGetTensorDimensions(
-      {
-        width: 2,
-        height: 2,
-        patchSize: 2,
-        padding: 0,
-      },
+    [
+      { width: 2, height: 2, patchSize: 2, padding: 0, }, 
       [
         {
           row: 0,
@@ -309,17 +281,10 @@ describe('getTensorDimensions', () => {
           },
         },
       ],
-    );
-  });
+    ],
 
-  it('gets tensor dimensions for patch size larger than image size', () => {
-    testGetTensorDimensions(
-      {
-        width: 2,
-        height: 2,
-        patchSize: 4,
-        padding: 0,
-      },
+    [
+      { width: 2, height: 2, patchSize: 4, padding: 0, },
       [
         {
           row: 0,
@@ -332,8 +297,37 @@ describe('getTensorDimensions', () => {
           },
         },
       ],
-    );
-  });
+    ],
+  ])(
+    "gets tensor dimensions for args %p",
+    (opts, expectations) => {
+      for (let i = 0; i < expectations.length; i++) {
+        const {
+          row,
+          col,
+          expectation: { origin, size, sliceOrigin = [0, 0,], sliceSize, },
+        } = expectations[i];
+        try {
+          expect(
+            getTensorDimensions({
+              row,
+              col,
+              patchSize: opts.patchSize,
+              padding: opts.padding,
+              height: opts.height,
+              width: opts.width,
+            }),
+          ).toEqual({
+            origin,
+            size,
+            sliceOrigin,
+            sliceSize,
+          });
+        } catch (err) {
+          throw new Error(`*******\n${row} | ${col}\n*******\n${err}`);
+        }
+      }
+    });
 
   it('gets tensor dimensions for a subset patch size that fits equally', () => {
     const sliceSize: [number, number] = [2, 2,];
