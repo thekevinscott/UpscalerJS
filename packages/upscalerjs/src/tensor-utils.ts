@@ -132,7 +132,7 @@ const checkAndAdjustEndingPosition = (
 
 // check that padding has not pushed our origins off the board
 // this is a mutating function
-const checkAndAdjustStartingPosition = (
+export const checkAndAdjustStartingPosition = (
   dimension: number,
   origin: [number, number],
   sliceOrigin: [number, number],
