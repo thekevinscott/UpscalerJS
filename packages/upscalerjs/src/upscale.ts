@@ -14,7 +14,6 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
-  nonNullable,
 } from './utils';
 import {
   parsePatchAndInputShapes,
@@ -25,6 +24,8 @@ import {
   trimInput,
   scaleOutput,
   getWidthAndHeight,
+  getTensorDimensions,
+  concatTensors,
 } from './tensor-utils';
 import {
   isTensor,

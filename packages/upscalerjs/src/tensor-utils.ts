@@ -17,6 +17,7 @@ import {
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
+import { nonNullable } from 'utils';
 
 export const padInput = (inputShape: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const pixelsHeight = pixels.shape[1];
