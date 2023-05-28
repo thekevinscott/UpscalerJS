@@ -97,7 +97,7 @@ const checkAndAdjustSliceSize = (
 };
 
 // mutating function
-const checkAndAdjustEndingPosition = (
+export const checkAndAdjustEndingPosition = (
   size: number,
   dimension: number,
   endPosition: [number, number],
@@ -140,8 +140,8 @@ export const checkAndAdjustStartingPosition = (
   [number, number],
   [number, number],
 ] => {
-  const newOrigin: [number, number] = [...origin];
-  const newSliceOrigin: [number, number] = [...sliceOrigin];
+  const newOrigin: [number, number,] = [...origin, ];
+  const newSliceOrigin: [number, number,] = [...sliceOrigin, ];
 
   // check that our origin is not off the board.
   if (origin[dimension] < 0) {
@@ -198,7 +198,7 @@ export const getTensorDimensions = ({
   const yPatchSize = patchSize > height ? height : patchSize;
   const xPatchSize = patchSize > width ? width : patchSize;
 
-  const [origin, sliceOrigin] = [0, 1].reduce(([
+  const [origin, sliceOrigin, ] = [0, 1, ].reduce<[[number, number, ], [number, number, ], ]>(([
     origin,
     sliceOrigin,
   ], dim) => checkAndAdjustStartingPosition(
@@ -212,10 +212,7 @@ export const getTensorDimensions = ({
       col * patchSize - padding,
     ],
     // initial slice origin
-    [padding, padding,]
-  ] as [
-    [number, number],
-    [number, number],
+    [padding, padding,],
   ]);
 
   const endPosition: [number, number] = [

@@ -14,6 +14,7 @@ import {
   concatTensors,
   getCopyOfInput,
   checkAndAdjustStartingPosition,
+  checkAndAdjustEndingPosition,
 } from './tensor-utils';
 import {
   isValidRange as _isValidRange,
@@ -1226,4 +1227,130 @@ describe('checkAndAdjustStartingPosition', () => {
         expectedSliceOrigin,
       ]);
     });
-})
+});
+
+describe('checkAndAdjustEndingPosition', () => {
+  const testCases: [
+    string,
+    number,
+    number, 
+    [number, number],
+    [number, number],
+    [number, number],
+    [number, number],
+
+    [number, number],
+    [number, number],
+    [number, number],
+    [number, number],
+  ][] = [
+      [
+        'no modifications',
+        100,
+        0,
+        [40, 40],
+        [0, 0],
+        [0, 0],
+        [32, 32],
+
+        [40, 40],
+        [0, 0],
+        [0, 0],
+        [32, 32],
+      ],
+
+      [
+        'no compensating amount',
+        100,
+        0,
+        [132, 40],
+        [92, 0],
+        [4, 0],
+        [36, 32],
+
+        [100, 40],
+        [60, 0],
+        [36, 0],
+        [68, 32],
+      ],
+
+      [
+        'some compensating amount',
+        2,
+        0,
+        [9, 13],
+        [0, 4],
+        [1, 4],
+        [2, 5],
+
+        [2, 13],
+        [0, 4],
+        [1, 4],
+        [2, 5],
+      ],
+
+      [
+        'no compensating amount',
+        100,
+        1,
+        [132, 40],
+        [92, 0],
+        [4, 0],
+        [36, 32],
+
+        [132, 40],
+        [92, 0],
+        [4, 0],
+        [36, 32],
+      ],
+
+      [
+        'some compensating amount',
+        2,
+        1,
+        [9, 13],
+        [0, 4],
+        [1, 4],
+        [2, 5],
+
+        [9, 2],
+        [0, 0],
+        [1, 8],
+        [2, 9],
+      ],
+    ];
+  test.each(testCases)(
+    `name: %s, ${[
+      'size',
+      'dimension',
+      'endPosition',
+      'origin',
+      'sliceOrigin',
+      'sliceEndPosition',
+      'expectedEndPosition',
+      'expectedOrigin',
+      'expectedSliceOrigin',
+      'expectedSliceEndPosition',
+    ].map(arg => `${arg}: %p`).join(' | ')}`,
+    (
+      _,
+      size,
+      dimension,
+
+      endPosition,
+      origin,
+      sliceOrigin,
+      sliceEndPosition,
+
+      expectedEndPosition,
+      expectedOrigin,
+      expectedSliceOrigin,
+      expectedSliceEndPosition,
+    ) => {
+      checkAndAdjustEndingPosition(size, dimension, endPosition, origin, sliceOrigin, sliceEndPosition);
+      expect(origin).toEqual(expectedOrigin);
+      expect(endPosition).toEqual(expectedEndPosition);
+      expect(sliceOrigin).toEqual(expectedSliceOrigin);
+      expect(sliceEndPosition).toEqual(expectedSliceEndPosition);
+    });
+});
