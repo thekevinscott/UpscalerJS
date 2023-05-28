@@ -7,6 +7,7 @@ import {
   isFourDimensionalTensor,
   isFixedShape4D,
   FixedShape4D,
+  isTensor,
 } from '@upscalerjs/core';
 import {
   GET_INVALID_SHAPED_TENSOR,
