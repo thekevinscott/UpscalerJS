@@ -24,7 +24,13 @@ import {
   getImageAsTensor as _getImageAsTensor,
 } from './image.generated';
 import {
-  GET_INVALID_SHAPED_TENSOR, GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED, GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED, GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED, GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED, GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED, GET_UNDEFINED_TENSORS_ERROR,
+  GET_INVALID_SHAPED_TENSOR,
+  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
+  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
+  GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
 
 jest.mock('./image.generated', () => {
@@ -260,6 +266,29 @@ describe('getTensorDimensions', () => {
       }
     }
   };
+
+  test.each<[IOpts, IExpectation[]]>([
+    [{
+      width: 2,
+      height: 2,
+      patchSize: 2,
+      padding: 0,
+    }, [
+      {
+        row: 0,
+        col: 0,
+        expectation: {
+          origin: [0, 0,],
+          size: [2, 2,],
+          sliceSize: [2, 2,],
+        },
+      },
+    ]],
+  ])(
+    "gets tensor dimensions for args %p",
+    (args, expected) => {
+      testGetTensorDimensions(args, expected);
+    });
 
   it('gets tensor dimensions for a fully-covered patch size', () => {
     testGetTensorDimensions(
@@ -1191,7 +1220,7 @@ describe('concatTensors', () => {
   });
 
   it('throws if given no tensors', () => {
-    expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR());
+    expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR);
   });
 });
 

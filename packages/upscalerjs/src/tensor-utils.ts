@@ -102,19 +102,17 @@ export const getTensorDimensions = ({
   width,
   padding = 0,
 }: GetTensorDimensionsOpts) => {
+
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
-  for (const [arg, err] of [
+  for (const [arg, err, ] of [
     [row, GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,],
     [col, GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,],
     [patchSize, GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,],
     [height, GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,],
     [width, GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,],
-  ]) {
-    if (arg === undefined) {
-      throw err;
-    }
-  }
+  ]) { if (arg === undefined) { throw err; } }
+
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
   if (yPatchSize > height) {
@@ -181,7 +179,7 @@ export const getTensorDimensions = ({
 export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T | undefined>, axis = 0): T {
   const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = tensors.filter(nonNullable);
   if (definedTensors.length === 0) {
-    throw GET_UNDEFINED_TENSORS_ERROR();
+    throw GET_UNDEFINED_TENSORS_ERROR;
   }
   const concatenatedTensor = tf.concat(definedTensors, axis);
   tensors.forEach(tensor => tensor?.dispose());
