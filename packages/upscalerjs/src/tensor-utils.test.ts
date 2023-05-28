@@ -12,6 +12,7 @@ import {
   getTensorDimensions,
   GetTensorDimensionsOpts,
   concatTensors,
+  getCopyOfInput,
 } from './tensor-utils';
 import {
   isValidRange as _isValidRange,
@@ -1191,5 +1192,28 @@ describe('concatTensors', () => {
 
   it('throws if given no tensors', () => {
     expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR());
+  });
+});
+
+describe('getCopyOfInput', () => {
+  it('returns non-tensor input unadulterated', () => {
+    const input = { foo: 'foo' } as any;
+    expect(getCopyOfInput(input)).toEqual(input);
+  });
+
+  it('returns a copy of a given 4d tensor', () => {
+    const input: tfn.Tensor4D = tfn.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [1, 2, 2, 3,],
+    );
+    expect(getCopyOfInput(input)).not.toEqual(input);
+  });
+
+  it('returns a copy of a given 3d tensor', () => {
+    const input: tfn.Tensor3D = tfn.tensor(
+      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
+      [2, 2, 3,],
+    );
+    expect(getCopyOfInput(input)).not.toEqual(input);
   });
 });

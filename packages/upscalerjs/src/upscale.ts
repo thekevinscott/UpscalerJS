@@ -6,7 +6,12 @@ import type {
   TENSOR,
   YieldedIntermediaryValue,
  } from './types';
-import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
+import {
+  checkValidEnvironment,
+  getImageAsTensor,
+  tensorAsBase64,
+  Input,
+} from './image.generated';
 import {
   wrapGenerator,
   warn,
@@ -26,6 +31,7 @@ import {
   getWidthAndHeight,
   getTensorDimensions,
   concatTensors,
+  getCopyOfInput,
 } from './tensor-utils';
 import {
   isTensor,
@@ -207,11 +213,6 @@ export async function* processPixels(
   postprocessedTensor.dispose();
   return squeezedTensor;
 }
-
-// if given a tensor, we copy it; otherwise, we pass input through unadulterated
-// this allows us to safely dispose of memory ourselves without having to manage
-// what input is in which format
-export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
 
 export function upscale(
   input: Input,

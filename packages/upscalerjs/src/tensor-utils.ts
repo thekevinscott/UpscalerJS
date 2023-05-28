@@ -17,7 +17,12 @@ import {
   GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
-import { nonNullable } from 'utils';
+import {
+  nonNullable,
+} from 'utils';
+import {
+  Input,
+} from './image.generated';
 
 export const padInput = (inputShape: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const pixelsHeight = pixels.shape[1];
@@ -250,3 +255,8 @@ const checkAndAdjustStartingPosition = (
     sliceOrigin[dimension] -= amount;
   }
 };
+
+// if given a tensor, we copy it; otherwise, we pass input through unadulterated
+// this allows us to safely dispose of memory ourselves without having to manage
+// what input is in which format
+export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);

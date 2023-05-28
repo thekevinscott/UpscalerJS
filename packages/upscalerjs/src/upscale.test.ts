@@ -110,31 +110,7 @@ describe('getPercentageComplete', () => {
   });
 });
 
-describe('getCopyOfInput', () => {
-  it('returns non-tensor input unadulterated', () => {
-    const input = { foo: 'foo' } as any;
-    expect(getCopyOfInput(input)).toEqual(input);
-  });
-
-  it('returns a copy of a given 4d tensor', () => {
-    const input: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-    expect(getCopyOfInput(input)).not.toEqual(input);
-  });
-
-  it('returns a copy of a given 3d tensor', () => {
-    const input: tf.Tensor3D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [2, 2, 3,],
-    );
-    expect(getCopyOfInput(input)).not.toEqual(input);
-  });
-});
-
 describe('getRowsAndColumns', () => {
-
   it('throws if returning an invalid row', () => {
     const img: tf.Tensor4D = tf.tensor(
       [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
