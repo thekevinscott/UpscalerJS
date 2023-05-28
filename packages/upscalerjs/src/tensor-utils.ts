@@ -85,6 +85,76 @@ export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32A
   return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
+// mutating function
+const checkAndAdjustSliceSize = (
+  dimension: number,
+  size: [number, number],
+  sliceEndPosition: [number, number],
+): void => {
+  if (sliceEndPosition[dimension] > size[dimension]) {
+    sliceEndPosition[dimension] = size[dimension];
+  }
+};
+
+// mutating function
+const checkAndAdjustEndingPosition = (
+  size: number,
+  dimension: number,
+  endPosition: [number, number],
+  origin: [number, number],
+  sliceOrigin: [number, number],
+  sliceEndPosition: [number, number],
+): void => {
+  // check that our final positions are not off the board
+  if (endPosition[dimension] > size) {
+    // box overhangs in the y direction, bring origin back and cut off the appropriate section.
+
+    // first determine the amount of overhang
+    const amount = endPosition[dimension] - size;
+
+    let compensatingAmount = 0;
+    if (origin[dimension] - amount < 0) {
+      compensatingAmount = 0 - (origin[dimension] - amount);
+    }
+
+    // reduce origin to accommodate overhang
+    origin[dimension] -= amount - compensatingAmount;
+
+    // then, reduce endPosition by the same amount.
+    endPosition[dimension] -= amount;
+
+    // then, increase sliceOrigin amount
+    const sliceAmount = amount - compensatingAmount;
+    sliceOrigin[dimension] += sliceAmount;
+    sliceEndPosition[dimension] += sliceAmount;
+  }
+};
+
+// check that padding has not pushed our origins off the board
+// this is a mutating function
+const checkAndAdjustStartingPosition = (
+  dimension: number,
+  origin: [number, number],
+  sliceOrigin: [number, number],
+): void => {
+  // check that our origin is not off the board.
+  if (origin[dimension] < 0) {
+    // first, find out how much it overhangs
+    const amount = 0 - origin[dimension];
+
+    // then, increase origin by that amount (could also just set it to 0.)
+    origin[dimension] += amount;
+
+    // and increase sliceOrigin to accommodate
+    sliceOrigin[dimension] -= amount;
+  }
+};
+
+// if given a tensor, we copy it; otherwise, we pass input through unadulterated
+// this allows us to safely dispose of memory ourselves without having to manage
+// what input is in which format
+export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
+
 export interface GetTensorDimensionsOpts {
   row: number;
   col: number;
@@ -105,13 +175,14 @@ export const getTensorDimensions = ({
 
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
-  for (const [arg, err, ] of [
+  const errChecks: [number | undefined, Error][] = [
     [row, GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,],
     [col, GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,],
     [patchSize, GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,],
     [height, GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,],
     [width, GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,],
-  ]) { if (arg === undefined) { throw err; } }
+  ];
+  for (const [arg, err, ] of errChecks) { if (arg === undefined) { throw err; } }
 
   let yPatchSize = patchSize;
   let xPatchSize = patchSize;
@@ -185,73 +256,3 @@ export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Arr
   tensors.forEach(tensor => tensor?.dispose());
   return concatenatedTensor as T;
 }
-
-// mutating function
-const checkAndAdjustSliceSize = (
-  dimension: number,
-  size: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
-  if (sliceEndPosition[dimension] > size[dimension]) {
-    sliceEndPosition[dimension] = size[dimension];
-  }
-};
-
-// mutating function
-const checkAndAdjustEndingPosition = (
-  size: number,
-  dimension: number,
-  endPosition: [number, number],
-  origin: [number, number],
-  sliceOrigin: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
-  // check that our final positions are not off the board
-  if (endPosition[dimension] > size) {
-    // box overhangs in the y direction, bring origin back and cut off the appropriate section.
-
-    // first determine the amount of overhang
-    const amount = endPosition[dimension] - size;
-
-    let compensatingAmount = 0;
-    if (origin[dimension] - amount < 0) {
-      compensatingAmount = 0 - (origin[dimension] - amount);
-    }
-
-    // reduce origin to accommodate overhang
-    origin[dimension] -= amount - compensatingAmount;
-
-    // then, reduce endPosition by the same amount.
-    endPosition[dimension] -= amount;
-
-    // then, increase sliceOrigin amount
-    const sliceAmount = amount - compensatingAmount;
-    sliceOrigin[dimension] += sliceAmount;
-    sliceEndPosition[dimension] += sliceAmount;
-  }
-};
-
-// check that padding has not pushed our origins off the board
-// this is a mutating function
-const checkAndAdjustStartingPosition = (
-  dimension: number,
-  origin: [number, number],
-  sliceOrigin: [number, number],
-): void => {
-  // check that our origin is not off the board.
-  if (origin[dimension] < 0) {
-    // first, find out how much it overhangs
-    const amount = 0 - origin[dimension];
-
-    // then, increase origin by that amount (could also just set it to 0.)
-    origin[dimension] += amount;
-
-    // and increase sliceOrigin to accommodate
-    sliceOrigin[dimension] -= amount;
-  }
-};
-
-// if given a tensor, we copy it; otherwise, we pass input through unadulterated
-// this allows us to safely dispose of memory ourselves without having to manage
-// what input is in which format
-export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
