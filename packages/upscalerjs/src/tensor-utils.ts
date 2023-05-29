@@ -85,26 +85,36 @@ export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32A
   return tensor.clipByValue(0, 255).concat([fill,], 2).dataSync();
 });
 
-// mutating function
-const checkAndAdjustSliceSize = (
+export const checkAndAdjustSliceSize = (
   dimension: number,
   size: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
+  _sliceEndPosition: [number, number],
+): [number, number] => {
+  const sliceEndPosition: [number, number,] = [..._sliceEndPosition,];
   if (sliceEndPosition[dimension] > size[dimension]) {
     sliceEndPosition[dimension] = size[dimension];
   }
+  return sliceEndPosition;
 };
 
 // mutating function
 export const checkAndAdjustEndingPosition = (
   size: number,
   dimension: number,
-  endPosition: [number, number],
-  origin: [number, number],
-  sliceOrigin: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
+  _endPosition: [number, number],
+  _origin: [number, number],
+  _sliceOrigin: [number, number],
+  _sliceEndPosition: [number, number],
+): [
+  [number, number],
+  [number, number],
+  [number, number],
+  [number, number],
+] => {
+  const endPosition: [number, number,] = [..._endPosition,];
+  const origin: [number, number,] = [..._origin,];
+  const sliceOrigin: [number, number,] = [..._sliceOrigin,];
+  const sliceEndPosition: [number, number,] = [..._sliceEndPosition,];
   // check that our final positions are not off the board
   if (endPosition[dimension] > size) {
     // box overhangs in the y direction, bring origin back and cut off the appropriate section.
@@ -128,6 +138,13 @@ export const checkAndAdjustEndingPosition = (
     sliceOrigin[dimension] += sliceAmount;
     sliceEndPosition[dimension] += sliceAmount;
   }
+
+  return [
+    endPosition,
+    origin,
+    sliceOrigin,
+    sliceEndPosition,
+  ];
 };
 
 // check that padding has not pushed our origins off the board
@@ -198,7 +215,7 @@ export const getTensorDimensions = ({
   const yPatchSize = patchSize > height ? height : patchSize;
   const xPatchSize = patchSize > width ? width : patchSize;
 
-  const [origin, sliceOrigin, ] = [0, 1, ].reduce<[[number, number, ], [number, number, ], ]>(([
+  const [firstOrigin, firstSliceOrigin, ] = [0, 1, ].reduce<[[number, number, ], [number, number, ], ]>(([
     origin,
     sliceOrigin,
   ], dim) => checkAndAdjustStartingPosition(
@@ -215,39 +232,46 @@ export const getTensorDimensions = ({
     [padding, padding,],
   ]);
 
-  const endPosition: [number, number] = [
-    origin[0] + yPatchSize + padding * 2,
-    origin[1] + xPatchSize + padding * 2,
-  ];
-  const sliceEndPosition: [number, number] = [
-    sliceOrigin[0] + yPatchSize,
-    sliceOrigin[1] + xPatchSize,
-  ];
 
-  checkAndAdjustEndingPosition(
-    height,
-    0,
+  const [
     endPosition,
     origin,
     sliceOrigin,
-    sliceEndPosition,
-  );
-  checkAndAdjustEndingPosition(
-    width,
-    1,
-    endPosition,
-    origin,
-    sliceOrigin,
-    sliceEndPosition,
-  );
+    firstSliceEndPosition,
+  ] = [[height, 0,], [width, 1,], ].reduce<[[number, number, ], [number, number, ], [number, number, ], [number, number, ], ]>(([
+    ...args
+  ], [size, dim,]) => checkAndAdjustEndingPosition(
+    size,
+    dim,
+    ...args,
+  ), [
+    // initial end position
+    [
+      firstOrigin[0] + yPatchSize + padding * 2,
+      firstOrigin[1] + xPatchSize + padding * 2,
+    ],
+    // initial origin
+    firstOrigin,
+    // initial sliceOrigin
+    firstSliceOrigin,
+    // initial sliceEndPosition
+    [
+      firstSliceOrigin[0] + yPatchSize,
+      firstSliceOrigin[1] + xPatchSize,
+    ],
+  ]);
 
   const size: [number, number] = [
     endPosition[0] - origin[0],
     endPosition[1] - origin[1],
   ];
 
-  checkAndAdjustSliceSize(0, size, sliceEndPosition);
-  checkAndAdjustSliceSize(1, size, sliceEndPosition);
+
+  const sliceEndPosition = [0, 1, ].reduce<[number, number, ]>((sliceEndPosition, dim) => checkAndAdjustSliceSize(
+    dim,
+    size,
+    sliceEndPosition,
+  ), firstSliceEndPosition);
   const sliceSize: [number, number] = [
     sliceEndPosition[0] - sliceOrigin[0],
     sliceEndPosition[1] - sliceOrigin[1],

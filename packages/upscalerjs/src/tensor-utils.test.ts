@@ -15,6 +15,7 @@ import {
   getCopyOfInput,
   checkAndAdjustStartingPosition,
   checkAndAdjustEndingPosition,
+  checkAndAdjustSliceSize,
 } from './tensor-utils';
 import {
   isValidRange as _isValidRange,
@@ -1347,10 +1348,63 @@ describe('checkAndAdjustEndingPosition', () => {
       expectedSliceOrigin,
       expectedSliceEndPosition,
     ) => {
-      checkAndAdjustEndingPosition(size, dimension, endPosition, origin, sliceOrigin, sliceEndPosition);
-      expect(origin).toEqual(expectedOrigin);
-      expect(endPosition).toEqual(expectedEndPosition);
-      expect(sliceOrigin).toEqual(expectedSliceOrigin);
-      expect(sliceEndPosition).toEqual(expectedSliceEndPosition);
+      expect(checkAndAdjustEndingPosition(size, dimension, endPosition, origin, sliceOrigin, sliceEndPosition)).toEqual([
+        expectedEndPosition,
+        expectedOrigin,
+        expectedSliceOrigin,
+        expectedSliceEndPosition,
+      ]);
     });
+});
+
+describe('checkAndAdjustSliceSize', () => {
+  const testCases: [
+    string,
+    number,
+    [number, number],
+    [number, number],
+
+    [number, number],
+  ][] = [
+      [
+        'no modifications',
+        0,
+        [2,2,],
+        [1,1,],
+        [1,1,],
+      ],
+
+      [
+        'a modification in height',
+        0,
+        [2,2,],
+        [3,3,],
+        [2,3,],
+      ],
+
+      [
+        'a modification in width',
+        1,
+        [2,2,],
+        [3,3,],
+        [3,2,],
+      ],
+    ];
+  test.each(testCases)(
+    `name: %s, ${[
+      'dimension',
+      'size',
+      'sliceEndPosition',
+      'expectedSliceEndPosition',
+    ].map(arg => `${arg}: %p`).join(' | ')}`,
+    (
+      _,
+      dimension,
+      size,
+      sliceEndPosition,
+      expectedSliceEndPosition,
+    ) => {
+      expect(checkAndAdjustSliceSize(dimension, size, sliceEndPosition)).toEqual(expectedSliceEndPosition);
+    });
+
 });
