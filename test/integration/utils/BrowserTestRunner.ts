@@ -27,7 +27,6 @@ export class BrowserTestRunner {
   private _name?: string;
   private _verbose?: boolean;
   private _usePNPM?: boolean;
-  private _cacheBundling?: boolean;
 
   constructor({
     name,
@@ -39,7 +38,6 @@ export class BrowserTestRunner {
     showWarnings = false,
     verbose = false,
     usePNPM = false,
-    cacheBundling = true,
   }: {
     name?: string;
     mockCDN?: MockCDN;
@@ -50,7 +48,6 @@ export class BrowserTestRunner {
     showWarnings?: boolean;
     verbose?: boolean;
     usePNPM?: boolean;
-    cacheBundling?: boolean;
   } = {}) {
     this._name = name;
     this.mockCDN = mockCDN;
@@ -61,7 +58,6 @@ export class BrowserTestRunner {
     this.log = log;
     this._verbose = verbose;
     this._usePNPM = usePNPM;
-    this._cacheBundling = cacheBundling;
   }
 
   /****
@@ -154,7 +150,6 @@ export class BrowserTestRunner {
 
   async startServer(dist?: string, port?: number) {
     this.server = await startServer(port || this.port, dist || this.dist);
-    // console.log(`Server running at ${this.serverURL}`);
     return this.server;
   }
 
@@ -217,6 +212,7 @@ export class BrowserTestRunner {
           const [model, restOfModelPath] = modelPath;
           const [_, ...pathToModel] = restOfModelPath.split('/');
           const redirectedURL = mockCDN(this.port, model, pathToModel.join('/'));
+          // console.log(`mock request ${url} to ${redirectedURL}`);
           request.continue({
             url: redirectedURL,
           });

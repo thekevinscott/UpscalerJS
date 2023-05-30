@@ -151,7 +151,7 @@ describe('Upscaler', () => {
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
       cancellableWarmup.mockImplementation(async () => { });
-      const warmupSizes: WarmupSizes = [[2, 2]];
+      const warmupSizes: WarmupSizes = [2,];
       new Upscaler({
         warmupSizes,
       });
@@ -175,7 +175,7 @@ describe('Upscaler', () => {
       loadModel.mockImplementation(() => modelDefinitionPromise);
       cancellableWarmup.mockImplementation(async () => { });
       const upscaler = new Upscaler();
-      const warmupSizes: WarmupSizes = [[2, 2]];
+      const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
       expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });

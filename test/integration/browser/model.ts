@@ -38,7 +38,7 @@ describe('Model Loading Integration Tests', () => {
     await testRunner.beforeAll();
   }, 60000);
 
-  afterAll(async function modelAfterAll() {
+  afterAll(async function afterAll() {
     await testRunner.afterAll();
   }, 10000);
 

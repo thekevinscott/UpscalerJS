@@ -7,10 +7,10 @@ export const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPat
   if (!size || typeof size !== 'object') {
     return false;
   }
-  return 'patchSize' in size && typeof (size as { patchSize: unknown })['patchSize'] === 'number';
+  return 'patchSize' in size && typeof (size as { patchSize: unknown }).patchSize === 'number';
 };
 export const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
-  return Boolean(size) && Array.isArray(size) && size.length === 2 && typeof size[0] === 'number' && typeof size[1] === 'number';
+  return Boolean(size) && typeof size === 'number' && size > 0;
 };
 
 const ERROR_INVALID_WARMUP_VALUE_URL =
@@ -24,11 +24,10 @@ export const ERROR_INVALID_WARMUP_VALUE = (size: unknown) => ([
 
 export const getInvalidValueError = (size: unknown): Error => new Error(ERROR_INVALID_WARMUP_VALUE(size));
 
-const getWidthAndHeight = (size: NumericWarmupSizes | WarmupSizesByPatchSize): [number, number] => {
+const getWidthAndHeight = (size: NumericWarmupSizes | WarmupSizesByPatchSize): number => {
   if (isWarmupSizeByPatchSize(size)) {
-    const { patchSize, padding = 0, } = size;
-    const amount = patchSize + padding * 2;
-    return [amount, amount,];
+    const { patchSize, } = size;
+    return patchSize;
   }
   return size;
 };
@@ -42,9 +41,9 @@ export async function* warmup(
     if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
       throw getInvalidValueError(size);
     }
-    const [ width, height, ] = getWidthAndHeight(size);
+    const warmupSize = getWidthAndHeight(size);
 
-    let dummyTensor = tf.zeros([1, height, width, 3,]) as tf.Tensor4D;
+    let dummyTensor = tf.zeros([1, warmupSize, warmupSize, 3,]) as tf.Tensor4D;
     yield [dummyTensor,];
 
     const fns = [
@@ -53,8 +52,7 @@ export async function* warmup(
       modelDefinition.postprocess,
     ].filter(Boolean);
 
-    for (let i = 0; i < fns.length; i++) {
-      const fn = fns[i];
+    for (const fn of fns) {
       dummyTensor = processAndDisposeOfTensor(dummyTensor, fn);
       yield [dummyTensor,];
     }
@@ -66,19 +64,16 @@ export async function* warmup(
 
 export const getSizesAsArray = (sizes: WarmupSizes): (NumericWarmupSizes | WarmupSizesByPatchSize)[] => {
   if (Array.isArray(sizes)) {
-    if (isNumericWarmupSize(sizes)) {
-      return [sizes,];
-    }
-
     for (const size of sizes) {
       if (!isWarmupSizeByPatchSize(size) && !isNumericWarmupSize(size)) {
-        throw getInvalidValueError(size);
+        throw getInvalidValueError(sizes);
       }
     }
     return sizes;
-  } else if (isWarmupSizeByPatchSize(sizes)) {
+  } else if (isWarmupSizeByPatchSize(sizes) || isNumericWarmupSize(sizes)) {
     return [sizes,];
   }
+
   throw getInvalidValueError(sizes);
 };
 

@@ -176,6 +176,10 @@ describe('isMultiArgProgress', () => {
   it('returns true for a multi arg tensor function with conflicting outputs', () => {
     expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'base64', 'tensor')).toEqual(true);
   });
+
+  it('returns true for a multi arg tensor function with conflicting outputs with an undefined progressOutput', () => {
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', undefined)).toEqual(true);
+  });
 });
 
 describe('getModelDefinitionError', () => {

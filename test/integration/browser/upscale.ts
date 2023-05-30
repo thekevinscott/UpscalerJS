@@ -63,6 +63,7 @@ describe('Upscale Integration Tests', () => {
     it("cancels an inflight upscale request", async () => {
       const errMessage = await page().evaluate(() => new Promise(resolve => {
         const abortController = new AbortController();
+        const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
@@ -70,8 +71,7 @@ describe('Upscale Integration Tests', () => {
             modelType: 'layers',
           },
           warmupSizes: [{
-            patchSize: 4,
-            padding: 2,
+            patchSize,
           }]
         });
         window['progressRates'] = [];
@@ -80,7 +80,7 @@ describe('Upscale Integration Tests', () => {
         let startTime = new Date().getTime();
         window['durations'] = [];
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
-          patchSize: 4,
+          patchSize,
           padding: 2,
           output: 'base64',
           signal: abortController.signal,
@@ -118,6 +118,7 @@ describe('Upscale Integration Tests', () => {
 
     it("cancels all inflight upscale requests", async () => {
       const errMessage = await page().evaluate(() => new Promise(resolve => {
+        const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
@@ -125,8 +126,7 @@ describe('Upscale Integration Tests', () => {
             modelType: 'layers',
           },
           warmupSizes: [{
-            patchSize: 4,
-            padding: 2,
+            patchSize,
           }]
         });
         window['progressRates'] = [];
@@ -135,7 +135,7 @@ describe('Upscale Integration Tests', () => {
         let startTime = new Date().getTime();
         window['durations'] = [];
         const options: any = {
-          patchSize: 4,
+          patchSize,
           padding: 2,
           output: 'base64',
           awaitNextFrame: true,
@@ -178,6 +178,7 @@ describe('Upscale Integration Tests', () => {
 
     it("can cancel all inflight upscale requests and then make a new request successfully", async () => {
       const errMessage = await page().evaluate(() => new Promise(resolve => {
+        const patchSize = 7;
         window['upscaler'] = new window['Upscaler']({
           model: {
             path: '/models/pixel-upsampler/models/4x/4x.json',
@@ -185,13 +186,12 @@ describe('Upscale Integration Tests', () => {
             modelType: 'layers',
           },
           warmupSizes: [{
-            patchSize: 4,
-            padding: 2,
+            patchSize,
           }]
         });
 
         const options: any = {
-          patchSize: 4,
+          patchSize,
           padding: 2,
           output: 'base64',
           progress: (rate: number) => {
@@ -228,7 +228,7 @@ describe('Upscale Integration Tests', () => {
         });
         const progressRates: Array<number> = [];
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
-          patchSize: 8,
+          patchSize: 10,
           padding: 2,
           output: 'base64',
           progress: (rate: number) => {
@@ -254,7 +254,7 @@ describe('Upscale Integration Tests', () => {
           resolve([rate, slice]);
         };
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
-          patchSize: 12,
+          patchSize: 14,
           padding: 2,
           output: 'base64',
           progress,
@@ -264,35 +264,76 @@ describe('Upscale Integration Tests', () => {
       checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/slice-patchsize-12-padding-2.png"), 'diff.png');
     });
 
-    it("calls back to progress with a tensor", async () => {
-      const [rate, slice] = await page().evaluate((): Promise<[number, tf.Tensor]> => new Promise(resolve => {
-        const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
-            scale: 4,
-            modelType: 'layers',
-          },
-        });
-        const progress: MultiArgTensorProgress = (rate, slice) => {
-          resolve([rate, slice]);
-        };
-        upscaler.execute(window['fixtures']['pixel-upsampler'], {
-          patchSize: 12,
-          padding: 2,
-          output: 'tensor',
-          progress,
-        });
-      }));
-      expect(typeof rate).toEqual('number');
-      expect(slice.shape).toEqual([48, 48, 3]);
-    });
+    test.each([
+      // image is 16, so expected final size of 32
+      [12, 0, [
+        [.25, [24, 24, 3]],
+        [.5, [24, 8, 3]],
+        [.75, [8, 24, 3]],
+        [1, [8, 8, 3]],
+      ]],
+      [12, 1, [
+        [.25, [22, 22, 3]],
+        [.5, [22, 10, 3]],
+        [.75, [10, 22, 3]],
+        [1, [10, 10, 3]],
+      ]],
+      [12, 2, [
+        [.25, [20, 20, 3]],
+        [.5, [20, 12, 3]],
+        [.75, [12, 20, 3]],
+        [1, [12, 12, 3]],
+      ]],
+      [10, 2, [
+        [.25, [16, 16, 3]],
+        [.5, [16, 16, 3]],
+        [.75, [16, 16, 3]],
+        [1, [16, 16, 3]],
+      ]],
+      [9, 2, [
+        [1 / 9, [14, 14, 3]],
+        [2 / 9, [14, 10, 3]],
+        [3 / 9, [14, 8, 3]],
+        [4 / 9, [10, 14, 3]],
+        [5 / 9, [10, 10, 3]],
+        [6 / 9, [10, 8, 3]],
+        [7 / 9, [8, 14, 3]],
+        [8 / 9, [8, 10, 3]],
+        [9 / 9, [8, 8, 3]],
+      ]],
+    ])(
+      "calls back to progress with a tensor | patch size: %i | padding: %i",
+      async (patchSize, padding, expectation,) => {
+        const updates = await page().evaluate(({ patchSize, padding }): Promise<[number, number[]][]> => new Promise(resolve => {
+          const upscaler = new window['Upscaler']({
+            model: {
+              path: '/models/pixel-upsampler/models/2x/2x.json',
+              scale: 2,
+              modelType: 'layers',
+            },
+          });
+          const updates: [number, number[]][] = [];
+          const progress: MultiArgTensorProgress = (rate, slice) => {
+            updates.push([rate, slice.shape])
+          };
+          upscaler.execute(window['fixtures']['pixel-upsampler'], {
+            patchSize,
+            padding,
+            output: 'tensor',
+            progress,
+          }).then(() => {
+            resolve(updates);
+          });
+        }), { patchSize, padding });
+        expect(updates).toEqual(expectation);
+      });
 
     it("calls back to progress with a row and col", async () => {
       const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
-            scale: 4,
+            path: '/models/pixel-upsampler/models/2x/2x.json',
+            scale: 2,
             modelType: 'layers',
           },
         });

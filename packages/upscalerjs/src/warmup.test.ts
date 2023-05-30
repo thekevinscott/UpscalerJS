@@ -22,11 +22,11 @@ const getFakeModel = () => {
 
 describe('isNumericWarmupSize', () => {
   it('returns true for numeric warmup sizes', () => {
-    expect(isNumericWarmupSize([1,1])).toBe(true);
+    expect(isNumericWarmupSize(1)).toBe(true);
   });
 
   it.each([
-    [1],
+    [-1],
     ['foo'],
     [[1]],
     [[1,2,3]],
@@ -57,20 +57,15 @@ describe('cancellableWarmup', () => {
   test.each([
     // patch size warmup 
     [{ patchSize: 'foo' }], 
-    // // numeric warm up
-    // [[1]],
-    // [['foo', 1]],
-    // [[1, 'foo']],
-    // // array of patch size warmups
-    // [[{ patchSize: 'foo' }]], 
-    // [[{ patchSize: 32 }, { patchSize: 'foo' }, ]], 
+    // numeric warm up
+    [-1],
+    // array of patch size warmups
+    [[{ patchSize: 'foo' }]], 
+    [[{ patchSize: 32 }, { patchSize: 'foo' }, ]], 
 
-    // // array of numeric warmups
-    // [[['foo', 1,],]], 
-    // [[[1, 'foo',],]],
-    // [[[32, 32, ], ['foo', 1,],]], 
-    // [[[32, 32, ], [1, 'foo',],]],
-    // [[[32, 32, ], [1,],]],
+    // array of numeric warmups
+    [[-1]], 
+    [['foo']], 
   ])(
     'throws if given invalid input of %p',
     async (args) => {
@@ -124,12 +119,12 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await cancellableWarmup(model, [[20, 10,],], undefined, {
+      await cancellableWarmup(model, [20,], undefined, {
         signal: new AbortController().signal,
       });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 20, 3,],
+          shape: [1, 20, 20, 3,],
         }),
       );
     });
@@ -147,19 +142,19 @@ describe('cancellableWarmup', () => {
         }),
       );
       await cancellableWarmup(model, [
-        [20, 10,],
-        [200, 100,],
+        20,
+        200,
       ], undefined, {
         signal: new AbortController().signal,
       });
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 10, 20, 3,],
+          shape: [1, 20, 20, 3,],
         }),
       );
       expect((await model).model.predict).toHaveBeenCalledWith(
         expect.objectContaining({
-          shape: [1, 100, 200, 3,],
+          shape: [1, 200, 200, 3,],
         }),
       );
     });
@@ -489,7 +484,7 @@ describe('Warmup', () => {
       }),
     );
     const patchSizeWarmUp: WarmupSizesByPatchSize = { patchSize: 10, };
-    const numericWarmUpSize: NumericWarmupSizes = [10, 10];
+    const numericWarmUpSize: NumericWarmupSizes = 10;
     const gen = warmup(modelPackage, [patchSizeWarmUp, numericWarmUpSize]);
 
     let currentExpectationIndex = 0;
@@ -522,7 +517,7 @@ describe('Warmup', () => {
 
 describe('getSizesAsArray', () => {
   it('should return an array for a numeric size', () => {
-    expect(getSizesAsArray([10, 10])).toEqual([[10, 10]]);
+    expect(getSizesAsArray(10)).toEqual([10]);
   });
 
   it('should return an array for a patchSize size', () => {
@@ -530,7 +525,7 @@ describe('getSizesAsArray', () => {
   });
 
   it('should return an (unchanged) array for a numeric size array', () => {
-    expect(getSizesAsArray([[10, 10]])).toEqual([[10, 10]]);
+    expect(getSizesAsArray([10])).toEqual([10]);
   });
 
   it('should return an (unchanged) array for a patchSize size array', () => {
@@ -538,10 +533,10 @@ describe('getSizesAsArray', () => {
   });
 
   it.each([
-    [1],
+    [-1],
     ['foo'],
-    [[1]],
-    [[1,2,3]],
+    [[[1]]],
+    [[[1,2,3]]],
     [[1,'foo']],
     [['foo',1]],
     [{ patchSize: 'foo' }],

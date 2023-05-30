@@ -11,11 +11,6 @@ import {
 } from '@upscalerjs/core';
 import {
   GET_INVALID_SHAPED_TENSOR,
-  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
 import {
@@ -185,119 +180,6 @@ export const checkAndAdjustStartingPosition = (
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
 export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
-
-export interface GetTensorDimensionsOpts {
-  row: number;
-  col: number;
-  patchSize: number;
-  height: number;
-  width: number;
-  padding?: number;
-}
-export type GetTensorDimensions = (opts: GetTensorDimensionsOpts) => {
-  preprocessedCoordinates: {
-    origin: Coordinate;
-    size: Coordinate;
-  };
-  postprocessedCoordinates: {
-    origin: Coordinate;
-    size: Coordinate;
-  };
-};
-
-export const getTensorDimensions: GetTensorDimensions = ({
-  row,
-  col,
-  patchSize,
-  height,
-  width,
-  padding = 0,
-})  => {
-  // non typescript code can call this function, so we add runtime
-  // checks to ensure required values are present
-  const errChecks: [number | undefined, Error][] = [
-    [row, GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,],
-    [col, GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,],
-    [patchSize, GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,],
-    [height, GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,],
-    [width, GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,],
-  ];
-  for (const [arg, err, ] of errChecks) { if (arg === undefined) { throw err; } }
-
-  const yPatchSize = patchSize > height ? height : patchSize;
-  const xPatchSize = patchSize > width ? width : patchSize;
-
-  const [initialOrigin, initialSliceOrigin, ] = [0, 1, ].reduce<[Coordinate, Coordinate, ]>(([
-    origin,
-    sliceOrigin,
-  ], dim) => checkAndAdjustStartingPosition(
-    dim,
-    origin,
-    sliceOrigin,
-  ), [
-    // initial origin
-    [
-      row * patchSize - padding,
-      col * patchSize - padding,
-    ],
-    // initial slice origin
-    [padding, padding,],
-  ]);
-
-
-  const [
-    endPosition,
-    preprocessedPixelsOrigin,
-    postprocessedPixelsOrigin,
-    initialPostProcessedEndPosition,
-  ] = [[height, 0,], [width, 1,], ].reduce<[Coordinate, Coordinate, Coordinate, Coordinate, ]>(([
-    ...args
-  ], [size, dim,]) => checkAndAdjustEndingPosition(
-    size,
-    dim,
-    ...args,
-  ), [
-    // initial end position
-    [
-      initialOrigin[0] + yPatchSize + padding * 2,
-      initialOrigin[1] + xPatchSize + padding * 2,
-    ],
-    // initial origin
-    initialOrigin,
-    // initial sliceOrigin
-    initialSliceOrigin,
-    // initial sliceEndPosition
-    [
-      initialSliceOrigin[0] + yPatchSize,
-      initialSliceOrigin[1] + xPatchSize,
-    ],
-  ]);
-
-  const preprocessedPixelsSize: Coordinate = [
-    endPosition[0] - preprocessedPixelsOrigin[0],
-    endPosition[1] - preprocessedPixelsOrigin[1],
-  ];
-
-  const postProcessedEndPosition = [0, 1, ].reduce<Coordinate>((postProcessedEndPosition, dim) => checkAndAdjustSliceSize(
-    dim,
-    preprocessedPixelsSize,
-    postProcessedEndPosition,
-  ), initialPostProcessedEndPosition);
-
-  return {
-    preprocessedCoordinates: {
-      origin: preprocessedPixelsOrigin,
-      size: preprocessedPixelsSize,
-    },
-    postprocessedCoordinates: {
-      origin: postprocessedPixelsOrigin,
-      size: [
-        postProcessedEndPosition[0] - postprocessedPixelsOrigin[0],
-        postProcessedEndPosition[1] - postprocessedPixelsOrigin[1],
-      ],
-    },
-  };
-};
 
 export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T | undefined>, axis = 0): T {
   const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = tensors.filter(nonNullable);

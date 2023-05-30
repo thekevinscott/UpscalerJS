@@ -1,8 +1,8 @@
 {
-  "name": "@upscalerjs/dev",
+  "name": "@upscalerjs/dev-browser",
   "private": true,
   "scripts": {
-    "dev": "vite --config ./vite.config.ts"
+    "dev": "vite --host --config ./vite.config.ts"
   },
   "devDependencies": {
     "upscaler": "workspace:*",

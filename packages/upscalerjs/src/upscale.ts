@@ -28,8 +28,6 @@ import {
   padInput,
   trimInput,
   scaleOutput,
-  getWidthAndHeight,
-  getTensorDimensions,
   concatTensors,
   getCopyOfInput,
 } from './tensor-utils';
@@ -43,34 +41,11 @@ import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
 import {
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
-  GET_INVALID_ROW_OR_COLUMN,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
 } from './errors-and-warnings';
-
-export const getRowsAndColumns = (
-  pixels: tf.Tensor3D | tf.Tensor4D,
-  patchSize: number,
-): {
-  rows: number;
-  columns: number;
-} => {
-  const [height, width,] = getWidthAndHeight(pixels);
-
-  const rows = Math.ceil(height / patchSize);
-  const columns = Math.ceil(width / patchSize);
-
-  if (rows <= 0) {
-    throw GET_INVALID_ROW_OR_COLUMN('rows', rows, patchSize, height);
-  }
-  if (columns <= 0) {
-    throw GET_INVALID_ROW_OR_COLUMN('columns', columns, patchSize, width);
-  }
-
-  return {
-    rows,
-    columns,
-  };
-};
+import {
+  getPatchesFromImage,
+} from './image-utils';
 
 export const getPercentageComplete = (row: number, col: number, columns: number, total: number) => {
   const index = row * columns + col + 1;
@@ -98,7 +73,7 @@ export async function* processPixels(
   {
     imageSize,
     patchSize,
-    padding,
+    padding = 0,
   }: {
     imageSize: FixedShape4D;
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
@@ -108,40 +83,29 @@ export async function* processPixels(
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);
-    const { rows, columns, } = getRowsAndColumns(pixels, patchSize);
+    const patches = getPatchesFromImage([width, height,], patchSize, padding);
     yield;
     let upscaledTensor: undefined | tf.Tensor4D;
-    const total = rows * columns;
-    for (let row = 0; row < rows; row++) {
+    const total = patches.length * patches[0].length;
+    for (let rowIdx = 0; rowIdx < patches.length; rowIdx++) {
+      const row = patches[rowIdx];
+      const columns = row.length;
       let colTensor: undefined | tf.Tensor4D;
       yield [colTensor, upscaledTensor,];
-      for (let col = 0; col < columns; col++) {
-        const {
-          preprocessedCoordinates,
-          postprocessedCoordinates: {
-            origin: sliceOrigin,
-            size: sliceSize,
-          },
-        } = getTensorDimensions({
-          row,
-          col,
-          patchSize,
-          padding,
-          height,
-          width,
-        });
+      for (let colIdx = 0; colIdx < columns; colIdx++) {
+        const { pre, post, } = row[colIdx];
         yield [upscaledTensor, colTensor,];
         const slicedPixels = pixels.slice(
-          [0, ...preprocessedCoordinates.origin,],
-          [-1, ...preprocessedCoordinates.size,],
+          [0, ...pre.origin,],
+          [-1, ...pre.size,],
         );
         yield [upscaledTensor, colTensor, slicedPixels,];
         const prediction = executeModel(model, slicedPixels);
         slicedPixels.dispose();
         yield [upscaledTensor, colTensor, prediction,];
 
-        const startSlice = [0, sliceOrigin[0] * scale, sliceOrigin[1] * scale,];
-        const endSlice = [-1, sliceSize[0] * scale, sliceSize[1] * scale,];
+        const startSlice = [0, post.origin[0] * scale, post.origin[1] * scale,];
+        const endSlice = [-1, post.size[0] * scale, post.size[1] * scale,];
         const slicedPrediction = prediction.slice(
           startSlice, endSlice,
         );
@@ -151,7 +115,7 @@ export async function* processPixels(
         yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
-          const percent = getPercentageComplete(row, col, columns, total);
+          const percent = getPercentageComplete(rowIdx, colIdx, columns, total);
           if (isSingleArgProgress(progress)) {
             progress(percent);
           } else {
@@ -159,12 +123,12 @@ export async function* processPixels(
             const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              progress(percent, squeezedTensor, row, col);
+              progress(percent, squeezedTensor, rowIdx, colIdx);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              progress(percent, src, row, col);
+              progress(percent, src, rowIdx, colIdx);
             }
           }
         }
