@@ -250,6 +250,7 @@ describe('getTensorDimensions', () => {
         origin: [0, 0,],
         size: [2, 2,],
         sliceSize: [2, 2,],
+        sliceOrigin: [0,0],
       },
     }],
   },
@@ -275,6 +276,7 @@ describe('getTensorDimensions', () => {
         origin: [0, 0,],
         size: [2, 2,],
         sliceSize: [2, 2,],
+        sliceOrigin: [0,0],
       },
     }, {
       args: { width: 4, height: 4, patchSize: 2, padding: 0, row: 1, col: 0, },
@@ -282,6 +284,7 @@ describe('getTensorDimensions', () => {
         origin: [2, 0,],
         size: [2, 2,],
         sliceSize: [2, 2,],
+        sliceOrigin: [0,0],
       },
     }, {
       args: { width: 4, height: 4, patchSize: 2, padding: 0, row: 0, col: 1, },
@@ -289,6 +292,7 @@ describe('getTensorDimensions', () => {
         origin: [0, 2,],
         size: [2, 2,],
         sliceSize: [2, 2,],
+        sliceOrigin: [0,0],
       },
     }, {
       args: { width: 4, height: 4, patchSize: 2, padding: 0, row: 1, col: 1, },
@@ -296,6 +300,7 @@ describe('getTensorDimensions', () => {
         origin: [2, 2,],
         size: [2, 2,],
         sliceSize: [2, 2,],
+        sliceOrigin: [0,0],
       },
     }],
   },
@@ -1075,6 +1080,7 @@ describe('getTensorDimensions', () => {
         origin: [0, 0,],
         size: [30, 30,],
         sliceSize: [20, 20,],
+        sliceOrigin: [0,0],
       },
     }],
   }];
@@ -1095,8 +1101,14 @@ describe('getTensorDimensions', () => {
         expect(
           getTensorDimensions(args),
         ).toEqual({
-          sliceOrigin: [0,0,],
-          ...expectation,
+          preprocessedCoordinates: {
+            origin: expectation.origin,
+            size: expectation.size,
+          },
+          postprocessedCoordinates: {
+            origin: expectation.sliceOrigin,
+            size: expectation.sliceSize,
+          }
         });
       } catch (err) {
         throw new Error(`*******\n${args.row} | ${args.col}\n*******\n${err}`);

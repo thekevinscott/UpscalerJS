@@ -82,3 +82,5 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
+
+export type Coordinate = [number, number];

@@ -24,6 +24,7 @@ import {
 import {
   Input,
 } from './image.generated';
+import { Coordinate } from './types';
 
 export const padInput = (inputShape: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const pixelsHeight = pixels.shape[1];
@@ -61,7 +62,7 @@ export const scaleOutput = (range?: Range) => (pixels: tf.Tensor4D): tf.Tensor4D
   return pixels.clipByValue(0, endingRange).mul(endingRange === 1 ? 255 : 1);
 };
 
-export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D | tf.Tensor): [number, number] => {
+export const getWidthAndHeight = (tensor: tf.Tensor3D | tf.Tensor4D | tf.Tensor): Coordinate => {
   if (isFourDimensionalTensor(tensor)) {
     return [tensor.shape[1], tensor.shape[2],];
   }
@@ -87,10 +88,10 @@ export const tensorAsClampedArray = (tensor: tf.Tensor3D): Uint8Array | Float32A
 
 export const checkAndAdjustSliceSize = (
   dimension: number,
-  size: [number, number],
-  _sliceEndPosition: [number, number],
-): [number, number] => {
-  const sliceEndPosition: [number, number,] = [..._sliceEndPosition,];
+  size: Coordinate,
+  _sliceEndPosition: Coordinate,
+): Coordinate => {
+  const sliceEndPosition: Coordinate = [..._sliceEndPosition,];
   if (sliceEndPosition[dimension] > size[dimension]) {
     sliceEndPosition[dimension] = size[dimension];
   }
@@ -101,20 +102,20 @@ export const checkAndAdjustSliceSize = (
 export const checkAndAdjustEndingPosition = (
   size: number,
   dimension: number,
-  _endPosition: [number, number],
-  _origin: [number, number],
-  _sliceOrigin: [number, number],
-  _sliceEndPosition: [number, number],
+  _endPosition: Coordinate,
+  _origin: Coordinate,
+  _sliceOrigin: Coordinate,
+  _sliceEndPosition: Coordinate,
 ): [
-  [number, number],
-  [number, number],
-  [number, number],
-  [number, number],
+  Coordinate,
+  Coordinate,
+  Coordinate,
+  Coordinate,
 ] => {
-  const endPosition: [number, number,] = [..._endPosition,];
-  const origin: [number, number,] = [..._origin,];
-  const sliceOrigin: [number, number,] = [..._sliceOrigin,];
-  const sliceEndPosition: [number, number,] = [..._sliceEndPosition,];
+  const endPosition: Coordinate = [..._endPosition,];
+  const origin: Coordinate = [..._origin,];
+  const sliceOrigin: Coordinate = [..._sliceOrigin,];
+  const sliceEndPosition: Coordinate = [..._sliceEndPosition,];
   // check that our final positions are not off the board
   if (endPosition[dimension] > size) {
     // box overhangs in the y direction, bring origin back and cut off the appropriate section.
@@ -151,14 +152,14 @@ export const checkAndAdjustEndingPosition = (
 // this is a mutating function
 export const checkAndAdjustStartingPosition = (
   dimension: number,
-  origin: [number, number],
-  sliceOrigin: [number, number],
+  origin: Coordinate,
+  sliceOrigin: Coordinate,
 ): [
-  [number, number],
-  [number, number],
+  Coordinate,
+  Coordinate,
 ] => {
-  const newOrigin: [number, number,] = [...origin, ];
-  const newSliceOrigin: [number, number,] = [...sliceOrigin, ];
+  const newOrigin: Coordinate = [...origin, ];
+  const newSliceOrigin: Coordinate = [...sliceOrigin, ];
 
   // check that our origin is not off the board.
   if (origin[dimension] < 0) {
@@ -199,8 +200,16 @@ export const getTensorDimensions = ({
   height,
   width,
   padding = 0,
-}: GetTensorDimensionsOpts) => {
-
+}: GetTensorDimensionsOpts): {
+  preprocessedCoordinates: {
+    origin: Coordinate;
+    size: Coordinate;
+  };
+  postprocessedCoordinates: {
+    origin: Coordinate;
+    size: Coordinate;
+  };
+} => {
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
   const errChecks: [number | undefined, Error][] = [
@@ -215,7 +224,7 @@ export const getTensorDimensions = ({
   const yPatchSize = patchSize > height ? height : patchSize;
   const xPatchSize = patchSize > width ? width : patchSize;
 
-  const [firstOrigin, firstSliceOrigin, ] = [0, 1, ].reduce<[[number, number, ], [number, number, ], ]>(([
+  const [initialOrigin, initialSliceOrigin, ] = [0, 1, ].reduce<[Coordinate, Coordinate, ]>(([
     origin,
     sliceOrigin,
   ], dim) => checkAndAdjustStartingPosition(
@@ -235,10 +244,10 @@ export const getTensorDimensions = ({
 
   const [
     endPosition,
-    origin,
-    sliceOrigin,
-    firstSliceEndPosition,
-  ] = [[height, 0,], [width, 1,], ].reduce<[[number, number, ], [number, number, ], [number, number, ], [number, number, ], ]>(([
+    preprocessedPixelsOrigin,
+    postprocessedPixelsOrigin,
+    initialPostProcessedEndPosition,
+  ] = [[height, 0,], [width, 1,], ].reduce<[Coordinate, Coordinate, Coordinate, Coordinate, ]>(([
     ...args
   ], [size, dim,]) => checkAndAdjustEndingPosition(
     size,
@@ -247,41 +256,43 @@ export const getTensorDimensions = ({
   ), [
     // initial end position
     [
-      firstOrigin[0] + yPatchSize + padding * 2,
-      firstOrigin[1] + xPatchSize + padding * 2,
+      initialOrigin[0] + yPatchSize + padding * 2,
+      initialOrigin[1] + xPatchSize + padding * 2,
     ],
     // initial origin
-    firstOrigin,
+    initialOrigin,
     // initial sliceOrigin
-    firstSliceOrigin,
+    initialSliceOrigin,
     // initial sliceEndPosition
     [
-      firstSliceOrigin[0] + yPatchSize,
-      firstSliceOrigin[1] + xPatchSize,
+      initialSliceOrigin[0] + yPatchSize,
+      initialSliceOrigin[1] + xPatchSize,
     ],
   ]);
 
-  const size: [number, number] = [
-    endPosition[0] - origin[0],
-    endPosition[1] - origin[1],
+  const preprocessedPixelsSize: Coordinate = [
+    endPosition[0] - preprocessedPixelsOrigin[0],
+    endPosition[1] - preprocessedPixelsOrigin[1],
   ];
 
-
-  const sliceEndPosition = [0, 1, ].reduce<[number, number, ]>((sliceEndPosition, dim) => checkAndAdjustSliceSize(
+  const postProcessedEndPosition = [0, 1, ].reduce<Coordinate>((postProcessedEndPosition, dim) => checkAndAdjustSliceSize(
     dim,
-    size,
-    sliceEndPosition,
-  ), firstSliceEndPosition);
-  const sliceSize: [number, number] = [
-    sliceEndPosition[0] - sliceOrigin[0],
-    sliceEndPosition[1] - sliceOrigin[1],
-  ];
+    preprocessedPixelsSize,
+    postProcessedEndPosition,
+  ), initialPostProcessedEndPosition);
 
   return {
-    origin,
-    sliceOrigin,
-    size,
-    sliceSize,
+    preprocessedCoordinates: {
+      origin: preprocessedPixelsOrigin,
+      size: preprocessedPixelsSize,
+    },
+    postprocessedCoordinates: {
+      origin: postprocessedPixelsOrigin,
+      size: [
+        postProcessedEndPosition[0] - postprocessedPixelsOrigin[0],
+        postProcessedEndPosition[1] - postprocessedPixelsOrigin[1],
+      ],
+    }
   };
 };
 
