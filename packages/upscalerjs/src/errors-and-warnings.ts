@@ -46,7 +46,7 @@ export const GET_INVALID_ROW_OR_COLUMN = (kind: 'rows' | 'columns', num: number,
     `${kind === 'rows' ? 'Height' : 'Width'} was: ${dim}`,
 ].join(' '));
 
-export const GET_UNDEFINED_TENSORS_ERROR = () => new Error('No defined tensors were passed to concatTensors');
+export const GET_UNDEFINED_TENSORS_ERROR = new Error('No defined tensors were passed to concatTensors');
 
 export const GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED = new Error('Row is undefined');
 export const GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED = new Error('Column is undefined');

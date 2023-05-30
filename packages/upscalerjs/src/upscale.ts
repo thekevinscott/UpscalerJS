@@ -6,7 +6,12 @@ import type {
   TENSOR,
   YieldedIntermediaryValue,
  } from './types';
-import { checkValidEnvironment, getImageAsTensor, tensorAsBase64, Input, } from './image.generated';
+import {
+  checkValidEnvironment,
+  getImageAsTensor,
+  tensorAsBase64,
+  Input,
+} from './image.generated';
 import {
   wrapGenerator,
   warn,
@@ -14,7 +19,6 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
-  nonNullable,
 } from './utils';
 import {
   parsePatchAndInputShapes,
@@ -25,6 +29,9 @@ import {
   trimInput,
   scaleOutput,
   getWidthAndHeight,
+  getTensorDimensions,
+  concatTensors,
+  getCopyOfInput,
 } from './tensor-utils';
 import {
   isTensor,
@@ -37,12 +44,6 @@ import {
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
   GET_INVALID_ROW_OR_COLUMN,
-  GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED,
-  GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED,
-  GET_UNDEFINED_TENSORS_ERROR,
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
 } from './errors-and-warnings';
 
@@ -70,178 +71,6 @@ export const getRowsAndColumns = (
     columns,
   };
 };
-
-// check that padding has not pushed our origins off the board
-// mutating function
-const checkAndAdjustStartingPosition = (
-  dimension: number,
-  origin: [number, number],
-  sliceOrigin: [number, number],
-): void => {
-  // check that our origin is not off the board.
-  if (origin[dimension] < 0) {
-    // first, find out how much it overhangs
-    const amount = 0 - origin[dimension];
-
-    // then, increase origin by that amount (could also just set it to 0.)
-    origin[dimension] += amount;
-
-    // and increase sliceOrigin to accommodate
-    sliceOrigin[dimension] -= amount;
-  }
-};
-
-// mutating function
-const checkAndAdjustEndingPosition = (
-  size: number,
-  dimension: number,
-  endPosition: [number, number],
-  origin: [number, number],
-  sliceOrigin: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
-  // check that our final positions are not off the board
-  if (endPosition[dimension] > size) {
-    // box overhangs in the y direction, bring origin back and cut off the appropriate section.
-
-    // first determine the amount of overhang
-    const amount = endPosition[dimension] - size;
-
-    let compensatingAmount = 0;
-    if (origin[dimension] - amount < 0) {
-      compensatingAmount = 0 - (origin[dimension] - amount);
-    }
-
-    // reduce origin to accommodate overhang
-    origin[dimension] -= amount - compensatingAmount;
-
-    // then, reduce endPosition by the same amount.
-    endPosition[dimension] -= amount;
-
-    // then, increase sliceOrigin amount
-    const sliceAmount = amount - compensatingAmount;
-    sliceOrigin[dimension] += sliceAmount;
-    sliceEndPosition[dimension] += sliceAmount;
-  }
-};
-
-// mutating function
-const checkAndAdjustSliceSize = (
-  dimension: number,
-  size: [number, number],
-  sliceEndPosition: [number, number],
-): void => {
-  if (sliceEndPosition[dimension] > size[dimension]) {
-    sliceEndPosition[dimension] = size[dimension];
-  }
-};
-
-export interface GetTensorDimensionsOpts {
-  row: number;
-  col: number;
-  patchSize: number;
-  height: number;
-  width: number;
-  padding?: number;
-}
-
-export const getTensorDimensions = ({
-  row,
-  col,
-  patchSize,
-  height,
-  width,
-  padding = 0,
-}: GetTensorDimensionsOpts) => {
-  // non typescript code can call this function, so we add runtime
-  // checks to ensure required values are present
-  if (row === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED;
-  }
-  if (col === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED;
-  }
-  if (patchSize === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED;
-  }
-  if (height === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED;
-  }
-  if (width === undefined) {
-    throw GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED;
-  }
-  let yPatchSize = patchSize;
-  let xPatchSize = patchSize;
-  if (yPatchSize > height) {
-    yPatchSize = height;
-  }
-  if (xPatchSize > width) {
-    xPatchSize = width;
-  }
-  const origin: [number, number] = [
-    row * patchSize - padding,
-    col * patchSize - padding,
-  ];
-  const sliceOrigin: [number, number] = [padding, padding,];
-
-  checkAndAdjustStartingPosition(0, origin, sliceOrigin);
-  checkAndAdjustStartingPosition(1, origin, sliceOrigin);
-
-  const endPosition: [number, number] = [
-    origin[0] + yPatchSize + padding * 2,
-    origin[1] + xPatchSize + padding * 2,
-  ];
-  const sliceEndPosition: [number, number] = [
-    sliceOrigin[0] + yPatchSize,
-    sliceOrigin[1] + xPatchSize,
-  ];
-
-  checkAndAdjustEndingPosition(
-    height,
-    0,
-    endPosition,
-    origin,
-    sliceOrigin,
-    sliceEndPosition,
-  );
-  checkAndAdjustEndingPosition(
-    width,
-    1,
-    endPosition,
-    origin,
-    sliceOrigin,
-    sliceEndPosition,
-  );
-
-  const size: [number, number] = [
-    endPosition[0] - origin[0],
-    endPosition[1] - origin[1],
-  ];
-
-  checkAndAdjustSliceSize(0, size, sliceEndPosition);
-  checkAndAdjustSliceSize(1, size, sliceEndPosition);
-  const sliceSize: [number, number] = [
-    sliceEndPosition[0] - sliceOrigin[0],
-    sliceEndPosition[1] - sliceOrigin[1],
-  ];
-
-  return {
-    origin,
-    sliceOrigin,
-    size,
-    sliceSize,
-  };
-};
-
-export function concatTensors<T extends tf.Tensor3D | tf.Tensor4D> (tensors: Array<T | undefined>, axis = 0): T {
-  const definedTensors: Array<tf.Tensor3D | tf.Tensor4D> = tensors.filter(nonNullable);
-  if (definedTensors.length === 0) {
-    throw GET_UNDEFINED_TENSORS_ERROR();
-  }
-  const concatenatedTensor = tf.concat(definedTensors, axis);
-  tensors.forEach(tensor => tensor?.dispose());
-  return concatenatedTensor as T;
-}
 
 export const getPercentageComplete = (row: number, col: number, columns: number, total: number) => {
   const index = row * columns + col + 1;
@@ -384,11 +213,6 @@ export async function* processPixels(
   postprocessedTensor.dispose();
   return squeezedTensor;
 }
-
-// if given a tensor, we copy it; otherwise, we pass input through unadulterated
-// this allows us to safely dispose of memory ourselves without having to manage
-// what input is in which format
-export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
 
 export function upscale(
   input: Input,
