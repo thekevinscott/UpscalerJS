@@ -222,2221 +222,2049 @@ describe('tensorAsClampedArray', () => {
 });
 
 describe('getTensorDimensions', () => {
-  interface GetTensorDimensionTestCaseArgs {
-    width: number;
-    height: number;
-    patchSize: number;
-    padding: number;
-    row: number;
-    col: number;
-  }
-
   type GetTensorDimensionTestCaseExpectation = ReturnType<GetTensorDimensions>;
 
   const testCases: {
     name: string;
+    input: Omit<GetTensorDimensionsOpts, 'row' | 'col'>;
     tests: {
-      args: GetTensorDimensionTestCaseArgs;
+      args: Pick<GetTensorDimensionsOpts, 'row' | 'col'>;
       expectation: GetTensorDimensionTestCaseExpectation;
     }[];
-  }[] = [
+  }[] = [{
+    "name": "a patch size that matches the image size",
+    "input": {
+      "width": 2,
+      "height": 2,
+      "patchSize": 2,
+      "padding": 0
+    },
+    "tests": [
       {
-        "name": "a patch size that matches the image size",
-        "tests": [
-          {
-            "args": {
-              "width": 2,
-              "height": 2,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "a patch size that is larger than the image",
+    "input": {
+      "width": 2,
+      "height": 2,
+      "patchSize": 4,
+      "padding": 0
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "subset patch size that fits equally",
+    "input": {
+      "width": 4,
+      "height": 4,
+      "patchSize": 2,
+      "padding": 0
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
       },
       {
-        "name": "a patch size that is larger than the image",
-        "tests": [
-          {
-            "args": {
-              "width": 2,
-              "height": 2,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "subset patch size that fits equally",
-        "tests": [
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "subset patch size that is unequal without padding",
-        "tests": [
-          {
-            "args": {
-              "width": 6,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 6,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  2,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  4,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "subset patch size that is unequal without padding",
+    "input": {
+      "width": 6,
+      "height": 6,
+      "patchSize": 4,
+      "padding": 0
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
       },
       {
-        "name": "uneven subset patch size that fits equally",
-        "tests": [
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
           },
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 6,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 0,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  4
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              2,
+              4
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "uneven subset patch size that fits unequally without padding",
-        "tests": [
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              4,
+              4
+            ]
           },
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  3,
-                  0
-                ],
-                "size": [
-                  1,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  4
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  3,
-                  0
-                ],
-                "size": [
-                  1,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  6
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  4,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 10,
-              "height": 5,
-              "patchSize": 4,
-              "padding": 0,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  6
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  3,
-                  2
-                ],
-                "size": [
-                  1,
-                  2
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              4,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | a subset patch size that fits equally with padding",
-        "tests": [
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              4,
+              4
+            ]
           },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 1,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 1,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 4,
-              "height": 4,
-              "patchSize": 2,
-              "padding": 1,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "uneven subset patch size that fits equally",
+    "input": {
+      "width": 6,
+      "height": 4,
+      "patchSize": 2,
+      "padding": 0
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
       },
       {
-        "name": "Padding for constant sized slices | a subset patch size that fits equally with padding with more dimensions",
-        "tests": [
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  0
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 2,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  4,
-                  0
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  1
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  1
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 2,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  4,
-                  2
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  1
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  2,
-                  4
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  2
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 2,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  4,
-                  4
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | a fully-covered patch size with padding for constant patch",
-        "tests": [
-          {
-            "args": {
-              "width": 2,
-              "height": 2,
-              "patchSize": 2,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  2
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | subset patch size that is unequal with padding for constant patch size",
-        "tests": [
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  0
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 2,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  0
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  5,
-                  0
-                ],
-                "size": [
-                  1,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  1
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  1
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 2,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  5,
-                  1
-                ],
-                "size": [
-                  1,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  5
-                ],
-                "size": [
-                  4,
-                  1
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  5
-                ],
-                "size": [
-                  4,
-                  1
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 9,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 2,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  3,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  5,
-                  5
-                ],
-                "size": [
-                  1,
-                  1
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | uneven subset patch size that fits equally with padding for a constant patch size",
-        "tests": [
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  0
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  0
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  1
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  2
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  1
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  2
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 3,
-              "padding": 1,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  1,
-                  4
-                ],
-                "size": [
-                  5,
-                  5
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  2,
-                  2
-                ],
-                "size": [
-                  3,
-                  3
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | an uneven subset patch size that fits unequally with padding for constant patch size",
-        "tests": [
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              4
+            ],
+            "size": [
+              2,
+              2
+            ]
           },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  4,
-                  0
-                ],
-                "size": [
-                  2,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  1
-                ],
-                "size": [
-                  4,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 1
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  4,
-                  1
-                ],
-                "size": [
-                  2,
-                  4
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 0,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  5
-                ],
-                "size": [
-                  4,
-                  1
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 9,
-              "height": 6,
-              "patchSize": 4,
-              "padding": 1,
-              "row": 1,
-              "col": 2
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  3
-                ],
-                "size": [
-                  6,
-                  6
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  4,
-                  5
-                ],
-                "size": [
-                  2,
-                  1
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
           }
-        ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "uneven subset patch size that fits unequally without padding",
+    "input": {
+      "width": 10,
+      "height": 5,
+      "patchSize": 4,
+      "padding": 0
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
       },
       {
-        "name": "Padding for constant sized slices | a very small patch size for constant patch size",
-        "tests": [
-          {
-            "args": {
-              "width": 13,
-              "height": 2,
-              "patchSize": 1,
-              "padding": 4,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  9
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  1,
-                  1
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
           },
-          {
-            "args": {
-              "width": 13,
-              "height": 2,
-              "patchSize": 1,
-              "padding": 4,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  2,
-                  9
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  0
-                ],
-                "size": [
-                  1,
-                  1
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 13,
-              "height": 2,
-              "patchSize": 1,
-              "padding": 4,
-              "row": 0,
-              "col": 8
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  2,
-                  9
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  1,
-                  1
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 13,
-              "height": 2,
-              "patchSize": 1,
-              "padding": 4,
-              "row": 1,
-              "col": 8
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  4
-                ],
-                "size": [
-                  2,
-                  9
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  1,
-                  4
-                ],
-                "size": [
-                  1,
-                  1
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              3,
+              0
+            ],
+            "size": [
+              1,
+              4
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "Padding for constant sized slices | a larger image at constant patch size",
-        "tests": [
-          {
-            "args": {
-              "width": 100,
-              "height": 100,
-              "patchSize": 32,
-              "padding": 4,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  40,
-                  40
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  32,
-                  32
-                ]
-              }
-            }
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              4,
+              4
+            ]
           },
-          {
-            "args": {
-              "width": 100,
-              "height": 100,
-              "patchSize": 32,
-              "padding": 4,
-              "row": 1,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  28,
-                  0
-                ],
-                "size": [
-                  40,
-                  40
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  4,
-                  0
-                ],
-                "size": [
-                  32,
-                  32
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 100,
-              "height": 100,
-              "patchSize": 32,
-              "padding": 4,
-              "row": 2,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  60,
-                  0
-                ],
-                "size": [
-                  40,
-                  40
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  4,
-                  0
-                ],
-                "size": [
-                  32,
-                  32
-                ]
-              }
-            }
-          },
-          {
-            "args": {
-              "width": 100,
-              "height": 100,
-              "patchSize": 32,
-              "padding": 4,
-              "row": 3,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  60,
-                  0
-                ],
-                "size": [
-                  40,
-                  40
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  36,
-                  0
-                ],
-                "size": [
-                  4,
-                  32
-                ]
-              }
-            }
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
           }
-        ]
+        }
       },
       {
-        "name": "the patch size example app",
-        "tests": [
-          {
-            "args": {
-              "width": 100,
-              "height": 100,
-              "patchSize": 20,
-              "padding": 5,
-              "row": 0,
-              "col": 0
-            },
-            "expectation": {
-              "preprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  30,
-                  30
-                ]
-              },
-              "postprocessedCoordinates": {
-                "origin": [
-                  0,
-                  0
-                ],
-                "size": [
-                  20,
-                  20
-                ]
-              }
-            }
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              4
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              3,
+              0
+            ],
+            "size": [
+              1,
+              4
+            ]
           }
-        ]
+        }
       },
-    ];
+      {
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              6
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              4,
+              2
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              6
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              3,
+              2
+            ],
+            "size": [
+              1,
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | a subset patch size that fits equally with padding",
+    "input": {
+      "width": 4,
+      "height": 4,
+      "patchSize": 2,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | a subset patch size that fits equally with padding with more dimensions",
+    "input": {
+      "width": 9,
+      "height": 9,
+      "patchSize": 3,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              0
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              4,
+              0
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              1
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              1
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              4,
+              2
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              1
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              2,
+              4
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              4,
+              4
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | a fully-covered patch size with padding for constant patch",
+    "input": {
+      "width": 2,
+      "height": 2,
+      "patchSize": 2,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              2
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | subset patch size that is unequal with padding for constant patch size",
+    "input": {
+      "width": 9,
+      "height": 9,
+      "patchSize": 4,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              0
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              0
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              5,
+              0
+            ],
+            "size": [
+              1,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              1
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              1
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              5,
+              1
+            ],
+            "size": [
+              1,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              5
+            ],
+            "size": [
+              4,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              5
+            ],
+            "size": [
+              4,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              3,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              5,
+              5
+            ],
+            "size": [
+              1,
+              1
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | uneven subset patch size that fits equally with padding for a constant patch size",
+    "input": {
+      "width": 9,
+      "height": 6,
+      "patchSize": 3,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              0
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              0
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              1
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              2
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              1
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              1,
+              4
+            ],
+            "size": [
+              5,
+              5
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              2,
+              2
+            ],
+            "size": [
+              3,
+              3
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | an uneven subset patch size that fits unequally with padding for constant patch size",
+    "input": {
+      "width": 9,
+      "height": 6,
+      "patchSize": 4,
+      "padding": 1
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              4,
+              0
+            ],
+            "size": [
+              2,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              1
+            ],
+            "size": [
+              4,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 1
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              4,
+              1
+            ],
+            "size": [
+              2,
+              4
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              5
+            ],
+            "size": [
+              4,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 2
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              3
+            ],
+            "size": [
+              6,
+              6
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              4,
+              5
+            ],
+            "size": [
+              2,
+              1
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | a very small patch size for constant patch size",
+    "input": {
+      "width": 13,
+      "height": 2,
+      "patchSize": 1,
+      "padding": 4
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              9
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              2,
+              9
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              0
+            ],
+            "size": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 0,
+          "col": 8
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              2,
+              9
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              1,
+              1
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 8
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              4
+            ],
+            "size": [
+              2,
+              9
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              1,
+              4
+            ],
+            "size": [
+              1,
+              1
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Padding for constant sized slices | a larger image at constant patch size",
+    "input": {
+      "width": 100,
+      "height": 100,
+      "patchSize": 32,
+      "padding": 4
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              40,
+              40
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              32,
+              32
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 1,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              28,
+              0
+            ],
+            "size": [
+              40,
+              40
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              4,
+              0
+            ],
+            "size": [
+              32,
+              32
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 2,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              60,
+              0
+            ],
+            "size": [
+              40,
+              40
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              4,
+              0
+            ],
+            "size": [
+              32,
+              32
+            ]
+          }
+        }
+      },
+      {
+        "args": {
+          "row": 3,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              60,
+              0
+            ],
+            "size": [
+              40,
+              40
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              36,
+              0
+            ],
+            "size": [
+              4,
+              32
+            ]
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "the patch size example app",
+    "input": {
+      "width": 100,
+      "height": 100,
+      "patchSize": 20,
+      "padding": 5
+    },
+    "tests": [
+      {
+        "args": {
+          "row": 0,
+          "col": 0
+        },
+        "expectation": {
+          "preprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              30,
+              30
+            ]
+          },
+          "postprocessedCoordinates": {
+            "origin": [
+              0,
+              0
+            ],
+            "size": [
+              20,
+              20
+            ]
+          }
+        }
+      }
+    ]
+  }];
 
-  const parsedTestCases = testCases.reduce((arr, {
+  const parsedTestCases = testCases.reduce<[
+    string, 
+    GetTensorDimensionsOpts, 
+    GetTensorDimensionTestCaseExpectation
+  ][]>((arr, {
     name,
+    input,
     tests,
   }) => arr.concat(tests.map(({ args, expectation, }) => ([
     name,
-    args,
+    {
+      padding: input.padding,
+      patchSize: input.patchSize,
+      width: input.width,
+      height: input.height,
+      row: args.row,
+      col: args.col,
+    },
     expectation,
-  ]))), [] as [string, GetTensorDimensionTestCaseArgs, GetTensorDimensionTestCaseExpectation][]);
+  ]))), []);
 
   test.each(parsedTestCases)(
     "gets tensor dimensions: %s | args: %p | expectation: %p",
