@@ -24,7 +24,9 @@ import {
 import {
   Input,
 } from './image.generated';
-import { Coordinate } from './types';
+import {
+  Coordinate,
+} from './types';
 
 export const padInput = (inputShape: Shape4D) => (pixels: tf.Tensor4D): tf.Tensor4D => {
   const pixelsHeight = pixels.shape[1];
@@ -201,7 +203,7 @@ export type GetTensorDimensions = (opts: GetTensorDimensionsOpts) => {
     origin: Coordinate;
     size: Coordinate;
   };
-}
+};
 
 export const getTensorDimensions: GetTensorDimensions = ({
   row,
@@ -293,7 +295,7 @@ export const getTensorDimensions: GetTensorDimensions = ({
         postProcessedEndPosition[0] - postprocessedPixelsOrigin[0],
         postProcessedEndPosition[1] - postprocessedPixelsOrigin[1],
       ],
-    }
+    },
   };
 };
 
