@@ -328,17 +328,16 @@ const getArgs = async (): Promise<Args> => {
   }
 };
 
-if (require.main === module) {
-  (async () => {
-    const {
-      platform,
-      runner,
-      positionalArgs,
-      kind,
-      ...args
-    } = await getArgs();
-    await test(platform, runner, kind, positionalArgs, {
-      ...args,
-    });
-  })();
-}
+// TODO: Enable test to be imported, check if the file is main
+(async () => {
+  const {
+    platform,
+    runner,
+    positionalArgs,
+    kind,
+    ...args
+  } = await getArgs();
+  await test(platform, runner, kind, positionalArgs, {
+    ...args,
+  });
+})();
