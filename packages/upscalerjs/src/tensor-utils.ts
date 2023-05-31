@@ -192,15 +192,7 @@ export interface GetTensorDimensionsOpts {
   width: number;
   padding?: number;
 }
-
-export const getTensorDimensions = ({
-  row,
-  col,
-  patchSize,
-  height,
-  width,
-  padding = 0,
-}: GetTensorDimensionsOpts): {
+export type GetTensorDimensions = (opts: GetTensorDimensionsOpts) => {
   preprocessedCoordinates: {
     origin: Coordinate;
     size: Coordinate;
@@ -209,7 +201,16 @@ export const getTensorDimensions = ({
     origin: Coordinate;
     size: Coordinate;
   };
-} => {
+}
+
+export const getTensorDimensions: GetTensorDimensions = ({
+  row,
+  col,
+  patchSize,
+  height,
+  width,
+  padding = 0,
+})  => {
   // non typescript code can call this function, so we add runtime
   // checks to ensure required values are present
   const errChecks: [number | undefined, Error][] = [
