@@ -116,7 +116,13 @@ export async function* processPixels(
       let colTensor: undefined | tf.Tensor4D;
       yield [colTensor, upscaledTensor,];
       for (let col = 0; col < columns; col++) {
-        const { origin, size, sliceOrigin, sliceSize, } = getTensorDimensions({
+        const {
+          preprocessedCoordinates,
+          postprocessedCoordinates: {
+            origin: sliceOrigin,
+            size: sliceSize,
+          },
+        } = getTensorDimensions({
           row,
           col,
           patchSize,
@@ -126,8 +132,8 @@ export async function* processPixels(
         });
         yield [upscaledTensor, colTensor,];
         const slicedPixels = pixels.slice(
-          [0, origin[0], origin[1],],
-          [-1, size[0], size[1],],
+          [0, ...preprocessedCoordinates.origin,],
+          [-1, ...preprocessedCoordinates.size,],
         );
         yield [upscaledTensor, colTensor, slicedPixels,];
         const prediction = executeModel(model, slicedPixels);
