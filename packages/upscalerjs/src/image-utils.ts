@@ -26,9 +26,9 @@ const get1DPatch = (total: number, idx: number, patchSize: number, padding: numb
     },
     increment,
   };
-}
+};
 
-export const getPatchesFromImage = ([width, height]: Coordinate, patchSize: number, padding: number): Patch[] => {
+export const getPatchesFromImage = ([width, height,]: Coordinate, patchSize: number, padding: number): Patch[] => {
   const patches: Patch[] = [];
   let x = 0;
   let y = 0;
@@ -66,7 +66,7 @@ export const getPatchesFromImage = ([width, height]: Coordinate, patchSize: numb
         post: {
           origin: [postOriginY, postOriginX,],
           size: [postSizeY, postSizeX,],
-        }
+        },
       });
       x += xIncrement;
     }
@@ -74,4 +74,4 @@ export const getPatchesFromImage = ([width, height]: Coordinate, patchSize: numb
     y += yIncrement;
   }
   return patches;
-}
+};
