@@ -84,3 +84,13 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
 }) => void;
 
 export type Coordinate = [number, number];
+
+export type PatchCoordinates = {
+  origin: Coordinate;
+  size: Coordinate;
+};
+
+export type Patch = {
+  pre: PatchCoordinates;
+  post: PatchCoordinates;
+};
