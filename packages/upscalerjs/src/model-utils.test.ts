@@ -29,8 +29,10 @@ import {
   ERROR_WITH_MODEL_INPUT_SHAPE, 
   GET_INVALID_PATCH_SIZE,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
+  WARNING_UNDEFINED_PADDING,
   getModelDefinitionError,
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
+  GET_INVALID_PATCH_SIZE_AND_PADDING,
 } from './errors-and-warnings';
 
 jest.mock('./dependencies.generated', () => {
@@ -176,6 +178,19 @@ describe('parsePatchAndInputShapes', () => {
     expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
   });
 
+  it('throws if given invalid patch size and padding', () => {
+    const patchSize = 4;
+    const padding = 2;
+    const modelPackage = {
+      model: {
+        layers: [{
+          batchInputShape: [null, null, null, 3],
+        }],
+      }
+    } as ModelPackage;
+    expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE_AND_PADDING(patchSize, padding));
+  });
+
   describe('Input size', () => {
     it('warns if provided an inputSize and patchSize', () => {
       const modelPackage: ModelPackage = {
@@ -185,7 +200,7 @@ describe('parsePatchAndInputShapes', () => {
           }],
         },
       } as ModelPackage;
-      parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3]);
+      parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 2 }, [ null, 9, 9, 3]);
       expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
     });
 
@@ -197,7 +212,7 @@ describe('parsePatchAndInputShapes', () => {
           }],
         },
       } as ModelPackage;
-      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [ null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
     });
 
     it('returns the appropriate patch size', () => {
@@ -209,7 +224,7 @@ describe('parsePatchAndInputShapes', () => {
         },
       } as ModelPackage;
       expect(parsePatchAndInputShapes(modelPackage, { patchSize: 3, padding: 1 }, [ null, 9, 9, 3])).toEqual({
-        patchSize: 7,
+        patchSize: 9,
         padding: 1,
         modelInputShape: [null, 9, 9, 3],
       });
@@ -230,12 +245,25 @@ describe('parsePatchAndInputShapes', () => {
       },
       model,
     };
-    expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 8 }, [ null, 9, 9, 3])).toEqual({
+    expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [ null, 9, 9, 3])).toEqual({
       patchSize: 9,
-      padding: 8,
+      padding: 1,
       modelInputShape: [null, null, null, 3],
     })
   });
+
+  it('warns if provided a patch size without padding', () => {
+    const modelPackage: ModelPackage = {
+      model: {
+        layers: [{
+          batchInputShape: [null, null, null, 3],
+        }],
+      },
+    } as ModelPackage;
+    parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [ null, 9, 9, 3]);
+    expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
+  });
+
 });
 
 describe('getModelInputShape', () => {

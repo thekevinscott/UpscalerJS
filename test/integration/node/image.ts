@@ -187,7 +187,7 @@ describe('Node Image Loading Integration Tests', () => {
       const result = await testRunner.run({
         globals: {
           image: JSON.stringify(IMAGE_FIXTURE_PATH),
-          patchSize: 4,
+          patchSize: 6,
           padding: 2,
         },
       });

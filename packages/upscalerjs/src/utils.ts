@@ -14,7 +14,13 @@ export const isMultiArgTensorProgress = (p: Progress, output: ResultFormat, prog
   if (!isProgress(p) || p.length <= 1) {
     return false;
   }
-  return progressOutput === undefined && output === 'tensor' || progressOutput === 'tensor';
+  if (progressOutput === undefined && output === 'tensor') {
+    return true;
+  }
+  if (progressOutput === 'tensor') {
+    return true;
+  }
+  return false;
 };
 
 export const isAborted = (abortSignal?: AbortSignal): boolean => {

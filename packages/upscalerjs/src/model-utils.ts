@@ -7,6 +7,7 @@ import {
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
+  GET_INVALID_PATCH_SIZE_AND_PADDING,
 } from './errors-and-warnings';
 
 import {
@@ -74,8 +75,13 @@ type ParsePatchAndInputShapes = (
 } & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
 export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }) => {
   const modelInputShape = getModelInputShape(modelPackage);
-  if (patchSize !== undefined && patchSize <= 0) {
-    throw GET_INVALID_PATCH_SIZE(patchSize);
+  if (patchSize !== undefined) {
+    if (patchSize <= 0) {
+      throw GET_INVALID_PATCH_SIZE(patchSize);
+    }
+    if (padding !== undefined && padding * 2 >= patchSize) {
+      throw GET_INVALID_PATCH_SIZE_AND_PADDING(patchSize, padding);
+    }
   }
   if (isFixedShape4D(modelInputShape)) {
     if (patchSize !== undefined) {
@@ -86,7 +92,7 @@ export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage,
       throw MODEL_INPUT_SIZE_MUST_BE_SQUARE;
     }
     return {
-      patchSize: modelInputShape[1] - (padding || 0) * 2,
+      patchSize: modelInputShape[1],
       padding,
       modelInputShape,
     };

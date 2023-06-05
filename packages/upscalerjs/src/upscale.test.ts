@@ -2,7 +2,6 @@ import * as tf from '@tensorflow/tfjs-node';
 import {
   getPercentageComplete,
   processPixels,
-  getRowsAndColumns,
   upscale,
   cancellableUpscale,
   executeModel,
@@ -11,7 +10,6 @@ import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
-  GET_INVALID_ROW_OR_COLUMN,
   AbortError,
 } from './errors-and-warnings';
 import {
@@ -23,9 +21,6 @@ import {
   wrapGenerator,
   warn as _warn,
 } from './utils';
-import {
-  getWidthAndHeight as _getWidthAndHeight,
-} from './tensor-utils';
 import {
   ModelDefinition,
   isFourDimensionalTensor as _isFourDimensionalTensor,
@@ -60,20 +55,19 @@ jest.mock('@upscalerjs/core', () => {
   };
 });
 
-jest.mock('./tensor-utils', () => {
-  const { getWidthAndHeight, ...rest } = jest.requireActual('./tensor-utils');
-  return {
-    ...rest,
-    getWidthAndHeight: jest.fn(getWidthAndHeight),
-  };
-});
+// jest.mock('./tensor-utils', () => {
+//   const { getWidthAndHeight, ...rest } = jest.requireActual('./tensor-utils');
+//   return {
+//     ...rest,
+//     getWidthAndHeight: jest.fn(getWidthAndHeight),
+//   };
+// });
 
 const tensorAsBase64 = mockFn(_tensorAsBase64);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 const isTensor = mockFn(_isTensor);
 const isFourDimensionalTensor = mockFn(_isFourDimensionalTensor);
 const checkValidEnvironment = mockFn(_checkValidEnvironment);
-const getWidthAndHeight = mockFn(_getWidthAndHeight);
 const warn = mockFn(_warn);
 
 describe('getPercentageComplete', () => {
@@ -106,67 +100,6 @@ describe('getPercentageComplete', () => {
     const total = rows * columns;
     const percent = getPercentageComplete(row, col, columns, total);
     expect(percent.toFixed(4)).toBe(expected.toFixed(4));
-  });
-});
-
-describe('getRowsAndColumns', () => {
-  it('throws if returning an invalid row', () => {
-    const img: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-
-    expect(() => getRowsAndColumns(img, -1)).toThrow(GET_INVALID_ROW_OR_COLUMN('rows', -2, -1, 2));
-  });
-
-  it('throws if returning an invalid column', () => {
-    getWidthAndHeight.mockImplementationOnce(() => [2, -3]);
-
-    const img: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-
-    expect(() => getRowsAndColumns(img, 1)).toThrow(GET_INVALID_ROW_OR_COLUMN('columns', -3, 1, -3));
-  });
-
-  it('gets rows and columns', () => {
-    const img: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-
-    expect(getRowsAndColumns(img, 1)).toEqual({
-      rows: 2,
-      columns: 2,
-    });
-  });
-
-  it('gets single row and column for a greater-than patch size', () => {
-    const img: tf.Tensor4D = tf.tensor(
-      [1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,],
-      [1, 2, 2, 3,],
-    );
-
-    expect(getRowsAndColumns(img, 3)).toEqual({
-      rows: 1,
-      columns: 1,
-    });
-  });
-
-  it('gets uneven rows and columns by rounding up', () => {
-    const img: tf.Tensor4D = tf.tensor(
-      [
-        1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 8, 8, 8,
-        9, 9, 9,
-      ],
-      [1, 3, 3, 3,],
-    );
-
-    expect(getRowsAndColumns(img, 2)).toEqual({
-      rows: 2,
-      columns: 2,
-    });
   });
 });
 

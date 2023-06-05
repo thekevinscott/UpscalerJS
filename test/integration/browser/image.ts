@@ -175,6 +175,28 @@ describe('Image Format Integration Tests', () => {
   });
 
   describe('Patch sizes', () => {
+    it("throws if given an invalid patch size and padding", async () => {
+      const errMessage = await page().evaluate(() => new Promise((resolve, reject) => {
+        const upscaler = new window['Upscaler']({
+          model: {
+            path: '/models/pixel-upsampler/models/4x/4x.json',
+            scale: 4,
+            modelType: 'layers',
+          },
+        });
+        return upscaler.execute(window['fixtures']['pixel-upsampler'], {
+          patchSize: 4,
+          padding: 2,
+        }).then(() => {
+          resolve('this should not be called');
+        }).catch((err: Error) => {
+          return resolve(err.message);
+        });
+      }));
+
+      expect(errMessage).toEqual('Invalid patch size and padding: 4 and 2. Patch size must be greater than padding * 2.');
+    });
+
     it("upscales an imported local image path with patch sizes", async () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
@@ -185,7 +207,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         return upscaler.execute(window['fixtures']['pixel-upsampler'], {
-          patchSize: 4,
+          patchSize: 6,
           padding: 2,
         });
       });

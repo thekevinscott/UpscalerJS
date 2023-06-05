@@ -40,19 +40,7 @@ export const ERROR_INVALID_MODEL_PREDICTION = [
   `For more information, see ${ERROR_INVALID_MODEL_PREDICTION_URL}.`,
 ].join('\n');
 
-export const GET_INVALID_ROW_OR_COLUMN = (kind: 'rows' | 'columns', num: number, patchSize: number, dim: number) => new Error([
-    `Invalid ${kind} generated: ${num}. Should be greater than 0.`,
-    `Patch size was: ${patchSize}`,
-    `${kind === 'rows' ? 'Height' : 'Width'} was: ${dim}`,
-].join(' '));
-
 export const GET_UNDEFINED_TENSORS_ERROR = new Error('No defined tensors were passed to concatTensors');
-
-export const GET_TENSOR_DIMENSION_ERROR_ROW_IS_UNDEFINED = new Error('Row is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_COL_IS_UNDEFINED = new Error('Column is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_PATCH_SIZE_IS_UNDEFINED = new Error('Patch Size is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_HEIGHT_IS_UNDEFINED = new Error('Height is undefined');
-export const GET_TENSOR_DIMENSION_ERROR_WIDTH_IS_UNDEFINED = new Error('Width is undefined');
 
 export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
@@ -92,6 +80,10 @@ export const GET_INVALID_SHAPED_TENSOR = (shape: number[]): Error => new Error(
 export const GET_INVALID_PATCH_SIZE = (patchSize: number): Error => new Error([
   `Invalid patch size: ${patchSize}. Patch size must be greater than 0.`,
 ].join(''));
+export const GET_INVALID_PATCH_SIZE_AND_PADDING = (patchSize: number, padding: number): Error => new Error([
+  `Invalid patch size and padding: ${patchSize} and ${padding}. Patch size must be greater than padding * 2.`,
+].join(''));
+
 
 export const MODEL_INPUT_SIZE_MUST_BE_SQUARE = new Error([
   'Model input sizes must be square. If you are using a model with a non-square input size and would like to request support,',

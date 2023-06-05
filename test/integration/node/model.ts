@@ -7,7 +7,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import {
-  MultiArgStringProgress,
+  MultiArgTensorProgress,
 } from '../../../packages/upscalerjs/src/types';
 import {
   ModelDefinition,
@@ -199,6 +199,7 @@ describe('Node Model Loading Integration Tests', () => {
   describe('Kinds of Model JSON Configurations', () => {
     interface ProgressResult {
       amount: number;
+      shape: number[];
       row: number;
       col: number;
     }
@@ -248,16 +249,18 @@ describe('Node Model Loading Integration Tests', () => {
         expectedTensor.print();
       }
       const progressResults: ProgressResult[] = [];
-      const progress: MultiArgStringProgress = (amount, _, row, col) => {
+      const progress: MultiArgTensorProgress = (amount, slice, row, col) => {
         progressResults.push({
           amount,
           row,
           col,
+          shape: slice.shape,
         });
+        slice.dispose();
       };
       const result = await upscaler.execute(tensor, {
         output: 'tensor',
-        progressOutput: 'string',
+        progressOutput: 'tensor',
         patchSize,
         padding,
         progress,
@@ -493,7 +496,7 @@ describe('Node Model Loading Integration Tests', () => {
         } = await run({
           imageInputSize: [7, 3],
           scale: 2,
-          patchSize: 4,
+          patchSize: 6,
           padding: 1,
         });
         expect(upscaledShape).toEqual(expectedShape);
