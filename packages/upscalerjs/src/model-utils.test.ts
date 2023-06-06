@@ -420,7 +420,7 @@ describe('parsePatchAndInputShapes', () => {
     expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [ null, 9, 9, 3])).toEqual({
       patchSize: 9,
       padding: 1,
-      modelInputShape: [null, null, null, 3],
+      modelInputShape: undefined,
     })
     expect(warn).not.toHaveBeenCalled();
   });
@@ -432,6 +432,7 @@ describe('parsePatchAndInputShapes', () => {
           batchInputShape: [null, null, null, 3],
         }],
       },
+      modelDefinition: {},
     } as ModelPackage;
     parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [ null, 9, 9, 3]);
     expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
