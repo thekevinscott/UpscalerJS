@@ -1,14 +1,18 @@
 {
   "name": "@upscalerjs/dev-node",
+  "description": "Dev CLI to interact with UpscalerJS in Node",
   "private": true,
   "scripts": {
-    "dev": "ts-node index.ts"
+    "dev": "ts-node src/index.ts"
   },
   "dependencies": {
-    "upscaler": "workspace:*",
     "@tensorflow/tfjs-node-gpu": "^4.6.0",
+    "commander": "^10.0.1",
     "seedrandom": "3.0.5",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "upscaler": "workspace:*"
   },
-  "version": "1.0.0-beta.10"
+  "version": "1.0.0-beta.10",
+  "devDependencies": {
+  }
 }
