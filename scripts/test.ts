@@ -341,6 +341,6 @@ const main = async () => {
   });
 }
 
-if (!module.parent) {
-  await main();
+if (require.main === module) {
+  main();
 }
