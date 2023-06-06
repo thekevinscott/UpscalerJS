@@ -23,7 +23,7 @@
     "build:cjs": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
   },
   "dependencies": {
-    "@tensorflow/tfjs-core": "^4.5.0"
+    "@tensorflow/tfjs-core": "^4.6.0"
   },
   "devDependencies": {
     "@types/jest": "^29.0.3"

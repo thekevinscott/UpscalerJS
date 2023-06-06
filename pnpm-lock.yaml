@@ -5,9 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@tensorflow/tfjs': ^4.5.0
-  '@tensorflow/tfjs-node': ^4.5.0
-  '@tensorflow/tfjs-node-gpu': ^4.5.0
+  '@tensorflow/tfjs': ^4.6.0
+  '@tensorflow/tfjs-node': ^4.6.0
+  '@tensorflow/tfjs-node-gpu': ^4.6.0
 
 importers:
 
@@ -41,14 +41,14 @@ importers:
         specifier: ^0.0.6
         version: 0.0.6
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@types/babel__core':
         specifier: ^7.1.19
         version: 7.1.19
@@ -245,8 +245,8 @@ importers:
   dev/browser:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       stats.js:
         specifier: ^0.17.0
         version: 0.17.0
@@ -310,20 +310,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -331,17 +331,17 @@ importers:
   dev/browser/public/models/default-model/demo:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/default-model':
         specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.7(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.8(@tensorflow/tfjs@4.6.0)
     devDependencies:
       vite:
         specifier: '*'
@@ -354,20 +354,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -379,20 +379,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -400,17 +400,17 @@ importers:
   dev/browser/public/models/esrgan-legacy/demo:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-legacy':
         specifier: 1.0.0-beta.9
-        version: 1.0.0-beta.9(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.9(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.8(@tensorflow/tfjs@4.6.0)
     devDependencies:
       vite:
         specifier: '*'
@@ -423,20 +423,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -444,17 +444,17 @@ importers:
   dev/browser/public/models/esrgan-medium/demo:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-medium':
         specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.7(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.8(@tensorflow/tfjs@4.6.0)
     devDependencies:
       vite:
         specifier: '*'
@@ -467,20 +467,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -488,17 +488,17 @@ importers:
   dev/browser/public/models/esrgan-slim/demo:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-slim':
         specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.7(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.8(@tensorflow/tfjs@4.6.0)
     devDependencies:
       vite:
         specifier: '*'
@@ -511,20 +511,20 @@ importers:
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -532,17 +532,17 @@ importers:
   dev/browser/public/models/esrgan-thick/demo:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.7(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.8(@tensorflow/tfjs@4.6.0)
     devDependencies:
       vite:
         specifier: '*'
@@ -551,24 +551,24 @@ importers:
   dev/browser/public/models/pixel-upsampler:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../../../../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -576,8 +576,8 @@ importers:
   dev/node:
     dependencies:
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -606,11 +606,11 @@ importers:
         specifier: 2.0.0-beta.80
         version: 2.0.0-beta.80
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-medium':
         specifier: npm:@upscalerjs/esrgan-medium@1.0.0-beta.9
-        version: 1.0.0-beta.9(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.9(@tensorflow/tfjs@4.6.0)
       chart.js:
         specifier: ^4.0.1
         version: 4.0.1
@@ -673,7 +673,7 @@ importers:
         version: 3.0.0
       upscaler:
         specifier: npm:upscaler@1.0.0-beta.16
-        version: 1.0.0-beta.16(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.16(@tensorflow/tfjs@4.6.0)
     devDependencies:
       '@algolia/client-search':
         specifier: ^4.14.2
@@ -739,17 +739,17 @@ importers:
   docs/src/components/homepage/homepage-code-embed:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: latest
-        version: 1.0.0-beta.11(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.11(@tensorflow/tfjs@4.6.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: latest
-        version: 1.0.0-beta.16(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.16(@tensorflow/tfjs@4.6.0)
 
   docs/workers/image-search:
     devDependencies:
@@ -781,8 +781,8 @@ importers:
   docs/workers/upscale:
     dependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       aws-sdk:
         specifier: ^2.1193.0
         version: 2.1270.0
@@ -855,20 +855,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -880,20 +880,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -905,20 +905,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -930,20 +930,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -955,20 +955,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -980,20 +980,20 @@ importers:
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -1001,24 +1001,24 @@ importers:
   models/pixel-upsampler:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@tensorflow/tfjs-layers':
-        specifier: ^4.5.0
-        version: 4.5.0(@tensorflow/tfjs-core@4.5.0)
+        specifier: ^4.6.0
+        version: 4.6.0(@tensorflow/tfjs-core@4.6.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -1026,8 +1026,8 @@ importers:
   packages/core:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
     devDependencies:
       '@types/jest':
         specifier: ^29.0.3
@@ -1036,8 +1036,8 @@ importers:
   packages/shared:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ^4.5.0
-        version: 4.5.0
+        specifier: ^4.6.0
+        version: 4.6.0
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../core
@@ -1052,14 +1052,14 @@ importers:
         version: link:../../models/default-model
     devDependencies:
       '@tensorflow/tfjs':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.5.0
-        version: 4.5.0(seedrandom@3.0.5)
+        specifier: ^4.6.0
+        version: 4.6.0(seedrandom@3.0.5)
       '@types/jest':
         specifier: ^29.0.3
         version: 29.0.3
@@ -1076,7 +1076,7 @@ importers:
     dependencies:
       upscaler:
         specifier: 1.0.0-beta.14
-        version: 1.0.0-beta.14(@tensorflow/tfjs@4.5.0)
+        version: 1.0.0-beta.14(@tensorflow/tfjs@4.6.0)
 
   scripts:
     dependencies:
@@ -4341,35 +4341,35 @@ packages:
     dependencies:
       defer-to-connect: 1.1.3
 
-  /@tensorflow/tfjs-backend-cpu@4.5.0(@tensorflow/tfjs-core@4.5.0):
-    resolution: {integrity: sha512-TO6tkGeqR0UhifEx2SBa15kv8UlpubCHPGFHAnAfiPqBe3Z+3D7zqMlw2RvOelrzxzCWpTQByppFkB5u1pfiiA==}
+  /@tensorflow/tfjs-backend-cpu@4.6.0(@tensorflow/tfjs-core@4.6.0):
+    resolution: {integrity: sha512-SsJQQmO/cOjQkWy6wiTMFZY8/BQa1/UO/3wkqWgwDGPjPZ2EIsqmfT8lkKDHaIHTUZP8jBeeSbjIOpJZgAq6zw==}
     engines: {yarn: '>= 1.3.2'}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
       '@types/seedrandom': 2.4.30
       seedrandom: 3.0.5
 
-  /@tensorflow/tfjs-backend-webgl@4.5.0(@tensorflow/tfjs-core@4.5.0):
-    resolution: {integrity: sha512-xBgb3GW9wPbKRKeL8k0hxhyZv21uPnZ1eEXgwnpfgu86rXajToA7ATklh7bCpOlrQDY/n7ixBA8PwvsQEt2Jcw==}
+  /@tensorflow/tfjs-backend-webgl@4.6.0(@tensorflow/tfjs-core@4.6.0):
+    resolution: {integrity: sha512-rnzPDIL6J0UAYyVdilxHkNXG40q4WpNN3Ex50L9PKPuYIV9wbnYk09ATU/sdCb5QtxG1ncXYKMirNDGN4uQ1DQ==}
     engines: {yarn: '>= 1.3.2'}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.5.0(@tensorflow/tfjs-core@4.5.0)
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-backend-cpu': 4.6.0(@tensorflow/tfjs-core@4.6.0)
+      '@tensorflow/tfjs-core': 4.6.0
       '@types/offscreencanvas': 2019.3.0
       '@types/seedrandom': 2.4.30
       '@types/webgl-ext': 0.0.30
       seedrandom: 3.0.5
 
-  /@tensorflow/tfjs-converter@4.5.0(@tensorflow/tfjs-core@4.5.0):
-    resolution: {integrity: sha512-gd2DiLPX1YStXk4mkgqzbQuOoiwcuSv4s7tTyYvFEX5Ty9SKmttYmannCCppzmliL6aTzyxTpIZyWnqTPuTxeg==}
+  /@tensorflow/tfjs-converter@4.6.0(@tensorflow/tfjs-core@4.6.0):
+    resolution: {integrity: sha512-AcpmhZwQ81i9xI+p+t77O5z6KUHatnUR7WA7qbPRn+U7FRYqjuuhe8W3dpApJwnCSxgl3VvzP3vAedwDpoiGbg==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
 
   /@tensorflow/tfjs-core@3.21.0:
     resolution: {integrity: sha512-YSfsswOqWfd+M4bXIhT3hwtAb+IV8+ODwIxwdFR/7jTAPZP1wMVnSlpKnXHAN64HFOiP+Tm3HmKusEZ0+09A0w==}
@@ -4387,8 +4387,8 @@ packages:
       - encoding
     dev: false
 
-  /@tensorflow/tfjs-core@4.5.0:
-    resolution: {integrity: sha512-FrHUnab/5msyzIg7zcjBmMV8W9vf2lj+f4em0zL+ntAczkEBeMAEIykk9BmV7sqMplRiCu2Cfrks8EqHFutSqw==}
+  /@tensorflow/tfjs-core@4.6.0:
+    resolution: {integrity: sha512-y35vctU0asMt7V5DFieZRBheEE7yM5hpDUeOastpVcDsoCnWDCclaU8N50XV2kejAsOpN4RgWeewXUqfWLnHIw==}
     engines: {yarn: '>= 1.3.2'}
     dependencies:
       '@types/long': 4.0.2
@@ -4402,13 +4402,13 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@tensorflow/tfjs-data@4.5.0(@tensorflow/tfjs-core@4.5.0)(seedrandom@3.0.5):
-    resolution: {integrity: sha512-fqTS5K+TrdisyDOOjcKwYQtoGyk9GzYhxwof1X9kpdm2zxpwl0kzeSqqCuVMPGD5DAOKp+EccTWYfAC4MIafcw==}
+  /@tensorflow/tfjs-data@4.6.0(@tensorflow/tfjs-core@4.6.0)(seedrandom@3.0.5):
+    resolution: {integrity: sha512-Tu5C9Coi6LY2Eay7OYNAI8Y+Dn1KBAmWWqJ11uCQ7N858q6OBx/TfWZVgdvo7kbRi8ZkuWnk5ANAfcW1DO/zRw==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
       seedrandom: ^3.0.5
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
       '@types/node-fetch': 2.6.2
       node-fetch: 2.6.7
       seedrandom: 3.0.5
@@ -4416,20 +4416,20 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@tensorflow/tfjs-layers@4.5.0(@tensorflow/tfjs-core@4.5.0):
-    resolution: {integrity: sha512-/Ohzc39SiIszQqOjEb+4DzGyJkdCweGP4uoblUzQQZdolJB/NxsAHJ06YUj0mD5dflTwNVCwYAe3rkdYqNlgvg==}
+  /@tensorflow/tfjs-layers@4.6.0(@tensorflow/tfjs-core@4.6.0):
+    resolution: {integrity: sha512-zvOF9xbEGkmXJCSAL2iRJYzASy13lhmHY6oOzHy8MORAQpZRohjLrWrFLwCgA5Qpt6xL/mzUYFLMpgqkuY9tqg==}
     peerDependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
 
-  /@tensorflow/tfjs-node-gpu@4.5.0(seedrandom@3.0.5):
-    resolution: {integrity: sha512-B4j5a8PeQL2lIB8ZBpeIRN6CtJyf8Ciq0M1MIZvcQ15T9RO1DEMUG5AmGenR7d4NkmD5IfNXwMXJ4vphrrBOeg==}
+  /@tensorflow/tfjs-node-gpu@4.6.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-3skg2ycgBy0Q0w6lXIVZ9uAhRsEt9fWH+P3vIt5USORj7V1l62CKjKc0yJvW6Z8eXzEQrwJpcYOqi6EKOR5iuQ==}
     engines: {node: '>=8.11.0'}
     requiresBuild: true
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       adm-zip: 0.5.9
       google-protobuf: 3.20.1
       https-proxy-agent: 2.2.4
@@ -4441,13 +4441,13 @@ packages:
       - seedrandom
       - supports-color
 
-  /@tensorflow/tfjs-node@4.5.0(seedrandom@3.0.5):
-    resolution: {integrity: sha512-KX1Vl9G6kqOvt9WIQhb54S3H9qx8K+rMaOoyy2LMytcUU5hbcOi8ElGju4BGM4xSCrYFtJI3hBsl+Xfgd2hAKg==}
+  /@tensorflow/tfjs-node@4.6.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-WOUXUnCNps6NGeOCj5GrNkUO+nP86ygA48bb1OEgi5wCLz5Tk5MJX/iqxhZd7xqZxk5usaEqZEZ/NXu3e42BkA==}
     engines: {node: '>=8.11.0'}
     requiresBuild: true
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.9
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       adm-zip: 0.5.9
       google-protobuf: 3.20.1
       https-proxy-agent: 2.2.4
@@ -4460,16 +4460,16 @@ packages:
       - supports-color
     dev: true
 
-  /@tensorflow/tfjs@4.5.0(seedrandom@3.0.5):
-    resolution: {integrity: sha512-GMpFI9GgotUSQKpce500yyBujYY8sWagG0gCpnjTSVzWrYRS8bsL+6Fq/GCamiCX5jtOrlpZ/kRkz/HIqaYXWg==}
+  /@tensorflow/tfjs@4.6.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-EWaTljQqo0w7WfbUpTCvWXCigi7/2HVh22NpR8GT875PcQIwimI2nsk7+STYi/Ly/uKTSQuCFcboFTCf8QV32g==}
     hasBin: true
     dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.5.0(@tensorflow/tfjs-core@4.5.0)
-      '@tensorflow/tfjs-backend-webgl': 4.5.0(@tensorflow/tfjs-core@4.5.0)
-      '@tensorflow/tfjs-converter': 4.5.0(@tensorflow/tfjs-core@4.5.0)
-      '@tensorflow/tfjs-core': 4.5.0
-      '@tensorflow/tfjs-data': 4.5.0(@tensorflow/tfjs-core@4.5.0)(seedrandom@3.0.5)
-      '@tensorflow/tfjs-layers': 4.5.0(@tensorflow/tfjs-core@4.5.0)
+      '@tensorflow/tfjs-backend-cpu': 4.6.0(@tensorflow/tfjs-core@4.6.0)
+      '@tensorflow/tfjs-backend-webgl': 4.6.0(@tensorflow/tfjs-core@4.6.0)
+      '@tensorflow/tfjs-converter': 4.6.0(@tensorflow/tfjs-core@4.6.0)
+      '@tensorflow/tfjs-core': 4.6.0
+      '@tensorflow/tfjs-data': 4.6.0(@tensorflow/tfjs-core@4.6.0)(seedrandom@3.0.5)
+      '@tensorflow/tfjs-layers': 4.6.0(@tensorflow/tfjs-core@4.6.0)
       argparse: 1.0.10
       chalk: 4.1.2
       core-js: 3.29.1
@@ -5192,7 +5192,7 @@ packages:
   /@upscalerjs/core@1.0.0-beta.10:
     resolution: {integrity: sha512-7pkr4j3DGX3CkpAoFIe9Cyc++2P+87i5EDpX4J45bkNoYiwDsabJotgwHxzFApK5K6HBj6ZY/Fn645HmyYATSw==}
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5200,7 +5200,7 @@ packages:
   /@upscalerjs/core@1.0.0-beta.14:
     resolution: {integrity: sha512-cteEV63pwcY23W0TPgT1PWMCeviIeNVI0Sx7Ro0wG3N7SsNIeODnKUHPQsffxibGlFvkKjeAzYeZOfdatEeVIw==}
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5216,116 +5216,116 @@ packages:
   /@upscalerjs/core@1.0.0-beta.8:
     resolution: {integrity: sha512-yfqzoiBvEsWgQPIPt4cg/s22eRjNDLIez84D27e2vZLTgc1hMJOmFs8Ct1BcPEMPfuGXhwRdoBsBLZuDV7mEuQ==}
     dependencies:
-      '@tensorflow/tfjs-core': 4.5.0
+      '@tensorflow/tfjs-core': 4.6.0
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-3myASwFmYlZXcb09DkKlyz+o3fpT+htV4JGoksGulhkfC3PukMiOCUtmQlPlLJEgr94Oo8EyUIfMds3CeYw3Pg==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.10
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.14(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/default-model@1.0.0-beta.14(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-h7BiWOeSzAXNZcL5XTw5EGsQGcREBzxh8/UYUKHzdZfKd89OLuN0DG5nCWJsIe2aEL1XgrsNnDxUr9CmxC656A==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.2.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.6(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/default-model@1.0.0-beta.6(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-i0RWCxY83v1nfP/LK5kvvrqbhIZWr1VWtI6zaap86EUwduEgYTOKA9PWVNet3Hf977X4ocSJAFB/jizkhS8JAw==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.0.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.6
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.7(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/default-model@1.0.0-beta.7(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-9QQfeLUwrSaThChi0V0sWzE31EUNkViSPI5hRV2wqcjKlD1L3LSRGlFqXefM7QUi3QtpxNDM3Tx79z9ozT3Sxg==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-legacy@1.0.0-beta.9(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-legacy@1.0.0-beta.9(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-0i0n3IrxW3JvRSUGgsC8VQb64im27BYL1duOwmd8YWVvsBmSH5fqOSj4DHXtAHB5E48wnVnTfS0BXaJziGWkZQ==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-medium@1.0.0-beta.7(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-medium@1.0.0-beta.7(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-ORBZS+8c2iLFwE/WnVsXNp+YiJsbHxmSOS6oDV7f8V6b7noqiXtx7uH7yA6jkavi66Ci7wRtXQ9xT8mvBH5G7Q==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-medium@1.0.0-beta.9(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-medium@1.0.0-beta.9(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-y36qZNIcXvw0YcCvadbMWKL9VF6gWxHlP9Kv57c3CYMDIv24UusqMSEdJZSkM0wC/xoP36LuoBvLbbumlQNk0g==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.2.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-slim@1.0.0-beta.7(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-slim@1.0.0-beta.7(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-uCuuGXdFNN/hx2Lm4uCEzGARFbFWsT+FDl+b5EH5q3Sfy+x2l+CQ5a/9FvMKpbScJKbj6d/bU6gyyxvFVoA3zw==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.2.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@upscalerjs/esrgan-thick@1.0.0-beta.7(@tensorflow/tfjs@4.5.0):
+  /@upscalerjs/esrgan-thick@1.0.0-beta.7(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-OtbVQE81GWab6V5m1cdej9FCd9hxFCkzGiiUblTwF60Bap3r9NSxkFXD150Er1NH3b9bjTkP0ETtiGN9lWrsMA==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
@@ -15227,41 +15227,41 @@ packages:
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
 
-  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.5.0):
+  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-G9yGw/YIKl8n2Mo1tZn18FZayL2fZubGLsEps5lZb5z26fzlAfXLt5TawdzT0UUHh0ybHz/+2g1nM+iQwChqDA==}
     engines: {node: '>=16.0'}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.5.0)
+      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.6.0)
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /upscaler@1.0.0-beta.16(@tensorflow/tfjs@4.5.0):
+  /upscaler@1.0.0-beta.16(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-/ccCpszl4gRhNJaVdlALYcBu5+XfGUZbp4N7rjrCasJ2KUu6+vFT8NsclBc61rhrbJOQNv2IkthVGYLcE6BhJA==}
     engines: {node: '>=16.0'}
     peerDependencies:
       '@tensorflow/tfjs': ^4.2.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.5.0)
+      '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.6.0)
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /upscaler@1.0.0-beta.8(@tensorflow/tfjs@4.5.0):
+  /upscaler@1.0.0-beta.8(@tensorflow/tfjs@4.6.0):
     resolution: {integrity: sha512-iCGlZcC5dssGwKaYq7wjg1qXd0KoJZoe+3ZerfBy2uZY3fXkLLmoiSI90B7e+bL/eJKwWxptTsB9wm8xh/jq4Q==}
     engines: {node: '>=16.0'}
     peerDependencies:
       '@tensorflow/tfjs': ^4.0.0
     dependencies:
-      '@tensorflow/tfjs': 4.5.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.8
-      '@upscalerjs/default-model': 1.0.0-beta.6(@tensorflow/tfjs@4.5.0)
+      '@upscalerjs/default-model': 1.0.0-beta.6(@tensorflow/tfjs@4.6.0)
     transitivePeerDependencies:
       - encoding
     dev: false
