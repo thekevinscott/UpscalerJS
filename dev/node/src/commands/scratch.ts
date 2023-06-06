@@ -1,8 +1,8 @@
-import { ModelDefinitionFn } from "../../packages/core/src";
+import { ModelDefinitionFn } from "../../../../packages/core/src";
 
 const fs = require('fs');
 const tf = require('@tensorflow/tfjs-node-gpu');
-const Upscaler = require('../../packages/upscalerjs/dist/node-gpu/cjs/index.js').default;
+const Upscaler = require('../../../../packages/upscalerjs/dist/node-gpu/cjs/index.js').default;
 const { mkdirpSync } = require("fs-extra");
 
 const getModel = (model: ModelDefinitionFn) => {
