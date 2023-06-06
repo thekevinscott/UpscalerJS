@@ -4,6 +4,7 @@ import { isLayersModel, } from './isLayersModel';
 import {
   ERROR_WITH_MODEL_INPUT_SHAPE,
   GET_INVALID_PATCH_SIZE,
+  GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
@@ -66,6 +67,10 @@ export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
   return batchInputShape;
 };
 
+export const getPatchSizeAsMultiple = (divisibilityFactor: number, patchSize: number): number => {
+  return Math.ceil(patchSize / divisibilityFactor) * divisibilityFactor;
+};
+
 type ParsePatchAndInputShapes = (
   modelPackage: ModelPackage,
   args: UpscaleArgs,
@@ -73,7 +78,7 @@ type ParsePatchAndInputShapes = (
 ) => {
   modelInputShape?: Shape4D;
 } & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
-export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }) => {
+export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }, imageSize) => {
   const modelInputShape = getModelInputShape(modelPackage);
   if (patchSize !== undefined) {
     if (patchSize <= 0) {
@@ -83,6 +88,7 @@ export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage,
       throw GET_INVALID_PATCH_SIZE_AND_PADDING(patchSize, padding);
     }
   }
+
   if (isFixedShape4D(modelInputShape)) {
     if (patchSize !== undefined) {
       warn(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
@@ -91,6 +97,7 @@ export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage,
     if (modelInputShape[1] !== modelInputShape[2]) {
       throw MODEL_INPUT_SIZE_MUST_BE_SQUARE;
     }
+
     return {
       patchSize: modelInputShape[1],
       padding,
@@ -103,9 +110,36 @@ export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage,
     warn(WARNING_UNDEFINED_PADDING);
   }
 
+  const { divisibilityFactor, } = modelPackage.modelDefinition;
+  if (divisibilityFactor !== undefined) {
+    if (patchSize !== undefined) {
+      const multipliedPatchSize = getPatchSizeAsMultiple(divisibilityFactor, patchSize);
+      if (multipliedPatchSize !== patchSize) {
+        warn(GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(patchSize, divisibilityFactor, multipliedPatchSize));
+      }
+      return {
+        patchSize: multipliedPatchSize,
+        padding,
+        modelInputShape: [null, multipliedPatchSize, multipliedPatchSize, 3,],
+      };
+    }
+
+    // pad the image up to the multipled image size
+    return {
+      patchSize: undefined,
+      padding: undefined,
+      modelInputShape: [
+        null,
+        getPatchSizeAsMultiple(divisibilityFactor, imageSize[1]),
+        getPatchSizeAsMultiple(divisibilityFactor, imageSize[2]),
+        3,
+      ],
+    };
+  }
+  
   return {
     patchSize,
     padding,
-    modelInputShape,
+    modelInputShape: undefined,
   };
 };

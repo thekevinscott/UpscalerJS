@@ -80,6 +80,11 @@ export interface ModelDefinition {
    */
   outputRange?: Range;
   /**
+   * A number denoting whether and how an image should be divisible. For instance, a model may only operate on images that are even (divisible by 2), in
+   * which case this would be `2`. Only square sizes are supported for now.
+   */
+  divisibilityFactor?: number;
+  /**
    * @hidden
    */
   meta?: Meta;
