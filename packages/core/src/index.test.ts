@@ -12,6 +12,8 @@ import {
   isNumber,
   isShape4D,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+  isFixedShape4D,
+  isDynamicShape4D,
 } from './index';
 
 jest.mock('@tensorflow/tfjs', () => ({
@@ -185,3 +187,32 @@ describe('isShape4D', () => {
     expect(isShape4D([null, null, null, 3])).toEqual(true);
   });
 });
+
+describe('isFixedShape4D', () => {
+  test.each([
+    [[null, null, null, 3], false],
+    [[null, -1, -1, 3], false],
+    [[null, 2, 2, 3], true],
+  ])(
+    [
+      '%p',
+    ].join(' | '),
+    (args, expectation) => {
+      expect(isFixedShape4D(args)).toEqual(expectation);
+    });
+});
+
+describe('isDynamicShape', () => {
+  test.each([
+    [[null, null, null, 3], true],
+    [[null, -1, -1, 3], true],
+    [[null, 2, 2, 3], false],
+  ])(
+    [
+      '%p',
+    ].join(' | '),
+    (args, expectation) => {
+      expect(isDynamicShape4D(args)).toEqual(expectation);
+    });
+});
+

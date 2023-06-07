@@ -34,8 +34,8 @@ export const isShape4D = (shape?: unknown): shape is Shape4D => {
   return shape.every((value) => value === null || typeof value === 'number');
 };
 
-export const isFixedShape4D = (shape?: unknown): shape is FixedShape4D => isShape4D(shape) && shape[1] !== null && shape[2] !== null;
-export const isDynamicShape4D = (shape?: unknown): shape is DynamicShape4D => isShape4D(shape) && shape[1] === null && shape[2] === null;
+export const isFixedShape4D = (shape?: unknown): shape is FixedShape4D => isShape4D(shape) && shape[1] !== null && shape[2] !== null && shape[1] > 0 && shape[2] > 0;
+export const isDynamicShape4D = (shape?: unknown): shape is DynamicShape4D => isShape4D(shape) && !isFixedShape4D(shape);
 
 export interface ModelDefinition {
   /**
