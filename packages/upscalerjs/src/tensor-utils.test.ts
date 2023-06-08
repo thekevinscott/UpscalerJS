@@ -2,7 +2,7 @@ import * as tfn from '@tensorflow/tfjs-node';
 import { Tensor4D, ones, tensor } from '@tensorflow/tfjs-node';
 import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
-import { 
+import {
   padInput,
   trimInput,
   scaleIncomingPixels,
@@ -11,7 +11,6 @@ import {
   tensorAsClampedArray,
   concatTensors,
   getCopyOfInput,
-  checkAndAdjustStartingPosition,
 } from './tensor-utils';
 import {
   isValidRange as _isValidRange,
