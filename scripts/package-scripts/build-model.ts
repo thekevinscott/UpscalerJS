@@ -190,7 +190,8 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   if (opts.verbose) {
     console.log(`Compiling typescript for CJS for ${modelFolder}`);
   }
-  await compileTypescript(modelFolder, 'cjs');
+  await compileTypescript(modelFolder, 'cjs', { verbose: opts.verbose });
+
   replaceTscAliasPaths({
     configFile: path.resolve(modelFolder, 'tsconfig.cjs.json'),
   });

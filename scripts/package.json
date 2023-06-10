@@ -20,6 +20,7 @@
     "model:convert-python-model": "pnpm __run_command ./package-scripts/convert-python-model.ts",
     "model:convert-python-model-folder": "pnpm __run_command ./package-scripts/convert-python-model-folder.ts",
     "model:create": "pnpm __run_command ./package-scripts/create-new-model-folder.ts",
+    "model:demo:create": "pnpm __run_command ./package-scripts/create-model-demo.ts",
     "test:integration:browserstack": "pnpm __run_command ./test.ts --platform browser --runner browserstack",
     "test:integration:browser": "pnpm __run_command ./test.ts --platform browser",
     "test:integration:node": "pnpm __run_command ./test.ts --platform node",
