@@ -12,6 +12,6 @@ const smallX2Epoch3986Datadiv2k_bcd5b105 = getModelDefinition(2, 'rdn', 'models/
   "sharpen": 0,
   "dataset": "div2k",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2Epoch3986Datadiv2k_bcd5b105;

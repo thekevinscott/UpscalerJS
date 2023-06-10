@@ -11,6 +11,6 @@ const rdnC8D2G4G064T0X2Epoch711Datadiv2k_b38dd4a9 = getModelDefinition(2, 'rdn',
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC8D2G4G064T0X2Epoch711Datadiv2k_b38dd4a9;

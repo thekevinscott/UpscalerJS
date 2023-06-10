@@ -11,6 +11,6 @@ const rdnC8D8G8G064T0X2BestValGeneratorLossEpoch705Datadiv2k_9381f45f = getModel
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC8D8G8G064T0X2BestValGeneratorLossEpoch705Datadiv2k_9381f45f;

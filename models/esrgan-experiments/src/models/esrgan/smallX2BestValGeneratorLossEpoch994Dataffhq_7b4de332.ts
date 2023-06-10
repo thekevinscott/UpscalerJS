@@ -12,6 +12,6 @@ const smallX2BestValGeneratorLossEpoch994Dataffhq_7b4de332 = getModelDefinition(
   "sharpen": 0,
   "dataset": "ffhq",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValGeneratorLossEpoch994Dataffhq_7b4de332;

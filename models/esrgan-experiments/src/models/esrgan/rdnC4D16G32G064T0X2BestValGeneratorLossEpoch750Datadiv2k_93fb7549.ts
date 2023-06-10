@@ -11,6 +11,6 @@ const rdnC4D16G32G064T0X2BestValGeneratorLossEpoch750Datadiv2k_93fb7549 = getMod
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC4D16G32G064T0X2BestValGeneratorLossEpoch750Datadiv2k_93fb7549;

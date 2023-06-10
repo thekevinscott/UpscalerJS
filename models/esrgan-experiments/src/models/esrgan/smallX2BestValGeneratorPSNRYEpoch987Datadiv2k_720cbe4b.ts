@@ -12,6 +12,6 @@ const smallX2BestValGeneratorPSNRYEpoch987Datadiv2k_720cbe4b = getModelDefinitio
   "sharpen": 1,
   "dataset": "div2k",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValGeneratorPSNRYEpoch987Datadiv2k_720cbe4b;

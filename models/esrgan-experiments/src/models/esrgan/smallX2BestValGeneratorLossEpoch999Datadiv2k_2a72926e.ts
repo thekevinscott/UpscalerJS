@@ -12,6 +12,6 @@ const smallX2BestValGeneratorLossEpoch999Datadiv2k_2a72926e = getModelDefinition
   "sharpen": 0,
   "dataset": "div2k",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValGeneratorLossEpoch999Datadiv2k_2a72926e;

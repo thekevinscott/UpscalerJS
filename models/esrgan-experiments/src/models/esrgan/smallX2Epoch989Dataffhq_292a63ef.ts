@@ -12,6 +12,6 @@ const smallX2Epoch989Dataffhq_292a63ef = getModelDefinition(2, 'rdn', 'models/es
   "sharpen": 0,
   "dataset": "ffhq",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2Epoch989Dataffhq_292a63ef;
