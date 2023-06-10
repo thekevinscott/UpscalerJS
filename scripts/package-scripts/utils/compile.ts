@@ -30,16 +30,19 @@ import { OutputFormat } from '../prompt/types';
 
 type CompileTypescriptOpts = {
   outDir?: string;
+  verbose?: boolean;
 }
 type CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, opts?: CompileTypescriptOpts) => Promise<void>;
 
 export const compileTypescript: CompileTypescript = (modelFolder: string, outputFormat: OutputFormat, {
   outDir,
+  verbose,
 } = {}) => callExec([
   `tsc`,
   `-p`,
   path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
   outDir ? `--outDir ${outDir}` : undefined,
 ].filter(Boolean).join(' '), {
+  verbose,
   cwd: modelFolder,
 });

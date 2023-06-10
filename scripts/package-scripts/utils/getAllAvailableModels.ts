@@ -4,14 +4,29 @@ import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExport
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');
-const EXCLUDED = ['dist', 'types', 'node_modules', 'docs', 'esrgan-experiments'];
+const EXCLUDED = ['dist', 'types', 'node_modules', 'docs'];
 
 const jsonParse = (fileName: string) => JSON.parse(readFileSync(fileName, 'utf-8'))
 
-export const getAllAvailableModelPackages = (): Array<string> => readdirSync(MODELS_DIR).filter(file => {
+export const getAllAvailableModelPackages = (includeExperimental = false): Array<string> => readdirSync(MODELS_DIR).filter(file => {
   const modelDir = path.resolve(MODELS_DIR, file);
+  if (EXCLUDED.includes(file) || !lstatSync(modelDir).isDirectory()) {
+    return false;
+  }
 
-  return !EXCLUDED.includes(file) && lstatSync(modelDir).isDirectory() && existsSync(path.resolve(modelDir, 'package.json'));
+  const packageJSONPath = path.resolve(modelDir, 'package.json');
+
+  if (!existsSync(packageJSONPath)) {
+    return false;
+  }
+
+  if (includeExperimental === false) {
+    const packageJSON = JSON.parse(readFileSync(packageJSONPath, 'utf-8'));
+    const experimental = packageJSON['@upscalerjs']?.['model']?.['experimental'];
+    return experimental !== true;
+  }
+
+  return true;
 });
 
 export interface AvailableModel {
@@ -28,7 +43,7 @@ export const getAllAvailableModels = (packageName: string): AvailableModel[] => 
   return getPackageJSONExports(modelPackageDir).map(([key, pathName]) => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
-      throw new Error(`No UMD name defined for ${key}`);
+      throw new Error(`No UMD name defined for ${packageName}/umd-names.json for ${key}`);
     }
     const availableModel: AvailableModel = {
       export: key,
@@ -51,22 +66,13 @@ export const getFilteredModels = ({
   specificModel?: string;
   filter?: (packageName: string, model: AvailableModel) => boolean;
   includeExperimental?: boolean;
-}) => {
-  const filteredPackagesAndModels = getAllAvailableModelPackages().reduce((arr, packageName) => {
+} = {}): [string, AvailableModel[]][] => {
+  const filteredPackagesAndModels = getAllAvailableModelPackages(includeExperimental).reduce((arr, packageName) => {
     const models = getAllAvailableModels(packageName);
     return arr.concat(models.map(model => {
       return [packageName, model];
     }));
   }, [] as ([string, AvailableModel])[])
-
-  .filter(([packageName, model]) => {
-    if (includeExperimental) {
-      return true;
-    }
-    const packageJSON = JSON.parse(readFileSync(path.resolve(MODELS_DIR, packageName, 'package.json'), 'utf-8'));
-    const experimental = packageJSON['@upscalerjs']?.['model']?.['experimental'];
-    return !experimental;
-  })
   .filter(([packageName, model]) => {
     if (specificPackage !== undefined) {
       return packageName === specificPackage;
@@ -96,10 +102,10 @@ export const getFilteredModels = ({
     ].join('\n'));
   }
 
-  const filteredPackagesAndModelsObj = filteredPackagesAndModels.reduce((obj, [packageName, model]) => ({
+  const filteredPackagesAndModelsObj = filteredPackagesAndModels.reduce<Record<string, AvailableModel[]>>((obj, [packageName, model]) => ({
     ...obj,
     [packageName]: (obj[packageName] || []).concat([model]),
-  }), {} as Record<string, AvailableModel[]>);
+  }), {});
 
   return Object.entries(filteredPackagesAndModelsObj);
 };
