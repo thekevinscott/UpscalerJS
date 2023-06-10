@@ -4,7 +4,6 @@
     "src/**/*.ts"
   ],
   "compilerOptions": {
-    "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist/cjs"
   }
