@@ -12,6 +12,6 @@ const smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen1Datadiv2kVaryCTrueE
   "sharpen": 1,
   "dataset": "div2k",
   "varyCompression": "True",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen1Datadiv2kVaryCTrueEpoch970Datadiv2k_f45f45bc;

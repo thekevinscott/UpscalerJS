@@ -12,6 +12,6 @@ const smallX2BestValLossEpoch3999Datadiv2k_b1c145bd = getModelDefinition(2, 'rdn
   "sharpen": 0,
   "dataset": "div2k",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValLossEpoch3999Datadiv2k_b1c145bd;

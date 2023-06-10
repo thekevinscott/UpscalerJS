@@ -12,6 +12,6 @@ const smallX2BestValGeneratorPSNRYEpoch996Dataffhq_12dee682 = getModelDefinition
   "sharpen": 0,
   "dataset": "ffhq",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValGeneratorPSNRYEpoch996Dataffhq_12dee682;

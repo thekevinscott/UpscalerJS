@@ -11,6 +11,6 @@ const rdnC2D16G32G064T0X2BestValGeneratorPSNRYEpoch746Datadiv2k_554775ce = getMo
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC2D16G32G064T0X2BestValGeneratorPSNRYEpoch746Datadiv2k_554775ce;

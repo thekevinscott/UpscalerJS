@@ -12,6 +12,6 @@ const smallX2BestValLossEpoch998Dataffhq_adb61f62 = getModelDefinition(2, 'rdn',
   "sharpen": 0,
   "dataset": "ffhq",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2BestValLossEpoch998Dataffhq_adb61f62;

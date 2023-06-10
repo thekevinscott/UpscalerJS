@@ -12,6 +12,6 @@ const smallX2Epoch3973Dataffhq_6def9c18 = getModelDefinition(2, 'rdn', 'models/e
   "sharpen": 0,
   "dataset": "ffhq",
   "varyCompression": "False",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2Epoch3973Dataffhq_6def9c18;

@@ -11,6 +11,6 @@ const rdnC2D8G32G064T0X2BestValLossEpoch735Datadiv2k_47fdac15 = getModelDefiniti
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC2D8G32G064T0X2BestValLossEpoch735Datadiv2k_47fdac15;

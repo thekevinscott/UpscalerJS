@@ -11,6 +11,6 @@ const rdnC1D4G4G064T0X2BestValGeneratorPSNRYEpoch715Datadiv2k_9eee6992 = getMode
   "compress": 100,
   "sharpen": 0,
   "dataset": "div2k",
-  "varyCompression": "False"
+  "varyCompression": "False",
 });
 export default rdnC1D4G4G064T0X2BestValGeneratorPSNRYEpoch715Datadiv2k_9eee6992;

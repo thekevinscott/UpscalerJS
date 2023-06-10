@@ -12,6 +12,6 @@ const smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueB
   "sharpen": 0,
   "dataset": "div2k",
   "varyCompression": "True",
-  "size": "small"
+  "size": "small",
 });
 export default smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValGeneratorLossEpoch992Datadiv2k_27a4e9e0;

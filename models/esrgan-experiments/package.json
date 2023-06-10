@@ -1,5 +1,5 @@
 {
-  "name": "@upscalerjs-for-esbuild/esrgan-experiments",
+  "name": "@upscalerjs/esrgan-experiments",
   "version": "0.1.0",
   "description": "Experiments",
   "exports": {
