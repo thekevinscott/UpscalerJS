@@ -4,7 +4,6 @@ import PixelUpsampler from '../../../models/pixel-upsampler/src/4x';
 import GANs from '../../../models/esrgan-legacy/src/gans';
 import './stats';
 import { FPS } from './fps';
-import { UpscaleArgs } from 'upscaler';
 
 const startButton = document.querySelector('#start')!;
 const status = document.querySelector('#status')!;
