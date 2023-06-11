@@ -1,3 +1,21 @@
 label {
   display: block;
 }
+
+#description {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  align-items: flex-end;
+}
+
+#description p {
+  margin: 0;
+}
+
+select {
+  padding: 10px;
+}
