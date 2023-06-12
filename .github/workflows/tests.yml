@@ -360,8 +360,12 @@ jobs:
         uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
-        working-directory: ./docs
         run: pnpm install
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Build'
         working-directory: ./docs
