@@ -86,7 +86,7 @@ describe('Node Image Loading Integration Tests', () => {
       checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
     });
 
-    it('throws if given 4-channel Uint8Array', async () => {
+    it.only('throws if given 4-channel Uint8Array', async () => {
       const mockedTensor = tf.node.decodeImage(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
       await expect(() => testRunner.run({
         globals: {

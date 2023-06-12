@@ -1,15 +1,15 @@
 import { exec, ExecOptions } from 'child_process';
 
-type StdOut = (chunk: string) => void;
-type StdErr = (chunk: string) => void;
+export type StdOut = (chunk: string) => void;
+export type StdErr = (chunk: string) => void;
 
-const callExec = (cmd: string, {
+export const callExec = (cmd: string, {
   verbose = false,
   ...options
 }: {
   encoding?: 'buffer' | null;
   verbose?: boolean;
-} & ExecOptions = {}, stdout?: StdOut | boolean, stderr: StdErr | boolean = true): Promise<void> => new Promise((resolve, reject) => {
+} & ExecOptions = {}, stdout?: StdOut | boolean, stderr?: StdErr | boolean): Promise<void> => new Promise((resolve, reject) => {
   if (verbose) {
     console.log(`Running command: ${cmd}`);
   }

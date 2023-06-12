@@ -1,4 +1,3 @@
-import callExec from "../utils/callExec";
 import fs from 'fs';
 import path from 'path';
 import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare";
@@ -9,6 +8,7 @@ import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedN
 import { Bundle } from "../../integration/utils/NodeTestRunner";
 import { MODELS_DIR, UPSCALER_DIR } from "../../../scripts/package-scripts/utils/constants";
 import validateBuild, { extractAllFilesFromPackageJSON } from "../../../scripts/package-scripts/validate-build";
+import callExec, { StdErr, StdOut } from '../utils/callExec';
 
 /***
  * Types
@@ -77,14 +77,6 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
   }
 };
 
-type Stdout = (data: string) => void;
-type Stderr = (data: string) => void;
-export const executeNodeScriptFromFilePath = async (file: string, stdout?: Stdout) => {
-  await callExec(`node "./src/${file}"`, {
-    cwd: NODE_ROOT
-  }, stdout);
-};
-
 const formatTestName = (testName: string) => testName.replace(/[\W_]+/g,"-");
 
 const getTestName = (testName: string | undefined, contents: string) => {
@@ -92,13 +84,19 @@ const getTestName = (testName: string | undefined, contents: string) => {
 }
 
 interface ExecuteNodeScriptOpts {
-  stdout?: Stdout;
-  stderr?: Stderr;
+  stdout?: StdOut;
+  stderr?: StdErr;
+  verbose?: boolean;
 }
 type ExecuteNodeScript = (fileName: string, opts?: ExecuteNodeScriptOpts) => Promise<void>;
-export const executeNodeScript: ExecuteNodeScript = async (fileName: string, { stdout, stderr } = {}) => {
+export const executeNodeScript: ExecuteNodeScript = async (fileName: string, { verbose, stdout, stderr } = {}) => {
   await callExec(`node "${fileName}"`, {
-    cwd: NODE_ROOT
+    cwd: NODE_ROOT,
+    env: {
+      // Hide warnings about TFJS not being compiled to use AXA on the CPU 
+      TF_CPP_MIN_LOG_LEVEL: '3',
+    },
+    verbose,
   }, stdout, stderr);
 };
 
@@ -133,6 +131,7 @@ export const runNodeScript: RunNodeScript = async (getScriptContents, {
           console.log('[PAGE]', chunk);
         }
       },
+      verbose,
     });
     data = fs.readFileSync(dataFile);
     if (removeTmpDir === false) {
