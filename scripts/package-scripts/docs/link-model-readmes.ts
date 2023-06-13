@@ -5,14 +5,12 @@ import path from 'path';
 import { copyFile, copy, existsSync, mkdirp, readFile, unlinkSync, writeFile } from 'fs-extra';
 import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
 import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
-// import { getHashedName } from '../utils/getHashedName';
 
 /****
  * Constants
  */
 const GLOBAL_IMAGE_RE = /(?<alt>!\[[^\]]*\])\((?<filename>.*?)(?=\"|\))\)/g;
 const IMAGE_FILENAME_RE = /(?<alt>!\[[^\]]*\])\((?<filename>.*?)(?=\"|\))\)/;
-// const IMAGE_FILENAME_RE = /\((?<filename>.*?)(?=\"|\))\)/;
 
 /****
  * Utility functions
@@ -31,31 +29,6 @@ const copyAssets = async (packageName: string, targetDir: string) => {
   const targetPath = path.resolve(targetDir, packageName);
   await copy(packagePath, targetPath);
 }
-
-// const copyAssetsOld = async (filepath: string, targetDir: string) => {
-//   let contents = await readFile(filepath, 'utf-8');
-//   const dirname = path.dirname(filepath);
-//   await Promise.all(findImagesInMarkdown(contents)?.map(async image => {
-//     const result = IMAGE_FILENAME_RE.exec(image);
-//     if (result === null) {
-//       throw new Error(`Error parsing image string ${image}, regex returned null.`);
-//     }
-//     const { filename: assetPath, alt } = result?.groups || {};
-//     if (!assetPath) {
-//       throw new Error(`Error parsing image string ${image}, no filename found. ${JSON.stringify(result)}`);
-//     }
-//     if (!isAbsolutePath(assetPath)) {
-//       // relative asset, copy over
-//       const hashedFilePath = getHashedName(filepath);
-//       const targetFileName = path.join('assets', hashedFilePath, assetPath);
-//       const targetPath = path.resolve(targetDir, targetFileName);
-//       await createFolderForFile(targetPath);
-//       copyFile(path.resolve(dirname, assetPath), targetPath);
-//       contents = contents.split(image).join(`![${alt}](${targetFileName})`);
-//     }
-//   }) || []);
-//   return contents;
-// }
 
 const createMarkdown = async (contents: string, targetPath: string) => writeFile(targetPath, contents, 'utf-8');
 
@@ -77,8 +50,6 @@ const linkModelReadmes = async () => {
       } catch (err) { }
       await copyAssets(packageName, targetAssetDir);
       await createMarkdown(await readFile(readmePath, 'utf-8'), targetPath);
-      // const contents = await copyAssets(packagePath, targetDir);
-      // await createMarkdown(contents, targetPath);
     }
   }
 }

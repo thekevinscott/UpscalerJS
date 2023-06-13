@@ -215,7 +215,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     `# Guides`,
     `This page contains a list of guides and examples for using various features of UpscalerJS.`,
     ``,
-    `The first two guides discuss the basics of UpscalerJS and how to use it in your project. The [Models](browser/models) and [Working with Tensors](browser/tensors) guides discuss useful configuration options of UpscalerJS.`,
+    `The first two guides discuss the basics of UpscalerJS and how to use it in a project. The [Models](browser/models) and [Working with Tensors](browser/tensors) guides discuss useful configuration options of UpscalerJS.`,
     ``,
     `There are also guides on [improving the performance](#performance) of UpscalerJS, [specific examples of implementations](#implementations), and [Node.js-specific](#node) guides.`,
     ``,

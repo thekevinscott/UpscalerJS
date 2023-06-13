@@ -22,7 +22,7 @@ upscaler.upscale('/image/path').then(upscaledSrc => {
 
 ## Browser Setup
 
-In the browser, you can install UpscalerJS via a script tag or by installing via NPM and using a build tool like webpack, parcel, or rollup.
+In the browser, we can install UpscalerJS via a script tag or by installing via NPM and using a build tool like webpack, parcel, or rollup.
 
 :::tip
 
@@ -32,16 +32,16 @@ For runnable code examples, check out [the guide on Script Tag Installation](/do
 
 ### Usage via Script Tag
 
-First, [ensure you've followed the instructions to install Tensorflow.js](https://www.tensorflow.org/js/tutorials/setup).
+First, [ensure we've followed the instructions to install Tensorflow.js](https://www.tensorflow.org/js/tutorials/setup).
 
-Then add the following tags to your HTML file:
+Then add the following tags to our HTML file:
 
 ```HTML
 <script src="https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@latest/dist/umd/index.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
 ```
 
-`Upscaler` will be available globally on your page. To use:
+`Upscaler` will be available globally on our page. To use:
 
 ```javascript
 <script type="text/javascript">
@@ -55,7 +55,7 @@ For a runnable code example, [check out the guide on script tag usage](/document
 
 ### Installation from NPM
 
-You can install UpscalerJS from NPM. Ensure Tensorflow.js is installed alongside it.
+We can install UpscalerJS from NPM. Ensure Tensorflow.js is installed alongside it.
 
 ```bash
 npm install upscaler @tensorflow/tfjs
@@ -69,19 +69,19 @@ import Upscaler from 'upscaler'
 const upscaler = new Upscaler()
 ```
 
-You can install specific models with NPM as well:
+We can install specific models with NPM as well:
 
 ```bash
 npm install @upscalerjs/esrgan-thick
 ```
 
-[A full list of official models is available here](/models). You can also use custom models others have trained.
+[A full list of official models is available here](/models). We can also use custom models others have trained.
 
 For a runnable code example, [check out the guide on NPM usage](/documentation/guides/browser/basic-npm).
 
 ## Node
 
-Install UpscalerJS and the targeted platform of Tensorflow.js. [You can also install specific models](/models).
+Install UpscalerJS and the targeted platform of Tensorflow.js. [We can also install specific models](/models).
 
 :::tip
 
@@ -127,7 +127,7 @@ upscaler.upscale('/image/path').then(upscaledSrc => {
 
 ### Instantiation
 
-By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default-model`](https://npmjs.com/package/@upscalerjs/default-model). You can install alternative models by installing them and providing them as an argument. 
+By default, when UpscalerJS is instantiated, it uses the default model, [`@upscalerjs/default-model`](https://npmjs.com/package/@upscalerjs/default-model). We can install alternative models by installing them and providing them as an argument. 
 
 :::tip
 
@@ -135,7 +135,7 @@ For a runnable code example, check out [the guide on providing models](/document
 
 :::
 
-For instance, to use `@upscalerjs/esrgan-thick`, you'd first install it:
+For instance, to use `@upscalerjs/esrgan-thick`, we'd first install it:
 
 ```sh
 npm install @upscalerjs/esrgan-thick
@@ -153,7 +153,7 @@ const upscaler = new Upscaler({
 
 [A full list of models can be found here](/models).
 
-Alternatively, you can provide a path to a pre-trained model of your own:
+Alternatively, we can provide a path to a pre-trained model of our own:
 
 ```javascript
 const upscaler = new Upscaler({
@@ -164,13 +164,13 @@ const upscaler = new Upscaler({
 });
 ```
 
-When providing your own model, **you must provide an explicit scale**.
+When providing our own model, **we must provide an explicit scale**.
 
 [See the API documentation for a model definition here](/documentation/api/constructor#parameters).
 
 ### Upscaling
 
-You can upscale an image with the following code:
+We can upscale an image with the following code:
 
 ```javascript
 upscaler.upscale('/path/to/image').then(img => {
@@ -178,20 +178,20 @@ upscaler.upscale('/path/to/image').then(img => {
 });
 ```
 
-In the browser, you can provide the image in any of the following formats:
+In the browser, we can provide the image in any of the following formats:
 
 * `string` - A URL to an image. Ensure the image can be loaded (for example, make sure the site's CORS policy allows for loading).
 * `tf.Tensor3D` or `tf.Tensor4D` - A tensor representing an image.
 * [Any valid input to `tf.browser.fromPixels`](https://js.tensorflow.org/api/latest/#browser.fromPixels)
 
-In Node, you can provide the image in any of the following formats:
+In Node, we can provide the image in any of the following formats:
 
 * `string` - A path to a local image, _or_ if provided a string that begins with `http`, a URL to a remote image.
 * `tf.Tensor3D` or `tf.Tensor4D` - A tensor representing an image.
 * `Uint8Array` - a `Uint8Array` representing an image.
 * `Buffer` - a `Buffer` representing an image.
 
-By default, a base64-encoded `src` attribute is returned. You can change the output type like so:
+By default, a base64-encoded `src` attribute is returned. We can change the output type like so:
 
 ```javascript
 upscaler.upscale('/path/to/image', {
@@ -216,7 +216,7 @@ For runnable code examples, check out [the guide on patch sizes](/documentation/
 
 :::
 
-To address this, you can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. You will likely also want to provide a `padding` parameter:
+To address this, we can provide a `patchSize` parameter to infer the image in "patches" and avoid blocking the UI. We will likely also want to provide a `padding` parameter:
 
 ```javascript
 ({
@@ -225,6 +225,6 @@ To address this, you can provide a `patchSize` parameter to infer the image in "
 })
 ```
 
-Without padding, images will usually end up with unsightly artifacting at the seams between patches. You should use as small a padding value as you can get away with (usually anything above 3 will avoid artifacting).
+Without padding, images will usually end up with unsightly artifacting at the seams between patches. We should use as small a padding value as we can get away with (usually anything above 3 will avoid artifacting).
 
 Smaller patch sizes will block the UI less, but also increase overall inference time for a given image.

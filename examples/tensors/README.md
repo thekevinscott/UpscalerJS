@@ -24,7 +24,7 @@ Let's say we've got a tensor that we'd like to upscale.
 
 :::note
 
-For the purposes of this example, we'll create a tensor with `tf.browser.fromPixels`. This is the same method used internally by UpscalerJS, so using this method is redundant unless you have additional steps you wish to perform on your tensor.
+For the purposes of this example, you'll create a tensor with `tf.browser.fromPixels`. This is the same method used internally by UpscalerJS, so using this method is redundant unless you have additional steps you wish to perform on your tensor.
 
 :::
 

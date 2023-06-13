@@ -19,7 +19,7 @@ import Upscaler from 'upscaler'
 const upscaler = new Upscaler()
 
 upscale.dispose().then(() => {
-  console.log('I am all cleaned up')
+  console.log('UpscalerJS is cleaned up')
 })
 ```
 
