@@ -4,6 +4,8 @@ description: Troubleshooting
 sidebar_position: 5
 ---
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/troubleshooting">View this page on the UpscalerJS website</a>
+
 # Troubleshooting
 
 ## Padding is undefined

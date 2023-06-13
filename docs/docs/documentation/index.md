@@ -4,6 +4,8 @@ description: Introduction
 sidebar_position: 1
 ---
 
+<a class="docs-link" href="https://upscalerjs.com/documentation">View this page on the UpscalerJS website</a>
+
 # Introduction
 
 UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x. It's open source, free to use, and ships with models to use out of the box. Your users won't have to install a thing.

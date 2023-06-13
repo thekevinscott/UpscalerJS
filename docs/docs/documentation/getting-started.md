@@ -4,6 +4,8 @@ sidebar_position: 2
 sidebar_label: Getting Started
 ---
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/getting-started">View this page on the UpscalerJS website</a>
+
 # Getting Started
 
 ## Quick Start
