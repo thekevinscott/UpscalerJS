@@ -1,7 +1,6 @@
 import path from 'path';
 import rimraf from 'rimraf';
-import fs from 'fs';
-import { mkdirpSync } from 'fs-extra';
+import { existsSync, mkdirpSync } from 'fs-extra';
 import { getHashedName } from './getHashedName';
 import { TMP_DIR } from './constants';
 
@@ -11,7 +10,7 @@ interface WithTmpDirOpts {
 }
 type WithTmpDir = (callback: WithTmpDirFn, opts?: WithTmpDirOpts) => (Promise<void> | void);
 type WithTmpDirFn = (tmp: string) => Promise<void>;
-export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir } = {}) => {
+export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir = true } = {}) => {
   const tmpDir = makeTmpDir(rootDir);
 
   try {
@@ -19,7 +18,7 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir }
   }
   finally {
     try {
-      if (tmpDir && removeTmpDir) {
+      if (removeTmpDir) {
         rimraf.sync(tmpDir);
       }
     }
@@ -30,9 +29,10 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir }
 };
 
 export const makeTmpDir = (root = TMP_DIR): string => {
-  const folder = path.resolve(root, getHashedName(`${Math.random()}`));
+  const hashedName = getHashedName(`${Math.random()}`);
+  const folder = path.resolve(root, hashedName);
   mkdirpSync(folder);
-  if (!fs.existsSync(folder)) {
+  if (!existsSync(folder)) {
     throw new Error(`Tmp directory ${folder} was not created`);
   }
   return folder;

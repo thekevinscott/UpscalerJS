@@ -1,7 +1,8 @@
 import { timeit } from "./timeit";
 import path from 'path';
-import { GetScriptContents, NODE_ROOT, runNodeScript as runNodeScript } from "../../lib/node/prepare";
+import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare";
 import { getHashedName, Opts } from '../../lib/shared/prepare';
+import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 
 export type Bundle<T = {}> = (opts?: T & {
   verbose?: boolean;
@@ -92,12 +93,20 @@ export class NodeTestRunner<T extends DefinedDependencies> {
       testName = expect.getState().currentTestName;
     } catch(err) {}
     try {
-      return await runNodeScript(contents, {
+      let output: Buffer | undefined;
+      const tmpRoot = path.resolve(NODE_ROOT, './tmp');
+      await withTmpDir(async tmpDir => {
+        output = await runNodeScript(contents, {
+          removeTmpDir,
+          testName,
+          rootDir: path.resolve(tmpRoot, tmpDir),
+          verbose: this.verbose,
+        });
+      }, {
+        rootDir: tmpRoot,
         removeTmpDir,
-        testName,
-        rootDir: path.resolve(NODE_ROOT, './tmp', getHashedName(`${Math.random()}`)),
-        verbose: this.verbose,
       });
+      return output;
     } catch(err: any) {
       const message = err.message;
       const pertinentLine = message.split('Error: ').pop().split('\n')[0].trim();
