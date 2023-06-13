@@ -12,7 +12,7 @@ If you're looking for a guide on how to host your own models in a Node environme
 
 ## Background
 
-UpscalerJS provides support for loading models via the local filesystem. This might be useful when we want to host the models ourselves (perhaps we're running offline), _or_ if we have a custom model we wish to integrate with UpscalerJS.
+UpscalerJS provides support for loading models via the local filesystem. This might be useful when wanting to host the models locally (perhaps when running offline), _or_ for when wanting to integration a custom model with UpscalerJS.
 
 :::note
 

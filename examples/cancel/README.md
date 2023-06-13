@@ -19,7 +19,7 @@ const abortController = new AbortController()
 upcaler.upscale(imagePath, {
   signal: abortController.signal,
 }).catch(abortError => {
-  console.log('I have aborted!', abortError)
+  console.log('UpscalerJS has been aborted', abortError)
 })
 
 // at some later point in time ...
