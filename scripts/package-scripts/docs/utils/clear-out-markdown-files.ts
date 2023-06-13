@@ -13,10 +13,11 @@ const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, 
 
 export const clearOutMarkdownFiles = async (target: string) => {
   const files = await getAllMarkdownFiles(target);
-  await Promise.all(files.map(file => unlink(file)));
-  console.log([
-    `Cleared out ${files.length} markdown files, including:`,
-    ...files.map(file => file.split(/docs\/documentation\//gi).pop()).map(file => `- ${file}`),
-  ].join('\n'));
+  if (files.length > 0) {
+    await Promise.all(files.map(file => unlink(file)));
+    console.log([
+      `Cleared out ${files.length} markdown files, including:`,
+      ...files.map(file => file.split(/docs\/documentation\//gi).pop()).map(file => `- ${file}`),
+    ].join('\n'));
+  }
 };
-
