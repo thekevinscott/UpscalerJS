@@ -7,9 +7,11 @@ pagination_next: null
 pagination_prev: null
 ---
 
+<a class="docs-link" href="https://upscalerjs.com/models">View this page on the UpscalerJS website</a>
+
 # Models
 
-There are a number of models available for use with UpscalerJS. In most cases, these models must be explicitly installed alongside UpscalerJS.
+UpscalerJS offers a number of available models. With the exception of `default-model`, these models must be explicitly installed alongside UpscalerJS.
 
 - [esrgan-slim](/models/available/esrgan-slim)
 - [esrgan-medium](/models/available/esrgan-medium)
