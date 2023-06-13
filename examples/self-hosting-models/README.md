@@ -16,7 +16,7 @@ UpscalerJS provides support for loading models via the local filesystem. This mi
 
 :::note
 
-In this example, we'll be using the raw 2x `model.json` available via the `esrgan-slim` package to demonstrate.
+This example uses the raw 2x `model.json` available via the `esrgan-slim` package to demonstrate.
 
 :::
 

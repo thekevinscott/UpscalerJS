@@ -15,7 +15,7 @@
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
     "docusaurus:start": "docusaurus start --host 0.0.0.0",
     "build:only": "docusaurus build",
-    "build": "concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm build:only",
+    "build": "concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm tense-checks && pnpm build:only",
     "_build_old_": "pnpm build:dependencies && concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm build:only",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -23,6 +23,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
+    "tense-checks": "pnpm --filter @upscalerjs/scripts docs:tense-checks",
     "typecheck": "tsc"
   },
   "dependencies": {
