@@ -1,7 +1,7 @@
 import path from 'path';
 import { copyFile, copyFileSync, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
-import { JSONSchema } from '../utils/packages';
+import { getPackageJSON,JSONSchema } from '../utils/packages';
 import fm from 'front-matter';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 
@@ -35,7 +35,7 @@ const getDefaultCodeEmbedParameters = (category: string) => {
 }
 
 const getFrontmatter = (key: string): ExampleContent => {
-  const packageJSON = JSON.parse(readFileSync(path.resolve(EXAMPLES_DIR, key, 'package.json'), 'utf-8')) as JSONSchema;
+  const packageJSON = getPackageJSON(path.resolve(EXAMPLES_DIR, key, 'package.json'));
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   const readmeContents = readFileSync(readmePath, 'utf-8');
   const { body } = fm(readmeContents);

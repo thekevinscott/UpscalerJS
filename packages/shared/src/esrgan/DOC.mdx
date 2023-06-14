@@ -1,17 +1,15 @@
 ---
-title: ESRGAN Medium
-description: Overview of @upscalerjs/esrgan-medium model
-sidebar_position: 2
-sidebar_label: esrgan-medium
+title: <% title %>
+description: <% description %>
+sidebar_position: <% snippets/sidebarPosition %>
+sidebar_label: <% key %>
 ---
 
-# ESRGAN Medium
+# <% title %>
 
-[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-medium/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-medium)
+[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/<% key %>/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/<% key %>)
 
-These models strike a balance between latency and image quality. They aim to be in the middle of speed and performance measurements between [`@upscalerjs/esrgan-slim`](esrgan-slim) and [`@upscalerjs/esrgan-thick`](esrgan-thick).
-
-The model weights were trained using the [`image-super-resolution` Python repo](https://github.com/idealo/image-super-resolution) and subsequently converted to Tensorflow.js models.
+<% snippets/overview %>
 
 ## Samples + Demo
 
@@ -19,29 +17,17 @@ Here are some examples of upscaled images using these models.
 
 import SampleTable from '@site/src/components/sampleTable/sampleTable';
 
-<SampleTable
-  packageName="esrgan-medium"
-  models={[
-    '2x',
-    '3x',
-    '4x',
-  ]}
-  scales={[
-    2,
-    3,
-    4,
-  ]}
-/>
+<% snippets/sampleTable %>
 
 import ModelExample from '@site/src/components/modelExample/modelExample';
 
-<ModelExample model="esrgan-medium" />
+<ModelExample model="<% key %>" />
 
 
 ## Installation
 
 ```
-npm install @upscalerjs/esrgan-medium
+npm install @upscalerjs/<% key %>
 ```
 
 ## Usage
@@ -50,7 +36,7 @@ Import a model, specified by its scale:
 
 ```
 import Upscaler from 'upscaler';
-import x2 from '@upscalerjs/esrgan-medium/2x';
+import x2 from '@upscalerjs/<% key %>/2x';
 
 const upscaler = new Upscaler({
   model: x2,
@@ -59,18 +45,18 @@ const upscaler = new Upscaler({
 
 ## Available Models
 
-ESRGAN Medium ships with four models corresponding to the desired scale of the upscaled image:
+<% title %> ships with four models corresponding to the desired scale of the upscaled image:
 
-- 2x: `@upscalerjs/esrgan-medium/2x`
-- 3x: `@upscalerjs/esrgan-medium/3x`
-- 4x: `@upscalerjs/esrgan-medium/4x`
-- 8x: `@upscalerjs/esrgan-medium/8x` (_note: the 8x model runs only in Node_)
+- 2x: `@upscalerjs/<% key %>/2x`
+- 3x: `@upscalerjs/<% key %>/3x`
+- 4x: `@upscalerjs/<% key %>/4x`
+- 8x: `@upscalerjs/<% key %>/8x` <% snippets/8xNote %>
 
 All models are also exported via the root export:
 
 ```
 import Upscaler from 'upscaler';
-import models from '@upscalerjs/esrgan-medium';
+import models from '@upscalerjs/<% key %>';
 
 const upscaler = new Upscaler({
   model: models.x2,
@@ -85,11 +71,11 @@ const upscaler = new Upscaler({
 import PerformanceChart from '@site/src/components/chart/performanceChart/performanceChart';
 import SpeedChart from '@site/src/components/chart/speedChart/speedChart';
 
-<PerformanceChart package="esrgan-medium" databasePath="/assets/performance.sql"></PerformanceChart>
+<PerformanceChart package="<% key %>" databasePath="/assets/performance.sql"></PerformanceChart>
 
-<SpeedChart package="esrgan-medium" databasePath="/assets/speed.sql"></SpeedChart>
+<SpeedChart package="<% key %>" databasePath="/assets/speed.sql"></SpeedChart>
 
-
+<% snippets/speedMeasurementsNote %>
 
 ## Architecture
 This model is trained via a Python implementation of the ESRGAN architecture.
@@ -107,11 +93,7 @@ The model is trained on the [Div2k dataset](https://data.vision.ee.ethz.ch/cvl/D
 
 It was trained for 500 epochs, with the following hyperparameters:
 
-- **architecture**: `rdn`
-- **C**: `1`
-- **D**: `10`
-- **G**: `64`
-- **G0**: `64`
+<% snippets/trainingDetails %>
 
 The batch size was 12, and the batches per epoch was 20. The learning rate was set to `0.0004`. The HR patch size was set to `128` or `129` depending on the scale (ensuring it is divisible by the scale) with the LR patch size being the resultant scale `HR_patch_size / scale`.
 

@@ -1,0 +1,13 @@
+<SampleTable
+  packageName="esrgan-slim"
+  models={[
+    '2x',
+    '3x',
+    '4x',
+  ]}
+  scales={[
+    2,
+    3,
+    4,
+  ]}
+/>

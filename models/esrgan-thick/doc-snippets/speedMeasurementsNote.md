@@ -1,0 +1,1 @@
+* Note: Speed measurements are not recorded for the 8x model. Speed measurements are performed against mobile devices in order to measure against fixed hardware, and the 8x model does not work reliably in a browser.

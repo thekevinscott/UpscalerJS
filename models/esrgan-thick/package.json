@@ -68,6 +68,10 @@
     "type": "git",
     "url": "git+https://github.com/thekevinscott/upscaler.git"
   },
+  "@upscalerjs": {
+    "title": "ESRGAN Thick",
+    "modelFamily": "esrgan"
+  },
   "author": "Kevin Scott",
   "license": "MIT"
 }
