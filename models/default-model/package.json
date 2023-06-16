@@ -48,6 +48,10 @@
     "@tensorflow/tfjs-node-gpu": "^4.6.0",
     "seedrandom": "3.0.5"
   },
+  "@upscalerjs": {
+    "title": "Default Model",
+    "modelFamily": "esrgan"
+  },
   "author": "Kevin Scott",
   "license": "MIT"
 }

@@ -66,6 +66,8 @@
   },
   "author": "Kevin Scott",
   "@upscalerjs": {
+    "title": "ESRGAN Medium",
+    "modelFamily": "esrgan",
     "models": {
       "./8x": {
         "supportedPlatforms": [

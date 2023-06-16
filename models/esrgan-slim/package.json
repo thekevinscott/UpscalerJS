@@ -30,11 +30,11 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-slim -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-slim"
+    "build": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd",
+    "build:cjs": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs",
+    "build:esm": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o esm",
+    "build:umd": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o umd",
+    "clean": "pnpm --filter @upscalerjs/scripts model:clean esrgan-slim"
   },
   "keywords": [
     "image super resolution",
@@ -66,6 +66,8 @@
   },
   "author": "Kevin Scott",
   "@upscalerjs": {
+    "title": "ESRGAN Slim",
+    "modelFamily": "esrgan",
     "models": {
       "./8x": {
         "supportedPlatforms": [

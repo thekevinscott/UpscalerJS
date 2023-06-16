@@ -34,3 +34,4 @@ output.json
 service-account.json
 .pnpm-store
 .ipynb_checkpoints
+notebooks
