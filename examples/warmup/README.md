@@ -1,5 +1,7 @@
 # Warming up models
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/performance/warmup">View this page on the UpscalerJS website</a>
+
 This guide demonstrates how to make calls to UpscalerJS process faster.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/warmup?file=index.js&title=UpscalerJS: Warmup Example">Open in Stackblitz</a>.

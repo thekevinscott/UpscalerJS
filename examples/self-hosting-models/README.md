@@ -1,5 +1,7 @@
 # Self Hosting Models
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/usage/self-hosting-models">View this page on the UpscalerJS website</a>
+
 Demonstrates how to self host a model with UpscalerJS.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.

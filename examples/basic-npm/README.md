@@ -1,5 +1,7 @@
 # Usage with NPM
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/basic-npm">View this page on the UpscalerJS website</a>
+
 Demonstrates a basic implementation of UpscalerJS for the browser.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic-npm?file=index.js&title=UpscalerJS: Basic Implementation">Open example in Stackblitz</a>.

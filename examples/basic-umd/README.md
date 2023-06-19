@@ -1,5 +1,7 @@
 # Usage with Script Tag
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/basic-umd">View this page on the UpscalerJS website</a>
+
 Demonstrates installing UpscalerJS with a script tag.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic-umd?file=index.js&title=UpscalerJS: Basic Implementation using a Script Tag">Open example in Stackblitz</a>.

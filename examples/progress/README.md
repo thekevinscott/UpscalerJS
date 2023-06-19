@@ -1,5 +1,7 @@
 # Monitoring Progress
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/usage/progress">View this page on the UpscalerJS website</a>
+
 It can be useful to monitor the progress of an upscale operation, particularly for larger images or heavier models. UpscalerJS provides an easy way to do so.
 
 ## Specifying a `progress` Callback Function

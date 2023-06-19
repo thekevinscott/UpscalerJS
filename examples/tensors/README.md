@@ -1,5 +1,7 @@
 # Working with Tensors
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/tensors">View this page on the UpscalerJS website</a>
+
 Here we'll discuss working with tensors directly within the context of UpscalerJS.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/tensors?file=index.js&title=UpscalerJS: Working with Tensors">Open in Stackblitz</a>.
