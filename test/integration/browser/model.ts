@@ -10,6 +10,8 @@ import * as tfn from '@tensorflow/tfjs-node';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -122,6 +124,50 @@ describe('Model Loading Integration Tests', () => {
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
   });
 
+  describe('Test specific model implementations', () => {
+    const SPECIFIC_PACKAGE: string | undefined = undefined;
+    const SPECIFIC_MODEL: string | undefined = undefined;
+    const filteredPackagesAndModels = getFilteredModels({
+      specificPackage: SPECIFIC_PACKAGE,
+      specificModel: SPECIFIC_MODEL,
+      filter: (packageName, model) => {
+        const packagePath = path.resolve(MODELS_DIR, packageName);
+        const packageJSON = getPackageJSON(packagePath);
+        const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
+
+        return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
+      },
+    }).reduce<[string, AvailableModel[]][]>((arr, [packageName, models]) => {
+      return arr;
+      // return arr.concat(models.map(({ esm, ...model }) => {
+      //   return [
+      //     packageName, {
+      //       ...model,
+      //       esm: esm === '' ? 'index' : esm,
+      //     }];
+      // }));
+    }, []);
+
+    filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
+      describe(packageName, () => {
+        filteredModels.forEach(({ esm }) => {
+          const modelName = esm || 'index';
+          it(`upscales with ${packageName}/${modelName} as esm`, async () => {
+            const fixture = packageName;
+            const result = await page().evaluate(({ fixture, packageName, modelName }) => {
+              const model = window[packageName][modelName];
+              const upscaler = new window['Upscaler']({
+                model,
+              });
+              return upscaler.execute(window['fixtures'][fixture]);
+            }, { fixture, packageName, modelName });
+            const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', modelName, 'result.png');
+            checkImage(result, FIXTURE_PATH, 'diff.png');
+          });
+        });
+      });
+    });
+  });
 });
 
 declare global {
