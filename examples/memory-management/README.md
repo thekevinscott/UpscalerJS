@@ -1,5 +1,7 @@
 # Memory Management
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/performance/memory-management">View this page on the UpscalerJS website</a>
+
 This guide demonstrates additional techniques for managing memory when using UpscalerJS.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/memory-management?file=index.js&title=UpscalerJS: Memory Management">Open in Stackblitz</a>.

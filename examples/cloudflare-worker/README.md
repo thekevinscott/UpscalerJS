@@ -1,5 +1,7 @@
 # Cloudflare Worker
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/implementations/cloudflare">View this page on the UpscalerJS website</a>
+
 Demonstrates how to integrate UpscalerJS in a Cloudflare worker.
 
 ## Getting Started
