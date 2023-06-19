@@ -1,5 +1,7 @@
 # Models
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/models">View this page on the UpscalerJS website</a>
+
 This guide discusses how models work in UpscalerJS.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/models?file=index.js&title=UpscalerJS: Models">Open example in Stackblitz</a>.
