@@ -1,5 +1,7 @@
 # Cancel Example
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/usage/cancel">View this page on the UpscalerJS website</a>
+
 Demonstrates how to cancel an inflight `upscale` request.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/cancel?file=index.js&title=UpscalerJS: Cancel Example">Open in Stackblitz</a>.

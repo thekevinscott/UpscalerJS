@@ -1,5 +1,7 @@
 # Web Worker Integration
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/performance/webworker">View this page on the UpscalerJS website</a>
+
 This guide demonstrates how to integrate UpscalerJS into a Web Worker.
 
 <a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/webworker?file=index.js&title=UpscalerJS: Web Worker Integration">Open in Stackblitz</a>.
