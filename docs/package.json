@@ -15,7 +15,7 @@
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
     "docusaurus:start": "docusaurus start --host 0.0.0.0",
     "build:only": "docusaurus build",
-    "build": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:only",
+    "build": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
