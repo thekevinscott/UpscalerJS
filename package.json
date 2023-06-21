@@ -26,6 +26,7 @@
     "build": "pnpm --filter=\"upscaler\" build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
+    "docs:build": "pnpm --filter=\"@upscalerjs/docs\" build",
     "docs:start": "pnpm --filter=\"@upscalerjs/docs\" start",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
