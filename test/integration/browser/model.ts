@@ -137,20 +137,22 @@ describe('Model Loading Integration Tests', () => {
 
         return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
       },
-    }).reduce<[string, AvailableModel[]][]>((arr, [packageName, models]) => {
-      return arr;
-      // return arr.concat(models.map(({ esm, ...model }) => {
-      //   return [
-      //     packageName, {
-      //       ...model,
-      //       esm: esm === '' ? 'index' : esm,
-      //     }];
-      // }));
+    }).reduce<{ packageName: string, preparedModels: AvailableModel[] }[]>((arr, [packageName, models]) => {
+      const preparedModels: AvailableModel[] = models.map(({ esm, ...model }) => {
+        return {
+          ...model,
+          esm: esm === '' ? 'index' : esm,
+        };
+      });
+      return arr.concat({
+        packageName,
+        preparedModels,
+      });
     }, []);
 
-    filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
+    filteredPackagesAndModels.forEach(({ packageName, preparedModels }) => {
       describe(packageName, () => {
-        filteredModels.forEach(({ esm }) => {
+        preparedModels.forEach(({ esm }) => {
           const modelName = esm || 'index';
           it(`upscales with ${packageName}/${modelName} as esm`, async () => {
             const fixture = packageName;
