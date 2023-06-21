@@ -1,9 +1,10 @@
 import path from 'path';
-import { copyFile, copyFileSync, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, unlink, writeFile } from 'fs-extra';
+import { copyFile, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, writeFile } from 'fs-extra';
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
-import { getPackageJSON,JSONSchema } from '../utils/packages';
+import { getPackageJSON } from '../utils/packages';
 import fm from 'front-matter';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
+import { getSharedArgs, SharedArgs } from './types';
 
 /****
  * Types
@@ -247,9 +248,11 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
 /****
  * Main function
  */
-export const buildGuides = async (src: string, dest: string) => {
+export const buildGuides = async (dest: string, { shouldClearMarkdown }: SharedArgs = {}) => {
   await mkdirp(dest)
-  await clearOutMarkdownFiles(dest);
+  if (shouldClearMarkdown) {
+    await clearOutMarkdownFiles(dest);
+  }
   const { exampleOrder, examplesByName } = getExamplesByName();
 
   await Promise.all([
@@ -264,6 +267,7 @@ export const buildGuides = async (src: string, dest: string) => {
 
 if (require.main === module) {
   (async () => {
-    await buildGuides(EXAMPLES_DIR, EXAMPLES_DOCS_DEST);
+    const sharedArgs = await getSharedArgs();
+    await buildGuides(EXAMPLES_DOCS_DEST, { ...sharedArgs });
   })();
 }

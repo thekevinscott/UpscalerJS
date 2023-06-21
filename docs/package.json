@@ -15,7 +15,7 @@
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
     "docusaurus:start": "docusaurus start --host 0.0.0.0",
     "build:only": "docusaurus build",
-    "build": "concurrently \"pnpm build-guides\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes\" && pnpm tense-checks && pnpm build:only",
+    "build": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
@@ -31,7 +31,7 @@
     "@docusaurus/theme-common": "^2.4.1",
     "@mdx-js/react": "^1.6.22",
     "@shoelace-style/shoelace": "2.0.0-beta.80",
-    "@upscalerjs/esrgan-medium": "1.0.0-beta.9",
+    "@upscalerjs/esrgan-medium": "workspace:*",
     "@tensorflow/tfjs": "^4.6.0",
     "chart.js": "^4.0.1",
     "classnames": "^2.3.1",
@@ -53,7 +53,7 @@
     "sql-wasm": "^1.1.4",
     "sql.js": "^1.8.0",
     "stream-browserify": "^3.0.0",
-    "upscaler": "1.0.0-beta.16"
+    "upscaler": "workspace:*"
   },
   "devDependencies": {
     "@algolia/client-search": "^4.14.2",
