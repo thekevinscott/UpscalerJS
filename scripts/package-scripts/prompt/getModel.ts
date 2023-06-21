@@ -3,7 +3,7 @@ import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
 
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 
-export const getModel = async (model?: string | number, all?: unknown) => {
+export const getModel = async (model?: string | number | (string | number)[], all?: unknown) => {
   if (all === true) {
     const modelPackages = getAllAvailableModelPackages();
     return modelPackages;
@@ -11,6 +11,10 @@ export const getModel = async (model?: string | number, all?: unknown) => {
 
   if (typeof model == 'string') {
     return [model];
+  }
+
+  if (Array.isArray(model)) {
+    return model.map(m => `${m}`);
   }
 
   const { models } = await inquirer.prompt<{
