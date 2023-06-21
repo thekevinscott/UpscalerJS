@@ -124,7 +124,7 @@ const writeModelDocs = async (
     const updatedDoc = await getPreparedDoc(model, { verbose });
     const targetPath = path.resolve(MODELS_DIR, model, 'DOC.mdx');
 
-    const existingDoc = await readFile(targetPath, 'utf-8');
+    await readFile(targetPath, 'utf-8');
 
     await writeFile(targetPath, updatedDoc);
   }
@@ -144,12 +144,7 @@ const getArgs = async (): Promise<Answers> => {
   const argv = await yargs.command('build models', 'build models', yargs => {
     yargs.positional('model', {
       describe: 'The model to build',
-    // }).option('o', {
-    //   alias: 'outputFormat',
-    //   type: 'string',
-    // }).option('a', {
-    //   alias: 'all',
-    //   type: 'boolean',
+      array: true,
     }).option('v', {
       alias: 'verbose',
       type: 'boolean',
@@ -158,7 +153,7 @@ const getArgs = async (): Promise<Answers> => {
     .help()
     .argv;
 
-  const models = await getModel(argv._[0], argv.a);
+  const models = await getModel(argv._, argv.model);
 
   function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
