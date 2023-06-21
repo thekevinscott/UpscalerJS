@@ -1,9 +1,9 @@
-[build.environment]
-  NPM_FLAGS = "--version"
-[build]
-  base = "docs/"
-  # command = "pip install --upgrade pip && pip install dvc[all] && echo '>>>>>>>>' && GDRIVE_CREDENTIALS_DATA=$GDRIVE_CREDENTIALS_DATA dvc pull -v -r gdrive-service-account && npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
-  command = "pip install --upgrade pip && pip install dvc[all] && echo '>>>>>>>>' && GDRIVE_CREDENTIALS_DATA=$GDRIVE_CREDENTIALS_DATA dvc pull -v -r gdrive-service-account && pnpm i --store=node_modules/.pnpm-store && pnpm run build"
-  # command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
-  # publish = "build"
-  # ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
+# [build.environment]
+#   NPM_FLAGS = "--version"
+# [build]
+#   base = "docs/"
+#   # command = "pip install --upgrade pip && pip install dvc[all] && echo '>>>>>>>>' && GDRIVE_CREDENTIALS_DATA=$GDRIVE_CREDENTIALS_DATA dvc pull -v -r gdrive-service-account && npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
+#   command = "pip install --upgrade pip && pip install dvc[all] && echo '>>>>>>>>' && GDRIVE_CREDENTIALS_DATA=$GDRIVE_CREDENTIALS_DATA dvc pull -v -r gdrive-service-account && pnpm i --store=node_modules/.pnpm-store && pnpm run build"
+#   # command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
+#   # publish = "build"
+#   # ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
