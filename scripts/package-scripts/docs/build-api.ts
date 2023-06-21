@@ -6,6 +6,7 @@ import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
+import { getSharedArgs, SharedArgs } from './types';
 
 /****
  * Types
@@ -834,7 +835,7 @@ const writeIndexFile = async (methods: DeclarationReflection[]) => {
 /****
  * Main function
  */
-async function main({ shouldClearMarkdown }: { shouldClearMarkdown?: boolean } = {}) {
+async function main({ shouldClearMarkdown }: SharedArgs = {}) {
   await mkdirp(EXAMPLES_DOCS_DEST);
   if (shouldClearMarkdown) {
     await clearOutMarkdownFiles(EXAMPLES_DOCS_DEST);
@@ -852,23 +853,10 @@ async function main({ shouldClearMarkdown }: { shouldClearMarkdown?: boolean } =
 /****
  * Functions to expose the main function as a CLI tool
  */
-interface Args {
-  shouldClearMarkdown?: boolean;
-}
-
-const getArgs = async (): Promise<Args> => {
-  const argv = await yargs(process.argv.slice(2)).options({
-    shouldClearMarkdown: { type: 'boolean' },
-  }).argv;
-
-  return {
-    ...argv,
-  }
-};
 
 if (require.main === module) {
   (async () => {
-    const args = await getArgs();
-    await main(args);
+    const sharedArgs = await getSharedArgs();
+    await main({ ...sharedArgs });
   })();
 }
