@@ -215,4 +215,3 @@ describe('isDynamicShape', () => {
       expect(isDynamicShape4D(args)).toEqual(expectation);
     });
 });
-
