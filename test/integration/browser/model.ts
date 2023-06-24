@@ -57,7 +57,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.execute(window['fixtures']['default-model']);
     });
-    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "index/result.png"), 'diff.png');
+    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
@@ -163,7 +163,7 @@ describe('Model Loading Integration Tests', () => {
               });
               return upscaler.execute(window['fixtures'][fixture]);
             }, { fixture, packageName, modelName });
-            const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__', modelName, 'result.png');
+            const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
             checkImage(result, FIXTURE_PATH, 'diff.png');
           });
         });
