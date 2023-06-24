@@ -71,11 +71,11 @@ export async function* processPixels(
   { output, progress, progressOutput, }: Pick<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'>,
   modelPackage: ModelPackage,
   {
-    imageSize,
+    originalImageSize,
     patchSize,
     padding = 0,
   }: {
-    imageSize: FixedShape4D;
+    originalImageSize: FixedShape4D;
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
@@ -150,7 +150,7 @@ export async function* processPixels(
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const processedUpscaledTensor = processAndDisposeOfTensor(
       upscaledTensor!.clone(),
-      trimInput(imageSize, scale)
+      trimInput(originalImageSize, scale)
     );
     upscaledTensor?.dispose();
     yield [processedUpscaledTensor,];
@@ -171,7 +171,7 @@ export async function* processPixels(
     prediction.clone(),
     modelDefinition.postprocess,
     scaleOutput(modelDefinition.outputRange),
-    trimInput(imageSize, scale)
+    trimInput(originalImageSize, scale)
   );
 
   prediction.dispose();
@@ -239,7 +239,7 @@ export async function* upscale(
     },
     modelPackage,
     {
-      imageSize,
+      originalImageSize: imageSize,
       patchSize,
       padding,
     }
