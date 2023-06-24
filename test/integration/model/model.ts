@@ -150,6 +150,11 @@ describe('Model Tests', () => {
   });
 
   describe.each(PLATFORMS?.includes('node') ? [[]] : [])('Node', () => {
+    if (USE_GPU) {
+      console.log('**** USING GPU in Node')
+    } else {
+      console.log('**** USING CPU in Node')
+    }
     describe('CJS', () => {
       const main: Main = async (deps) => {
         const {
