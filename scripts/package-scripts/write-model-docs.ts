@@ -120,14 +120,14 @@ const writeModelDocs = async (
     return;
   }
 
-  for (const model of models) {
+  await Promise.all(models.map(async model => {
     const updatedDoc = await getPreparedDoc(model, { verbose });
     const targetPath = path.resolve(MODELS_DIR, model, 'DOC.mdx');
 
     await readFile(targetPath, 'utf-8');
 
     await writeFile(targetPath, updatedDoc);
-  }
+  }));
 }
 
 export default writeModelDocs;
