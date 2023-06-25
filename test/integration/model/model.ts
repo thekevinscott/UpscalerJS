@@ -37,15 +37,16 @@ const getModels = (platform: 'browser' | 'node') => getFilteredModels({
   },
 });
 
-const filterModels = (models: AvailableModel[], ...keys: (keyof AvailableModel)[]) => models.map(model => {
-  return keys.map(key => {
-    const value = model[key];
-    if (typeof value !== 'string') {
-      throw new Error(`Expected ${key} to be a string, but got ${value} (${typeof value})`);
-    }
-    return value || 'index';
-  });
-});
+const filterModels = (
+  models: AvailableModel[], 
+  ...keys: (keyof AvailableModel)[]
+): string[][] => models.map(model => keys.map(key => {
+  const value = model[key];
+  if (typeof value !== 'string') {
+    throw new Error(`Expected ${key} to be a string, but got ${value} (${typeof value})`);
+  }
+  return value || 'index';
+}));
 
 
 describe('Model Tests', () => {
