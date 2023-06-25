@@ -1,5 +1,4 @@
 import { tf, } from './dependencies.generated';
-
 import { isLayersModel, } from './isLayersModel';
 import {
   ERROR_WITH_MODEL_INPUT_SHAPE,
@@ -71,6 +70,17 @@ export const getPatchSizeAsMultiple = (divisibilityFactor: number, patchSize: nu
   return Math.ceil(patchSize / divisibilityFactor) * divisibilityFactor;
 };
 
+/**
+ * A user may provide patch size and padding variables when invoking `execute`.
+ * 
+ * A model definition may further specify a given input shape.
+ * 
+ * This function has a few responsibilities:
+ * - validate that patchSize is valid (i.e., greater than 0 if defined)
+ * - warn if the user is providing a patch size where one is unacceptable (i.e., when a model has defined its own input size)
+ * - if a model has defined its own input size, return the appropriate patch size and padding values
+ * - if a model has not defined its own input size, return the given user variables (which may be undefined)
+ */
 type ParsePatchAndInputShapes = (
   modelPackage: ModelPackage,
   args: UpscaleArgs,
