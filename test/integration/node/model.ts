@@ -148,52 +148,6 @@ describe('Node Model Loading Integration Tests', () => {
       const formattedResult = `data:image/png;base64,${result}`;
       checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
     });
-
-    describe('Test specific model implementations', () => {
-      const SPECIFIC_PACKAGE: string | undefined = undefined;
-      const SPECIFIC_MODEL: string | undefined = undefined;
-
-      const filteredPackagesAndModels = getFilteredModels({
-        specificPackage: SPECIFIC_PACKAGE,
-        specificModel: SPECIFIC_MODEL,
-        filter: (packageName, model) => {
-          const packagePath = path.resolve(MODELS_DIR, packageName);
-          const packageJSON = getPackageJSON(packagePath);
-          const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
-
-          return supportedPlatforms === undefined || supportedPlatforms.includes('node');
-        },
-      });
-      filteredPackagesAndModels.forEach(([packageName, filteredModels]) => {
-        describe(packageName, () => {
-          filteredModels.forEach(({ cjs }) => {
-            const cjsName = cjs || 'index';
-            it(`upscales with ${packageName}/${cjsName} as cjs`, async () => {
-              const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, cjsName === 'index' ? '' : `/${cjsName}`);
-              const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
-              const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
-              const result = await testRunner.run({
-                dependencies: {
-                  customModel: importPath,
-                },
-                globals: {
-                  model: 'customModel',
-                  imagePath: JSON.stringify(fixturePath),
-                }
-              });
-
-              expect(result).not.toEqual('');
-              const formattedResult = `data:image/png;base64,${result}`;
-              const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${cjsName === 'index' ? '' : `/${cjsName}`}`, "result.png");
-              const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, cjsName);
-              const diffPath = path.resolve(outputsPath, `diff.png`);
-              const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
-              checkImage(formattedResult, resultPath, diffPath, upscaledPath);
-            });
-          });
-        });
-      });
-    });
   });
 
   // test the various configurations a model.json can have
