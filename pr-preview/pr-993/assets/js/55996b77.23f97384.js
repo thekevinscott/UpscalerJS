@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_upscalerjs_docs=self.webpackChunk_upscalerjs_docs||[]).push([[3881],{57842:s=>{s.exports=JSON.parse('{"label":"roadmap","permalink":"/news/tags/roadmap","allTagsPath":"/news/tags","count":2}')}}]);

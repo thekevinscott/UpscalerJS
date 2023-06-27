@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_upscalerjs_docs=self.webpackChunk_upscalerjs_docs||[]).push([[7183],{75264:s=>{s.exports=JSON.parse('{"label":"announcement","permalink":"/news/tags/announcement","allTagsPath":"/news/tags","count":1}')}}]);

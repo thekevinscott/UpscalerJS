@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_upscalerjs_docs=self.webpackChunk_upscalerjs_docs||[]).push([[5659],{31555:e=>{e.exports=JSON.parse('{"permalink":"/news","page":1,"postsPerPage":3,"totalPages":1,"totalCount":3,"blogDescription":"News about upcoming models, features, and releases of UpscalerJS","blogTitle":"UpscalerJS News"}')}}]);
