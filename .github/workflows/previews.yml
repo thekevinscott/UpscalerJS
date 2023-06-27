@@ -11,24 +11,24 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   # Build job
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
+  # build:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16]
+  #   steps:
+  #     - name: 'Checkout repository'
+  #       uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
 
-      - name: Build Docs
-        uses: ./.github/actions/build-docs
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+  #     - name: Build Docs
+  #       uses: ./.github/actions/build-docs
+  #       with:
+  #         gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
   # Deployment job
   deploy-preview:
@@ -43,10 +43,28 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build Docs
-        uses: ./.github/actions/build-docs
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
+
+      - name: 'Install dependencies'
+        shell: bash
+        run: pnpm install
+
+      - name: 'Build'
+        shell: bash
+        working-directory: ./docs
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./docs/build
+
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
