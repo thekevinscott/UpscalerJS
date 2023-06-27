@@ -1,6 +1,11 @@
 name: Build Docs
 description: "Build Documentation Site"
 
+inputs:
+  gdrive_credentials_data:  # id of input
+    description: 'Path to GDrive Credentials Data'
+    required: true
+
 runs:
   using: "composite"
   steps:

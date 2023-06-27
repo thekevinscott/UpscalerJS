@@ -27,6 +27,8 @@ jobs:
 
       - name: Build Docs
         uses: ./.github/actions/build-docs
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
   # Deployment job
   deploy-preview:
