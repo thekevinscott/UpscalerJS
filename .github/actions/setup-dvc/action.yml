@@ -16,12 +16,12 @@ runs:
       id: cache-output-restore
       uses: actions/cache/restore@v3
       with:
-        path: dvc-cache-dir
+        path: dvc-cache-dir-jun-23
         key: dvc-cache-dir
 
     - name: 'Set Cache Dir'
       shell: bash
-      run: dvc cache dir dvc-cache-dir
+      run: dvc cache dir dvc-cache-dir-jun-23
 
     - name: 'Set Cache Shared to Group'
       shell: bash
@@ -41,5 +41,5 @@ runs:
       id: cache-output-save
       uses: actions/cache/save@v3
       with:
-        path: dvc-cache-dir
+        path: dvc-cache-dir-jun-23
         key: ${{ steps.cache-output-restore.outputs.cache-primary-key }}
