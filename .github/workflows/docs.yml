@@ -1,0 +1,61 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy Docs
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Single deploy job since we're just deploying
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
+
+      - name: 'Install dependencies'
+        run: pnpm install
+
+      - name: 'Build'
+        working-directory: ./docs
+        run: pnpm build
