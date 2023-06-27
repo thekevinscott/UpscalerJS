@@ -17,38 +17,8 @@ jobs:
       matrix:
         node-version: [16]
     steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Install dependencies'
-        run: pnpm install
-
-      - name: 'Build'
-        working-directory: ./docs
-        run: pnpm build
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./docs/build
+      - name: 'Build Docs'
+        uses: ./.github/actions/build-docs
 
   # Deployment job
   deploy-preview:

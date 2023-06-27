@@ -336,37 +336,38 @@ jobs:
       - name: 'Memory Leak Tests'
         run: pnpm test:memory-leaks --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
-  build-docs:
-    name: 'Build Documentation'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
+  # This is covered by previews.yml
+  # build-docs:
+  #   name: 'Build Documentation'
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16]
+  #   steps:
+  #     - name: 'Checkout repository'
+  #       uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
 
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+  #     - name: 'Setup DVC & Pull Models'
+  #       uses: ./.github/actions/setup-dvc
+  #       with:
+  #         gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+  #     - name: 'Setup PNPM'
+  #       uses: ./.github/actions/setup-pnpm
 
-      - name: 'Install dependencies'
-        run: pnpm install
+  #     - name: 'Install dependencies'
+  #       run: pnpm install
 
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
+  #     # - name: Setup tmate session
+  #     #   uses: mxschmitt/action-tmate@v3
+  #     #   with:
+  #     #     detached: true
 
-      - name: 'Build'
-        working-directory: ./docs
-        run: pnpm build
+  #     - name: 'Build'
+  #       working-directory: ./docs
+  #       run: pnpm build
