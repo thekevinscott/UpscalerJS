@@ -32,6 +32,9 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
       - name: 'Build Docs'
         uses: ./.github/actions/build-docs
 
@@ -43,6 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
