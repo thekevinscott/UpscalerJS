@@ -47,6 +47,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      # - name: Build Docs
+      #   uses: ./.github/actions/build-docs
+      #   with:
+      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
@@ -64,11 +69,20 @@ jobs:
         working-directory: ./docs
         run: pnpm build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: ./docs/build
+      - name: 'LS docs'
+        shell: bash
+        working-directory: ./docs
+        run: ls
 
+      - name: 'LS docs/build'
+        shell: bash
+        working-directory: ./docs
+        run: ls build
+
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     path: ./docs/build
 
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
