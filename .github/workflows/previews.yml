@@ -1,0 +1,68 @@
+name: Deploy PR previews
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+concurrency: preview-${{ github.ref }}
+
+jobs:
+  # Build job
+  build:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Setup PNPM'
+        uses: ./.github/actions/setup-pnpm
+
+      - name: 'Install dependencies'
+        run: pnpm install
+
+      - name: 'Build'
+        working-directory: ./docs
+        run: pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./docs/build
+
+  # Deployment job
+  deploy-preview:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs/build/
+  
