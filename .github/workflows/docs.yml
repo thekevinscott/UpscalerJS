@@ -60,6 +60,11 @@ jobs:
         working-directory: ./docs
         run: pnpm build
 
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./docs/build
+
   # Deployment job
   deploy:
     environment:
