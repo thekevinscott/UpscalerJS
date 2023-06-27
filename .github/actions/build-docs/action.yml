@@ -1,19 +1,9 @@
 name: Build Docs
 description: "Build Documentation Site"
 
-# inputs:
-#   gdrive_credentials_data:  # id of input
-#     description: 'Path to GDrive Credentials Data'
-#     required: true
-
 runs:
   using: "composite"
   steps:
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-
     # - name: Setup tmate session
     #   uses: mxschmitt/action-tmate@v3
     #   with:
