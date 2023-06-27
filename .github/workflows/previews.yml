@@ -74,4 +74,5 @@ jobs:
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: ./docs/build/
+          custom-url: upscalerjs.com
   
