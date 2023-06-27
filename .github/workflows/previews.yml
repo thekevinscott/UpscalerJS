@@ -11,29 +11,29 @@ concurrency: preview-${{ github.ref }}
 
 jobs:
   # Build job
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
+  # build:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       node-version: [16]
+  #   steps:
+  #     - name: 'Checkout repository'
+  #       uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+  #     - name: Use Node.js ${{ matrix.node-version }}
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
 
-      - name: Build Docs
-        uses: ./.github/actions/build-docs
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+  #     - name: Build Docs
+  #       uses: ./.github/actions/build-docs
+  #       with:
+  #         gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
   # Deployment job
   deploy-preview:
     runs-on: ubuntu-latest
-    needs: build
+    # needs: build
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
