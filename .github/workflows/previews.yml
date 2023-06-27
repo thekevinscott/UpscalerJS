@@ -12,9 +12,6 @@ concurrency: preview-${{ github.ref }}
 jobs:
   # Build job
   build:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,9 +52,6 @@ jobs:
 
   # Deployment job
   deploy-preview:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
