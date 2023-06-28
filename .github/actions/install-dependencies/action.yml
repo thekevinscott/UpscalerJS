@@ -1,0 +1,20 @@
+name: Install dependencies
+description: "Installs dependencies for UpscalerJS"
+
+inputs:
+  gdrive_credentials_data:  # id of input
+    description: 'Path to GDrive Credentials Data'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: 'DVC Pull'
+      shell: bash
+      run: dvc pull -v -r gdrive-service-account
+      env:
+        GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
+
+    - name: 'PNPM Install'
+      shell: bash
+      run: pnpm install

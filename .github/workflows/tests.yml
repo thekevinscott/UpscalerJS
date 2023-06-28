@@ -374,25 +374,22 @@ jobs:
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
+      volumes:
+        - /home/runner/work/UpscalerJS/UpscalerJS:/home/runner/work/UpscalerJS/UpscalerJS
+      # options: --cpus 1
+    # strategy:
+    #   matrix:
+    #     node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
