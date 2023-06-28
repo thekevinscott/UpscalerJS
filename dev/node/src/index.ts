@@ -12,6 +12,10 @@ import {
   registerScript as registerScriptForWriteModelTestFixtures,
 } from './commands/write-model-test-fixtures';
 
+import {
+  registerScript as registerScriptForWriteModelAssets
+} from './commands/write-model-assets';
+
 const main = async () => {
   const program = new Command();
 
@@ -24,6 +28,7 @@ const main = async () => {
     registerScriptForTestModel,
     registerScriptForTestEsrganInAllConfigurations,
     registerScriptForWriteModelTestFixtures,
+    registerScriptForWriteModelAssets,
   ].forEach(fn => fn(program));
 
   await program.parseAsync(process.argv);
