@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import styles from './modelHeaderImage.module.scss';
 
 interface IProps {
@@ -11,8 +11,8 @@ export default function ModelHeaderImage ({ packageName, model }: IProps) {
   const enhancedSrc = `/assets/sample-images/${packageName}/samples/${model}/result.png`;
   return (
     <div className={styles.modelHeaderImage}>
-      <img src={originalSrc} alt={`Unenhanced image for ${packageName}`} />
-      <img src={enhancedSrc} alt={`Enhanced image for ${packageName}`} />
+      <img src={originalSrc} alt={`Unenhanced file for ${packageName}`} />
+      <img src={enhancedSrc} alt={`Enhanced file for ${packageName}`} />
     </div>
   );
 }
