@@ -15,10 +15,6 @@ runs:
       env:
         GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
         
-    - name: 'PNPM Upgrade'
-      shell: bash
-      run: pnpm add -g pnpm
-
     - name: 'PNPM Install'
       shell: bash
       run: pnpm install
