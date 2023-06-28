@@ -3,14 +3,18 @@ import clsx from 'clsx';
 import styles from './examples.module.scss';
 import Link from '@docusaurus/Link';
 import {useColorMode} from '@docusaurus/theme-common';
-
-const EXAMPLE_ROOT = 'https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/docs/src/components/homepage/homepage-code-embed';
+import CodeEmbed from '../../codeEmbed/codeEmbed';
 
 export function Examples() {
   const { colorMode } = useColorMode();
-  const EXAMPLE_SRC = useMemo(() => `${EXAMPLE_ROOT}?embed=1&ctl=1&file=index.js&hideExplorer=1&theme=${colorMode}`, [
-    // colorMode, // switching reloads the whole iframe, which is not ideal.
-  ]);
+  const params = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set('file', 'index.js');
+    params.set('ctl', '1');
+    params.set('embed', '1');
+    params.set('theme', colorMode);
+    return params;
+  }, []);
 
   return (
     <div className={clsx(`${styles.examples}`)}>
@@ -28,7 +32,7 @@ export function Examples() {
         <p><Link href="/documentation/guides">Check out the full list of examples</Link>.</p>
       </div>
       <div className={styles.right}>
-        <iframe src={EXAMPLE_SRC}></iframe> 
+        <CodeEmbed url={`docs/src/components/homepage/homepage-code-embed`} params={params} type="codesandbox" />
       </div>
     </div>
   );

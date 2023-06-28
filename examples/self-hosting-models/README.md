@@ -4,7 +4,7 @@
 
 Demonstrates how to self host a model with UpscalerJS.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.
 
 :::tip
 

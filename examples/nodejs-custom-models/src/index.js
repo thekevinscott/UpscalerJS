@@ -9,7 +9,7 @@ const app = express();
 const upscaler = new Upscaler({
   model: {
     scale: 2,
-    path: tf.io.fileSystem(path.resolve(__dirname, './model/model.json')),
+    path: tf.io.fileSystem(path.resolve(__dirname, '../model/model.json')),
   }
 });
 

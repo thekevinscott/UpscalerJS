@@ -8,7 +8,7 @@ It can be useful to monitor the progress of an upscale operation, particularly f
 
 :::caution
 
-`progress` will _only_ be called if a `patchSize` is set during an upscale. [Read more about patch sizes here](../performance/patch-sizes).
+`progress` will _only_ be called if a `patchSize` is set during an upscale (for models with dynamic sizes). For models with fixed input sizes or divisibility requirements, `progress` will be called automatically. [Read more about patch sizes here](../performance/patch-sizes).
 
 :::
 

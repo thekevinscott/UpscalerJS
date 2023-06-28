@@ -20,6 +20,9 @@ interface ExampleContent {
 /****
  * Constants
  */
+const DEFAULT_EMBED_FOR_NODE = 'codesandbox';
+const DEFAULT_EMBED_FOR_BROWSER = 'codesandbox';
+// const DEFAULT_EMBED_FOR_BROWSER = 'stackblitz';
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 
 /****
@@ -28,11 +31,16 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
-const getDefaultCodeEmbedParameters = (category: string) => {
+const getDefaultCodeEmbedParameters = (category: string, params: Record<string, any> = {}) => {
   if (category.toLowerCase() === 'node') {
     return 'view=split,preview&module=index.js&hidenavigation=1';
   };
-  return 'embed=1&file=index.js&hideExplorer=1';
+  return Object.entries({
+    embed: 1,
+    file: 'index.js',
+    hideExplorer: 1,
+    ...params,
+  }).map(([key, val]) => `${key}=${val}`).join('&');
 }
 
 const getFrontmatter = (key: string): ExampleContent => {
@@ -61,8 +69,8 @@ const getFrontmatter = (key: string): ExampleContent => {
   } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
 
   const codeEmbed = code_embed !== false ? {
-    params: getDefaultCodeEmbedParameters(category),
-    type: category.toLowerCase() === 'node' ? 'codesandbox' : 'stackblitz',
+    params: getDefaultCodeEmbedParameters(category, frontmatter.params),
+    type: category.toLowerCase() === 'node' ? DEFAULT_EMBED_FOR_NODE : DEFAULT_EMBED_FOR_BROWSER,
     url: `/examples/${key}`,
     ...code_embed,
   } : {};

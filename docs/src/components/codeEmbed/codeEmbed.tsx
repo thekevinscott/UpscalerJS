@@ -5,7 +5,8 @@ import styles from './codeEmbed.module.scss';
 import clsx from 'clsx';
 
 const ROOT_URL_STACKBLITZ = 'stackblitz.com/github/thekevinscott/upscalerjs/tree/main';
-const ROOT_URL_CODESANDBOX = 'githubbox.com/thekevinscott/upscalerjs/tree/main';
+// const ROOT_URL_CODESANDBOX = 'githubbox.com/thekevinscott/upscalerjs/tree/main';
+const ROOT_URL_CODESANDBOX = 'codesandbox.io/embed/github/thekevinscott/upscalerjs/tree/main';
 const THRESHOLD_TO_GO_MAX = 100;
 const IFRAME_DEFAULT_HEIGHT = 300;
 const HEADER_HEIGHT = 60;
@@ -153,7 +154,7 @@ export const CodeEmbed = ({
   url,
   params,
   persist,
-  type = 'stackblitz',
+  type = 'codesandbox',
 }: {
   url: string,
   params?: URLSearchParams | string,
@@ -188,14 +189,22 @@ export const CodeEmbed = ({
     return (
       <div className={styles.container} style={{ height: containerHeight }}>
         {dragging && <div className={styles.overlay}></div>}
-        <iframe className={styles.iframe} ref={ref} src={src}></iframe>
+        <iframe
+          className={styles.iframe}
+          ref={ref}
+          src={src}
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
         {isBrowser && <Dragger type={type} onDragging={setDragging} onDrag={setDelta} text={text} />}
       </div>
     );
   }
 
   return (
-    <iframe className={styles.iframe} ref={ref} src={src}></iframe>
+    <iframe 
+      className={styles.iframe}
+      ref={ref}
+      src={src}
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
   )
 }
 

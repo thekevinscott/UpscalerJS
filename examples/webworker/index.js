@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import img from './flower.png';
+import img from './public/flower.png';
 import { writeOutput, disable } from './ui';
 
 const buttonWithWW = document.getElementById('button-webworker');

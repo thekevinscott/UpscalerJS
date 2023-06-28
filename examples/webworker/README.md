@@ -4,7 +4,7 @@
 
 This guide demonstrates how to integrate UpscalerJS into a Web Worker.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/webworker?file=index.js&title=UpscalerJS: Web Worker Integration">Open in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/webworker?file=index.js&title=UpscalerJS: Web Worker Integration">Open in Codesandbox</a>.
 
 ## Motivation
 
