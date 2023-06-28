@@ -88,7 +88,7 @@ export function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className={clsx("row")}>
         <div className={clsx('col col--4')}>
-        <h1 className="hero__title">Upscale Images in Javascript</h1>
+        <h1 className="hero__title">Enhance Images with AI using Javascript</h1>
         <p className="hero__subtitle">Open source, browser/Node compatibility, and completely free to use under the MIT license.</p>
         <div className={styles.buttons}>
           <Link
