@@ -374,10 +374,13 @@ jobs:
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     container:
       image: upscalerjs/upscalerjs:latest
-      volumes:
-        - /home/runner/work/UpscalerJS/UpscalerJS:/home/runner/work/UpscalerJS/UpscalerJS
+      # volumes:
+      #   - /home/runner/work/UpscalerJS/UpscalerJS:/home/runner/work/UpscalerJS/UpscalerJS
       # options: --cpus 1
     # strategy:
     #   matrix:
