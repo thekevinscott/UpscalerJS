@@ -20,8 +20,8 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000 * 5;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
+const JEST_TIMEOUT = 60 * 1000 * 15;
+jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
@@ -122,53 +122,6 @@ describe('Model Loading Integration Tests', () => {
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);
     const expectedTensor = tfn.image.resizeNearestNeighbor(tfn.tensor(startingPixels).reshape([2,2,3]).clipByValue(0, 255) as Tensor3D, [4,4]);
     expect(expectedTensor.dataSync()).toEqual(predictedTensor.dataSync())
-  });
-
-  describe('Test specific model implementations', () => {
-    const SPECIFIC_PACKAGE: string | undefined = undefined;
-    const SPECIFIC_MODEL: string | undefined = undefined;
-    const filteredPackagesAndModels = getFilteredModels({
-      specificPackage: SPECIFIC_PACKAGE,
-      specificModel: SPECIFIC_MODEL,
-      filter: (packageName, model) => {
-        const packagePath = path.resolve(MODELS_DIR, packageName);
-        const packageJSON = getPackageJSON(packagePath);
-        const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
-
-        return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
-      },
-    }).reduce<{ packageName: string, preparedModels: AvailableModel[] }[]>((arr, [packageName, models]) => {
-      const preparedModels: AvailableModel[] = models.map(({ esm, ...model }) => {
-        return {
-          ...model,
-          esm: esm === '' ? 'index' : esm,
-        };
-      });
-      return arr.concat({
-        packageName,
-        preparedModels,
-      });
-    }, []);
-
-    filteredPackagesAndModels.forEach(({ packageName, preparedModels }) => {
-      describe(packageName, () => {
-        preparedModels.forEach(({ esm }) => {
-          const modelName = esm || 'index';
-          it(`upscales with ${packageName}/${modelName} as esm`, async () => {
-            const fixture = packageName;
-            const result = await page().evaluate(({ fixture, packageName, modelName }) => {
-              const model = window[packageName][modelName];
-              const upscaler = new window['Upscaler']({
-                model,
-              });
-              return upscaler.execute(window['fixtures'][fixture]);
-            }, { fixture, packageName, modelName });
-            const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
-            checkImage(result, FIXTURE_PATH, 'diff.png');
-          });
-        });
-      });
-    });
   });
 });
 

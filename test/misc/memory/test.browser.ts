@@ -227,7 +227,7 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          warmupSizes: [[10, 10]],
+          warmupSizes: [10],
           model: window['pixel-upsampler']['4x'],
         });
         await upscaler.dispose();
@@ -560,7 +560,7 @@ describe('Memory Leaks', () => {
     }, TIMES_TO_CHECK);
 
     await tick(testRunner.page);
-    expect(image.shape).toEqual([8, 8, 3]);
+    expect(image.shape).toEqual([16, 16, 3]);
     await testRunner.page.evaluate(() => {
       window['output']!.dispose();
     })

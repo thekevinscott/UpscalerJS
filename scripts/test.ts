@@ -215,7 +215,10 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       watch ? '--watch' : undefined,
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
-    // console.log('args', args);
+
+    if (verbose) {
+      console.log(args);
+    }
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
     if (bsLocal !== undefined) {
