@@ -32,7 +32,7 @@ export function Examples() {
         <p><Link href="/documentation/guides">Check out the full list of examples</Link>.</p>
       </div>
       <div className={styles.right}>
-        <CodeEmbed url={`docs/src/components/homepage/homepage-code-embed`} params={params} type="codesandbox" />
+        <CodeEmbed url={'docs/src/components/homepage/homepage-code-embed'} params={params} type="codesandbox" />
       </div>
     </div>
   );

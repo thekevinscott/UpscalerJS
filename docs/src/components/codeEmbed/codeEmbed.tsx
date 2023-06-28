@@ -125,8 +125,16 @@ const Dragger = ({
     onDragging(dragging);
   }, [dragging]);
 
+  const onTouchStart = useCallback(e => startDrag(e.touches[0].clientY), [])
+  const onMouseDown = useCallback(e => startDrag(e.clientY), []);
+
   return (
-    <div className={clsx(styles.dragger, dragging ? styles.active : null, styles[type])} onTouchStart={e => startDrag(e.touches[0].clientY)} onMouseDown={e => startDrag(e.clientY)}>{text}</div>
+    <div
+      className={clsx(styles.dragger, dragging ? styles.active : null, styles[type])} 
+      onTouchStart={onTouchStart} 
+      onMouseDown={onMouseDown}
+      role="button"
+    >{text}</div>
   );
 }
 
@@ -190,6 +198,7 @@ export const CodeEmbed = ({
       <div className={styles.container} style={{ height: containerHeight }}>
         {dragging && <div className={styles.overlay}></div>}
         <iframe
+          title="Code Embed"
           className={styles.iframe}
           ref={ref}
           src={src}
@@ -201,6 +210,7 @@ export const CodeEmbed = ({
 
   return (
     <iframe 
+      title="Code Embed"
       className={styles.iframe}
       ref={ref}
       src={src}
