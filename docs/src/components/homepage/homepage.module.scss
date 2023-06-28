@@ -29,6 +29,20 @@ $padding: 80px;
       &.off {
         background-color: var(--off-background-color);
       }
+
+      &.cta {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--cta-background-color);
+        padding: 20px;
+
+        button {
+          padding: 20px;
+          border: none;
+          background: rgb(156, 68, 0);
+        }
+      }
     }
   }
 }

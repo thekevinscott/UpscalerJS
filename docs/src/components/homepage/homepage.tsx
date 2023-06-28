@@ -12,6 +12,13 @@ export function Homepage() {
     <div id={styles.homePage}>
       <HomepageHeader />
       <main>
+        <section className={styles.cta}>
+        <Link
+            className="button button--primary button--lg"
+            to="/demo">
+              Try a Live Demo →
+          </Link>
+        </section>
         <section>
           <HomepageFeatures />
         </section>
