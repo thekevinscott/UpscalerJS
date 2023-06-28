@@ -1,5 +1,5 @@
 import Upscaler from 'upscaler';
-import img from './flower.png';
+import img from './public/flower.png';
 const target = document.getElementById('target');
 const upscale = document.getElementById('upscale');
 const cancel = document.getElementById('cancel');
@@ -12,7 +12,7 @@ upscale.onclick = () => {
   const start = new Date().getTime();
   let rate = 0;
   upscaler.upscale(img, {
-    patchSize: 16,
+    patchSize: 7,
     padding: 4,
     signal: abortController.signal,
     progress: (inProgressRate) => {

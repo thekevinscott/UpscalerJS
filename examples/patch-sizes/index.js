@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { getRowsAndColumns } from "upscaler";
-import flower from "./flower.png";
+import flower from "./public/flower.png";
 // Variables referencing elements on the page
 const button = document.getElementById("button");
 const tbody = document.getElementById('output').querySelector('tbody');

@@ -8,4 +8,4 @@ sidebar_position: 1
 
 Shows a basic use case of UpscalerJS.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Basic Example">Open in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Basic Example">Open in Codesandbox</a>.

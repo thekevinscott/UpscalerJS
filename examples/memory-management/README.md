@@ -4,13 +4,13 @@
 
 This guide demonstrates additional techniques for managing memory when using UpscalerJS.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/memory-management?file=index.js&title=UpscalerJS: Memory Management">Open in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/memory-management?file=index.js&title=UpscalerJS: Memory Management">Open in Codesandbox</a>.
 
 ## Disposing of an UpscalerJS Instance
 
 :::caution
 
-The most important consideration about memory is to **dispose of tensors**. If you provide a tensor, or specify a `tensor` as the return type, you are responsible for disposing of the tensor. [Read more about that here](../tensors#managing-memory). (Any tensors _not_ explicitly specified, UpscalerJS will clear for you.)
+The most important consideration is to **dispose of tensors**. If you provide a tensor, or specify a `tensor` as the return type, you are responsible for disposing of the tensor. [Read more about that here](../tensors#managing-memory). (Any tensors _not_ explicitly specified, UpscalerJS will clear for you.)
 
 :::
 
@@ -20,7 +20,7 @@ If working with multiple upscalers within a page, we may want to clean up upscal
 import Upscaler from 'upscaler'
 const upscaler = new Upscaler()
 
-upscale.dispose().then(() => {
+upscaler.dispose().then(() => {
   console.log('UpscalerJS is cleaned up')
 })
 ```

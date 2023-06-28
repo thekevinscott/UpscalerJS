@@ -4,7 +4,7 @@
 
 This guide discusses how models work in UpscalerJS.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/models?file=index.js&title=UpscalerJS: Models">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/models?file=index.js&title=UpscalerJS: Models">Open example in Stackblitz</a>.
 
 ## Overview
 

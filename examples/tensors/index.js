@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import flower from './flower.png';
+import flower from './public/flower.png';
 import Upscaler from 'upscaler';
 const button = document.getElementById('button');
 const info = document.getElementById('info');

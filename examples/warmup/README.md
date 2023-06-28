@@ -4,7 +4,7 @@
 
 This guide demonstrates how to make calls to UpscalerJS process faster.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/warmup?file=index.js&title=UpscalerJS: Warmup Example">Open in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/warmup?file=index.js&title=UpscalerJS: Warmup Example">Open in Codesandbox</a>.
 
 ## Motivation
 

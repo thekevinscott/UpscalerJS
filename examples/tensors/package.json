@@ -17,6 +17,9 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
+        "params": {
+          "expanddevtools": 1
+        },
         "sidebar_position": 3
       }
     }

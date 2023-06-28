@@ -4,7 +4,7 @@
 
 Here we'll discuss working with tensors directly within the context of UpscalerJS.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/tensors?file=index.js&title=UpscalerJS: Working with Tensors">Open in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/tensors?file=index.js&title=UpscalerJS: Working with Tensors">Open in Codesandbox</a>.
 
 ## Tensors
 

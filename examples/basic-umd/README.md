@@ -4,7 +4,7 @@
 
 Demonstrates installing UpscalerJS with a script tag.
 
-<a href="https://stackblitz.com/github/thekevinscott/upscalerjs/tree/main/examples/basic-umd?file=index.js&title=UpscalerJS: Basic Implementation using a Script Tag">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic-umd?file=index.js&title=UpscalerJS: Basic Implementation using a Script Tag">Open example in Stackblitz</a>.
 
 ## Overview
 
