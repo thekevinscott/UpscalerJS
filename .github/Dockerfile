@@ -1,3 +1,17 @@
+############################################################
+#
+# Dockerfile for CI.
+#
+# Steps to build and push:
+#
+# ```
+# docker build -t upscalerjs \
+#     --build-arg GDRIVE_CREDENTIALS_DATA="$(cat path_to_json_creds)" .
+# docker tag upscalerjs upscalerjs/upscalerjs:latest
+# docker push upscalerjs/upscalerjs:latest
+# ```
+#
+############################################################
 FROM ubuntu:20.04
 
 WORKDIR /home/runner/work/UpscalerJS
