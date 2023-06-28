@@ -389,18 +389,6 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'pwd'
-        run: pwd
-
-      - name: 'LS'
-        run: ls -la 
-
-      - name: 'LS /dvc-cache-dir'
-        run: ls -la /dvc-cache-dir
-
-      - name: 'LS .dvc'
-        run: ls -la .dvc
-
       - name: 'Install Dependencies'
         uses: ./.github/actions/install-dependencies
         with:

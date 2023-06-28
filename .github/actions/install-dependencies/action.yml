@@ -9,6 +9,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: 'pwd'
+      shell: bash
+      run: if pwd | grep '/__w/UpscalerJS/UpscalerJS' -q; then echo "Good PWD"; else exit 1; fi; 
+
     - name: 'DVC Pull'
       shell: bash
       run: dvc pull -v -r gdrive-service-account
