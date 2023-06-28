@@ -389,6 +389,18 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: 'pwd'
+        run: pwd
+
+      - name: 'LS'
+        run: ls
+
+      - name: 'LS .dvc'
+        run: ls .dvc
+
+      - name: 'LS .dvc/cache'
+        run: ls .dvc/cache
+
       - name: 'Install Dependencies'
         uses: ./.github/actions/install-dependencies
         with:
