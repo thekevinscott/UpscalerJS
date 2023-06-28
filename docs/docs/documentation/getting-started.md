@@ -2,6 +2,7 @@
 title: Getting Started
 sidebar_position: 2
 sidebar_label: Getting Started
+hide_title: true
 ---
 
 <a class="docs-link" href="https://upscalerjs.com/documentation/getting-started">View this page on the UpscalerJS website</a>
