@@ -14,7 +14,7 @@
 ############################################################
 FROM ubuntu:20.04
 
-WORKDIR /home/runner/work/UpscalerJS
+WORKDIR /__w/UpscalerJS
 
 ENV TZ="America/New_York"
 ENV NODE_VERSION=16.20.1
@@ -57,7 +57,7 @@ RUN apt-get update \
 
 ##### Repo
 RUN git clone https://github.com/thekevinscott/UpscalerJS /home/runner/work/UpscalerJS/UpscalerJS
-WORKDIR /home/runner/work/UpscalerJS/UpscalerJS
+WORKDIR /__w/UpscalerJS/UpscalerJS
 RUN pnpm install
 ARG GDRIVE_CREDENTIALS_DATA
 RUN dvc pull -v -r gdrive-service-account
