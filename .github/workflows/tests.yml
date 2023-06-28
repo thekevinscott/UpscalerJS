@@ -401,9 +401,6 @@ jobs:
       - name: 'LS .dvc'
         run: ls -la .dvc
 
-      - name: 'LS .dvc/cache'
-        run: ls -la .dvc/cache
-
       - name: 'Install Dependencies'
         uses: ./.github/actions/install-dependencies
         with:
