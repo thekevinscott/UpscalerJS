@@ -395,6 +395,9 @@ jobs:
       - name: 'LS'
         run: ls -la 
 
+      - name: 'LS /dvc-cache-dir'
+        run: ls -la /dvc-cache-dir
+
       - name: 'LS .dvc'
         run: ls -la .dvc
 

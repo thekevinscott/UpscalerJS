@@ -59,6 +59,12 @@ RUN apt-get update \
 RUN git clone https://github.com/thekevinscott/UpscalerJS /__w/UpscalerJS/UpscalerJS
 WORKDIR /__w/UpscalerJS/UpscalerJS
 RUN pnpm install
+
+RUN mkdir /dvc-cache-dir \
+    && dvc cache dir /dvc-cache-dir \
+    && dvc config cache.shared group \
+    && dvc config cache.type hardlink,symlink
+
 ARG GDRIVE_CREDENTIALS_DATA
 RUN dvc pull -v -r gdrive-service-account
 
