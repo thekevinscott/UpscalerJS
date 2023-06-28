@@ -289,7 +289,7 @@ importers:
         version: 3.0.5
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@18.11.9)(typescript@4.8.3)
+        version: 10.9.1(@types/node@20.3.2)(typescript@5.1.5)
       upscaler:
         specifier: workspace:*
         version: link:../../packages/upscalerjs
@@ -449,13 +449,13 @@ importers:
         version: 4.6.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: latest
-        version: 1.0.0-beta.11(@tensorflow/tfjs@4.6.0)
+        version: link:../../../../../models/esrgan-thick
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: latest
-        version: 1.0.0-beta.16(@tensorflow/tfjs@4.6.0)
+        version: link:../../../../../packages/upscalerjs
 
   docs/workers/image-search:
     devDependencies:
@@ -782,7 +782,7 @@ importers:
     dependencies:
       upscaler:
         specifier: 1.0.0-beta.14
-        version: 1.0.0-beta.14(@tensorflow/tfjs@4.6.0)
+        version: 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
 
   scripts:
     dependencies:
@@ -824,7 +824,7 @@ importers:
         version: 1.8.2
       typedoc:
         specifier: ^0.23.20
-        version: 0.23.21(typescript@4.8.3)
+        version: 0.23.21(typescript@4.9.5)
       upscaler:
         specifier: workspace:*
         version: link:../packages/upscalerjs
@@ -4058,6 +4058,17 @@ packages:
       '@types/seedrandom': 2.4.30
       seedrandom: 3.0.5
 
+  /@tensorflow/tfjs-backend-cpu@4.8.0(@tensorflow/tfjs-core@4.8.0):
+    resolution: {integrity: sha512-kT4WZeM4cuuZ+dSCMatrC9YiqV4dxpFzjxKOKwdS41gdg5QKQGW7caScCe55thO/Xpp7VOJXncDYeaMH7GcxCA==}
+    engines: {yarn: '>= 1.3.2'}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+      '@types/seedrandom': 2.4.30
+      seedrandom: 3.0.5
+    dev: false
+
   /@tensorflow/tfjs-backend-webgl@4.6.0(@tensorflow/tfjs-core@4.6.0):
     resolution: {integrity: sha512-rnzPDIL6J0UAYyVdilxHkNXG40q4WpNN3Ex50L9PKPuYIV9wbnYk09ATU/sdCb5QtxG1ncXYKMirNDGN4uQ1DQ==}
     engines: {yarn: '>= 1.3.2'}
@@ -4071,12 +4082,34 @@ packages:
       '@types/webgl-ext': 0.0.30
       seedrandom: 3.0.5
 
+  /@tensorflow/tfjs-backend-webgl@4.8.0(@tensorflow/tfjs-core@4.8.0):
+    resolution: {integrity: sha512-iAJzQbndBtarV+OWk9Ukur5U0Xk/4t7j7O5WhPQO/q9yuRyWjAT6MPaCEW/+Ew4XC8yJGuvlfL0Oqi1X0drvfA==}
+    engines: {yarn: '>= 1.3.2'}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-core': 4.8.0
+      '@types/offscreencanvas': 2019.3.0
+      '@types/seedrandom': 2.4.30
+      '@types/webgl-ext': 0.0.30
+      seedrandom: 3.0.5
+    dev: false
+
   /@tensorflow/tfjs-converter@4.6.0(@tensorflow/tfjs-core@4.6.0):
     resolution: {integrity: sha512-AcpmhZwQ81i9xI+p+t77O5z6KUHatnUR7WA7qbPRn+U7FRYqjuuhe8W3dpApJwnCSxgl3VvzP3vAedwDpoiGbg==}
     peerDependencies:
       '@tensorflow/tfjs-core': 4.6.0
     dependencies:
       '@tensorflow/tfjs-core': 4.6.0
+
+  /@tensorflow/tfjs-converter@4.8.0(@tensorflow/tfjs-core@4.8.0):
+    resolution: {integrity: sha512-tBYsCdhdFNlFFn4FO49gr1yLX4h8xDxpoFI70lFECxDu9UfwaHNVuBLcocMx4XIFqQx12h6/Y3pD93HFvoum3A==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dev: false
 
   /@tensorflow/tfjs-core@4.6.0:
     resolution: {integrity: sha512-y35vctU0asMt7V5DFieZRBheEE7yM5hpDUeOastpVcDsoCnWDCclaU8N50XV2kejAsOpN4RgWeewXUqfWLnHIw==}
@@ -4093,6 +4126,22 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /@tensorflow/tfjs-core@4.8.0:
+    resolution: {integrity: sha512-EkgGOAsPQSlpEdiG938c92pdC5i8GHeBVk6xO1AKKX8NiMSIruKtKqIQvX2aOkarwHy/5nhrJebAAvIL4dJlbw==}
+    engines: {yarn: '>= 1.3.2'}
+    dependencies:
+      '@types/long': 4.0.2
+      '@types/offscreencanvas': 2019.7.0
+      '@types/seedrandom': 2.4.30
+      '@types/webgl-ext': 0.0.30
+      '@webgpu/types': 0.1.30
+      long: 4.0.0
+      node-fetch: 2.6.11
+      seedrandom: 3.0.5
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@tensorflow/tfjs-data@4.6.0(@tensorflow/tfjs-core@4.6.0)(seedrandom@3.0.5):
     resolution: {integrity: sha512-Tu5C9Coi6LY2Eay7OYNAI8Y+Dn1KBAmWWqJ11uCQ7N858q6OBx/TfWZVgdvo7kbRi8ZkuWnk5ANAfcW1DO/zRw==}
     peerDependencies:
@@ -4107,12 +4156,35 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /@tensorflow/tfjs-data@4.8.0(@tensorflow/tfjs-core@4.8.0)(seedrandom@3.0.5):
+    resolution: {integrity: sha512-eISTI7Rs51nR9EjyMq/E+mk9JpOIvBqfxT52IEJr2DxqY7TUZ0PlN77Ng/huEL+5I9M+GoVTXe+GFHCmq/5VhQ==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+      seedrandom: ^3.0.5
+    dependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+      '@types/node-fetch': 2.6.4
+      node-fetch: 2.6.11
+      seedrandom: 3.0.5
+      string_decoder: 1.3.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@tensorflow/tfjs-layers@4.6.0(@tensorflow/tfjs-core@4.6.0):
     resolution: {integrity: sha512-zvOF9xbEGkmXJCSAL2iRJYzASy13lhmHY6oOzHy8MORAQpZRohjLrWrFLwCgA5Qpt6xL/mzUYFLMpgqkuY9tqg==}
     peerDependencies:
       '@tensorflow/tfjs-core': 4.6.0
     dependencies:
       '@tensorflow/tfjs-core': 4.6.0
+
+  /@tensorflow/tfjs-layers@4.8.0(@tensorflow/tfjs-core@4.8.0):
+    resolution: {integrity: sha512-jJJvyPxwztP4QMyjUXjyrV6ErWmw4zjub4QidijD8SpY6aVE31xVYqBzIqATa4LjF1ozYwqQoSEvKh4BVFexnA==}
+    peerDependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    dev: false
 
   /@tensorflow/tfjs-node-gpu@4.6.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-3skg2ycgBy0Q0w6lXIVZ9uAhRsEt9fWH+P3vIt5USORj7V1l62CKjKc0yJvW6Z8eXzEQrwJpcYOqi6EKOR5iuQ==}
@@ -4169,6 +4241,26 @@ packages:
     transitivePeerDependencies:
       - encoding
       - seedrandom
+
+  /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
+    resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
+    hasBin: true
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-backend-webgl': 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-converter': 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-core': 4.8.0
+      '@tensorflow/tfjs-data': 4.8.0(@tensorflow/tfjs-core@4.8.0)(seedrandom@3.0.5)
+      '@tensorflow/tfjs-layers': 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      argparse: 1.0.10
+      chalk: 4.1.2
+      core-js: 3.29.1
+      regenerator-runtime: 0.13.11
+      yargs: 16.2.0
+    transitivePeerDependencies:
+      - encoding
+      - seedrandom
+    dev: false
 
   /@tootallnate/once@1.1.2:
     resolution: {integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==}
@@ -4462,11 +4554,22 @@ packages:
       '@types/node': 18.11.9
       form-data: 3.0.1
 
+  /@types/node-fetch@2.6.4:
+    resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
+    dependencies:
+      '@types/node': 20.3.2
+      form-data: 3.0.1
+    dev: false
+
   /@types/node@17.0.45:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
 
   /@types/node@18.11.9:
     resolution: {integrity: sha512-CRpX21/kGdzjOpFsZSkcrXMGIBWMGNIHXXBVFSH+ggkftxg+XYP20TESbh+zFvFj3EQOl5byk0HTRn1IL6hbqg==}
+
+  /@types/node@20.3.2:
+    resolution: {integrity: sha512-vOBLVQeCQfIcF/2Y7eKFTqrMnizK5lRNQ7ykML/5RuwVXVWxYkgwS7xbt4B6fKCUPgbSL5FSsjHQpaGQP/dQmw==}
+    dev: false
 
   /@types/offscreencanvas@2019.3.0:
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
@@ -4896,35 +4999,13 @@ packages:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.6.0):
+  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-3myASwFmYlZXcb09DkKlyz+o3fpT+htV4JGoksGulhkfC3PukMiOCUtmQlPlLJEgr94Oo8EyUIfMds3CeYw3Pg==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.10
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/default-model@1.0.0-beta.14(@tensorflow/tfjs@4.6.0):
-    resolution: {integrity: sha512-h7BiWOeSzAXNZcL5XTw5EGsQGcREBzxh8/UYUKHzdZfKd89OLuN0DG5nCWJsIe2aEL1XgrsNnDxUr9CmxC656A==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.6.0):
-    resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5394,7 +5475,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.1
-      caniuse-lite: 1.0.30001441
+      caniuse-lite: 1.0.30001509
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -5815,7 +5896,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001441
+      caniuse-lite: 1.0.30001509
       electron-to-chromium: 1.4.177
       node-releases: 2.0.5
       update-browserslist-db: 1.0.4(browserslist@4.21.1)
@@ -5978,12 +6059,12 @@ packages:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
     dependencies:
       browserslist: 4.21.1
-      caniuse-lite: 1.0.30001441
+      caniuse-lite: 1.0.30001509
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
 
-  /caniuse-lite@1.0.30001441:
-    resolution: {integrity: sha512-OyxRR4Vof59I3yGWXws6i908EtGbMzVUi3ganaZQHmydk1iwDhRnvaPG2WaR0KcqrDFKrxVZHULT396LEPhXfg==}
+  /caniuse-lite@1.0.30001509:
+    resolution: {integrity: sha512-2uDDk+TRiTX5hMcUYT/7CSyzMZxjfGu0vAUjS2g0LSD8UoXOv0LtpH4LxGMemsiPq6LCVIUjNwVM0erkOkGCDA==}
 
   /capnp-ts@0.7.0:
     resolution: {integrity: sha512-XKxXAC3HVPv7r674zP0VC3RTXz+/JKhfyw94ljvF80yynK6VkTnqE3jMuN8b3dUVmmc43TjyxjW4KTsmB3c86g==}
@@ -9010,7 +9091,7 @@ packages:
       source-map: 0.6.1
       wordwrap: 1.0.0
     optionalDependencies:
-      uglify-js: 3.16.2
+      uglify-js: 3.17.4
     dev: true
 
   /has-ansi@2.0.0:
@@ -11293,6 +11374,18 @@ packages:
     dependencies:
       lodash: 4.17.21
 
+  /node-fetch@2.6.11:
+    resolution: {integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
@@ -12896,6 +12989,10 @@ packages:
   /regenerate@1.4.2:
     resolution: {integrity: sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==}
 
+  /regenerator-runtime@0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+    dev: false
+
   /regenerator-runtime@0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
 
@@ -14461,6 +14558,38 @@ packages:
       typescript: 4.8.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
+
+  /ts-node@10.9.1(@types/node@20.3.2)(typescript@5.1.5):
+    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 20.3.2
+      acorn: 8.7.1
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.1.5
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: false
 
   /tsc-alias@1.8.2:
     resolution: {integrity: sha512-ukBkcNekOgwtnSWYLD5QsMX3yQWg7JviAs8zg3qJGgu4LGtY3tsV4G6vnqvOXIDkbC+XL9vbhObWSpRA5/6wbg==}
@@ -14575,11 +14704,38 @@ packages:
       minimatch: 5.1.1
       shiki: 0.11.1
       typescript: 4.8.3
+    dev: true
+
+  /typedoc@0.23.21(typescript@4.9.5):
+    resolution: {integrity: sha512-VNE9Jv7BgclvyH9moi2mluneSviD43dCE9pY8RWkO88/DrEgJZk9KpUk7WO468c9WWs/+aG6dOnoH7ccjnErhg==}
+    engines: {node: '>= 14.14'}
+    hasBin: true
+    peerDependencies:
+      typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x
+    dependencies:
+      lunr: 2.3.9
+      marked: 4.2.5
+      minimatch: 5.1.1
+      shiki: 0.11.1
+      typescript: 4.9.5
+    dev: false
 
   /typescript@4.8.3:
     resolution: {integrity: sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typescript@4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
+
+  /typescript@5.1.5:
+    resolution: {integrity: sha512-FOH+WN/DQjUvN6WgW+c4Ml3yi0PH+a/8q+kNIfRehv1wLhWONedw85iu+vQ39Wp49IzTJEsZ2lyLXpBF7mkF1g==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: false
 
   /ua-parser-js@0.7.31:
     resolution: {integrity: sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==}
@@ -14596,6 +14752,14 @@ packages:
     engines: {node: '>=0.8.0'}
     hasBin: true
     requiresBuild: true
+
+  /uglify-js@3.17.4:
+    resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}
+    engines: {node: '>=0.8.0'}
+    hasBin: true
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -14822,28 +14986,15 @@ packages:
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
 
-  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.6.0):
+  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-G9yGw/YIKl8n2Mo1tZn18FZayL2fZubGLsEps5lZb5z26fzlAfXLt5TawdzT0UUHh0ybHz/+2g1nM+iQwChqDA==}
     engines: {node: '>=16.0'}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.6.0)
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /upscaler@1.0.0-beta.16(@tensorflow/tfjs@4.6.0):
-    resolution: {integrity: sha512-/ccCpszl4gRhNJaVdlALYcBu5+XfGUZbp4N7rjrCasJ2KUu6+vFT8NsclBc61rhrbJOQNv2IkthVGYLcE6BhJA==}
-    engines: {node: '>=16.0'}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.6.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.6.0)
+      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.8.0)
     transitivePeerDependencies:
       - encoding
     dev: false
