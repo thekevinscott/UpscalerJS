@@ -7,7 +7,7 @@ interface IProps {
   enhancedSrc: string;
 }
 
-export default function ModelHeaderImage ({ unenhancedSrc, enhancedSrc, packageName }) {
+export default function ModelHeaderImage ({ unenhancedSrc, enhancedSrc, packageName }: IProps) {
   return (
     <div className={styles.modelHeaderImage}>
       <img src={`/assets/sample-images/${unenhancedSrc}`} alt={`Unenhanced file for ${packageName}`} />
