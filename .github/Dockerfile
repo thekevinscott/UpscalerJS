@@ -6,7 +6,6 @@ ENV TZ="America/New_York"
 ENV NODE_VERSION=16.20.1
 ENV NVM_DIR=/root/.nvm
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-ARG GDRIVE_CREDENTIALS_DATA
 
 ##### System
 RUN apt-get update \
@@ -45,8 +44,9 @@ RUN apt-get update \
 ##### Repo
 RUN git clone https://github.com/thekevinscott/UpscalerJS /home/runner/work/UpscalerJS/UpscalerJS
 WORKDIR /home/runner/work/UpscalerJS/UpscalerJS
-RUN pnpm install \
-    && dvc pull -v -r gdrive-service-account
+RUN pnpm install
+ARG GDRIVE_CREDENTIALS_DATA
+RUN dvc pull -v -r gdrive-service-account
 
 # ##### Cleanup
 RUN rm -rf /var/lib/apt/lists/*
