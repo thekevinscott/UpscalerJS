@@ -393,13 +393,13 @@ jobs:
         run: pwd
 
       - name: 'LS'
-        run: ls
+        run: ls -la 
 
       - name: 'LS .dvc'
-        run: ls .dvc
+        run: ls -la .dvc
 
       - name: 'LS .dvc/cache'
-        run: ls .dvc/cache
+        run: ls -la .dvc/cache
 
       - name: 'Install Dependencies'
         uses: ./.github/actions/install-dependencies
