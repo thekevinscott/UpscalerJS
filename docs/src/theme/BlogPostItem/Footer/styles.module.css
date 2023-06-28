@@ -1,0 +1,13 @@
+.blogPostFooterDetailsFull {
+  /* flex-direction: column; */
+}
+
+.blogPostTags {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.blogPostTags ul {
+  margin: 0;
+}

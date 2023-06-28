@@ -130,14 +130,14 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Play',
+            title: 'Learn',
             items: [
               {
                 label: 'Demo',
                 to: '/demo',
               },
               {
-                label: 'Examples',
+                label: 'Guides',
                 to: '/documentation/guides/',
               },
             ],
@@ -152,10 +152,6 @@ const config = {
               {
                 label: 'Getting Started',
                 to: '/documentation/getting-started',
-              },
-              {
-                label: 'Usage',
-                to: '/documentation/getting-started#usage',
               },
               {
                 label: 'API',
@@ -175,20 +171,8 @@ const config = {
             title: 'Models',
             items: [
               {
-                label: 'esrgan-slim',
-                to: '/models/available/esrgan-slim',
-              },
-              {
-                label: 'esrgan-medium',
-                to: '/models/available/esrgan-medium',
-              },
-              {
-                label: 'esrgan-thick',
-                to: '/models/available/esrgan-thick',
-              },
-              {
-                label: 'esrgan-legacy',
-                to: '/models/available/esrgan-legacy',
+                label: 'Super Resolution',
+                to: '/models#upscaling',
               },
             ],
           },

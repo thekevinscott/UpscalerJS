@@ -2,6 +2,7 @@
 title: Introduction
 description: Introduction
 sidebar_position: 1
+hide_title: true
 ---
 
 <a class="docs-link" href="https://upscalerjs.com/documentation">View this page on the UpscalerJS website</a>

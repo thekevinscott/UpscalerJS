@@ -2,6 +2,7 @@
 title: Support
 sidebar_position: 6
 sidebar_label: Support
+hide_title: true
 ---
 
 <a class="docs-link" href="https://upscalerjs.com/documentation/support">View this page on the UpscalerJS website</a>
