@@ -59,7 +59,7 @@ const DemoVideo = () => {
 
   if (browser === 'safari') {
     return (
-      <img className="demo" src="/assets/demo.mov" />
+      <img className="demo" src="/assets/demo.mov" alt="Demonstration of UpscalerJS" />
     );
   }
 
@@ -102,7 +102,11 @@ export function HomepageHeader() {
             data-show-count="true" 
             aria-label="Star thekevinscott/upscalerjs on GitHub">Star</GitHubButton>
         </div>
-        <code className={clsx(copied ? styles.copied : '')} onClick={copyInstallationInstructions}>npm install upscaler <GoClippy /></code>
+        <code className={clsx(copied ? styles.copied : '')}>
+          <button onClick={copyInstallationInstructions} >
+          npm install upscaler <GoClippy />
+          </button>
+          </code>
         </div>
         <div className={clsx('col col--8')}>
           <div className={styles.demo}>
