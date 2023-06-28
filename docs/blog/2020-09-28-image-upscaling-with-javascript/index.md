@@ -34,20 +34,20 @@ Is there a technical solution we can explore? There certainly is and it's called
 ## What is this "Super Resolution" you speak of?
 Let’s say somebody's uploaded a 150px photo to our e-commerce site:
 
-<a target="_blank" href="./images/dog-150.jpg"><img src="./images/dog-150.jpg" alt="A cute photo of a dog" /></a>
+![A cute photo of a dog](./images/dog-150.jpg)
 <capt><a href="https://www.flickr.com/photos/30048871@N00/2437627725" target="_blank" rel="noopener noreferrer">A happy dog by merec0</a></capt>
 
 We want to feature that image on our home page because it's a beautiful dog, but our design demands images at 300px. What can we do? If we double each pixel we get a larger image that looks pixelated:
 
 <div style={{textAlign: "center"}}>
-<a target="_blank" href="./images/dog-300-pixelated.png" style={{ borderBottom: "none"}}><img src="./images/dog-300-pixelated.png" alt="The cute dog, upscaled to 300px" width="300" /></a>
+![The cute dog, upscaled to 300px](./images/dog-300-pixelated.png)
 </div>
 <capt>Image upscaled to 300px.</capt>
 
 You have to [go out of your way to achieve the pixelated look](https://css-tricks.com/keep-pixelated-images-pixelated-as-they-scale/) in the browser; by default most browsers will apply some sort of scaling algorithm to the image, usually [bicubic interpolation](https://en.wikipedia.org/wiki/Bicubic_interpolation), which looks like:
 
 <div style={{ textAlign: "center" }}>
-<a target="_blank" href="./images/dog-300-bicubic.png" style={{ borderBottom: "none"}}><img src="./images/dog-300-bicubic.png" alt="The cute dog, upscaled to 300px using Bicubic Interpolation" width="300" /></a>
+![The cute dog, upscaled to 300px using Bicubic Interpolation](./images/dog-300-bicubic.png)
 </div>
 <capt>Image upscaled to 300px using Bicubic Interpolation.</capt>
 
@@ -56,7 +56,7 @@ An image upscaled using bicubic interpolation certainly looks less pixelated tha
 **Super Resolution is a Machine Learning technique for reconstructing a higher resolution image from a lower one.** You can think of the process as painting new pixels into the image, achieving a higher fidelity than is possible with an algorithm like bicubic interpolation.
 
 <div style={{ textAlign: "center" }}>
-<a target="_blank" href="./images/dog-300-gan.png" style={{ borderBottom: "none"}}><img src="./images/dog-300-gan.png" alt="The cute dog, upscaled to 300px using a GAN" width="300" /></a>
+![The cute dog, upscaled to 300px using a GAN](./images/dog-300-gan.png)
 </div>
 <capt>Image upscaled to 300px using a GAN.</capt>
 
