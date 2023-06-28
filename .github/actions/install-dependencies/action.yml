@@ -13,9 +13,36 @@ runs:
       shell: bash
       run: if pwd | grep '/__w/UpscalerJS/UpscalerJS' -q; then echo "Good PWD"; else exit 1; fi; 
 
-    - name: 'DVC Pull'
+    - name: 'DVC Version'
       shell: bash
-      run: dvc pull -v -r gdrive-service-account
+      run: dvc --version
+
+    - name: 'DVC Doctor'
+      shell: bash
+      run: dvc doctor
+
+    - name: Restore cached output
+      id: cache-output-restore
+      uses: actions/cache/restore@v3
+      with:
+        path: /dvc-cache-dir
+        key: dvc-cache-dir-jun-23
+
+    - name: 'Set Cache Dir'
+      shell: bash
+      run: dvc cache dir /dvc-cache-dir
+
+    - name: 'Set Cache Shared to Group'
+      shell: bash
+      run: dvc config cache.shared group
+
+    - name: 'Set Cache Type to Symlink'
+      shell: bash
+      run: dvc config cache.type hardlink,symlink
+
+    - name: 'Checkout Models'
+      shell: bash
+      run : dvc pull -vv -r gdrive-service-account
       env:
         GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
         
