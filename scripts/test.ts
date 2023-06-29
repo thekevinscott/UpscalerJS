@@ -130,6 +130,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   skipTest,
   useGPU,
   watch,
+  ci,
 }: {
   browserstackAccessKey?: string;
   skipUpscalerBuild?: boolean;
@@ -140,6 +141,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   skipTest?: boolean;
   useGPU?: boolean,
   watch?: boolean;
+  ci?: boolean;
 }) => {
   let bsLocal: undefined | Browserstack = undefined;
   if (skipTest !== true && runner === 'browserstack') {
@@ -213,6 +215,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       jestConfigPath,
       '--detectOpenHandles',
       watch ? '--watch' : undefined,
+      ci ? '--ci' : undefined,
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
 
@@ -220,7 +223,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       console.log(args);
     }
 
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
+    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ci });
     if (bsLocal !== undefined) {
       await stopBrowserstack(bsLocal);
     }
@@ -246,6 +249,7 @@ interface Args {
   verbose?: boolean;
   kind: Kind;
   useGPU?: boolean;
+  ci?: boolean;
 
   // this is an option only for CI; lets us separate out our build step from our test step
   skipTest?: boolean;
@@ -310,6 +314,7 @@ const getArgs = async (): Promise<Args> => {
     verbose: { type: 'boolean' },
     kind: { type: 'string' },
     useGPU: { type: 'boolean' },
+    ci: { type: 'boolean' },
   }).argv;
   const kind = getKind(argv.kind);
   const platform = getPlatform(kind, argv.platform);
@@ -330,6 +335,7 @@ const getArgs = async (): Promise<Args> => {
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
     forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
+    ci: ifDefined('ci', 'boolean'),
   }
 };
 

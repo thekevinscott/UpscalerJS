@@ -12,7 +12,11 @@
 # ```
 #
 ############################################################
-FROM ubuntu:20.04
+
+
+
+#### WORK IN PROGRESS
+FROM alpine:3.18
 
 WORKDIR /__w/UpscalerJS/UpscalerJS
 
@@ -24,30 +28,39 @@ ENV DVC_VERSION="2.45.1"
 ARG GDRIVE_CREDENTIALS_DATA
 
 ##### System
-RUN apt-get update \
+RUN apk update \
     && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-    software-properties-common \
+    apk add \
     git \
     curl \
     wget \
-    # unzip \
     vim \
+    gcc \
     jq \
+    # this is required for dvc
+    musl-dev \ 
     ##### Python
-    && add-apt-repository ppa:deadsnakes/ppa \
-    && apt-get update \
-    && apt-get install -y \
-    python3.11 \
-    python3-pip \
-    python3-venv \
-    && pip3 install --upgrade pip \
+    && apk add --update --no-cache python3-dev \
+    && ln -sf python3 /usr/bin/python \
+    && python3 -m ensurepip \
+    && pip3 install --no-cache --upgrade pip setuptools \
+    && pip3 install --upgrade pip
     ##### DVC
-    && python3 -m pip install \
-        dvc[gdrive]==${DVC_VERSION} \
-        dvc[s3]==${DVC_VERSION} \
+    RUN apk add cmake
+    RUN apk update
+    RUN apk add libgit2
+
+RUN python3 -m pip install 'ruamel.yaml'
+    RUN python3 -m pip install pygit2
+
+
+    # RUN python3 -m pip install \
+    #     dvc[gdrive]==${DVC_VERSION} \
+    #     dvc[s3]==${DVC_VERSION} \
+    RUN python3 -m pip install dvc[gdrive]==${DVC_VERSION}
+    RUN python3 -m pip install dvc[s3]==${DVC_VERSION}
     ##### Node
-    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
+    RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
     && . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION} \
     && . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION} \
     && . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION} \
@@ -56,12 +69,12 @@ RUN apt-get update \
     && npm install -g npm@latest \
     ##### Puppeteer
     # https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
-    && apt-get install -y \
+    && apk add \
         gnupg \
         && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
+    && apk update \
+    && apk add --virtual \
         google-chrome-stable \
         fonts-ipafont-gothic \
         fonts-wqy-zenhei \
@@ -133,10 +146,10 @@ RUN apt-get update \
     ##### Install pnpm dependencies
     && pnpm install \
     ##### Clean up system
-    && apt-get purge -y \
+    && apk purge \
         curl \
         wget \
-    && apt-get autoremove -y \
-    && apt-get clean \
+    && apk autoremove \
+    && apk clean \
     && rm -rf /var/lib/apt/lists/* \
     && echo "Dependency Install Complete"

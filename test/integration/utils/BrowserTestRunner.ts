@@ -1,14 +1,30 @@
 import http from 'http';
-import puppeteer from 'puppeteer';
+import puppeteer, { PuppeteerLaunchOptions } from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
 import { catchFailures } from './catchFailures';
 
+const CI = process.env.ci === 'true';
+
 type Bundle = (opts?: Opts) => Promise<void>;
 
 const DEFAULT_PORT = 8098;
+
+const PUPPETEER_ARGS: PuppeteerLaunchOptions = {
+  headless: true,
+  args: [
+    /* Leave these commented out unless required */
+    // "--disable-gpu",
+    // "--disable-dev-shm-usage",
+    // "--disable-setuid-sandbox",
+
+
+    // required to run under docker. If in CI, mark this true
+    CI ? "--no-sandbox" : '',
+  ].filter(Boolean),
+};
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
@@ -172,18 +188,7 @@ export class BrowserTestRunner {
   }
 
   public async startBrowser() {
-    this.browser = await puppeteer.launch(
-{
-    headless: true,
-    args: [
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-    ]
-}
-
-    );
+    this.browser = await puppeteer.launch(PUPPETEER_ARGS);
   }
 
   private _attachLogger() {

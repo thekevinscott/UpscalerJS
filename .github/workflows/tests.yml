@@ -8,41 +8,33 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Lint'
         run: 'pnpm lint'
 
-  build:
-    name: 'Build'
+  upscalerjs-build:
+    name: 'UpscalerJS / Build'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -53,23 +45,19 @@ jobs:
       - name: 'Validate'
         run: 'pnpm --filter="upscaler" validate:build'
 
-  unit-browser-jest:
-    name: 'Unit / Browser / Jest'
+  upscalerjs-unit-browser-jest:
+    name: 'UpscalerJS / Unit / Browser / Jest'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -82,23 +70,19 @@ jobs:
           path: |
             ./packages/upscalerjs/coverage/coverage-final.json
 
-  unit-browser-playwright:
-    name: 'Unit / Browser / Playwright'
+  upscalerjs-unit-browser-playwright:
+    name: 'UpscalerJS / Unit / Browser / Playwright'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -112,26 +96,19 @@ jobs:
             ./packages/upscalerjs/.nyc_output/coverage-pw.json
 
 
-  unit-node:
-    name: 'Unit / Node'
+  upscalerjs-unit-node:
+    name: 'UpscalerJS / Unit / Node'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Install dependencies'
-        run: pnpm liteinstall
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -143,23 +120,20 @@ jobs:
           name: artifacts-test-unit-node
           path: ./packages/upscalerjs/coverage/coverage-final.json
 
+
   core-unit:
     name: 'Core / Unit'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -168,7 +142,7 @@ jobs:
   upload-to-codecov:
     name: 'Upload to CodeCov'
     runs-on: ubuntu-latest
-    needs: [ unit-node, unit-browser-jest, unit-browser-playwright ]
+    needs: [ upscalerjs-unit-node, upscalerjs-unit-browser-jest, upscalerjs-unit-browser-playwright ]
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -181,210 +155,8 @@ jobs:
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-
-  integration-browser-local:
-    name: 'Integration / Browser / Local'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-
-  integration-node-local-16:
-    name: 'Integration / Node / Local / v16'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
-
-  models-browser:
-    name: 'Models / Browser'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:model --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
-
-  models-node:
-    name: 'Models / Node'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:model --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
-
-  memory-leaks:
-    name: 'Memory Leaks'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     container:
       image: upscalerjs/upscalerjs:latest
-      # volumes:
-      #   - /home/runner/work/UpscalerJS/UpscalerJS:/home/runner/work/UpscalerJS/UpscalerJS
-      # options: --cpus 1
-    # strategy:
-    #   matrix:
-    #     node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
@@ -394,14 +166,112 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:integration:browserstack --ci --verbose --skipTest
 
-      - name: 'Build Models'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+      - name: 'Integration Tests'
+        run: pnpm test:integration:browserstack --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
 
-      - name: 'Bundle'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+  integration-browser-local:
+    name: 'Integration / Browser / Local'
+    runs-on: ubuntu-latest
+    container:
+      image: upscalerjs/upscalerjs:latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:integration:browser --ci --verbose --skipTest
+
+      - name: 'Integration Tests'
+        run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        env:
+          NODE_OPTIONS: --max_old_space_size=8192
+
+  integration-node-local:
+    name: 'Integration / Node / Local'
+    runs-on: ubuntu-latest
+    container:
+      image: upscalerjs/upscalerjs:latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:integration:node --ci --verbose --skipTest
+
+      - name: 'Integration Tests'
+        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+
+  models-browser:
+    name: 'Models / Browser'
+    runs-on: ubuntu-latest
+    container:
+      image: upscalerjs/upscalerjs:latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:model --platform browser --ci --verbose --skipTest
+
+      - name: 'Integration Tests'
+        run: pnpm test:model --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+
+  models-node:
+    name: 'Models / Node'
+    runs-on: ubuntu-latest
+    container:
+      image: upscalerjs/upscalerjs:latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:model --platform node --ci --verbose --skipTest
+
+      - name: 'Integration Tests'
+        run: pnpm test:model --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+
+  memory-leaks:
+    name: 'Memory Leaks'
+    runs-on: ubuntu-latest
+    container:
+      image: upscalerjs/upscalerjs:latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+
+      - name: 'Build Upscaler, Build Models, Bundle'
+        run: pnpm test:memory-leaks --ci --verbose --skipTest
 
       - name: 'Memory Leak Tests'
         run: pnpm test:memory-leaks --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
@@ -409,30 +279,16 @@ jobs:
   build-docs:
     name: 'Build Documentation'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    container:
+      image: upscalerjs/upscalerjs:latest
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
+      - name: 'Install Dependencies'
+        uses: ./.github/actions/install-dependencies
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
         run: pnpm install
