@@ -20,6 +20,7 @@ ENV TZ="America/New_York"
 ENV NODE_VERSION=16.20.1
 ENV NVM_DIR=/root/.nvm
 ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+ENV DVC_VERSION="2.45.1"
 
 ##### System
 RUN apt-get update \
@@ -42,8 +43,8 @@ RUN apt-get update \
     && pip3 install --upgrade pip \
     ##### DVC
     && python3 -m pip install \
-    dvc[gdrive] \
-    dvc[s3] \
+    dvc[gdrive]==${DVC_VERSION} \
+    dvc[s3]==${DVC_VERSION} \
     ##### Node
     && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
     && . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION} \
