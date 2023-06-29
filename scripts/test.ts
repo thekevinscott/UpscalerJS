@@ -269,16 +269,15 @@ const getPlatform = (kind: Kind, argPlatform?: string): Platform | Platform[] =>
   throw new Error(`Unsupported platform provided: ${platform}. You must pass either 'browser' or 'node'.`)
 }
 
-const isValidKind = (kind?: string): kind is undefined | Kind => {
-  return kind === undefined ? true : ['integration', 'memory', 'model'].includes(kind);
+const isValidKind = (kind: string): kind is Kind => {
+  return ['integration', 'memory', 'model'].includes(kind);
 };
 
-const getKind = (kind?: string): Kind => {
-  if (isValidKind(kind)) {
-    return kind === undefined ? 'integration' : kind;
-
+const getKind = (kind: string): Kind => {
+  if (!isValidKind(kind)) {
+    throw new Error(`Unsupported kind provided: ${kind}. You must pass either 'integration', 'memory', or 'model'.`)
   }
-  throw new Error(`Unsupported kind provided: ${kind}. You must pass either 'integration', 'memory', or 'model'.`)
+  return kind;
 };
 
 const isValidRunner = (runner?: string): runner is undefined | Runner => {
