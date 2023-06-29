@@ -273,7 +273,10 @@ const isValidKind = (kind: string): kind is Kind => {
   return ['integration', 'memory', 'model'].includes(kind);
 };
 
-const getKind = (kind: string): Kind => {
+const getKind = (kind?: string): Kind => {
+  if (kind === undefined) {
+    throw new Error(`${kind} is undefined. You must pass either 'integration', 'memory', or 'model'.`)
+  }
   if (!isValidKind(kind)) {
     throw new Error(`Unsupported kind provided: ${kind}. You must pass either 'integration', 'memory', or 'model'.`)
   }
