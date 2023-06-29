@@ -129,3 +129,9 @@ article[itemprop="blogPost"] {
 a.docs-link {
   display: none;
 }
+
+blockquote p {
+  opacity: .7;
+  font-size: 120%;
+  line-height: 1.4;
+}
