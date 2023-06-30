@@ -50,7 +50,13 @@ import UpscalerJS from 'upscaler';
 const upscaler = new UpscalerJS(); // Using the default-model
 ```
 
-`default-model` can also be provided explicitly:
+So in most cases, it does not need to be explicitly required. If for some reason an explicit require is needed, read on.
+
+### Browser
+
+#### Using a transpiler
+
+`default-model` can be provided explicitly:
 
 ```
 import UpscalerJS from 'upscaler';
@@ -60,6 +66,36 @@ const upscaler = new UpscalerJS({
   model,
 })
 ```
+
+#### Using a script tag
+
+If loading UpscalerJS via a script tag, reference the global name of the model:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/default-model@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
+
+<script type="text/javascript">
+  const upscaler = new Upscaler({
+    model: DefaultUpscalerJSModel,
+  })
+</script>
+```
+
+### Node
+
+Require the model with:
+
+```
+const Upscaler = require('upscaler/node'); // if using @tensorflow/tfjs-node-gpu, change this to upscaler/node-gpu
+const defaultModel = require('@upscalerjs/default-model');
+
+const upscaler = new Upscaler({
+  model: defaultModel,
+})
+```
+
+The model will work for both `node` and `node-gpu` flavors of Tensorflow.js.
 
 ## Performance + Speed Measurements
 

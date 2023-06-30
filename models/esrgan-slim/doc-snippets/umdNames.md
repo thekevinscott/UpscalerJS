@@ -1,0 +1,4 @@
+- `2x`: `ESRGANSlim2x`
+- `3x`: `ESRGANSlim3x`
+- `4x`: `ESRGANSlim4x`
+- `8x`: `ESRGANSlim8x`
