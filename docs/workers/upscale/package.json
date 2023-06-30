@@ -19,7 +19,7 @@
     "deploy:prod": "wrangler publish -e production"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^4.6.0",
+    "@tensorflow/tfjs": "^4.8.0",
     "aws-sdk": "^2.1193.0",
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
