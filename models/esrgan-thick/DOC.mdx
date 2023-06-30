@@ -59,7 +59,11 @@ npm install @upscalerjs/esrgan-thick
 
 ## Usage
 
-Import a model, specified by its scale:
+### Browser
+
+#### Using a transpiler
+
+If using a transpiler (such as `tsc`, `webpack`, or `vite`) import the model with:
 
 ```
 import Upscaler from 'upscaler';
@@ -69,6 +73,38 @@ const upscaler = new Upscaler({
   model: x2,
 })
 ```
+
+#### Using a script tag
+
+If importing Tensorflow.js using script tags, import the model and UpscalerJS with:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-thick@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
+
+<script type="text/javascript">
+  const upscaler = new Upscaler({
+    model: ESRGANSlim2x,
+  })
+</script>
+```
+
+All models will be made available on the global window object. See [Available Models](#available-models) for information on their names.
+
+### Node
+
+Require the model with:
+
+```
+const Upscaler = require('upscaler/node'); // if using @tensorflow/tfjs-node-gpu, change this to upscaler/node-gpu
+const x2 = require('@upscalerjs/esrgan-thick/2x');
+
+const upscaler = new Upscaler({
+  model: x2,
+})
+```
+
+The model will work for both `node` and `node-gpu` flavors of Tensorflow.js.
 
 ## Available Models
 
@@ -92,6 +128,13 @@ const upscaler = new Upscaler({
   // model: models.x8,
 })
 ```
+
+If referencing the models via script tags, refer to the models by their global names:
+
+- `2x`: `ESRGANThick2x`
+- `3x`: `ESRGANThick3x`
+- `4x`: `ESRGANThick4x`
+- `8x`: `ESRGANThick8x`
 
 ## Performance + Speed Measurements
 

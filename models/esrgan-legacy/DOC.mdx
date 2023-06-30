@@ -64,7 +64,11 @@ npm install @upscalerjs/esrgan-legacy
 
 ## Usage
 
-Import a model:
+### Browser
+
+#### Using a transpiler
+
+If using a transpiler (such as `tsc`, `webpack`, or `vite`) import the model with:
 
 ```
 import Upscaler from 'upscaler';
@@ -74,6 +78,38 @@ const upscaler = new Upscaler({
   model: gans,
 })
 ```
+
+#### Using a script tag
+
+If importing Tensorflow.js using script tags, import the model and UpscalerJS with:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-legacy@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
+
+<script type="text/javascript">
+  const upscaler = new Upscaler({
+    model: ESRGANLegacyGANS,
+  })
+</script>
+```
+
+All models will be made available on the global window object. See [Available Models](#available-models) for information on their names.
+
+### Node
+
+Require the model with:
+
+```
+const Upscaler = require('upscaler/node'); // if using @tensorflow/tfjs-node-gpu, change this to upscaler/node-gpu
+const gans = require('@upscalerjs/esrgan-legacy/gans');
+
+const upscaler = new Upscaler({
+  model: gans,
+})
+```
+
+The model will work for both `node` and `node-gpu` flavors of Tensorflow.js.
 
 ## Available Models
 
@@ -99,6 +135,14 @@ const upscaler = new Upscaler({
   // model: models.div2K4x,
 })
 ```
+
+If referencing the models via script tags, refer to the models by their global names:
+
+- `GANS`: `ESRGANLegacyGANS`
+- `div2k/2x`: `ESRGANLegacyDiv2K2x`,
+- `div2k/3x`: `ESRGANLegacyDiv2K3x`,
+- `div2k/4x`: `ESRGANLegacyDiv2K4x`,
+- `psnr-small`: `ESRGANLegacyPSNRSmall`,
 
 ### GANS
 
