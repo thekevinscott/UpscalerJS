@@ -1,74 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn'
 import styles from './header.module.scss';
 import { GoClippy } from 'react-icons/go';
-import useIsBrowser from '@docusaurus/useIsBrowser';
-
-const useAgent = () => {
-  const isBrowser = useIsBrowser();
-  return useMemo(() => {
-    if (isBrowser) {
-      // https://www.geeksforgeeks.org/how-to-detect-the-user-browser-safari-chrome-ie-firefox-and-opera-using-javascript/
-      const userAgentString = window.navigator.userAgent;
-
-      // Detect Internet Explorer
-      const IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1;
-
-      // Detect Firefox
-      const firefoxAgent = userAgentString.indexOf("Firefox") > -1;
-
-      // Detect Opera
-      const operaAgent = userAgentString.indexOf("OP") > -1;
-
-      // Detect Chrome
-      let chromeAgent = userAgentString.indexOf("Chrome") > -1;
-
-      // Detect Safari
-      let safariAgent = userAgentString.indexOf("Safari") > -1;
-            
-      // Discard Safari since it also matches Chrome
-      if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
-            
-      // Discard Chrome since it also matches Opera     
-      if ((chromeAgent) && (operaAgent)) { chromeAgent = false; }
-
-      if (safariAgent) {
-        return 'safari';
-      }
-      if (firefoxAgent) {
-        return 'firefox';
-      }
-      if (IExplorerAgent) {
-        return 'ie';
-      }
-      if (operaAgent) {
-        return 'opera';
-      }
-      if (chromeAgent) {
-        return 'chrome';
-      }
-    }
-    return undefined;
-  }, [isBrowser]);
-};
-
-const DemoVideo = () => {
-  const browser = useAgent();
-
-  if (browser === 'safari') {
-    return (
-      <img className="demo" src="/assets/demo.mov" alt="Demonstration of UpscalerJS" />
-    );
-  }
-
-  return (
-    <video autoPlay muted loop>
-      <source src="/assets/demo.mov#t=3" type="video/mp4" />
-    </video>
-  );
-}
+import { DemoVideo } from './demo-video/demo-video';
 
 export function HomepageHeader() {
   const [copied, setCopied] = useState(false);
@@ -110,9 +46,7 @@ export function HomepageHeader() {
         </div>
         <div className={clsx('col col--8')}>
           <div className={styles.demo}>
-            <div className={styles.demoInner}>
-              <DemoVideo />
-          </div>
+            <DemoVideo />
           </div>
         </div>
       </div>

@@ -24,12 +24,12 @@ export function Homepage() {
         </section>
         <section className={styles.off}>
           <div className={styles.innerSection}>
-            <Examples />
+            {/* <Examples /> */}
           </div>
         </section>
         <section>
           <div className={styles.innerSection}>
-            <Testimonials />
+            {/* <Testimonials /> */}
           </div>
         </section>
         <section className={styles.off}>
