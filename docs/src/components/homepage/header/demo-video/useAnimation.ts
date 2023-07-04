@@ -102,7 +102,9 @@ export const useAnimation = (durations: number[]) => {
       dispatch({
         type: 'nextStep',
       });
-    } catch(err) {}
+    } catch(err) {
+      // empty
+    }
   }, [durations]);
 
   useEffect(() => {

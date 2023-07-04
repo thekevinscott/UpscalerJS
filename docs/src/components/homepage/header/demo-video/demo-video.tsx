@@ -48,9 +48,36 @@ const steps = [
   100,
 ];
 
+const getStepIdx = ({ 
+  actualIdx: actualIdx, 
+  activeImageIdx: activeIdx, 
+  stepIdx,
+  totalSteps,
+  totalImages,
+  i,
+}: { 
+  actualIdx: number; 
+  activeImageIdx: number; 
+  stepIdx: number;
+  totalSteps: number;
+  totalImages: number;
+  i: number;
+ }) => {
+  if (i === activeIdx) {
+    return stepIdx;
+  }
+  if (i === activeIdx - 1) {
+    return totalSteps - 1;
+  }
+  if (actualIdx > 0 && i === totalImages - 1 && stepIdx < 2) {
+    return totalSteps - 1;
+
+  }
+  return 0;
+};
+
 export const DemoVideo = () => {
   const {
-    activeIdx,
     idx: actualIdx,
     animating,
     handleClick,
@@ -84,31 +111,3 @@ export const DemoVideo = () => {
     </>
   );
 }
-
-const getStepIdx = ({ 
-  actualIdx: actualIdx, 
-  activeImageIdx: activeIdx, 
-  stepIdx,
-  totalSteps,
-  totalImages,
-  i,
-}: { 
-  actualIdx: number; 
-  activeImageIdx: number; 
-  stepIdx: number;
-  totalSteps: number;
-  totalImages: number;
-  i: number;
- }) => {
-  if (i === activeIdx) {
-    return stepIdx;
-  }
-  if (i === activeIdx - 1) {
-    return totalSteps - 1;
-  }
-  if (actualIdx > 0 && i === totalImages - 1 && stepIdx < 2) {
-    return totalSteps - 1;
-
-  }
-  return 0;
-};
