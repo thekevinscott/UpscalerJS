@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React from 'react';
 import styles from './example-images.module.scss';
 
 export type ValidExampleImageSize = 128 | 256;
