@@ -118,10 +118,6 @@ export const useAnimation = (durations: number[]) => {
     resetKey();
   }, []);
 
-  const handleMouseOut = useCallback((_i: number) => {}, []);
-
-  const handleMouseOver = useCallback((_i: number) => {}, []);
-
   const handleClick = useCallback((i: number) => {
     stopAnimating();
     dispatch({
@@ -141,8 +137,6 @@ export const useAnimation = (durations: number[]) => {
 
   return {
     animating,
-    handleMouseOut,
-    handleMouseOver,
     handleClick,
     idx: state.idx,
   };

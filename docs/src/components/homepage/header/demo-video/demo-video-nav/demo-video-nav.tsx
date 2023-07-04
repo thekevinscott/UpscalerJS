@@ -5,24 +5,20 @@ import styles from './demo-video-nav.module.scss';
 export const DemoVideoNav = ({
   images,
   active,
-  handleMouseOver,
-  handleMouseOut,
   handleClick,
 }: {
   active: number;
   images: number;
-  handleMouseOver: (i: number) => void;
-  handleMouseOut: (i: number) => void;
   handleClick: (i: number) => void;
 }) => {
   return (
     <ul className={styles.nav}>
       {Array(images).fill('').map((_, i) => i).map(i => (
         <li 
+          role="button"
           key={i}
-          onMouseOver={() => handleMouseOver(i)}
-          onMouseOut={() => handleMouseOut(i)}
           onClick={() => handleClick(i)}
+          onKeyUp={() => handleClick(i)}
           className={clsx(active === i ? styles.active : '')}
         >
           <button></button>

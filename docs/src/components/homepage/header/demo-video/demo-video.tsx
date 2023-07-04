@@ -53,8 +53,6 @@ export const DemoVideo = () => {
     activeIdx,
     idx: actualIdx,
     animating,
-    handleMouseOut,
-    handleMouseOver,
     handleClick,
   } = useAnimation(steps);
 
@@ -81,8 +79,6 @@ export const DemoVideo = () => {
       <DemoVideoNav
         active={activeImageIdx}
         images={IMAGES.length}
-        handleMouseOut={handleMouseOut}
-        handleMouseOver={handleMouseOver}
         handleClick={handleClick}
       />
     </>
