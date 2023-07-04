@@ -5,38 +5,81 @@ import { useAnimation } from './useAnimation';
 import { ExampleImages, IExampleImage } from './example-images/example-images';
 
 const IMAGES: IExampleImage[] = [{
-  originalSrc: '/assets/homepage-demo/originals/flower.png',
-  originalSize: 128,
-  originalLabel: 'Upscaled using native bicubic interpolation',
-
-  enhancedSrc: '/assets/homepage-demo/enhanced/flower.png',
-  enhancedSize: 256,
-  enhancedLabel: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
-
+  sizes: {
+    original: 128,
+    enhanced: 256,
+  },
+  original: {
+    src: '/assets/homepage-demo/originals/flower.png',
+    labels: {
+      short: 'Bicubic interpolation',
+      long: 'Upscaled using native bicubic interpolation',
+    },
+  },
+  enhanced: {
+    src: '/assets/homepage-demo/enhanced/flower.png',
+    labels: {
+      short: '@upscalerjs/esrgan-thick/4x',
+      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+    },
+  },
 }, {
-  originalSrc: '/assets/homepage-demo/originals/face2.png',
-  originalSize: 128,
-  originalLabel: 'Upscaled using native bicubic interpolation',
-
-  enhancedSrc: '/assets/homepage-demo/enhanced/face2.png',
-  enhancedSize: 256,
-  enhancedLabel: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+  sizes: {
+    original: 128,
+    enhanced: 256,
+  },
+  original: {
+    src: '/assets/homepage-demo/originals/face2.png',
+    labels: {
+      short: 'Bicubic interpolation',
+      long: 'Upscaled using native bicubic interpolation',
+    },
+  },
+  enhanced: {
+    src: '/assets/homepage-demo/enhanced/face2.png',
+    labels: {
+      short: '@upscalerjs/esrgan-thick/4x',
+      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+    },
+  },
 }, {
-  originalSrc: '/assets/homepage-demo/originals/face3.png',
-  originalSize: 128,
-  originalLabel: 'Upscaled using native bicubic interpolation',
-
-  enhancedSrc: '/assets/homepage-demo/enhanced/face3.png',
-  enhancedSize: 256,
-  enhancedLabel: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+  sizes: {
+    original: 128,
+    enhanced: 256,
+  },
+  original: {
+    src: '/assets/homepage-demo/originals/face3.png',
+    labels: {
+      short: 'Bicubic interpolation',
+      long: 'Upscaled using native bicubic interpolation',
+    },
+  },
+  enhanced: {
+    src: '/assets/homepage-demo/enhanced/face3.png',
+    labels: {
+      short: '@upscalerjs/esrgan-thick/4x',
+      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+    },
+  },
 }, {
-  originalSrc: '/assets/homepage-demo/originals/face1.png',
-  originalSize: 128,
-  originalLabel: 'Upscaled using native bicubic interpolation',
-
-  enhancedSrc: '/assets/homepage-demo/enhanced/face1.png',
-  enhancedSize: 256,
-  enhancedLabel: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+  sizes: {
+    original: 128,
+    enhanced: 256,
+  },
+  original: {
+    src: '/assets/homepage-demo/originals/face1.png',
+    labels: {
+      short: 'Bicubic interpolation',
+      long: 'Upscaled using native bicubic interpolation',
+    },
+  },
+  enhanced: {
+    src: '/assets/homepage-demo/enhanced/face1.png',
+    labels: {
+      short: '@upscalerjs/esrgan-thick/4x',
+      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
+    },
+  },
 }];
 
 const steps = [
