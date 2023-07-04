@@ -40,17 +40,13 @@ const getOriginalLabel = (label: string, state: ValidState) => {
 };
 
 const getActiveStyle = (kind: ValidExampleKind, state: ValidState): boolean => {
-  if ([
+  return !([
     undefined,
     'hide-images',
   ].includes(state) || (kind === 'enhanced' && [
     'original-image',
     'prepare-for-side-by-side',
-  ].includes(state))) {
-    return false;
-  }
-
-  return true;
+  ].includes(state)));
 }
 const getSizeStyle = (state: ValidState, originalSize: number, enhancedSize: number): string => {
   if ([
