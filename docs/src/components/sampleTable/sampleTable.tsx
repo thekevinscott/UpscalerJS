@@ -51,7 +51,7 @@ export default function SampleTable ({ packageName, models, scales }: IProps) {
               {models.map((model, i) => {
                 const scale = scales[i];
                 const imageWidth = (sameSize ? maxScale : scale) * IMAGE_WIDTH;
-                const src = bicubic ? flower : `/assets/sample-images/${packageName}/samples/${model}/flower.png`;
+                const src = bicubic ? flower : `/assets/sample-images/${packageName}/samples/${model}/result.png`;
                 return (
                   <td key={model }>
                     <img
