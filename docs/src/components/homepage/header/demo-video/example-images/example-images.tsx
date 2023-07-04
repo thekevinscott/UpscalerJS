@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React from 'react';
 import styles from './example-images.module.scss';
 
 export type ValidExampleImageSize = 128 | 256;
@@ -20,23 +20,31 @@ const getStateFromStepIdx = (num: number): ValidState => {
   return STATES[num];
 };
 
-export interface IExampleImage {
-  originalSrc: string;
-  originalLabel: string;
-  originalSize: ValidExampleImageSize;
-  enhancedSrc: string;
-  enhancedLabel: string;
-  enhancedSize: ValidExampleImageSize;
+interface IExampleImageSlice {
+  src: string;
+  labels: {
+    short: string;
+    long: string;
+  };
 }
 
-const getOriginalLabel = (label: string, state: ValidState) => {
+export interface IExampleImage {
+  original: IExampleImageSlice;
+  enhanced: IExampleImageSlice;
+  sizes: {
+    original: ValidExampleImageSize;
+    enhanced: ValidExampleImageSize;
+  }
+}
+
+const getOriginalLabel = (label: string, state: ValidState, short = false) => {
   if ([
     'hide-images',
     'show-images-side-by-side-with-label',
   ].includes(state)) {
     return label;
   }
-  return 'Original image';
+  return short ? 'Original' : 'Original image';
 };
 
 const getActiveStyle = (kind: ValidExampleKind, state: ValidState): boolean => {
@@ -80,7 +88,7 @@ const getStateAsStyles = (
 
 const ExampleImage = ({
   src,
-  label,
+  labels,
   originalSize,
   enhancedSize,
   state,
@@ -89,7 +97,10 @@ const ExampleImage = ({
 }: {
   kind: ValidExampleKind;
   src: string;
-  label: string;
+  labels: {
+    long: string;
+    short: string;
+  };
   originalSize: ValidExampleImageSize;
   enhancedSize: ValidExampleImageSize;
   state: ValidState;
@@ -99,13 +110,35 @@ const ExampleImage = ({
   return (
     <div className={clsx(styles.imageContainer, styles[kind], animating ? styles.animating : undefined, stateStyle)}>
       <img src={src} className={clsx()} alt={kind} />
-      <label className={styles.imageContainerLabel}>{kind === 'original' ? getOriginalLabel(label, state) : label}</label>
+      {[{
+         label: labels.long,
+         cls: styles.longLabel,
+         isShort: false,
+        }, {
+         label: labels.short,
+         cls: styles.shortLabel,
+         isShort: true,
+        }].map(({ label, cls, isShort }) => (
+        <label 
+          key={label}
+          className={clsx(cls, styles.imageContainerLabel)}
+        >
+          {kind === 'original' ? getOriginalLabel(label, state, isShort) : label}
+        </label>
+      ))}
     </div>
   );
 };
 
 export const ExampleImages = ({
-  exampleImage,
+  exampleImage: {
+    original,
+    enhanced,
+    sizes: {
+      original: originalSize,
+      enhanced: enhancedSize,
+    },
+  },
   stepIdx,
   animating,
 }: {
@@ -114,31 +147,19 @@ export const ExampleImages = ({
   animating: boolean;
 }) => {
   const state = getStateFromStepIdx(stepIdx);
-  const props = useMemo<{
-    src: string;
-    label: string;
-    kind: ValidExampleKind;
-  }[]>(() => [{
-    src: exampleImage.originalSrc,
-    label: exampleImage.originalLabel,
-    kind: 'original',
-    }, {
-      src: exampleImage.enhancedSrc,
-      label: exampleImage.enhancedLabel,
-      kind: 'enhanced',
-  }], [exampleImage]);
+  const props: (IExampleImageSlice & { kind: ValidExampleKind })[] = [{ ...original, kind: 'original' }, { ...enhanced, kind: 'enhanced' }];
   return (
     <>
-      {props.map(({ label, src, kind }) => (
+      {props.map(({ labels, src, kind }) => (
         <ExampleImage 
           key={src}
           animating={animating}
           kind={kind}
           state={state}
           src={src} 
-          label={label} 
-          originalSize={exampleImage.originalSize}
-          enhancedSize={exampleImage.enhancedSize}
+          labels={labels} 
+          originalSize={originalSize}
+          enhancedSize={enhancedSize}
         />
       ))}
     </>
