@@ -15,13 +15,16 @@ export const DemoVideoNav = ({
     <ul className={styles.nav}>
       {Array(images).fill('').map((_, i) => i).map(i => (
         <li 
-          role="button"
           key={i}
-          onClick={() => handleClick(i)}
-          onKeyUp={() => handleClick(i)}
-          className={clsx(active === i ? styles.active : '')}
         >
-          <button></button>
+          <button
+            onClick={() => handleClick(i)}
+            onKeyUp={() => handleClick(i)}
+            className={clsx(active === i ? styles.active : '')}
+          >
+            <div className={styles.dot}></div>
+
+          </button>
         </li>
       ))}
     </ul>
