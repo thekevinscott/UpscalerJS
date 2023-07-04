@@ -102,7 +102,7 @@ const ExampleImage = ({
   const stateStyle = getStateAsStyles(state, kind, originalSize, enhancedSize);
   return (
     <div className={clsx(styles.imageContainer, styles[kind], animating ? styles.animating : undefined, stateStyle)}>
-      <img src={src} className={clsx()} />
+      <img src={src} className={clsx()} alt={kind} />
       <label className={styles.imageContainerLabel}>{kind === 'original' ? getOriginalLabel(label, state) : label}</label>
     </div>
   );

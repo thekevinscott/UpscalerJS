@@ -17,7 +17,7 @@ export const DemoVideoNav = ({
 }) => {
   return (
     <ul className={styles.nav}>
-      {Array(images).fill('').map((_, i) => (
+      {Array(images).fill('').map((_, i) => i).map(i => (
         <li 
           key={i}
           onMouseOver={() => handleMouseOver(i)}

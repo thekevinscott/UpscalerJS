@@ -73,7 +73,7 @@ export const DemoVideo = () => {
               animating={animating}
               stepIdx={exampleStepIdx}
               exampleImage={exampleImage}
-              key={i}
+              key={JSON.stringify(exampleImage)}
             />
           )
         })}
