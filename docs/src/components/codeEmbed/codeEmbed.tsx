@@ -162,7 +162,7 @@ export const CodeEmbed = ({
   url,
   params,
   persist,
-  type = 'codesandbox',
+  type = 'stackblitz',
 }: {
   url: string,
   params?: URLSearchParams | string,

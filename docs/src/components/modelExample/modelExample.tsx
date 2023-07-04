@@ -11,7 +11,7 @@ export const ModelExample = ({ model }: { model: string }) => {
   }, []);
 
   return (
-    <CodeEmbed url={`models/${model}/demo`} params={params} type="codesandbox" />
+    <CodeEmbed url={`models/${model}/demo`} params={params} />
   );
 }
 
