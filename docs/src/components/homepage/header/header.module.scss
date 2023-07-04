@@ -58,8 +58,6 @@
     border-radius: 5px;
     padding: 10px;
     position: relative;
-    width: 768px;
-    height: 407px;
 
     .demoInner {
       background-size: cover;
@@ -120,3 +118,10 @@
     to {color: inherit;}
   }
 }
+
+@media (max-width: 492px) {
+  .demo {
+    display: none;
+  }
+}
+  

@@ -1,0 +1,20 @@
+.demos {
+  position: relative;
+  height: 407px;
+  width: 768px;
+  max-width: 100%;
+}
+
+@media (max-width: 996px) {
+  .demos {
+    width: 100%;
+  }
+}
+  
+
+@media (max-width: 780px) {
+  .demos {
+    height: 260px;
+  }
+}
+  

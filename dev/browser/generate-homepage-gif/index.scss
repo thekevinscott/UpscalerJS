@@ -99,9 +99,9 @@ $end_scale: 0.8;
   label {
     font-size: 20px;
   }
-}
 
 @keyframes animate-fade {
   0% { opacity: 0; transform: scale($start_scale) translateY(30px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
+}
 }

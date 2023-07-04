@@ -1,0 +1,51 @@
+$size: 16px; 
+$gap: 12px;
+
+.nav {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  bottom: $size;
+  width: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    button {
+      cursor: pointer;
+      transition-duration: 0.4s;
+      padding: 0 5px;
+      height: 100%;
+      border: none;
+      background: transparent;
+
+      .dot {
+        background: rgba(255, 255, 255, 0.7);
+        border: 2px solid rgba(255, 255, 255, 0.9);
+        height: $size;
+        width: $size;
+        border-radius: $size;
+      }
+
+      &:hover,
+      &.active {
+        .dot {
+          background: rgba(255, 165, 0, 0.4);
+          border-color: rgba(255, 165, 0, 0.8);
+        }
+      }
+
+      &:hover {
+        transition-duration: 0.0s;
+      }
+    }
+  }
+}
+    
