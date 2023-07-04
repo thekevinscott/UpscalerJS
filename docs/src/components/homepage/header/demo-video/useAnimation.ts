@@ -86,7 +86,6 @@ export const useAnimation = (durations: number[]) => {
   const { resetKey, isValidKey} = useKeys();
   const {state, dispatch} = useTrackAnimationState(durations.length);
   const { animating, idx } = state;
-  const activeIdx = Math.floor(idx / durations.length)
   const stepIdx = idx % durations.length;
   const timer = useRef<number>();
 
@@ -94,7 +93,7 @@ export const useAnimation = (durations: number[]) => {
     const key = resetKey();
     const dur = durations[stepIdx];
     if (dur === 0 || dur === undefined) {
-      throw new Error(`Bad duration for idx ${activeIdx} for steps ${JSON.stringify(durations)}`);
+      throw new Error(`Bad duration for steps ${JSON.stringify(durations)}`);
     }
     try {
       if (!animating || !isValidKey(key)) { throw new Error(); }
@@ -119,11 +118,9 @@ export const useAnimation = (durations: number[]) => {
     resetKey();
   }, []);
 
-  const handleMouseOut = useCallback((i: number) => {
-  }, []);
+  const handleMouseOut = useCallback((_i: number) => {}, []);
 
-  const handleMouseOver = useCallback((i: number) => {
-  }, []);
+  const handleMouseOver = useCallback((_i: number) => {}, []);
 
   const handleClick = useCallback((i: number) => {
     stopAnimating();
@@ -147,7 +144,6 @@ export const useAnimation = (durations: number[]) => {
     handleMouseOut,
     handleMouseOver,
     handleClick,
-    activeIdx,
     idx: state.idx,
   };
 }
