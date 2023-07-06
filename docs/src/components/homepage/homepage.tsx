@@ -6,10 +6,15 @@ import { Testimonials } from './testimonials/testimonials';
 import Link from '@docusaurus/Link'
 
 import styles from './homepage.module.scss';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 export function Homepage() {
   return (
     <div id={styles.homePage}>
+      <BrowserOnly fallback={<div>Loading...</div>}>
+      {() => {
+        return (
+          <>
       <HomepageHeader />
       <main>
         <section className={styles.cta}>
@@ -43,6 +48,10 @@ export function Homepage() {
           </div>
         </section>
       </main>
+      </>
+        );
+      }}
+    </BrowserOnly>
     </div>
   );
 }
