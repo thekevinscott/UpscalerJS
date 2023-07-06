@@ -5,6 +5,7 @@ import GitHubButton from 'react-github-btn'
 import styles from './header.module.scss';
 import { GoClippy } from 'react-icons/go';
 import { DemoVideo } from './demo-video/demo-video';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 export function HomepageHeader() {
   const [copied, setCopied] = useState(false);
@@ -46,7 +47,15 @@ export function HomepageHeader() {
         </div>
         <div className={clsx('col col--8')}>
           <div className={styles.demo}>
+          <BrowserOnly fallback={<div>Loading...</div>}>
+      {() => {
+        return (
+          <>
             <DemoVideo />
+          </>
+        );
+      }}
+    </BrowserOnly>
           </div>
         </div>
       </div>

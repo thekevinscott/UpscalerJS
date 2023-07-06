@@ -6,7 +6,6 @@ import { Testimonials } from './testimonials/testimonials';
 import Link from '@docusaurus/Link'
 
 import styles from './homepage.module.scss';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 
 export function Homepage() {
   return (
