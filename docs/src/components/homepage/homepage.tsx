@@ -11,15 +11,7 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 export function Homepage() {
   return (
     <div id={styles.homePage}>
-      <BrowserOnly fallback={<div>Loading...</div>}>
-      {() => {
-        return (
-          <>
       <HomepageHeader />
-      </>
-        );
-      }}
-    </BrowserOnly>
       <main>
         <section className={styles.cta}>
         <Link
