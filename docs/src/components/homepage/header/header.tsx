@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
-import GitHubButton from 'react-github-btn'
+import GitHubButton from 'react-github-btn';
 import styles from './header.module.scss';
 import { GoClippy } from 'react-icons/go';
 import { DemoVideo } from './demo-video/demo-video';
@@ -23,6 +23,10 @@ export function HomepageHeader() {
 
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
+          <BrowserOnly fallback={<div>Loading...</div>}>
+      {() => {
+        return (
+          <>
       <div className={clsx("row")}>
         <div className={clsx('col col--4')}>
         <h1 className="hero__title">Enhance Images with AI using Javascript</h1>
@@ -40,7 +44,7 @@ export function HomepageHeader() {
             aria-label="Star thekevinscott/upscalerjs on GitHub">Star</GitHubButton>
         </div>
         <code className={clsx(copied ? styles.copied : '')}>
-          <button onClick={copyInstallationInstructions} >
+          <button onClick={copyInstallationInstructions}>
           npm install upscaler <GoClippy />
           </button>
           </code>
@@ -59,6 +63,10 @@ export function HomepageHeader() {
           </div>
         </div>
       </div>
+          </>
+        );
+      }}
+    </BrowserOnly>
     </header>
   );
 }
