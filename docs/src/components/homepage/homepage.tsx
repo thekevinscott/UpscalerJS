@@ -16,6 +16,10 @@ export function Homepage() {
         return (
           <>
       <HomepageHeader />
+      </>
+        );
+      }}
+    </BrowserOnly>
       <main>
         <section className={styles.cta}>
         <Link
@@ -48,10 +52,6 @@ export function Homepage() {
           </div>
         </section>
       </main>
-      </>
-        );
-      }}
-    </BrowserOnly>
     </div>
   );
 }
