@@ -7,3 +7,8 @@
 #   # command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
 #   # publish = "build"
 #   # ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cross-Origin-Embedder-Policy: require-corp
+    Cross-Origin-Opener-Policy: same-origin
