@@ -14,11 +14,13 @@ export function HomepageHeader() {
     navigator.clipboard.writeText('npm install upscaler');
     setCopied(false);
     setCopied(true);
-    setTimeout(() => {
-      if (setCopied) {
-        setCopied(false);
-      }
+    const timer = setTimeout(() => {
+      setCopied(false);
     }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+    }
   }, []);
 
   return (
