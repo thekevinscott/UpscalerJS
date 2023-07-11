@@ -26,7 +26,7 @@ import {
   isFourDimensionalTensor as _isFourDimensionalTensor,
   isTensor as _isTensor,
 } from '@upscalerjs/core';
-import { ModelPackage, } from './types';
+import { ModelPackage, MultiArgStringProgress, } from './types';
 import { mockFn } from '../../../test/lib/shared/mockers';
 
 jest.mock('./utils', () => {
@@ -291,12 +291,12 @@ describe('predict', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it('should invoke progress callback with percent, slice, row, and col', async () => {
+  it('should invoke progress callback with percent, slice, and slice data', async () => {
     const mockResponse = 'foobarbaz1';
     tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
-    const progress = jest.fn((_1: any, _2: any, _3: any, _4: any) => { });
+    const progress = jest.fn<ReturnType<MultiArgStringProgress>, Parameters<MultiArgStringProgress>>((_1: any, _2: any, _3: any) => { });
     await wrapGenerator(processPixels(
       tensor, {
       progress,
@@ -310,10 +310,10 @@ describe('predict', () => {
         originalImageSize: tensor.shape,
       })
     );
-    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
-    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
-    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
-    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, expect.objectContaining({ row: 0, col: 1, }));
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, expect.objectContaining({ row: 1, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, expect.objectContaining({ row: 1, col: 1, }));
     expect(warn).not.toHaveBeenCalled();
   });
 
