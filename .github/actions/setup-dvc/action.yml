@@ -10,7 +10,9 @@ runs:
   using: "composite"
   steps:
     - name: 'Setup DVC'
-      uses: iterative/setup-dvc@v1
+      shell: bash
+      run: pip install dvc[s3]=='2.45.1' dvc[gdrive]=='2.45.1'
+      # uses: iterative/setup-dvc@v1
 
     - name: Restore cached output
       id: cache-output-restore
