@@ -1,7 +1,7 @@
 import { mkdirp, writeFile } from 'fs-extra';
 import yargs from 'yargs';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import { Application, ArrayType, Comment, CommentDisplayPart, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
@@ -240,7 +240,11 @@ const getSummary = (comment?: Comment) => {
   return comment?.summary.map(({ text }) => text).join('');
 }
 
-const getTextSummary = (name: string, comment?: Comment) => {
+const getTextSummary = (name: string, comment?: Comment): {
+  codeSnippet?: string;
+  description?: string;
+  blockTags?: Record<string, CommentDisplayPart[]>;
+} => {
   if (comment === undefined) {
     return {};
   }
@@ -267,7 +271,7 @@ const getTextSummary = (name: string, comment?: Comment) => {
       };
     }, {}),
     description: text.trim(),
-    code: expectedCodeSnippet,
+    codeSnippet: expectedCodeSnippet.text.trim(),
   }
 };
 
@@ -748,7 +752,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   //   throw new Error(`No comment found in method ${name}`);
   // }
 
-  const { description, code: codeSnippet, blockTags } = getTextSummary(name, comment);
+  const { description, codeSnippet, blockTags } = getTextSummary(name, comment);
   let source;
   try {
     source = getSource(sources);

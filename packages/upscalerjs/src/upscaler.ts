@@ -105,14 +105,14 @@ export class Upscaler {
    *   progress: (progress) => {
    *     console.log('Progress:', progress);
    *   },
-   * }).then(upscaledSrc => {
-   *   console.log(upscaledSrc);
+   * }).then(enhancedSrc => {
+   *   console.log(enhancedSrc);
    * });
    * ```
    *
-   * @param image The image to upscale.
-   * @param options A set of upscaling arguments.
-   * @returns an upscaled image.
+   * @param image The image to enhance
+   * @param options A set of enhancing arguments.
+   * @returns an enhanced image.
    */
   public async execute(
     image: Input,
@@ -163,7 +163,7 @@ export class Upscaler {
    *   patchSize: 64,
    *   padding: 2,
    * }]).then(() => {
-   *   console.log('I am all warmed up!');
+   *   console.log('All warmed up!');
    * });
    * ```
    * 
@@ -178,7 +178,7 @@ export class Upscaler {
   };
 
   /**
-   * Aborts all active asynchronous methods (including upscaling and warm up methods). For more info, [see the guide on cancelling](/documentation/guides/browser/usage/cancel).
+   * Aborts all active asynchronous methods (including execution and warm up methods). For more info, [see the guide on cancelling](/documentation/guides/browser/usage/cancel).
    * 
    * ```javascript
    * const upscaler = new Upscaler();
@@ -191,12 +191,12 @@ export class Upscaler {
   };
 
   /**
-   * Disposes of an UpscalerJS instance and clears up any used memory. Ensure you've aborted any active upscaling events before disposing of the model.
+   * Disposes of an UpscalerJS instance and clears up any used memory. Ensure any active execution events have first been aborted before disposing of the model.
    * 
    * ```javascript
    * const upscaler = new Upscaler();
    * upscaler.dispose().then(() => {
-   *   console.log("I'm all cleaned up!");
+   *   console.log("All cleaned up!");
    * })
    * ```
    */
