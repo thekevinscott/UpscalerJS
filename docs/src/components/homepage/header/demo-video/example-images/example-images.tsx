@@ -98,11 +98,13 @@ const Label = ({
   state: ValidState;
   isShort?: boolean;
 }) => {
-  if (kind === 'original') {
-    return getOriginalLabel(label, state, isShort);
-  }
+  const parsedLabel = kind === 'original' ? getOriginalLabel(label, state, isShort) : label;
 
-  return (<ReactMarkdown>{label}</ReactMarkdown>);
+  return (
+    <div className={clsx(cls, styles.imageContainerLabel)}>
+      {parsedLabel}
+    </div>
+  );
 };
 
 const ExampleImage = ({
@@ -138,17 +140,13 @@ const ExampleImage = ({
          cls: styles.shortLabel,
          isShort: true,
         }].map(({ label, cls, isShort }) => (
-        <label 
-          key={JSON.stringify({ label, cls, isShort })}
-          className={clsx(cls, styles.imageContainerLabel)}
-        >
           <Label
+            key={JSON.stringify({ label, cls, isShort })}
             kind={kind}
             label={label}
             state={state}
             isShort={isShort}
           />
-        </label>
       ))}
     </div>
   );

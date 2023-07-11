@@ -17,7 +17,7 @@ export function Testimonials() {
   const { colorMode } = useColorMode();
   return (
     <div className={styles.testimonials}>
-      <div className={clsx(`row`)}>
+      <div className={clsx('row')}>
         <h2>Testimonials</h2>
       </div>
       <div className={styles.tweets}>
