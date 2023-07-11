@@ -18,7 +18,7 @@ const config = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: '/img/favicon.ico',
+  favicon: '/favicon.ico',
 
   organizationName: 'thekevinscott',
   projectName: 'upscalerjs',
