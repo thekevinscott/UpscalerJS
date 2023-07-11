@@ -253,10 +253,10 @@ describe('predict', () => {
         padding: 0,
       })
     );
-    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
-    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
-    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
-    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, expect.objectContaining({ row: 0, col: 1, }));
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, expect.objectContaining({ row: 1, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, expect.objectContaining({ row: 1, col: 1, }));
     expect(warn).not.toHaveBeenCalled();
   });
 
@@ -284,10 +284,10 @@ describe('predict', () => {
       originalImageSize: tensor.shape,
     })
     );
-    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, 0, 0);
-    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, 0, 1);
-    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, 1, 0);
-    expect(progress).toHaveBeenCalledWith(1, mockResponse, 1, 1);
+    expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(0.5, mockResponse, expect.objectContaining({ row: 0, col: 1, }));
+    expect(progress).toHaveBeenCalledWith(0.75, mockResponse, expect.objectContaining({ row: 1, col: 0, }));
+    expect(progress).toHaveBeenCalledWith(1, mockResponse, expect.objectContaining({ row: 1, col: 1, }));
     expect(warn).not.toHaveBeenCalled();
   });
 
@@ -349,15 +349,19 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(warn).not.toHaveBeenCalled();
   });
@@ -393,15 +397,19 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(warn).not.toHaveBeenCalled();
   });
@@ -437,15 +445,19 @@ describe('predict', () => {
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(progress).toHaveBeenCalledWith(1,
       expect.objectContaining({
         shape: [4, 4, 3,],
       }),
-      expect.any(Number),
-      expect.any(Number),
+      expect.objectContaining({
+        row: expect.any(Number),
+        col: expect.any(Number),
+      }),
     );
     expect(warn).not.toHaveBeenCalled();
   });
