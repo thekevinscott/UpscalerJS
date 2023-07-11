@@ -276,303 +276,6 @@ importers:
         specifier: ^3.1.5
         version: 3.1.5
 
-  dev/browser/public/models:
-    devDependencies:
-      '@types/fs-extra':
-        specifier: ^9.0.13
-        version: 9.0.13
-      '@types/mkdirp':
-        specifier: ^1.0.2
-        version: 1.0.2
-      '@types/node':
-        specifier: ^17.0.39
-        version: 17.0.45
-      '@types/uglify-js':
-        specifier: ^3.13.1
-        version: 3.16.0
-      fs-extra:
-        specifier: ^10.0.1
-        version: 10.1.0
-      mkdirp:
-        specifier: ^1.0.4
-        version: 1.0.4
-      typescript:
-        specifier: ^4.8.3
-        version: 4.8.3
-      uglify-js:
-        specifier: ^3.15.3
-        version: 3.16.2
-
-  dev/browser/public/models/default-model:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/default-model/demo:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/default-model':
-        specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.8.0)
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      upscaler:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.8.0)
-    devDependencies:
-      vite:
-        specifier: '*'
-        version: 3.1.5
-
-  dev/browser/public/models/esrgan-experiments:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/esrgan-legacy:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/esrgan-legacy/demo:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/esrgan-legacy':
-        specifier: 1.0.0-beta.9
-        version: 1.0.0-beta.9(@tensorflow/tfjs@4.8.0)
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      upscaler:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.8.0)
-    devDependencies:
-      vite:
-        specifier: '*'
-        version: 3.1.5
-
-  dev/browser/public/models/esrgan-medium:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/esrgan-medium/demo:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/esrgan-medium':
-        specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.8.0)
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      upscaler:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.8.0)
-    devDependencies:
-      vite:
-        specifier: '*'
-        version: 3.1.5
-
-  dev/browser/public/models/esrgan-slim:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/esrgan-slim/demo:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/esrgan-slim':
-        specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.8.0)
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      upscaler:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.8.0)
-    devDependencies:
-      vite:
-        specifier: '*'
-        version: 3.1.5
-
-  dev/browser/public/models/esrgan-thick:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  dev/browser/public/models/esrgan-thick/demo:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/esrgan-thick':
-        specifier: 1.0.0-beta.7
-        version: 1.0.0-beta.7(@tensorflow/tfjs@4.8.0)
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      upscaler:
-        specifier: 1.0.0-beta.8
-        version: 1.0.0-beta.8(@tensorflow/tfjs@4.8.0)
-    devDependencies:
-      vite:
-        specifier: '*'
-        version: 3.1.5
-
-  dev/browser/public/models/pixel-upsampler:
-    dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ^4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ^4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../../../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: ^4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
   dev/node:
     dependencies:
       '@tensorflow/tfjs-node-gpu':
@@ -659,9 +362,6 @@ importers:
       react-loading:
         specifier: ^2.0.3
         version: 2.0.3(prop-types@15.8.1)(react@17.0.2)
-      react-markdown:
-        specifier: ^8.0.7
-        version: 8.0.7(@types/react@18.0.17)(react@17.0.2)
       react-twitter-embed:
         specifier: ^4.0.4
         version: 4.0.4(react-dom@17.0.2)(react@17.0.2)
@@ -4378,22 +4078,6 @@ packages:
     dependencies:
       '@tensorflow/tfjs-core': 4.8.0
 
-  /@tensorflow/tfjs-core@3.21.0:
-    resolution: {integrity: sha512-YSfsswOqWfd+M4bXIhT3hwtAb+IV8+ODwIxwdFR/7jTAPZP1wMVnSlpKnXHAN64HFOiP+Tm3HmKusEZ0+09A0w==}
-    engines: {yarn: '>= 1.3.2'}
-    dependencies:
-      '@types/long': 4.0.2
-      '@types/offscreencanvas': 2019.3.0
-      '@types/seedrandom': 2.4.30
-      '@types/webgl-ext': 0.0.30
-      '@webgpu/types': 0.1.16
-      long: 4.0.0
-      node-fetch: 2.6.11
-      seedrandom: 3.0.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@tensorflow/tfjs-core@4.8.0:
     resolution: {integrity: sha512-EkgGOAsPQSlpEdiG938c92pdC5i8GHeBVk6xO1AKKX8NiMSIruKtKqIQvX2aOkarwHy/5nhrJebAAvIL4dJlbw==}
     engines: {yarn: '>= 1.3.2'}
@@ -5212,22 +4896,6 @@ packages:
       - encoding
     dev: false
 
-  /@upscalerjs/core@1.0.0-beta.6:
-    resolution: {integrity: sha512-8k0C3TJw0bBg1rD34edPtlocBdhYSh+/jeZkmjmyj7MFacBwekpg3+ve03/exgZ5ufINB60+5nuuNN4qivZLXw==}
-    dependencies:
-      '@tensorflow/tfjs-core': 3.21.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/core@1.0.0-beta.8:
-    resolution: {integrity: sha512-yfqzoiBvEsWgQPIPt4cg/s22eRjNDLIez84D27e2vZLTgc1hMJOmFs8Ct1BcPEMPfuGXhwRdoBsBLZuDV7mEuQ==}
-    dependencies:
-      '@tensorflow/tfjs-core': 4.8.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-3myASwFmYlZXcb09DkKlyz+o3fpT+htV4JGoksGulhkfC3PukMiOCUtmQlPlLJEgr94Oo8EyUIfMds3CeYw3Pg==}
     peerDependencies:
@@ -5250,61 +4918,6 @@ packages:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.6(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-i0RWCxY83v1nfP/LK5kvvrqbhIZWr1VWtI6zaap86EUwduEgYTOKA9PWVNet3Hf977X4ocSJAFB/jizkhS8JAw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.0.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.6
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/default-model@1.0.0-beta.7(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-9QQfeLUwrSaThChi0V0sWzE31EUNkViSPI5hRV2wqcjKlD1L3LSRGlFqXefM7QUi3QtpxNDM3Tx79z9ozT3Sxg==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-legacy@1.0.0-beta.9(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-0i0n3IrxW3JvRSUGgsC8VQb64im27BYL1duOwmd8YWVvsBmSH5fqOSj4DHXtAHB5E48wnVnTfS0BXaJziGWkZQ==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-medium@1.0.0-beta.7(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-ORBZS+8c2iLFwE/WnVsXNp+YiJsbHxmSOS6oDV7f8V6b7noqiXtx7uH7yA6jkavi66Ci7wRtXQ9xT8mvBH5G7Q==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-slim@1.0.0-beta.7(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-uCuuGXdFNN/hx2Lm4uCEzGARFbFWsT+FDl+b5EH5q3Sfy+x2l+CQ5a/9FvMKpbScJKbj6d/bU6gyyxvFVoA3zw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
     peerDependencies:
@@ -5312,17 +4925,6 @@ packages:
     dependencies:
       '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-thick@1.0.0-beta.7(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-OtbVQE81GWab6V5m1cdej9FCd9hxFCkzGiiUblTwF60Bap3r9NSxkFXD150Er1NH3b9bjTkP0ETtiGN9lWrsMA==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.1.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5417,10 +5019,6 @@ packages:
     dependencies:
       '@webassemblyjs/ast': 1.11.1
       '@xtuc/long': 4.2.2
-
-  /@webgpu/types@0.1.16:
-    resolution: {integrity: sha512-9E61voMP4+Rze02jlTXud++Htpjyyk8vw5Hyw9FGRrmhHQg2GqbuOfwf5Klrb8vTxc2XWI3EfO7RUHMpxTj26A==}
-    dev: false
 
   /@webgpu/types@0.1.30:
     resolution: {integrity: sha512-9AXJSmL3MzY8ZL//JjudA//q+2kBRGhLBFpkdGksWIuxrMy81nFrCzj2Am+mbh8WoU6rXmv7cY5E3rdlyru2Qg==}
@@ -5985,10 +5583,6 @@ packages:
   /bail@1.0.5:
     resolution: {integrity: sha512-xFbRxM1tahm08yHBP16MMjVUAvDaBMD38zsM9EMAUN61omwLmKlOpB/Zku5QkjZ8TZ4vn53pj+t518cH0S03RQ==}
 
-  /bail@2.0.2:
-    resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
-    dev: false
-
   /balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
@@ -6489,10 +6083,6 @@ packages:
   /character-entities@1.2.4:
     resolution: {integrity: sha512-iBMyeEHxfVnIakwOuDXpVkc54HijNgCyQB2w0VfGQThle6NXn50zU6V/u+LDhxHcDUPojn6Kpga3PTAD8W1bQw==}
 
-  /character-entities@2.0.2:
-    resolution: {integrity: sha512-shx7oQ0Awen/BRIdkjkvz54PnEEI/EjwXDSIZp86/KKdbafHh1Df/RYGBhn4hbe2+uKC9FnT5UCEdyPz3ai9hQ==}
-    dev: false
-
   /character-reference-invalid@1.1.4:
     resolution: {integrity: sha512-mKKUkUbhPpQlCOfIuZkvSEgktjPFIsZKRRbC6KWVEMvlzblj3i3asQv5ODsrwt0N3pHAEvjP8KTQPHkp0+6jOg==}
 
@@ -6774,10 +6364,6 @@ packages:
 
   /comma-separated-tokens@1.0.8:
     resolution: {integrity: sha512-GHuDRO12Sypu2cV70d1dkA2EUmXHgntrzbpvOB+Qy+49ypNfGgFQIC2fhhXbnyrJRynDCAARsT7Ou0M6hirpfw==}
-
-  /comma-separated-tokens@2.0.3:
-    resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
-    dev: false
 
   /commander@10.0.1:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
@@ -7375,12 +6961,6 @@ packages:
     resolution: {integrity: sha512-V0pfhfr8suzyPGOx3nmq4aHqabehUZn6Ch9kyFpV79TGDTWFmHqUqXdabR7QHqxzrYolF4+tVmJhUG4OURg5dQ==}
     dev: true
 
-  /decode-named-character-reference@1.0.2:
-    resolution: {integrity: sha512-O8x12RzrUF8xyVcY0KJowWsmaJxQbmy0/EtnNtHRpsOcT7dFk5W598coHqBVpmWo1oQQfsCqfCmkZN5DJrZVdg==}
-    dependencies:
-      character-entities: 2.0.2
-    dev: false
-
   /decompress-response@3.3.0:
     resolution: {integrity: sha512-BzRPQuY1ip+qDonAOz42gRm/pg9F768C+npV/4JOsxRC2sq+Rlk+Q4ZCAsOhnIaMrgarILY+RMUIvMmmX1qAEA==}
     engines: {node: '>=4'}
@@ -7494,11 +7074,6 @@ packages:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
 
-  /dequal@2.0.3:
-    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
-    engines: {node: '>=6'}
-    dev: false
-
   /des.js@1.0.1:
     resolution: {integrity: sha512-Q0I4pfFrv2VPd34/vfLrFOoRmlYj3OV50i7fskps1jZWK1kApMWWT9G6RRUeYedLcBDIhnSDaUvJMb3AhUlaEA==}
     dependencies:
@@ -7568,6 +7143,7 @@ packages:
   /diff@5.0.0:
     resolution: {integrity: sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==}
     engines: {node: '>=0.3.1'}
+    dev: true
 
   /diffie-hellman@5.0.3:
     resolution: {integrity: sha512-kqag/Nl+f3GwyK25fhUMYj81BUOrZ9IuJsjIcDE5icNM9FJHAVm3VcUDxdLPoQtTuUylWm6ZIknYJwwaPxsUzg==}
@@ -9553,10 +9129,6 @@ packages:
       xtend: 4.0.2
       zwitch: 1.0.5
 
-  /hast-util-whitespace@2.0.1:
-    resolution: {integrity: sha512-nAxA0v8+vXSBDt3AnRUNjyRIQ0rD+ntpbAp4LnPkumc5M9yUbSMa4XDU9Q6etY4f1Wp4bNgvc1yjiZtsTTrSng==}
-    dev: false
-
   /hastscript@6.0.0:
     resolution: {integrity: sha512-nDM6bvd7lIqDUiYEiu5Sl/+6ReP0BMk/2f4U/Rooccxkj0P5nm+acM5PrGJ/t5I8qPGiqZSE6hVAwZEdZIvP4w==}
     dependencies:
@@ -10163,11 +9735,6 @@ packages:
   /is-plain-obj@3.0.0:
     resolution: {integrity: sha512-gwsOE28k+23GP1B6vFl1oVh/WOzmawBrKwo5Ev6wMKzPkaXaCDIQKzLnvsA42DRlbVTWorkgTKIviAKCWkfUwA==}
     engines: {node: '>=10'}
-
-  /is-plain-obj@4.1.0:
-    resolution: {integrity: sha512-+Pgi+vMuUNkJyExiMBt5IlFoMyKnr5zhJ4Uspz58WOhBF5QoIZkFyNHIbBAtHwzVAgk5RtndVNsDRN61/mmDqg==}
-    engines: {node: '>=12'}
-    dev: false
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
@@ -10975,6 +10542,7 @@ packages:
   /kleur@4.1.5:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
+    dev: true
 
   /klona@2.0.5:
     resolution: {integrity: sha512-pJiBpiXMbt7dkzXe8Ghj/u4FfXOOa98fPW+bihOJ4SjnoijweJrNThJfd3ifXpXhREjpoF2mZVH1GfS9LV3kHQ==}
@@ -11275,33 +10843,6 @@ packages:
     dependencies:
       unist-util-visit: 2.0.3
 
-  /mdast-util-definitions@5.1.2:
-    resolution: {integrity: sha512-8SVPMuHqlPME/z3gqVwWY4zVXn8lqKv/pAhC57FuJ40ImXyBpmO5ukh98zB2v7Blql2FiHjHv9LVztSIqjY+MA==}
-    dependencies:
-      '@types/mdast': 3.0.10
-      '@types/unist': 2.0.6
-      unist-util-visit: 4.1.2
-    dev: false
-
-  /mdast-util-from-markdown@1.3.1:
-    resolution: {integrity: sha512-4xTO/M8c82qBcnQc1tgpNtubGUW/Y1tBQ1B0i5CtSoelOLKFYlElIr3bvgREYYO5iRqbMY1YuqZng0GVOI8Qww==}
-    dependencies:
-      '@types/mdast': 3.0.10
-      '@types/unist': 2.0.6
-      decode-named-character-reference: 1.0.2
-      mdast-util-to-string: 3.2.0
-      micromark: 3.2.0
-      micromark-util-decode-numeric-character-reference: 1.1.0
-      micromark-util-decode-string: 1.1.0
-      micromark-util-normalize-identifier: 1.1.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-      unist-util-stringify-position: 3.0.3
-      uvu: 0.5.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /mdast-util-to-hast@10.0.1:
     resolution: {integrity: sha512-BW3LM9SEMnjf4HXXVApZMt8gLQWVNXc3jryK0nJu/rOXPOnlkUjmdkDlmxMirpbU9ILncGFIwLH/ubnWBbcdgA==}
     dependencies:
@@ -11314,27 +10855,8 @@ packages:
       unist-util-position: 3.1.0
       unist-util-visit: 2.0.3
 
-  /mdast-util-to-hast@12.3.0:
-    resolution: {integrity: sha512-pits93r8PhnIoU4Vy9bjW39M2jJ6/tdHyja9rrot9uujkN7UTU9SDnE6WNJz/IGyQk3XHX6yNNtrBH6cQzm8Hw==}
-    dependencies:
-      '@types/hast': 2.3.4
-      '@types/mdast': 3.0.10
-      mdast-util-definitions: 5.1.2
-      micromark-util-sanitize-uri: 1.2.0
-      trim-lines: 3.0.1
-      unist-util-generated: 2.0.1
-      unist-util-position: 4.0.4
-      unist-util-visit: 4.1.2
-    dev: false
-
   /mdast-util-to-string@2.0.0:
     resolution: {integrity: sha512-AW4DRS3QbBayY/jJmD8437V1Gombjf8RSOUCMFBuo5iHi58AGEgVCKQ+ezHkZZDpAQS75hcBMpLqjpJTjtUL7w==}
-
-  /mdast-util-to-string@3.2.0:
-    resolution: {integrity: sha512-V4Zn/ncyN1QNSqSBxTrMOLpjr+IKdHl2v3KVLoWmDPscP4r9GcCi71gjgvUV1SFSKh92AjAG4peFuBl2/YgCJg==}
-    dependencies:
-      '@types/mdast': 3.0.10
-    dev: false
 
   /mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}
@@ -11376,181 +10898,6 @@ packages:
   /methods@1.1.2:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
-
-  /micromark-core-commonmark@1.1.0:
-    resolution: {integrity: sha512-BgHO1aRbolh2hcrzL2d1La37V0Aoz73ymF8rAcKnohLy93titmv62E0gP8Hrx9PKcKrqCZ1BbLGbP3bEhoXYlw==}
-    dependencies:
-      decode-named-character-reference: 1.0.2
-      micromark-factory-destination: 1.1.0
-      micromark-factory-label: 1.1.0
-      micromark-factory-space: 1.1.0
-      micromark-factory-title: 1.1.0
-      micromark-factory-whitespace: 1.1.0
-      micromark-util-character: 1.2.0
-      micromark-util-chunked: 1.1.0
-      micromark-util-classify-character: 1.1.0
-      micromark-util-html-tag-name: 1.2.0
-      micromark-util-normalize-identifier: 1.1.0
-      micromark-util-resolve-all: 1.1.0
-      micromark-util-subtokenize: 1.1.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-      uvu: 0.5.6
-    dev: false
-
-  /micromark-factory-destination@1.1.0:
-    resolution: {integrity: sha512-XaNDROBgx9SgSChd69pjiGKbV+nfHGDPVYFs5dOoDd7ZnMAE+Cuu91BCpsY8RT2NP9vo/B8pds2VQNCLiu0zhg==}
-    dependencies:
-      micromark-util-character: 1.2.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-factory-label@1.1.0:
-    resolution: {integrity: sha512-OLtyez4vZo/1NjxGhcpDSbHQ+m0IIGnT8BoPamh+7jVlzLJBH98zzuCoUeMxvM6WsNeh8wx8cKvqLiPHEACn0w==}
-    dependencies:
-      micromark-util-character: 1.2.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-      uvu: 0.5.6
-    dev: false
-
-  /micromark-factory-space@1.1.0:
-    resolution: {integrity: sha512-cRzEj7c0OL4Mw2v6nwzttyOZe8XY/Z8G0rzmWQZTBi/jjwyw/U4uqKtUORXQrR5bAZZnbTI/feRV/R7hc4jQYQ==}
-    dependencies:
-      micromark-util-character: 1.2.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-factory-title@1.1.0:
-    resolution: {integrity: sha512-J7n9R3vMmgjDOCY8NPw55jiyaQnH5kBdV2/UXCtZIpnHH3P6nHUKaH7XXEYuWwx/xUJcawa8plLBEjMPU24HzQ==}
-    dependencies:
-      micromark-factory-space: 1.1.0
-      micromark-util-character: 1.2.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-factory-whitespace@1.1.0:
-    resolution: {integrity: sha512-v2WlmiymVSp5oMg+1Q0N1Lxmt6pMhIHD457whWM7/GUlEks1hI9xj5w3zbc4uuMKXGisksZk8DzP2UyGbGqNsQ==}
-    dependencies:
-      micromark-factory-space: 1.1.0
-      micromark-util-character: 1.2.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-util-character@1.2.0:
-    resolution: {integrity: sha512-lXraTwcX3yH/vMDaFWCQJP1uIszLVebzUa3ZHdrgxr7KEU/9mL4mVgCpGbyhvNLNlauROiNUq7WN5u7ndbY6xg==}
-    dependencies:
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-util-chunked@1.1.0:
-    resolution: {integrity: sha512-Ye01HXpkZPNcV6FiyoW2fGZDUw4Yc7vT0E9Sad83+bEDiCJ1uXu0S3mr8WLpsz3HaG3x2q0HM6CTuPdcZcluFQ==}
-    dependencies:
-      micromark-util-symbol: 1.1.0
-    dev: false
-
-  /micromark-util-classify-character@1.1.0:
-    resolution: {integrity: sha512-SL0wLxtKSnklKSUplok1WQFoGhUdWYKggKUiqhX+Swala+BtptGCu5iPRc+xvzJ4PXE/hwM3FNXsfEVgoZsWbw==}
-    dependencies:
-      micromark-util-character: 1.2.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-util-combine-extensions@1.1.0:
-    resolution: {integrity: sha512-Q20sp4mfNf9yEqDL50WwuWZHUrCO4fEyeDCnMGmG5Pr0Cz15Uo7KBs6jq+dq0EgX4DPwwrh9m0X+zPV1ypFvUA==}
-    dependencies:
-      micromark-util-chunked: 1.1.0
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-util-decode-numeric-character-reference@1.1.0:
-    resolution: {integrity: sha512-m9V0ExGv0jB1OT21mrWcuf4QhP46pH1KkfWy9ZEezqHKAxkj4mPCy3nIH1rkbdMlChLHX531eOrymlwyZIf2iw==}
-    dependencies:
-      micromark-util-symbol: 1.1.0
-    dev: false
-
-  /micromark-util-decode-string@1.1.0:
-    resolution: {integrity: sha512-YphLGCK8gM1tG1bd54azwyrQRjCFcmgj2S2GoJDNnh4vYtnL38JS8M4gpxzOPNyHdNEpheyWXCTnnTDY3N+NVQ==}
-    dependencies:
-      decode-named-character-reference: 1.0.2
-      micromark-util-character: 1.2.0
-      micromark-util-decode-numeric-character-reference: 1.1.0
-      micromark-util-symbol: 1.1.0
-    dev: false
-
-  /micromark-util-encode@1.1.0:
-    resolution: {integrity: sha512-EuEzTWSTAj9PA5GOAs992GzNh2dGQO52UvAbtSOMvXTxv3Criqb6IOzJUBCmEqrrXSblJIJBbFFv6zPxpreiJw==}
-    dev: false
-
-  /micromark-util-html-tag-name@1.2.0:
-    resolution: {integrity: sha512-VTQzcuQgFUD7yYztuQFKXT49KghjtETQ+Wv/zUjGSGBioZnkA4P1XXZPT1FHeJA6RwRXSF47yvJ1tsJdoxwO+Q==}
-    dev: false
-
-  /micromark-util-normalize-identifier@1.1.0:
-    resolution: {integrity: sha512-N+w5vhqrBihhjdpM8+5Xsxy71QWqGn7HYNUvch71iV2PM7+E3uWGox1Qp90loa1ephtCxG2ftRV/Conitc6P2Q==}
-    dependencies:
-      micromark-util-symbol: 1.1.0
-    dev: false
-
-  /micromark-util-resolve-all@1.1.0:
-    resolution: {integrity: sha512-b/G6BTMSg+bX+xVCshPTPyAu2tmA0E4X98NSR7eIbeC6ycCqCeE7wjfDIgzEbkzdEVJXRtOG4FbEm/uGbCRouA==}
-    dependencies:
-      micromark-util-types: 1.1.0
-    dev: false
-
-  /micromark-util-sanitize-uri@1.2.0:
-    resolution: {integrity: sha512-QO4GXv0XZfWey4pYFndLUKEAktKkG5kZTdUNaTAkzbuJxn2tNBOr+QtxR2XpWaMhbImT2dPzyLrPXLlPhph34A==}
-    dependencies:
-      micromark-util-character: 1.2.0
-      micromark-util-encode: 1.1.0
-      micromark-util-symbol: 1.1.0
-    dev: false
-
-  /micromark-util-subtokenize@1.1.0:
-    resolution: {integrity: sha512-kUQHyzRoxvZO2PuLzMt2P/dwVsTiivCK8icYTeR+3WgbuPqfHgPPy7nFKbeqRivBvn/3N3GBiNC+JRTMSxEC7A==}
-    dependencies:
-      micromark-util-chunked: 1.1.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-      uvu: 0.5.6
-    dev: false
-
-  /micromark-util-symbol@1.1.0:
-    resolution: {integrity: sha512-uEjpEYY6KMs1g7QfJ2eX1SQEV+ZT4rUD3UcF6l57acZvLNK7PBZL+ty82Z1qhK1/yXIY4bdx04FKMgR0g4IAag==}
-    dev: false
-
-  /micromark-util-types@1.1.0:
-    resolution: {integrity: sha512-ukRBgie8TIAcacscVHSiddHjO4k/q3pnedmzMQ4iwDcK0FtFCohKOlFbaOL/mPgfnPsL3C1ZyxJa4sbWrBl3jg==}
-    dev: false
-
-  /micromark@3.2.0:
-    resolution: {integrity: sha512-uD66tJj54JLYq0De10AhWycZWGQNUvDI55xPgk2sQM5kn1JYlhbCMTtEeT27+vAhW2FBQxLlOmS3pmA7/2z4aA==}
-    dependencies:
-      '@types/debug': 4.1.7
-      debug: 4.3.4(supports-color@8.1.1)
-      decode-named-character-reference: 1.0.2
-      micromark-core-commonmark: 1.1.0
-      micromark-factory-space: 1.1.0
-      micromark-util-character: 1.2.0
-      micromark-util-chunked: 1.1.0
-      micromark-util-combine-extensions: 1.1.0
-      micromark-util-decode-numeric-character-reference: 1.1.0
-      micromark-util-encode: 1.1.0
-      micromark-util-normalize-identifier: 1.1.0
-      micromark-util-resolve-all: 1.1.0
-      micromark-util-sanitize-uri: 1.2.0
-      micromark-util-subtokenize: 1.1.0
-      micromark-util-symbol: 1.1.0
-      micromark-util-types: 1.1.0
-      uvu: 0.5.6
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /micromatch@4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
@@ -11835,6 +11182,7 @@ packages:
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
+    dev: true
 
   /mrmime@1.0.1:
     resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
@@ -13112,10 +12460,6 @@ packages:
     dependencies:
       xtend: 4.0.2
 
-  /property-information@6.2.0:
-    resolution: {integrity: sha512-kma4U7AFCTwpqq5twzC1YVIDXSqg6qQK6JN0smOw8fgRy1OkMi0CYSzFmsy6dnqSenamAtj0CyXMUJ1Mf6oROg==}
-    dev: false
-
   /proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
@@ -13395,6 +12739,7 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: true
 
   /react-json-view@1.21.3(@types/react@18.0.17)(react-dom@17.0.2)(react@17.0.2):
     resolution: {integrity: sha512-13p8IREj9/x/Ye4WI/JpjhoIwuzEgUAtgJZNBJckfzJt1qyh24BdTm6UQNGnyTq9dapQdrqvquZTo3dz1X6Cjw==}
@@ -13436,33 +12781,6 @@ packages:
     dependencies:
       prop-types: 15.8.1
       react: 17.0.2
-    dev: false
-
-  /react-markdown@8.0.7(@types/react@18.0.17)(react@17.0.2):
-    resolution: {integrity: sha512-bvWbzG4MtOU62XqBx3Xx+zB2raaFFsq4mYiAzfjXJMEz2sixgeAfraA3tvzULF02ZdOMUOKTBFFaZJDDrq+BJQ==}
-    peerDependencies:
-      '@types/react': '>=16'
-      react: '>=16'
-    dependencies:
-      '@types/hast': 2.3.4
-      '@types/prop-types': 15.7.5
-      '@types/react': 18.0.17
-      '@types/unist': 2.0.6
-      comma-separated-tokens: 2.0.3
-      hast-util-whitespace: 2.0.1
-      prop-types: 15.8.1
-      property-information: 6.2.0
-      react: 17.0.2
-      react-is: 18.2.0
-      remark-parse: 10.0.2
-      remark-rehype: 10.1.0
-      space-separated-tokens: 2.0.2
-      style-to-object: 0.4.1
-      unified: 10.1.2
-      unist-util-visit: 4.1.2
-      vfile: 5.3.7
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /react-router-config@5.1.1(react-router@5.3.3)(react@17.0.2):
@@ -13683,16 +13001,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /remark-parse@10.0.2:
-    resolution: {integrity: sha512-3ydxgHa/ZQzG8LvC7jTXccARYDcRld3VfcgIIFs7bI6vbRSxJJmzgLEIIoYKyrfhaY+ujuWaf/PJiMZXoiCXgw==}
-    dependencies:
-      '@types/mdast': 3.0.10
-      mdast-util-from-markdown: 1.3.1
-      unified: 10.1.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /remark-parse@8.0.3:
     resolution: {integrity: sha512-E1K9+QLGgggHxCQtLt++uXltxEprmWzNfg+MxpfHsZlrddKzZ/hZyWHDbK3/Ap8HJQqYJRXP+jHczdL6q6i85Q==}
     dependencies:
@@ -13712,15 +13020,6 @@ packages:
       unist-util-remove-position: 2.0.1
       vfile-location: 3.2.0
       xtend: 4.0.2
-
-  /remark-rehype@10.1.0:
-    resolution: {integrity: sha512-EFmR5zppdBp0WQeDVZ/b66CWJipB2q2VLNFMabzDSGR66Z2fQii83G5gTBbgGEnEEA0QRussvrFHxk1HWGJskw==}
-    dependencies:
-      '@types/hast': 2.3.4
-      '@types/mdast': 3.0.10
-      mdast-util-to-hast: 12.3.0
-      unified: 10.1.2
-    dev: false
 
   /remark-squeeze-paragraphs@4.0.0:
     resolution: {integrity: sha512-8qRqmL9F4nuLPIgl92XUuxI3pFxize+F1H0e/W3llTk0UsjJaj01+RrirkMw7P21RKe4X6goQhYRSvNWX+70Rw==}
@@ -13940,6 +13239,7 @@ packages:
     engines: {node: '>=6'}
     dependencies:
       mri: 1.2.0
+    dev: true
 
   /safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
@@ -14512,10 +13812,6 @@ packages:
   /space-separated-tokens@1.1.5:
     resolution: {integrity: sha512-q/JSVd1Lptzhf5bkYm4ob4iWPjx0KiRe3sRFBNrVqbJkFaBm5vbbowy1mymoPNLRa52+oadOhJ+K49wsSeSjTA==}
 
-  /space-separated-tokens@2.0.2:
-    resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
-    dev: false
-
   /spawn-command@0.0.2-1:
     resolution: {integrity: sha512-n98l9E2RMSJ9ON1AKisHzz7V42VDiBQGY6PB1BwRglz99wpVsSuGzQ+jOi6lFXBGVTCrRpltvjm+/XA+tpeJrg==}
     dev: true
@@ -14781,12 +14077,6 @@ packages:
     resolution: {integrity: sha512-CzFnRRXhzWIdItT3OmF8SQfWyahHhjq3HwcMNCNLn+N7klOOqPjMeG/4JSu77D7ypZdGvSzvkrbyeTMizz2VrA==}
     dependencies:
       inline-style-parser: 0.1.1
-
-  /style-to-object@0.4.1:
-    resolution: {integrity: sha512-HFpbb5gr2ypci7Qw+IOhnP2zOU7e77b+rzM+wTzXzfi1PrtBCX0E7Pk4wL4iTLnhzZ+JgEGAhX81ebTg/aYjQw==}
-    dependencies:
-      inline-style-parser: 0.1.1
-    dev: false
 
   /stylehacks@5.1.0(postcss@8.4.17):
     resolution: {integrity: sha512-SzLmvHQTrIWfSgljkQCw2++C9+Ne91d/6Sp92I8c5uHTcy/PgeHamwITIbBW9wnFTY/3ZfSXR9HIL6Ikqmcu6Q==}
@@ -15102,10 +14392,6 @@ packages:
     hasBin: true
     dev: true
 
-  /trim-lines@3.0.1:
-    resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
-    dev: false
-
   /trim-trailing-lines@1.1.4:
     resolution: {integrity: sha512-rjUWSqnfTNrjbB9NQWfPMH/xRK1deHeGsHoVfpxJ++XeYXE0d6B1En37AHfw3jtfTU7dzMzZL2jjpe8Qb5gLIQ==}
 
@@ -15114,10 +14400,6 @@ packages:
 
   /trough@1.0.5:
     resolution: {integrity: sha512-rvuRbTarPXmMb79SmzEp8aqXNKcK+y0XaB298IXueQ8I2PsrATcPBCSPyK/dDNa2iWOhKlfNnOjdAOTBU/nkFA==}
-
-  /trough@2.1.0:
-    resolution: {integrity: sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==}
-    dev: false
 
   /trouter@2.0.1:
     resolution: {integrity: sha512-kr8SKKw94OI+xTGOkfsvwZQ8mWoikZDd2n8XZHjJVZUARZT+4/VV6cacRS6CLsH9bNm+HFIPU1Zx4CnNnb4qlQ==}
@@ -15442,18 +14724,6 @@ packages:
     resolution: {integrity: sha512-5Zfuy9q/DFr4tfO7ZPeVXb1aPoeQSdeFMLpYuFebehDAhbuevLs5yxSZmIFN1tP5F9Wl4IpJrYojg85/zgyZHQ==}
     engines: {node: '>=4'}
 
-  /unified@10.1.2:
-    resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}
-    dependencies:
-      '@types/unist': 2.0.6
-      bail: 2.0.2
-      extend: 3.0.2
-      is-buffer: 2.0.5
-      is-plain-obj: 4.1.0
-      trough: 2.1.0
-      vfile: 5.3.7
-    dev: false
-
   /unified@9.2.0:
     resolution: {integrity: sha512-vx2Z0vY+a3YoTj8+pttM3tiJHCwY5UFbYdiWrwBEbHmK8pvsPj2rtAX2BFfgXen8T39CJWblWRDT4L5WGXtDdg==}
     dependencies:
@@ -15509,27 +14779,11 @@ packages:
   /unist-util-generated@1.1.6:
     resolution: {integrity: sha512-cln2Mm1/CZzN5ttGK7vkoGw+RZ8VcUH6BtGbq98DDtRGquAAOXig1mrBQYelOwMXYS8rK+vZDyyojSjp7JX+Lg==}
 
-  /unist-util-generated@2.0.1:
-    resolution: {integrity: sha512-qF72kLmPxAw0oN2fwpWIqbXAVyEqUzDHMsbtPvOudIlUzXYFIeQIuxXQCRCFh22B7cixvU0MG7m3MW8FTq/S+A==}
-    dev: false
-
   /unist-util-is@4.1.0:
     resolution: {integrity: sha512-ZOQSsnce92GrxSqlnEEseX0gi7GH9zTJZ0p9dtu87WRb/37mMPO2Ilx1s/t9vBHrFhbgweUwb+t7cIn5dxPhZg==}
 
-  /unist-util-is@5.2.1:
-    resolution: {integrity: sha512-u9njyyfEh43npf1M+yGKDGVPbY/JWEemg5nH05ncKPfi+kBbKBJoTdsogMu33uhytuLlv9y0O7GH7fEdwLdLQw==}
-    dependencies:
-      '@types/unist': 2.0.6
-    dev: false
-
   /unist-util-position@3.1.0:
     resolution: {integrity: sha512-w+PkwCbYSFw8vpgWD0v7zRCl1FpY3fjDSQ3/N/wNd9Ffa4gPi8+4keqt99N3XW6F99t/mUzp2xAhNmfKWp95QA==}
-
-  /unist-util-position@4.0.4:
-    resolution: {integrity: sha512-kUBE91efOWfIVBo8xzh/uZQ7p9ffYRtUbMRZBNFYwf0RK8koUMx6dGUfwylLOKmaT2cs4wSW96QoYUSXAyEtpg==}
-    dependencies:
-      '@types/unist': 2.0.6
-    dev: false
 
   /unist-util-remove-position@2.0.1:
     resolution: {integrity: sha512-fDZsLYIe2uT+oGFnuZmy73K6ZxOPG/Qcm+w7jbEjaFcJgbQ6cqjs/eSPzXhsmGpAsWPkqZM9pYjww5QTn3LHMA==}
@@ -15546,24 +14800,11 @@ packages:
     dependencies:
       '@types/unist': 2.0.6
 
-  /unist-util-stringify-position@3.0.3:
-    resolution: {integrity: sha512-k5GzIBZ/QatR8N5X2y+drfpWG8IDBzdnVj6OInRNWm1oXrzydiaAT2OQiA8DPRRZyAKb9b6I2a6PxYklZD0gKg==}
-    dependencies:
-      '@types/unist': 2.0.6
-    dev: false
-
   /unist-util-visit-parents@3.1.1:
     resolution: {integrity: sha512-1KROIZWo6bcMrZEwiH2UrXDyalAa0uqzWCxCJj6lPOvTve2WkfgCytoDTPaMnodXh1WrXOq0haVYHj99ynJlsg==}
     dependencies:
       '@types/unist': 2.0.6
       unist-util-is: 4.1.0
-
-  /unist-util-visit-parents@5.1.3:
-    resolution: {integrity: sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg==}
-    dependencies:
-      '@types/unist': 2.0.6
-      unist-util-is: 5.2.1
-    dev: false
 
   /unist-util-visit@2.0.3:
     resolution: {integrity: sha512-iJ4/RczbJMkD0712mGktuGpm/U4By4FfDonL7N/9tATGIF4imikjOuagyMY53tnZq3NP6BcmlrHhEKAfGWjh7Q==}
@@ -15571,14 +14812,6 @@ packages:
       '@types/unist': 2.0.6
       unist-util-is: 4.1.0
       unist-util-visit-parents: 3.1.1
-
-  /unist-util-visit@4.1.2:
-    resolution: {integrity: sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg==}
-    dependencies:
-      '@types/unist': 2.0.6
-      unist-util-is: 5.2.1
-      unist-util-visit-parents: 5.1.3
-    dev: false
 
   /universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
@@ -15683,19 +14916,6 @@ packages:
       '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
       '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /upscaler@1.0.0-beta.8(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-iCGlZcC5dssGwKaYq7wjg1qXd0KoJZoe+3ZerfBy2uZY3fXkLLmoiSI90B7e+bL/eJKwWxptTsB9wm8xh/jq4Q==}
-    engines: {node: '>=16.0'}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.0.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.8
-      '@upscalerjs/default-model': 1.0.0-beta.6(@tensorflow/tfjs@4.8.0)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -15810,17 +15030,6 @@ packages:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
 
-  /uvu@0.5.6:
-    resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
-    engines: {node: '>=8'}
-    hasBin: true
-    dependencies:
-      dequal: 2.0.3
-      diff: 5.0.0
-      kleur: 4.1.5
-      sade: 1.8.1
-    dev: false
-
   /v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -15857,13 +15066,6 @@ packages:
       '@types/unist': 2.0.6
       unist-util-stringify-position: 2.0.3
 
-  /vfile-message@3.1.4:
-    resolution: {integrity: sha512-fa0Z6P8HUrQN4BZaX05SIVXic+7kE3b05PWAtPuYP9QLHsLKYR7/AlLW3NtOrpXRLeawpDLMsVkmk5DG0NXgWw==}
-    dependencies:
-      '@types/unist': 2.0.6
-      unist-util-stringify-position: 3.0.3
-    dev: false
-
   /vfile@4.2.1:
     resolution: {integrity: sha512-O6AE4OskCG5S1emQ/4gl8zK586RqA3srz3nfK/Viy0UPToBc5Trp9BVFb1u0CjsKrAWwnpr4ifM/KBXPWwJbCA==}
     dependencies:
@@ -15871,15 +15073,6 @@ packages:
       is-buffer: 2.0.5
       unist-util-stringify-position: 2.0.3
       vfile-message: 2.0.4
-
-  /vfile@5.3.7:
-    resolution: {integrity: sha512-r7qlzkgErKjobAmyNIkkSpizsFPYiUPuJb5pNW1RB4JcYVZhs4lIbVqk8XPk033CV/1z8ss5pkax8SuhGpcG8g==}
-    dependencies:
-      '@types/unist': 2.0.6
-      is-buffer: 2.0.5
-      unist-util-stringify-position: 3.0.3
-      vfile-message: 3.1.4
-    dev: false
 
   /vite@3.1.5:
     resolution: {integrity: sha512-V4Avke0b7h2zTWVJf8vq6TE3aH061NQ3b1ixHQyqdoE/5HIVsxVLCyTLjJtHVcsJ5fIKSHvOtflWpgavHS8RPw==}
