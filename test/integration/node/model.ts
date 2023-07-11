@@ -204,7 +204,7 @@ describe('Node Model Loading Integration Tests', () => {
         expectedTensor.print();
       }
       const progressResults: ProgressResult[] = [];
-      const progress: MultiArgTensorProgress = (amount, slice, row, col) => {
+      const progress: MultiArgTensorProgress = (amount, slice, { row, col }) => {
         progressResults.push({
           amount,
           row,

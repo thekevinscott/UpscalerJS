@@ -338,7 +338,7 @@ describe('Upscale Integration Tests', () => {
           },
         });
         const progressRates: Array<[number, number]> = [];
-        const progress: MultiArgStringProgress = (rate, slice, row, col) => {
+        const progress: MultiArgStringProgress = (rate, slice, { row, col }) => {
           progressRates.push([row, col]);
         };
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
