@@ -16,19 +16,7 @@ const getStateForActions = (state: State, open: boolean) => {
     return false;
   }
 
-  if (state === State.COMPLETE || state === State.PROCESSING) {
-    return true;
-  }
-
-  return false;
-}
-
-const getStateForSidebar = (state: State, open: boolean) => {
-  if (state === State.BENCHMARKING) {
-    return false;
-  }
-
-  return open;
+  return state === State.COMPLETE || state === State.PROCESSING;
 }
 
 export default function Controls({ 
@@ -61,8 +49,8 @@ export default function Controls({
           {progress}
         </div>
       </div>
-      {state !== State.BENCHMARKING && <Toggle handleToggle={handleToggle} open={open} />}
-      <ControlPane open={getStateForSidebar(state, open)} position="right">
+      <Toggle handleToggle={handleToggle} open={open} />
+      <ControlPane open={open} position="right">
         <Sidebar selectImage={selectImage} state={state} />
       </ControlPane>
       <ControlPane open={getStateForActions(state, open)} position="bottom" height={120}>

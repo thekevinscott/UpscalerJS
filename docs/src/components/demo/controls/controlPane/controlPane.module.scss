@@ -76,13 +76,15 @@
 html[data-theme='dark'] {
   #controlPane {
     #controlPaneInner {
-      background: rgba(4, 11, 17, 0.8);
+      // background: rgba(4, 11, 17, 0.8);
+      background-color: var(--off-background-color);
     }
   }
     #controlPane {
       &.mobile {
         #controlPaneInner {
-          background: rgba(4, 11, 17, 1.0);
+          background-color: var(--off-background-color);
+          // background: rgba(4, 11, 17, 1.0);
         }
       }
     }

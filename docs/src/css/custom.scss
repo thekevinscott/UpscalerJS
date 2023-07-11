@@ -135,3 +135,22 @@ blockquote p {
   font-size: 120%;
   line-height: 1.4;
 }
+
+  sl-button::part(base) {
+    background-color: #7fa5f0;
+    border: 1px solid #7fa5f0;
+    border-radius: 6.4px;
+    color: black;
+    cursor: pointer;
+    font-size: 18.9px;
+    font-weight: 700;
+    // padding: 8.1px 32.4px;
+    text-align: center;
+    justify-content: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.08, 0.52, 0.52, 1);
+  }
