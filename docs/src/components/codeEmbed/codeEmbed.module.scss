@@ -100,4 +100,8 @@ iframe.iframe {
   height: 400px;
   z-index: 2;
   background: black;
+
+  &.large {
+    height: 800px;
+  }
 }

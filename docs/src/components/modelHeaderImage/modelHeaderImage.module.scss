@@ -1,13 +1,22 @@
+$gap: 20px;
+
 .modelHeaderImage {
-  width: 100%;
+  width: calc(100% + var(--ifm-spacing-horizontal));
   display: flex;
   height: 256px;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-}
+  gap: $gap;
+  overflow: hidden;
 
-.modelHeaderImage img {
-  height: 256px;
-  object-fit: cover;
+  & img {
+      height: 256px;
+      object-fit: cover;
+
+      &.oversized {
+        object-fit: none;
+        object-position: center;
+        max-width: calc(50% - ($gap / 2));
+      }
+    }
 }

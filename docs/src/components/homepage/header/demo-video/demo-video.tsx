@@ -2,86 +2,9 @@ import React from 'react';
 import { DemoVideoNav } from './demo-video-nav/demo-video-nav';
 import styles from './demo-video.module.scss';
 import { useAnimation } from './useAnimation';
-import { ExampleImages, IExampleImage } from './example-images/example-images';
+import { ExampleImages } from './example-images/example-images';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-
-const IMAGES: IExampleImage[] = [{
-  sizes: {
-    original: 128,
-    enhanced: 256,
-  },
-  original: {
-    src: '/assets/homepage-demo/originals/flower.png',
-    labels: {
-      short: 'Bicubic interpolation',
-      long: 'Upscaled using native bicubic interpolation',
-    },
-  },
-  enhanced: {
-    src: '/assets/homepage-demo/enhanced/flower.png',
-    labels: {
-      short: '@upscalerjs/esrgan-thick/4x',
-      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
-    },
-  },
-}, {
-  sizes: {
-    original: 128,
-    enhanced: 256,
-  },
-  original: {
-    src: '/assets/homepage-demo/originals/face2.png',
-    labels: {
-      short: 'Bicubic interpolation',
-      long: 'Upscaled using native bicubic interpolation',
-    },
-  },
-  enhanced: {
-    src: '/assets/homepage-demo/enhanced/face2.png',
-    labels: {
-      short: '@upscalerjs/esrgan-thick/4x',
-      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
-    },
-  },
-}, {
-  sizes: {
-    original: 128,
-    enhanced: 256,
-  },
-  original: {
-    src: '/assets/homepage-demo/originals/face3.png',
-    labels: {
-      short: 'Bicubic interpolation',
-      long: 'Upscaled using native bicubic interpolation',
-    },
-  },
-  enhanced: {
-    src: '/assets/homepage-demo/enhanced/face3.png',
-    labels: {
-      short: '@upscalerjs/esrgan-thick/4x',
-      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
-    },
-  },
-}, {
-  sizes: {
-    original: 128,
-    enhanced: 256,
-  },
-  original: {
-    src: '/assets/homepage-demo/originals/face1.png',
-    labels: {
-      short: 'Bicubic interpolation',
-      long: 'Upscaled using native bicubic interpolation',
-    },
-  },
-  enhanced: {
-    src: '/assets/homepage-demo/enhanced/face1.png',
-    labels: {
-      short: '@upscalerjs/esrgan-thick/4x',
-      long: 'Upscaled using @upscalerjs/esrgan-thick 4x model',
-    },
-  },
-}];
+import { IMAGES } from './images';
 
 const steps = [
   1,
@@ -145,7 +68,7 @@ export const DemoVideo = () => {
                     animating={animating}
                     stepIdx={exampleStepIdx}
                     exampleImage={exampleImage}
-                    key={JSON.stringify(exampleImage)}
+                    key={exampleImage.original.src}
                   />
                 )
               })}
