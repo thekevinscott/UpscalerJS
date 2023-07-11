@@ -1,4 +1,4 @@
-import Upscaler, { AbortError } from 'upscaler';
+import Upscaler, { AbortError, SliceData } from 'upscaler';
 import model from '@upscalerjs/esrgan-medium/4x';
 import * as tf from '@tensorflow/tfjs';
 
@@ -19,10 +19,16 @@ let id: string;
 
 let scale: number;
 const PATCH_SIZE = 32;
+const PADDING = 2;
 let resolver = () => {};
-let ready = new Promise<void>(r => {
+const ready = new Promise<void>(r => {
   resolver = r;
 });
+
+const post = (payload: {
+  type: SenderWorkerState;
+  data: Record<string, string | number | SliceData | Float32Array | Uint8Array | Uint16Array | Int32Array | number[]>;
+}) => window.postMessage(payload, '*');
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
@@ -32,16 +38,17 @@ onmessage = async ({ data: { type, data } }) => {
       });
       const { modelDefinition } = await upscaler.getModel();
       scale = modelDefinition.scale;
-      postMessage({
+      post({
         type: SenderWorkerState.SEND_CONSTS,
         data: {
           scale,
           patchSize: PATCH_SIZE,
+          padding: PADDING,
         },
       });
-      await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
+      await upscaler.warmup([{ patchSize: PATCH_SIZE, padding: PADDING }]); // skipcq: js-0032
       resolver();
-      console.log('UpscalerJS warmup complete.');
+      // console.log('UpscalerJS warmup complete.');
     } else {
       console.warn('Was asked to instantiate UpscalerJS, but it already exists.')
     }
@@ -72,14 +79,13 @@ onmessage = async ({ data: { type, data } }) => {
         output: 'tensor',
         patchSize,
         padding,
-        progress: (rate, slice, row, col) => {
-          postMessage({
+        progress: (rate, slice, sliceData) => {
+          post({
             type: SenderWorkerState.PROGRESS,
             data: {
               id,
               rate,
-              row,
-              col,
+              sliceData,
               slice: slice.dataSync(),
               shape: slice.shape,
             },

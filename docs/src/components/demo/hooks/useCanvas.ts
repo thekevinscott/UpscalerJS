@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { spliceImage } from '../utils/spliceImage';
+import type { SliceData } from 'upscaler';
 
 const OVERLAY_TEXT = "UPSCALING";
 const TEXT_PADDING = 30;
@@ -61,7 +62,7 @@ export const useCanvas = () => {
     manipulateOriginalImage(canvas);
   }, []);
 
-  const drawImage = useCallback((canvas: HTMLCanvasElement, slice: Float32Array, shape: number[], patchSize: number, x: number, y: number) => {
+  const drawImage = useCallback((canvas: HTMLCanvasElement, slice: Float32Array, shape: number[], { patchCoordinates }: SliceData, scale: number) => {
     const arr = new Uint8ClampedArray(4 * shape[1] * shape[0]);
 
     // Fill the array with the same RGBA values
@@ -75,10 +76,13 @@ export const useCanvas = () => {
       sliceIndex += 3;
       arrIndex += 4;
     }
+
+    const { pre, post } = patchCoordinates;
+    const y = (pre.origin[0] * scale) + (post.origin[0] * scale);
+    const x = (pre.origin[1] * scale) + (post.origin[1] * scale);
     const imageData = new ImageData(arr, shape[1], shape[0]);
-    spliceImage(canvas, imageData, patchSize, x, y);
+    spliceImage(canvas, imageData, x, y);
   }, []);
 
   return { createCanvas: createCanvasAndSetImage, drawImage };
 };
-

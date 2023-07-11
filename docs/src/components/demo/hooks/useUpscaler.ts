@@ -6,6 +6,7 @@ import { ReceiverWorkerState, SenderWorkerState } from './worker';
 export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
   const [scale, setScale] = useState<number>();
   const [patchSize, setPatchSize] = useState<number>();
+  const [padding, setPadding] = useState<number>();
   const [upscaling, setUpscaling] = useState(false);
   const [progress, setProgress] = useState<number>();
 
@@ -41,14 +42,13 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
         if (upscaling) {
           const {
             rate,
-            row,
-            col,
+            sliceData,
             slice,
             shape,
           } = data;
           if (id === data.id) {
             setProgress(rate);
-            drawImage(upscaledRef.current, slice, shape, patchSize * scale, col, row);
+            drawImage(upscaledRef.current, slice, shape, sliceData, scale);
             if (rate === 1) {
               setUpscaling(false);
             }
@@ -59,11 +59,12 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
       } else if (type === SenderWorkerState.SEND_CONSTS) {
         setScale(data.scale);
         setPatchSize(data.patchSize);
+        setPadding(data.padding);
       }
     }
   }, [upscaling, id, setProgress, ]);
 
-  const upscale = useCallback(async (_img: HTMLCanvasElement, _scale?: number, _patchSize?: number) => {
+  const upscale = useCallback(async (_img: HTMLCanvasElement, _scale: number, _patchSize: number, _padding: number) => {
     if (!_scale) {
       throw new Error('Scale is not defined');
     }
@@ -80,7 +81,7 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
         pixels: src.dataSync(),
         shape: src.shape,
         patchSize: _patchSize,
-        padding: 2,
+        padding: _padding,
       }
     });
   }, [upscaledRef, createCanvas, scale, setUpscaling, setProgress]);
@@ -96,14 +97,14 @@ export const useUpscaler = (img?: HTMLCanvasElement, id?: string) => {
   useEffect(() => {
     const canvas = upscaledRef.current;
     if (canvas) {
-      if (img && scale && patchSize) {
-        upscale(img, scale, patchSize);
+      if (img && scale && patchSize && padding) {
+        upscale(img, scale, patchSize, padding);
       } else {
         const context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
       }
     }
-  }, [img, upscale, scale, patchSize, upscaledRef]);
+  }, [img, upscale, scale, patchSize, padding, upscaledRef]);
 
   return {
     cancelUpscale,

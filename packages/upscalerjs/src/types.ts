@@ -21,8 +21,16 @@ export type ParsedModelDefinition = ModelDefinition;
 export type BASE64 = 'base64';
 export type TENSOR = 'tensor';
 export type ResultFormat = BASE64 | TENSOR | undefined;
-export type MultiArgStringProgress = (amount: number, slice: string, row: number, col: number) => void;
-export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, row: number, col: number) => void;
+export interface SliceData {
+  row: number;
+  col: number;
+  patchCoordinates: {
+    pre: PatchCoordinates;
+    post: PatchCoordinates;
+  }
+}
+export type MultiArgStringProgress = (amount: number, slice: string, sliceData: SliceData) => void;
+export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, sliceData: SliceData) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTensorProgress;
 
