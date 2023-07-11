@@ -56,6 +56,17 @@ $size: 256px;
   width: 200%;
   margin-left: -50%;
 
+  p, code {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    border: none;
+  } 
+
+  code, a {
+    color: red;
+  }
+
   &.shortLabel {
     display: none;
   }

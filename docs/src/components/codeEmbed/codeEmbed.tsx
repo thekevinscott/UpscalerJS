@@ -163,11 +163,13 @@ export const CodeEmbed = ({
   params,
   persist,
   type = 'stackblitz',
+  large = false,
 }: {
   url: string,
   params?: URLSearchParams | string,
   persist?: string;
   type?: 'stackblitz' | 'codesandbox';
+  large?: boolean;
 }) => {
   const isBrowser = useIsBrowser();
   const ref = useRef<HTMLIFrameElement>(null);
@@ -193,29 +195,24 @@ export const CodeEmbed = ({
 
   const text = useMemo(() => containerHeight === minimumSize ? 'Drag to expand' : 'Drag to resize', [containerHeight, minimumSize]);
 
-  if (persist) {
-    return (
-      <div className={styles.container} style={{ height: containerHeight }}>
-        {dragging && <div className={styles.overlay}></div>}
-        <iframe
+  const iframe = (<iframe
           title="Code Embed"
-          className={styles.iframe}
+          className={clsx(styles.iframe, large ? styles.large : null)}
           ref={ref}
           src={src}
-          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+          sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>);
+
+  if (persist) {
+    return (
+      <div className={clsx(styles.container)} style={{ height: containerHeight }}>
+        {dragging && <div className={styles.overlay}></div>}
+        {iframe}
         {isBrowser && <Dragger type={type} onDragging={setDragging} onDrag={setDelta} text={text} />}
       </div>
     );
   }
 
-  return (
-    <iframe 
-      title="Code Embed"
-      className={styles.iframe}
-      ref={ref}
-      src={src}
-      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
-  )
+  return iframe;
 }
 
 export default CodeEmbed;
