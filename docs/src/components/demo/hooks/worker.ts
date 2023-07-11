@@ -28,7 +28,7 @@ const ready = new Promise<void>(r => {
 const post = (payload: {
   type: SenderWorkerState;
   data: Record<string, string | number | SliceData | Float32Array | Uint8Array | Uint16Array | Int32Array | number[]>;
-}) => postMessage(payload, '*');
+}) => postMessage(payload); // skipcq: js-s1014
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
