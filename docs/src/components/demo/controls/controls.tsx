@@ -16,11 +16,7 @@ const getStateForActions = (state: State, open: boolean) => {
     return false;
   }
 
-  if (state === State.COMPLETE || state === State.PROCESSING) {
-    return true;
-  }
-
-  return false;
+  return state === State.COMPLETE || state === State.PROCESSING;
 }
 
 export default function Controls({ 
