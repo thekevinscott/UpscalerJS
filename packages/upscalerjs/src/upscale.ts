@@ -80,7 +80,7 @@ export async function* processPixels(
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
-  const scale = modelDefinition.scale || 1;
+  const scale = modelDefinition.scale ?? 1;
 
   if (patchSize) {
     const [height, width,] = pixels.shape.slice(1);

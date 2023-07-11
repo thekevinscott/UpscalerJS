@@ -21,9 +21,14 @@ let scale: number;
 const PATCH_SIZE = 32;
 const PADDING = 2;
 let resolver = () => {};
-let ready = new Promise<void>(r => {
+const ready = new Promise<void>(r => {
   resolver = r;
 });
+
+const post = (payload: {
+  type: SenderWorkerState;
+  data: any;
+}) => window.postMessage(payload, '*');
 
 onmessage = async ({ data: { type, data } }) => {
   if (type === ReceiverWorkerState.INSTANTIATE) {
@@ -33,7 +38,7 @@ onmessage = async ({ data: { type, data } }) => {
       });
       const { modelDefinition } = await upscaler.getModel();
       scale = modelDefinition.scale;
-      postMessage({
+      post({
         type: SenderWorkerState.SEND_CONSTS,
         data: {
           scale,
@@ -75,7 +80,7 @@ onmessage = async ({ data: { type, data } }) => {
         patchSize,
         padding,
         progress: (rate, slice, sliceData) => {
-          postMessage({
+          post({
             type: SenderWorkerState.PROGRESS,
             data: {
               id,
