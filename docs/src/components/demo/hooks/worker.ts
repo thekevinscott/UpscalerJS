@@ -19,6 +19,7 @@ let id: string;
 
 let scale: number;
 const PATCH_SIZE = 32;
+const PADDING = 2;
 let resolver = () => {};
 let ready = new Promise<void>(r => {
   resolver = r;
@@ -37,11 +38,12 @@ onmessage = async ({ data: { type, data } }) => {
         data: {
           scale,
           patchSize: PATCH_SIZE,
+          padding: PADDING,
         },
       });
-      await upscaler.warmup([{ patchSize: PATCH_SIZE }]); // skipcq: js-0032
+      await upscaler.warmup([{ patchSize: PATCH_SIZE, padding: PADDING }]); // skipcq: js-0032
       resolver();
-      console.log('UpscalerJS warmup complete.');
+      // console.log('UpscalerJS warmup complete.');
     } else {
       console.warn('Was asked to instantiate UpscalerJS, but it already exists.')
     }
@@ -72,14 +74,13 @@ onmessage = async ({ data: { type, data } }) => {
         output: 'tensor',
         patchSize,
         padding,
-        progress: (rate, slice, row, col) => {
+        progress: (rate, slice, sliceData) => {
           postMessage({
             type: SenderWorkerState.PROGRESS,
             data: {
               id,
               rate,
-              row,
-              col,
+              sliceData,
               slice: slice.dataSync(),
               shape: slice.shape,
             },

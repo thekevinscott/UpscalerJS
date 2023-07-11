@@ -5,6 +5,7 @@ import type {
   BASE64,
   TENSOR,
   YieldedIntermediaryValue,
+  SliceData,
  } from './types';
 import {
   checkValidEnvironment,
@@ -121,14 +122,22 @@ export async function* processPixels(
           } else {
             /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
             const squeezedTensor = processedPrediction.squeeze() as tf.Tensor3D;
+            const sliceData: SliceData = {
+              row: rowIdx,
+              col: colIdx,
+              patchCoordinates: {
+                pre,
+                post,
+              },
+            };
             if (isMultiArgTensorProgress(progress, output, progressOutput)) {
               // because we are returning a tensor, we cannot safely dispose of it
-              progress(percent, squeezedTensor, rowIdx, colIdx);
+              progress(percent, squeezedTensor, sliceData);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
               const src = tensorAsBase64(squeezedTensor);
               squeezedTensor.dispose();
-              progress(percent, src, rowIdx, colIdx);
+              progress(percent, src, sliceData);
             }
           }
         }
