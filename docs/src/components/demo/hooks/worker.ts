@@ -1,4 +1,4 @@
-import Upscaler, { AbortError } from 'upscaler';
+import Upscaler, { AbortError, SliceData } from 'upscaler';
 import model from '@upscalerjs/esrgan-medium/4x';
 import * as tf from '@tensorflow/tfjs';
 
@@ -27,7 +27,7 @@ const ready = new Promise<void>(r => {
 
 const post = (payload: {
   type: SenderWorkerState;
-  data: any;
+  data: Record<string, string | number | SliceData | Float32Array | Uint8Array | Uint16Array | Int32Array | number[]>;
 }) => window.postMessage(payload, '*');
 
 onmessage = async ({ data: { type, data } }) => {
