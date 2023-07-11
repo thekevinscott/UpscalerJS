@@ -65,7 +65,6 @@ const checkFileForTense = async (file: string) => {
   if (file.includes('documentation/api') || file.includes('troubleshooting')) {
     const matches = checkTense(contents, 'second');
     if (matches !== null) {
-      console.log(contents);
       return [
         `Found inconsistent tenses in file ${file}:`,
         '',
