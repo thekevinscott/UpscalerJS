@@ -19,7 +19,8 @@
 
 html[data-theme='dark'] {
   #page {
-    background-color: #010e1a;
+    // background-color: #010e1a;
+    background-color: var(--cta-background-color);
   }
 }
 

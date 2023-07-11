@@ -286,10 +286,17 @@ importers:
         version: 1.0.2
       '@types/node':
         specifier: ^17.0.39
+<<<<<<< HEAD
         version: 17.0.39
       '@types/uglify-js':
         specifier: ^3.13.1
         version: 3.13.1
+=======
+        version: 17.0.45
+      '@types/uglify-js':
+        specifier: ^3.13.1
+        version: 3.16.0
+>>>>>>> main
       fs-extra:
         specifier: ^10.0.1
         version: 10.1.0
@@ -5364,7 +5371,11 @@ packages:
       '@types/webgl-ext': 0.0.30
       '@webgpu/types': 0.1.16
       long: 4.0.0
+<<<<<<< HEAD
       node-fetch: 2.6.12
+=======
+      node-fetch: 2.6.11
+>>>>>>> main
       seedrandom: 3.0.5
     transitivePeerDependencies:
       - encoding
