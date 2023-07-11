@@ -92,17 +92,21 @@ const Label = ({
   label,
   state,
   isShort,
+  cls,
 }: {
   kind: ValidExampleKind;
   label: string;
   state: ValidState;
   isShort?: boolean;
+  cls: string;
 }) => {
   const parsedLabel = kind === 'original' ? getOriginalLabel(label, state, isShort) : label;
 
   return (
     <div className={clsx(cls, styles.imageContainerLabel)}>
-      {parsedLabel}
+      <ReactMarkdown>
+        {parsedLabel}
+      </ReactMarkdown>
     </div>
   );
 };
@@ -146,6 +150,7 @@ const ExampleImage = ({
             label={label}
             state={state}
             isShort={isShort}
+            cls={cls}
           />
       ))}
     </div>
