@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import React from 'react';
 import styles from './example-images.module.scss';
+import ReactMarkdown from 'react-markdown';
 
 export type ValidExampleImageSize = 128 | 256;
 type ValidExampleKind = 'original' | 'enhanced';
@@ -86,6 +87,24 @@ const getStateAsStyles = (
   });
 };
 
+const Label = ({
+  kind,
+  label,
+  state,
+  isShort,
+}: {
+  kind: ValidExampleKind;
+  label: string;
+  state: ValidState;
+  isShort?: boolean;
+}) => {
+  if (kind === 'original') {
+    return getOriginalLabel(label, state, isShort);
+  }
+
+  return (<ReactMarkdown>{label}</ReactMarkdown>);
+};
+
 const ExampleImage = ({
   src,
   labels,
@@ -120,10 +139,15 @@ const ExampleImage = ({
          isShort: true,
         }].map(({ label, cls, isShort }) => (
         <label 
-          key={label}
+          key={JSON.stringify({ label, cls, isShort })}
           className={clsx(cls, styles.imageContainerLabel)}
         >
-          {kind === 'original' ? getOriginalLabel(label, state, isShort) : label}
+          <Label
+            kind={kind}
+            label={label}
+            state={state}
+            isShort={isShort}
+          />
         </label>
       ))}
     </div>

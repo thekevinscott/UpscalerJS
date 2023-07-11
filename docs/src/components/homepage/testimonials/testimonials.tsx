@@ -22,7 +22,7 @@ export function Testimonials() {
       </div>
       <div className={styles.tweets}>
         {TWEETS.map((tweetId) => (
-          <div className={styles.tweet}>
+          <div className={styles.tweet} key={tweetId}>
             <TwitterTweetEmbed
               tweetId={tweetId}
               options={{
