@@ -753,7 +753,6 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   // }
 
   const { description, codeSnippet, blockTags } = getTextSummary(name, comment);
-  console.log(description, codeSnippet)
   let source;
   try {
     source = getSource(sources);

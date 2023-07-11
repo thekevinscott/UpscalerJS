@@ -40,7 +40,7 @@ interface SharedArgs {
    */
   signal?: AbortSignal;
   /**
-   * If provided, upscaler will await `tf.nextFrame()` on each cycle. This can be helpful if you need to release for the UI thread or wish to be more responsive to abort signals.
+   * If provided, upscaler will await `tf.nextFrame()` on each cycle. This allows enhancement operations to more often release the UI thread, and can make enhancement operations more responsive to abort signals or.
    */
   awaitNextFrame?: boolean;
 }
@@ -59,7 +59,7 @@ export interface UpscaleArgs extends SharedArgs {
    */
   padding?: number;
   /**
-   * An optional progress callback if `upscale` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](/documentation/guides/browser/usage/progress).
+   * An optional progress callback if `execute` is called with a `patchSize` argument. [For more, see the guide on progress callbacks](/documentation/guides/browser/usage/progress).
    */
   progress?: Progress;
   /**

@@ -53,9 +53,9 @@ const splitFileContents = (contents: string): [string, string] => {
 const checkTense = (contents: string, expectedTense: 'third' | 'second') => {
   if (expectedTense === 'third') {
     // const matches = contents.match(/(Y|y)ou|(Y|y)our|(M|m)ine|(M|m)y/g);
-    return contents.match(/\b(I|me|my|mine|you|your|yours|yourself|yourselves)\b/g);
+    return contents.match(/\b(I |I'm|me|my|mine|you|your|yours|yourself|yourselves)\b/g);
   } else if (expectedTense === 'second') {
-    return contents.match(/\b(I|me|my|mine|we|us|our|ours|ourselves)\b/g);
+    return contents.match(/\b(I |I'm|me|my|mine|we|us|our|ours|ourselves)\b/g);
   }
   throw new Error(`Unexpected tense: ${expectedTense}`);
 }
@@ -65,6 +65,7 @@ const checkFileForTense = async (file: string) => {
   if (file.includes('documentation/api') || file.includes('troubleshooting')) {
     const matches = checkTense(contents, 'second');
     if (matches !== null) {
+      console.log(contents);
       return [
         `Found inconsistent tenses in file ${file}:`,
         '',
