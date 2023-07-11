@@ -3,7 +3,7 @@ import { State } from "../types";
 
 interface Opts {
   hasBeenRescaled: boolean;
-  img: HTMLImageElement;
+  img: HTMLCanvasElement;
   progress?: number;
 }
 

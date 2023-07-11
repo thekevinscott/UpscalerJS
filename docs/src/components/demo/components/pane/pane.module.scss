@@ -27,7 +27,8 @@ $smallPadding: 10px;
 
 html[data-theme='dark'] {
   #pane {
-    background-color: #0a2235;
+    // background-color: #0a2235;
+    background-color: var(--off-background-color);
     border: 2px dashed rgba(4, 60, 94, .5);
   }
 }
