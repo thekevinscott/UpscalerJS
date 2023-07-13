@@ -107,17 +107,17 @@ const getArgs = async (): Promise<Args> => {
 
   return {
     src,
-    include,
+    include: include as string[] | undefined,
   }
 }
 
 if (require.main === module) {
   (async () => {
     const argv = await getArgs();
-    const checkedFiles = await validateBuild(argv.src, argv.include);
+    const checkedFiles = Array.from(await validateBuild(argv.src, argv.include));
     console.log([
       'The following files are present: ',
-      ...[...checkedFiles].map(file => {
+      ...checkedFiles.map(file => {
         return ` - ${file}`;
       }),
     ].join('\n'))
