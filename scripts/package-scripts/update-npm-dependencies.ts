@@ -1,24 +1,44 @@
 import { exec as _exec, ExecOptions } from 'child_process';
+import yargs from 'yargs';
 import path from 'path';
+import { ifDefined as _ifDefined } from './prompt/ifDefined';
 import glob from 'glob';
 import { ROOT_DIR } from './utils/constants';
-import { 
-  DIRECTORIES, 
-  updateMultiplePackages, 
-  updateSinglePackage,
- } from './utils/packages';
+import asyncPool from "tiny-async-pool";
 
 /****
  * Types
  */
 interface PNPMLSItem {
-  name: string; version: string; path: string; private: boolean;
+  name: string;
+  version: string;
+  path: string;
+  private: boolean;
 }
+
+/****
+ * Constants
+ */
+const NUMBER_OF_CONCURRENT_THREADS = 5;
 
 /****
  * Utility functions
  */
-const getOutput = async (cmd: string, opts: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
+const exec = async (cmd: string, { verbose, ...opts }: { verbose?: boolean; } & ExecOptions = {}) => new Promise<string>((resolve, reject) => {
+  let output = '';
+  const spawnedProcess = _exec(cmd, opts, (error) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(output);
+    }
+  });
+
+  if (verbose) {
+    spawnedProcess.stdout?.pipe(process.stdout);
+  }
+});
+const getOutput = async (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
   let output = '';
   const spawnedProcess = _exec(cmd, opts, (error) => {
     if (error) {
@@ -61,19 +81,20 @@ const getAllNonPNPMPackages = async () => {
       '**/scratch/**',
     ],
   });
-  const filteredFiles = files.filter(file => !packages.has(file) && file !== 'package.json');
-  await Promise.all(filteredFiles.map(async file => {
-    await getOutput('npm update', {
-      cwd: path.resolve(ROOT_DIR, path.dirname(file)),
-    });
-  }))
+  return files.filter(file => !packages.has(file) && file !== 'package.json');
 }
 
 /****
  * Main function
  */
-const updateNPMDependencies = async () => {
-  await getAllNonPNPMPackages();
+const updateNPMDependencies = async ({ verbose }: Args) => {
+  const filteredFiles = await getAllNonPNPMPackages();
+  for await (const _ of asyncPool(NUMBER_OF_CONCURRENT_THREADS, filteredFiles, async (file: string) => {
+    const output = await exec('npm update --save', {
+      cwd: path.resolve(ROOT_DIR, path.dirname(file)),
+      verbose,
+    });
+  })) { }
 };
 
 export default updateNPMDependencies;
@@ -83,28 +104,30 @@ export default updateNPMDependencies;
  */
 
 interface Args {
+  verbose?: boolean;
 }
 
 const getArgs = async (): Promise<Args> => {
-  // const argv = await yargs.command('update-dependency <dependency> <version>', 'update dependency', yargs => {
-  //   yargs.positional('dependency', {
-  //     describe: 'The dependency to update',
-  //   }).positional('version', {
-  //     describe: 'The version to update to',
-  //   }).options({
-  //     packages: { type: 'string' },
-  //   });
-  // })
-  // .help()
-  // .argv;
+  const argv = await yargs.command('update-dependency <dependency> <version>', 'update dependency', yargs => {
+    yargs.option('v', {
+      alias: 'verbose',
+      type: 'boolean',
+      packages: { type: 'string' },
+    });
+  })
+  .help()
+  .argv;
+
+  function ifDefined<T>(key: string, type: string) { return _ifDefined(argv, key, type) as T; }
 
   return {
+    verbose: ifDefined('v', 'boolean'),
   }
 }
 
 if (require.main === module) {
   (async () => {
-    const {} = await getArgs();
-    await updateNPMDependencies();
+    const { verbose } = await getArgs();
+    await updateNPMDependencies({ verbose });
   })();
 }
