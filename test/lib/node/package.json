@@ -5,11 +5,11 @@
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.8.0",
     "@tensorflow/tfjs-node-gpu": "^4.8.0",
-    "yargs": "^17.3.1"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "seedrandom": "3.0.5",
-    "tslib": "^2.4.0"
+    "tslib": "^2.6.0"
   },
   "license": "MIT"
 }
