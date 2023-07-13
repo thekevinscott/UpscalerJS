@@ -770,7 +770,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       '---',
     ].join('\n'),
 
-    `# ${name}`,
+    `# \`${name}\``,
     description,
     ...(codeSnippet ? [
       `## Example`,
