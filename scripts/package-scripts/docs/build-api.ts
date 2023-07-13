@@ -1,7 +1,27 @@
 import { mkdirp, writeFile } from 'fs-extra';
-import yargs from 'yargs';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentDisplayPart, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import {
+  Application,
+  ArrayType,
+  Comment,
+  CommentDisplayPart,
+  CommentTag,
+  DeclarationReflection,
+  IntersectionType,
+  IntrinsicType,
+  LiteralType,
+  ParameterReflection,
+  ProjectReflection,
+  ReferenceType,
+  ReflectionKind,
+  SignatureReflection,
+  SomeType,
+  SourceReference,
+  TSConfigReader,
+  TypeDocReader,
+  TypeParameterReflection,
+  UnionType,
+} from 'typedoc';
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
@@ -128,9 +148,8 @@ const getPackageAsTree = (entryPoints: string[], tsconfig: string): ProjectRefle
 
   if (project) {
     return app.serializer.projectToObject(project) as ProjectReflection;
-  } else {
-    throw new Error('No project was converted.')
   }
+  throw new Error('No project was converted.')
 }
 
 const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: string) => {
