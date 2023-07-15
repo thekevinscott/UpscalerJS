@@ -18,7 +18,6 @@ import {
   ReflectionKind,
   SignatureReflection,
   SomeType,
-  SourceReference,
   TSConfigReader,
   TypeDocReader,
   TypeParameterReflection,
@@ -210,7 +209,7 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
   }
 }
 
-const getDefinitions = async () => {
+const getDefinitions = async (): Promise<Definitions> => {
   await scaffoldDependenciesForUpscaler('node');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
@@ -233,7 +232,6 @@ const getDefinitions = async () => {
   ];
 
   const parsedChildren = children.reduce((obj, child) => {
-    console.log(child);
     const { kind } = child;
     const key = getKindStringKey(kind);
     if (!key) {
@@ -268,67 +266,67 @@ const getDefinitions = async () => {
 //   return comment?.summary.map(({ text }) => text).join('');
 // }
 
-// const getTextSummary = (name: string, comment?: Comment): {
-//   codeSnippet?: string;
-//   description?: string;
-//   blockTags?: Record<string, CommentDisplayPart[]>;
-// } => {
-//   if (comment === undefined) {
-//     return {};
-//   }
-//   const { summary, blockTags } = comment;
-//   const expectedCodeSnippet = summary.pop();
-//   if (expectedCodeSnippet?.kind !== 'code') {
-//     throw new Error(`Expected code snippet not found for ${name}`);
-//   }
-//   // const { text, code } = summary.reduce((obj, item) => {
-//   //   return {
-//   //     ...obj,
-//   //     [item.kind]: item.text.trim(),
-//   //   }
-//   // }, {
-//   //   text: '',
-//   //   code: '',
-//   // });
-//   const text = summary.map(({ text }) => text).join('');
-//   return {
-//     blockTags: blockTags?.reduce((obj, blockTag) => {
-//       return {
-//         ...obj,
-//         [blockTag.tag]: blockTag.content,
-//       };
-//     }, {}),
-//     description: text.trim(),
-//     codeSnippet: expectedCodeSnippet.text.trim(),
-//   }
-// };
+const getTextSummary = (name: string, comment?: Comment): {
+  codeSnippet?: string;
+  description?: string;
+  blockTags?: Record<string, CommentDisplayPart[]>;
+} => {
+  if (comment === undefined) {
+    return {};
+  }
+  const { summary, blockTags } = comment;
+  const expectedCodeSnippet = summary.pop();
+  if (expectedCodeSnippet?.kind !== 'code') {
+    throw new Error(`Expected code snippet not found for ${name}`);
+  }
+  // const { text, code } = summary.reduce((obj, item) => {
+  //   return {
+  //     ...obj,
+  //     [item.kind]: item.text.trim(),
+  //   }
+  // }, {
+  //   text: '',
+  //   code: '',
+  // });
+  const text = summary.map(({ text }) => text).join('');
+  return {
+    blockTags: blockTags?.reduce((obj, blockTag) => {
+      return {
+        ...obj,
+        [blockTag.tag]: blockTag.content,
+      };
+    }, {}),
+    description: text.trim(),
+    codeSnippet: expectedCodeSnippet.text.trim(),
+  }
+};
 
-// const getSource = ([source]: SourceReference[]) => {
-//   let {
-//     fileName,
-//     line,
-//     // character, 
-//     url,
-//   } = source;
-//   url = `${REPO_ROOT}/blob/main/${fileName}#L${line}`;
-//   // if (!url) {
-//   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
-//   // }
-//   const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
-//   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
-// };
+const getSource = ([source]: SourceReference[]) => {
+  let {
+    fileName,
+    line,
+    // character, 
+    url,
+  } = source;
+  url = `${REPO_ROOT}/blob/main/${fileName}#L${line}`;
+  // if (!url) {
+  //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
+  // }
+  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
+  return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
+};
 
-// const rewriteURL = (url: string) => {
-//   const parts = url.split(/blob\/(?<group>[^/]+)/)
-//   if (parts.length !== 3) {
-//     throw new Error(`Error with the regex: ${url}`);
-//   }
-//   return [
-//     parts[0],
-//     'tree/main',
-//     parts[2],
-//   ].join('');
-// }
+const rewriteURL = (url: string) => {
+  const parts = url.split(/blob\/(?<group>[^/]+)/)
+  if (parts.length !== 3) {
+    throw new Error(`Error with the regex: ${url}`);
+  }
+  return [
+    parts[0],
+    'tree/main',
+    parts[2],
+  ].join('');
+}
 
 // const isDeclarationReflection = (reflection?: DecRef): reflection is TypedocDeclarationReflection => {
 //   return reflection?.kindString !== 'Platform Specific Type';
@@ -530,17 +528,17 @@ const getDefinitions = async () => {
 //   return undefined;
 // }
 
-// function sortChildrenByLineNumber<T extends (TypedocDeclarationReflection | ParameterReflection)>(children: (T)[]) {
-//   return children.sort(({ sources: aSrc }, { sources: bSrc }) => {
-//     if (!aSrc?.length) {
-//       return 1;
-//     }
-//     if (!bSrc?.length) {
-//       return -1;
-//     }
-//     return aSrc[0].line - bSrc[0].line;
-//   });
-// }
+function sortChildrenByLineNumber<T extends (DeclarationReflection)>(children: T[]) {
+  return children.sort(({ sources: aSrc }, { sources: bSrc }) => {
+    if (!aSrc?.length) {
+      return 1;
+    }
+    if (!bSrc?.length) {
+      return -1;
+    }
+    return aSrc[0].line - bSrc[0].line;
+  });
+};
 
 // const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection): reflection is TypeParameterReflection => {
 //   return 'parent' in reflection;
@@ -743,126 +741,125 @@ const getDefinitions = async () => {
 //   }).join('\n');
 // }
 
-// const getContentForMethod = (method: TypedocDeclarationReflection, definitions: Definitions, i: number) => {
-//   const {
-//     name,
-//     signatures,
-//     sources,
-//   } = method;
+const getContentForMethod = (method: DeclarationReflection, definitions: Definitions, i: number) => {
+  const {
+    name,
+    signatures,
+    sources,
+  } = method;
 
-//   if (name === 'upscale') {
-//     return [
-//       [
-//         '---',
-//         `title: ${name}`,
-//         `sidebar_position: ${i}`,
-//         `sidebar_label: ${name}`,
-//         '---',
-//       ].join('\n'),
+  if (name === 'upscale') {
+    return [
+      [
+        '---',
+        `title: ${name}`,
+        `sidebar_position: ${i}`,
+        `sidebar_label: ${name}`,
+        '---',
+      ].join('\n'),
 
-//       `# ${name}`,
-//       `Alias for [\`execute\`](execute)`,
-//     ].filter(Boolean).join('\n\n');
+      `# ${name}`,
+      `Alias for [\`execute\`](execute)`,
+    ].filter(Boolean).join('\n\n');
 
-//   }
+  }
 
-//   if (!sources?.length) {
-//     throw new Error(`No sources found for ${name}`);
-//   }
-//   if (!signatures?.length) {
-//     const { type, ...m } = method;
-//     console.log(JSON.stringify(m, null, 2))
-//     throw new Error(`No signatures found in ${name}`);
-//   }
-//   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
-//   const { comment, parameters, typeParameter: typeParameters } = signature;
-//   // if (!comment) {
-//   //   throw new Error(`No comment found in method ${name}`);
-//   // }
+  if (!sources?.length) {
+    throw new Error(`No sources found for ${name}`);
+  }
+  if (!signatures?.length) {
+    const { type, ...m } = method;
+    console.log(JSON.stringify(m, null, 2))
+    throw new Error(`No signatures found in ${name}`);
+  }
+  const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
+  const { comment, parameters, typeParameter: typeParameters } = signature;
+  // if (!comment) {
+  //   throw new Error(`No comment found in method ${name}`);
+  // }
 
-//   const { description, codeSnippet, blockTags } = getTextSummary(name, comment);
-//   let source;
-//   try {
-//     source = getSource(sources);
-//   } catch(e) {
-//     console.error(JSON.stringify(method, null, 2));
-//     throw e;
-//   }
+  const { description, codeSnippet, blockTags } = getTextSummary(name, comment);
+  let source;
+  try {
+    source = getSource(sources);
+  } catch(e) {
+    console.error(JSON.stringify(method, null, 2));
+    throw e;
+  }
 
-//   const content = [
-//     [
-//       '---',
-//       `title: ${name}`,
-//       `sidebar_position: ${i}`,
-//       `sidebar_label: ${name}`,
-//       '---',
-//     ].join('\n'),
+  const content = [
+    [
+      '---',
+      `title: ${name}`,
+      `sidebar_position: ${i}`,
+      `sidebar_label: ${name}`,
+      '---',
+    ].join('\n'),
+`# \`${name}\``,
+    description,
+    ...(codeSnippet ? [
+      `## Example`,
+      codeSnippet,
+    ] : []),
+    source,
+    // ...(parameters ? [
+    //   `## Parameters`,
+    //   getParameters(name, parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
+    // ] : []),
+    // writeExpandedTypeDefinitions(name, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
+    // `## Returns`,
+    // getReturnType(signatures, blockTags),
+  ].filter(Boolean).join('\n\n');
+  return content;
+};
 
-//     `# ${name}`,
-//     description,
-//     ...(codeSnippet ? [
-//       `## Example`,
-//       codeSnippet,
-//     ] : []),
-//     source,
-//     ...(parameters ? [
-//       `## Parameters`,
-//       getParameters(name, parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
-//     ] : []),
-//     writeExpandedTypeDefinitions(name, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
-//     `## Returns`,
-//     getReturnType(signatures, blockTags),
-//   ].filter(Boolean).join('\n\n');
-//   return content;
-// }
+const getSortedMethodsForWriting = async (definitions: Definitions) => {
+  const exports = Object.values(definitions.classes);
+  const methods: DeclarationReflection[] = [];
+  for (let i = 0; i < exports.length; i++) {
+    const xport = exports[i];
+    if (VALID_EXPORTS_FOR_WRITING_DOCS.includes(xport.name)) {
+      const { children } = xport;
+      if (!children) {
+        throw new Error(`No methods found in export ${xport.name}`);
+      }
+      sortChildrenByLineNumber(children).forEach(method => {
+        if (VALID_METHODS_FOR_WRITING_DOCS.includes(method.name)) {
+          methods.push(method);
+        } else {
+          console.log(`** Ignoring method ${method.name}`);
+        }
+      });
+    }
+  }
+  return methods;
+};
 
-// const getSortedMethodsForWriting = async (definitions: Definitions) => {
-//   const exports = Object.values(definitions.classes);
-//   const methods: TypedocDeclarationReflection[] = [];
-//   for (let i = 0; i < exports.length; i++) {
-//     const xport = exports[i];
-//     if (VALID_EXPORTS_FOR_WRITING_DOCS.includes(xport.name)) {
-//       const { children } = xport;
-//       if (!children) {
-//         throw new Error(`No methods found in export ${xport.name}`);
-//       }
-//       sortChildrenByLineNumber<TypedocDeclarationReflection>(children).forEach(method => {
-//         if (VALID_METHODS_FOR_WRITING_DOCS.includes(method.name)) {
-//           methods.push(method);
-//         } else {
-//           console.log(`** Ignoring method ${method.name}`);
-//         }
-//       });
-//     }
-//   }
-//   return methods;
-// }
+const writeAPIDocumentationFiles = async (methods: DeclarationReflection[], definitions: Definitions) => {
+  await Promise.all(methods.map(async (method, i) => {
+    const content = getContentForMethod(method, definitions, i);
+    if (content) {
+      const target = path.resolve(EXAMPLES_DOCS_DEST, `${method.name}.md`);
+      await mkdirp(path.dirname(target));
+      await writeFile(target, content.trim(), 'utf-8');
+    } else {
+      throw new Error(`No content for method ${method.name}`);
+    }
+  }))
+};
 
-// const writeAPIDocumentationFiles = async (methods: TypedocDeclarationReflection[], definitions: Definitions) => {
-//   await Promise.all(methods.map(async (method, i) => {
-//     const content = getContentForMethod(method, definitions, i);
-//     if (content) {
-//       const target = path.resolve(EXAMPLES_DOCS_DEST, `${method.name}.md`);
-//       await mkdirp(path.dirname(target));
-//       await writeFile(target, content.trim(), 'utf-8');
-//     } else {
-//       throw new Error(`No content for method ${method.name}`);
-//     }
-//   }))
-// };
-
-// const writeIndexFile = async (methods: TypedocDeclarationReflection[]) => {
-//   const contents = [
-//     '# API',
-//     '',
-//     'API Documentation for UpscalerJS.',
-//     '',
-//     'Available methods:',
-//     '',
-//     ...methods.map(method => `- [\`${method.name}\`](./${method.name})`),
-//   ].join('\n')
-//   await writeFile(path.resolve(EXAMPLES_DOCS_DEST, 'index.md'), contents, 'utf-8');
-// }
+const writeIndexFile = async (methods: DeclarationReflection[]) => {
+  const contents = [
+    '# API',
+    '',
+    'API Documentation for UpscalerJS.',
+    '',
+    'Available methods:',
+    '',
+    ...methods.map(method => `- [\`${method.name}\`](./${method.name})`),
+  ].join('\n')
+  await writeFile(path.resolve(EXAMPLES_DOCS_DEST, 'index.md'), contents, 'utf-8');
+}
 
 /****
  * Main function
@@ -874,12 +871,12 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
   }
 
   const definitions = await getDefinitions();
-  // const methods = await getSortedMethodsForWriting(definitions);
+  const methods = await getSortedMethodsForWriting(definitions);
 
-  // await Promise.all([
-  //   writeAPIDocumentationFiles(methods, definitions),
-  //   writeIndexFile(methods),
-  // ]);
+  await Promise.all([
+    writeAPIDocumentationFiles(methods, definitions),
+    writeIndexFile(methods),
+  ]);
 }
 
 /****
