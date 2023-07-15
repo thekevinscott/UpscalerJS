@@ -59,7 +59,7 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
         "paths": [
           `./${weightsName}`,
         ],
-        "weights": []
+        "weights": [] as unknown[],
       }
     ]
   };
