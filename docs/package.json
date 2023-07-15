@@ -61,7 +61,7 @@
     "@docusaurus/module-type-aliases": "^2.4.1",
     "@docusaurus/types": "^2.4.1",
     "@tsconfig/docusaurus": "^1.0.7",
-    "@types/react": "^18.2.14",
+    "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/sql.js": "^1.4.4",
     "concurrently": "^7.6.0",
