@@ -452,13 +452,13 @@ importers:
         version: 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: latest
-        version: 1.0.0-beta.11(@tensorflow/tfjs@4.8.0)
+        version: link:../../../../../models/esrgan-thick
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: latest
-        version: 1.0.0-beta.16(@tensorflow/tfjs@4.8.0)
+        version: link:../../../../../packages/upscalerjs
 
   docs/workers/image-search:
     devDependencies:
@@ -5598,28 +5598,6 @@ packages:
     dependencies:
       '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.10
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/default-model@1.0.0-beta.14(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-h7BiWOeSzAXNZcL5XTw5EGsQGcREBzxh8/UYUKHzdZfKd89OLuN0DG5nCWJsIe2aEL1XgrsNnDxUr9CmxC656A==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
-  /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -12761,7 +12739,7 @@ packages:
       levn: 0.3.0
       prelude-ls: 1.1.2
       type-check: 0.3.2
-      word-wrap: 1.2.3
+      word-wrap: 1.2.4
     dev: true
 
   /optionator@0.9.3:
@@ -16438,19 +16416,6 @@ packages:
       - encoding
     dev: false
 
-  /upscaler@1.0.0-beta.16(@tensorflow/tfjs@4.8.0):
-    resolution: {integrity: sha512-/ccCpszl4gRhNJaVdlALYcBu5+XfGUZbp4N7rjrCasJ2KUu6+vFT8NsclBc61rhrbJOQNv2IkthVGYLcE6BhJA==}
-    engines: {node: '>=16.0'}
-    peerDependencies:
-      '@tensorflow/tfjs': ^4.2.0
-    dependencies:
-      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
@@ -17037,8 +17002,8 @@ packages:
       '@types/node': 17.0.45
     dev: false
 
-  /word-wrap@1.2.3:
-    resolution: {integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==}
+  /word-wrap@1.2.4:
+    resolution: {integrity: sha512-2V81OA4ugVo5pRo46hAoD2ivUJx8jXmWXfUkY4KFNw0hEptvN0QfH3K4nHiwzGeKl5rFKedV48QVoqYavy4YpA==}
     engines: {node: '>=0.10.0'}
     dev: true
 
