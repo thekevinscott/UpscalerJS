@@ -5,7 +5,6 @@ import GitHubButton from 'react-github-btn';
 import styles from './header.module.scss';
 import { VscClippy } from 'react-icons/vsc';
 import { DemoVideo } from './demo-video/demo-video';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 
 export function HomepageHeader() {
   const [copied, setCopied] = useState(false);
