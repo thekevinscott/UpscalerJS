@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import GitHubButton from 'react-github-btn';
 import styles from './header.module.scss';
-import { GoClippy } from 'react-icons/go';
+import { VscClippy } from 'react-icons/vsc';
 import { DemoVideo } from './demo-video/demo-video';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
@@ -25,10 +25,6 @@ export function HomepageHeader() {
 
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-          <BrowserOnly fallback={<div>Loading...</div>}>
-      {() => {
-        return (
-          <>
       <div className={clsx("row")}>
         <div className={clsx('col col--4')}>
         <h1 className="hero__title">Enhance Images with AI using Javascript</h1>
@@ -47,28 +43,16 @@ export function HomepageHeader() {
         </div>
         <code className={clsx(copied ? styles.copied : '')}>
           <button onClick={copyInstallationInstructions}>
-          npm install upscaler <GoClippy />
+          npm install upscaler <VscClippy />
           </button>
           </code>
         </div>
         <div className={clsx('col col--8')}>
           <div className={styles.demo}>
-          <BrowserOnly fallback={<div>Loading...</div>}>
-      {() => {
-        return (
-          <>
             <DemoVideo />
-          </>
-        );
-      }}
-    </BrowserOnly>
           </div>
         </div>
       </div>
-          </>
-        );
-      }}
-    </BrowserOnly>
     </header>
   );
 }
