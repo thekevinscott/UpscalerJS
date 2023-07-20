@@ -3,7 +3,6 @@ import { DemoVideoNav } from './demo-video-nav/demo-video-nav';
 import styles from './demo-video.module.scss';
 import { useAnimation } from './useAnimation';
 import { ExampleImages } from './example-images/example-images';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 import { IMAGES } from './images';
 
 const steps = [
