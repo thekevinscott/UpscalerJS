@@ -572,7 +572,7 @@ const writeParameter = (methodName: string, parameter: ParameterReflection | Dec
     '-',
     `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
     childParameters === '' ? linkedName : undefined, // only show the type information if we're not expanding it
-    comment ? ` - ${comment}` : undefined,
+    comment ? ` - ${comment.split('\n').join(" ")}` : undefined,
   ].filter(Boolean).join(' ');
 };
 
