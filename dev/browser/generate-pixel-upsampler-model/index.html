@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>UpscalerJS Development: Generate Pixel Upsampler Model</title>
+  <link rel="stylesheet" href="../global.css" />
+  <link rel="stylesheet" href="index.scss" />
+</head>
+<body>
+  <div id="container">
+    <h1>Generate Pixel Upsampler Model</h1>
+    <form>
+      <button type="submit">Generate</button>
+    </form>
+    <pre id="output"></pre>
+    <div id="images">
+      <h2>Images</h2>
+      <div class="image">
+        <h3>Fixture</h3>
+        <img id="fixture" src="/node_modules/@upscalerjs/pixel-upsampler/assets/fixture.png" width="16" />
+      </div>
+    </div>
+  </div>
+  <script type="module" src="./index.ts"></script>
+</body>
+</html>
