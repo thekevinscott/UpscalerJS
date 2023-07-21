@@ -31,7 +31,7 @@
     "@docusaurus/theme-common": "^2.4.1",
     "@mdx-js/react": "^2.3.0",
     "@shoelace-style/shoelace": "2.5.2",
-    "@tensorflow/tfjs": "^4.9.0",
+    "@tensorflow/tfjs": "~4.8.0",
     "@upscalerjs/esrgan-medium": "workspace:*",
     "chart.js": "^4.3.0",
     "classnames": "^2.3.2",
