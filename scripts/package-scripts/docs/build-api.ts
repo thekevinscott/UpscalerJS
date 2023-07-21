@@ -1,12 +1,37 @@
-import { mkdirp, writeFile } from 'fs-extra';
-import yargs from 'yargs';
 import path from 'path';
-import { Application, ArrayType, Comment, CommentDisplayPart, CommentTag, DeclarationReflection, IntersectionType, IntrinsicType, LiteralType, ParameterReflection, ProjectReflection, ReferenceType, ReflectionKind, SignatureReflection, SomeType, SourceReference, TSConfigReader, TypeDocOptions, TypeDocReader, TypeParameterReflection, UnionType } from 'typedoc';
+import {
+  mkdirp,
+  writeFile,
+} from 'fs-extra';
+import {
+  Application,
+  DeclarationReflection as TypedocDeclarationReflection,
+  TSConfigReader,
+  TypeDocReader,
+  ReflectionKind,
+} from 'typedoc';
 import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 import { getSharedArgs, SharedArgs } from './types';
+import {
+  CommentDisplayPart,
+  CommentTag,
+  ParameterReflection,
+  ArrayType,
+  UnionType,
+  IntersectionType,
+  IntrinsicType,
+  LiteralType,
+  ReferenceType,
+  SomeType,
+  Comment,
+  SignatureReflection,
+  SourceReference,
+  DeclarationReflection,
+  TypeParameterReflection,
+} from 'typedoc/dist/lib/serialization/schema';
 
 /****
  * Types
@@ -22,23 +47,20 @@ interface Definitions {
   enums: Record<string, DecRef>;
 }
 
-interface ExpandedProjectReflection extends Omit<ProjectReflection, 'children'> {
-  children?: (DeclarationReflection | PlatformSpecificDeclarationReflection)[];
-}
-
-interface PlatformSpecificDeclarationReflection {
-  name: string;
-  kindString: 'Platform Specific Type';
+interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflection, 'kind' | 'id' | 'flags'> {
+  kind: 'Platform Specific Type';
   node: DeclarationReflection;
   browser: DeclarationReflection;
-  type: DeclarationReflection['type'];
-  children: [];
 }
 
 /****
  * Constants
  */
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
+const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
+const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
+const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
+const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
@@ -76,14 +98,14 @@ const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParam
     '',
     '[See the guide on progress for more information.](/documentation/guides/browser/usage/progress)',
   ].join('\n')),
-}
+};
 // define special type information that is external
-const makeNewExternalType = (name: string, url: string) => {
-  const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
-  const source = new SourceReference('', 0, 0);
-  source.url = url;
-  type.sources = [source];
-  return type;
+const makeNewExternalType = (name: string, url: string): DeclarationReflection => {
+  const type = new TypedocDeclarationReflection(name, ReflectionKind['SomeType']);
+  // const source = new SourceReference('', 0, 0);
+  // source.url = url;
+  type.sources = [];
+  return type as DeclarationReflection;
 };
 
 const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
@@ -100,37 +122,23 @@ const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
 /****
  * Utility functions
  */
-const getUpscalerAsTree = async (): Promise<ExpandedProjectReflection> => {
-  await scaffoldDependenciesForUpscaler('node');
-  const upscalerTree: ExpandedProjectReflection = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src')], path.resolve(UPSCALER_DIR, 'tsconfig.esm.json'));
-  const coreTree = getPackageAsTree([path.resolve(CORE_DIR, 'src')], path.resolve(CORE_DIR, 'tsconfig.json'));
-  const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
-  upscalerTree.children = [
-    upscalerTree,
-    coreTree,
-    platformSpecificTypes,
-  ].reduce((arr, tree) => arr.concat(tree.children || []), [] as (DeclarationReflection | PlatformSpecificDeclarationReflection)[]);
-  return upscalerTree;
-}
-
-const getPackageAsTree = (entryPoints: string[], tsconfig: string): ProjectReflection => {
+const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: string) => {
   const app = new Application();
 
   app.options.addReader(new TSConfigReader());
   app.options.addReader(new TypeDocReader());
 
   app.bootstrap({
-    entryPoints,
+    entryPoints: [entryPoint],
     tsconfig,
   });
 
   const project = app.convert();
 
   if (project) {
-    return app.serializer.projectToObject(project) as ProjectReflection;
-  } else {
-    throw new Error('No project was converted.')
+    return app.serializer.projectToObject(project, projectRoot);
   }
+  throw new Error('No project was converted.')
 }
 
 const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: string) => {
@@ -139,7 +147,11 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   for (let i = 0; i < platforms.length; i++) {
     const platform = platforms[i];
     await scaffoldDependenciesForUpscaler(platform);
-    const imageBrowser = getPackageAsTree([path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`)], path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`));
+    const imageBrowser = getPackageAsTree(
+      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
+      path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
+      UPSCALER_DIR,
+    );
     const matchingType = imageBrowser.children?.filter(child => child.name === typeName).pop();
     if (!matchingType) {
       throw new Error(`Could not find input from ${fileName}.${platform}.ts`);
@@ -149,7 +161,8 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
 
   const platformSpecificType: PlatformSpecificDeclarationReflection = {
     name: typeName,
-    kindString: 'Platform Specific Type',
+    variant: 'declaration',
+    kind: 'Platform Specific Type',
     browser: platformSpecificTypes[0],
     node: platformSpecificTypes[1],
     children: [],
@@ -176,40 +189,56 @@ function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
   }), {} as Record<string, T>);
 }
 
-const getKindStringKey = (kindString: string = '') => {
+const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind) => {
   switch (kindString) {
     case 'Platform Specific Type':
       return 'types';
-    case 'Constructor':
+    case ReflectionKind.Constructor:
       return 'constructors';
-    case 'Method':
+    case ReflectionKind.Method:
       return 'methods';
-    case 'Interface':
+    case ReflectionKind.Interface:
       return 'interfaces';
-    case 'Type alias':
+    case ReflectionKind.TypeAlias:
       return 'types';
-    case 'Class':
+    case ReflectionKind.Class:
       return 'classes';
-    case 'Function':
+    case ReflectionKind.Function:
       return 'functions';
-    case 'Enumeration':
+    case ReflectionKind.Enum:
       return 'enums';
     default:
       throw new Error(`Unexpected kind string: ${kindString}`);
   }
 }
 
-const getChildren = (projectReflection: ExpandedProjectReflection): Definitions => {
-  const children = projectReflection.children;
-  if (children === undefined) {
-    throw new Error('No children found in project reflection');
+const getDefinitions = async (): Promise<Definitions> => {
+  await scaffoldDependenciesForUpscaler('node');
+  const upscalerTree = getPackageAsTree(
+    UPSCALER_SRC_PATH, 
+    UPSCALER_TSCONFIG_PATH,
+    UPSCALER_DIR,
+  );
+  const coreTree = getPackageAsTree(
+    CORE_SRC_PATH, 
+    CORE_TSCONFIG_PATH,
+    CORE_DIR,
+  );
+  const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
+  if (!upscalerTree.children) {
+    throw new Error('No children were found on upscaler tree object. Indicates an error in the returned structure from getPackageAsTree');
   }
+  const children = [
+    ...upscalerTree.children,
+    ...(coreTree.children || []),
+    ...(platformSpecificTypes.children || []),
+  ];
 
   const parsedChildren = children.reduce((obj, child) => {
-    const { kindString } = child;
-    const key = getKindStringKey(kindString);
+    const { kind } = child;
+    const key = getKindStringKey(kind);
     if (!key) {
-      throw new Error(`Unexpected kind string: ${kindString}`);
+      throw new Error(`Unexpected kind string: ${kind}`);
     }
     return {
       ...obj,
@@ -234,11 +263,9 @@ const getChildren = (projectReflection: ExpandedProjectReflection): Definitions 
     classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
     enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
   };
-};
-
-const getSummary = (comment?: Comment) => {
-  return comment?.summary.map(({ text }) => text).join('');
 }
+
+const getSummary = (comment?: Comment) => comment?.summary.map(({ text }) => text).join('');
 
 const getTextSummary = (name: string, comment?: Comment): {
   codeSnippet?: string;
@@ -302,9 +329,7 @@ const rewriteURL = (url: string) => {
   ].join('');
 }
 
-const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => {
-  return reflection?.kindString !== 'Platform Specific Type';
-}
+const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection?.kind !== 'Platform Specific Type';
 const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
 const isReferenceType = (type: SomeType): type is ReferenceType => type.type === 'reference';
 const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
@@ -434,7 +459,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
         }
         if (matchingTypeType.type === 'tuple') {
           console.log('matchingTypeType tuple', matchingTypeType);
-          return `[${matchingTypeType.elements.map(e => {
+          return `[${matchingTypeType.elements?.map(e => {
             if ('name' in e) {
               return e.name;
             }
@@ -482,7 +507,7 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
   console.error(_type)
 
   throw new Error(`Unsupported type: ${_type.type}`)
-}
+};
 
 const getURLFromSources = (matchingType: undefined | DecRef | TypeParameterReflection) => {
   if (!matchingType) {
@@ -500,9 +525,9 @@ const getURLFromSources = (matchingType: undefined | DecRef | TypeParameterRefle
   }
 
   return undefined;
-}
+};
 
-function sortChildrenByLineNumber<T extends (DeclarationReflection | ParameterReflection)>(children: (T)[]) {
+function sortChildrenByLineNumber<T extends (DeclarationReflection)>(children: T[]) {
   return children.sort(({ sources: aSrc }, { sources: bSrc }) => {
     if (!aSrc?.length) {
       return 1;
@@ -512,7 +537,7 @@ function sortChildrenByLineNumber<T extends (DeclarationReflection | ParameterRe
     }
     return aSrc[0].line - bSrc[0].line;
   });
-}
+};
 
 const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection): reflection is TypeParameterReflection => {
   return 'parent' in reflection;
@@ -547,7 +572,7 @@ const writeParameter = (methodName: string, parameter: ParameterReflection | Dec
     '-',
     `**${parameter.name}${parameter.flags?.isOptional ? '?' : ''}**:`,
     childParameters === '' ? linkedName : undefined, // only show the type information if we're not expanding it
-    comment ? ` - ${comment}` : undefined,
+    comment ? ` - ${comment.split('\n').join(" ")}` : undefined,
   ].filter(Boolean).join(' ');
 };
 
@@ -562,8 +587,7 @@ const writePlatformSpecificParameter = (platform: string, parameter: Declaration
     `\`${parsedName}\``,
     comment ? ` - ${comment}` : undefined,
   ].filter(Boolean).join(' ');
-
-}
+};
 
 const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
   const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
@@ -573,13 +597,11 @@ const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
       platformSpecificTypes.push(type);
     }
   }
-  return platformSpecificTypes.map(parameter => {
-    return [
-      writePlatformSpecificParameter('Browser', parameter.browser, definitions),
-      writePlatformSpecificParameter('Node', parameter.node, definitions),
-    ].join('\n')
-  }).join('\n');
-}
+  return platformSpecificTypes.map(parameter => [
+    writePlatformSpecificParameter('Browser', parameter.browser, definitions),
+    writePlatformSpecificParameter('Node', parameter.node, definitions),
+  ].join('\n')).join('\n');
+};
 
 const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
   const { classes, interfaces, types } = definitions;
@@ -707,12 +729,10 @@ const getReturnType = (signatures: (SignatureReflection & { typeParameter?: Type
 const writeExpandedTypeDefinitions = (methodName: string, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}): string => {
   // this method is for writing out additional information on the types, below the parameters
   const typesToExpand = TYPES_TO_EXPAND[methodName === 'constructor' ? '_constructor' : methodName] || [];
-  return typesToExpand.map(type => {
-    return [
-      `### \`${type}\``,
-      EXPANDED_TYPE_CONTENT[type](definitions, typeParameters),
-    ].join('\n')
-  }).join('\n');
+  return typesToExpand.map(type => [
+    `### \`${type}\``,
+    EXPANDED_TYPE_CONTENT[type](definitions, typeParameters),
+  ].join('\n')).join('\n');
 }
 
 const getContentForMethod = (method: DeclarationReflection, definitions: Definitions, i: number) => {
@@ -769,8 +789,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       `sidebar_label: ${name}`,
       '---',
     ].join('\n'),
-
-    `# \`${name}\``,
+`# \`${name}\``,
     description,
     ...(codeSnippet ? [
       `## Example`,
@@ -786,7 +805,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     getReturnType(signatures, blockTags),
   ].filter(Boolean).join('\n\n');
   return content;
-}
+};
 
 const getSortedMethodsForWriting = async (definitions: Definitions) => {
   const exports = Object.values(definitions.classes);
@@ -798,7 +817,7 @@ const getSortedMethodsForWriting = async (definitions: Definitions) => {
       if (!children) {
         throw new Error(`No methods found in export ${xport.name}`);
       }
-      sortChildrenByLineNumber<DeclarationReflection>(children).forEach(method => {
+      sortChildrenByLineNumber(children).forEach(method => {
         if (VALID_METHODS_FOR_WRITING_DOCS.includes(method.name)) {
           methods.push(method);
         } else {
@@ -808,7 +827,7 @@ const getSortedMethodsForWriting = async (definitions: Definitions) => {
     }
   }
   return methods;
-}
+};
 
 const writeAPIDocumentationFiles = async (methods: DeclarationReflection[], definitions: Definitions) => {
   await Promise.all(methods.map(async (method, i) => {
@@ -845,7 +864,7 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
     await clearOutMarkdownFiles(EXAMPLES_DOCS_DEST);
   }
 
-  const definitions = getChildren(await getUpscalerAsTree());
+  const definitions = await getDefinitions();
   const methods = await getSortedMethodsForWriting(definitions);
 
   await Promise.all([
