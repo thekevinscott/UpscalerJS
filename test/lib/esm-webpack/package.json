@@ -4,7 +4,7 @@
   "version": "1.0.0-beta.10",
   "main": "index.js",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.8.0"
+    "@tensorflow/tfjs": "~4.8.0"
   },
   "devDependencies": {
     "html-webpack-plugin": "^5.5.3",

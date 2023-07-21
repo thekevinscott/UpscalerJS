@@ -68,9 +68,9 @@
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
-    "@tensorflow/tfjs": "^4.8.0",
-    "@tensorflow/tfjs-node": "^4.8.0",
-    "@tensorflow/tfjs-node-gpu": "^4.8.0"
+    "@tensorflow/tfjs": "~4.8.0",
+    "@tensorflow/tfjs-node": "~4.8.0",
+    "@tensorflow/tfjs-node-gpu": "~4.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.9",
@@ -82,9 +82,9 @@
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@schemastore/package": "^0.0.6",
-    "@tensorflow/tfjs": "^4.8.0",
-    "@tensorflow/tfjs-node": "^4.8.0",
-    "@tensorflow/tfjs-node-gpu": "^4.8.0",
+    "@tensorflow/tfjs": "~4.8.0",
+    "@tensorflow/tfjs-node": "~4.8.0",
+    "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/babel__core": "^7.20.1",
     "@types/chai": "^4.3.5",
     "@types/chai-as-promised": "^7.1.5",
@@ -152,9 +152,9 @@
   },
   "pnpm": {
     "overrides": {
-      "@tensorflow/tfjs": "^4.8.0",
-      "@tensorflow/tfjs-node": "^4.8.0",
-      "@tensorflow/tfjs-node-gpu": "^4.8.0"
+      "@tensorflow/tfjs": "~4.8.0",
+      "@tensorflow/tfjs-node": "~4.8.0",
+      "@tensorflow/tfjs-node-gpu": "~4.8.0"
     }
   }
 }
