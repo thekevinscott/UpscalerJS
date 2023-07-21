@@ -47,7 +47,7 @@
     "sequelize": "^6.23.1",
     "sqlite3": "^5.1.1",
     "tsc-alias": "^1.8.2",
-    "typedoc": "^0.23.20",
+    "typedoc": "^0.24.8",
     "upscaler": "workspace:*"
   },
   "devDependencies": {
