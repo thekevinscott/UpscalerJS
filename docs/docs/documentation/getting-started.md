@@ -21,6 +21,7 @@ upscaler.upscale('/image/path').then(upscaledSrc => {
 });
 ```
 
+
 ## Browser Setup
 
 In the browser, we can install UpscalerJS via a script tag or by installing via NPM and using a build tool like webpack, parcel, or rollup.

@@ -13,7 +13,7 @@ $size: 256px;
 
   &.original {
     &.sideBySide {
-      left: $size / 2 + $padding;
+      left: calc($size / 2 + $padding);
     }
   }
 
@@ -34,16 +34,16 @@ $size: 256px;
     $size: 128px;
     width: $size;
     height: $size;
-    margin-top: $size / -2;
-    margin-left: $size / -2;
+    margin-top: calc($size / -2);
+    margin-left: calc($size / -2);
   }
 
   &.size-256 {
     $size: 256px;
     width: $size;
     height: $size;
-    margin-top: $size / -2;
-    margin-left: $size / -2;
+    margin-top: calc($size / -2);
+    margin-left: calc($size / -2);
   }
 }
 
@@ -77,7 +77,7 @@ $size: 256px;
   .imageContainer {
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -99,7 +99,7 @@ $size: 256px;
   .imageContainer {
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -116,7 +116,7 @@ $size: 256px;
   .imageContainer {
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -133,7 +133,7 @@ $size: 256px;
   .imageContainer {
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -152,7 +152,7 @@ $size: 256px;
 
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -172,16 +172,16 @@ $size: 256px;
       $size: 96px;
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
 
     &.size-256 {
       $size: 192px;
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
   }
 
@@ -200,7 +200,7 @@ $size: 256px;
 
     &.original {
       &.sideBySide {
-        left: $size / 2 + $padding;
+        left: calc($size / 2 + $padding);
       }
     }
 
@@ -221,16 +221,16 @@ $size: 256px;
       $size: 64px;
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
 
     &.size-256 {
       $size: 128px;
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
   }
 
@@ -250,7 +250,7 @@ $size: 256px;
 
     &.original {
       &.sideBySide {
-        left: $defaultSize / 2 + $padding;
+        left: calc($defaultSize / 2 + $padding);
       }
     }
 
@@ -268,19 +268,19 @@ $size: 256px;
 
     // sizing
     &.size-128 {
-      $size: $defaultSize / 2;
+      $size: calc($defaultSize / 2);
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
 
     &.size-256 {
       $size: $defaultSize;
       width: $size;
       height: $size;
-      margin-top: $size / -2;
-      margin-left: $size / -2;
+      margin-top: calc($size / -2);
+      margin-left: calc($size / -2);
     }
   }
 }
