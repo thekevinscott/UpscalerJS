@@ -90,7 +90,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     });
     let testName = '';
     try {
-      testName = expect.getState().currentTestName;
+      testName = expect.getState().currentTestName || '';
     } catch(err) {}
     try {
       let output: Buffer | undefined;
