@@ -29,7 +29,10 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 [View the docs here.](https://upscalerjs.com)
 
+## Support the Project
+
+Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=javascript,image-enhancement,tensorflow.js,super-resolution) to support the project!
+
 ## License
 
 [MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
-

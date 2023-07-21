@@ -25,4 +25,5 @@ Check out the [news page](/news) for the latest UpscalerJS news. An [RSS feed is
 Follow [@thekevinscott](https://twitter.com/thekevinscott) for announcements on Twitter.
 
 ## Support the Project
+
 Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=javascript,image-enhancement,tensorflow.js,super-resolution) to support the project!
