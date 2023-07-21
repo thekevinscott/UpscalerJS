@@ -9,7 +9,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.8.0",
+    "@tensorflow/tfjs": "~4.8.0",
     "seedrandom": "^3.0.5",
     "@upscalerjs/esrgan-thick": "latest",
     "upscaler": "latest"

@@ -1,0 +1,37 @@
+* {
+  box-sizing: border-box;
+}
+
+#container {
+  padding: 40px;
+  width: 600px;
+}
+
+pre {
+  min-height: 100px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+}
+
+h3 {
+  margin: 0 0 10px 0;
+}
+
+.image {
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 20px;
+  margin-bottom: 10px;
+}
+
+form {
+  button {
+    padding: 20px;
+    width: 100%;
+  }
+
+  section {
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 20px;
+    margin: 0 0 20px 0;
+  }
+}

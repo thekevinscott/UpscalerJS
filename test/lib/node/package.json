@@ -3,8 +3,8 @@
   "private": true,
   "version": "1.0.0-beta.10",
   "dependencies": {
-    "@tensorflow/tfjs-node": "^4.8.0",
-    "@tensorflow/tfjs-node-gpu": "^4.8.0",
+    "@tensorflow/tfjs-node": "~4.8.0",
+    "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
