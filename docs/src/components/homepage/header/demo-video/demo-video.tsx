@@ -3,7 +3,6 @@ import { DemoVideoNav } from './demo-video-nav/demo-video-nav';
 import styles from './demo-video.module.scss';
 import { useAnimation } from './useAnimation';
 import { ExampleImages } from './example-images/example-images';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 import { IMAGES } from './images';
 
 const steps = [
@@ -56,31 +55,25 @@ export const DemoVideo = () => {
   const stepIdx = clippedIdx % totalSteps;
 
   return (
-    <BrowserOnly fallback={<div>Loading...</div>}>
-      {() => {
-        return (
-          <>
-            <div className={styles.demos}>
-              {IMAGES.map((exampleImage, i) => {
-                const exampleStepIdx = getStepIdx({ i, actualIdx, activeImageIdx, stepIdx, totalSteps, totalImages: IMAGES.length });
-                return (
-                  <ExampleImages
-                    animating={animating}
-                    stepIdx={exampleStepIdx}
-                    exampleImage={exampleImage}
-                    key={exampleImage.original.src}
-                  />
-                )
-              })}
-            </div>
-            <DemoVideoNav
-              active={activeImageIdx}
-              images={IMAGES.length}
-              handleClick={handleClick}
+    <>
+      <div className={styles.demos}>
+        {IMAGES.map((exampleImage, i) => {
+          const exampleStepIdx = getStepIdx({ i, actualIdx, activeImageIdx, stepIdx, totalSteps, totalImages: IMAGES.length });
+          return (
+            <ExampleImages
+              animating={animating}
+              stepIdx={exampleStepIdx}
+              exampleImage={exampleImage}
+              key={exampleImage.original.src}
             />
-          </>
-        );
-      }}
-    </BrowserOnly>
+          )
+        })}
+      </div>
+      <DemoVideoNav
+        active={activeImageIdx}
+        images={IMAGES.length}
+        handleClick={handleClick}
+      />
+    </>
   );
 }
