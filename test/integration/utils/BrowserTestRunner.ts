@@ -1,5 +1,5 @@
-import http from 'http';
-import puppeteer from 'puppeteer';
+import http, { request } from 'http';
+import * as puppeteer from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
@@ -191,8 +191,9 @@ export class BrowserTestRunner {
             console.log(`${status} ${response.url()}`);
           }
         })
-        .on('requestfailed', request =>
-          console.log(`${request.failure().errorText} ${request.url()}`))
+        .on('requestfailed', request => { 
+            console.log(`${request.failure()?.errorText} ${request.url()}`);
+      })
     }
   }
 
