@@ -1,5 +1,5 @@
 import path from 'path';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -54,7 +54,7 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
 }), [] as Import[]);
 
 export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): Promise<void> => new Promise(async (resolve, reject) => {
-  rimraf.sync(DIST);
+  rimraf(DIST);
   copyFixtures(DIST, {
     includeModels: true,
     verbose,

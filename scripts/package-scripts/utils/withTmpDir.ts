@@ -1,5 +1,5 @@
 import path from 'path';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import { existsSync, mkdirpSync } from 'fs-extra';
 import { getHashedName } from './getHashedName';
 import { TMP_DIR } from './constants';
@@ -19,7 +19,7 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir =
   finally {
     try {
       if (removeTmpDir) {
-        rimraf.sync(tmpDir);
+        rimraf(tmpDir);
       }
     }
     catch (e) {

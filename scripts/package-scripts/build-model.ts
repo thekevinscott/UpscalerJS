@@ -1,5 +1,5 @@
 import fs, { mkdirp, existsSync, chmod, exists } from 'fs-extra';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
@@ -55,7 +55,7 @@ const buildESM = async (modelFolder: string, opts: Opts = {}) => {
   }
   if (opts.forceRebuild === true) {
     // clear out dist folder
-    rimraf.sync(DIST);
+    rimraf(DIST);
   }
   if (opts.verbose) {
     console.log(`Compiling typescript for ESM in folder ${modelFolder}`)
@@ -120,7 +120,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
   }
   if (opts.forceRebuild === true) {
     // clear out dist folder
-    rimraf.sync(DIST);
+    rimraf(DIST);
   }
   await mkDistFolder(DIST);
 
@@ -168,7 +168,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
 
     uglify(FILE_DIST, file);
   }
-  rimraf.sync(TMP);
+  rimraf(TMP);
 };
 
 /****
@@ -184,7 +184,7 @@ const buildCJS = async (modelFolder: string, opts: Opts = {}) => {
   }
   if (opts.forceRebuild === true) {
     // clear out dist folder
-    rimraf.sync(DIST);
+    rimraf(DIST);
   }
   await mkDistFolder(DIST);
   if (opts.verbose) {
@@ -224,7 +224,7 @@ const buildModel = async (
   }
   scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
 
-  // rimraf.sync(DIST);
+  // rimraf(DIST);
   // await mkDistFolder(DIST);
 
   const outputFormatFns = [
