@@ -277,10 +277,10 @@ const getLocalAndRemoteDependencies = (dir: string) => {
   const localDependencies: Dependency = {};
   const remoteDependencies: Dependency = {};
 
-  const entries: Array<[string, string]> = Object.entries(dependencies);
+  const entries: Array<[string, string | undefined]> = Object.entries(dependencies);
 
   for (let i = 0; i < entries.length; i++) {
-    const [dependency, version] = entries[i];
+    const [dependency, version = ''] = entries[i];
     if (version.startsWith('workspace:')) {
       localDependencies[dependency] = version;
     } else {
