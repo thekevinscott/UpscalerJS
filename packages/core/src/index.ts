@@ -132,7 +132,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
   }
-  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
+  if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   }
   if (!modelDefinition.path) {
