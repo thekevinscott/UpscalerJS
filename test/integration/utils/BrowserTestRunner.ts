@@ -1,5 +1,5 @@
 import http, { request } from 'http';
-import * as puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
