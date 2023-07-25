@@ -13,29 +13,15 @@ import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { executeAsyncScript } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const ESRGAN_LEGACY_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = true;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
 
 
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(5);
-
-
-
-// const getCapabilityName = (capability: BrowserOption) => {
-//   if (capability.os) {
-//     return `${capability.os} | ${capability.browserName}`;
-//   }
-//   if (capability.device) {
-//     return `${capability.browserName} | ${capability.device}`;
-//   }
-
-//   return JSON.stringify(capability)
-// }
+const JEST_TIMEOUT = 5 * 60 * 1000;
+jest.setTimeout(JEST_TIMEOUT);
+jest.retryTimes(3);
 
 const browserOptions = getBrowserOptions(option => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
@@ -78,11 +64,7 @@ describe('Browser Integration Tests', () => {
 
       const result = await executeAsyncScript(driver, async () => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['pixel-upsampler']['4x'],
         });
         const data = upscaler.execute(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
