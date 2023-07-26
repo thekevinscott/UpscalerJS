@@ -47,6 +47,9 @@ const makeSetVersionForPackageJSON = (dependencies: string[], version: string): 
       let value = gen.next().value;
       while (value) {
         const [key] = value;
+        if (!key) {
+          throw new Error(`No key found in ${JSON.stringify(value)}`)
+        }
         packageJSONListOfDependencies[key] = version;
         value = gen.next().value;
         logger.push(`  - ${packageJSONKey}: ${key}`);

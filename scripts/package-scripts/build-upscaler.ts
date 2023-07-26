@@ -1,5 +1,5 @@
 import { mkdirp } from 'fs-extra';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
@@ -38,7 +38,7 @@ const getDistFolder = (platform: Platform, outputFormat: OutputFormat) => {
 
 const cleanOutput = (distFolder: string, clearDistFolder: boolean) => {
   if (clearDistFolder) {
-    rimraf.sync(distFolder);
+    rimraf(distFolder);
   }
 }
 

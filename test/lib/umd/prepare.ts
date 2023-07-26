@@ -1,5 +1,5 @@
 import path from 'path';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
@@ -76,7 +76,7 @@ const getMinifiedScripts = () => {
 };
 
 export const prepareScriptBundleForUMD = async () => {
-  rimraf.sync(DIST);
+  rimraf(DIST);
   mkdirpSync(DIST);
   copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
 

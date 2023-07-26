@@ -40,6 +40,9 @@ const getTFJSVersion = (dir: string = ROOT_DIR): string => {
     throw new Error(`Could not find a dependency matching @tensorflow/tfjs in ${dir}`);
   }
   const [_, val] = matchingTFJS;
+  if (!val) {
+    throw new Error(`No value was found in ${JSON.stringify(matchingTFJS)}`);
+  }
   return val;
 };
 

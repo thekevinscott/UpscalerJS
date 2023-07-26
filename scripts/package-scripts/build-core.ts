@@ -1,7 +1,6 @@
 import { mkdirp } from 'fs-extra';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import path from 'path';
-import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies';
 import yargs from 'yargs';
 import { OutputFormat as _OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
@@ -33,7 +32,7 @@ const getDistFolder = (outputFormat: OutputFormat) => {
 
 const cleanOutput = (distFolder: string, clearDistFolder: boolean) => {
   if (clearDistFolder) {
-    rimraf.sync(distFolder);
+    rimraf(distFolder);
   }
 }
 

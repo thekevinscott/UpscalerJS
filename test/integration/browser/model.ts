@@ -10,8 +10,6 @@ import * as tfn from '@tensorflow/tfjs-node';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');

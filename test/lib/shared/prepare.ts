@@ -1,7 +1,7 @@
 import { Dependency } from '@schemastore/package';
 import { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } from 'fs-extra';
 import path from 'path';
-import rimraf from 'rimraf';
+import { sync as rimraf } from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
 import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import callExec from "../utils/callExec";
@@ -277,10 +277,10 @@ const getLocalAndRemoteDependencies = (dir: string) => {
   const localDependencies: Dependency = {};
   const remoteDependencies: Dependency = {};
 
-  const entries: Array<[string, string]> = Object.entries(dependencies);
+  const entries: Array<[string, string | undefined]> = Object.entries(dependencies);
 
   for (let i = 0; i < entries.length; i++) {
-    const [dependency, version] = entries[i];
+    const [dependency, version = ''] = entries[i];
     if (version.startsWith('workspace:')) {
       localDependencies[dependency] = version;
     } else {
@@ -341,7 +341,7 @@ const packAndTar = async (src: string, target: string, opts: Opts & { attempts?:
 }
 
 export const installLocalPackage = async (src: string, dest: string, opts: Opts = {}) => {
-  rimraf.sync(dest);
+  rimraf(dest);
   await withTmpDir(async tmp => {
     try {
 

@@ -5,6 +5,7 @@ import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
+/* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
@@ -131,7 +132,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (modelDefinition === undefined) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
   }
-  if (!isValidModelType(modelDefinition.modelType || 'layers')) {
+  if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   }
   if (!modelDefinition.path) {
