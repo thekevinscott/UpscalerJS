@@ -5,7 +5,8 @@
   "description": "Demonstration of Electron integration with UpscalerJS",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "prebuild": "esbuild src/main.js --bundle --outfile=dist/main.js",
+    "start": "npm run prebuild && electron ."
   },
   "@upscalerjs": {
     "guide": {
@@ -17,9 +18,10 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.2.0",
+    "@tensorflow/tfjs": "^4.8.0",
+    "esbuild": "^0.18.16",
     "seedrandom": "^3.0.5",
-    "upscaler": "1.0.0-beta.14"
+    "upscaler": "1.0.0-beta.17"
   },
   "engines": {
     "npm": ">8.0.0"

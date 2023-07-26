@@ -3,13 +3,32 @@
   <head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="img-src 'self' data:; default-src 'self'; script-src 'self'">
+
     <title>Electron Integration | Upscaler.JS</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+  <h1>Electron Example</h1>
+  <p>An example showing how to upscale an image with <a href="https://github.com/thekevinscott/UpscalerJS" target="_blank">UpscalerJS</a> in Electron.</p>
+  <p>Click the upscale button to upscale the photo.</p>
+  <button disabled id="button">Loading...</button>
+  <p id="info"></p>
+  <table>
+    <thead>
+      <tr><td>Original</td><td>Upscaled</td></tr>
+    </thead>
+    <tbody>
+      <tr><td>
+      <img src="./flower.png" id="flower" />
+        </td>
+      <td>
+        <div id="target">
+
+        </div>
+      </td>
+    </tr>
+      </tbody>
+    </table>
+    <script src="./dist/main.js" type="module"></script>
   </body>
 </html>
