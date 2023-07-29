@@ -191,6 +191,7 @@ describe('loadModel browser tests', () => {
         } as ModelDefinition))
           .rejects
           .toThrowError(getLoadModelErrorMessage(modelPath, {
+            path: modelPath,
             name: packageName,
             version,
           }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
@@ -200,7 +201,7 @@ describe('loadModel browser tests', () => {
         const modelConfiguration = {
           scale: 2,
           modelType: 'layers',
-        };
+        } as ModelDefinition;
         expect(fetchModel(modelConfiguration)).toThrow(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
       });
     });
