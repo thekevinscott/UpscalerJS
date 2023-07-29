@@ -1,8 +1,7 @@
 import { Scale, getESRGANModelDefinition, } from '../../../../packages/shared/src/esrgan/esrgan';
-import { ModelDefinitionFn, } from '@upscalerjs/core';
 import { NAME, VERSION, } from '../constants.generated';
 
-const getModelDefinition = (scale: Scale, architecture: string, modelPath: string, meta = {}): ModelDefinitionFn => getESRGANModelDefinition({
+const getModelDefinition = (scale: Scale, architecture: string, modelPath: string, meta = {}) => getESRGANModelDefinition({
   scale,
   path: modelPath,
   name: NAME,

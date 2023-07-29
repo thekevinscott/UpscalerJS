@@ -1,11 +1,9 @@
-import type { ModelDefinitionFn, TF, } from '@upscalerjs/core';
 import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 
-const modelDefinition: ModelDefinitionFn = (tf: TF) => {
-  const SCALE = 4;
+const SCALE = 4;
 
-  return getESRGANModelDefinition({
+export default getESRGANModelDefinition({
     scale: SCALE, 
     path: 'models/gans/model.json',
     name: NAME,
@@ -14,7 +12,4 @@ const modelDefinition: ModelDefinitionFn = (tf: TF) => {
       dataset: 'div2k',
       architecture: "rrdn",
     },
-  })(tf);
-};
-
-export default modelDefinition;
+  });

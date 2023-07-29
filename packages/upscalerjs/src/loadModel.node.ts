@@ -35,8 +35,9 @@ export const getModelPath = ({ packageInformation, path: modelPath, }: ParsedMod
 };
 
 export const loadModel = async (
-  modelDefinition: ModelDefinition,
+  _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
+  const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);
   } catch(err: unknown) {

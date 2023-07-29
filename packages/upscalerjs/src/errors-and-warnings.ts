@@ -3,6 +3,15 @@ import {
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from "@upscalerjs/core";
 
+const WARNING_DEPRECATED_MODEL_DEFINITION_URL =
+  'https://upscalerjs.com/documentation/troubleshooting#deprecated-model-definition-function';
+
+export const WARNING_DEPRECATED_MODEL_DEFINITION_FN = [
+  'Passing a model definition as a function is deprecated and will be removed in a future version.',
+  'To leverage model lifecycle methods, use the setup and teardown methods.',
+  `For more information, see ${WARNING_DEPRECATED_MODEL_DEFINITION_URL}.`,
+].join(' ');
+
 const WARNING_UNDEFINED_PADDING_URL =
   'https://upscalerjs.com/documentation/troubleshooting#padding-is-undefined';
 

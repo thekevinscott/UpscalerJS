@@ -4,11 +4,11 @@
 
 Demonstrates how to self host a model with UpscalerJS.
 
-<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/self-hosting-models?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.
 
 :::tip
 
-If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/nodejs-custom-models).
+If you're looking for a guide on how to host your own models in a Node environment, [check out the Node-specific guide](../../node/nodejs-custom-file-path).
 
 :::
 
@@ -39,60 +39,6 @@ const upscaler = new Upscaler({
 })
 ```
 
-Both `scale` and `path` are required options. Models are tied to a specific scale which must be specified per model.
+`path` is a required option.
 
-## Model options
-
-We can further specify our model with additional configuration options:
-
-```javascript
-import Upscaler from 'upscaler'
-
-const upscaler = new Upscaler({
-  model: {
-    scale: 2,
-    path: '/model.json',
-    preprocess: input => tf.tidy(() => tf.mul(input, 1 / 255)),
-    postprocess: output => tf.tidy(() => output.clipByValue(0, 255)),
-  }
-})
-```
-
-`preprocess` and `postprocess` are functions called on the input and output tensors, respectively.
-
-The model can also define a function that returns a `ModelDefinition`, which can be helpful for defining custom layers and ops:
-
-```javascript
-import Upscaler from 'upscaler'
-
-const getModelDefinition = (
-  /**
-   * tf refers to the currently active Tensorflow.js library, which may be 
-   * @tensorflow/tfjs, @tensorflow/tfjs-node, or @tensorflow/tfjs-node-gpu.
-   **/
-  tf,
-) => {
-  class CustomLayer extends Layer {
-    call(inputs: Inputs) {
-      ... some definition ...
-    }
-
-    static className = 'CustomLayer'
-  }
-
-  tf.serialization.registerClass(CustomLayer);
-  
-  return {
-    scale: 2,
-    path: '/model.json',
-    preprocess: input => tf.tidy(() => tf.mul(input, 1 / 255)),
-    postprocess: output => tf.tidy(() => output.clipByValue(0, 255)),
-  }
-}
-
-const upscaler = new Upscaler({
-  model: getModelDefinition,
-})
-```
-
-We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/models/esrgan-thick/src/utils/getModelDefinition.ts#L14).
+We can also further specify our model with additional configuration options. See the guide on [custom model configurations](custom-model-configurations) for more information.
