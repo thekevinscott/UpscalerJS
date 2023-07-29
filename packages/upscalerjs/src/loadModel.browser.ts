@@ -38,7 +38,9 @@ export const getLoadModelErrorMessage = (modelPath: string, packageInformation: 
 export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>({
   path: modelPath,
   modelType,
-  packageInformation,
+  _internals: {
+    packageInformation,
+  } = {},
 }: {
   modelType: M;
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {

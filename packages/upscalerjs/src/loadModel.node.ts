@@ -26,7 +26,7 @@ export const getModuleFolder = (name: string): string => {
   return match;
 };
 
-export const getModelPath = ({ packageInformation, path: modelPath, }: ParsedModelDefinition): string => {
+export const getModelPath = ({ _internals: { packageInformation } = {}, path: modelPath, }: ParsedModelDefinition): string => {
   if (packageInformation) {
     const moduleFolder = getModuleFolder(packageInformation.name);
     return `file://${path.resolve(moduleFolder, modelPath)}`;
