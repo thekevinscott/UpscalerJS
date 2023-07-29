@@ -37,13 +37,11 @@ export const getESRGANModelDefinition = ({
   if (architecture === 'rdn') {
     return {
       scale,
-      path,
       modelType: 'layers',
       _internals: {
-        packageInformation: {
-          name,
-          version,
-        },
+        path,
+        name,
+        version,
       },
       meta: {
         architecture,
@@ -104,13 +102,11 @@ export const getESRGANModelDefinition = ({
 
   return {
     scale,
-    path,
     modelType: 'layers',
     _internals: {
-      packageInformation: {
-        name,
-        version,
-      },
+      path,
+      name,
+      version,
     },
     meta: {
       architecture,

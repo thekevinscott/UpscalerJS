@@ -242,3 +242,20 @@ For example, for a model with a `divisibilityFactor` of `64` and a `patchSize` o
 ```
 
 To get rid of this warning, update your `patchSize` and `padding` arguments to result in a multiple of the `divisibilityFactor`.
+
+## Missing path and internals
+
+This error indicates model configuration is missing a path to a valid JSON file.
+
+If you are loading a first-party UpscalerJS model (one installed via npm, under the `@upscalerjs/` namespace) this likely indicates an error.  [Please open a bug report](https://github.com/thekevinscott/UpscalerJS/issues/new?assignees=thekevinscott&labels=bug&projects=&template=bug_report.md&title=)
+
+If you are providing a custom model configuration, you are missing the `path` variable. The UpscalerJS instantiation should look something like:
+
+```
+const upscaler = new Upscaler({
+  model: {
+    path: '/path/to/custom/model',
+    ... other model configuration variables ...
+  },
+});
+```

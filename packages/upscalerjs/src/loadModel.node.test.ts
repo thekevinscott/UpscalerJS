@@ -12,6 +12,7 @@ import type { ModelDefinition } from "@upscalerjs/core";
 import {
   getModelDefinitionError as _getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
 } from './errors-and-warnings';
 import {
   loadTfModel as _loadTfModel,
@@ -104,28 +105,39 @@ describe('loadModel.node', () => {
   });
 
   describe('getModelPath', () => {
-    it('returns model path if given no package information', () => {
+    it('returns model path if provided a path', () => {
       resolver.mockImplementation(getResolver(() => ''));
       expect(getModelPath({ 
         path: 'foo', 
+        _internals: {
+          path: 'some-model',
+          name: 'baz',
+          version: '1.0.0',
+        },
         scale: 2,
         modelType: 'layers',
        })).toEqual('foo');
     });
 
-    it('returns model path if given package information', () => {
+    it('returns model path if not provided a path', () => {
       resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
       expect(getModelPath({
         _internals: {
-          packageInformation: {
-            name: 'baz',
-            version: '1.0.0',
-          },
+          path: 'some-model',
+          name: 'baz',
+          version: '1.0.0',
         },
-        path: 'some-model',
         scale: 2,
         modelType: 'layers',
       })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/default-model', 'some-model')}`);
+    });
+
+    it('throws an error if neither _internals nor path is provided', () => {
+      const modelConfiguration = {
+        scale: 2,
+        modelType: 'layers',
+      };
+      expect(getModelPath(modelConfiguration)).toThrow(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
     });
   });
 

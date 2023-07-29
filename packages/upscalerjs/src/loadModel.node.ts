@@ -26,12 +26,15 @@ export const getModuleFolder = (name: string): string => {
   return match;
 };
 
-export const getModelPath = ({ _internals: { packageInformation, } = {}, path: modelPath, }: ParsedModelDefinition): string => {
-  if (packageInformation) {
-    const moduleFolder = getModuleFolder(packageInformation.name);
-    return `file://${path.resolve(moduleFolder, modelPath)}`;
+export const getModelPath = (modelConfiguration: ParsedModelDefinition): string => {
+  if (modelConfiguration.path) {
+    return modelConfiguration.path;
   }
-  return modelPath;
+  if (modelConfiguration._internals) {
+    const moduleFolder = getModuleFolder(modelConfiguration._internals.name);
+    return `file://${path.resolve(moduleFolder, modelConfiguration._internals.path)}`;
+  }
+  throw getMissingMatchesError(modelConfiguration);
 };
 
 export const loadModel = async (

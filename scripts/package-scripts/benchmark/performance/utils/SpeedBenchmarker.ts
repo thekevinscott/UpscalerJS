@@ -434,7 +434,6 @@ const benchmarkModel: BenchmarkModel = async (
       const upscalerOpts = {
         model: {
           ...model,
-          _internals: undefined,
           meta: undefined,
           path: `/models/${packageName}/${model.path}`,
         }
