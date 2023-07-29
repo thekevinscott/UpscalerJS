@@ -40,13 +40,13 @@ export const isDynamicShape4D = (shape?: unknown): shape is DynamicShape4D => is
 
 export interface ModelDefinition {
   /**
+   * The type of the model. Can be 'graph' or 'layer'.
+   */
+  modelType: ModelType;
+  /**
    * Path to a model.json file.
    */
   path: string;
-  /**
-   * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'
-   */
-  modelType: ModelType;
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
@@ -60,9 +60,11 @@ export interface ModelDefinition {
   /**
    * @hidden
    * 
-   * Used internally by UpscalerJS models to encode information about package version and name.
+   * Used internally by UpscalerJS models to encode information about the model configuration, such as package version, package name, and path to model JSON file.
    */
-  packageInformation?: PackageInformation;
+  _internals?: {
+    packageInformation?: PackageInformation;
+  };
   /**
    * A function that processes the input image before feeding to the model. For example, you can use this function if you need to regularize your input.
    */

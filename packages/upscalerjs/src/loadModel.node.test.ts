@@ -116,10 +116,12 @@ describe('loadModel.node', () => {
     it('returns model path if given package information', () => {
       resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
       expect(getModelPath({
-        packageInformation: {
-          name: 'baz',
-          version: '1.0.0',
-        }, 
+        _internals: {
+          packageInformation: {
+            name: 'baz',
+            version: '1.0.0',
+          },
+        },
         path: 'some-model',
         scale: 2,
         modelType: 'layers',

@@ -159,7 +159,7 @@ export const getUpscalerFromExports = async (tf: TF, modelPackageFolder: string,
     const { require: importPath, } = value;
     const pathToModel = getPathToModel(modelPackageFolder, importPath, value);
     const modelDefinitionFn = (await import(pathToModel)).default;
-    const { packageInformation, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
+    const { _internals, ...modelDefinition } = modelDefinitionFn(tf) as ModelDefinition;
 
     const modelPath = path.resolve(modelPackageFolder, modelDefinition.path);
     const model = {
