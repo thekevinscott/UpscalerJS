@@ -3,7 +3,7 @@ import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 2;
 
-const modelDefinition = getESRGANModelDefinition({
+export default getESRGANModelDefinition({
   scale: SCALE,
   name: NAME,
   version: VERSION,
@@ -23,5 +23,3 @@ const modelDefinition = getESRGANModelDefinition({
     modelFileName: 'rdn-C1-D2-G4-G064-T10-x2-patchsize128-compress100-sharpen0-datadiv2k-vary_cFalse_best-val_loss_epoch494',
   },
 });
-
-export default modelDefinition;
