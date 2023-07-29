@@ -9,6 +9,7 @@ import {
 } from '@upscalerjs/core';
 import {
   ERROR_MODEL_DEFINITION_BUG,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 
@@ -34,7 +35,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
     const moduleFolder = getModuleFolder(modelConfiguration._internals.name);
     return `file://${path.resolve(moduleFolder, modelConfiguration._internals.path)}`;
   }
-  throw getMissingMatchesError(modelConfiguration);
+  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
 };
 
 export const loadModel = async (

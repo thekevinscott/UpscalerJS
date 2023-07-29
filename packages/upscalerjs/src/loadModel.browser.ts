@@ -7,6 +7,7 @@ import {
 } from './model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 import {
@@ -35,13 +36,10 @@ export const getLoadModelErrorMessage = (modelPath: string, internals: ModelConf
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
-export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>({
-  path: modelPath,
-  modelType,
-  _internals,
-}: {
+export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>(modelConfiguration: {
   modelType: M;
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
+  const { modelType, _internals, path: modelPath, } = modelConfiguration;
   if (modelPath) {
     return await loadTfModel(modelPath, modelType);
   }
@@ -60,8 +58,8 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
     }
     throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
   }
-  throw new Error('huzzah')
-}
+  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+};
 
 export const loadModel = async (
   modelDefinition: ModelDefinition,
