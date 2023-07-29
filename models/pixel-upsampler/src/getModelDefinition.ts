@@ -5,9 +5,11 @@ const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
   scale,
   path: `models/${scale}x/${scale}x.json`,
   modelType: 'layers',
-  packageInformation: {
-    name: NAME,
-    version: VERSION,
+  _internals: {
+    packageInformation: {
+      name: NAME,
+      version: VERSION,
+    },
   },
   meta: {
     dataset: null,

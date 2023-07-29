@@ -258,9 +258,11 @@ const getModelDefinition = (scale: 2 | 3 | 4 | 8, architecture: Size, modelPath:
     scale,
     channels: 3,
     path: modelPath,
-    packageInformation: {
-      name: NAME,
-      version: VERSION,
+    _internals: {
+      packageInformation: {
+        name: NAME,
+        version: VERSION,
+      },
     },
     meta,
     preprocess,
@@ -285,9 +287,11 @@ const modelDefinition: ModelDefinitionFn = () => ({
   scale: SCALE,
   channels: 3,
   path: 'models/${modelName}/model.json',
-  packageInformation: {
-    name: NAME,
-    version: VERSION,
+  _internals: {
+    packageInformation: {
+      name: NAME,
+      version: VERSION,
+    },
   },
   meta: {
   },

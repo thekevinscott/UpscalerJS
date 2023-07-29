@@ -112,9 +112,11 @@ describe('loadModel browser tests', () => {
         expect(loadTfModel).toBeCalledTimes(0);
         await fetchModel({
           path: modelPath,
-          packageInformation: {
-            name: packageName,
-            version,
+          _internals: {
+            packageInformation: {
+              name: packageName,
+              version,
+            },
           },
           modelType: 'layers',
         } as ModelDefinition);
@@ -129,9 +131,11 @@ describe('loadModel browser tests', () => {
         expect(loadTfModel).toBeCalledTimes(0);
         await fetchModel({
           path: modelPath,
-          packageInformation: {
-            name: packageName,
-            version,
+          _internals: {
+            packageInformation: {
+              name: packageName,
+              version,
+            },
           },
           modelType: 'graph',
         } as ModelDefinition);
@@ -152,9 +156,11 @@ describe('loadModel browser tests', () => {
         expect(loadTfModel).toBeCalledTimes(0);
         await fetchModel({
           path: modelPath,
-          packageInformation: {
-            name: packageName,
-            version,
+          _internals: {
+            packageInformation: {
+              name: packageName,
+              version,
+            },
           },
           modelType: 'layers',
         } as ModelDefinition);
@@ -172,9 +178,11 @@ describe('loadModel browser tests', () => {
         });
         await expect(() => fetchModel({
           path: modelPath,
-          packageInformation: {
-            name: packageName,
-            version,
+          _internals: {
+            packageInformation: {
+              name: packageName,
+              version,
+            },
           },
           modelType: 'layers',
         } as ModelDefinition))
