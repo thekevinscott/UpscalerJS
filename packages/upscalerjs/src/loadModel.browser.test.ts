@@ -195,11 +195,11 @@ describe('loadModel browser tests', () => {
       });
       getModelDefinitionError.mockImplementation(() => e);
 
-      await expect(() => loadModel({
+      await expect(() => loadModel(Promise.resolve({
         path: 'foo',
         scale: 2,
         modelType: 'layers',
-      })).rejects.toThrowError(e);
+      }))).rejects.toThrowError(e);
     });
 
     it('loads a valid layers model successfully', async () => {

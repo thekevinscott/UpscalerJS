@@ -8,6 +8,7 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   GET_INVALID_PATCH_SIZE_AND_PADDING,
+  WARNING_DEPRECATED_MODEL_DEFINITION_FN,
 } from './errors-and-warnings';
 
 import {
@@ -38,7 +39,11 @@ export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition
 export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
 export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
-  return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
+  if (isModelDefinitionFn(modelDefinition)) {
+    warn(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
+    return modelDefinition(tf);
+  }
+  return modelDefinition;
 }
 
 export async function getModel(modelDefinition: ModelDefinitionObjectOrFn): Promise<ModelDefinition> {
