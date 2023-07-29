@@ -214,7 +214,7 @@ describe('loadModel browser tests', () => {
         modelType: 'layers',
       };
 
-      const result = await loadModel(modelDefinition);
+      const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
@@ -238,7 +238,7 @@ describe('loadModel browser tests', () => {
         modelType: 'graph',
       };
 
-      const result = await loadModel(modelDefinition);
+      const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
