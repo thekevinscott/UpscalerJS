@@ -15,7 +15,6 @@ import {
 import {
   getModelDefinitionError as _getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
-  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
 } from './errors-and-warnings';
 
 import {
@@ -207,21 +206,11 @@ describe('loadModel browser tests', () => {
         };
         await expect(() => fetchModel(modelDefinition))
           .rejects
-          .toThrowError(getLoadModelErrorMessage(modelPath, {
+          .toThrowError(getLoadModelErrorMessage(CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)]), modelPath, {
             path: modelPath,
             name: packageName,
             version,
-          }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
-      });
-
-      it('throws an error if neither _internals nor path is provided', async () => {
-        const modelConfiguration = {
-          scale: 2,
-          modelType: 'layers',
-        } as ModelDefinition;
-        await expect(() => fetchModel(modelConfiguration))
-        .rejects
-        .toThrowError(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
+          }));
       });
     });
   });

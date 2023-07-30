@@ -1,3 +1,4 @@
+import { ModelDefinitionValidationError, } from '@upscalerjs/core';
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
 import { 
@@ -17,10 +18,7 @@ export const isMultiArgTensorProgress = (p: Progress, output: ResultFormat, prog
   if (progressOutput === undefined && output === 'tensor') {
     return true;
   }
-  if (progressOutput === 'tensor') {
-    return true;
-  }
-  return false;
+  return progressOutput === 'tensor';
 };
 
 export const isAborted = (abortSignal?: AbortSignal): boolean => {
@@ -65,3 +63,5 @@ export function processAndDisposeOfTensor<T extends tf.Tensor>(
   }
   return tensor;
 }
+
+export const errIsModelDefinitionValidationError = (err: unknown): err is ModelDefinitionValidationError => err instanceof ModelDefinitionValidationError;

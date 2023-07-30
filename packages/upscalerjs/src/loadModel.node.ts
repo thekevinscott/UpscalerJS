@@ -4,14 +4,15 @@ import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
-  ModelDefinitionValidationError,
   isValidModelDefinition,
 } from '@upscalerjs/core';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
+import {
+  errIsModelDefinitionValidationError,
+} from './utils';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
@@ -31,11 +32,13 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   if (modelConfiguration.path) {
     return modelConfiguration.path;
   }
-  if (modelConfiguration._internals) {
-    const moduleFolder = getModuleFolder(modelConfiguration._internals.name);
-    return `file://${path.resolve(moduleFolder, modelConfiguration._internals.path)}`;
+  const { _internals, } = modelConfiguration;
+  if (!_internals) {
+    // This should never happen. This should have been caught by isValidModelDefinition.
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+  const moduleFolder = getModuleFolder(_internals.name);
+  return `file://${path.resolve(moduleFolder, _internals.path)}`;
 };
 
 export const loadModel = async (
@@ -45,7 +48,10 @@ export const loadModel = async (
   try {
     isValidModelDefinition(modelDefinition);
   } catch(err: unknown) {
-    throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
+    if (errIsModelDefinitionValidationError(err)) {
+      throw getModelDefinitionError(err.type, modelDefinition);
+    }
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);

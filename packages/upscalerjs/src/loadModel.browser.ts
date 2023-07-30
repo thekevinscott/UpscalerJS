@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, ModelDefinitionValidationError, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
+import { ModelDefinition, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
 import type { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   loadTfModel,
@@ -7,12 +7,14 @@ import {
 } from './model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 import {
   isValidModelDefinition,
 } from '@upscalerjs/core';
+import {
+  errIsModelDefinitionValidationError,
+} from './utils';
 
 type CDN = 'jsdelivr' | 'unpkg';
 
@@ -30,8 +32,8 @@ export const CDNS: CDN[] = [
   'unpkg',
 ];
 
-export const getLoadModelErrorMessage = (modelPath: string, internals: ModelConfigurationInternals, errs: Errors): Error => new Error([
-  `Could not resolve URL ${modelPath} for package ${internals.name}@${internals.version}`,
+export const getLoadModelErrorMessage = (errs: Errors, modelPath: string, internals: ModelConfigurationInternals): Error => new Error([
+  `Could not resolve URL ${modelPath} for package ${internals?.name}@${internals?.version}`,
   `Errors include:`,
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
@@ -43,21 +45,22 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
   if (modelPath) {
     return await loadTfModel(modelPath, modelType);
   }
-  if (_internals) {
-    const errs: Errors = [];
-    for (const cdn of CDNS) {
-      const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
-      try {
-        const url = getCDNFn(_internals.name, _internals.version, _internals.path);
-        return await loadTfModel(url, modelType);
-      } catch (err: unknown) {
-        // there was an issue with the CDN, try another
-        errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
-      }
-    }
-    throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
+  if (!_internals) {
+    // This should never happen. This should have been caught by isValidModelDefinition.
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+  const errs: Errors = [];
+  for (const cdn of CDNS) {
+    const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
+    try {
+      const url = getCDNFn(_internals.name, _internals.version, _internals.path);
+      return await loadTfModel(url, modelType);
+    } catch (err: unknown) {
+      // there was an issue with the CDN, try another
+      errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
+    }
+  }
+  throw getLoadModelErrorMessage(errs, modelPath || _internals.path, _internals);
 };
 
 export const loadModel = async (
@@ -66,8 +69,11 @@ export const loadModel = async (
   const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);
-  } catch(err: unknown) {
-    throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
+  } catch (err: unknown) {
+    if (errIsModelDefinitionValidationError(err)) {
+      throw getModelDefinitionError(err.type, modelDefinition);
+    }
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
