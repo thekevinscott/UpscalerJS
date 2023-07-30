@@ -1,4 +1,4 @@
-import { ModelDefinitionValidationError } from '@upscalerjs/core';
+import { ModelDefinitionValidationError, } from '@upscalerjs/core';
 import { tf, } from './dependencies.generated';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
 import { 
