@@ -202,7 +202,10 @@ export class Upscaler {
    */
   dispose = async (): Promise<void> => {
     await this.ready;
-    const { model, } = await this._model;
+    const { model, modelDefinition, } = await this._model;
+    if (modelDefinition.teardown) {
+      await modelDefinition.teardown(tf);
+    }
     model.dispose();
   };
 

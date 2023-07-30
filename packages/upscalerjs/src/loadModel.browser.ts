@@ -46,8 +46,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
   if (packageInformation) {
     const errs: Errors = [];
-    for (let i = 0; i < CDNS.length; i++) {
-      const cdn = CDNS[i];
+    for (const cdn of CDNS) {
       const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
       try {
         const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
@@ -63,8 +62,9 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
 }
 
 export const loadModel = async (
-  modelDefinition: ModelDefinition,
+  _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
+  const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);
   } catch(err: unknown) {

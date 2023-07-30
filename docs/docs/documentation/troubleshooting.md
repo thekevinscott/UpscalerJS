@@ -242,3 +242,11 @@ For example, for a model with a `divisibilityFactor` of `64` and a `patchSize` o
 ```
 
 To get rid of this warning, update your `patchSize` and `padding` arguments to result in a multiple of the `divisibilityFactor`.
+
+## Deprecated Model Definition Function
+
+Passing a function for a model configuration is deprecated and will be removed in a future version of UpscalerJS.
+
+Model configuration functions were used primarily for registering custom layers and operations. This behavior can be achieved by leveraging the `setup` function, which is called upon model instantiation.  [See the guide on custom model configurations for more information](/documentation/guides/browser/usage/custom-model-configurations).
+
+To resolve this warning, rewrite your custom model configuration function to be a plain object, and move your instantiation logic into the `setup` function.
