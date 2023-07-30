@@ -75,8 +75,6 @@ export interface PrivateUpscaleArgs extends Omit<UpscaleArgs, 'output' | 'progre
 
 export type Layer = tf.layers.Layer;
 
-export type { PackageInformation, ProcessFn, } from '@upscalerjs/core';
-
 export interface ModelPackage {
   model: tf.LayersModel | tf.GraphModel;
   modelDefinition: ParsedModelDefinition;
@@ -102,3 +100,5 @@ export type Patch = {
   pre: PatchCoordinates;
   post: PatchCoordinates;
 };
+
+export type { ProcessFn, } from '@upscalerjs/core';

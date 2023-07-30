@@ -55,16 +55,10 @@ export class AbortError extends Error {
   message = 'The upscale request received an abort signal';
 }
 
-const ERROR_MISSING_MODEL_DEFINITION_PATH_URL =
-  'https://upscalerjs.com/documentation/troubleshooting#missing-model-path';
 const ERROR_INVALID_MODEL_TYPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#invalid-model-type';
 const WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL = 'https://upscalerjs.com/documentation/troubleshooting#input-size-and-patch-size';
 const ERROR_WITH_MODEL_INPUT_SHAPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#error-with-model-input-shape';
 
-export const ERROR_MISSING_MODEL_DEFINITION_PATH = [
-  'You must provide a "path" when providing a model definition',
-  `For more information, see ${ERROR_MISSING_MODEL_DEFINITION_PATH_URL}.`,
-].join(' ');
 export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
   `You've provided an invalid model type: ${JSON.stringify(modelType)}. Accepted types are "layers" and "graph".`,
   `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
@@ -114,11 +108,16 @@ export const MODEL_INPUT_SIZE_MUST_BE_SQUARE = new Error([
 
 export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
   switch(error) {
-    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH:
-      return new Error(ERROR_MISSING_MODEL_DEFINITION_PATH);
     case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
       return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
     default:
       return new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 }
+
+export const MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-path-and-internals';
+export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfiguration: Partial<ModelDefinition>) => new Error([
+  'Provided model configuration is missing both a "path" and "_internals". A valid path to a model JSON file must be provided.',
+  `For more information, see ${MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL}.`,
+  `The model configuration provided was: ${JSON.stringify(modelConfiguration)}`,
+].join(' '));

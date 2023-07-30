@@ -9,9 +9,10 @@ export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
 export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
-export interface PackageInformation {
+export interface ModelConfigurationInternals {
   name: string;
   version: string;
+  path: string;
 }
 
 export type Range = [number, number,];
@@ -49,7 +50,7 @@ export interface ModelDefinition {
   /**
    * Path to a model.json file.
    */
-  path: string;
+  path?: string;
   /**
    * The scale of the model. For super resolution models, should match the scale at which the model was trained.
    */
@@ -65,9 +66,7 @@ export interface ModelDefinition {
    * 
    * Used internally by UpscalerJS models to encode information about the model configuration, such as package version, package name, and path to model JSON file.
    */
-  _internals?: {
-    packageInformation?: PackageInformation;
-  };
+  _internals?: ModelConfigurationInternals;
   /**
    * A function that processes the input image before feeding to the model. For example, you can use this function if you need to regularize your input.
    */
@@ -148,7 +147,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   }
-  if (!modelDefinition.path) {
+  if (!modelDefinition.path && !modelDefinition._internals?.path) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
   }
   return true;

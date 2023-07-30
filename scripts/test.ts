@@ -21,7 +21,7 @@ import { Bundle } from '../test/integration/utils/NodeTestRunner';
 type Platform = 'browser' | 'node';
 type TargetPlatform = 'browser' | 'node' | 'node-gpu';
 type Runner = 'local' | 'browserstack';
-type Kind = 'integration' | 'memory' | 'model';
+type Kind = 'integraticn' | 'memory' | 'model';
 
 /****
  * Utility Functions & Classes

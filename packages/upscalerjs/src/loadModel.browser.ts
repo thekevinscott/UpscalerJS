@@ -1,12 +1,13 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, ModelDefinitionValidationError, ModelType, } from '@upscalerjs/core';
-import type { ParsedModelDefinition, ModelPackage, PackageInformation, } from './types';
+import { ModelDefinition, ModelDefinitionValidationError, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
+import type { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   loadTfModel,
   parseModelDefinition,
 } from './model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 import {
@@ -29,37 +30,35 @@ export const CDNS: CDN[] = [
   'unpkg',
 ];
 
-export const getLoadModelErrorMessage = (modelPath: string, packageInformation: PackageInformation, errs: Errors): Error => new Error([
-  `Could not resolve URL ${modelPath} for package ${packageInformation.name}@${packageInformation.version}`,
+export const getLoadModelErrorMessage = (modelPath: string, internals: ModelConfigurationInternals, errs: Errors): Error => new Error([
+  `Could not resolve URL ${modelPath} for package ${internals.name}@${internals.version}`,
   `Errors include:`,
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
-export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>({
-  path: modelPath,
-  modelType,
-  _internals: {
-    packageInformation,
-  } = {},
-}: {
+export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>(modelConfiguration: {
   modelType: M;
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
-  if (packageInformation) {
+  const { modelType, _internals, path: modelPath, } = modelConfiguration;
+  if (modelPath) {
+    return await loadTfModel(modelPath, modelType);
+  }
+  if (_internals) {
     const errs: Errors = [];
     for (const cdn of CDNS) {
       const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
       try {
-        const url = getCDNFn(packageInformation.name, packageInformation.version, modelPath);
+        const url = getCDNFn(_internals.name, _internals.version, _internals.path);
         return await loadTfModel(url, modelType);
       } catch (err: unknown) {
         // there was an issue with the CDN, try another
         errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
       }
     }
-    throw getLoadModelErrorMessage(modelPath, packageInformation, errs);
+    throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
   }
-  return await loadTfModel(modelPath, modelType);
-}
+  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+};
 
 export const loadModel = async (
   _modelDefinition: Promise<ModelDefinition>,
