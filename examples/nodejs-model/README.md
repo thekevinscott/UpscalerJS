@@ -1,5 +1,7 @@
 # Node.js Model Guide
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/node/nodejs-model">View this page on the UpscalerJS website</a>
+
 Demonstration of loading a model in Node.js.
 
 <a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs-model">Open in CodeSandbox</a>.

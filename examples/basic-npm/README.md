@@ -4,7 +4,7 @@
 
 Demonstrates a basic implementation of UpscalerJS for the browser.
 
-<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic-npm?file=index.js&title=UpscalerJS: Basic Implementation">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic-npm?file=index.js&title=UpscalerJS: Basic Implementation">Open example in Codesandbox</a>.
 
 ## Getting Started
 
