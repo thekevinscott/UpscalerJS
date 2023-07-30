@@ -133,11 +133,12 @@ describe('loadModel.node', () => {
     });
 
     it('throws an error if neither _internals nor path is provided', () => {
-      const modelConfiguration = {
+      const modelConfiguration: ModelDefinition = {
         scale: 2,
         modelType: 'layers',
       };
-      expect(getModelPath(modelConfiguration)).toThrow(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
+      const err = GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+      expect(() => getModelPath(modelConfiguration)).toThrow(err);
     });
   });
 
