@@ -1,8 +1,10 @@
 # Node.js Custom File Path Guide
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/node/nodejs-custom-file-path">View this page on the UpscalerJS website</a>
+
 Demonstration of loading a model via a custom file path in Node.js.
 
-<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs-custom-models">Open in CodeSandbox</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs-custom-file-path">Open in CodeSandbox</a>.
 
 ## Code
 

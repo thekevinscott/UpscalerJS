@@ -1,5 +1,7 @@
 # Node.js Example
 
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/node/nodejs">View this page on the UpscalerJS website</a>
+
 Demonstates how to use UpscalerJS within a Node.js context.
 
 <a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/nodejs">Open in CodeSandbox</a>.
