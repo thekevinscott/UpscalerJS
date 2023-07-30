@@ -1,6 +1,7 @@
 import { Upscaler } from './upscaler';
 import type { LayersModel } from '@tensorflow/tfjs';
 import { loadModel as _loadModel, } from './loadModel.generated';
+import { getModel as _getModel, } from './model-utils';
 import { cancellableWarmup as _cancellableWarmup, } from './warmup';
 import { getImageAsTensor as _getImageAsTensor } from './image.generated';
 import { cancellableUpscale as _cancellableUpscale, } from './upscale';
@@ -29,6 +30,13 @@ jest.mock('./loadModel.generated', () => {
     loadModel: jest.fn(loadModel),
   };
 });
+jest.mock('./model-utils', () => {
+  const { getModel, ...rest } = jest.requireActual('./model-utils');
+  return {
+    ...rest,
+    getModel: jest.fn(getModel),
+  };
+});
 jest.mock('./warmup', () => {
   const { cancellableWarmup, ...rest } = jest.requireActual('./warmup');
   return {
@@ -46,6 +54,7 @@ jest.mock('./dependencies.generated', () => {
 const cancellableUpscale = mockFn(_cancellableUpscale);
 const cancellableWarmup = mockFn(_cancellableWarmup);
 const loadModel = mockFn(_loadModel);
+const getModel = mockFn(_getModel);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -55,17 +64,20 @@ describe('Upscaler', () => {
     cancellableUpscale.mockClear();
     cancellableWarmup.mockClear();
     loadModel.mockClear();
+    getModel.mockClear();
     getImageAsTensor.mockClear();
   });
 
   it('is able to abort multiple times', (): Promise<void> => new Promise(async (resolve, reject) => {
+    const modelDefinition: ModelDefinition = {
+      path: 'foo',
+      modelType: 'layers',
+      scale: 2,
+    };
+    getModel.mockImplementation(async () => modelDefinition);
     loadModel.mockImplementation(async () => {
       return {
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: {
           predict: jest.fn(() => _tf.ones([1,2,2,3])),
           inputs: [{
@@ -111,12 +123,14 @@ describe('Upscaler', () => {
       const mockModel = {
         dispose,
       };
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
+      getModel.mockImplementation(async () => modelDefinition);
       loadModel.mockImplementation(async () => ({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: mockModel as unknown as LayersModel,
       }));
       const upscaler = new Upscaler();
@@ -130,13 +144,15 @@ describe('Upscaler', () => {
         dispose,
       };
       const teardown = jest.fn().mockImplementation(() => {});
+      const modelDefinition: ModelDefinition = {
+        teardown,
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
+      getModel.mockImplementation(async () => modelDefinition);
       loadModel.mockImplementation(async () => ({
-        modelDefinition: {
-          teardown,
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: mockModel as unknown as LayersModel,
       }));
       const upscaler = new Upscaler();
@@ -154,6 +170,13 @@ describe('Upscaler', () => {
         await wait(0);
         complete = true;
       });
+      const modelDefinition: ModelDefinition = {
+        teardown,
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
+      getModel.mockImplementation(async () => modelDefinition);
       loadModel.mockImplementation(async () => ({
         modelDefinition: {
           teardown,
@@ -186,18 +209,20 @@ describe('Upscaler', () => {
 
   describe('warmups', () => {
     it('calls warmup from constructor', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
         model: LayersModel;
       }>(resolve => resolve({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
+      getModel.mockImplementation(async () => modelDefinition);
       cancellableWarmup.mockImplementation(async () => { });
       const warmupSizes: WarmupSizes = [2,];
       new Upscaler({
@@ -209,18 +234,20 @@ describe('Upscaler', () => {
     });
 
     it('is able to warmup with a numeric array of warmup sizes', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
         model: LayersModel;
       }>(resolve => resolve({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
+      getModel.mockImplementation(async () => modelDefinition);
       cancellableWarmup.mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
@@ -229,18 +256,20 @@ describe('Upscaler', () => {
     });
 
     it('is able to warmup with a patchSize array of warmup sizes', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
         model: LayersModel;
       }>(resolve => resolve({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
+      getModel.mockImplementation(async () => modelDefinition);
       cancellableWarmup.mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
@@ -249,18 +278,20 @@ describe('Upscaler', () => {
     });
 
     it('is able to warmup with a numeric warmup size', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
         model: LayersModel;
       }>(resolve => resolve({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
+      getModel.mockImplementation(async () => modelDefinition);
       cancellableWarmup.mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
@@ -269,18 +300,20 @@ describe('Upscaler', () => {
     });
 
     it('is able to warmup with a patchSize warmup sizes', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        modelType: 'layers',
+        scale: 2,
+      };
       const modelDefinitionPromise = new Promise<{
         modelDefinition: ModelDefinition;
         model: LayersModel;
       }>(resolve => resolve({
-        modelDefinition: {
-          path: 'foo',
-          modelType: 'layers',
-          scale: 2,
-        },
+        modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
       loadModel.mockImplementation(() => modelDefinitionPromise);
+      getModel.mockImplementation(async () => modelDefinition);
       cancellableWarmup.mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = { patchSize: 32, padding: 2 };
