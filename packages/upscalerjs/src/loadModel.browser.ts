@@ -12,7 +12,9 @@ import {
 import {
   isValidModelDefinition,
 } from '@upscalerjs/core';
-import { errIsModelDefinitionValidationError } from 'utils';
+import {
+  errIsModelDefinitionValidationError,
+} from './utils';
 
 type CDN = 'jsdelivr' | 'unpkg';
 

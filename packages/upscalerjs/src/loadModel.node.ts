@@ -10,7 +10,9 @@ import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
 } from './errors-and-warnings';
-import { errIsModelDefinitionValidationError } from 'utils';
+import {
+  errIsModelDefinitionValidationError,
+} from './utils';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
