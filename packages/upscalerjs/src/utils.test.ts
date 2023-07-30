@@ -13,7 +13,6 @@ import {
 } from '@upscalerjs/core';
 import {
   ERROR_INVALID_MODEL_TYPE,
-  ERROR_MISSING_MODEL_DEFINITION_PATH, 
   ERROR_MODEL_DEFINITION_BUG, 
   getModelDefinitionError,
 } from './errors-and-warnings';
@@ -183,11 +182,6 @@ describe('isMultiArgProgress', () => {
 });
 
 describe('getModelDefinitionError', () => {
-  it('returns an error if path is not provided', () => {
-    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH, { path: 'foo', scale: 2, modelType: 'foo', } as unknown as ModelDefinition);
-    expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
-  });
-
   it('returns an error if invalid model type is provided', () => {
     const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
     expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));

@@ -65,26 +65,6 @@ This likely means one of two things:
 - You are using `upscaler`, instead of `upscaler/node`; [check out the guide on Node.js here](/documentation/guides/node/nodejs).
 - You are using `import` syntax instead of `require` syntax; if so, try switching to `require('upscaler')`. For more information on this, [see this Github issue](https://github.com/thekevinscott/UpscalerJS/issues/554#issuecomment-1344108954).
 
-## Missing Model Path
-
-If you see an error like:
-
-```
-Error: You must provide a "path" when providing a model definition
-```
-
-You've passed a `null` or `undefined` path argument in the `model` argument to UpscalerJS:
-
-```javascript
-const upscaler = new Upscaler({
-  model: {
-    path: null,
-  },
-})
-```
-
-Ensure you pass a valid `path` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
-
 ## Missing Model Scale
 
 If you see an error like:
@@ -245,9 +225,9 @@ To get rid of this warning, update your `patchSize` and `padding` arguments to r
 
 ## Missing path and internals
 
-This error indicates model configuration is missing a path to a valid JSON file.
+This error indicates the model configuration is missing a path to a valid JSON file.
 
-If you are loading a first-party UpscalerJS model (one installed via npm, under the `@upscalerjs/` namespace) this likely indicates an error.  [Please open a bug report](https://github.com/thekevinscott/UpscalerJS/issues/new?assignees=thekevinscott&labels=bug&projects=&template=bug_report.md&title=)
+### When using a custom model configuration
 
 If you are providing a custom model configuration, you are missing the `path` variable. The UpscalerJS instantiation should look something like:
 
@@ -259,6 +239,12 @@ const upscaler = new Upscaler({
   },
 });
 ```
+
+Ensure you pass a valid `path` argument in the `model` payload. [See the guide on models for more information](/documentation/guides/browser/models).
+
+### When using an installed model
+
+If you are loading a first-party UpscalerJS model (one installed via npm, under the `@upscalerjs/` namespace) this likely indicates an error.  [Please open a bug report](https://github.com/thekevinscott/UpscalerJS/issues/new?assignees=thekevinscott&labels=bug&projects=&template=bug_report.md&title=)
 
 ## Deprecated Model Definition Function
 

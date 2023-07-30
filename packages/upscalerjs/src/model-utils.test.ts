@@ -24,7 +24,6 @@ import {
 import { ModelPackage } from './types';
 import {
   ERROR_INVALID_MODEL_TYPE,
-  ERROR_MISSING_MODEL_DEFINITION_PATH, 
   ERROR_MODEL_DEFINITION_BUG, 
   ERROR_WITH_MODEL_INPUT_SHAPE, 
   GET_INVALID_PATCH_SIZE,
@@ -85,11 +84,6 @@ const warn = mockFn(_warn);
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('getModelDefinitionError', () => {
-  it('returns an error if path is not provided', () => {
-    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH, { path: 'foo', scale: 2, modelType: 'foo', } as unknown as ModelDefinition);
-    expect(err.message).toEqual(ERROR_MISSING_MODEL_DEFINITION_PATH);
-  });
-
   it('returns an error if invalid model type is provided', () => {
     const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
     expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
