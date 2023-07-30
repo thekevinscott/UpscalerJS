@@ -1,4 +1,4 @@
-import puppeteer, { Page } from 'puppeteer';
+import { JSHandle, Page } from 'puppeteer';
 import { ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
@@ -12,7 +12,7 @@ const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer mo
 const EXPECTED_UPSCALERS = 0;
 
 // https://puppeteer.github.io/puppeteer/docs/10.0.0/puppeteer.page.queryobjects/#example
-const countObjects = async (page: Page, prototype: puppeteer.JSHandle): Promise<number> => {
+const countObjects = async (page: Page, prototype: JSHandle): Promise<number> => {
   const instances = await page.queryObjects(prototype);
   const numberOfObjects = await page.evaluate((i) => i.length, instances);
 
@@ -28,7 +28,7 @@ const TIMES_TO_CHECK = 7;
 
 interface PrototypeDefinition {
   name: 'LayersModel' | 'Upscaler';
-  prototype: (page: Page) => Promise<puppeteer.JSHandle>
+  prototype: (page: Page) => Promise<JSHandle>
 }
 interface TFJSMemory {
   unreliable: boolean;
@@ -106,7 +106,7 @@ describe('Memory Leaks', () => {
     await testRunner.afterEach();
   });
 
-  const tick = async (page: puppeteer.Page, tickTime = 10) => {
+  const tick = async (page: Page, tickTime = 10) => {
     await page.evaluate(async (duration) => {
       await new Promise(resolve => setTimeout(resolve, duration));
     }, tickTime);
