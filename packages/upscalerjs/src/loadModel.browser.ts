@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { ModelDefinition, ModelDefinitionValidationError, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
+import { ModelDefinition, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
 import type { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   loadTfModel,
@@ -7,7 +7,6 @@ import {
 } from './model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 import {

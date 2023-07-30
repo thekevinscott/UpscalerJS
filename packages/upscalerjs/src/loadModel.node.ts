@@ -4,12 +4,10 @@ import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
-  ModelDefinitionValidationError,
   isValidModelDefinition,
 } from '@upscalerjs/core';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
   getModelDefinitionError,
 } from './errors-and-warnings';
 import { errIsModelDefinitionValidationError } from 'utils';
