@@ -147,7 +147,7 @@ export const isValidModelDefinition = (modelDefinition?: ModelDefinition): model
   if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   }
-  if (!modelDefinition.path) {
+  if (!modelDefinition.path && !modelDefinition._internals?.path) {
     throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
   }
   return true;

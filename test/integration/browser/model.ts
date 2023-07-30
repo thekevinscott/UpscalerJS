@@ -51,6 +51,8 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("loads the default model", async () => {
+    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    await wait(15000);
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']();
       return upscaler.execute(window['fixtures']['default-model']);
