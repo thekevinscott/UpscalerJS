@@ -12,6 +12,7 @@ import type { ModelDefinition } from "@upscalerjs/core";
 import {
   getModelDefinitionError as _getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
 } from './errors-and-warnings';
 import {
   loadTfModel as _loadTfModel,
@@ -129,6 +130,15 @@ describe('loadModel.node', () => {
         scale: 2,
         modelType: 'layers',
       })).toEqual(`file://${path.resolve('./node_modules/@upscalerjs/default-model', 'some-model')}`);
+    });
+
+    it('throws an error if neither _internals nor path is provided', () => {
+      const modelConfiguration: ModelDefinition = {
+        scale: 2,
+        modelType: 'layers',
+      };
+      const err = GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+      expect(() => getModelPath(modelConfiguration)).toThrow(err);
     });
   });
 
