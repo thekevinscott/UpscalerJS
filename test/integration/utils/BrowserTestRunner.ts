@@ -1,4 +1,4 @@
-import http, { request } from 'http';
+import http from 'http';
 import * as puppeteer from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
@@ -172,7 +172,9 @@ export class BrowserTestRunner {
   }
 
   public async startBrowser() {
-    this.browser = await puppeteer.launch();
+    this.browser = await puppeteer.launch({
+      headless: 'new',
+    });
   }
 
   private _attachLogger() {
