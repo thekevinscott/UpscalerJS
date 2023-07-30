@@ -32,8 +32,13 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   if (modelConfiguration.path) {
     return modelConfiguration.path;
   }
-  const moduleFolder = getModuleFolder(modelConfiguration._internals.name);
-  return `file://${path.resolve(moduleFolder, modelConfiguration._internals.path)}`;
+  const { _internals, } = modelConfiguration;
+  if (!_internals) {
+    // This should never happen. This should have been caught by isValidModelDefinition.
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
+  }
+  const moduleFolder = getModuleFolder(_internals.name);
+  return `file://${path.resolve(moduleFolder, _internals.path)}`;
 };
 
 export const loadModel = async (
