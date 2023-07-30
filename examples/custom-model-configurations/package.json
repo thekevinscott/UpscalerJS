@@ -1,0 +1,28 @@
+{
+  "name": "@upscalerjs/examples.custom-model-configurations",
+  "private": true,
+  "version": "1.0.0-beta.10",
+  "description": "Demonstration of custom model configurations with UpscalerJS",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx vite"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@tensorflow/tfjs": "~4.8.0",
+    "seedrandom": "^3.0.5",
+    "upscaler": "1.0.0-beta.14"
+  },
+  "engines": {
+    "npm": ">8.0.0"
+  },
+  "@upscalerjs": {
+    "guide": {
+      "frontmatter": {
+        "sidebar_position": 204,
+        "parent": "usage"
+      }
+    }
+  }
+}

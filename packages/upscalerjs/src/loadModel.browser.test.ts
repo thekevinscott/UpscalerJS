@@ -234,11 +234,11 @@ describe('loadModel browser tests', () => {
       });
       getModelDefinitionError.mockImplementation(() => e);
 
-      await expect(() => loadModel({
+      await expect(() => loadModel(Promise.resolve({
         path: 'foo',
         scale: 2,
         modelType: 'layers',
-      })).rejects.toThrowError(e);
+      }))).rejects.toThrowError(e);
     });
 
     it('loads a valid layers model successfully', async () => {
@@ -253,7 +253,7 @@ describe('loadModel browser tests', () => {
         modelType: 'layers',
       };
 
-      const result = await loadModel(modelDefinition);
+      const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
@@ -277,7 +277,7 @@ describe('loadModel browser tests', () => {
         modelType: 'graph',
       };
 
-      const result = await loadModel(modelDefinition);
+      const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
       expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');

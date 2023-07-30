@@ -48,6 +48,8 @@ const cancellableWarmup = mockFn(_cancellableWarmup);
 const loadModel = mockFn(_loadModel);
 const getImageAsTensor = mockFn(_getImageAsTensor);
 
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 describe('Upscaler', () => {
   beforeEach(() => {
     cancellableUpscale.mockClear();
@@ -103,23 +105,69 @@ describe('Upscaler', () => {
     await tick();
   }), 100);
 
-  it('is able to dispose', async () => {
-    const dispose = jest.fn();
-    const mockModel = {
-      dispose,
-    };
-    loadModel.mockImplementation(async () => ({
-      modelDefinition: {
-        path: 'foo',
-        modelType: 'layers',
-        scale: 2,
-      },
-      model: mockModel as unknown as LayersModel,
-    }));
-    const upscaler = new Upscaler();
-    await upscaler.dispose();
-    expect(dispose).toHaveBeenCalled();
+  describe('dispose', () => {
+    it('is able to dispose of a model', async () => {
+      const dispose = jest.fn();
+      const mockModel = {
+        dispose,
+      };
+      loadModel.mockImplementation(async () => ({
+        modelDefinition: {
+          path: 'foo',
+          modelType: 'layers',
+          scale: 2,
+        },
+        model: mockModel as unknown as LayersModel,
+      }));
+      const upscaler = new Upscaler();
+      await upscaler.dispose();
+      expect(dispose).toHaveBeenCalled();
+    });
 
+    it('is able to call teardown function, if one is present', async () => {
+      const dispose = jest.fn();
+      const mockModel = {
+        dispose,
+      };
+      const teardown = jest.fn().mockImplementation(() => {});
+      loadModel.mockImplementation(async () => ({
+        modelDefinition: {
+          teardown,
+          path: 'foo',
+          modelType: 'layers',
+          scale: 2,
+        },
+        model: mockModel as unknown as LayersModel,
+      }));
+      const upscaler = new Upscaler();
+      await upscaler.dispose();
+      expect(teardown).toHaveBeenCalled();
+    });
+
+    it('is able to call an async teardown function, if one is present', async () => {
+      const dispose = jest.fn();
+      const mockModel = {
+        dispose,
+      };
+      let complete = false;
+      const teardown = jest.fn().mockImplementation(async () => {
+        await wait(0);
+        complete = true;
+      });
+      loadModel.mockImplementation(async () => ({
+        modelDefinition: {
+          teardown,
+          path: 'foo',
+          modelType: 'layers',
+          scale: 2,
+        },
+        model: mockModel as unknown as LayersModel,
+      }));
+      const upscaler = new Upscaler();
+      await upscaler.dispose();
+      expect(teardown).toHaveBeenCalled();
+      expect(complete).toEqual(true);
+    });
   });
 
   it('can handle a failing loadModel', (done) => {

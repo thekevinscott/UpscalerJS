@@ -39,6 +39,9 @@ export const isShape4D = (shape?: unknown): shape is Shape4D => {
 export const isFixedShape4D = (shape?: unknown): shape is FixedShape4D => isShape4D(shape) && shape[1] !== null && shape[2] !== null && shape[1] > 0 && shape[2] > 0;
 export const isDynamicShape4D = (shape?: unknown): shape is DynamicShape4D => isShape4D(shape) && !isFixedShape4D(shape);
 
+export type Setup = (tf: TF) => (void | Promise<void>);
+export type Teardown = (tf: TF) => (void | Promise<void>);
+
 export interface ModelDefinition {
   /**
    * The type of the model. Can be 'graph' or 'layer'.
@@ -90,6 +93,14 @@ export interface ModelDefinition {
    * @hidden
    */
   meta?: Meta;
+  /**
+   * A function that runs when a model is instantiated. Can be used for registering custom layers and ops. 
+   */
+  setup?: Setup;
+  /**
+   * A function that runs when a model is disposed. Can be used for releasing memory.
+   */
+  teardown?: Teardown;
 }
 
 export type ModelDefinitionFn = (tf: TF) => ModelDefinition;

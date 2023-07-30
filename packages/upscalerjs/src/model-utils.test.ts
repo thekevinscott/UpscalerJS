@@ -1,6 +1,5 @@
-import { GraphModel } from '@tensorflow/tfjs-node';
-import { tf as _tf, } from './dependencies.generated';
 import { mock, mockFn } from '../../../test/lib/shared/mockers';
+import { tf as _tf, } from './dependencies.generated';
 import { 
   parseModelDefinition,
   getModel,
@@ -35,6 +34,7 @@ import {
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
   GET_INVALID_PATCH_SIZE_AND_PADDING,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
+  WARNING_DEPRECATED_MODEL_DEFINITION_FN,
 } from './errors-and-warnings';
 
 jest.mock('./dependencies.generated', () => {
@@ -82,6 +82,8 @@ const isFixedShape4D = mockFn(_isFixedShape4D);
 const isShape4D = mockFn(_isShape4D);
 const warn = mockFn(_warn);
 
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 describe('getModelDefinitionError', () => {
   it('returns an error if path is not provided', () => {
     const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH, { path: 'foo', scale: 2, modelType: 'foo', } as unknown as ModelDefinition);
@@ -100,25 +102,90 @@ describe('getModelDefinitionError', () => {
 })
 
 describe('getModel', () => {
-  it('returns model definition', () => {
-    const modelDefinition: ModelDefinition = {
-      modelType: 'layers',
-      path: 'foo',
-      scale: 2,
-    };
-
-    expect(getModel(modelDefinition)).toEqual(modelDefinition)
+  beforeEach(() => {
+    warn.mockImplementation(() => {});
   });
 
-  it('returns model definition from model definition fn', () => {
-    const modelDefinition: ModelDefinition = {
-      path: 'foo',
-      scale: 2,
-      modelType: 'layers',
-    };
-    const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
+  afterEach(() => {
+    warn.mockClear();
+  });
 
-    expect(getModel(modelDefinitionFn)).toEqual(modelDefinition)
+  describe('ModelDefinition', () => {
+    it('returns model definition', async () => {
+      const modelDefinition: ModelDefinition = {
+        modelType: 'layers',
+        path: 'foo',
+        scale: 2,
+      };
+
+      expect(await getModel(modelDefinition)).toEqual(modelDefinition)
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('calls setup if defined on a model definition', async () => {
+      const setup = jest.fn().mockImplementation(() => {});
+      const modelDefinition: ModelDefinition = {
+        setup,
+        modelType: 'layers',
+        path: 'foo',
+        scale: 2,
+      };
+
+      expect(await getModel(modelDefinition)).toEqual(modelDefinition)
+      expect(setup).toHaveBeenCalled();
+      expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('awaits an async setup if defined on a model definition', async () => {
+      let complete = false;
+      const setup = jest.fn().mockImplementation(async () => {
+        await wait(0);
+        complete = true;
+      });
+      const modelDefinition: ModelDefinition = {
+        setup,
+        modelType: 'layers',
+        path: 'foo',
+        scale: 2,
+      };
+
+      expect(await getModel(modelDefinition)).toEqual(modelDefinition)
+      expect(setup).toHaveBeenCalled();
+      expect(complete).toEqual(true);
+      expect(warn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ModelDefinitionFn', () => {
+    it('returns model definition from model definition fn', async () => {
+      const modelDefinition: ModelDefinition = {
+        path: 'foo',
+        scale: 2,
+        modelType: 'layers',
+      };
+      const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
+
+      expect(await getModel(modelDefinitionFn)).toEqual(modelDefinition);
+      expect(warn).toHaveBeenCalledWith(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls setup if defined on a model function definition', async () => {
+      const setup = jest.fn().mockImplementation(() => { });
+      const modelDefinition: ModelDefinition = {
+        setup,
+        modelType: 'layers',
+        path: 'foo',
+        scale: 2,
+      };
+
+      const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
+
+      expect(await getModel(modelDefinitionFn)).toEqual(modelDefinition)
+      expect(setup).toHaveBeenCalled();
+      expect(warn).toHaveBeenCalledWith(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
+      expect(warn).toHaveBeenCalledTimes(1);
+    });
   });
 });
 
@@ -129,8 +196,8 @@ describe('loadTfModel', () => {
   });
 
   it('loads a graph model if graph is specified', async () => {
-    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as _tf.GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as _tf.LayersModel));
     const model = await loadTfModel('foo', 'graph');
     expect(model).toEqual('graph');
     expect(tf.loadLayersModel).not.toHaveBeenCalled();
@@ -138,8 +205,8 @@ describe('loadTfModel', () => {
   });
 
   it('loads a layers model if layer is specified', async () => {
-    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as _tf.GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as _tf.LayersModel));
     const model = await loadTfModel('bar', 'layers');
     expect(model).toEqual('layers');
     expect(tf.loadLayersModel).toHaveBeenCalled();
@@ -147,8 +214,8 @@ describe('loadTfModel', () => {
   });
 
   it('loads a layers model if no argument is specified', async () => {
-    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as GraphModel));
+    tf.loadGraphModel = jest.fn().mockImplementation((async () => 'graph' as any as _tf.GraphModel));
+    tf.loadLayersModel = jest.fn().mockImplementation((async () => 'layers' as any as _tf.LayersModel));
     const model = await loadTfModel('bar');
     expect(model).toEqual('layers');
     expect(tf.loadLayersModel).toHaveBeenCalled();
@@ -196,7 +263,7 @@ describe('parsePatchAndInputShapes', () => {
     };
     parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
     expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
-      expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenCalledTimes(1);
   });
 
   it('throws if given invalid patch size and padding', () => {

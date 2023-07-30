@@ -8,6 +8,7 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   GET_INVALID_PATCH_SIZE_AND_PADDING,
+  WARNING_DEPRECATED_MODEL_DEFINITION_FN,
 } from './errors-and-warnings';
 
 import {
@@ -37,10 +38,22 @@ export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition
 
 export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export function getModel(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
+export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
+  if (isModelDefinitionFn(modelDefinition)) {
+    warn(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
+    return modelDefinition(tf);
+  }
+  return modelDefinition;
+}
+
+export async function getModel(modelDefinition: ModelDefinitionObjectOrFn): Promise<ModelDefinition> {
   /* eslint-disable @typescript-eslint/no-unsafe-call */
   /* eslint-disable @typescript-eslint/no-unsafe-return */
-  return isModelDefinitionFn(modelDefinition) ? modelDefinition(tf) : modelDefinition;
+  const modelDef = getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefinition);
+  if (modelDef.setup) {
+    await modelDef.setup(tf);
+  }
+  return modelDef;
 }
 
 export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ? tf.GraphModel : tf.LayersModel>>(modelPath: string, modelType?: M): R {

@@ -1,4 +1,4 @@
-import type { Meta, ModelDefinition, ModelDefinitionFn, } from '@upscalerjs/core';
+import type { Meta, ModelDefinition, Setup } from '@upscalerjs/core';
 import type { Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type Inputs = Tensor4D | Tensor4D[];
@@ -32,7 +32,7 @@ export const getESRGANModelDefinition = ({
   scale: Scale;
   meta: Meta;
   path?: string;
-}): ModelDefinitionFn => (tf): ModelDefinition => {
+}): ModelDefinition => {
   const path = modelPath || `models/${scale}x/model.json`;
   if (architecture === 'rdn') {
     return {
@@ -52,55 +52,58 @@ export const getESRGANModelDefinition = ({
     };
   }
 
-  const Layer = tf.layers.Layer;
-  const BETA = 0.2;
+  const setup: Setup = (tf) => {
+    const Layer = tf.layers.Layer;
+    const BETA = 0.2;
 
-  class MultiplyBeta extends Layer {
-    beta: number;
-
-    constructor() {
-      super({});
-      this.beta = BETA;
-    }
-
-    call(inputs: Inputs) {
-      return tf.mul(getInput(inputs), this.beta);
-    }
-
-    static className = 'MultiplyBeta';
-  }
-
-  const getPixelShuffle = (_scale: number) => {
-    class PixelShuffle extends Layer {
-      scale: number = _scale;
+    class MultiplyBeta extends Layer {
+      beta: number;
 
       constructor() {
         super({});
-      }
-
-      // skipcq: js-0105
-      computeOutputShape(inputShape: number[]) {
-        return [inputShape[0], inputShape[1], inputShape[2], 3,];
+        this.beta = BETA;
       }
 
       call(inputs: Inputs) {
-        return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
+        return tf.mul(getInput(inputs), this.beta);
       }
 
-      static className = `PixelShuffle${scale}x`;
+      static className = 'MultiplyBeta';
     }
 
-    return PixelShuffle;
+    const getPixelShuffle = (_scale: number) => {
+      class PixelShuffle extends Layer {
+        scale: number = _scale;
+
+        constructor() {
+          super({});
+        }
+
+        // skipcq: js-0105
+        computeOutputShape(inputShape: number[]) {
+          return [inputShape[0], inputShape[1], inputShape[2], 3,];
+        }
+
+        call(inputs: Inputs) {
+          return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
+        }
+
+        static className = `PixelShuffle${scale}x`;
+      }
+
+      return PixelShuffle;
+    };
+
+    [
+      MultiplyBeta,
+      getPixelShuffle(scale),
+    ].forEach((layer) => {
+      tf.serialization.registerClass(layer);
+    });
   };
 
-  [
-    MultiplyBeta,
-    getPixelShuffle(scale),
-  ].forEach((layer) => {
-    tf.serialization.registerClass(layer);
-  });
-
   return {
+    setup,
     scale,
     modelType: 'layers',
     _internals: {

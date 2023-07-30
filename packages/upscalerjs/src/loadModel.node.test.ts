@@ -149,7 +149,7 @@ describe('loadModel.node', () => {
         throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
       });
 
-      await expect(loadModel({} as ModelDefinition))
+      await expect(loadModel(Promise.resolve({}) as Promise<ModelDefinition>))
         .rejects
         .toThrow(error);
     });
@@ -162,7 +162,7 @@ describe('loadModel.node', () => {
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
-      const response = await loadModel(modelDefinition);
+      const response = await loadModel(Promise.resolve(modelDefinition));
       expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
@@ -178,7 +178,7 @@ describe('loadModel.node', () => {
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'graph' };
 
-      const response = await loadModel(modelDefinition);
+      const response = await loadModel(Promise.resolve(modelDefinition));
       expect(loadTfModel).toHaveBeenCalledWith(path, 'graph');
       expect(response).toEqual({
         model: 'graph model',
