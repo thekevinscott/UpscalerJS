@@ -44,9 +44,9 @@ export type Teardown = (tf: TF) => (void | Promise<void>);
 
 export interface ModelDefinition {
   /**
-   * The type of the model. Can be 'graph' or 'layer'.
+   * The type of the model. Can be 'graph' or 'layer'. Defaults to 'layer'.
    */
-  modelType: ModelType;
+  modelType?: ModelType;
   /**
    * Path to a model.json file.
    */
