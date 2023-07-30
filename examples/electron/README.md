@@ -47,12 +47,12 @@ const upscaler = new Upscaler({
 });
 ```
 
-Here, we load the configuration for `default-model`, but we update the `path` to point to our local `node_modules` folder. (You could change this to point to wherever you wish to host your models.)
+Here, we load the configuration for `default-model`, but we update the `path` to point to our local `node_modules` folder. (We could change this to point to wherever our models are hosted.)
 
-You will also want to ensure you have the following `Content-Security-Policy`:
+We'll also want to ensure the following `Content-Security-Policy` is in place:
 
 ```html
 <meta http-equiv="Content-Security-Policy" content="img-src 'self' data:; default-src 'self'; script-src 'self'">
 ```
 
-In particular, `img-src 'self' data:` ensures that base64-encoded images will be available to load in the app. (Otherwise, you'll get broken images.)
+In particular, `img-src 'self' data:` ensures that base64-encoded images will be available to load in the app. (Otherwise, we'll get broken images.)
