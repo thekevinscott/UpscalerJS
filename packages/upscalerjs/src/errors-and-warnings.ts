@@ -107,7 +107,7 @@ export const MODEL_INPUT_SIZE_MUST_BE_SQUARE = new Error([
 ].join(' '));
 
 export const MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-path-and-internals';
-export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfiguration: Partial<ModelDefinition>) => [
+export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfiguration?: Partial<ModelDefinition>) => [
   'Provided model configuration is missing both a "path" and "_internals". A valid path to a model JSON file must be provided.',
   `For more information, see ${MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL}.`,
   `The model configuration provided was: ${JSON.stringify(modelConfiguration)}`,

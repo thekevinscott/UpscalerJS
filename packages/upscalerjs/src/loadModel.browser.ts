@@ -30,8 +30,8 @@ export const CDNS: CDN[] = [
   'unpkg',
 ];
 
-export const getLoadModelErrorMessage = (modelPath: string, internals: ModelConfigurationInternals, errs: Errors): Error => new Error([
-  `Could not resolve URL ${modelPath} for package ${internals.name}@${internals.version}`,
+export const getLoadModelErrorMessage = (errs: Errors, modelPath: string, internals: ModelConfigurationInternals): Error => new Error([
+  `Could not resolve URL ${modelPath} for package ${internals?.name}@${internals?.version}`,
   `Errors include:`,
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
@@ -42,6 +42,10 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
   const { modelType, _internals, path: modelPath, } = modelConfiguration;
   if (modelPath) {
     return await loadTfModel(modelPath, modelType);
+  }
+  if (!_internals) {
+    // This should never happen. This should have been caught by isValidModelDefinition.
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
   const errs: Errors = [];
   for (const cdn of CDNS) {
@@ -54,7 +58,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
       errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
     }
   }
-  throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
+  throw getLoadModelErrorMessage(errs, modelPath || _internals.path, _internals);
 };
 
 export const loadModel = async (

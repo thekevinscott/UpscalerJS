@@ -207,11 +207,11 @@ describe('loadModel browser tests', () => {
         };
         await expect(() => fetchModel(modelDefinition))
           .rejects
-          .toThrowError(getLoadModelErrorMessage(modelPath, {
+          .toThrowError(getLoadModelErrorMessage(CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)]), modelPath, {
             path: modelPath,
             name: packageName,
             version,
-          }, CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)])));
+          }));
       });
 
       it('throws an error if neither _internals nor path is provided', async () => {
