@@ -13,6 +13,7 @@ import {
 import {
   isValidModelDefinition,
 } from '@upscalerjs/core';
+import { errIsModelDefinitionValidationError } from 'utils';
 
 type CDN = 'jsdelivr' | 'unpkg';
 
@@ -43,21 +44,18 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
   if (modelPath) {
     return await loadTfModel(modelPath, modelType);
   }
-  if (_internals) {
-    const errs: Errors = [];
-    for (const cdn of CDNS) {
-      const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
-      try {
-        const url = getCDNFn(_internals.name, _internals.version, _internals.path);
-        return await loadTfModel(url, modelType);
-      } catch (err: unknown) {
-        // there was an issue with the CDN, try another
-        errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
-      }
+  const errs: Errors = [];
+  for (const cdn of CDNS) {
+    const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
+    try {
+      const url = getCDNFn(_internals.name, _internals.version, _internals.path);
+      return await loadTfModel(url, modelType);
+    } catch (err: unknown) {
+      // there was an issue with the CDN, try another
+      errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
     }
-    throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
   }
-  throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration);
+  throw getLoadModelErrorMessage(modelPath || _internals.path, _internals, errs);
 };
 
 export const loadModel = async (
@@ -66,8 +64,11 @@ export const loadModel = async (
   const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);
-  } catch(err: unknown) {
-    throw err instanceof ModelDefinitionValidationError ? getModelDefinitionError(err.type, modelDefinition) : new Error(ERROR_MODEL_DEFINITION_BUG);
+  } catch (err: unknown) {
+    if (errIsModelDefinitionValidationError(err)) {
+      throw getModelDefinitionError(err.type, modelDefinition);
+    }
+    throw new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);

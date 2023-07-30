@@ -110,14 +110,16 @@ export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK
   switch(error) {
     case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
       return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
+    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH:
+      return new Error(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition));
     default:
       return new Error(ERROR_MODEL_DEFINITION_BUG);
   }
 }
 
 export const MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL = 'https://upscalerjs.com/documentation/troubleshooting#missing-path-and-internals';
-export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfiguration: Partial<ModelDefinition>) => new Error([
+export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfiguration: Partial<ModelDefinition>) => [
   'Provided model configuration is missing both a "path" and "_internals". A valid path to a model JSON file must be provided.',
   `For more information, see ${MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL}.`,
   `The model configuration provided was: ${JSON.stringify(modelConfiguration)}`,
-].join(' '));
+].join(' ');
