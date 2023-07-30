@@ -83,10 +83,10 @@ describe('loadModel browser tests', () => {
   });
 
   describe('fetchModel', () => {
-    describe('No package info', () => {
+    describe('Model configurations with explicit paths', () => {
       it('loads the given model path if path is provided', async () => {
         expect(loadTfModel).toBeCalledTimes(0);
-        await fetchModel({
+        const modelDefinition: ModelDefinition = {
           path: 'foo',
           modelType: 'layers',
           _internals: {
@@ -94,14 +94,15 @@ describe('loadModel browser tests', () => {
             name: 'packageName',
             version: 'version',
           },
-        } as ModelDefinition);
+        };
+        await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith('foo', 'layers');
       });
 
       it('loads the given model path as a graph model if path is provided', async () => {
         expect(loadTfModel).toBeCalledTimes(0);
-        await fetchModel({
+        const modelDefinition: ModelDefinition = {
           path: 'foo',
           modelType: 'graph',
           _internals: {
@@ -109,26 +110,39 @@ describe('loadModel browser tests', () => {
             name: 'packageName',
             version: 'version',
           },
-        } as ModelDefinition);
+        };
+        await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith('foo', 'graph');
       });
+
+      it('loads the given model if _internals is not defined but path is', async () => {
+        expect(loadTfModel).toBeCalledTimes(0);
+        const modelDefinition: ModelDefinition = {
+          path: 'foo',
+          modelType: 'layers',
+        };
+        await fetchModel(modelDefinition);
+        expect(loadTfModel).toBeCalledTimes(1);
+        expect(loadTfModel).toBeCalledWith('foo', 'layers');
+      });
     });
 
-    describe('Package info', () => {
+    describe('Model configurations without explicit paths', () => {
       it('attempts to load a model from a CDN if provided no custom path', async () => {
         const packageName = 'packageName';
         const version = 'version';
         const modelPath = 'modelPath';
         expect(loadTfModel).toBeCalledTimes(0);
-        await fetchModel({
+        const modelDefinition: ModelDefinition = {
           _internals: {
             path: modelPath,
             name: packageName,
             version,
           },
           modelType: 'layers',
-        } as ModelDefinition);
+        };
+        await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
       });
@@ -138,14 +152,15 @@ describe('loadModel browser tests', () => {
         const version = 'version';
         const modelPath = 'modelPath';
         expect(loadTfModel).toBeCalledTimes(0);
-        await fetchModel({
+        const modelDefinition: ModelDefinition = {
           _internals: {
             path: modelPath,
             name: packageName,
             version,
           },
           modelType: 'graph',
-        } as ModelDefinition);
+        };
+        await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
         expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
       });
@@ -161,14 +176,15 @@ describe('loadModel browser tests', () => {
           return 'foo' as unknown as LayersModel;
         });
         expect(loadTfModel).toBeCalledTimes(0);
-        await fetchModel({
+        const modelDefinition: ModelDefinition = {
           _internals: {
             path: modelPath,
             name: packageName,
             version,
           },
           modelType: 'layers',
-        } as ModelDefinition);
+        };
+        await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
         expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
       });
@@ -181,14 +197,15 @@ describe('loadModel browser tests', () => {
         loadTfModel.mockImplementation(async () => {
           throw new Error(`next: ${i++}`);
         });
-        await expect(() => fetchModel({
+        const modelDefinition: ModelDefinition = {
           _internals: {
             path: modelPath,
             name: packageName,
             version,
           },
           modelType: 'layers',
-        } as ModelDefinition))
+        };
+        await expect(() => fetchModel(modelDefinition))
           .rejects
           .toThrowError(getLoadModelErrorMessage(modelPath, {
             path: modelPath,
@@ -202,7 +219,9 @@ describe('loadModel browser tests', () => {
           scale: 2,
           modelType: 'layers',
         } as ModelDefinition;
-        expect(fetchModel(modelConfiguration)).toThrow(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
+        await expect(() => fetchModel(modelConfiguration))
+        .rejects
+        .toThrowError(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelConfiguration));
       });
     });
   });
