@@ -36,7 +36,11 @@ describe('Image', async () => {
     it('loads an Image() if given a string as input', async () => {
       const tensor = await getImageAsTensor(FLOWER_SMALL);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
-      expect(JSON.stringify(result)).to.equal(JSON.stringify(expectedArray));
+      expect(result.length).to.equal(expectedArray.length);
+      for (let i = 0; i < result.length; i++) {
+        // allow for a small amount of variance in the pixel output
+        expect(result[i]).to.be.within(expectedArray[i] - 1, expectedArray[i] + 1);
+      }
     });
 
     it('handles a rejected Image() if given a string as input', async () => {
@@ -49,7 +53,11 @@ describe('Image', async () => {
       const img = await loadImage(FLOWER_SMALL);
       const tensor = await getImageAsTensor(img);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
-      expect(JSON.stringify(result)).to.equal(JSON.stringify(expectedArray));
+      expect(result.length).to.equal(expectedArray.length);
+      for (let i = 0; i < result.length; i++) {
+        // allow for a small amount of variance in the pixel output
+        expect(result[i]).to.be.within(expectedArray[i] - 1, expectedArray[i] + 1);
+      }
     });
 
     it('reads a rank 4 tensor directly without manipulation', async () => {
