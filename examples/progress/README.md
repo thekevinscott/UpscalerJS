@@ -4,6 +4,8 @@
 
 It can be useful to monitor the progress of an upscale operation, particularly for larger images or heavier models. UpscalerJS provides an easy way to do so.
 
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/progress?file=index.js&title=UpscalerJS: Progress">Open example in Codesandbox</a>.
+
 ## Specifying a `progress` Callback Function
 
 :::caution

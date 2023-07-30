@@ -1,10 +1,10 @@
 # Custom Models
 
-<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/usage/custom-models">View this page on the UpscalerJS website</a>
+<a class="docs-link" href="https://upscalerjs.com/documentation/guides/browser/usage/custom-model-configurations">View this page on the UpscalerJS website</a>
 
 Demonstrates how to write a custom model configuration for usage with UpscalerJS.
 
-<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/custom-models?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Stackblitz</a>.
+<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/custom-model-configurations?file=index.js&title=UpscalerJS: Self Hosting Models">Open example in Codesandbox</a>.
 
 :::tip
 
