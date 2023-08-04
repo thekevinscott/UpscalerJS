@@ -34,7 +34,7 @@ export default function ModelCard ({
         <div id={styles.badges}>
           {/* <img alt={`Latest version on NPM for @upscalerjs/${packageName}`} src={`https://badge.fury.io/js/@upscalerjs%2F${packageName}.svg`} /> */}
           <img src={`https://img.shields.io/npm/dw/@upscalerjs/${packageName}`} alt={`Downloads per week for @upscalerjs/${packageName}`} />
-          <img src={`https://img.shields.io/bundlephobia/min/react`} alt={`Minified file size for @upscalerjs/${packageName}`} />
+          <img src={`https://img.shields.io/bundlephobia/min/@upscalerjs/${packageName}`} alt={`Minified file size for @upscalerjs/${packageName}`} />
         </div>
         <Button>View</Button>
       </div>
