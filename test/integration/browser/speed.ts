@@ -5,7 +5,7 @@ import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../l
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import puppeteer from 'puppeteer';
+import type { Page } from 'puppeteer';
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -29,7 +29,7 @@ describe('Speed Integration Tests', () => {
     usePNPM: USE_PNPM,
   });
 
-  let pages: puppeteer.Page[] = [];
+  let pages: Page[] = [];
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll();

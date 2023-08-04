@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
 import path from 'path';
-import type puppeteer from 'puppeteer';
+import type { Page } from 'puppeteer';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
@@ -30,7 +30,7 @@ describe('Image Format Integration Tests', () => {
     verbose: VERBOSE,
     usePNPM: USE_PNPM,
   });
-  const page = (): puppeteer.Page => testRunner.page;
+  const page = (): Page => testRunner.page;
 
   beforeAll(async function beforeAll() {
     await testRunner.beforeAll();

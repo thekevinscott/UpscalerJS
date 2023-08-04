@@ -5,7 +5,7 @@ import { ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import type puppeteer from 'puppeteer';
+import type { Page } from 'puppeteer';
 
 // TODO: Figure out how to import this from upscaler
 const CDNS = [
@@ -30,7 +30,7 @@ describe('CDN Integration Tests', () => {
     verbose: VERBOSE,
     usePNPM: USE_PNPM,
   });
-  const page = () => {
+  const page = (): Page => {
     testRunner.page.setRequestInterception(true);
     return testRunner.page;
   }
@@ -51,7 +51,7 @@ describe('CDN Integration Tests', () => {
     await testRunner.afterEach();
   });
 
-  const evaluateUpscaler = async (page: puppeteer.Page) => {
+  const evaluateUpscaler = async (page: Page) => {
     try {
       await page.evaluate(() => {
         const upscaler = new window['Upscaler']({
