@@ -5,7 +5,7 @@
     "@upscalerjs/workers.shared": "workspace:*",
     "@cloudflare/workers-types": "^3.14.1",
     "typescript": "^5.1.6",
-    "wrangler": "^3.0.0"
+    "wrangler": "^3.1.1"
   },
   "private": true,
   "scripts": {
