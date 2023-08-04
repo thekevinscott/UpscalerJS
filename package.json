@@ -144,7 +144,7 @@
     "typescript": "^5.1.6",
     "uglify-js": "^3.17.4",
     "upscaler": "workspace:*",
-    "vite": "^4.4.5",
+    "vite": "^3.2.7",
     "webpack": "^5.88.2",
     "yargs": "^17.7.2"
   },
