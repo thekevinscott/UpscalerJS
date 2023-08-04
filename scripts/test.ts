@@ -198,11 +198,19 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         key: browserstackAccessKey,
         verbose,
       });
+      console.log('verbose', verbose);
+      if (verbose) {
+        console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
+      }
       process.on('exit', async () => {
         if (bsLocal !== undefined && bsLocal.isRunning()) {
           await stopBrowserstack(bsLocal);
         }
       });
+    } else {
+      if (verbose) {
+        console.log('no browserstack');
+      }
     }
 
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
