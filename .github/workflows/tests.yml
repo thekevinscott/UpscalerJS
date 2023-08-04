@@ -252,6 +252,11 @@ jobs:
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
       - name: 'Build Upscaler'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
 
@@ -260,9 +265,6 @@ jobs:
 
       - name: 'Bundle'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'LS'
-        run: ls -la $HOME/.cache/puppeteer
 
       - name: 'Integration Tests'
         run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
