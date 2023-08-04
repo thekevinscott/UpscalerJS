@@ -179,8 +179,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       puppeteer:
-        specifier: ^15.5.0
-        version: 15.5.0
+        specifier: ^16.0.0
+        version: 16.0.0
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -14630,8 +14630,8 @@ packages:
     dependencies:
       escape-goat: 2.1.1
 
-  /puppeteer@15.5.0:
-    resolution: {integrity: sha512-+vZPU8iBSdCx1Kn5hHas80fyo0TiVyMeqLGv/1dygX2HKhAZjO9YThadbRTCoTYq0yWw+w/CysldPsEekDtjDQ==}
+  /puppeteer@16.0.0:
+    resolution: {integrity: sha512-FgSe21IHNHkqv1SiJiob4ANsxVujcINa4p3MaDEMyoZsocbgSgwYE0c9lnF8eoinw4id3vx4DOXwhFdOOwVlDg==}
     engines: {node: '>=14.1.0'}
     deprecated: < 19.4.0 is no longer supported
     requiresBuild: true
@@ -14647,7 +14647,7 @@ packages:
       rimraf: 3.0.2
       tar-fs: 2.1.1
       unbzip2-stream: 1.4.3
-      ws: 8.8.0
+      ws: 8.8.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -18042,8 +18042,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /ws@8.8.0:
-    resolution: {integrity: sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==}
+  /ws@8.8.1:
+    resolution: {integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

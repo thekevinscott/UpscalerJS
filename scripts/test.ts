@@ -141,19 +141,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  let bsLocal: undefined | Browserstack = undefined;
-  if (skipTest !== true && runner === 'browserstack') {
-    bsLocal = await startBrowserstack({
-      key: browserstackAccessKey,
-      verbose,
-    });
-    process.on('exit', async () => {
-      if (bsLocal !== undefined && bsLocal.isRunning()) {
-        await stopBrowserstack(bsLocal);
-      }
-    });
-  }
-
   if (skipModelBuild !== true) {
     const modelPackages = getAllAvailableModelPackages();
     const durations = await buildModels(modelPackages, getOutputFormats(platform), {
@@ -205,6 +192,19 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   }
 
   if (skipTest !== true) {
+    let bsLocal: undefined | Browserstack = undefined;
+    if (runner === 'browserstack') {
+      bsLocal = await startBrowserstack({
+        key: browserstackAccessKey,
+        verbose,
+      });
+      process.on('exit', async () => {
+        if (bsLocal !== undefined && bsLocal.isRunning()) {
+          await stopBrowserstack(bsLocal);
+        }
+      });
+    }
+
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const args = [
       'pnpm',
@@ -218,6 +218,11 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
     if (verbose) {
       console.log(args);
+      if (bsLocal) {
+        console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
+      } else {
+        console.log('Browserstack not specified');
+      }
     }
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
