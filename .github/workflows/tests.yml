@@ -261,6 +261,9 @@ jobs:
       - name: 'Bundle'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
+      - name: 'LS'
+        run: ls -la $HOME/.cache/puppeteer
+
       - name: 'Integration Tests'
         run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
