@@ -23,7 +23,7 @@ const getModelFamily = (packageJSON: JSONSchema) => {
 };
 
 const getSharedDoc = async (modelFamily: string) => {
-  const sharedDoc = path.resolve(SHARED_DIR, 'src', modelFamily, 'DOC.mdx');
+  const sharedDoc = path.resolve(MODELS_DIR, modelFamily, 'DOC.mdx');
   if (!existsSync(sharedDoc)) {
     throw new Error(`File does not exist: ${sharedDoc}`)
   }
