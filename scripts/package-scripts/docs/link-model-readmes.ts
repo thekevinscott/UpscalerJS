@@ -111,7 +111,6 @@ pagination_next: null
 pagination_prev: null
 hide_title: true
 ---
-
 <a className="docs-link" href="https://upscalerjs.com/models">View this page on the UpscalerJS website</a>
 
 # Models
@@ -132,7 +131,7 @@ ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
 />
 `).join('\n')}
 </div>
-  `.trim();
+  `;
   await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents, 'utf-8');
 };
 

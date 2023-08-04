@@ -24,6 +24,26 @@
     padding: 0;
     font-size: 24px;
   }
+
+    #buttonContainer {
+      display: flex;
+      justify-content: flex-end;
+  
+      button {
+        display: inline;
+        padding: 8px 20px;
+        background-color: #7fa5f0;
+        border: 1px solid #7fa5f0;
+        border-radius: 6.4px;
+        cursor: pointer;
+        font-size: 18.9px;
+        font-weight: 700;
+        justify-content: center;
+        text-align: center;
+        user-select: none;
+        white-space: nowrap;
+      }
+    }
 }
 
 #images {
@@ -48,6 +68,7 @@
 }
 
 #footer {
+  min-height: 40px;
   margin-top: 8px;
   padding: 8px;
   border-top: 1px solid rgba(0,0,0,0.2);
