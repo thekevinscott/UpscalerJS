@@ -11,12 +11,15 @@ import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { BrowserOption, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { executeAsyncScript } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
+import { smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch994Datadiv2k_3c52b980 } from '../../../dev/browser/public/models/esrgan-experiments/src';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = true;
 const PORT = 8099;
 const DEFAULT_LOCALHOST = 'localhost';
+const LOG = true;
+const VERBOSE = process.env.verbose === '1';
 
 
 const JEST_TIMEOUT = 5 * 60 * 1000;
@@ -37,6 +40,8 @@ describe('Browser Integration Tests', () => {
     dist: ESBUILD_DIST,
     trackTime: TRACK_TIME,
     port: PORT,
+    verbose: VERBOSE,
+    log: LOG,
   });
 
   beforeAll(async function browserBeforeAll() {
@@ -54,7 +59,7 @@ describe('Browser Integration Tests', () => {
 
   describe.each(browserOptions)("Browser %j", (capabilities: BrowserOption) => {
     it("upscales an imported local image path", async () => {
-      driver = getDriver(capabilities);
+      driver = getDriver(capabilities, { verbose: VERBOSE});
       const ROOT_URL = `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${PORT}`;
       await driver.get(ROOT_URL);
       await driver.wait(async () => {

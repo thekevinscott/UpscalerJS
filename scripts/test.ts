@@ -200,7 +200,13 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       });
       process.on('exit', async () => {
         if (bsLocal !== undefined && bsLocal.isRunning()) {
+          if (verbose) {
+            console.log('Stopping browserstack');
+          }
           await stopBrowserstack(bsLocal);
+          if (verbose) {
+            console.log('Stopped browserstack');
+          }
         }
       });
     }
@@ -220,14 +226,21 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       console.log(args);
       if (bsLocal) {
         console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
-      } else {
-        console.log('Browserstack not specified');
       }
     }
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
-    if (bsLocal !== undefined) {
+    if (runner === 'browserstack') {
+      if (!bsLocal) {
+        throw new Error('Runner is browserstack but there is no bsLocal variable defined');
+      }
+      if (verbose) {
+        console.log('Stopping browserstack');
+      }
       await stopBrowserstack(bsLocal);
+      if (verbose) {
+        console.log('Stopped browserstack');
+      }
     }
     if (code !== null) {
       process.exit(code);
