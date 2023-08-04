@@ -179,8 +179,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       puppeteer:
-        specifier: ^17.0.0
-        version: 17.0.0
+        specifier: ^18.0.0
+        version: 18.0.0
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -8390,8 +8390,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /devtools-protocol@0.0.1019158:
-    resolution: {integrity: sha512-wvq+KscQ7/6spEV7czhnZc9RM/woz1AY+/Vpd8/h2HFMwJSdTliu7f/yr1A6vDdJfKICZsShqsYpEQbdhg8AFQ==}
+  /devtools-protocol@0.0.1036444:
+    resolution: {integrity: sha512-0y4f/T8H9lsESV9kKP1HDUXgHxCdniFeJh6Erq+FbdOEvp/Ydp9t8kcAAM5gOd17pMrTDlFWntoHtzzeTUWKNw==}
     dev: true
 
   /diff-sequences@29.4.3:
@@ -14630,15 +14630,15 @@ packages:
     dependencies:
       escape-goat: 2.1.1
 
-  /puppeteer@17.0.0:
-    resolution: {integrity: sha512-T2rdzlPxnPezF218kywFP3O+0YI5/8Kl8riNUicGb+KuMyDTrqRjhSOSDp6coQ1T4QYPBARTFp4EMBepMOzAQA==}
+  /puppeteer@18.0.0:
+    resolution: {integrity: sha512-g87rnbVwRbIJF3J2399jq7bic2TSJXxv6ysaPRi61pnwHf7eVm97YO3fEIldgVKWO/nxND192YWfhaeKjkcfOg==}
     engines: {node: '>=14.1.0'}
     deprecated: < 19.4.0 is no longer supported
     requiresBuild: true
     dependencies:
       cross-fetch: 3.1.5
       debug: 4.3.4(supports-color@8.1.1)
-      devtools-protocol: 0.0.1019158
+      devtools-protocol: 0.0.1036444
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
       progress: 2.0.3

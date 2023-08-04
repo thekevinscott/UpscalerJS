@@ -91,7 +91,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               }
               const fixture = packageName;
               const result = await esmTestRunner.page.evaluate(({ fixture, packageName, modelName }) => {
-                const model = window[packageName][modelName] as ModelDefinition;
+                const model = window[packageName][modelName] as unknown as ModelDefinition;
                 const upscaler = new window['Upscaler']({
                   model,
                 });
@@ -138,7 +138,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                 console.log('UMD Test', packageName, modelName)
               }
               const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
-                const model = window[modelName] as ModelDefinition;
+                const model = window[modelName] as unknown as ModelDefinition;
                 const upscaler = new window['Upscaler']({
                   model,
                 });
