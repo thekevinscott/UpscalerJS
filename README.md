@@ -1,10 +1,11 @@
 # UpscalerJS
 
-<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler" /></a>
-<a href="https://www.npmjs.com/package/upscaler"><img alt="npm" src="https://img.shields.io/npm/dw/upscaler" /></a>
-<a href="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml/badge.svg" alt="Tests" /></a>
-<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
-<a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="Latest UpscalerJS NPM Version" src="https://badge.fury.io/js/upscaler.svg" /></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="License for UpscalerJS" src="https://img.shields.io/npm/l/upscaler" /></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="Downloads per week on NPM for UpscalerJS" src="https://img.shields.io/npm/dw/upscaler" /></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml/badge.svg" alt="Status of tests for UpcalerJS repository" /></a>
+<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Code Coverage for UpscalerJS" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
+<a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource issues for UpscalerJS" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
 
 
 UpscalerJS is a tool for enhancing images in Javascript using Neural Networks. UpscalerJS features models enabling the following:

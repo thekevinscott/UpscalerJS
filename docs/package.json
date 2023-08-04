@@ -9,7 +9,7 @@
     "build-guides": "pnpm --filter @upscalerjs/scripts docs:build-guides",
     "build-guides:watch": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/build-guides.ts' -x \"pnpm run build-guides\"",
     "link-model-readmes": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes",
-    "link-model-readmes:watch": "nodemon -e md -e mdx --watch '../models/**/*' -x \"pnpm run link-model-readmes\"",
+    "link-model-readmes:watch": "nodemon -e md -e mdx --watch '../models/**/*' --watch '../scripts/package-scripts/docs/link-model-readmes.ts' -x \"pnpm run link-model-readmes\"",
     "docusaurus": "docusaurus",
     "start": "pnpm run start:all",
     "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
