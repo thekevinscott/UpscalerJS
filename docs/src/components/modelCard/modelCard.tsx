@@ -2,7 +2,6 @@ import React from 'react';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import styles from './modelCard.module.scss';
-import BrowserOnly from '@docusaurus/BrowserOnly';
 import ReactMarkdown from 'react-markdown';
 
 interface IProps {
