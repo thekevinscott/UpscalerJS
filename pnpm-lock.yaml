@@ -179,8 +179,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       puppeteer:
-        specifier: ^16.0.0
-        version: 16.0.0
+        specifier: ^17.0.0
+        version: 17.0.0
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -14630,8 +14630,8 @@ packages:
     dependencies:
       escape-goat: 2.1.1
 
-  /puppeteer@16.0.0:
-    resolution: {integrity: sha512-FgSe21IHNHkqv1SiJiob4ANsxVujcINa4p3MaDEMyoZsocbgSgwYE0c9lnF8eoinw4id3vx4DOXwhFdOOwVlDg==}
+  /puppeteer@17.0.0:
+    resolution: {integrity: sha512-T2rdzlPxnPezF218kywFP3O+0YI5/8Kl8riNUicGb+KuMyDTrqRjhSOSDp6coQ1T4QYPBARTFp4EMBepMOzAQA==}
     engines: {node: '>=14.1.0'}
     deprecated: < 19.4.0 is no longer supported
     requiresBuild: true
@@ -14641,7 +14641,6 @@ packages:
       devtools-protocol: 0.0.1019158
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
-      pkg-dir: 4.2.0
       progress: 2.0.3
       proxy-from-env: 1.1.0
       rimraf: 3.0.2
