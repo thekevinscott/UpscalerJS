@@ -16,6 +16,7 @@ interface ExampleContent {
   title: string;
   frontmatter: FrontMatter;
 }
+type Category = 'browser' | 'node' | 'other';
 
 /****
  * Constants
@@ -28,11 +29,12 @@ const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/guides');
 /****
  * Utility functions
  */
+const isCategory = (category: unknown): category is Category => typeof category === 'string' && ['browser', 'node', 'other'].includes(category);
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
-const getDefaultCodeEmbedParameters = (category: string, params: Record<string, any> = {}) => {
-  if (category.toLowerCase() === 'node') {
+const getDefaultCodeEmbedParameters = (category: Category, params: Record<string, any> = {}) => {
+  if (category === 'node') {
     return 'view=split,preview&module=index.js&hidenavigation=1';
   };
   return Object.entries({
@@ -63,21 +65,21 @@ const getFrontmatter = (key: string): ExampleContent => {
   }
 
   const {
-    category = 'Browser',
+    category = 'browser',
     code_embed,
     ...frontmatter
   } = packageJSON['@upscalerjs']?.guide?.frontmatter || {};
 
   const codeEmbed = code_embed !== false ? {
     params: getDefaultCodeEmbedParameters(category, frontmatter.params),
-    type: category.toLowerCase() === 'node' ? DEFAULT_EMBED_FOR_NODE : DEFAULT_EMBED_FOR_BROWSER,
+    type: category ? DEFAULT_EMBED_FOR_NODE : DEFAULT_EMBED_FOR_BROWSER,
     url: `/examples/${key}`,
     ...code_embed,
   } : {};
 
   return {
     frontmatter: {
-      category: category.toLowerCase() === 'node' ? 'Node' : 'Browser',
+      category,
       hide_table_of_contents: true,
       ...frontmatter,
       code_embed: codeEmbed,
@@ -181,15 +183,15 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
 
     const {
       parent,
-      category = 'Browser',
+      category,
     } = frontmatter;
-    if (typeof category !== 'string') {
-      throw new Error(`Category is not of type string ${category}`);
+    if (!isCategory(category)) {
+      throw new Error(`Category is not valid: ${category}, for key ${key}`);
     }
     if (parent !== undefined && typeof parent !== 'string') {
       throw new Error(`Parent is not of type string: ${parent}`);
     }
-    const targetDir = path.resolve(...[dest, category.toLowerCase(), parent].filter(Boolean));
+    const targetDir = path.resolve(...[dest, category, parent].filter(Boolean));
 
     // copy assets
     await copyAssets(targetDir, key);
@@ -204,9 +206,9 @@ const copyReadmesToDocs = async (exampleOrder: string[], examplesByName: Record<
 
 const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<string, ExampleContent>, dest: string) => {
   const examplesByCategory = exampleOrder.reduce((obj, example) => {
-    const { frontmatter: { parent, category = 'Browser' } } = examplesByName[example];
-    if (typeof category !== 'string') {
-      throw new Error(`Category is not of type string: ${category}`);
+    const { frontmatter: { parent, category } } = examplesByName[example];
+    if (!isCategory(category)) {
+      throw new Error(`Category is not valid: ${category}, for key ${example}`);
     }
     if (parent !== undefined && typeof parent !== 'string') {
       throw new Error(`Parent is not of type string: ${parent}`);
@@ -230,12 +232,12 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     ``,
     ...Object.entries(examplesByCategory).map(([category, examples]) => {
       let activeParent: undefined | string;
-      return `\n## ${category}\n\n${examples.map(([parent, example], i) => {
+      return `\n## ${uppercase(category)}\n\n${examples.map(([parent, example], i) => {
         const { title } = examplesByName[example];
         const url = [
           '/documentation',
           'guides',
-          category.toLowerCase(),
+          category,
           parent,
           example
         ].filter(Boolean).join('/');

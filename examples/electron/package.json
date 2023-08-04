@@ -11,8 +11,8 @@
   "@upscalerjs": {
     "guide": {
       "frontmatter": {
-        "sidebar_position": 305,
-        "parent": "implementations",
+        "sidebar_position": 2001,
+        "category": "other",
         "code_embed": false
       }
     }
