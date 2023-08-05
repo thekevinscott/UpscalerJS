@@ -1,8 +1,11 @@
 import React from 'react';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
+import { BiDownload } from 'react-icons/bi';
 import styles from './modelCard.module.scss';
 import ReactMarkdown from 'react-markdown';
+import { useBadges } from './useBadges';
+import { formatDistanceToNow } from 'date-fns'
 
 interface IProps {
   packageName: string;
@@ -23,6 +26,7 @@ export default function ModelCard ({
   enhancedSrc,
   description,
 }: IProps) {
+  const { version, lastUpdated, downloadsPerWeek } = useBadges(packageName);
   return (
      <Link href={`/models/available/${packageName}`} id={clsx(styles.card)}>
        <div id={styles.images}>
@@ -35,9 +39,14 @@ export default function ModelCard ({
       </div>
       <div id={styles.footer}>
         <div id={styles.badges}>
-          {/* <img alt={`Latest version on NPM for @upscalerjs/${packageName}`} src={`https://badge.fury.io/js/@upscalerjs%2F${packageName}.svg`} /> */}
-          <img src={`https://img.shields.io/npm/dw/@upscalerjs/${packageName}`} alt={`Downloads per week for @upscalerjs/${packageName}`} />
-          <img src={`https://img.shields.io/bundlephobia/min/@upscalerjs/${packageName}`} alt={`Minified file size for @upscalerjs/${packageName}`} />
+          {version && (<span className={styles.badge}>{version}</span>)}
+          {lastUpdated && (<span className={styles.badge}>{formatDistanceToNow(lastUpdated, {})} ago</span>)}
+          {downloadsPerWeek !== undefined && (
+            <span className={styles.badge}>
+              <BiDownload />
+              {downloadsPerWeek}
+            </span>
+          )}
         </div>
         <div id={styles.buttonContainer}>
         <button>View</button>
