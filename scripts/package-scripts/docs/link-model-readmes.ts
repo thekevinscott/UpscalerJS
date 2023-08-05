@@ -132,7 +132,7 @@ ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
 `).join('\n')}
 </div>
   `;
-  await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents, 'utf-8');
+  await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents.trim(), 'utf-8');
 };
 
 /****
