@@ -7,7 +7,7 @@
     "npx": "^10.2.2",
     "seedrandom": "3.0.5",
     "typescript": "^5.1.6",
-    "vite": "^4.4.3"
+    "vite": "^4.4.8"
   },
   "private": true,
   "scripts": {
@@ -19,10 +19,10 @@
     "@tensorflow/tfjs-core": "~4.8.0",
     "@upscalerjs/esrgan-slim": "^1.0.0-beta.7",
     "@upscalerjs/esrgan-thick": "^1.0.0-beta.10",
-    "aws-sdk": "^2.1414.0",
+    "aws-sdk": "^2.1430.0",
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
-    "nock": "^13.3.1",
+    "nock": "^13.3.2",
     "upscaler": "1.0.0-beta.14"
   },
   "engines": {

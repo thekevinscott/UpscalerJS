@@ -38,6 +38,7 @@ const exec = async (cmd: string, { verbose, ...opts }: { verbose?: boolean; } & 
     spawnedProcess.stdout?.pipe(process.stdout);
   }
 });
+
 const getOutput = async (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
   let output = '';
   const spawnedProcess = _exec(cmd, opts, (error) => {
@@ -79,6 +80,8 @@ const getAllNonPNPMPackages = async () => {
       'node_modules/**', 
       '**/node_modules/**', 
       '**/scratch/**',
+      '**/dev/browser/public/**',
+      '**/examples/react/**',
     ],
   });
   return files.filter(file => !packages.has(file) && file !== 'package.json');
@@ -89,12 +92,23 @@ const getAllNonPNPMPackages = async () => {
  */
 const updateNPMDependencies = async ({ verbose }: Args) => {
   const filteredFiles = await getAllNonPNPMPackages();
-  for await (const _ of asyncPool(NUMBER_OF_CONCURRENT_THREADS, filteredFiles, async (file: string) => {
-    const output = await exec('npm update --save', {
-      cwd: path.resolve(ROOT_DIR, path.dirname(file)),
-      verbose,
-    });
-  })) { }
+  for (const file of filteredFiles) {
+    try {
+      const output = await exec('npm update --save', {
+        cwd: path.resolve(ROOT_DIR, path.dirname(file)),
+        verbose,
+      });
+    } catch (e) {
+      console.log(file);
+      throw e;
+    }
+  }
+  // for await (const _ of asyncPool(NUMBER_OF_CONCURRENT_THREADS, filteredFiles, async (file: string) => {
+  //   const output = await exec('npm update --save', {
+  //     cwd: path.resolve(ROOT_DIR, path.dirname(file)),
+  //     verbose,
+  //   });
+  // })) { }
 };
 
 export default updateNPMDependencies;
