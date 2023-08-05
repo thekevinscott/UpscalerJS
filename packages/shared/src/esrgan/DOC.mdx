@@ -7,12 +7,13 @@ hide_title: true
 ---
 
 import ModelHeaderImage from '@site/src/components/modelHeaderImage/modelHeaderImage';
+import Badges from '@site/src/components/badges/badges';
 
 <ModelHeaderImage packageName="<% key %>" unenhancedSrc="<% key %>/fixture.png" enhancedSrc="<% key %>/samples/4x/result.png" />
 
 # <% title %>
 
-[![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/<% key %>/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/<% key %>)
+<Badges packageName="<% key %>" />
 
 <% snippets/overview %>
 

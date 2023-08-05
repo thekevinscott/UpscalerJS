@@ -46,7 +46,7 @@ const getDescription = (readmeContents: string) => {
     } else if (line.startsWith('## ')) {
       startedDescription = false;
       break;
-    } else if (!line.startsWith('[!') && startedDescription) {
+    } else if (!line.startsWith('<Badge') && !line.startsWith('[!') && startedDescription) {
       description += line;
       if (description) {
         break;
