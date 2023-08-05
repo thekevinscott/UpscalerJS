@@ -173,7 +173,7 @@ export class BrowserTestRunner {
 
   public async startBrowser() {
     this.browser = await puppeteer.launch({
-      // headless: 'new',
+      headless: 'new',
     });
   }
 
