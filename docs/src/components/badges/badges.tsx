@@ -25,9 +25,11 @@ export default function Badges ({
         </span>
       )}
       {includeCDN && (
-        <a href={`https://www.jsdelivr.com/package/npm/@upscalerjs/${packageName}`}>
-          <img src={`https://data.jsdelivr.com/v1/package/npm/@upscalerjs/${packageName}/badge`} />
-        </a>
+        <span className={styles.badge}>
+          <a href={`https://www.jsdelivr.com/package/npm/@upscalerjs/${packageName}`}>
+            <img src={`https://data.jsdelivr.com/v1/package/npm/@upscalerjs/${packageName}/badge`} />
+          </a>
+        </span>
       )}
     </div>
   );

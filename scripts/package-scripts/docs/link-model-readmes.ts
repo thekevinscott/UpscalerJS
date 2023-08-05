@@ -32,6 +32,8 @@ const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, t
       } catch (err) { }
       await copyAssets(packageName, targetAssetDir);
       await createMarkdown(await readFile(readmePath, 'utf-8'), targetPath);
+    } else {
+      console.log(`** Does not exist: ${packageName}`)
     }
   }
 };
