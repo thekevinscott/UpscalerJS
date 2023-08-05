@@ -204,10 +204,8 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
-
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -252,10 +250,10 @@ jobs:
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
