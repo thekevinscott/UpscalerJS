@@ -27,7 +27,7 @@ export default function Badges ({
       {includeCDN && (
         <span className={styles.badge}>
           <a href={`https://www.jsdelivr.com/package/npm/@upscalerjs/${packageName}`}>
-            <img src={`https://data.jsdelivr.com/v1/package/npm/@upscalerjs/${packageName}/badge`} />
+            <img src={`https://data.jsdelivr.com/v1/package/npm/@upscalerjs/${packageName}/badge`} alt="CDN hit count from JSDelivr" />
           </a>
         </span>
       )}
