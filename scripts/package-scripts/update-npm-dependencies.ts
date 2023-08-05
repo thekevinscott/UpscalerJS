@@ -79,6 +79,8 @@ const getAllNonPNPMPackages = async () => {
       'node_modules/**', 
       '**/node_modules/**', 
       '**/scratch/**',
+      '**/dev/browser/public/**',
+      '**/examples/react/**',
     ],
   });
   return files.filter(file => !packages.has(file) && file !== 'package.json');
