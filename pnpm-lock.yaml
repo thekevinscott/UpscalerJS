@@ -179,8 +179,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
       puppeteer:
-        specifier: ^18.0.0
-        version: 18.0.0
+        specifier: ^19.0.0
+        version: 19.0.0
       rimraf:
         specifier: ^5.0.1
         version: 5.0.1
@@ -449,13 +449,13 @@ importers:
         version: 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: latest
-        version: link:../../../../../models/esrgan-thick
+        version: 1.0.0-beta.11(@tensorflow/tfjs@4.8.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
         specifier: latest
-        version: link:../../../../../packages/upscalerjs
+        version: 1.0.0-beta.16(@tensorflow/tfjs@4.8.0)
 
   docs/workers/image-search:
     devDependencies:
@@ -5942,6 +5942,28 @@ packages:
       - encoding
     dev: false
 
+  /@upscalerjs/default-model@1.0.0-beta.14(@tensorflow/tfjs@4.8.0):
+    resolution: {integrity: sha512-h7BiWOeSzAXNZcL5XTw5EGsQGcREBzxh8/UYUKHzdZfKd89OLuN0DG5nCWJsIe2aEL1XgrsNnDxUr9CmxC656A==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/core': 1.0.0-beta.14
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upscalerjs/esrgan-thick@1.0.0-beta.11(@tensorflow/tfjs@4.8.0):
+    resolution: {integrity: sha512-YY8EHpErjjQ/uyA7lw8oWW08wYYws7rXerIGgdfZ5X5TiPir8BcC5SWqOo7i12e3+ODBS47eY762jzHPiM1dvw==}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/core': 1.0.0-beta.14
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@webassemblyjs/ast@1.11.6:
     resolution: {integrity: sha512-IN1xI7PwOvLPgjcf180gC1bqn3q/QaOCwYUahIOhbYUu8KA/3tw2RT/T0Gidi1l7Hhj5D/INhJxiICObqpMu4Q==}
     dependencies:
@@ -8390,8 +8412,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /devtools-protocol@0.0.1036444:
-    resolution: {integrity: sha512-0y4f/T8H9lsESV9kKP1HDUXgHxCdniFeJh6Erq+FbdOEvp/Ydp9t8kcAAM5gOd17pMrTDlFWntoHtzzeTUWKNw==}
+  /devtools-protocol@0.0.1045489:
+    resolution: {integrity: sha512-D+PTmWulkuQW4D1NTiCRCFxF7pQPn0hgp4YyX4wAQ6xYXKOadSWPR3ENGDQ47MW/Ewc9v2rpC/UEEGahgBYpSQ==}
     dev: true
 
   /diff-sequences@29.4.3:
@@ -14630,23 +14652,37 @@ packages:
     dependencies:
       escape-goat: 2.1.1
 
-  /puppeteer@18.0.0:
-    resolution: {integrity: sha512-g87rnbVwRbIJF3J2399jq7bic2TSJXxv6ysaPRi61pnwHf7eVm97YO3fEIldgVKWO/nxND192YWfhaeKjkcfOg==}
+  /puppeteer-core@19.0.0:
+    resolution: {integrity: sha512-OljQ9W5M4cBX68vnOAGbcRkVENDHn6lfj6QYoGsnLQsxPAh6ExTQAhHauwdFdQkhYdDExZFWlKArnBONzeHY+g==}
     engines: {node: '>=14.1.0'}
-    deprecated: < 19.4.0 is no longer supported
-    requiresBuild: true
     dependencies:
       cross-fetch: 3.1.5
       debug: 4.3.4(supports-color@8.1.1)
-      devtools-protocol: 0.0.1036444
+      devtools-protocol: 0.0.1045489
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
-      progress: 2.0.3
       proxy-from-env: 1.1.0
       rimraf: 3.0.2
       tar-fs: 2.1.1
       unbzip2-stream: 1.4.3
-      ws: 8.8.1
+      ws: 8.9.0
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /puppeteer@19.0.0:
+    resolution: {integrity: sha512-3Ga5IVerQQ2hKU9q7T28RmcUsd8F2kL6cYuPcPCzeclSjmHhGydPBZL/KJKC02sG6J6Wfry85uiWpbkjQ5qBiw==}
+    engines: {node: '>=14.1.0'}
+    deprecated: < 19.4.0 is no longer supported
+    requiresBuild: true
+    dependencies:
+      https-proxy-agent: 5.0.1
+      progress: 2.0.3
+      proxy-from-env: 1.1.0
+      puppeteer-core: 19.0.0
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -17312,6 +17348,19 @@ packages:
       - encoding
     dev: false
 
+  /upscaler@1.0.0-beta.16(@tensorflow/tfjs@4.8.0):
+    resolution: {integrity: sha512-/ccCpszl4gRhNJaVdlALYcBu5+XfGUZbp4N7rjrCasJ2KUu6+vFT8NsclBc61rhrbJOQNv2IkthVGYLcE6BhJA==}
+    engines: {node: '>=16.0'}
+    peerDependencies:
+      '@tensorflow/tfjs': ^4.2.0
+    dependencies:
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/core': 1.0.0-beta.14
+      '@upscalerjs/default-model': 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
@@ -18041,8 +18090,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  /ws@8.8.1:
-    resolution: {integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==}
+  /ws@8.9.0:
+    resolution: {integrity: sha512-Ja7nszREasGaYUYCI2k4lCKIRTt+y7XuqVoHR44YpI49TtryyqbqvDMn5eqfW7e6HzTukDRIsXqzVHScqRcafg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1

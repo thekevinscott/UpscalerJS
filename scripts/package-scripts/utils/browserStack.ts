@@ -136,12 +136,13 @@ export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOp
 export const getMobileBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => mobileBrowserOptions.filter(filter || Boolean);
 
 type Capabilities = Parameters<Builder['withCapabilities']>[0];
-export const getDriver = (capabilities: Capabilities): webdriver.ThenableWebDriver => new webdriver.Builder()
+export const getDriver = (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): webdriver.ThenableWebDriver => new webdriver.Builder()
   .usingServer(serverURL)
   .setLoggingPrefs(prefs)
   .withCapabilities({
     ...DEFAULT_CAPABILITIES,
     ...capabilities,
+    verbose,
   })
   .build();
 
