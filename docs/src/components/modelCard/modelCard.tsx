@@ -1,11 +1,9 @@
 import React from 'react';
 import Link from '@docusaurus/Link';
 import clsx from 'clsx';
-import { BiDownload } from 'react-icons/bi';
 import styles from './modelCard.module.scss';
 import ReactMarkdown from 'react-markdown';
-import { useBadges } from './useBadges';
-import { formatDistanceToNow } from 'date-fns'
+import Badges from '../badges/badges';
 
 interface IProps {
   packageName: string;
@@ -26,7 +24,6 @@ export default function ModelCard ({
   enhancedSrc,
   description,
 }: IProps) {
-  const { version, lastUpdated, downloadsPerWeek } = useBadges(packageName);
   return (
      <Link href={`/models/available/${packageName}`} id={clsx(styles.card)}>
        <div id={styles.images}>
@@ -38,16 +35,7 @@ export default function ModelCard ({
          <Description description={description} />
       </div>
       <div id={styles.footer}>
-        <div id={styles.badges}>
-          {version && (<span className={styles.badge}>{version}</span>)}
-          {lastUpdated && (<span className={styles.badge}>{formatDistanceToNow(lastUpdated, {})} ago</span>)}
-          {downloadsPerWeek !== undefined && (
-            <span className={styles.badge}>
-              <BiDownload />
-              {downloadsPerWeek}
-            </span>
-          )}
-        </div>
+        <Badges packageName={packageName} includeCDN={false} />
         <div id={styles.buttonContainer}>
         <button>View</button>
         </div>
