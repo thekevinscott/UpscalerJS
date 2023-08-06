@@ -13,7 +13,7 @@ interface IProps {
 }
 
 const Description = ({ description }: { description: string }) => (
-  <ReactMarkdown>
+  <ReactMarkdown disallowedElements={['a']}>
     {description}
   </ReactMarkdown>
 );
@@ -35,7 +35,7 @@ export default function ModelCard ({
          <Description description={description} />
       </div>
       <div id={styles.footer}>
-        <Badges packageName={packageName} includeCDN={false} />
+        <Badges packageName={packageName} truncated={true} />
         <div id={styles.buttonContainer}>
         <button>View</button>
         </div>

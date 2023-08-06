@@ -39,6 +39,7 @@ function useDocTOC() {
 export default function DocItemLayout({children}) {
   const docTOC = useDocTOC();
   const hiddenSidebarContainer = useContext(HiddenSidebarContainerContext);
+
   return (
     <div className={styles.container}>
       {docTOC.embed && (

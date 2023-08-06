@@ -1,4 +1,5 @@
 import React from 'react';
+import { SlSkeleton } from '@shoelace-style/shoelace/dist/react';
 import { BiDownload } from 'react-icons/bi';
 import styles from './badges.module.scss';
 import { useBadges } from './useBadges';
@@ -6,33 +7,58 @@ import { formatDistanceToNow } from 'date-fns'
 
 interface IProps {
   packageName: string;
-  includeCDN?: boolean;
+  truncated?: boolean;
 }
+
+const Badge = ({
+  label,
+  verbose,
+  content,
+}: {
+  label: string;
+  verbose: boolean;
+  content?: boolean | string | JSX.Element | number;
+}) => {
+  if (content !== undefined && content !== false) {
+    if (verbose) {
+      return (<span className={styles.badge}><strong>{label}</strong>: {content}</span>);
+    }
+    return (<span className={styles.badge}>{content}</span>);
+  }
+
+  return (
+    <span className={styles.badge}>
+      <strong>{label}</strong>:
+      <SlSkeleton effect='sheen' />
+    </span>
+  );
+};
 
 export default function Badges ({
   packageName,
-  includeCDN = true,
+  truncated,
 }: IProps) {
-  const { version, lastUpdated, downloadsPerWeek } = useBadges(packageName);
+  const verbose = truncated !== true;
+  const { version, lastUpdated, downloadsPerWeek, cdnHits } = useBadges(packageName);
   return (
     <div id={styles.badges}>
-      {version && (<span className={styles.badge}>{version}</span>)}
-      {lastUpdated && (<span className={styles.badge}>{formatDistanceToNow(lastUpdated, {})} ago</span>)}
-      {downloadsPerWeek !== undefined && (
-        <span className={styles.badge}>
-          <BiDownload />
-          {downloadsPerWeek}
-        </span>
-      )}
-      {includeCDN && (
-        <span className={styles.badge}>
-          <a href={`https://www.jsdelivr.com/package/npm/@upscalerjs/${packageName}`}>
-            <img src={`https://data.jsdelivr.com/v1/package/npm/@upscalerjs/${packageName}/badge`} alt="CDN hit count from JSDelivr" />
-          </a>
-        </span>
-      )}
+      <Badge label="Version" verbose={verbose} content={version} />
+      <Badge label="Last Updated" verbose={verbose} content={lastUpdated && `${formatDistanceToNow(lastUpdated, {})} ago`} />
+      <Badge
+        label="Downloads per week"
+        verbose={verbose}
+        content={downloadsPerWeek !== undefined && verbose ? downloadsPerWeek : (
+          <>
+            <BiDownload />
+            {downloadsPerWeek}
+          </>
+        )}
+      />
+      {verbose && (<Badge
+        label="CDN hits per week"
+        verbose={verbose}
+        content={cdnHits}
+      />)}
     </div>
   );
-}
-
-
+};

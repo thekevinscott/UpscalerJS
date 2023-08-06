@@ -26,6 +26,27 @@ interface DownloadCountResponse {
   package: string;
 }
 
+interface JSDelivrAPIResponseRanking {
+  rank: number;
+  typeRank: number;
+  total: number;
+  dates: Record<string, number>;
+  prev: {
+    rank: number;
+    typeRank: number;
+    total: number;
+  };
+};
+
+interface JSDelivrAPIResponse {
+  hits: JSDelivrAPIResponseRanking;
+  bandwidth: JSDelivrAPIResponseRanking;
+  links: {
+    self: string;
+    version: string;
+  };
+}
+
 function useFetch<T>(url: string): T | undefined {
   const [result, setResult] = useState<T>();
 
@@ -38,28 +59,28 @@ function useFetch<T>(url: string): T | undefined {
 
 const useRegistry = (packageName: string) => useFetch<RegistryResponse>(`https://registry.npmjs.org/@upscalerjs/${packageName}`);
 const useDownloadCount = (packageName: string) => useFetch<DownloadCountResponse>(`https://api.npmjs.org/downloads/point/last-week/@upscalerjs/${packageName}`);
+const useHitCount = (packageName: string) => useFetch<JSDelivrAPIResponse>(`https://data.jsdelivr.com/v1/stats/packages/npm/@upscalerjs/${packageName}?period=week`);
 
 export const useBadges = (packageName: string): {
   version: undefined | string;
   lastUpdated: undefined | Date;
   minifiedSize: undefined | number;
   downloadsPerWeek: undefined | number;
+  cdnHits: undefined | number;
 } => {
   const {
     'dist-tags': distTags,
     time,
   } = useRegistry(packageName) || {};
   const { downloads: downloadsPerWeek } = useDownloadCount(packageName) || {};
+  const { hits } = useHitCount(packageName) || {};
 
   return useMemo(() => ({
     version: distTags?.latest,
     lastUpdated: time?.modified ? new Date(time.modified) : undefined, 
     minifiedSize: undefined,
     downloadsPerWeek,
+    cdnHits: hits?.total,
   }), [distTags, time, downloadsPerWeek]);
-  // version
-  // last updated
-  // minified size
-  // downloads per week
 };
 
