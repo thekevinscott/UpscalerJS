@@ -1,27 +1,15 @@
 {
+  "description": "See the package.json at packages/upscaler for more information",
   "name": "@upscalerjs/root",
   "version": "1.0.0-beta.14",
   "private": true,
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "@babel/plugin-transform-modules-commonjs"
-        ]
-      }
-    },
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/preset-typescript"
-    ]
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "scripts": {
     "build": "pnpm --filter=\"upscaler\" build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
@@ -60,13 +48,6 @@
     "test:unit:browser:jest": "pnpm --filter upscaler test:unit:browser:jest",
     "test:unit:node": "pnpm --filter upscaler test:unit:node"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
-  },
-  "author": "Kevin Scott",
-  "license": "MIT",
-  "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
@@ -147,6 +128,26 @@
     "vite": "^4.4.5",
     "webpack": "^5.88.2",
     "yargs": "^17.7.2"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    },
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
   },
   "pnpm": {
     "overrides": {
