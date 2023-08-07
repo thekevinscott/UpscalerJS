@@ -1,8 +1,8 @@
-import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 import { useDatabase } from '@site/src/utils/sqljs';
 import React, { useCallback, useEffect, useState } from 'react';
 import { DropdownMenu } from '../../dropdown/dropdown-menu';
 import styles from './modelFilter.module.scss';
+import { MenuItem } from '../../menu-item/menu-item';
 
 interface Package {
   id: number;
@@ -124,7 +124,7 @@ export const ModelFilter = ({
       <DropdownMenu title="Packages" allLabel="All Packages" multi onChange={setSelectedPackages} defaultValue={availablePackages.map(p => p.name)}>
         {
           availablePackages.map(({ name }) => (
-            <SlMenuItem key={name} value={name} checked={selectedPackages?.includes(name)}>{name}</SlMenuItem>
+            <MenuItem key={name} value={name} type="checkbox" checked={selectedPackages?.includes(name)}>{name}</MenuItem>
           ))
         }
       </DropdownMenu>
@@ -135,7 +135,7 @@ export const ModelFilter = ({
           availableScales.map((availableScale) => {
             const scale = `${availableScale.scale}`;
             return (
-              <SlMenuItem key={scale} value={scale} checked={selectedScales?.includes(scale)}>{scale}</SlMenuItem>
+              <MenuItem key={scale} value={scale} type="checkbox" checked={selectedScales?.includes(scale)}>{scale}</MenuItem>
             );
           })
         }

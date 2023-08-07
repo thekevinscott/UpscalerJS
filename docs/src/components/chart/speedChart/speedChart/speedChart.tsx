@@ -2,12 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Chart, { useSetParams } from '../../chart';
 import styles from '../../chart.module.scss';
 import { DropdownMenu } from '../../../dropdown/dropdown-menu';
-import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
 import { DEFAULT_ASC, Device, DEVICES, getDefaultActiveDevice, getDefaultDevices } from '../utils';
 import { useSpeedQuery } from '../useSpeedQuery';
 import { translateResults } from '../translateResults';
 import { ModelFilter, OnChangeOpts } from '../../modelFilter/modelFilter';
 import { ModelTooltip } from '../../modelTooltip/modelTooltip';
+import { MenuItem } from '@site/src/components/menu-item/menu-item';
 
 export interface IProps {
   package?: string;
@@ -74,7 +74,7 @@ export function SpeedChart({ databasePath, package: packageName }: IProps) {
           <DropdownMenu multi onChange={setDevices} defaultValue={devices}>
             {
               DEVICES.map(option => (
-                <SlMenuItem key={option} value={option} checked={devices.includes(option)}>{option}</SlMenuItem>
+                <MenuItem key={option} type="checkbox" value={option} checked={devices.includes(option)}>{option}</MenuItem>
               ))
             }
           </DropdownMenu>
