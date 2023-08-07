@@ -35,7 +35,7 @@ export default function ModelCard ({
          <Description description={description} />
       </div>
       <div id={styles.footer}>
-        <Badges packageName={packageName} truncated={true} />
+        <Badges packageName={packageName} truncated />
         <div id={styles.buttonContainer}>
         <button>View</button>
         </div>
