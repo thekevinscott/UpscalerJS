@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SlSkeleton } from '@shoelace-style/shoelace/dist/react';
-import { BiDownload } from 'react-icons/bi';
 import styles from './badges.module.scss';
 import { useBadges } from './useBadges';
 import { formatDistanceToNow } from 'date-fns'
+import { BiDownload } from 'react-icons/bi';
 import { PiTagBold } from 'react-icons/pi';
+import { FiEye } from 'react-icons/fi';
+import { FaRegClock } from 'react-icons/fa';
+import { TbWeight } from 'react-icons/tb';
 
 interface IProps {
   packageName: string;
@@ -12,39 +15,46 @@ interface IProps {
 }
 
 const BadgeLabel = ({
-  verbose,
   icon,
   label,
+  truncated,
 }: {
-  verbose: boolean;
+  truncated?: boolean;
   icon?: JSX.Element;
   label: string;
 }) => {
-  if (verbose) {
-    return (<PiTagBold />);
+  if (truncated) {
+    return icon;
   }
 
-  return (<span className="badge-label"><strong>{label}</strong> :</span>);
+  return (
+    <span className={styles.badgeLabel}>
+      {icon}
+      <strong>{label}</strong> :
+    </span>
+  );
 }
 
 const Badge = ({
   label,
-  verbose,
-  content,
+  truncated,
+  children,
   icon,
+  description,
 }: {
   label: string;
-  verbose: boolean;
-  content?: boolean | string | JSX.Element | number;
+  truncated?: boolean;
+  children?: boolean | string | JSX.Element | number;
   icon?: JSX.Element;
+  description: string;
 }) => (
-  <span className={styles.badge}>
+  <span className={styles.badge} title={description}>
     <BadgeLabel
-      verbose={verbose}
+      truncated={truncated}
       icon={icon}
       label={label}
     />
-    {content || <SlSkeleton effect='sheen' />}
+    {children || <SlSkeleton effect='sheen' />}
   </span>
 );
 
@@ -52,27 +62,57 @@ export default function Badges ({
   packageName,
   truncated,
 }: IProps) {
-  const verbose = truncated !== true;
-  const { version, lastUpdated, downloadsPerWeek, cdnHits } = useBadges(packageName);
+  const { version, lastUpdated, downloadsPerWeek, cdnHits, minifiedSize } = useBadges(packageName);
+  const badges = useMemo<{
+    label: string;
+    content?: boolean | string | JSX.Element | number;
+    icon?: JSX.Element;
+    description: string;
+  }[]>(() => [
+    {
+      label: 'Version',
+      content: version,
+      icon: <PiTagBold />,
+      description: 'Latest version of the model.',
+    },
+    {
+      label: 'Last Updated',
+      content: lastUpdated && `${formatDistanceToNow(lastUpdated, {})} ago`,
+      icon: <FaRegClock />,
+      description: 'Time since the model was last updated.',
+    },
+    {
+      label: 'NPM installs per week',
+      content: downloadsPerWeek,
+      icon: <BiDownload />,
+      description: 'Number of times the model was installed via NPM last week',
+    },
+    {
+      label: 'CDN hits per week',
+      content: cdnHits,
+      icon: <FiEye />,
+      description: 'Number of times the model was loaded via CDN last week',
+    },
+    // {
+    //   label: 'Bundle size',
+    //   content: minifiedSize,
+    //   icon: <TbWeight />,
+    //   description: 'Minified size of the model.',
+    // },
+  ].filter(Boolean), [version, lastUpdated, downloadsPerWeek, cdnHits]);
   return (
     <div className={styles.badges}>
-      <Badge icon={<PiTagBold />} label="Version" verbose={verbose} content={version} />
-      <Badge label="Last Updated" verbose={verbose} content={lastUpdated && `${formatDistanceToNow(lastUpdated, {})} ago`} />
-      <Badge
-        label="Downloads per week"
-        verbose={verbose}
-        content={downloadsPerWeek !== undefined && verbose ? downloadsPerWeek : (
-          <>
-            <BiDownload />
-            {downloadsPerWeek}
-          </>
-        )}
-      />
-      {verbose && (<Badge
-        label="CDN hits per week"
-        verbose={verbose}
-        content={cdnHits}
-      />)}
+      {badges.map(({ description, label, content, icon }) => (
+        <Badge
+          key={label}
+          icon={icon}
+          label={label}
+          truncated={truncated}
+          description={description}
+        >
+          {content}
+        </Badge>
+      ))}
     </div>
   );
 };

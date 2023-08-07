@@ -92,37 +92,3 @@ html[data-theme='dark'] {
     color: white;
   }
 }
-
-:global {
-  .model-card-container {
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fill, calc(33.3% - (20px / 3 * 2)));
-  }
-
-  @media (max-width: 1800px) {
-    .model-card-container {
-      grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
-    }
-  }
-
-  @media (max-width: 1240px) {
-    .model-card-container {
-      grid-gap: 10px;
-      grid-template-columns: repeat(auto-fill, 100%);
-    }
-  }
-
-  @media (max-width: 996px) {
-    .model-card-container {
-      grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
-    }
-  }
-
-  @media (max-width: 744px) {
-    .model-card-container {
-      grid-gap: 10px;
-      grid-template-columns: repeat(auto-fill, 100%);
-    }
-  }
-}
