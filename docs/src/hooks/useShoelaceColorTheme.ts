@@ -41,10 +41,10 @@ export const useShoelaceColorTheme = () => {
     if (html) {
       // Adding / removing multiple times is fine
       if (colorMode === 'dark') {
-        console.log('Adding dark mode');
+        // console.log('Adding dark mode');
         html.classList.add(SHOELACE_DARK_MODE);
       } else {
-        console.log('Removing dark mode');
+        // console.log('Removing dark mode');
         html.classList.remove(SHOELACE_DARK_MODE);
       }
     }

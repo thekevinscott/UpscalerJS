@@ -1,4 +1,4 @@
-#card {
+.card {
   background: rgba(200,200,255,0.2);
   border-radius: 8px;
   // max-width: 350px;
@@ -25,7 +25,7 @@
     font-size: 24px;
   }
 
-    #buttonContainer {
+    .buttonContainer {
       display: flex;
       justify-content: flex-end;
   
@@ -46,7 +46,7 @@
     }
 }
 
-#images {
+.images {
   display: flex;
 
   img {
@@ -55,7 +55,7 @@
   }
 }
 
-#body {
+.body {
   padding: 20px 20px 0 20px;
   flex: 1;
 
@@ -67,7 +67,7 @@
   }
 }
 
-#footer {
+.footer {
   min-height: 40px;
   margin-top: 8px;
   padding: 8px 20px;
@@ -88,39 +88,39 @@
 }
 
 html[data-theme='dark'] {
-  #body p {
+  .body p {
     color: white;
   }
 }
 
 :global {
-  #model-card-container {
+  .model-card-container {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fill, calc(33.3% - (20px / 3 * 2)));
   }
 
   @media (max-width: 1800px) {
-    #model-card-container {
+    .model-card-container {
       grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
     }
   }
 
   @media (max-width: 1240px) {
-    #model-card-container {
+    .model-card-container {
       grid-gap: 10px;
       grid-template-columns: repeat(auto-fill, 100%);
     }
   }
 
   @media (max-width: 996px) {
-    #model-card-container {
+    .model-card-container {
       grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
     }
   }
 
   @media (max-width: 744px) {
-    #model-card-container {
+    .model-card-container {
       grid-gap: 10px;
       grid-template-columns: repeat(auto-fill, 100%);
     }

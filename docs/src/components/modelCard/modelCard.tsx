@@ -25,18 +25,18 @@ export default function ModelCard ({
   description,
 }: IProps) {
   return (
-     <Link href={`/models/available/${packageName}`} id={clsx(styles.card)}>
-       <div id={styles.images}>
+     <Link href={`/models/available/${packageName}`} className={clsx(styles.card)}>
+       <div className={styles.images}>
          <img src={`/assets/sample-images/${unenhancedSrc}`} alt={`Unenhanced file for ${packageName}`} />
          <img src={`/assets/sample-images/${enhancedSrc}`} alt={`Enhanced file for ${packageName}`} />
        </div>
-       <div id={styles.body}>
+       <div className={styles.body}>
          <h1>{packageName}</h1>
          <Description description={description} />
       </div>
-      <div id={styles.footer}>
+      <div className={styles.footer}>
         <Badges packageName={packageName} truncated={true} />
-        <div id={styles.buttonContainer}>
+        <div className={styles.buttonContainer}>
         <button>View</button>
         </div>
       </div>

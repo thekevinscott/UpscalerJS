@@ -1,4 +1,4 @@
-#badges {
+.badges {
   display: flex;
   min-height: 20px;
   flex-wrap: wrap;
@@ -31,17 +31,14 @@
       margin-left: 4px;
     }
   
-    // sl-skeleton:nth-child(1) {
-    //   float: left;
-    //   width: 3rem;
-    //   height: 1rem;
-    //   vertical-align: middle;
-    // }
+    .badge-label {
+      margin-right: 4px;
+    }
   }
 }
 
 html[data-theme='dark'] {
-  #badges .badge {
+  .badges .badge {
     color: rgba(255,255,255,0.6);
 
     &:after {

@@ -123,7 +123,7 @@ UpscalerJS offers a number of available models. With the exception of \`default-
 
 import ModelCard from '@site/src/components/modelCard/modelCard';
 
-<div id="model-card-container">
+<div className="model-card-container">
 ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
 <ModelCard 
   packageName="${packageName}" 
