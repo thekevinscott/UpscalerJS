@@ -10,4 +10,4 @@ export const useShoelace = () => {
       setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.80/dist/');
     }
   }, [isBrowser]);
-}
+};

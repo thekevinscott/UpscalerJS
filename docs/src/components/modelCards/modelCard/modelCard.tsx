@@ -3,7 +3,7 @@ import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import styles from './modelCard.module.scss';
 import ReactMarkdown from 'react-markdown';
-import Badges from '../badges/badges';
+import Badges from '../../badges/badges';
 
 interface IProps {
   packageName: string;

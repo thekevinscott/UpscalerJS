@@ -2,47 +2,4 @@
   display: flex;
   min-height: 20px;
   flex-wrap: wrap;
-
-  .badge {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    white-space: nowrap;
-    color: rgba(0,0,0,0.6);
-    font-size: 12px;
-
-    &:after {
-      margin: 0 4px;
-      content: "•";
-      color: rgba(0,0,0,0.2);
-      font-size: 18px;
-    }
-
-    &:last-child:after {
-      content: "";
-    }
-
-    svg {
-      margin-right: 4px;
-    }
-  
-    sl-skeleton {
-      min-width: 2rem;
-      margin-left: 4px;
-    }
-  
-    .badge-label {
-      margin-right: 4px;
-    }
-  }
-}
-
-html[data-theme='dark'] {
-  .badges .badge {
-    color: rgba(255,255,255,0.6);
-
-    &:after {
-      color: rgba(255,255,255,0.2);
-    }
-  }
 }

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import useIsBrowser from "@docusaurus/useIsBrowser";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface RegistryResponse {
   author: {
@@ -47,12 +48,43 @@ interface JSDelivrAPIResponse {
   };
 }
 
+const MAX_ATTEMPTS = 3;
+
 function useFetch<T>(url: string): T | undefined {
   const [result, setResult] = useState<T>();
+  const isBrowser = useIsBrowser();
+  const mounted = useRef(false);
 
   useEffect(() => {
-    fetch(url).then(r => r.json()).then(setResult);
-  }, [url])
+    mounted.current = isBrowser;
+
+    return () => {
+      mounted.current = false;
+    };
+  }, [isBrowser]);
+
+  const fetchUrl = useCallback(async (isBrowser: boolean, url: string, attempts = 0) => {
+    if (isBrowser) {
+      try {
+        const r = await fetch(url);
+        const j = await r.json();
+        if (mounted.current) {
+          setResult(j);
+        }
+      } catch (err) {
+        if (attempts > MAX_ATTEMPTS) {
+          throw new Error(`Could not fetch ${url} after ${MAX_ATTEMPTS} attempts`);
+        }
+        if (!mounted.current) {
+          fetchUrl(isBrowser, url, attempts + 1);
+        }
+      }
+    }
+  }, [isBrowser]);
+
+  useEffect(() => {
+    fetchUrl(isBrowser, url);
+  }, [isBrowser, url])
 
   return result;
 };
