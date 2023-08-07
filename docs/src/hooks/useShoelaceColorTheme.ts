@@ -1,5 +1,5 @@
 import { useColorMode } from '@docusaurus/theme-common';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 
 const SHOELACE_DARK_MODE = 'sl-theme-dark';
