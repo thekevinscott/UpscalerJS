@@ -1,6 +1,6 @@
 import React, { DOMAttributes } from 'react';
 import './skeleton.module.scss';
-import { SlSkeleton } from '@shoelace-style/shoelace';
+import type { SlSkeleton } from '@shoelace-style/shoelace';
 
 interface IProps {
   effect?: SlSkeleton['effect'];

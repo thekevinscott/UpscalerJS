@@ -209,7 +209,7 @@ const config = {
     }),
   scripts: [
     { src: 'https://plausible.io/js/script.js', defer: true, 'data-domain': 'upscalerjs.com' },
-    { type: 'module', src:"https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.6.0/cdn/shoelace-autoloader.js" },
+    { type: 'module', src:"https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/shoelace.js" },
   ],
 };
 

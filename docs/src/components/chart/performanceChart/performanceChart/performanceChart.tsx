@@ -9,7 +9,7 @@ import { translateResults } from '../translateResults';
 import { ModelFilter, OnChangeOpts } from '../../modelFilter/modelFilter';
 import { ModelTooltip } from '../../modelTooltip/modelTooltip';
 import { BiLinkExternal } from 'react-icons/bi';
-import SlMenuItem from '@shoelace-style/shoelace/dist/react/menu-item';
+import { MenuItem } from '@site/src/components/menu-item/menu-item';
 
 const DATASET_LINKS: Record<Dataset, string> = {
   'Div2K': 'https://data.vision.ee.ethz.ch/cvl/DIV2K/',
@@ -94,7 +94,7 @@ export function PerformanceChart({ databasePath, package: packageName }: IProps)
           <DropdownMenu title="Datasets" placement="bottom-end" multi onChange={onDatasetChange} defaultValue={datasets} >
             {
               DATASETS.map(option => (
-                <SlMenuItem key={option} value={option} checked={datasets.includes(option)}>
+                <MenuItem key={option} value={option} type="checkbox" checked={datasets.includes(option)}>
                     {option}
                     <a 
                       className={styles.optionLink} 
@@ -103,7 +103,7 @@ export function PerformanceChart({ databasePath, package: packageName }: IProps)
                     >
                       <BiLinkExternal />
                     </a>
-                  </SlMenuItem>
+                  </MenuItem>
               ))
             }
           </DropdownMenu>
@@ -126,7 +126,7 @@ export function PerformanceChart({ databasePath, package: packageName }: IProps)
       })}>
         <DropdownMenu title="Metrics" onChange={setMetrics} defaultValue={metrics} >
           {METRICS.map(option => (
-            <SlMenuItem key={option} value={option} checked={metrics.includes(option)}>{option}</SlMenuItem>
+            <MenuItem key={option} type="checkbox" value={option} checked={metrics.includes(option)}>{option}</MenuItem>
           ))}
         </DropdownMenu>
       </div>
