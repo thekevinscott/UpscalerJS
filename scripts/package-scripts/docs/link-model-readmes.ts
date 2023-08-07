@@ -121,18 +121,19 @@ UpscalerJS offers a number of available models. With the exception of \`default-
 
 ## Upscaling
 
-import ModelCard from '@site/src/components/modelCard/modelCard';
+import ModelCard from '@site/src/components/modelCards/modelCard/modelCard';
+import ModelCards from '@site/src/components/modelCards/modelCards';
 
-<div id="model-card-container">
-${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
-<ModelCard 
-  packageName="${packageName}" 
-  unenhancedSrc="${unenhancedSrc}" 
-  enhancedSrc="${enhancedSrc}" 
-  description="${description}"
-/>
-`).join('\n')}
-</div>
+<ModelCards>
+  ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
+  <ModelCard 
+    packageName="${packageName}" 
+    unenhancedSrc="${unenhancedSrc}" 
+    enhancedSrc="${enhancedSrc}" 
+    description="${description}"
+  />
+  `).join('\n')}
+</ModelCards>
   `;
   await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents.trim(), 'utf-8');
 };

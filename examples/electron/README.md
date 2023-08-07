@@ -36,15 +36,15 @@ The browser version of UpscalerJS by default loads the neural networks from a CD
 We can do that by specifying an explicit _path_ to UpscalerJS:
 
 ```javascript
-import Upscaler from 'upscaler';
-import defaultModel from '@upscalerjs/default-model';
+import Upscaler from 'upscaler'
+import defaultModel from '@upscalerjs/default-model'
 
 const upscaler = new Upscaler({
   model: {
     ...defaultModel,
     path: './node_modules/@upscalerjs/default-model/models/model.json',
   },
-});
+})
 ```
 
 Here, we load the configuration for `default-model`, but we update the `path` to point to our local `node_modules` folder. (We could change this to point to wherever our models are hosted.)

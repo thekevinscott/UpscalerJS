@@ -3,7 +3,7 @@ import Link from '@docusaurus/Link';
 import clsx from 'clsx';
 import styles from './modelCard.module.scss';
 import ReactMarkdown from 'react-markdown';
-import Badges from '../badges/badges';
+import Badges from '../../badges/badges';
 
 interface IProps {
   packageName: string;
@@ -13,7 +13,7 @@ interface IProps {
 }
 
 const Description = ({ description }: { description: string }) => (
-  <ReactMarkdown>
+  <ReactMarkdown disallowedElements={['a']}>
     {description}
   </ReactMarkdown>
 );
@@ -25,19 +25,19 @@ export default function ModelCard ({
   description,
 }: IProps) {
   return (
-     <Link href={`/models/available/${packageName}`} id={clsx(styles.card)}>
-       <div id={styles.images}>
+     <Link href={`/models/available/${packageName}`} className={clsx(styles.card)}>
+       <div className={styles.images}>
          <img src={`/assets/sample-images/${unenhancedSrc}`} alt={`Unenhanced file for ${packageName}`} />
          <img src={`/assets/sample-images/${enhancedSrc}`} alt={`Enhanced file for ${packageName}`} />
        </div>
-       <div id={styles.body}>
+       <div className={styles.body}>
          <h1>{packageName}</h1>
          <Description description={description} />
       </div>
-      <div id={styles.footer}>
-        <Badges packageName={packageName} includeCDN={false} />
-        <div id={styles.buttonContainer}>
-        <button>View</button>
+      <div className={styles.footer}>
+        <Badges packageName={packageName} truncated />
+        <div className={styles.buttonContainer}>
+          <button>View</button>
         </div>
       </div>
     </Link>

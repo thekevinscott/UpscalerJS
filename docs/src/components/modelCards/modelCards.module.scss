@@ -1,0 +1,31 @@
+.modelCards {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fill, calc(33.3% - (20px / 3 * 2)));
+}
+
+@media (max-width: 1800px) {
+  .modelCards {
+    grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
+  }
+}
+
+@media (max-width: 1240px) {
+  .modelCards {
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}
+
+@media (max-width: 996px) {
+  .modelCards {
+    grid-template-columns: repeat(auto-fill, calc(50% - (20px / 2)));
+  }
+}
+
+@media (max-width: 744px) {
+  .modelCards {
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}
