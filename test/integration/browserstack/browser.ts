@@ -8,10 +8,8 @@ import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/p
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { BrowserOption, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
+import { BrowserOption, executeAsyncScript, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { executeAsyncScript } from '../../../scripts/package-scripts/benchmark/performance/utils/utils';
-import { smallX2RdnC1D2G4G064T10X2Patchsize128Compress50Sharpen0Datadiv2kVaryCTrueBestValLossEpoch994Datadiv2k_3c52b980 } from '../../../dev/browser/public/models/esrgan-experiments/src';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -22,12 +20,13 @@ const LOG = true;
 const VERBOSE = process.env.verbose === '1';
 
 
-const JEST_TIMEOUT = 5 * 60 * 1000;
+const JEST_TIMEOUT = 60 * 1000 * 1;
 jest.setTimeout(JEST_TIMEOUT);
-jest.retryTimes(3);
+jest.retryTimes(2);
 
 const browserOptions = getBrowserOptions(option => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
+  // return option?.browserName === 'chrome';
   // return option?.os === 'OS X';
   // return !option.browserName?.toLowerCase().includes('iphone');
   return true;
@@ -67,15 +66,17 @@ describe('Browser Integration Tests', () => {
         return title.endsWith('| Loaded');
       }, 3000);
 
-      const result = await executeAsyncScript(driver, async () => {
+      const TIMEOUT = JEST_TIMEOUT - 1000 - 3000;
+
+      const result = await executeAsyncScript(driver, () => {
         const upscaler = new window['Upscaler']({
           model: window['pixel-upsampler']['4x'],
         });
         const data = upscaler.execute(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
         return data;
-      }, {}, {
-        timeout: 45000, // 45 seconds max
+      }, {
+        timeout: TIMEOUT,
       });
       await printLogs(driver, capabilities);
 

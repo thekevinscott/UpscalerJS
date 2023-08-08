@@ -61,7 +61,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
     }
   }
   throw getLoadModelErrorMessage(errs, modelPath || _internals.path, _internals);
-};
+}
 
 export const loadModel = async (
   _modelDefinition: Promise<ModelDefinition>,

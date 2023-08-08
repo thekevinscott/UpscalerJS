@@ -6,12 +6,11 @@ import type * as tf from '@tensorflow/tfjs';
 import { Device } from './Device';
 import { CreationAttributes, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
-import { BrowserOption, getBrowserstackAccessKey, getDriver, printLogs, startBrowserstack, stopBrowserstack, takeScreenshot } from "../../../utils/browserStack";
+import { BrowserOption, executeAsyncScript, getBrowserstackAccessKey, getDriver, printLogs, startBrowserstack, stopBrowserstack, takeScreenshot } from "../../../utils/browserStack";
 import type webdriver from 'selenium-webdriver';
 import { Benchmarker } from "./Benchmarker";
 import { UpscalerModel } from "./UpscalerModel";
 import sequelize from "./sequelize";
-import { executeAsyncScript } from "./utils";
 import { Local } from "browserstack-local";
 import { mkdirpSync } from "fs-extra";
 
@@ -492,9 +491,3 @@ const benchmarkModel: BenchmarkModel = async (
   await printLogs(driver, capabilities);
   return result;
 };
-
-declare global {
-  interface Window {
-    [index: string]: any;
-  }
-}
