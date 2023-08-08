@@ -240,14 +240,18 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
     if (runner === 'browserstack') {
       if (!bsLocal) {
-        throw new Error('Runner is browserstack but there is no bsLocal variable defined');
+        throw new Error('bsLocal was never initialized even though runner is browserstack')
       }
-      if (verbose) {
-        console.log('Stopping browserstack');
-      }
-      await stopBrowserstack(bsLocal);
-      if (verbose) {
-        console.log('Stopped browserstack');
+      if (bsLocal.isRunning() === false) {
+        console.log('bsLocal is already stopped.')
+      } else {
+        if (verbose) {
+          console.log('Stopping browserstack', bsLocal.isRunning());
+        }
+        await stopBrowserstack(bsLocal);
+        if (verbose) {
+          console.log('Stopped browserstack')
+        }
       }
     }
     if (code !== null) {

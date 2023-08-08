@@ -1,6 +1,6 @@
 import path from 'path';
 import browserstack from 'browserstack-local';
-import webdriver, { Builder, logging } from 'selenium-webdriver';
+import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
 import { ROOT_DIR } from './constants';
 import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
@@ -68,7 +68,7 @@ function getEnv () {
   return process.env;
 }
 
-function shouldPrintLogs (entry: webdriver.logging.Entry, capabilities: BrowserOption) {
+function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
   if (entry.message.includes('favicon')) {
     return false;
   }
@@ -119,7 +119,7 @@ export const startBrowserstack = async ({
     if (error) {
       return reject(error);
     }
-    if (!bs || bs.isRunning() !== true) {
+    if (bs?.isRunning() !== true) {
       throw new Error('Browserstack failed to start');
     }
     if (verbose) {
@@ -136,7 +136,7 @@ export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOp
 export const getMobileBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => mobileBrowserOptions.filter(filter || Boolean);
 
 type Capabilities = Parameters<Builder['withCapabilities']>[0];
-export const getDriver = (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): webdriver.ThenableWebDriver => new webdriver.Builder()
+export const getDriver = (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): ThenableWebDriver => new webdriver.Builder()
   .usingServer(serverURL)
   .setLoggingPrefs(prefs)
   .withCapabilities({
@@ -146,7 +146,7 @@ export const getDriver = (capabilities: Capabilities, { verbose }: { verbose?: b
   })
   .build();
 
-export const printLogs = async (driver: webdriver.WebDriver, capabilities: BrowserOption, verbose = false) => {
+export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, verbose = false) => {
   if (capabilities?.browserName === 'firefox') {
     if (capabilities?.os === 'windows') {
       if (verbose) {
@@ -192,10 +192,74 @@ export const printLogs = async (driver: webdriver.WebDriver, capabilities: Brows
   }
 }
 
-export const takeScreenshot = async (driver: webdriver.ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
+export const takeScreenshot = async (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
   driver.takeScreenshot().then(data => {
     var base64Data = data.replace(/^data:image\/png;base64,/, "");
     writeFileSync(target, base64Data, 'base64');
     resolve();
   });
 });
+
+export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: any) => T, args?: any, {
+  pollTime = 100, 
+  timeout = 60 * 1000 * 5,
+}: {
+  pollTime?: number;
+  timeout?: number;
+} = {}): Promise<T> {
+  const wait = (d: number) => new Promise(r => setTimeout(r, d));
+  const localKey = `___result_${Math.random()}___`;
+  const errorKey = `___result_${Math.random()}___`;
+  const mainFn = new Function(`
+    const main = ${fn.toString()}
+    main(...arguments).then((result) => {
+      window['${localKey}'] = result;
+    }).catch(err => {
+      window['${errorKey}'] = err.message;
+    });
+  `);
+  try {
+    driver.executeScript(mainFn, args);
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`Error executing main script: ${err.message}`);
+    } else {
+      throw err;
+    }
+  }
+  let response: T | undefined;
+  let err: string | undefined;
+  const start = performance.now();
+  let iterations = 0;
+  while (!response && !err) {
+    if (performance.now() - start > timeout) {
+      throw new Error(`Failed to execute script after ${timeout} ms`);
+    }
+    try {
+      response = await driver.executeScript<T | undefined>((localKey: string) => window[localKey], localKey);
+    } catch(err) {
+      console.error(`Error executing script (duration: ${performance.now() - start})`, err);
+    }
+    if (!response) {
+      err = await driver.executeScript<string | undefined>((errorKey: string) => window[errorKey], errorKey);
+      if (err) {
+        console.log('An error was returned', err);
+        throw new Error(err);
+      }
+    }
+    await wait(pollTime);
+    iterations += 1;
+  }
+  if (!response) {
+    throw new Error('Bug with code');
+  }
+  return response;
+}
+
+// When checking for the errorKey or localKey variables on the window object above,
+// we need to declare that window can adopt any kind of variable
+declare global {
+  interface Window {
+    [index: string]: any;
+  }
+}

@@ -122,4 +122,4 @@ export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK
     default:
       return new Error(ERROR_MODEL_DEFINITION_BUG);
   }
-};
+}

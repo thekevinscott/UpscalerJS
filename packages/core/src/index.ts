@@ -5,7 +5,6 @@ import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type TF = typeof tfBrowser | typeof tfNode | typeof tfNodeGpu;
-/* eslint-disable @typescript-eslint/no-duplicate-type-constituents */
 export type OpExecutor = tfBrowser.OpExecutor | tfNode.OpExecutor | tfNodeGpu.OpExecutor;
 
 export type ProcessFn<T extends Tensor> = (t: T) => T;
