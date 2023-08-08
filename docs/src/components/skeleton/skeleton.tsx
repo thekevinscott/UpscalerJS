@@ -1,6 +1,7 @@
 import React, { DOMAttributes } from 'react';
 import './skeleton.module.scss';
 import type { SlSkeleton } from '@shoelace-style/shoelace';
+import { CustomElement } from '@site/src/utils/customElement';
 
 interface IProps {
   effect?: SlSkeleton['effect'];
@@ -13,8 +14,6 @@ export const Skeleton = ({
     <sl-skeleton effect={effect} />
   );
 };
-
-type CustomElement<T> = Partial<T & DOMAttributes<T> & { children: any }>;
 
 declare global {
   namespace JSX {
