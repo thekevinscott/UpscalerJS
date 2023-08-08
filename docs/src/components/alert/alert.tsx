@@ -1,7 +1,14 @@
-import React from 'react';
-import { SlAlert } from '@shoelace-style/shoelace/dist/react';
+import React, { DOMAttributes } from 'react';
+import { SlAlert } from '@shoelace-style/shoelace';
 import './alert.module.scss';
+import { CustomElement } from '@site/src/utils/customElement';
 
-export const Alert = (props) => {
-  return <SlAlert {...props} />;
+export const Alert = (props) => (<sl-alert {...props} />);
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      ['sl-alert']: CustomElement<SlAlert>;
+    }
+  }
 }

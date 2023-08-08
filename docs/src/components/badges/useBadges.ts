@@ -75,9 +75,11 @@ function useFetch<T>(url: string): T | undefined {
         if (attempts > MAX_ATTEMPTS) {
           throw new Error(`Could not fetch ${url} after ${MAX_ATTEMPTS} attempts`);
         }
-        if (!mounted.current) {
-          fetchUrl(isBrowser, url, attempts + 1);
-        }
+        setTimeout(() => {
+          if (!mounted.current) {
+            fetchUrl(isBrowser, url, attempts + 1);
+          }
+        }, 500);
       }
     }
   }, [isBrowser]);
