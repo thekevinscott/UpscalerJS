@@ -156,7 +156,7 @@ importers:
         version: 0.3.15
       html-webpack-plugin:
         specifier: 5.5.0
-        version: 5.5.0(webpack@5.73.0)
+        version: 5.5.0(webpack@5.76.0)
       inquirer:
         specifier: 8.2.4
         version: 8.2.4
@@ -236,8 +236,8 @@ importers:
         specifier: 3.1.5
         version: 3.1.5
       webpack:
-        specifier: 5.73.0
-        version: 5.73.0(esbuild@0.11.0)(uglify-js@3.16.2)
+        specifier: 5.76.0
+        version: 5.76.0(esbuild@0.11.0)(uglify-js@3.16.2)
       yargs:
         specifier: 17.6.2
         version: 17.6.2
@@ -5525,9 +5525,6 @@ packages:
       '@types/parse5': 5.0.3
       '@types/tough-cookie': 4.0.2
     dev: true
-
-  /@types/json-schema@7.0.11:
-    resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
 
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
@@ -11185,7 +11182,7 @@ packages:
   /html-void-elements@1.0.5:
     resolution: {integrity: sha512-uE/TxKuyNIcx44cIWnjr/rfIATDH7ZaOMmstu0CwhFG1Dunhlp4OC6/NMbhiwoq5BpW0ubi303qnEk/PZj614w==}
 
-  /html-webpack-plugin@5.5.0(webpack@5.73.0):
+  /html-webpack-plugin@5.5.0(webpack@5.76.0):
     resolution: {integrity: sha512-sy88PC2cRTVxvETRgUHFrL4No3UxvcH8G1NepGhqaTT+GXN2kTamqasot0inS5hXeg1cMbFDt27zzo9p35lZVw==}
     engines: {node: '>=10.13.0'}
     peerDependencies:
@@ -11196,7 +11193,7 @@ packages:
       lodash: 4.17.21
       pretty-error: 4.0.0
       tapable: 2.2.1
-      webpack: 5.73.0(esbuild@0.11.0)(uglify-js@3.16.2)
+      webpack: 5.76.0(esbuild@0.11.0)(uglify-js@3.16.2)
     dev: true
 
   /html-webpack-plugin@5.5.0(webpack@5.88.2):
@@ -16513,7 +16510,7 @@ packages:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/json-schema': 7.0.11
+      '@types/json-schema': 7.0.12
       ajv: 6.12.6
       ajv-keywords: 3.5.2(ajv@6.12.6)
 
@@ -17572,7 +17569,7 @@ packages:
       uglify-js: 3.16.2
       webpack: 5.88.2(esbuild@0.18.14)(uglify-js@3.16.2)
 
-  /terser-webpack-plugin@5.3.9(esbuild@0.11.0)(uglify-js@3.16.2)(webpack@5.73.0):
+  /terser-webpack-plugin@5.3.9(esbuild@0.11.0)(uglify-js@3.16.2)(webpack@5.76.0):
     resolution: {integrity: sha512-ZuXsqE07EcggTWQjXUj+Aot/OMcD0bMKGgF63f7UxYcu5/AJF53aIpK1YoP5xR9l6s/Hy2b+t1AM0bLNPRuhwA==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
@@ -17595,7 +17592,7 @@ packages:
       serialize-javascript: 6.0.1
       terser: 5.19.0
       uglify-js: 3.16.2
-      webpack: 5.73.0(esbuild@0.11.0)(uglify-js@3.16.2)
+      webpack: 5.76.0(esbuild@0.11.0)(uglify-js@3.16.2)
     dev: true
 
   /terser-webpack-plugin@5.3.9(esbuild@0.18.14)(uglify-js@3.16.2)(webpack@5.88.2):
@@ -18768,8 +18765,8 @@ packages:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}
     engines: {node: '>=10.13.0'}
 
-  /webpack@5.73.0(esbuild@0.11.0)(uglify-js@3.16.2):
-    resolution: {integrity: sha512-svjudQRPPa0YiOYa2lM/Gacw0r6PvxptHj4FuEKQ2kX05ZLkjbVc5MnPs6its5j7IZljnIqSVo/OsY2X0IpHGA==}
+  /webpack@5.76.0(esbuild@0.11.0)(uglify-js@3.16.2):
+    resolution: {integrity: sha512-l5sOdYBDunyf72HW8dF23rFtWq/7Zgvt/9ftMof71E/yUb1YLOBmTgA2K4vQthB3kotMrSj609txVE0dnr2fjA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -18799,7 +18796,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.3.0
       tapable: 2.2.1
-      terser-webpack-plugin: 5.3.9(esbuild@0.11.0)(uglify-js@3.16.2)(webpack@5.73.0)
+      terser-webpack-plugin: 5.3.9(esbuild@0.11.0)(uglify-js@3.16.2)(webpack@5.76.0)
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:
