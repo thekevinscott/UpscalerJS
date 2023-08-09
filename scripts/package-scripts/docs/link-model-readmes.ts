@@ -9,6 +9,19 @@ import { getSharedArgs, SharedArgs } from './types';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 
 /****
+ * Types
+ */
+
+interface PackageWithMetadata {
+  description: string;
+  sidebarPosition: number;
+  enhancedSrc: string;
+  unenhancedSrc: string;
+  category: string;
+  packageName: string;
+}
+
+/****
  * Utility functions
  */
 
@@ -80,29 +93,69 @@ const getEnhancedSrc = (packageName: string, readmeContents: string) => {
   throw new Error(`Could not find enhanced_src for package name ${packageName}`);
 };
 
+const getCategory = (packageName: string, readmeContents: string) => {
+  const lines = readmeContents.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('category: ')) {
+      return line.split('category: ').pop() || '';
+    }
+  }
+
+  throw new Error(`Could not find category for package name ${packageName}`);
+};
+
 const getPackageMetadata = async (packageName: string) => {
   const packagePath = path.resolve(MODELS_DIR, packageName);
-  const readmePath = path.resolve(packagePath, 'DOC.mdx');
-  const readmeContents = await readFile(readmePath, 'utf-8');
+  const docMdxPath = path.resolve(packagePath, 'DOC.mdx');
+  const docMdxContents = await readFile(docMdxPath, 'utf-8');
   return {
-    description: getDescription(readmeContents),
-    sidebarPosition: getSidebarPosition(packageName, readmeContents),
-    enhancedSrc: getEnhancedSrc(packageName, readmeContents),
+    description: getDescription(docMdxContents),
+    sidebarPosition: getSidebarPosition(packageName, docMdxContents),
+    enhancedSrc: getEnhancedSrc(packageName, docMdxContents),
     unenhancedSrc: `${packageName}/fixture.png`,
+    category: getCategory(packageName, docMdxContents),
   };
 };
 
-const writeModelIndexFile = async (packageNames: string[], targetAssetDir: string) => {
-  const packages = (await Promise.all(packageNames.filter(packageName => {
+const getAllPackagesOrganizedByCategory = async (packageNames: string[]): Promise<{ category: string, packages: PackageWithMetadata[] }[]> => {
+  const packages = await getAllPackagesWithMetadata(packageNames);
+
+  const packagesByCategory = packages.reduce<Record<string, Record<string, PackageWithMetadata>>>((obj, pkg) => {
+    const { category, sidebarPosition } = pkg;
+    if (!obj[category]) {
+      obj[category] = {};
+    }
+    obj[category][sidebarPosition] = pkg;
+    return obj;
+  }, {});
+
+  return Object.keys(packagesByCategory).map(category => {
+    const packageSidebarPositions = Object.keys(packagesByCategory[category]).sort();
+    const packages = packagesByCategory[category];
+
+    return {
+      category,
+      packages: packageSidebarPositions.map(position => packages[position]),
+    }
+  });
+};
+
+const getAllPackagesWithMetadata = async (packageNames: string[]): Promise<PackageWithMetadata[]> => {
+  const packagesWithValidReadme = packageNames.filter(packageName => {
     const packagePath = path.resolve(MODELS_DIR, packageName);
     const readmePath = path.resolve(packagePath, 'DOC.mdx');
     return existsSync(readmePath);
-  }).map(async (packageName) => ({
+  });
+  const packagesWithMetadata = await Promise.all(packagesWithValidReadme.map(async (packageName) => ({
     packageName,
     ...(await getPackageMetadata(packageName)),
-  })))).sort(({ sidebarPosition: a }, { sidebarPosition: b }) => {
-    return a - b;
-  });
+  })));
+
+  return packagesWithMetadata;
+};
+
+const writeModelIndexFile = async (packageNames: string[], targetAssetDir: string) => {
+  const packagesByCategory = getAllPackagesOrganizedByCategory(packageNames);
   const contents = `
 ---
 title: Models
@@ -119,10 +172,11 @@ hide_title: true
 
 UpscalerJS offers a number of available models. With the exception of \`default-model\`, these models must be explicitly installed alongside UpscalerJS.
 
-## Upscaling
-
 import ModelCard from '@site/src/components/modelCards/modelCard/modelCard';
 import ModelCards from '@site/src/components/modelCards/modelCards';
+
+${(await packagesByCategory).map(({ category, packages }) => `
+## ${category}
 
 <ModelCards>
   ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
@@ -134,6 +188,8 @@ import ModelCards from '@site/src/components/modelCards/modelCards';
   />
   `).join('\n')}
 </ModelCards>
+`)}
+
   `;
   await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents.trim(), 'utf-8');
 };
