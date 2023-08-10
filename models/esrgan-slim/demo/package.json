@@ -7,7 +7,7 @@
     "dev": "vite"
   },
   "devDependencies": {
-    "vite": "^4.4.8"
+    "vite": "^4.4.9"
   },
   "author": "Kevin Scott",
   "license": "MIT",
