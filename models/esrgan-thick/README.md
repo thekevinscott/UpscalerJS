@@ -2,7 +2,7 @@
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-thick/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-thick)
 
-ESRGAN Thick is a package of Tensorflow.js models for upscaling images with UpscalerJS.
+ESRGAN Thick is a package of models for upscaling images with [UpscalerJS](https://upscalerjs.com).
 
 The model's goal is to maximize performance.
 

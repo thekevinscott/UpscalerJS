@@ -2,7 +2,7 @@
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/default-model/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/default-model)
 
-This model is the default upscaling model used with UpscalerJS. It is a copy of the 2x model made available via @upscalerjs/esrgan-slim.
+This model is the default upscaling model used with [UpscalerJS](https://upscalerjs.com). It is a copy of the 2x model made available via [@upscalerjs/esrgan-slim](https://upscalerjs.com/models/available/esrgan-slim).
 
 ## Quick start
 

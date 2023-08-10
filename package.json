@@ -1,27 +1,11 @@
 {
-  "name": "@upscalerjs/root",
-  "version": "1.0.0-beta.14",
   "private": true,
-  "babel": {
-    "env": {
-      "test": {
-        "plugins": [
-          "@babel/plugin-transform-modules-commonjs"
-        ]
-      }
-    },
-    "presets": [
-      [
-        "@babel/preset-env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/preset-typescript"
-    ]
-  },
+  "name": "@upscalerjs/root",
+  "description": "This is the root package.json for the UpscalerJS monorepo. You are probably looking for the package.json located at packages/upscalerjs/package.json",
+  "version": "1.0.0-beta.14",
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "scripts": {
     "build": "pnpm --filter=\"upscaler\" build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
@@ -63,9 +47,6 @@
     "type": "git",
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
-  "author": "Kevin Scott",
-  "license": "MIT",
-  "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "peerDependencies": {
     "@tensorflow/tfjs": "4.8.0",
     "@tensorflow/tfjs-node": "4.8.0",
@@ -148,6 +129,26 @@
     "html-webpack-plugin": "5.5.0",
     "webpack": "5.73.0",
     "yargs": "17.6.2"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    },
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
   },
   "pnpm": {
     "overrides": {

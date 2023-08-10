@@ -8,3 +8,17 @@ $imgSize: 160px;
   height: $imgSize;
   width: $imgSize;
 }
+
+.featureImg {
+  font-size: 56px;
+  // margin: 0 1rem;
+  margin-right: 1rem;
+  display: block;
+  // float: left;
+  // text-align: center;
+}
+
+.featureTitle {
+  display: flex;
+  align-items: flex-end;
+}

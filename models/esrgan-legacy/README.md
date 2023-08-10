@@ -2,7 +2,7 @@
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-legacy/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-legacy)
 
-ESRGAN Legacy is a package of Tensorflow.js models for upscaling images with UpscalerJS.
+ESRGAN Legacy is a package of models for upscaling images with [UpscalerJS](https://upscalerjs.com).
 
 This package contains the five models available in pre-`1.0.0` versions of UpscalerJS.
 

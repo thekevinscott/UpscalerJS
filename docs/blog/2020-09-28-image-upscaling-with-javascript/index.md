@@ -420,9 +420,9 @@ It's likely that training on a dataset specific to your domain will yield increa
 
 Last year I spent some time working with [RAISR](https://ai.googleblog.com/2016/11/enhance-raisr-sharp-images-with-machine.html). One of the key insights in the paper was that compressing the low resolution images led to a more resilient model better able to handle artifacting, while sharpening the high resolution images led to more aesthetically pleasing upscaled images (at the expense of worse performance against the metrics). I suspect - though I don't know for sure - that similar techniques might yield similar benefits in training here, and I'm currently experimenting to find out.
 
-## Upscaler.JS
+## UpscalerJS
 
-I've packaged this all up into an npm model called [Upscaler.js](https://github.com/thekevinscott/UpscalerJS).
+I've packaged this all up into an npm model called [UpscalerJS](https://github.com/thekevinscott/UpscalerJS).
 
 It's agnostic to the upscaling model being used, which means that in the future, I’ll be able to improve models, and potentially introduce models tuned to various use cases (faces, illustrations). I'm currently serving models via JS CDNs and look forward to adding additional models in the future.
 

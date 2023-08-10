@@ -1,7 +1,22 @@
 {
   "name": "@upscalerjs/default-model",
   "version": "1.0.0-beta.15",
-  "description": "ESRGAN Default Model for Upscaler.js",
+  "description": "ESRGAN Default Model for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
+  "keywords": [
+    "image enhancement",
+    "super resolution",
+    "upscaling",
+    "tensorflowjs",
+    "neural network",
+    "ai",
+    "esrgan"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
   "exports": {
     ".": {
       "require": "./dist/cjs/models/default-model/src/index.js",
@@ -20,14 +35,6 @@
     "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o umd",
     "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
   },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models",
-    "esrgan"
-  ],
   "files": [
     "assets/**/*",
     "license",
@@ -51,7 +58,5 @@
   "@upscalerjs": {
     "title": "Default Model",
     "modelFamily": "esrgan"
-  },
-  "author": "Kevin Scott",
-  "license": "MIT"
+  }
 }

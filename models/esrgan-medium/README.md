@@ -2,7 +2,7 @@
 
 [![](https://data.jsdelivr.com/v1/package/npm/@upscalerjs/esrgan-medium/badge)](https://www.jsdelivr.com/package/npm/@upscalerjs/esrgan-medium)
 
-ESRGAN Medium is a package of Tensorflow.js models for upscaling images with UpscalerJS.
+ESRGAN Medium is a package of models for upscaling images with [UpscalerJS](https://upscalerjs.com).
 
 The model's goal is to strike a balance between latency and image quality. It aims to be in the middle of speed and performance measurements between `@upscalerjs/esrgan-slim` and `@upscalerjs/esrgan-thick`.
 

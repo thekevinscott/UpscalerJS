@@ -7,32 +7,18 @@
 <a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Code Coverage for UpscalerJS" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
 <a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource issues for UpscalerJS" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
 
+Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser & Node Compatible, MIT License.
 
-UpscalerJS is a tool for enhancing images in Javascript using Neural Networks. UpscalerJS features models enabling the following:
-
-- Super Resolution
-- Deblurring
-- Denoising
-- Deraining
-- Dehazing
-- Low Light Enhancement
-- Retouching
-- Inpainting (soon!)
+- 🎁 **Pretrained Models:** Enhance images using UpscalerJS's diverse pretrained models, designed to suit various image styles and requirements including increasing image resolution, denoising, deblurring, and more.
+- 🔌 **Seamless Platform Integration:** Integrate UpscalerJS across Browser, Node (CPU and GPU), and Workers environments.
+- 📘 **Comprehensive Documentation:** Leverage UpscalerJS confidently with extensive documentation, thorough examples, and TypeScript support.
+- 🚀 **UI-Focused Enhancement:** Performant UI support with built-in patch-based processing that supports performance without sacrificing quality.
+- 📱 **Device Compatibility:** Consistent image enhancement across a variety of devices, including desktops, tablets, and phones.
+- 🧩 **Custom Model Integration:** Extend UpscalerJS by integrating your own pretrained models for personalized image enhancements.
 
 ![Demo](docs/assets/assets/demo.png)
 
 [A live demo is here](https://upscalerjs.com/demo).
-
-## Announcement
-
-[A beta version of `1.0.0`](http://npmjs.com/package/upscaler) was released on 7/15/22. [Learn more here](https://twitter.com/upscalerjs/status/1547662175950344192) about what's included.
-
-If you are migrating from `<=0.12`, and you are using a custom model, [you will need to modify how you load models](https://upscalerjs.com/#/?id=instantiation). If you are using the default model (e.g., not providing a `model` argument) then no changes are needed.
-
-
-## Guides
-
-You can [view runnable code examples](https://upscalerjs.com/documentation/guides/). You can also find the [guides here on Github](https://github.com/thekevinscott/UpscalerJS/tree/main/examples).
 
 
 ## Quick Start
@@ -49,9 +35,15 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 
 [View the docs here.](https://upscalerjs.com)
 
-## Developing
 
-If cloning the repo, [ensure that `dvc` is installed](http://dvc.orgv). `dvc` is used to manage the model files and has git pre-hooks enabled.
+## Guides
+
+You can [view runnable code examples](https://upscalerjs.com/documentation/guides/). You can also find the [guides here on Github](https://github.com/thekevinscott/UpscalerJS/tree/main/examples).
+
+
+## Support the Project
+
+Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=javascript,image-enhancement,tensorflow.js,super-resolution) to support the project!
 
 ## License
 

@@ -1,7 +1,22 @@
 {
   "name": "@upscalerjs/esrgan-slim",
   "version": "1.0.0-beta.9",
-  "description": "ESRGAN Slim Model for Upscaler.js",
+  "description": "ESRGAN Slim Model for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
+  "keywords": [
+    "image enhancement",
+    "super resolution",
+    "upscaling",
+    "tensorflowjs",
+    "neural network",
+    "ai",
+    "esrgan"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
   "exports": {
     "./2x": {
       "require": "./dist/cjs/models/esrgan-slim/src/2x.js",
@@ -36,14 +51,6 @@
     "build:umd": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o umd",
     "clean": "pnpm --filter @upscalerjs/scripts model:clean esrgan-slim"
   },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models",
-    "esrgan"
-  ],
   "files": [
     "assets/**/*",
     "license",
@@ -64,7 +71,6 @@
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "seedrandom": "3.0.5"
   },
-  "author": "Kevin Scott",
   "@upscalerjs": {
     "title": "ESRGAN Slim",
     "modelFamily": "esrgan",
@@ -75,6 +81,5 @@
         ]
       }
     }
-  },
-  "license": "MIT"
+  }
 }

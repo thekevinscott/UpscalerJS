@@ -155,7 +155,7 @@ const upscaler = new Upscaler({
 
 [A full list of models can be found here](/models).
 
-Alternatively, we can provide a path to a pre-trained model of our own:
+Alternatively, we can provide a path to a pretrained model of our own:
 
 ```javascript
 const upscaler = new Upscaler({
@@ -165,8 +165,6 @@ const upscaler = new Upscaler({
   },
 });
 ```
-
-When providing our own model, **we must provide an explicit scale**.
 
 [See the API documentation for a model definition here](/documentation/api/constructor#parameters).
 
@@ -206,7 +204,7 @@ upscaler.upscale('/path/to/image', {
 The available types for output are:
 
 * `src` - A src URL of the upscaled image.
-* `tf.Tensor3D` - The raw tensor.
+* `tensor` - The raw tensor.
 
 #### Performance
 
