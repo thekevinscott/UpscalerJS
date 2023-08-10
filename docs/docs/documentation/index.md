@@ -9,9 +9,9 @@ hide_title: true
 
 # Introduction
 
-UpscalerJS is a tool for increasing image resolution in Javascript via a Neural Network up to 4x. It's open source, free to use, and ships with models to use out of the box. Users don't have to install anything.
+UpscalerJS is a tool for enhancing images in Javascript using AI. It can run in the browser, Node.js, and in Worker environments. It's open source, free to use, and ships with models to use out of the box so users don't have to install anything.
 
-## Motivation
+## Super Resolution
 
 Increasing an image's size results in a pixelated image:
 
@@ -27,24 +27,13 @@ Neural Networks [can allow us to "paint in" the expanded sections of the image](
 
 ## Javascript
 
-UpscalerJS is written in Javascript (on top of Tensorflow.js).
+UpscalerJS is written in Javascript and uses Tensorflow.js. Javascript for machine learning has several benefits:
 
-Most Super Resolution (most machine learning, for that matter) is done via Python. Javascript for machine learning has several benefits:
-
-### Convenience
-By running the code on users' devices, there's no need for installations or server-side implementation. This means inference happens immediately, without any extra setup.
-
-### Privacy
-Since images don't need to leave the users' device for processing, UpscalerJS offers a secure and private solution for machine learning.
-
-### Performance
-In addition to being convenient, running UpscalerJS clientside can also offer a latency benefit. By avoiding the need for a round trip to the server for processing, UpscalerJS can deliver faster results to users.
-
-### Compatibility
-UpscalerJS can be used on a variety of platforms, including Node.js, Electron, and Cloudflare Workers, making it a versatile choice for upscaling needs.
-
-### Simplicity
-If a codebase is already written in Javascript, UpscalerJS can be easily integrated into existing workflows. This makes it an ideal choice for bringing the power of machine learning to users without any additional complications.
+- **Convenience**: By running the code on users' devices, there's no need for installations or server-side implementation. This means inference happens immediately, without any extra setup.
+- **Privacy**: Since images don't need to leave the users' device for processing, UpscalerJS offers a secure and private solution for machine learning.
+- **Performance**: In addition to being convenient, running UpscalerJS clientside can also offer a latency benefit. By avoiding the need for a round trip to the server for processing, UpscalerJS can deliver faster results to users.
+- **Compatibility**: UpscalerJS can be used on a variety of platforms, including Node.js, Electron, and Cloudflare Workers, making it a versatile choice for upscaling needs.
+- **Simplicity**: If a codebase is already written in Javascript, UpscalerJS can be easily integrated into existing workflows. This makes it an ideal choice for bringing the power of machine learning to users without any additional complications.
 
 ## Next Steps
 

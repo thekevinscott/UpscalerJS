@@ -1,7 +1,22 @@
 {
   "name": "@upscalerjs/esrgan-legacy",
   "version": "1.0.0-beta.11",
-  "description": "ESRGAN Legacy Models for Upscaler.js",
+  "description": "ESRGAN Legacy Models for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
+  "keywords": [
+    "image enhancement",
+    "super resolution",
+    "upscaling",
+    "tensorflowjs",
+    "neural network",
+    "ai",
+    "esrgan"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
   "exports": {
     "./div2k/2x": {
       "require": "./dist/cjs/models/esrgan-legacy/src/div2k/2x.js",
@@ -40,14 +55,6 @@
     "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o umd",
     "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-legacy"
   },
-  "keywords": [
-    "image super resolution",
-    "image upscaling",
-    "image enhancement",
-    "tensorflow.js",
-    "pretrained models",
-    "esrgan"
-  ],
   "files": [
     "assets/**/*",
     "license",
@@ -67,7 +74,5 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "seedrandom": "3.0.5"
-  },
-  "author": "Kevin Scott",
-  "license": "MIT"
+  }
 }

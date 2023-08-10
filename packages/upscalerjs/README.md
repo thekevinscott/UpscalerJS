@@ -1,19 +1,25 @@
 # UpscalerJS
 
-<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="NPM" src="https://img.shields.io/npm/l/upscaler" /></a>
-<a href="https://www.npmjs.com/package/upscaler"><img alt="npm" src="https://img.shields.io/npm/dw/upscaler" /></a>
-<a href="https://travis-ci.org/github/thekevinscott/UpscalerJS"><img alt="Travis" src="https://img.shields.io/travis/thekevinscott/upscalerjs" /></a>
-<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
-<a href="https://github.com/thekevinscott/UpscalerJS/issues"><img alt="Github issues" src="https://img.shields.io/github/issues/thekevinscott/upscalerjs" /></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="Latest UpscalerJS NPM Version" src="https://badge.fury.io/js/upscaler.svg" /></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/blob/master/LICENSE"><img alt="License for UpscalerJS" src="https://img.shields.io/npm/l/upscaler" /></a>
+<a href="https://www.npmjs.com/package/upscaler"><img alt="Downloads per week on NPM for UpscalerJS" src="https://img.shields.io/npm/dw/upscaler" /></a>
+<a href="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml"><img src="https://github.com/thekevinscott/UpscalerJS/actions/workflows/tests.yml/badge.svg" alt="Status of tests for UpcalerJS repository" /></a>
+<a href="https://codecov.io/gh/thekevinscott/upscalerjs"><img alt="Code Coverage for UpscalerJS" src="https://img.shields.io/codecov/c/github/thekevinscott/upscalerjs" /></a>
+<a href="https://deepsource.io/gh/thekevinscott/UpscalerJS/?ref=repository-badge"><img alt="DeepSource issues for UpscalerJS" src="https://deepsource.io/gh/thekevinscott/UpscalerJS.svg/?label=active+issues&show_trend=true" /></a>
 
-UpscalerJS is a tool for increasing image resolution in Javascript via Tensorflow.js.
+Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser & Node Compatible, MIT License.
 
-<table>
-<thead><tr><th>Original</th><th>Upscaled</th></tr></thead>
-<tbody><tr><td><img src="https://github.com/thekevinscott/UpscalerJS/blob/main/assets/baboon-bicubic.png?raw=true" /></td><td><img src="https://github.com/thekevinscott/UpscalerJS/blob/main/assets/baboon-upscaled.png?raw=true" /></td></tr></tbody>
-</table>
+- 🎁 **Pretrained Models:** Enhance images using UpscalerJS's diverse pretrained models, designed to suit various image styles and requirements including increasing image resolution, denoising, deblurring, and more.
+- 🔌 **Seamless Platform Integration:** Integrate UpscalerJS across Browser, Node (CPU and GPU), and Workers environments.
+- 📘 **Comprehensive Documentation:** Leverage UpscalerJS confidently with extensive documentation, thorough examples, and TypeScript support.
+- 🚀 **UI-Focused Enhancement:** Performant UI support with built-in patch-based processing that supports performance without sacrificing quality.
+- 📱 **Device Compatibility:** Consistent image enhancement across a variety of devices, including desktops, tablets, and phones.
+- 🧩 **Custom Model Integration:** Extend UpscalerJS by integrating your own pretrained models for personalized image enhancements.
+
+![Demo](docs/assets/assets/demo.png)
 
 [A live demo is here](https://upscalerjs.com/demo).
+
 
 ## Quick Start
 
@@ -28,6 +34,12 @@ upscaler.upscale('/path/to/image').then(upscaledImage => {
 ## Documentation
 
 [View the docs here.](https://upscalerjs.com)
+
+
+## Guides
+
+You can [view runnable code examples](https://upscalerjs.com/documentation/guides/). You can also find the [guides here on Github](https://github.com/thekevinscott/UpscalerJS/tree/main/examples).
+
 
 ## Support the Project
 

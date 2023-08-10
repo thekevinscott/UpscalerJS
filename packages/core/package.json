@@ -1,5 +1,6 @@
 {
   "name": "@upscalerjs/core",
+  "description": "Core library for UpscalerJS, dependency for upscaler and model packages. Not intended to be used directly.",
   "version": "1.0.0-beta.15",
   "main": "./dist/cjs/index.js",
   "types": "./dist/cjs/index.d.ts",
