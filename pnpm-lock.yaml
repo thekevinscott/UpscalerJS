@@ -287,7 +287,7 @@ importers:
         version: 3.0.5
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@20.4.9)(typescript@5.1.6)
+        version: 10.9.1(@types/node@17.0.45)(typescript@5.1.6)
       upscaler:
         specifier: workspace:*
         version: link:../../packages/upscalerjs
@@ -773,9 +773,6 @@ importers:
       '@types/jest':
         specifier: ^29.5.3
         version: 29.5.3
-      chokidar:
-        specifier: ^3.5.3
-        version: 3.5.3
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -786,7 +783,7 @@ importers:
     dependencies:
       upscaler:
         specifier: 1.0.0-beta.14
-        version: 1.0.0-beta.14(@tensorflow/tfjs@4.10.0)
+        version: 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
 
   scripts:
     dependencies:
@@ -4955,7 +4952,7 @@ packages:
       chalk: 4.1.2
       ci-info: 3.3.2
       exit: 0.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-changed-files: 29.5.0
       jest-config: 29.6.1(@types/node@17.0.45)(ts-node@10.9.1)
       jest-haste-map: 29.6.1
@@ -5049,7 +5046,7 @@ packages:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 5.2.0
       istanbul-lib-report: 3.0.0
@@ -5079,7 +5076,7 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.18
       callsites: 3.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
     dev: true
 
   /@jest/test-result@29.6.1:
@@ -5097,7 +5094,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/test-result': 29.6.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.6.1
       slash: 3.0.0
     dev: true
@@ -5113,7 +5110,7 @@ packages:
       chalk: 4.1.2
       convert-source-map: 2.0.0
       fast-json-stable-stringify: 2.1.0
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.6.1
       jest-regex-util: 29.4.3
       jest-util: 29.6.1
@@ -5571,17 +5568,6 @@ packages:
     dependencies:
       defer-to-connect: 1.1.3
 
-  /@tensorflow/tfjs-backend-cpu@4.10.0(@tensorflow/tfjs-core@4.10.0):
-    resolution: {integrity: sha512-w3f0ORR1smSpkW7om2yQVunRYMjyqWcEbWCPirR1DQ6ImgW+VWqmM2oVPQXRsFYpwg1g6bk2Jp5COafpPA+krw==}
-    engines: {yarn: '>= 1.3.2'}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-      '@types/seedrandom': 2.4.30
-      seedrandom: 3.0.5
-    dev: false
-
   /@tensorflow/tfjs-backend-cpu@4.8.0(@tensorflow/tfjs-core@4.8.0):
     resolution: {integrity: sha512-kT4WZeM4cuuZ+dSCMatrC9YiqV4dxpFzjxKOKwdS41gdg5QKQGW7caScCe55thO/Xpp7VOJXncDYeaMH7GcxCA==}
     engines: {yarn: '>= 1.3.2'}
@@ -5591,19 +5577,6 @@ packages:
       '@tensorflow/tfjs-core': 4.8.0
       '@types/seedrandom': 2.4.30
       seedrandom: 3.0.5
-
-  /@tensorflow/tfjs-backend-webgl@4.10.0(@tensorflow/tfjs-core@4.10.0):
-    resolution: {integrity: sha512-Vzl/pyXHa9TgFaRJGspExjZVDKgkKvLxOkPaH+psE2LPnQkiH/IOPO7HKO0U3+hZql977BIiZdHc6HNprFS3/A==}
-    engines: {yarn: '>= 1.3.2'}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.10.0(@tensorflow/tfjs-core@4.10.0)
-      '@tensorflow/tfjs-core': 4.10.0
-      '@types/offscreencanvas': 2019.3.0
-      '@types/seedrandom': 2.4.30
-      seedrandom: 3.0.5
-    dev: false
 
   /@tensorflow/tfjs-backend-webgl@4.8.0(@tensorflow/tfjs-core@4.8.0):
     resolution: {integrity: sha512-iAJzQbndBtarV+OWk9Ukur5U0Xk/4t7j7O5WhPQO/q9yuRyWjAT6MPaCEW/+Ew4XC8yJGuvlfL0Oqi1X0drvfA==}
@@ -5618,35 +5591,12 @@ packages:
       '@types/webgl-ext': 0.0.30
       seedrandom: 3.0.5
 
-  /@tensorflow/tfjs-converter@4.10.0(@tensorflow/tfjs-core@4.10.0):
-    resolution: {integrity: sha512-ffLpK+ismdmiDcoTID2aidP3/uJYyQPjmKdRZ3hBUkrczy7pQIcCW8blIR9Gk20htB4OLQMf74ZxbpfdQ9nYeQ==}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dev: false
-
   /@tensorflow/tfjs-converter@4.8.0(@tensorflow/tfjs-core@4.8.0):
     resolution: {integrity: sha512-tBYsCdhdFNlFFn4FO49gr1yLX4h8xDxpoFI70lFECxDu9UfwaHNVuBLcocMx4XIFqQx12h6/Y3pD93HFvoum3A==}
     peerDependencies:
       '@tensorflow/tfjs-core': 4.8.0
     dependencies:
       '@tensorflow/tfjs-core': 4.8.0
-
-  /@tensorflow/tfjs-core@4.10.0:
-    resolution: {integrity: sha512-klc6lUTYRbHQLEFnVKtTICNK+WUlduUcrlXsDs6ixKAOJzLAlIR2JnmJICt2AT2Rxwu0Zj2bAYojSxgcIcUUxA==}
-    engines: {yarn: '>= 1.3.2'}
-    dependencies:
-      '@types/long': 4.0.2
-      '@types/offscreencanvas': 2019.7.0
-      '@types/seedrandom': 2.4.30
-      '@webgpu/types': 0.1.30
-      long: 4.0.0
-      node-fetch: 2.6.12
-      seedrandom: 3.0.5
-    transitivePeerDependencies:
-      - encoding
-    dev: false
 
   /@tensorflow/tfjs-core@4.8.0:
     resolution: {integrity: sha512-EkgGOAsPQSlpEdiG938c92pdC5i8GHeBVk6xO1AKKX8NiMSIruKtKqIQvX2aOkarwHy/5nhrJebAAvIL4dJlbw==}
@@ -5663,21 +5613,6 @@ packages:
     transitivePeerDependencies:
       - encoding
 
-  /@tensorflow/tfjs-data@4.10.0(@tensorflow/tfjs-core@4.10.0)(seedrandom@3.0.5):
-    resolution: {integrity: sha512-71rQ6xSipXdClKja705jrWZkH9ostAYuVZlf7nW2AJXUCzhrGsJAkcHag4m568mDFoAqfQQTBy4Gk26h0/Y+Pg==}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-      seedrandom: ^3.0.5
-    dependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-      '@types/node-fetch': 2.6.4
-      node-fetch: 2.6.12
-      seedrandom: 3.0.5
-      string_decoder: 1.3.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /@tensorflow/tfjs-data@4.8.0(@tensorflow/tfjs-core@4.8.0)(seedrandom@3.0.5):
     resolution: {integrity: sha512-eISTI7Rs51nR9EjyMq/E+mk9JpOIvBqfxT52IEJr2DxqY7TUZ0PlN77Ng/huEL+5I9M+GoVTXe+GFHCmq/5VhQ==}
     peerDependencies:
@@ -5691,14 +5626,6 @@ packages:
       string_decoder: 1.3.0
     transitivePeerDependencies:
       - encoding
-
-  /@tensorflow/tfjs-layers@4.10.0(@tensorflow/tfjs-core@4.10.0):
-    resolution: {integrity: sha512-SLZWnuDF98WmmJQ5NhsXJFlJPwoKxfLowvAHTlLz+Q1Po4juZVZ+BkatRsqrI2sA2B0IIu2TJp4VEAFWMqzTTg==}
-    peerDependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dependencies:
-      '@tensorflow/tfjs-core': 4.10.0
-    dev: false
 
   /@tensorflow/tfjs-layers@4.8.0(@tensorflow/tfjs-core@4.8.0):
     resolution: {integrity: sha512-jJJvyPxwztP4QMyjUXjyrV6ErWmw4zjub4QidijD8SpY6aVE31xVYqBzIqATa4LjF1ozYwqQoSEvKh4BVFexnA==}
@@ -5743,26 +5670,6 @@ packages:
       - seedrandom
       - supports-color
     dev: true
-
-  /@tensorflow/tfjs@4.10.0(seedrandom@3.0.5):
-    resolution: {integrity: sha512-16q6CcGEoxfg3kimBzNBrZg069GRd4Du49uyQHUMsEvpHbmU0ZpWa2zhjjZ71GlURpbD1LZIZNp6cd2Q1Eqjow==}
-    hasBin: true
-    dependencies:
-      '@tensorflow/tfjs-backend-cpu': 4.10.0(@tensorflow/tfjs-core@4.10.0)
-      '@tensorflow/tfjs-backend-webgl': 4.10.0(@tensorflow/tfjs-core@4.10.0)
-      '@tensorflow/tfjs-converter': 4.10.0(@tensorflow/tfjs-core@4.10.0)
-      '@tensorflow/tfjs-core': 4.10.0
-      '@tensorflow/tfjs-data': 4.10.0(@tensorflow/tfjs-core@4.10.0)(seedrandom@3.0.5)
-      '@tensorflow/tfjs-layers': 4.10.0(@tensorflow/tfjs-core@4.10.0)
-      argparse: 1.0.10
-      chalk: 4.1.2
-      core-js: 3.29.1
-      regenerator-runtime: 0.13.11
-      yargs: 16.2.0
-    transitivePeerDependencies:
-      - encoding
-      - seedrandom
-    dev: false
 
   /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
@@ -6511,12 +6418,12 @@ packages:
       - encoding
     dev: false
 
-  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.10.0):
+  /@upscalerjs/default-model@1.0.0-beta.12(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-3myASwFmYlZXcb09DkKlyz+o3fpT+htV4JGoksGulhkfC3PukMiOCUtmQlPlLJEgr94Oo8EyUIfMds3CeYw3Pg==}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.10.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.10
     transitivePeerDependencies:
       - encoding
@@ -7165,7 +7072,7 @@ packages:
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 29.5.0(@babel/core@7.22.10)
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
@@ -9310,7 +9217,7 @@ packages:
     resolution: {integrity: sha512-LXYT42KJ7lpIKECr2mAXIaMldcNCh/7E0KBKOu4KSfkHmP+mZmSs+8V5gBAqisWBy0OO4W5Oyys0GO1Y8KtdKg==}
     engines: {node: '>=10.13.0'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       tapable: 2.2.1
 
   /enquirer@2.3.6:
@@ -10757,7 +10664,7 @@ packages:
     resolution: {integrity: sha512-WvJ193OHa0GHPEL+AycEJgxvBEwyfRkN1vhjca23OaPVMCaLCXTd5qAu82AjTcgP1UJmytkOKb63Ypde7raDIg==}
     engines: {node: '>=0.6'}
     dependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       inherits: 2.0.4
       mkdirp: 0.5.6
       rimraf: 2.7.1
@@ -12119,7 +12026,7 @@ packages:
       '@jest/types': 29.6.1
       chalk: 4.1.2
       exit: 0.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       import-local: 3.1.0
       jest-config: 29.6.1(@types/node@20.4.9)(ts-node@10.9.1)
       jest-util: 29.6.1
@@ -12153,7 +12060,7 @@ packages:
       ci-info: 3.3.2
       deepmerge: 4.2.2
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-circus: 29.6.1
       jest-environment-node: 29.6.1
       jest-get-type: 29.4.3
@@ -12193,7 +12100,7 @@ packages:
       ci-info: 3.3.2
       deepmerge: 4.2.2
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-circus: 29.6.1
       jest-environment-node: 29.6.1
       jest-get-type: 29.4.3
@@ -12266,7 +12173,7 @@ packages:
       '@types/node': 20.4.9
       anymatch: 3.1.2
       fb-watchman: 2.0.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-regex-util: 29.4.3
       jest-util: 29.6.1
       jest-worker: 29.6.1
@@ -12365,7 +12272,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       chalk: 4.1.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.6.1
       jest-pnp-resolver: 1.2.2(jest-resolve@29.6.1)
       jest-util: 29.6.1
@@ -12387,7 +12294,7 @@ packages:
       '@types/node': 20.4.9
       chalk: 4.1.2
       emittery: 0.13.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-docblock: 29.4.3
       jest-environment-node: 29.6.1
       jest-haste-map: 29.6.1
@@ -12420,7 +12327,7 @@ packages:
       cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
       glob: 7.2.3
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-haste-map: 29.6.1
       jest-message-util: 29.6.1
       jest-mock: 29.6.1
@@ -12450,7 +12357,7 @@ packages:
       babel-preset-current-node-syntax: 1.0.1(@babel/core@7.22.10)
       chalk: 4.1.2
       expect: 29.6.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       jest-diff: 29.6.2
       jest-get-type: 29.4.3
       jest-matcher-utils: 29.6.2
@@ -12471,7 +12378,7 @@ packages:
       '@types/node': 17.0.45
       chalk: 4.1.2
       ci-info: 3.3.2
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       picomatch: 2.3.1
     dev: true
 
@@ -12678,7 +12585,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /jszip@3.10.1:
     resolution: {integrity: sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g==}
@@ -17360,6 +17267,37 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
+  /ts-node@10.9.1(@types/node@17.0.45)(typescript@5.1.6):
+    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
+    hasBin: true
+    peerDependencies:
+      '@swc/core': '>=1.2.50'
+      '@swc/wasm': '>=1.2.50'
+      '@types/node': '*'
+      typescript: '>=2.7'
+    peerDependenciesMeta:
+      '@swc/core':
+        optional: true
+      '@swc/wasm':
+        optional: true
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.9
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.3
+      '@types/node': 17.0.45
+      acorn: 8.7.1
+      acorn-walk: 8.2.0
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.1.6
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    dev: false
+
   /ts-node@10.9.1(@types/node@20.4.9)(typescript@4.8.3):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -17390,37 +17328,6 @@ packages:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
-
-  /ts-node@10.9.1(@types/node@20.4.9)(typescript@5.1.6):
-    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 20.4.9
-      acorn: 8.7.1
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.1.6
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: false
 
   /tsc-alias@1.8.2:
     resolution: {integrity: sha512-ukBkcNekOgwtnSWYLD5QsMX3yQWg7JviAs8zg3qJGgu4LGtY3tsV4G6vnqvOXIDkbC+XL9vbhObWSpRA5/6wbg==}
@@ -17794,7 +17701,7 @@ packages:
       buffer-indexof-polyfill: 1.0.2
       duplexer2: 0.1.4
       fstream: 1.0.12
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
       listenercount: 1.0.1
       readable-stream: 2.3.7
       setimmediate: 1.0.5
@@ -17854,15 +17761,15 @@ packages:
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
 
-  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.10.0):
+  /upscaler@1.0.0-beta.14(@tensorflow/tfjs@4.8.0):
     resolution: {integrity: sha512-G9yGw/YIKl8n2Mo1tZn18FZayL2fZubGLsEps5lZb5z26fzlAfXLt5TawdzT0UUHh0ybHz/+2g1nM+iQwChqDA==}
     engines: {node: '>=16.0'}
     peerDependencies:
       '@tensorflow/tfjs': ^4.1.0
     dependencies:
-      '@tensorflow/tfjs': 4.10.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/core': 1.0.0-beta.14
-      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.10.0)
+      '@upscalerjs/default-model': 1.0.0-beta.12(@tensorflow/tfjs@4.8.0)
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -18126,7 +18033,7 @@ packages:
     engines: {node: '>=10.13.0'}
     dependencies:
       glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.10
+      graceful-fs: 4.2.11
 
   /wbuf@1.7.3:
     resolution: {integrity: sha512-O84QOnr0icsbFGLS0O3bI5FswxzRr8/gHwWkDlQFskhSPryQXvrTMxjxGP4+iWYoauLoBvfDpkrOauZ+0iZpDA==}
