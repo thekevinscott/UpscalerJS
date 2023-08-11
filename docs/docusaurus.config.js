@@ -8,7 +8,7 @@ const { readFileSync } = require('fs-extra');
 
 const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 
-const { dependencies } = readFileSync(path.resolve('package.json'), 'utf8');
+const { dependencies } = JSON.parse(readFileSync(path.resolve('package.json'), 'utf8'));
 const SHOELACE_VERSION = dependencies['@shoelace-style/shoelace'];
 
 /** @type {import('@docusaurus/types').Config} */
