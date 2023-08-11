@@ -80,11 +80,11 @@ const getPreparedDoc = async (model: string, { verbose }: Opts) => {
   for (const match of matches) {
     const key = getKey(match[0]);
     if (key === undefined) {
-      throw new Error(`An undefined key was returned from the match "${match[0]}"`)
+      throw new Error(`An undefined key was returned from the match "${match[0]}" for model ${model}`);
     } else if (!(key in args)) {
-      throw new Error(`Key "${key}" for model family ${modelFamily} was not found in args`)
+      throw new Error(`Key "${key}" for model family ${modelFamily} and model ${model} was not found in args. Did you mean to prepend it with 'snippets/'? Args is: ${JSON.stringify(args, null, 2)}}`);
     } else if (typeof args[key] !== 'string') {
-      throw new Error(`Key "${key}" for model family ${modelFamily} is not a string, it is: ${typeof args[key]}`)
+      throw new Error(`Key "${key}" for model family ${modelFamily} and model ${model} is not a string, it is: ${typeof args[key]}`)
     } else {
       const matchStart = match?.index || 0;
       const matchEnd = matchStart + (match[0]?.length || 0);
