@@ -2,7 +2,7 @@ import { exec as _exec, ExecOptions } from 'child_process';
 import yargs from 'yargs';
 import path from 'path';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';
-import glob from 'glob';
+import { GlobOptionsWithFileTypesFalse, globSync, glob } from 'glob';
 import { ROOT_DIR } from './utils/constants';
 import asyncPool from "tiny-async-pool";
 
@@ -53,28 +53,11 @@ const getOutput = async (cmd: string, { ...opts }: ExecOptions = {}) => new Prom
   });
 });
 
-const globAsync = (pattern: string, {
-  cwd = ROOT_DIR,
-  ...options
-}: glob.IOptions = {
-}) => new Promise<string[]>((resolve, reject) => {
-  glob(pattern, {
-    cwd,
-    ...options,
-  }, (err, files) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(files);
-    }
-  });
-});
-
 const getPNPMPackages = async (): Promise<PNPMLSItem[]> => JSON.parse(await getOutput('pnpm m ls --json --depth=-1'));
 
 const getAllNonPNPMPackages = async () => {
   const packages = new Set((await getPNPMPackages()).map((pkg) => `${pkg.path.split(`${ROOT_DIR}/`).pop()}/package.json`));
-  const files = await globAsync('**/package.json', {
+  const files = await glob('**/package.json', {
     ignore: [
       'node_modules/**', 
       '**/node_modules/**', 
