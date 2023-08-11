@@ -3,8 +3,13 @@
 
 const lightCodeTheme = require('prism-react-renderer').themes.github;
 const darkCodeTheme = require('prism-react-renderer').themes.nightOwl;
+const path = require('path');
+const { readFileSync } = require('fs-extra');
 
 const GITHUB_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
+
+const { dependencies } = readFileSync(path.resolve('package.json'), 'utf8');
+const SHOELACE_VERSION = dependencies['@shoelace-style/shoelace'];
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -209,7 +214,7 @@ const config = {
     }),
   scripts: [
     { src: 'https://plausible.io/js/script.js', defer: true, 'data-domain': 'upscalerjs.com' },
-    { type: 'module', src:"https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.5.2/dist/shoelace.js" },
+    { type: 'module', src:`https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@${SHOELACE_VERSION}/dist/shoelace.js` },
   ],
 };
 
