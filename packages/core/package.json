@@ -27,6 +27,6 @@
     "@tensorflow/tfjs-core": "~4.8.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.0.3"
+    "@types/jest": "^29.5.3"
   }
 }
