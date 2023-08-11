@@ -71,6 +71,8 @@ const getDescription = (readmeContents: string) => {
   return description;
 };
 
+const uppercase = (part: string) => part[0].toUpperCase() + part.slice(1);
+
 const getSidebarPosition = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
@@ -176,7 +178,7 @@ import ModelCard from '@site/src/components/modelCards/modelCard/modelCard';
 import ModelCards from '@site/src/components/modelCards/modelCards';
 
 ${(await packagesByCategory).map(({ category, packages }) => `
-## ${category}
+## ${category.split('-').map(uppercase)}
 
 <ModelCards>
   ${packages.map(({ packageName, description, unenhancedSrc, enhancedSrc } ) => `
@@ -188,7 +190,7 @@ ${(await packagesByCategory).map(({ category, packages }) => `
   />
   `).join('\n')}
 </ModelCards>
-`)}
+`).join('\n')}
 
   `;
   await writeFile(path.resolve(DOCS_DIR, 'docs', 'models', 'index.md'), contents.trim(), 'utf-8');
