@@ -137,20 +137,30 @@ interface AvailableModel {
   value: string | PackageJSONExport;
 }
 
-export const getSupportedPlatforms = async (packageName: string, modelName: string): Promise<Environment[]> => {
+export const getSupportedPlatforms = async (packageName: string, modelName: string, key = 'supportedPlatforms'): Promise<Environment[]> => {
   if (!packageName) {
     throw new Error('Missing package name')
   }
   const packageJSONPath = path.resolve(MODELS_DIR, packageName);
   const packageJSON = await getPackageJSON(packageJSONPath);
-  return packageJSON['@upscalerjs']?.models?.[modelName]?.supportedPlatforms || ['clientside', 'serverside'];
+  const supportedPlatforms: undefined | string[] = packageJSON['@upscalerjs']?.models?.[modelName]?.[key];
+  if (supportedPlatforms === undefined) {
+    return ['clientside', 'serverside'];
+  }
+  return Array.from(new Set(supportedPlatforms.map(platform => {
+    if (['node', 'node-gpu'].includes(platform)) {
+      return 'serverside';
+    }
+    return 'clientside';
+  })));
 };
 
-const getPackagesAndModelsMatchingEnvironment = async (environment: Environment, packagesAndModels: ModelInformation[]) => {
+const getPackagesAndModelsMatchingEnvironment = async (environment: Environment, packagesAndModels: ModelInformation[], CI = false) => {
   const filteredPackagesAndModels: ModelInformation[] = [];
   await Promise.all(packagesAndModels.map(async (modelInformation) => {
     const supportedPlatforms = await getSupportedPlatforms(modelInformation.packageDirectoryName, modelInformation.modelName);
-    if (supportedPlatforms.includes(environment)) {
+    const supportedCIPlatforms = await getSupportedPlatforms(modelInformation.packageDirectoryName, modelInformation.modelName, 'CI');
+    if (supportedPlatforms.includes(environment) && (CI === false || supportedCIPlatforms.includes(environment))) {
       filteredPackagesAndModels.push(modelInformation);
     }
   }));
@@ -158,7 +168,7 @@ const getPackagesAndModelsMatchingEnvironment = async (environment: Environment,
 };
 
 
-export const getPackagesAndModelsForEnvironment = async (environment: Environment): Promise<ModelInformation[]> => {
+export const getPackagesAndModelsForEnvironment = async (environment: Environment, CI = false): Promise<ModelInformation[]> => {
   const packagesAndModels = await ALL_MODELS;
-  return getPackagesAndModelsMatchingEnvironment(environment, packagesAndModels);
+  return getPackagesAndModelsMatchingEnvironment(environment, packagesAndModels, CI);
 };

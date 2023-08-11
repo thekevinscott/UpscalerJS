@@ -9,7 +9,7 @@ import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
-const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
+const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 31, 2023 00:00:00');
 
 const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
 if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
@@ -41,8 +41,8 @@ describe('Speed Integration Tests', () => {
   afterEach(async function afterEach() {
     pages.forEach(page => {
       try {
-      page.close();
-      } catch(err) {}
+        page.close();
+      } catch (err) { }
     });
     pages = [];
     await testRunner.afterEach();

@@ -1,0 +1,192 @@
+{
+  "name": "@upscalerjs/maxim-enhancement",
+  "version": "0.1.0",
+  "description": "Maxim Enhancement model for UpscalerJS. Enhancement low light images with AI using Javascript",
+  "keywords": [
+    "image enhancement",
+    "super resolution",
+    "dehazing",
+    "tensorflowjs",
+    "neural network",
+    "ai",
+    "maxim"
+  ],
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
+  "exports": {
+    ".": {
+      "umd": "./dist/umd/models/maxim-enhancement/src/umd.min.js",
+      "require": "./dist/cjs/models/maxim-enhancement/src/cjs.js",
+      "import": "./dist/esm/models/maxim-enhancement/src/index.js"
+    }
+  },
+  "module": "./dist/esm/models/maxim-enhancement/src/index.js",
+  "types": "./dist/esm/models/maxim-enhancement/src/index.d.ts",
+  "umd:main": "./dist/umd/models/maxim-enhancement/src/umd.min.js",
+  "scripts": {
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "scaffold": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:index": "wireit",
+    "build:umd:rollup:index": "wireit",
+    "build:umd:uglify:index": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit"
+  },
+  "files": [
+    "assets/**/*",
+    "license",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "~4.11.0"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs-core": "~4.11.0",
+    "@tensorflow/tfjs-layers": "~4.11.0",
+    "@tensorflow/tfjs-node": "~4.11.0",
+    "@tensorflow/tfjs-node-gpu": "~4.11.0",
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
+  },
+  "@upscalerjs": {
+    "title": "MAXIM Enhancement",
+    "modelFamily": "maxim",
+    "models": {
+      ".": {
+        "CI": [
+          "node",
+          "node-gpu"
+        ]
+      }
+    }
+  },
+  "wireit": {
+    "lint": {
+      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold"
+      ]
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-enhancement"
+    },
+    "build": {
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../packages/shared/src/maxim/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "../tsconfig.json",
+        "tsconfig.umd.json",
+        "umd-names.json",
+        "../tsconfig.umd.json",
+        "tsconfig.esm.json",
+        "../tsconfig.esm.json",
+        "tsconfig.cjs.json",
+        "../tsconfig.cjs.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "build:cjs": {
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "dependencies": [
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../packages/shared/src/maxim/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "../tsconfig.json",
+        "tsconfig.cjs.json",
+        "../tsconfig.cjs.json"
+      ],
+      "output": [
+        "dist/cjs/**"
+      ]
+    },
+    "build:esm": {
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "dependencies": [
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../packages/shared/src/maxim/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "../tsconfig.json",
+        "tsconfig.esm.json",
+        "../tsconfig.esm.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
+    },
+    "build:umd": {
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && rimraf ./dist/umd-tmp",
+      "dependencies": [
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../packages/shared/src/maxim/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "../tsconfig.json",
+        "tsconfig.umd.json",
+        "umd-names.json",
+        "../tsconfig.umd.json"
+      ],
+      "output": [
+        "dist/umd/**"
+      ]
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:index": {
+      "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
+    },
+    "build:umd:rollup:index": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/maxim-enhancement/src/index.js --file ./dist/umd/models/maxim-enhancement/src/umd.js --name MaximEnhancement --format umd"
+    },
+    "build:umd:uglify:index": {
+      "command": "uglifyjs ./dist/umd/models/maxim-enhancement/src/umd.js --output ./dist/umd/models/maxim-enhancement/src/umd.min.js --compress --mangle --source-map"
+    }
+  }
+}
