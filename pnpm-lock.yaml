@@ -567,12 +567,6 @@ importers:
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@tensorflow/tfjs-node':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
@@ -617,12 +611,6 @@ importers:
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@tensorflow/tfjs-node':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
@@ -642,12 +630,6 @@ importers:
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@tensorflow/tfjs-node':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
@@ -686,12 +668,6 @@ importers:
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@tensorflow/tfjs-node':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
