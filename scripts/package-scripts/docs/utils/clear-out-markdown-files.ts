@@ -1,15 +1,7 @@
-import glob from 'glob';
+import { glob } from 'glob';
 import { unlink } from 'fs-extra';
 
-const getAllMarkdownFiles = (target: string) => new Promise<string[]>((resolve, reject) => {
-  glob(`${target}/**/*.md?(x)`, (err, files) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(files);
-    }
-  });
-});
+const getAllMarkdownFiles = (target: string) => glob(`${target}/**/*.md?(x)`);
 
 export const clearOutMarkdownFiles = async (target: string) => {
   const files = await getAllMarkdownFiles(target);
