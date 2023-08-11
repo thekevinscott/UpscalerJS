@@ -90,8 +90,7 @@
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "@types/jest": "^29.0.3",
-    "chokidar": "^3.5.3",
+    "@types/jest": "^29.5.3",
     "seedrandom": "3.0.5"
   }
 }
