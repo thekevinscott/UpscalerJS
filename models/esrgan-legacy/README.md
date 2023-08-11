@@ -43,7 +43,7 @@ ESRGAN Legacy ships with five models:
 
 ## Documentation
 
-For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-legacy](https://upscalerjs.com/models/available/esrgan-legacy).
+For more documentation, check out the model documentation at [upscalerjs.com/models/available/upscaling/esrgan-legacy](https://upscalerjs.com/models/available/upscaling/esrgan-legacy).
 
 ## License
 

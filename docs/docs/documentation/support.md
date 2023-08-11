@@ -17,13 +17,13 @@ For feature requests, [open a feature request issue on Github](https://github.co
 
 For model requests, [open a model request issue on Github](https://github.com/thekevinscott/UpscalerJS/issues/new?assignees=thekevinscott&labels=enhancement&projects=&template=model_request.md&title=) describing the model or image enhancement task request.
 
-For questions and all other support, [open a discussion in Github discussion](https://github.com/thekevinscott/UpscalerJS/discussions).
+For questions and all other support, [open a discussion in Github discussions](https://github.com/thekevinscott/UpscalerJS/discussions).
 
 ## Announcements and News
 Check out the [news page](/news) for the latest UpscalerJS news. An [RSS feed is also available](https://upscalerjs.com/news/rss.xml).
 
-Follow [@thekevinscott](https://twitter.com/thekevinscott) for announcements on Twitter.
+Follow the official Twitter account [@upscalerjs](https://twitter.com/upscalerjs) or the author [@thekevinscott](https://twitter.com/thekevinscott) for announcements on Twitter.
 
 ## Support the Project
 
-Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=javascript,image-enhancement,tensorflow.js,super-resolution) to support the project!
+Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fthekevinscott%2Fupscaler&via=thekevinscott&hashtags=image-enhancement,super-resolution,upscaling,tensorflow.js,neural-network,ai) to support the project!

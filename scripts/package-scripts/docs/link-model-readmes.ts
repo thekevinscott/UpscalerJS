@@ -2,7 +2,7 @@
  * Script for linking model readmes locally in docs folder
  */
 import path from 'path';
-import { copy, existsSync, readFile, unlinkSync, writeFile, writeFileSync } from 'fs-extra';
+import { copy, existsSync, mkdirp, readFile, unlinkSync, writeFile, writeFileSync } from 'fs-extra';
 import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
 import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
 import { getSharedArgs, SharedArgs } from './types';
@@ -33,20 +33,28 @@ const copyAssets = async (packageName: string, targetDir: string) => {
 
 const createMarkdown = async (contents: string, targetPath: string) => writeFile(targetPath, contents, 'utf-8');
 
-const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, targetDocDir: string) => {
+const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, targetDocDir: string, verbose?: boolean) => {
   for (let i = 0; i < packages.length; i++) {
     const packageName = packages[i];
     const packagePath = path.resolve(MODELS_DIR, packageName);
-    const readmePath = path.resolve(packagePath, 'DOC.mdx');
-    if (existsSync(readmePath)) {
-      const targetPath = path.resolve(targetDocDir, `${packageName}.mdx`);
-      try {
-        unlinkSync(targetPath);
-      } catch (err) { }
+    const docMdxPath = path.resolve(packagePath, 'DOC.mdx');
+
+    if (existsSync(docMdxPath)) {
+      const docMdxContents = await readFile(docMdxPath, 'utf-8');
+      const category = getCategory(packageName, docMdxContents);
+
+      const targetPath = path.resolve(targetDocDir, category, `${packageName}.mdx`);
+      await mkdirp(path.dirname(targetPath));
+      // try {
+      //   unlinkSync(targetPath);
+      // } catch (err) { }
       await copyAssets(packageName, targetAssetDir);
-      await createMarkdown(await readFile(readmePath, 'utf-8'), targetPath);
-    } else {
-      console.log(`** Does not exist: ${packageName}`)
+      await createMarkdown(await readFile(docMdxPath, 'utf-8'), targetPath);
+      if (verbose) {
+        console.log(`** Linked: ${packageName}`);
+      }
+    } else if (verbose) {
+      console.log(`** Does not have a DOC.mdx file: ${packageName}`)
     }
   }
 };
@@ -71,7 +79,7 @@ const getDescription = (readmeContents: string) => {
   return description;
 };
 
-const uppercase = (part: string) => part[0].toUpperCase() + part.slice(1);
+const uppercase = (part: string) => `${part[0].toUpperCase()}${part.slice(1)}`;
 
 const getSidebarPosition = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
@@ -187,6 +195,7 @@ ${(await packagesByCategory).map(({ category, packages }) => `
     unenhancedSrc="${unenhancedSrc}" 
     enhancedSrc="${enhancedSrc}" 
     description="${description}"
+    category="${category}"
   />
   `).join('\n')}
 </ModelCards>
@@ -199,19 +208,20 @@ ${(await packagesByCategory).map(({ category, packages }) => `
 /****
  * Main function
  */
-const linkModelReadmes = async ({ shouldClearMarkdown }: SharedArgs = {}) => {
+const linkModelReadmes = async ({ shouldClearMarkdown, verbose }: SharedArgs = {}) => {
   const packages = getAllAvailableModelPackages();
   const targetAssetDir = path.resolve(DOCS_DIR, `assets/assets/sample-images`);
   const targetDocDir = path.resolve(DOCS_DIR, `docs/models/available`);
   if (shouldClearMarkdown) {
-    await clearOutMarkdownFiles(targetDocDir);
+    await clearOutMarkdownFiles(targetDocDir, verbose);
   }
 
-  await Promise.all([
-    linkAllModelReadmes(packages, targetAssetDir, targetDocDir),
-    writeModelIndexFile(packages, targetAssetDir),
-  ]);
-}
+  await writeModelIndexFile(packages, targetAssetDir);
+  if (verbose) {
+    console.log('Wrote model index file');
+  }
+  await linkAllModelReadmes(packages, targetAssetDir, targetDocDir, verbose);
+};
 
 /****
  * Functions to expose the main function as a CLI tool

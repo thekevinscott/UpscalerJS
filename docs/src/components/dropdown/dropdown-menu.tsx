@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
 import styles from './dropdown-menu.module.scss';
 import { SlMenuItem } from '@shoelace-style/shoelace';
-import SlDropdown from '@shoelace-style/shoelace/dist/react/dropdown';
-import SlMenu from '@shoelace-style/shoelace/dist/react/menu';
 import { Button } from '@site/src/components/button/button';
+import { Dropdown } from './dropdown';
+import { Menu } from '../menu/menu';
 
 interface IProps <T> {
   defaultValue?: T[];
@@ -12,7 +12,7 @@ interface IProps <T> {
   multi?: boolean;
   children?: JSX.Element | JSX.Element[];
   allLabel?: string;
-  placement?: React.ComponentProps<typeof SlDropdown>['placement'];
+  placement?: React.ComponentProps<typeof Dropdown>['placement'];
   title?: string;
 }
 
@@ -84,7 +84,7 @@ export function DropdownMenu<T extends string>({title, placement = 'bottom-start
   return (
     <div>
       {title && <label className={styles.title}>{title}</label>}
-      <SlDropdown
+      <Dropdown
         stayOpenOnSelect
         placement={placement}
         distance={20}
@@ -93,10 +93,10 @@ export function DropdownMenu<T extends string>({title, placement = 'bottom-start
         <Button slot="trigger" caret>
           {label}
         </Button>
-        <SlMenu ref={ref}>
+        <Menu ref={ref}>
           {children}
-        </SlMenu>
-      </SlDropdown>
+        </Menu>
+      </Dropdown>
     </div>
   );
 }

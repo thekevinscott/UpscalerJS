@@ -56,7 +56,7 @@ ESRGAN Slim ships with four models corresponding to the _scale_ of the upscaled 
 
 ## Documentation
 
-For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-slim](https://upscalerjs.com/models/available/esrgan-slim).
+For more documentation, check out the model documentation at [upscalerjs.com/models/available/upscaling/esrgan-slim](https://upscalerjs.com/models/available/upscaling/esrgan-slim).
 
 ## License
 

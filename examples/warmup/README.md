@@ -46,14 +46,14 @@ upscaler.warmup([{ patchSize: 64, padding: 2 }, { patchSize: 32, padding: 2 }])
 
 ### Numeric sizes
 
-Alternatively, we can explicitly provide the width and height as numbers (width first):
+Alternatively, we can explicitly provide a size which will be used for the width and height:
 
 ```javascript
-upscaler.warmup([64, 64])
+upscaler.warmup(64)
 ```
 
 We can also pass this as an array if we need to warm up multiple sizes, like:
 
 ```javascript
-upscaler.warmup([[64, 64], [32, 32]])
+upscaler.warmup([64, 32])
 ```

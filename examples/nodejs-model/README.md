@@ -14,7 +14,7 @@ UpscalerJS offers a number of [models](/models#models-1) for download and instal
 
 ## Installing
 
-In this example, [we'll use `esrgan-thick`](/models/available/esrgan-thick), the most performant model. Install the model with:
+In this example, [we'll use `esrgan-thick`](/models/available/upscaling/esrgan-thick), the most performant model. Install the model with:
 
 ```bash
 npm install @upscalerjs/esrgan-thick
