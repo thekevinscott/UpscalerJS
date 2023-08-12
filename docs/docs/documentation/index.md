@@ -11,7 +11,7 @@ hide_title: true
 
 UpscalerJS is a tool for enhancing images in Javascript using AI. It can run in the browser, Node.js, and in Worker environments. It's open source, free to use, and ships with models to use out of the box so users don't have to install anything.
 
-UpscalerJS supports a variety of image enhancement techniques, but its original purpose was to support super resolution. If you haven't heard of super resolution before, here's a quick crash course.
+UpscalerJS supports a variety of image enhancement techniques, but its original purpose was to support super resolution. We'll go through a quick crash course on super resolution below.
 
 ## Motivation for Super Resolution
 
