@@ -92,4 +92,4 @@ const upscaler = new Upscaler({
 })
 ```
 
-We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/packages/shared/src/esrgan/esrgan.ts#L105).
+We can see an example of [two custom models defined in the `esrgan-thick` model package](https://github.com/thekevinscott/UpscalerJS/blob/main/packages/shared/src/esrgan/esrgan.ts#L55).

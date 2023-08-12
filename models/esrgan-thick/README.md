@@ -59,7 +59,7 @@ ESRGAN thick ships with four models corresponding to the _scale_ of the upscaled
 
 ## Documentation
 
-For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-thick](https://upscalerjs.com/models/available/esrgan-thick).
+For more documentation, check out the model documentation at [upscalerjs.com/models/available/upscaling/esrgan-thick](https://upscalerjs.com/models/available/upscaling/esrgan-thick).
 
 ## License
 

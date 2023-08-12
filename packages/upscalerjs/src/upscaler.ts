@@ -69,7 +69,7 @@ export class Upscaler {
    * 
    * const upscaler = new Upscaler({
    *   model: x2,
-   *   warmupSizes: [{ patchSize: 64 }],
+   *   warmupSizes: { patchSize: 64 },
    * });
    * ```
    * 
