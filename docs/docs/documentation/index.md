@@ -41,6 +41,6 @@ Javascript for machine learning offers several benefits:
 
 ## Next Steps
 
-With UpscalerJS, you can leverage the benefits of Javascript to deliver fast, convenient, and secure upscaling and image enhancement with AI.
+With UpscalerJS, leverage the benefits of Javascript to deliver fast, convenient, and secure upscaling and image enhancement with AI.
 
 [Learn more about how to install UpscalerJS and get started](/documentation/getting-started).
