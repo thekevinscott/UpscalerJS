@@ -57,7 +57,7 @@ ESRGAN Medium ships with four models corresponding to the _scale_ of the upscale
 
 ## Documentation
 
-For more documentation, check out the model documentation at [upscalerjs.com/models/available/esrgan-medium](https://upscalerjs.com/models/available/esrgan-medium).
+For more documentation, check out the model documentation at [upscalerjs.com/models/available/upscaling/esrgan-medium](https://upscalerjs.com/models/available/upscaling/esrgan-medium).
 
 ## License
 

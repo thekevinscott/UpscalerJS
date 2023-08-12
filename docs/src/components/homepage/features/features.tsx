@@ -40,8 +40,8 @@ function Feature({img, title, description}) {
   return (
     <div className={clsx(`col col--4 ${styles.feature}`)}>
       <div className="text--left padding-horiz--md">
-        <h3 className={styles.featureTitle}>
         <span className={styles.featureImg}>{img}</span>
+        <h3 className={styles.featureTitle}>
         {title}</h3>
         <p>{description}</p>
       </div>

@@ -8,7 +8,7 @@ export type WarmupSizesByPatchSize = {
 export type NumericWarmupSizes = number;
 export interface UpscalerOptions {
   /**
-   * Defaults to [`@upscalerjs/default-model`](/models/available/default-model)
+   * Defaults to [`@upscalerjs/default-model`](/models/available/upscaling/default-model)
    */
   model?: ModelDefinitionObjectOrFn;
   warmupSizes?: WarmupSizes;

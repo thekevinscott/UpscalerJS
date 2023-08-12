@@ -23,7 +23,6 @@ export const DemoVideoNav = ({
             className={clsx(active === i ? styles.active : '')}
           >
             <div className={styles.dot}></div>
-
           </button>
         </li>
       ))}

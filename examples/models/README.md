@@ -8,11 +8,11 @@ This guide discusses how models work in UpscalerJS.
 
 ## Overview
 
-UpscalerJS upscales images using neural networks trained on specific scales, configured in a variety of architecture sizes
+UpscalerJS's super resolution models upscale images using neural networks trained on specific scales, configured in a variety of architecture sizes
 
 :::info
 
-By default, UpscalerJS uses `default-model`, [which is available here](/models/available/default-model).
+By default, UpscalerJS uses `default-model`, [which is available here](/models/available/upscaling/default-model).
 
 :::
 
@@ -20,7 +20,7 @@ UpscalerJS offers a number of [models](/models) for download and installation, d
 
 ## Installing
 
-In this example, [we'll use `esrgan-thick`](/models/available/esrgan-thick), the most performant model. Install the model with:
+In this example, [we'll use `esrgan-thick`](/models/available/upscaling/esrgan-thick), the most performant model. Install the model with:
 
 ```bash
 npm install @upscalerjs/esrgan-thick

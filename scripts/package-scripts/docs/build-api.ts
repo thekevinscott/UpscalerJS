@@ -84,9 +84,9 @@ const TYPES_TO_EXPAND: Record<string, string[]> = {
 const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
   'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
   'WarmupSizes': () => ([
-    `- \`[number, number]\` - an array of two numbers representing width and height.`,
+    `- \`number\` - a number representing both the size (width and height) of the patch.`,
     `- \`{patchSize: number; padding?: number}\` - an object with the \`patchSize\` and optional \`padding\` properties.`,
-    `- \`[number, number][]\` - an array of arrays of two numbers representing width and height.`,
+    `- \`number[]\` - an array of numbers representing the size (width and height) of the patch.`,
     `- \`{patchSize: number; padding?: number}[]\` - an array of objects with the \`patchSize\` and optional \`padding\` properties.`,
   ].join('\n')),
   'Progress': () => ([

@@ -7,6 +7,7 @@ import Badges from '../../badges/badges';
 
 interface IProps {
   packageName: string;
+  category: string;
   unenhancedSrc: string;
   enhancedSrc: string;
   description: string;
@@ -20,12 +21,13 @@ const Description = ({ description }: { description: string }) => (
 
 export default function ModelCard ({
   packageName,
+  category,
   unenhancedSrc,
   enhancedSrc,
   description,
 }: IProps) {
   return (
-     <Link href={`/models/available/${packageName}`} className={clsx(styles.card)}>
+     <div className={clsx(styles.card)}>
        <div className={styles.images}>
          <img src={`/assets/sample-images/${unenhancedSrc}`} alt={`Unenhanced file for ${packageName}`} />
          <img src={`/assets/sample-images/${enhancedSrc}`} alt={`Enhanced file for ${packageName}`} />
@@ -37,10 +39,15 @@ export default function ModelCard ({
       <div className={styles.footer}>
         <Badges packageName={packageName} truncated />
         <div className={styles.buttonContainer}>
-          <button>View</button>
+          <Link
+            className="button button--primary button--lg"
+            to={`/models/available/${category}/${packageName}`}
+          >
+            View
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
