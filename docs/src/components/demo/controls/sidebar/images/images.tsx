@@ -51,10 +51,10 @@ export default function Images({
       {images ? (
         <div id={styles.imageList}>{images.map(image => (
           <div className={styles.image} key={image.url}>
-            <a onClick={e => {
+            <button onClick={e => {
               e.preventDefault();
               selectImage({ src: image.url, filename: image.tags });
-            }}><img src={image.url} /></a>
+            }}><img src={image.url} alt={image.url} /></button>
           </div>
         ))}</div>
       ) : (
