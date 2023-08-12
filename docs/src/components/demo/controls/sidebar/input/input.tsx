@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react';
+import React, { ChangeEvent, useMemo } from 'react';
 import styles from './input.module.scss';
 import { BiSearchAlt } from 'react-icons/bi';
 
