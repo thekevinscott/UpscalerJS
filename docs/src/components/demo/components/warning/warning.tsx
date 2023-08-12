@@ -32,7 +32,7 @@ export default function Warning({
           <Icon slot="icon" name="exclamation-triangle" />
           <strong>Large Image Detected</strong>
         </Alert>
-        <img id={styles.uploadedImage} src={src} />
+        <img id={styles.uploadedImage} src={src} alt="Uploaded image" />
         <p>
           Your image is <strong>{width}</strong> by <strong>{height}</strong> pixels. Large 
           images can take a long time to upscale in the browser.
@@ -48,7 +48,7 @@ export default function Warning({
         </p>
         <div id={styles.options}>
           <div id={styles.left}>
-          <a onClick={() => choose('original')}>I understand, use the original image!</a>
+          <button onClick={() => choose('original')}>I understand, use the original image!</button>
           </div>
           <div id={styles.right}>
             <Button variant='primary' onClick={() => choose('downscaled')}>

@@ -4,7 +4,8 @@ import { SlButton as _SlButton} from '@shoelace-style/shoelace/dist/react';
 import { SlButton } from '@shoelace-style/shoelace';
 import { CustomElement } from '@site/src/utils/customElement';
 
-interface IProps extends React.ComponentProps<typeof _SlButton>{
+interface IProps extends Omit<React.ComponentProps<typeof _SlButton>, 'className'>{
+  class?: string;
   onClick?: () => void; 
 }
 export const Button = ({ onClick, draggable, translate, ...props }: IProps) => {
@@ -12,6 +13,7 @@ export const Button = ({ onClick, draggable, translate, ...props }: IProps) => {
   return (
     <sl-button
       ref={ref}
+      class="button"
       {...props}
     />
   );

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useRef } from 'react';
+import React, { ChangeEvent, useMemo } from 'react';
 import styles from './input.module.scss';
 import { BiSearchAlt } from 'react-icons/bi';
 
@@ -9,17 +9,15 @@ export default function Input({
 }: {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const input = useRef<HTMLInputElement>();
-  const focus = useCallback(() => {
-    input.current.focus();
-  }, [input.current]);
+  const id = useMemo(() => `input-${Math.random()}`, []);
+
   return (
-      <div id={styles.container} onClick={focus}>
-        <div id={styles.input}>
-          <input style={{ fontSize }} placeholder="Search for images" onChange={handleChange} ref={input} />
-          <BiSearchAlt size={fontSize} />
-        </div>
+    <label id={styles.container} htmlFor={id}>
+      <div id={styles.input}>
+        <input id={id} style={{ fontSize }} placeholder="Search for images" onChange={handleChange} />
+        <BiSearchAlt size={fontSize} />
       </div>
+    </label>
   );
 }
 

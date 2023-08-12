@@ -4,7 +4,7 @@ import type { SlMenuItem } from '@shoelace-style/shoelace';
 import { CustomElement } from '@site/src/utils/customElement';
 
 type IProps = Partial<Pick<SlMenuItem, 'value' | 'checked' | 'menuItem' | 'type' | 'disabled'> & {
-  children: any;
+  children: JSX.Element | JSX.Element[];
 }>;
 
 export const MenuItem = ({

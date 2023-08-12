@@ -16,7 +16,7 @@ const makeESRGAN = (image: string): IExampleImage => ({
     src: `/assets/homepage-demo/enhanced/${image}.png`,
     labels: {
       short: '@upscalerjs/esrgan-thick/4x',
-      long: 'Upscaled using [`@upscalerjs/esrgan-thick` 4x](/models/available/esrgan-thick) model',
+      long: 'Upscaled using [`@upscalerjs/esrgan-thick` 4x](/models/available/upscaling/esrgan-thick) model',
     },
   },
 });

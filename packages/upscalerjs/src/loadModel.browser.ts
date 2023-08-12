@@ -34,7 +34,7 @@ export const CDNS: CDN[] = [
 
 export const getLoadModelErrorMessage = (errs: Errors, modelPath: string, internals: ModelConfigurationInternals): Error => new Error([
   `Could not resolve URL ${modelPath} for package ${internals?.name}@${internals?.version}`,
-  `Errors include:`,
+  'Errors include:',
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
