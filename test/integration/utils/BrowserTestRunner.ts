@@ -1,5 +1,5 @@
 import http from 'http';
-import * as puppeteer from 'puppeteer';
+import { Page, Browser, BrowserContext, launch, } from 'puppeteer';
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
@@ -21,9 +21,9 @@ export class BrowserTestRunner {
   dist: string;
   private _mockCDN: MockCDN | undefined;
   private _server: http.Server | undefined;
-  private _browser: puppeteer.Browser | undefined;
-  private _page: puppeteer.Page | undefined;
-  private _context: puppeteer.BrowserContext | undefined;
+  private _browser: Browser | undefined;
+  private _page: Page | undefined;
+  private _context: BrowserContext | undefined;
   private _name?: string;
   private _verbose?: boolean;
   private _usePNPM?: boolean;
@@ -64,7 +64,7 @@ export class BrowserTestRunner {
    * Getters and setters
    */
 
-  private _getLocal<T extends puppeteer.Browser | puppeteer.Page | puppeteer.BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
+  private _getLocal<T extends Browser | Page | BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
     if (!this[key]) {
       throw new Error(this._getLogMessage(`${key.substring(1)} is undefined`));
     }
@@ -86,8 +86,8 @@ export class BrowserTestRunner {
     this._server = server;
   }
 
-  get browser(): puppeteer.Browser { return this._getLocal('_browser'); }
-  set browser(browser: puppeteer.Browser | undefined) {
+  get browser(): Browser { return this._getLocal('_browser'); }
+  set browser(browser: Browser | undefined) {
     if (browser && this._browser) {
       throw new Error(this._getLogMessage(`Browser is already active`));
     }
@@ -95,22 +95,22 @@ export class BrowserTestRunner {
   }
 
 
-  get context(): puppeteer.BrowserContext { return this._getLocal('_context'); }
-  set context(context: puppeteer.BrowserContext | undefined) {
+  get context(): BrowserContext { return this._getLocal('_context'); }
+  set context(context: BrowserContext | undefined) {
     if (context && this._context) {
       throw new Error(this._getLogMessage(`Context is already active`));
     }
     this._context = context;
   }
 
-  get page(): puppeteer.Page {
-    const page = this._getLocal<puppeteer.Page>('_page');
+  get page(): Page {
+    const page = this._getLocal<Page>('_page');
     // if (page && page.isClosed() === true) {
     //   throw new Error('Page is already closed; did you forget to close and restart the browser?');
     // }
     return page;
   }
-  set page(page: puppeteer.Page | undefined) {
+  set page(page: Page | undefined) {
     {
       if (page && this._page) {
         throw new Error(this._getLogMessage(`Page is already active`));
@@ -172,8 +172,8 @@ export class BrowserTestRunner {
   }
 
   public async startBrowser() {
-    this.browser = await puppeteer.launch({
-      // headless: 'new',
+    this.browser = await launch({
+      headless: 'new',
     });
   }
 
