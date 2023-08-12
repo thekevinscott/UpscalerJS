@@ -90,4 +90,3 @@ export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 export const checkValidEnvironment: CheckValidEnvironment<Input> = () => {};
-d

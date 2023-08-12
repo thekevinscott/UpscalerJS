@@ -9,17 +9,12 @@ export default function Input({
 }: {
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const input = useRef<HTMLInputElement>();
-  const focus = useCallback(() => {
-    input.current.focus();
-  }, [input.current]);
-
   const id = useMemo(() => `input-${Math.random()}`, []);
 
   return (
-    <label id={styles.container} onClick={focus} htmlFor={id}>
+    <label id={styles.container} htmlFor={id}>
       <div id={styles.input}>
-        <input id={id} style={{ fontSize }} placeholder="Search for images" onChange={handleChange} ref={input} />
+        <input id={id} style={{ fontSize }} placeholder="Search for images" onChange={handleChange} />
         <BiSearchAlt size={fontSize} />
       </div>
     </label>
