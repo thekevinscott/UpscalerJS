@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { MutableRefObject } from 'react';
 import { CustomElement } from '@site/src/utils/customElement';
 import { SlMenu } from '@shoelace-style/shoelace';
 
 interface IProps {
-  ref?: any;
+  ref?: MutableRefObject<SlMenu>;
   children: JSX.Element | JSX.Element[];
 }
 
