@@ -11,7 +11,7 @@ import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvai
 import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import buildUpscaler from './package-scripts/build-upscaler';
-import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
+import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from '@internals/browserstack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
@@ -232,9 +232,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
     if (verbose) {
       console.log(args);
-      if (bsLocal) {
-        console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
-      }
     }
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });

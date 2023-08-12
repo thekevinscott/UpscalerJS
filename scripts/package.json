@@ -61,6 +61,7 @@
     "image-size": "^1.0.2",
     "inquirer": "^8.2.4",
     "sharp": "^0.31.0",
+    "@internals/browserstack": "workspace:*",
     "yargs": "^17.5.1"
   }
 }

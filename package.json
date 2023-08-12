@@ -84,7 +84,7 @@
     "@typescript-eslint/eslint-plugin": "6.3.0",
     "@typescript-eslint/parser": "6.3.0",
     "babel-plugin-add-module-exports": "1.0.4",
-    "browserstack-local": "1.5.4",
+    "browserstack-local": "1.5.1",
     "chai": "4.3.7",
     "chai-as-promised": "7.1.1",
     "chokidar": "3.5.3",
@@ -126,6 +126,9 @@
     "upscaler": "workspace:*",
     "vite": "4.4.9",
     "webpack": "5.88.2",
+    "@internals/browserstack": "workspace:*",
+    "@internals/test-runner": "workspace:*",
+    "@internals/git": "workspace:*",
     "yargs": "17.7.2"
   },
   "babel": {
@@ -154,8 +157,5 @@
       "@tensorflow/tfjs-node": "4.8.0",
       "@tensorflow/tfjs-node-gpu": "4.8.0"
     }
-  },
-  "dependencies": {
-    "rimraf": "^5.0.1"
   }
 }

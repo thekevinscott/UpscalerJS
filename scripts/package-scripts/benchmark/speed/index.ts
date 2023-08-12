@@ -7,7 +7,7 @@ import yargs from 'yargs';
 import { startServer } from '../../../../test/lib/shared/server';
 import http from 'http';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack';
+import { getBrowserstackAccessKey, getMobileBrowserOptions, startBrowserstack as _startBrowserstack, stopBrowserstack } from 'browserstack';
 import { BenchmarkedSpeedResult, SpeedBenchmarker } from '../performance/utils/SpeedBenchmarker';
 import { TF } from "../performance/utils/types";
 import Table from 'cli-table';

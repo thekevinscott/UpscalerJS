@@ -6,7 +6,7 @@ import type * as tf from '@tensorflow/tfjs';
 import { Device } from './Device';
 import { CreationAttributes, QueryTypes } from "sequelize";
 import { ProgressBar } from "../../../utils/ProgressBar";
-import { BrowserOption, executeAsyncScript, getBrowserstackAccessKey, getDriver, printLogs, startBrowserstack, stopBrowserstack, takeScreenshot } from "../../../utils/browserStack";
+import { BrowserOption, executeAsyncScript, getBrowserstackAccessKey, getDriver, printLogs, startBrowserstack, stopBrowserstack, takeScreenshot } from "../../../../../internals/testing/src/browserStack";
 import type webdriver from 'selenium-webdriver';
 import { Benchmarker } from "./Benchmarker";
 import { UpscalerModel } from "./UpscalerModel";

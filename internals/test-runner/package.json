@@ -1,0 +1,5 @@
+{
+  "name": "@internals/test-runner",
+  "private": true,
+  "main": "./src/index.ts"
+}

@@ -1,14 +1,17 @@
 import path from 'path';
-import browserstack from 'browserstack-local';
+import { Local } from 'browserstack-local';
 import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
-import { ROOT_DIR } from './constants';
+import { getCurrentBranch } from '@internals/git';
 import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
+import puppeteer from 'puppeteer';
+import { ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { createServerWithResponse } from '../../../test/lib/shared/server';
 
 /****
  * Types
  */
-export type Browserstack = browserstack.Local;
+export type Browserstack = Local;
 
 export interface BrowserOption {
   os?: string;
@@ -19,6 +22,12 @@ export interface BrowserOption {
   real_mobile?: 'true';
   browserName?: string;
   localhost?: string;
+
+  build?: string;
+  name?: string;
+  'browserstack.username'?: string;
+  'browserstack.accessKey'?: string;
+  'browserstack.local'?: string;
 }
 
 export type FilterBrowserOption = (option: BrowserOption) => boolean;
@@ -27,7 +36,10 @@ export type FilterBrowserOption = (option: BrowserOption) => boolean;
  * Constants
  */
 
+export const USE_PUPPETEER = true; // puppeteer doesn't work for mobile browsers
+export const DEFAULT_LOCALHOST = 'localhost';
 const env = getEnv();
+const CURRENT_BRANCH =  getCurrentBranch();
 
 const browserOptions: Array<BrowserOption> = JSON.parse(readFileSync(path.resolve(__dirname, './browserStackOptions.json'), 'utf8'));
 const mobileBrowserOptions: Array<BrowserOption> = JSON.parse(readFileSync(path.resolve(__dirname, './browserStackMobileOptions.json'), 'utf8')).map((option: BrowserOption[]) => ({
@@ -46,12 +58,13 @@ prefs.setLevel(logging.Type.BROWSER, logging.Level.INFO);
  * Public Constants
  */
 export const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack.com/wd/hub`;
-export const DEFAULT_CAPABILITIES = {
-  'build': env.BROWSERSTACK_BUILD_NAME,
-  'project': env.BROWSERSTACK_PROJECT_NAME,
+export const DEFAULT_CAPABILITIES = async () => ({
+  // 'build': env.BROWSERSTACK_BUILD_NAME,
+  // 'project': env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.local': true,
+  'build': await CURRENT_BRANCH,
   // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
-}
+})
 
 /****
  * Utility Functions
@@ -94,20 +107,20 @@ export const startBrowserstack = async ({
   verbose = true,
 }: {
   key?: string;
-  bs?: browserstack.Local;
+  bs?: Local;
   verbose?: boolean;
-}): Promise<Browserstack> => new Promise((resolve, reject) => {
+}): Promise<Browserstack> => new Promise(async (resolve, reject) => {
   if (!key) {
     throw new Error('A key must be passed to start up the local browserstack service');
   }
   if (!bs) {
     if (verbose) {
-      console.log('Start browserstack with a brand new object')
+      console.log('Starting browserstack with a brand new object')
     }
-    bs = new browserstack.Local();
+    bs = new Local();
   } else {
     if (verbose) {
-      console.log('Start browserstack with an existing object')
+      console.log('Starting browserstack with an existing object')
     }
   }
   bs.start({
@@ -115,7 +128,7 @@ export const startBrowserstack = async ({
     force: true,
     onlyAutomate: true,
     forceLocal: true,
-  }, (error) => {
+  }, async (error) => {
     if (error) {
       return reject(error);
     }
@@ -123,7 +136,17 @@ export const startBrowserstack = async ({
       throw new Error('Browserstack failed to start');
     }
     if (verbose) {
-      console.log('Browserstack started');
+      console.log('Browserstack started, and running is:', bs.isRunning());
+    }
+    try {
+      await waitForLocalhostAccess({
+        timeout: 5000,
+        verbose,
+      }, bs);
+    } catch (err) {
+      await stopBrowserstack(bs);
+      console.error('Could not access localhost via browserstack.')
+      return reject(err);
     }
     resolve(bs);
   });
@@ -136,15 +159,25 @@ export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOp
 export const getMobileBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => mobileBrowserOptions.filter(filter || Boolean);
 
 type Capabilities = Parameters<Builder['withCapabilities']>[0];
-export const getDriver = (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): ThenableWebDriver => new webdriver.Builder()
-  .usingServer(serverURL)
-  .setLoggingPrefs(prefs)
-  .withCapabilities({
-    ...DEFAULT_CAPABILITIES,
+export const getSeleniumDriver = async (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): Promise<ThenableWebDriver> => {
+  const caps = {
+    ...(await DEFAULT_CAPABILITIES()),
     ...capabilities,
     verbose,
-  })
-  .build();
+  };
+  console.log('caps', caps);
+  const driver = new webdriver.Builder();
+  driver.forBrowser('chrome');
+  driver.usingServer(serverURL);
+  driver.withCapabilities(caps);
+  // driver.build();
+  return driver.build();
+  // return new webdriver.Builder()
+  //   .usingServer(serverURL)
+  //   .setLoggingPrefs(prefs)
+  //   .withCapabilities(caps)
+  //   .build();
+};
 
 export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, verbose = false) => {
   if (capabilities?.browserName === 'firefox') {
@@ -254,7 +287,57 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
     throw new Error('Bug with code');
   }
   return response;
-}
+};
+
+export const getRootURL = (port: number, capabilities: BrowserOption) => `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${port}`;
+
+export const connectPuppeteerForBrowserstack = async (caps: BrowserOption) => puppeteer.connect({
+  browserWSEndpoint: `wss://cdp.browserstack.com/puppeteer?caps=${encodeURIComponent(JSON.stringify({
+    'build': await CURRENT_BRANCH,
+    'browserstack.username': username,
+    // process.env.BROWSERSTACK_USERNAME || 'kevinscott3',
+    'browserstack.accessKey': accessKey,
+    // process.env.BROWSERSTACK_ACCESS_KEY || 'TiWVBe57ZkZwqmuqHAVL',
+    'browserstack.local': 'true',
+    ...caps,
+  }))}`,
+});
+
+// const wait = (d: number) => new Promise(r => setTimeout(r, d));
+const waitForLocalhostAccess = async ({ timeout, verbose, }: { timeout: number; verbose?: boolean }, bsLocal: Local) => {
+  const TITLE = 'We are live';
+  const PORT = 5003;
+  await createServerWithResponse(PORT, TITLE);
+
+  const caps = {
+    'browser': 'chrome',
+    // 'browser_version': 'latest',
+    'os': 'os x',
+    'os_version': 'catalina',
+    'name': 'Testing localhost connectivity',
+  };
+
+  if (USE_PUPPETEER) {
+    const browser = await connectPuppeteerForBrowserstack(caps);
+
+    const page = await browser.newPage();
+    await page.goto(getRootURL(PORT, caps));
+    const title = await page.title();
+    await browser.close();
+    if (title !== TITLE) {
+      throw new Error(`Expected title to be ${TITLE} but was: ${title}`);
+    }
+  } else {
+    const driver = await getSeleniumDriver(caps, { verbose });
+    await driver.get(getRootURL(PORT, caps));
+    await driver.wait(async () => {
+      const title = await driver.getTitle();
+      return title.endsWith('| Loaded');
+    }, 3000);
+
+    await printLogs(driver, caps);
+  }
+};
 
 // When checking for the errorKey or localKey variables on the window object above,
 // we need to declare that window can adopt any kind of variable

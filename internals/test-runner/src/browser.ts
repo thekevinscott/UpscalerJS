@@ -1,10 +1,10 @@
 import http from 'http';
 import { Page, Browser, BrowserContext, launch, connect, ConnectOptions } from 'puppeteer';
-import { startServer } from '../../lib/shared/server';
-import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
 import { catchFailures } from './catchFailures';
+import { Opts } from '../../../test/lib/shared/prepare';
+import { startServer } from '../../../test/lib/shared/server';
 
 type Bundle = (opts?: Opts) => Promise<void>;
 
@@ -49,7 +49,6 @@ export class BrowserTestRunner {
     verbose?: boolean;
     usePNPM?: boolean;
   } = {}) {
-    console.log('this is the old BrowserTestRunner. Switch to importing it from test-runner')
     this._name = name;
     this.mockCDN = mockCDN;
     this.dist = dist;
@@ -150,14 +149,17 @@ export class BrowserTestRunner {
    */
 
   async startServer(dist?: string, port?: number) {
-    this.server = await startServer(port || this.port, dist || this.dist);
-    return this.server;
+    return startServer(port || this.port, dist || this.dist);
   }
 
   stopServer(): Promise<void> {
+    console.log('stop the server')
     return new Promise((resolve, reject) => {
+      console.log('prepare to stop the server')
       try {
+        console.log('prepare to stop the server 1')
         this.server.close(err => {
+          console.log('closed')
           if (err) {
             reject(err);
           } else {
@@ -166,18 +168,19 @@ export class BrowserTestRunner {
           }
         });
       } catch (err) {
+        console.log('err')
         this._warn(`No server found`);
         resolve();
       }
-    })
+    });
   }
 
-  public async startBrowser(opts: ConnectOptions = {}) {
+  public startBrowser = async (opts: ConnectOptions = {}) => {
     // const browser1 = await launch({
     //   headless: 'new',
     // });
-    const connectedBrowser = await connect(opts);
-    this.browser = connectedBrowser;
+    this.browser = await connect(opts);
+    return this.browser;
   }
 
   private _attachLogger() {
@@ -255,7 +258,7 @@ export class BrowserTestRunner {
     }
   }
 
-  private _makeOpts(): Opts {
+  private _makeBundleOpts(): Opts {
     return {
       verbose: this._verbose,
       usePNPM: this._usePNPM,
@@ -268,8 +271,8 @@ export class BrowserTestRunner {
 
   @catchFailures()
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
-  async beforeAll(bundle?: Bundle, connectOpts?: ConnectOptions) {
-    const opts = this._makeOpts();
+  async beforeAll(bundle?: Bundle, startBrowser = true) {
+    const opts = this._makeBundleOpts();
     const _bundle = async () => {
       if (bundle) {
         await bundle(opts);
@@ -278,7 +281,7 @@ export class BrowserTestRunner {
     };
     await Promise.all([
       _bundle(),
-      this.startBrowser(connectOpts),
+      startBrowser ? this.startBrowser() : undefined,
     ]);
   }
 
@@ -307,3 +310,4 @@ export class BrowserTestRunner {
     ]);
   }
 }
+
