@@ -11,7 +11,7 @@ type Bundle = (opts?: Opts) => Promise<void>;
 const DEFAULT_PORT = 8098;
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
-export type AfterEachCallback<T> = () => Promise<void | T>;
+export type AfterEachCallback = () => Promise<void>;
 
 export class BrowserTestRunner {
   trackTime: boolean;
@@ -269,7 +269,7 @@ export class BrowserTestRunner {
    * Jest lifecycle methods
    */
 
-  @catchFailures()
+  @catchFailures(() => process.exit(1))
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle?: Bundle, startBrowser = true) {
     const opts = this._makeBundleOpts();
@@ -285,7 +285,7 @@ export class BrowserTestRunner {
     ]);
   }
 
-  @catchFailures()
+  @catchFailures(() => process.exit(1))
   @timeit('afterAll clean up')
   async afterAll() {
     await Promise.all([
@@ -294,14 +294,14 @@ export class BrowserTestRunner {
     ]);
   }
 
-  @catchFailures()
+  @catchFailures(() => process.exit(1))
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
-  @catchFailures()
+  @catchFailures(() => process.exit(1))
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback: AfterEachCallback = async () => {}) {
     await Promise.all([

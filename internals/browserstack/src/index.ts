@@ -123,11 +123,7 @@ function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
 
   // if running in IE, it appears TFJS is already available? Ignore warnings
   // about the TFJS backend already being registered
-  if (entry.level.name === 'WARNING' && capabilities?.browserName === 'edge') {
-    return false;
-  }
-
-  return true;
+  return entry.level.name !== 'WARNING' && capabilities?.browserName !== 'edge';
 }
 
 
