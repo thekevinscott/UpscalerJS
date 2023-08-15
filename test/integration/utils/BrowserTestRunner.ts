@@ -1,5 +1,9 @@
 import http from 'http';
+<<<<<<< HEAD
 import { Page, Browser, BrowserContext, launch, connect, ConnectOptions } from 'puppeteer';
+=======
+import { Page, Browser, BrowserContext, launch, } from 'puppeteer';
+>>>>>>> main
 import { startServer } from '../../lib/shared/server';
 import { Opts } from '../../lib/shared/prepare';
 import { isIgnoredMessage } from './messages';
