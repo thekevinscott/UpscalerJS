@@ -5,7 +5,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '@internals/test-runner/browser';
+import { BrowserTestRunner } from '../../../internals/test-runner/src/browser';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src';

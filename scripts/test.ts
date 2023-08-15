@@ -226,6 +226,9 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       '--config',
       jestConfigPath,
       '--detectOpenHandles',
+      '--bail',
+      // TODO: Allow multiple instances of a server to resolve to the same server
+      '--runInBand', // to avoid server collisions on the same port.
       watch ? '--watch' : undefined,
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);

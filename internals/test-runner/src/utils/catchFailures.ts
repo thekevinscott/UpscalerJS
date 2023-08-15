@@ -1,5 +1,4 @@
-type CatchFn = (err: unknown) => void;
-export function catchFailures<T extends unknown[]>(catchFn: CatchFn) {
+export function catchFailures<T extends unknown[]>() {
   return (
     _1: unknown,
     _2: string | symbol,
@@ -11,7 +10,8 @@ export function catchFailures<T extends unknown[]>(catchFn: CatchFn) {
         return await origFn.apply(this, args);
       } catch (err) {
         console.error(err);
-        return catchFn(err);
+        // process.exit(1);
+        throw err;
       }
     };
     return descriptor;

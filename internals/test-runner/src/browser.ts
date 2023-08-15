@@ -1,5 +1,5 @@
 import http from 'http';
-import { Page, Browser, BrowserContext, connect, ConnectOptions } from 'puppeteer';
+import { Page, Browser, BrowserContext, connect, ConnectOptions as _ConnectOptions, launch } from 'puppeteer';
 import { isIgnoredMessage } from './utils/messages';
 import { timeit } from './utils/timeit';
 import { catchFailures } from './utils/catchFailures';
@@ -12,6 +12,13 @@ const DEFAULT_PORT = 8098;
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void>;
+type ConnectOptions = Omit<_ConnectOptions, 'browserWSEndpoint' | 'browserURL' | 'transport'> & ({
+  browserWSEndpoint: _ConnectOptions['browserWSEndpoint'];
+} | {
+  browserURL: _ConnectOptions['browserURL'];
+} | {
+  transport: _ConnectOptions['transport'];
+}); 
 
 export class BrowserTestRunner {
   trackTime: boolean;
@@ -166,12 +173,20 @@ export class BrowserTestRunner {
     });
   }
 
-  public startBrowser = async (opts: ConnectOptions = {}) => {
-    // const browser1 = await launch({
-    //   headless: 'new',
-    // });
-    this.browser = await connect(opts);
-    return this.browser;
+  public startBrowser = async (opts?: ConnectOptions) => {
+    const validOpts = !!opts && (!('browserWSEndpoint' in opts) && !('browserURL' in opts) && !('transport' in opts));
+    if (validOpts) {
+      const browser = await connect(validOpts ? opts : {
+        browserURL: this.serverURL,
+      });
+      this.browser = browser;
+      return browser;
+    }
+    const browser = await launch({
+      headless: 'new',
+    });
+    this.browser = browser;
+    return browser;
   }
 
   private _attachLogger() {
@@ -260,9 +275,9 @@ export class BrowserTestRunner {
    * Jest lifecycle methods
    */
 
-  @catchFailures(() => process.exit(1))
+  @catchFailures()
   @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
-  async beforeAll(bundle?: Bundle, startBrowser = true) {
+  async beforeAll(bundle?: Bundle, shouldStartBrowser = true) {
     const opts = this._makeBundleOpts();
     const _bundle = async () => {
       if (bundle) {
@@ -272,11 +287,11 @@ export class BrowserTestRunner {
     };
     await Promise.all([
       _bundle(),
-      startBrowser ? this.startBrowser() : undefined,
+      shouldStartBrowser ? this.startBrowser() : undefined,
     ]);
   }
 
-  @catchFailures(() => process.exit(1))
+  @catchFailures()
   @timeit('afterAll clean up')
   async afterAll() {
     await Promise.all([
@@ -285,14 +300,14 @@ export class BrowserTestRunner {
     ]);
   }
 
-  @catchFailures(() => process.exit(1))
+  @catchFailures()
   @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
-  @catchFailures(() => process.exit(1))
+  @catchFailures()
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
   async afterEach(callback?: AfterEachCallback) {
     await Promise.all([

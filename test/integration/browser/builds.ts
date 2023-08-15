@@ -7,7 +7,7 @@ import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-w
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { BrowserTestRunner, MockCDN } from '@internals/test-runner/browser';
+import { BrowserTestRunner, MockCDN } from '../../../internals/test-runner/src/browser';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
