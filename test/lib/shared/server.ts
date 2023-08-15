@@ -57,7 +57,7 @@ export const createBaseServer = (port: number, requestListener: RequestListener)
   });
 });
 
-export const createServerWithResponse = (port: number, response: string) => createBaseServer(port, (req, res) => {
+export const createServerWithResponse = (port: number, response: string) => createBaseServer(port, (_req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.write(`<html><head><title>${response}</title></head><body><h1>${response}</h1></body></html>`);
   res.end();
