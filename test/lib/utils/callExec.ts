@@ -1,7 +1,24 @@
-import { exec, ExecOptions } from 'child_process';
+import { exec, ExecException, ExecOptions } from 'child_process';
 
 export type StdOut = (chunk: string) => void;
 export type StdErr = (chunk: string) => void;
+
+export const isExecException = (error: unknown | ExecException): error is ExecException => {
+  return !!error && typeof error === 'object' && 'message' in error && error.message !== undefined;
+};
+
+export const getParsedErrorMessage = (err: ExecException) => {
+  const message = err.message;
+  if (message !== '') {
+    const errorMessage = message.split('Error: ').pop();
+    if (errorMessage) {
+      const pertinentLine = errorMessage.split('\n')[0].trim();
+      return pertinentLine;
+    }
+    throw new Error(`Could not find "Error: " string in error message. Error message: ${message}`);
+  }
+  throw new Error('Error message returned from node process was blank');
+}
 
 export const callExec = (cmd: string, {
   verbose = false,
@@ -15,7 +32,7 @@ export const callExec = (cmd: string, {
   }
   const spawnedProcess = exec(cmd, options, (error) => {
     if (error) {
-      reject(error);
+      reject(new Error(error.message));
     } else {
       resolve();
     }

@@ -1,10 +1,10 @@
 import http from 'http';
-import { Page, Browser, BrowserContext, launch, connect, ConnectOptions } from 'puppeteer';
-import { isIgnoredMessage } from './messages';
-import { timeit } from './timeit';
-import { catchFailures } from './catchFailures';
+import { Page, Browser, BrowserContext, connect, ConnectOptions } from 'puppeteer';
+import { isIgnoredMessage } from './utils/messages';
+import { timeit } from './utils/timeit';
+import { catchFailures } from './utils/catchFailures';
 import { Opts } from '../../../test/lib/shared/prepare';
-import { startServer } from '../../../test/lib/shared/server';
+import { startServer as _startServer } from '../../../test/lib/shared/server';
 
 type Bundle = (opts?: Opts) => Promise<void>;
 
@@ -81,7 +81,7 @@ export class BrowserTestRunner {
   get server(): http.Server { return this._getLocal('_server'); }
   set server(server: http.Server | undefined) {
     if (server && this._server) {
-      throw new Error(this._getLogMessage(`Server is already active`));
+      throw new Error(this._getLogMessage('Server is already active'));
     }
     this._server = server;
   }
@@ -89,7 +89,7 @@ export class BrowserTestRunner {
   get browser(): Browser { return this._getLocal('_browser'); }
   set browser(browser: Browser | undefined) {
     if (browser && this._browser) {
-      throw new Error(this._getLogMessage(`Browser is already active`));
+      throw new Error(this._getLogMessage('Browser is already active'));
     }
     this._browser = browser;
   }
@@ -98,7 +98,7 @@ export class BrowserTestRunner {
   get context(): BrowserContext { return this._getLocal('_context'); }
   set context(context: BrowserContext | undefined) {
     if (context && this._context) {
-      throw new Error(this._getLogMessage(`Context is already active`));
+      throw new Error(this._getLogMessage('Context is already active'));
     }
     this._context = context;
   }
@@ -111,12 +111,10 @@ export class BrowserTestRunner {
     return page;
   }
   set page(page: Page | undefined) {
-    {
-      if (page && this._page) {
-        throw new Error(this._getLogMessage(`Page is already active`));
-      }
-      this._page = page;
+    if (page && this._page) {
+      throw new Error(this._getLogMessage('Page is already active'));
     }
+    this._page = page;
   }
 
   /****
@@ -148,18 +146,12 @@ export class BrowserTestRunner {
    * Start and stop methods
    */
 
-  async startServer(dist?: string, port?: number) {
-    return startServer(port || this.port, dist || this.dist);
-  }
+  startServer = (dist?: string, port?: number) => _startServer(port || this.port, dist || this.dist);
 
   stopServer(): Promise<void> {
-    console.log('stop the server')
     return new Promise((resolve, reject) => {
-      console.log('prepare to stop the server')
       try {
-        console.log('prepare to stop the server 1')
         this.server.close(err => {
-          console.log('closed')
           if (err) {
             reject(err);
           } else {
@@ -168,8 +160,7 @@ export class BrowserTestRunner {
           }
         });
       } catch (err) {
-        console.log('err')
-        this._warn(`No server found`);
+        this._warn('No server found');
         resolve();
       }
     });
@@ -244,7 +235,7 @@ export class BrowserTestRunner {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this._warn(`No browser found`);
+      this._warn('No browser found');
     }
   }
 
@@ -254,7 +245,7 @@ export class BrowserTestRunner {
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this._warn(`No context found`);
+      this._warn('No context found');
     }
   }
 
@@ -303,10 +294,10 @@ export class BrowserTestRunner {
 
   @catchFailures(() => process.exit(1))
   @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
-  async afterEach(callback: AfterEachCallback = async () => {}) {
+  async afterEach(callback?: AfterEachCallback) {
     await Promise.all([
       this._closeContext(),
-      callback(),
+      callback ? callback() : undefined,
     ]);
   }
 }

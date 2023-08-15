@@ -14,7 +14,7 @@ import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from '@internals/browserstack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { TEST_DIR } from './package-scripts/utils/constants';
-import { Bundle } from '../test/integration/utils/NodeTestRunner';
+import { Bundle } from '../internals/test-runner/src/node';
 /****
  * Types
  */

@@ -6,7 +6,7 @@ import { checkImage } from '../../lib/utils/checkImage';
 import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '@internals/test-runner';
+import { BrowserTestRunner } from '@internals/test-runner/browser';
 import { USE_PUPPETEER, BrowserOption, executeAsyncScript, getBrowserOptions, getSeleniumDriver, getRootURL, printLogs } from '@internals/browserstack';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { connectPuppeteerForBrowserstack } from '../../../internals/browserstack/src';

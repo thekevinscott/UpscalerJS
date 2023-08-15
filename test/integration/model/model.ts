@@ -7,12 +7,12 @@ import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '@internals/test-runner/browser';
+import { NodeTestRunner, Main } from '@internals/test-runner/node';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;

@@ -32,6 +32,8 @@ export interface BrowserOption {
 
 export type FilterBrowserOption = (option: BrowserOption) => boolean;
 
+type Capabilities = Parameters<Builder['withCapabilities']>[0];
+
 /****
  * Constants
  */
@@ -69,6 +71,86 @@ export const DEFAULT_CAPABILITIES = async () => ({
 /****
  * Utility Functions
  */
+export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, verbose = false) => {
+  if (capabilities?.browserName === 'firefox') {
+    if (capabilities?.os === 'windows') {
+      if (verbose) {
+        console.log('Not printing logs, because it is Windows Firefox')
+      }
+      // There is a bug with Firefox not supporting the get logs method on Windows
+      // https://stackoverflow.com/questions/59192232/selenium-trying-to-get-firefox-console-logs-results-in-webdrivererror-http-me
+      // console.log('** Firefox on Windows does not support logging')
+      return;
+    }
+    if (capabilities?.os === 'OS X') {
+      if (verbose) {
+        console.log('Not printing logs, because it is OS X Firefox')
+      }
+      // Firefox does not seem to support logging on OS X either
+      // https://github.com/mozilla/geckodriver/issues/1698
+      // console.log('** Firefox on OS X does not support logging')
+      return;
+    }
+  }
+
+  if (capabilities?.browserName === 'safari') {
+    if (verbose) {
+      console.log('Not printing logs, because it is Safari')
+    }
+    // It looks like Safari also does not support logging
+    // console.log('** Safari does not support logging')
+    return;
+  }
+
+  const logs = await driver.manage().logs().get(logging.Type.BROWSER);
+
+  if (verbose) {
+    console.log(`Got ${logs.length} logs`);
+  }
+
+  for (const entry of logs) {
+    if (shouldPrintLogs(entry, capabilities)) {
+      console.log('LOG [%s] %s', entry.level.name, entry.message, capabilities);
+    } else if (verbose) {
+      console.log('Skipping log');
+    }
+  }
+};
+
+export const getSeleniumDriver = async (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): Promise<ThenableWebDriver> => {
+  const caps = {
+    ...(await DEFAULT_CAPABILITIES()),
+    ...capabilities,
+    verbose,
+  };
+  console.log('caps', caps);
+  const driver = new webdriver.Builder();
+  driver.forBrowser('chrome');
+  driver.usingServer(serverURL);
+  driver.withCapabilities(caps);
+  // driver.build();
+  return driver.build();
+  // return new webdriver.Builder()
+  //   .usingServer(serverURL)
+  //   .setLoggingPrefs(prefs)
+  //   .withCapabilities(caps)
+  //   .build();
+};
+
+export const getRootURL = (port: number, capabilities: BrowserOption) => `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${port}`;
+
+export const connectPuppeteerForBrowserstack = async (caps: BrowserOption) => puppeteer.connect({
+  browserWSEndpoint: `wss://cdp.browserstack.com/puppeteer?caps=${encodeURIComponent(JSON.stringify({
+    'build': await CURRENT_BRANCH,
+    'browserstack.username': username,
+    // process.env.BROWSERSTACK_USERNAME || 'kevinscott3',
+    'browserstack.accessKey': accessKey,
+    // process.env.BROWSERSTACK_ACCESS_KEY || 'TiWVBe57ZkZwqmuqHAVL',
+    'browserstack.local': 'true',
+    ...caps,
+  }))}`,
+});
+
 const waitForLocalhostAccess = async ({ verbose, }: { verbose?: boolean }) => {
   const TITLE = 'We are live';
   const PORT = 5003;
@@ -134,7 +216,7 @@ export const getBrowserstackAccessKey = () => getEnv().BROWSERSTACK_ACCESS_KEY;
 
 export const stopBrowserstack = (bs: Browserstack): Promise<void> => new Promise(resolve => bs.stop(() => resolve()));
 
-export const startBrowserstack = async ({
+export const startBrowserstack = ({
   key,
   bs,
   verbose = true,
@@ -142,7 +224,7 @@ export const startBrowserstack = async ({
   key?: string;
   bs?: Local;
   verbose?: boolean;
-}): Promise<Browserstack> => new Promise(async (resolve, reject) => {
+}): Promise<Browserstack> => new Promise((resolve, reject) => {
   if (!key) {
     throw new Error('A key must be passed to start up the local browserstack service');
   }
@@ -180,7 +262,7 @@ export const startBrowserstack = async ({
       console.error('Could not access localhost via browserstack.')
       return reject(err);
     }
-    resolve(bs);
+    return resolve(bs);
   });
 });
 
@@ -188,80 +270,11 @@ export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOp
 
 export const getMobileBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => mobileBrowserOptions.filter(filter || Boolean);
 
-type Capabilities = Parameters<Builder['withCapabilities']>[0];
-export const getSeleniumDriver = async (capabilities: Capabilities, { verbose }: { verbose?: boolean } = {}): Promise<ThenableWebDriver> => {
-  const caps = {
-    ...(await DEFAULT_CAPABILITIES()),
-    ...capabilities,
-    verbose,
-  };
-  console.log('caps', caps);
-  const driver = new webdriver.Builder();
-  driver.forBrowser('chrome');
-  driver.usingServer(serverURL);
-  driver.withCapabilities(caps);
-  // driver.build();
-  return driver.build();
-  // return new webdriver.Builder()
-  //   .usingServer(serverURL)
-  //   .setLoggingPrefs(prefs)
-  //   .withCapabilities(caps)
-  //   .build();
-};
-
-export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, verbose = false) => {
-  if (capabilities?.browserName === 'firefox') {
-    if (capabilities?.os === 'windows') {
-      if (verbose) {
-        console.log('Not printing logs, because it is Windows Firefox')
-      }
-      // There is a bug with Firefox not supporting the get logs method on Windows
-      // https://stackoverflow.com/questions/59192232/selenium-trying-to-get-firefox-console-logs-results-in-webdrivererror-http-me
-      // console.log('** Firefox on Windows does not support logging')
-      return;
-    }
-    if (capabilities?.os === 'OS X') {
-      if (verbose) {
-        console.log('Not printing logs, because it is OS X Firefox')
-      }
-      // Firefox does not seem to support logging on OS X either
-      // https://github.com/mozilla/geckodriver/issues/1698
-      // console.log('** Firefox on OS X does not support logging')
-      return;
-    }
-  }
-
-  if (capabilities?.browserName === 'safari') {
-    if (verbose) {
-      console.log('Not printing logs, because it is Safari')
-    }
-    // It looks like Safari also does not support logging
-    // console.log('** Safari does not support logging')
-    return;
-  }
-
-  const logs = await driver.manage().logs().get(logging.Type.BROWSER);
-
-  if (verbose) {
-    console.log(`Got ${logs.length} logs`);
-  }
-
-  for (const entry of logs) {
-    if (shouldPrintLogs(entry, capabilities)) {
-      console.log('LOG [%s] %s', entry.level.name, entry.message, capabilities);
-    } else if (verbose) {
-      console.log('Skipping log');
-    }
-  }
-}
-
-export const takeScreenshot = async (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
-  driver.takeScreenshot().then(data => {
-    var base64Data = data.replace(/^data:image\/png;base64,/, "");
-    writeFileSync(target, base64Data, 'base64');
-    resolve();
-  });
-});
+export const takeScreenshot = (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => driver.takeScreenshot().then(data => {
+  const base64Data = data.replace(/^data:image\/png;base64,/, "");
+  writeFileSync(target, base64Data, 'base64');
+  resolve();
+}));
 
 type ExecuteAsyncScriptArgs = Parameters<webdriver.WebDriver['executeAsyncScript']>[1];
 export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: ExecuteAsyncScriptArgs) => T, args?: ExecuteAsyncScriptArgs, {
@@ -317,20 +330,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
   }
   return response;
 };
-
-export const getRootURL = (port: number, capabilities: BrowserOption) => `http://${capabilities.localhost || DEFAULT_LOCALHOST}:${port}`;
-
-export const connectPuppeteerForBrowserstack = async (caps: BrowserOption) => puppeteer.connect({
-  browserWSEndpoint: `wss://cdp.browserstack.com/puppeteer?caps=${encodeURIComponent(JSON.stringify({
-    'build': await CURRENT_BRANCH,
-    'browserstack.username': username,
-    // process.env.BROWSERSTACK_USERNAME || 'kevinscott3',
-    'browserstack.accessKey': accessKey,
-    // process.env.BROWSERSTACK_ACCESS_KEY || 'TiWVBe57ZkZwqmuqHAVL',
-    'browserstack.local': 'true',
-    ...caps,
-  }))}`,
-});
 
 // When checking for the errorKey or localKey variables on the window object above,
 // we need to declare that window can adopt any kind of variable

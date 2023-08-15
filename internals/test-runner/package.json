@@ -1,5 +1,8 @@
 {
   "name": "@internals/test-runner",
   "private": true,
-  "main": "./src/index.ts"
+  "exports": {
+    "./browser": "./src/browser.ts",
+    "./node": "./src/node.ts"
+  }
 }

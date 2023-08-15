@@ -5,7 +5,7 @@ import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
 import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
-import { Bundle } from "../../integration/utils/NodeTestRunner";
+import { Bundle } from '../../../internals/test-runner/src/node';
 import { MODELS_DIR, UPSCALER_DIR } from "../../../scripts/package-scripts/utils/constants";
 import validateBuild, { extractAllFilesFromPackageJSON } from "../../../scripts/package-scripts/validate-build";
 import callExec, { StdErr, StdOut } from '../utils/callExec';

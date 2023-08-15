@@ -4,7 +4,7 @@
 import { ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '@internals/test-runner/browser';
 import type { Page } from 'puppeteer';
 
 // TODO: Figure out how to import this from upscaler

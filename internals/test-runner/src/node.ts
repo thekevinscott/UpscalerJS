@@ -1,10 +1,11 @@
-import { timeit } from "./timeit";
+import { timeit } from "./utils/timeit";
 import path from 'path';
-import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare";
-import { Opts } from '../../lib/shared/prepare';
+import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../../test/lib/node/prepare";
+import { Opts } from '../../../test/lib/shared/prepare';
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
+import { getParsedErrorMessage, isExecException } from "../../../test/lib/utils/callExec";
 
-export type Bundle<T = {}> = (opts?: T & {
+export type Bundle<T = object> = (opts?: T & {
   verbose?: boolean;
   skipInstallNodeModules?: boolean;
   skipInstallLocalPackages?: boolean;
@@ -90,8 +91,10 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     });
     let testName = '';
     try {
-      testName = expect.getState().currentTestName || '';
-    } catch (err) { }
+      testName = expect.getState().currentTestName ?? '';
+    } catch (err) {
+      // empty
+    }
     try {
       let output: Buffer | undefined;
       const tmpRoot = path.resolve(NODE_ROOT, './tmp');
@@ -108,15 +111,8 @@ export class NodeTestRunner<T extends DefinedDependencies> {
       });
       return output;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        const message = err.message;
-        if (typeof message === 'string' && message !== '') {
-          const errorMessage = message.split('Error: ').pop();
-          if (errorMessage) {
-            const pertinentLine = errorMessage.split('\n')[0].trim();
-            throw new Error(pertinentLine);
-          }
-        }
+      if (isExecException(err)) {
+        throw new Error(getParsedErrorMessage(err));
       }
       throw err;
     }

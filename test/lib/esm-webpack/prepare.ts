@@ -5,10 +5,10 @@ import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
+import { MockCDN } from '../../../internals/test-runner/src/browser';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { Bundle } from '../../integration/utils/NodeTestRunner';
+import { Bundle } from '../../../internals/test-runner/src/node';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');

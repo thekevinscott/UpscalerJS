@@ -1,7 +1,7 @@
 import path from 'path';
 import { checkImage } from '../../lib/utils/checkImage';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { NodeTestRunner, Main } from '../../../internals/test-runner/src/node';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
