@@ -69,6 +69,41 @@ export const DEFAULT_CAPABILITIES = async () => ({
 /****
  * Utility Functions
  */
+const waitForLocalhostAccess = async ({ verbose, }: { verbose?: boolean }) => {
+  const TITLE = 'We are live';
+  const PORT = 5003;
+  await createServerWithResponse(PORT, TITLE);
+
+  const caps = {
+    'browser': 'chrome',
+    // 'browser_version': 'latest',
+    'os': 'os x',
+    'os_version': 'catalina',
+    'name': 'Testing localhost connectivity',
+  };
+
+  if (USE_PUPPETEER) {
+    const browser = await connectPuppeteerForBrowserstack(caps);
+
+    const page = await browser.newPage();
+    await page.goto(getRootURL(PORT, caps));
+    const title = await page.title();
+    await browser.close();
+    if (title !== TITLE) {
+      throw new Error(`Expected title to be ${TITLE} but was: ${title}`);
+    }
+  } else {
+    const driver = await getSeleniumDriver(caps, { verbose });
+    await driver.get(getRootURL(PORT, caps));
+    await driver.wait(async () => {
+      const title = await driver.getTitle();
+      return title.endsWith('| Loaded');
+    }, 3000);
+
+    await printLogs(driver, caps);
+  }
+};
+
 function getEnv () {
   const localEnvPath = path.resolve(ROOT_DIR, '.env')
   if (existsSync(localEnvPath)) {
@@ -100,6 +135,8 @@ function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
  * Public Functions
  */
 export const getBrowserstackAccessKey = () => getEnv().BROWSERSTACK_ACCESS_KEY;
+
+export const stopBrowserstack = (bs: Browserstack): Promise<void> => new Promise(resolve => bs.stop(() => resolve()));
 
 export const startBrowserstack = async ({
   key,
@@ -140,9 +177,8 @@ export const startBrowserstack = async ({
     }
     try {
       await waitForLocalhostAccess({
-        timeout: 5000,
         verbose,
-      }, bs);
+      });
     } catch (err) {
       await stopBrowserstack(bs);
       console.error('Could not access localhost via browserstack.')
@@ -151,8 +187,6 @@ export const startBrowserstack = async ({
     resolve(bs);
   });
 });
-
-export const stopBrowserstack = (bs: Browserstack): Promise<void> => new Promise(resolve => bs.stop(() => resolve()));
 
 export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => browserOptions.filter(filter || Boolean);
 
@@ -264,7 +298,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
   let response: T | undefined;
   let err: string | undefined;
   const start = performance.now();
-  let iterations = 0;
   while (!response && !err) {
     if (performance.now() - start > timeout) {
       throw new Error(`Failed to execute script after ${timeout} ms`);
@@ -282,7 +315,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
       }
     }
     await wait(pollTime);
-    iterations += 1;
   }
   if (!response) {
     throw new Error('Bug with code');
@@ -303,42 +335,6 @@ export const connectPuppeteerForBrowserstack = async (caps: BrowserOption) => pu
     ...caps,
   }))}`,
 });
-
-// const wait = (d: number) => new Promise(r => setTimeout(r, d));
-const waitForLocalhostAccess = async ({ timeout, verbose, }: { timeout: number; verbose?: boolean }, bsLocal: Local) => {
-  const TITLE = 'We are live';
-  const PORT = 5003;
-  await createServerWithResponse(PORT, TITLE);
-
-  const caps = {
-    'browser': 'chrome',
-    // 'browser_version': 'latest',
-    'os': 'os x',
-    'os_version': 'catalina',
-    'name': 'Testing localhost connectivity',
-  };
-
-  if (USE_PUPPETEER) {
-    const browser = await connectPuppeteerForBrowserstack(caps);
-
-    const page = await browser.newPage();
-    await page.goto(getRootURL(PORT, caps));
-    const title = await page.title();
-    await browser.close();
-    if (title !== TITLE) {
-      throw new Error(`Expected title to be ${TITLE} but was: ${title}`);
-    }
-  } else {
-    const driver = await getSeleniumDriver(caps, { verbose });
-    await driver.get(getRootURL(PORT, caps));
-    await driver.wait(async () => {
-      const title = await driver.getTitle();
-      return title.endsWith('| Loaded');
-    }, 3000);
-
-    await printLogs(driver, caps);
-  }
-};
 
 // When checking for the errorKey or localKey variables on the window object above,
 // we need to declare that window can adopt any kind of variable

@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 
 export const getCurrentBranch = () => new Promise<string>((resolve, reject) => {
-  exec('git rev-parse --abbrev-ref HEAD', (err, stdout, stderr) => {
+  exec('git rev-parse --abbrev-ref HEAD', (err, stdout, _stderr) => {
     if (err) {
       reject(err);
     }

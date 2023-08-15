@@ -1,5 +1,3 @@
-import puppeteer from 'puppeteer';
-
 const MESSAGES_TO_IGNORE = [
   'Initialization of backend webgl failed',
   'Could not get context for WebGL version 1',
