@@ -233,7 +233,8 @@ export const takeScreenshot = async (driver: ThenableWebDriver, target: string) 
   });
 });
 
-export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: any) => T, args?: any, {
+type ExecuteAsyncScriptArgs = Parameters<webdriver.WebDriver['executeAsyncScript']>[1];
+export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: ExecuteAsyncScriptArgs) => T, args?: ExecuteAsyncScriptArgs, {
   pollTime = 100, 
   timeout = 60 * 1000 * 5,
 }: {
@@ -343,6 +344,6 @@ const waitForLocalhostAccess = async ({ timeout, verbose, }: { timeout: number; 
 // we need to declare that window can adopt any kind of variable
 declare global {
   interface Window {
-    [index: string]: any;
+    [index: string]: any; // skipcq: js-0323
   }
 }

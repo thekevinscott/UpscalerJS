@@ -12,9 +12,9 @@ export type Bundle<T = {}> = (opts?: T & {
  }) => Promise<void>;
 
 export type Dependencies = Record<string, string>;
-export type DefinedDependencies = Record<string, any>;
+export type DefinedDependencies = Record<string, any>; // skipcq: js-0323
 export type Main<T extends DefinedDependencies = DefinedDependencies> = (dependencies: T) => Promise<string>;
-export type Globals = Record<string, any>;
+export type Globals = Record<string, any>; // skipcq: js-0323
 
 interface TestOpts<T extends DefinedDependencies> {
   dependencies?: Dependencies;
@@ -75,7 +75,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     globals = {},
   }: TestOpts<T>, {
     removeTmpDir = true, // set to false if you need to inspect the Node output files
-  } = {}): Promise<Buffer | undefined> {
+    } = {}): Promise<Buffer | undefined> {
     const _main = main || this.main;
     if (!_main) {
       throw new Error('No main function defined');
@@ -91,7 +91,7 @@ export class NodeTestRunner<T extends DefinedDependencies> {
     let testName = '';
     try {
       testName = expect.getState().currentTestName || '';
-    } catch(err) {}
+    } catch (err) { }
     try {
       let output: Buffer | undefined;
       const tmpRoot = path.resolve(NODE_ROOT, './tmp');
@@ -107,10 +107,18 @@ export class NodeTestRunner<T extends DefinedDependencies> {
         removeTmpDir,
       });
       return output;
-    } catch(err: any) {
-      const message = err.message;
-      const pertinentLine = message.split('Error: ').pop().split('\n')[0].trim();
-      throw new Error(pertinentLine);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        const message = err.message;
+        if (typeof message === 'string' && message !== '') {
+          const errorMessage = message.split('Error: ').pop();
+          if (errorMessage) {
+            const pertinentLine = errorMessage.split('\n')[0].trim();
+            throw new Error(pertinentLine);
+          }
+        }
+      }
+      throw err;
     }
   }
 

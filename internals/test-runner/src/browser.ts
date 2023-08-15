@@ -11,7 +11,7 @@ type Bundle = (opts?: Opts) => Promise<void>;
 const DEFAULT_PORT = 8098;
 
 export type MockCDN = (port: number, model: string, pathToModel: string) => string;
-export type AfterEachCallback = () => Promise<void | any>;
+export type AfterEachCallback<T> = () => Promise<void | T>;
 
 export class BrowserTestRunner {
   trackTime: boolean;
