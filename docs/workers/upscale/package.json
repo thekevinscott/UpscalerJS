@@ -3,8 +3,8 @@
   "description": "Demonstration of cloudflare worker implementation with UpscalerJS",
   "version": "1.0.0-beta.10",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230807.0",
-    "@types/node": "^20.4.9",
+    "@cloudflare/workers-types": "^4.20230814.0",
+    "@types/node": "^20.5.0",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/workers.shared": "workspace:*",
     "seedrandom": "3.0.5",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "~4.8.0",
-    "aws-sdk": "^2.1434.0",
+    "aws-sdk": "^2.1436.0",
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
     "nock": "^13.3.2"
