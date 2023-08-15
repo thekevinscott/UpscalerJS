@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/cli-table": "^0.3.1",
-    "@types/inquirer": "^8.2.1",
+    "@types/inquirer": "^9.0.3",
     "@types/sequelize": "^4.28.15",
     "@types/sharp": "^0.32.0",
     "@types/sqlite3": "^3.1.8",
