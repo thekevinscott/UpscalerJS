@@ -131,15 +131,12 @@ const writeDemoFile = async (model: string, file: string, contents: string) => {
   await writeFile(path.resolve(demoRoot, file), contents.trim(), 'utf-8');
 }
 
-const writeDemoFiles = async (model: string) => {
-  return Promise.all([
-    ['index.js', getIndexJSFile(model)],
-    ['index.html', getIndexHTMLFile(model)],
-    ['package.json', getPackageJSONFile(model)],
-    ['.stackblitzrc', getStackBlitz()],
-
-  ].map(([file, contents]) => writeDemoFile(model, file, contents)));
-};
+const writeDemoFiles = (model: string) => Promise.all([
+  ['index.js', getIndexJSFile(model)],
+  ['index.html', getIndexHTMLFile(model)],
+  ['package.json', getPackageJSONFile(model)],
+  ['.stackblitzrc', getStackBlitz()],
+].map(([file, contents]) => writeDemoFile(model, file, contents)));
 
 /****
  * Main function

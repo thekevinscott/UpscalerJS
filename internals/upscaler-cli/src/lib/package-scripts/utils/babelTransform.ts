@@ -14,6 +14,6 @@ export const babelTransform = async (directory: string) => {
         "@babel/plugin-proposal-export-namespace-from",
       ],
     });
-    fs.writeFileSync(filePath, transformedCode?.code || '');
+    fs.writeFileSync(filePath, transformedCode?.code ?? '');
   }));
 };

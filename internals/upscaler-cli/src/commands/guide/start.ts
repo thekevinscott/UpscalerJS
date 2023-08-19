@@ -76,7 +76,7 @@ const startGuide = async (guide: string, { verbose, skipUpscalerBuild, }: Option
   }
 
   const npmInstall = exec('npm install --no-package-lock');
-  npmInstall.on('close', function (_code) {
+  npmInstall.on('close', (_code) => {
     spawn("npm", ['run', 'dev'], {
       shell: true,
       cwd: guidePath,

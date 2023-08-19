@@ -33,7 +33,7 @@ const isCategory = (category: unknown): category is Category => typeof category 
 const isDirectory = (root: string) => (folder: string) => statSync(path.resolve(root, folder)).isDirectory();
 const getExampleFolders = (root: string) => readdirSync(root).filter(isDirectory(root));
 
-const getDefaultCodeEmbedParameters = (category: Category, params: Record<string, any> = {}) => {
+const getDefaultCodeEmbedParameters = (category: Category, params: Record<string, string | number | boolean> = {}) => {
   if (category === 'node') {
     return 'view=split,preview&module=index.js&hidenavigation=1';
   };
@@ -52,10 +52,9 @@ const getFrontmatter = (key: string): ExampleContent => {
   const { body } = fm(readmeContents);
   const bodyParts = body.split('\n');
   let title: undefined | string;
-  for (let i = 0; i < bodyParts.length; i++) {
-    const line = bodyParts[i];
+  for (const line of bodyParts) {
     if (line.startsWith('#')) {
-      title = line.split('#')?.pop()?.trim() || '';
+      title = line.split('#')?.pop()?.trim() ?? '';
       break;
     }
   }
@@ -223,16 +222,16 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     '---',
     'hide_table_of_contents: true',
     '---',
-    `# Guides`,
-    `This page contains a list of guides and examples for using various features of UpscalerJS.`,
-    ``,
-    `The first two guides discuss the basics of UpscalerJS and how to use it in a project. The [Models](browser/models) and [Working with Tensors](browser/tensors) guides discuss useful configuration options of UpscalerJS.`,
-    ``,
-    `There are also guides on [improving the performance](#performance) of UpscalerJS, [specific examples of implementations](#implementations), and [Node.js-specific](#node) guides.`,
-    ``,
+    '# Guides',
+    'This page contains a list of guides and examples for using various features of UpscalerJS.',
+    '',
+    'The first two guides discuss the basics of UpscalerJS and how to use it in a project. The [Models](browser/models) and [Working with Tensors](browser/tensors) guides discuss useful configuration options of UpscalerJS.',
+    '',
+    'There are also guides on [improving the performance](#performance) of UpscalerJS, [specific examples of implementations](#implementations), and [Node.js-specific](#node) guides.',
+    '',
     ...Object.entries(examplesByCategory).map(([category, examples]) => {
       let activeParent: undefined | string;
-      return `\n## ${uppercase(category)}\n\n${examples.map(([parent, example], i) => {
+      return `\n## ${uppercase(category)}\n\n${examples.map(([parent, example]) => {
         const { title } = examplesByName[example];
         const url = [
           '/documentation',
@@ -241,7 +240,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
           parent,
           example
         ].filter(Boolean).join('/');
-        let strings: string[] = [];
+        const strings: string[] = [];
         if (activeParent !== parent) {
           activeParent = parent;
           strings.push(`- ### ${parent}`);

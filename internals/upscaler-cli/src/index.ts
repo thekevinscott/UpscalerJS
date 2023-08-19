@@ -1,4 +1,3 @@
-import path from 'path';
 import { program } from 'commander';
 import * as commands from './commands/index.js';
 import { isFunction } from './types.js';
@@ -54,5 +53,5 @@ export class CLI {
     }
   }
 
-  run = () => program.parseAsync();
+  run = () => program.parseAsync(); // skipcq: JS-0105
 }

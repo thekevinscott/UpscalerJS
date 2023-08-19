@@ -5,8 +5,6 @@ import { getPackageJSON, JSONSchema } from './utils/packages';
 import { sync } from 'glob';
 
 const ROOT = path.resolve(__dirname, '../..');
-const UPSCALER_JS = path.resolve(ROOT, 'packages/upscalerjs');
-const UPSCALER_JS_DIST = path.resolve(UPSCALER_JS, 'dist');
 
 /****
  * Utility methods
@@ -46,11 +44,11 @@ export const extractAllFilesFromPackageJSON = (packagePath: string): string[] =>
  * Main function
  */
 
-const validateBuild = async (packageName: string, include: string[] = [], {
+const validateBuild = (packageName: string, include: string[] = [], {
   includeFilesFromPackageJSON = true,
 }: {
-  includeFilesFromPackageJSON?: Boolean;
-} = { }): Promise<Set<string>> => {
+  includeFilesFromPackageJSON?: boolean;
+} = { }): Set<string> => {
   const packagePath = path.resolve(ROOT, packageName);
   const files = new Set([
     ...(includeFilesFromPackageJSON ? extractAllFilesFromPackageJSON(packagePath) : []),
@@ -114,7 +112,7 @@ const getArgs = async (): Promise<Args> => {
 if (require.main === module) {
   (async () => {
     const argv = await getArgs();
-    const checkedFiles = Array.from(await validateBuild(argv.src, argv.include));
+    const checkedFiles = Array.from(validateBuild(argv.src, argv.include));
     console.log([
       'The following files are present: ',
       ...checkedFiles.map(file => {

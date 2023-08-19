@@ -1,4 +1,4 @@
-import { access, exists, existsSync, rm, rmdir, unlink } from 'fs-extra';
+import { existsSync, rm } from 'fs-extra';
 import path from 'path';
 import yargs from 'yargs';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';
@@ -61,13 +61,11 @@ const cleanModels = async (
   opts: Opts = {}
 ) => {
   if (models.length === 0) {
-    console.log('No models selected, nothing to do.')
-    return;
+    throw new Error('No models selected, nothing to do.')
   }
 
   if (outputFormats.length === 0) {
-    console.log('No output formats selected, nothing to do.')
-    return;
+    throw new Error('No output formats selected, nothing to do.')
   }
 
   const start = performance.now();

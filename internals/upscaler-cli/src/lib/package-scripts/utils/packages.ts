@@ -53,7 +53,7 @@ export const getPackageJSONPath = (file: string) => {
   return path.resolve(file, 'package.json');
 }
 
-export const writePackageJSON = (file: string, contents: Record<string, string | number | Object | Array<any>>) => {
+export const writePackageJSON = (file: string, contents: unknown) => {
   const stringifiedContents = `${JSON.stringify(contents, null, 2)}\n`;
   fs.writeFileSync(getPackageJSONPath(file), stringifiedContents);
 };
@@ -62,22 +62,22 @@ export const getPackageJSON = (file: string): JSONSchema => JSON.parse(fs.readFi
 
 const defaultTransform: TransformPackageJsonFn = (packageJSON) => packageJSON;
 
-const defaultLogger: PackageUpdaterLogger = (file: string) => undefined;
+const defaultLogger: PackageUpdaterLogger = (_file: string) => undefined;
 
-export const updateMultiplePackages = async (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
-  const packages = findAllPackages(dir, [path.resolve(DOCS_DIR, 'assets')]);
-  for (let i = 0; i < packages.length; i++) {
-    const pkg = path.resolve(ROOT_DIR, packages[i]);
-    await updateSinglePackage(pkg, transform, logger);
-  }
-};
-
-export const updateSinglePackage = async (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
+export const updateSinglePackage = (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
   const packageJSON = getPackageJSON(dir);
   writePackageJSON(dir, transform(packageJSON, dir));
   const message = logger(dir);
   if (message) {
     console.log(message);
+  }
+};
+
+export const updateMultiplePackages = (dir: string, transform: TransformPackageJsonFn = defaultTransform, logger: PackageUpdaterLogger = defaultLogger) => {
+  const packages = findAllPackages(dir, [path.resolve(DOCS_DIR, 'assets')]);
+  for (const pkgName of packages) {
+    const pkg = path.resolve(ROOT_DIR, pkgName);
+    updateSinglePackage(pkg, transform, logger);
   }
 };
 

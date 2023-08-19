@@ -2,7 +2,7 @@
  * Script for linking model readmes locally in docs folder
  */
 import path from 'path';
-import { copy, existsSync, mkdirp, readFile, unlinkSync, writeFile, writeFileSync } from 'fs-extra';
+import { copy, existsSync, mkdirp, readFile, writeFile } from 'fs-extra';
 import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
 import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
 import { getSharedArgs, SharedArgs } from './types';
@@ -31,11 +31,21 @@ const copyAssets = async (packageName: string, targetDir: string) => {
   await copy(packagePath, targetPath);
 }
 
-const createMarkdown = async (contents: string, targetPath: string) => writeFile(targetPath, contents, 'utf-8');
+const createMarkdown = (contents: string, targetPath: string) => writeFile(targetPath, contents, 'utf-8');
+
+const getCategory = (packageName: string, readmeContents: string) => {
+  const lines = readmeContents.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('category: ')) {
+      return line.split('category: ').pop() ?? '';
+    }
+  }
+
+  throw new Error(`Could not find category for package name ${packageName}`);
+};
 
 const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, targetDocDir: string, verbose?: boolean) => {
-  for (let i = 0; i < packages.length; i++) {
-    const packageName = packages[i];
+  for (const packageName of packages) {
     const packagePath = path.resolve(MODELS_DIR, packageName);
     const docMdxPath = path.resolve(packagePath, 'DOC.mdx');
 
@@ -85,7 +95,7 @@ const getSidebarPosition = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
     if (line.startsWith('sidebar_position: ')) {
-      const pos = line.split('sidebar_position: ').pop() || '';
+      const pos = line.split('sidebar_position: ').pop() ?? '';
       return parseInt(pos, 10);
     }
   }
@@ -96,22 +106,11 @@ const getEnhancedSrc = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
     if (line.startsWith('enhanced_src: ')) {
-      return line.split('enhanced_src: ').pop() || '';
+      return line.split('enhanced_src: ').pop() ?? '';
     }
   }
 
   throw new Error(`Could not find enhanced_src for package name ${packageName}`);
-};
-
-const getCategory = (packageName: string, readmeContents: string) => {
-  const lines = readmeContents.split('\n');
-  for (const line of lines) {
-    if (line.startsWith('category: ')) {
-      return line.split('category: ').pop() || '';
-    }
-  }
-
-  throw new Error(`Could not find category for package name ${packageName}`);
 };
 
 const getPackageMetadata = async (packageName: string) => {
@@ -126,6 +125,21 @@ const getPackageMetadata = async (packageName: string) => {
     category: getCategory(packageName, docMdxContents),
   };
 };
+
+const getAllPackagesWithMetadata = async (packageNames: string[]): Promise<PackageWithMetadata[]> => {
+  const packagesWithValidReadme = packageNames.filter(packageName => {
+    const packagePath = path.resolve(MODELS_DIR, packageName);
+    const readmePath = path.resolve(packagePath, 'DOC.mdx');
+    return existsSync(readmePath);
+  });
+  const packagesWithMetadata = await Promise.all(packagesWithValidReadme.map(async (packageName) => ({
+    packageName,
+    ...(await getPackageMetadata(packageName)),
+  })));
+
+  return packagesWithMetadata;
+};
+
 
 const getAllPackagesOrganizedByCategory = async (packageNames: string[]): Promise<{ category: string, packages: PackageWithMetadata[] }[]> => {
   const packages = await getAllPackagesWithMetadata(packageNames);
@@ -150,21 +164,7 @@ const getAllPackagesOrganizedByCategory = async (packageNames: string[]): Promis
   });
 };
 
-const getAllPackagesWithMetadata = async (packageNames: string[]): Promise<PackageWithMetadata[]> => {
-  const packagesWithValidReadme = packageNames.filter(packageName => {
-    const packagePath = path.resolve(MODELS_DIR, packageName);
-    const readmePath = path.resolve(packagePath, 'DOC.mdx');
-    return existsSync(readmePath);
-  });
-  const packagesWithMetadata = await Promise.all(packagesWithValidReadme.map(async (packageName) => ({
-    packageName,
-    ...(await getPackageMetadata(packageName)),
-  })));
-
-  return packagesWithMetadata;
-};
-
-const writeModelIndexFile = async (packageNames: string[], targetAssetDir: string) => {
+const writeModelIndexFile = async (packageNames: string[]) => {
   const packagesByCategory = getAllPackagesOrganizedByCategory(packageNames);
   const contents = `
 ---
@@ -210,13 +210,13 @@ ${(await packagesByCategory).map(({ category, packages }) => `
  */
 const linkModelReadmes = async ({ shouldClearMarkdown, verbose }: SharedArgs = {}) => {
   const packages = getAllAvailableModelPackages();
-  const targetAssetDir = path.resolve(DOCS_DIR, `assets/assets/sample-images`);
-  const targetDocDir = path.resolve(DOCS_DIR, `docs/models/available`);
+  const targetAssetDir = path.resolve(DOCS_DIR, 'assets/assets/sample-images');
+  const targetDocDir = path.resolve(DOCS_DIR, 'docs/models/available');
   if (shouldClearMarkdown) {
     await clearOutMarkdownFiles(targetDocDir, verbose);
   }
 
-  await writeModelIndexFile(packages, targetAssetDir);
+  await writeModelIndexFile(packages);
   if (verbose) {
     console.log('Wrote model index file');
   }

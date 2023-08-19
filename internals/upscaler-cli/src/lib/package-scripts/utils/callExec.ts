@@ -23,13 +23,13 @@ export const callExec = (cmd: string, {
 
   if (stderr === true || verbose) {
     spawnedProcess.stderr?.pipe(process.stderr);
-  } else if (!!stderr && typeof stderr !== 'boolean') {
+  } else if (stderr && typeof stderr !== 'boolean') {
     spawnedProcess.stderr?.on('data', stderr);
   }
 
   if (stdout === undefined || stdout === true) {
     spawnedProcess.stdout?.pipe(process.stdout);
-  } else if (!!stdout) {
+  } else if (stdout) {
     spawnedProcess.stdout?.on('data', stdout);
   }
 });

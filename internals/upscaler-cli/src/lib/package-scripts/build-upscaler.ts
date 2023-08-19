@@ -1,16 +1,13 @@
 import { mkdirp } from 'fs-extra';
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
-import scaffoldDependencies, { ScaffoldDependenciesConfig, loadScaffoldDependenciesConfig, writeTFJSDependency } from './scaffold-dependencies.js';
+import scaffoldDependencies, { ScaffoldDependenciesConfig, writeTFJSDependency } from './scaffold-dependencies.js';
 import { rollupBuild } from './utils/rollup.js';
 import { uglify } from './utils/uglify.js';
 import { mkdirpSync } from 'fs-extra';
-import yargs from 'yargs';
 import * as rollupConfig from './upscalerjs-rollup-config.js';
 import { OutputFormat, Platform } from './prompt/types.js';
 import { compileTypescript } from './utils/compile.js';
-import { getOutputFormats } from './prompt/getOutputFormats.js';
-import { getPlatform } from './prompt/getPlatform.js';
 import { withTmpDir } from './utils/withTmpDir.js';
 import { UPSCALER_DIR } from './utils/constants.js';
 import { ifDefined as _ifDefined} from './prompt/ifDefined.js';
@@ -137,7 +134,7 @@ export const scaffoldDependenciesForUpscaler = async (platform: Platform, { verb
         name: 'dependencies',
         contents: [
           writeTFJSDependency,
-          () => `export { default as DefaultUpscalerModel } from '@upscalerjs/default-model';`,
+          () => "export { default as DefaultUpscalerModel } from '@upscalerjs/default-model';",
         ],
       },
     ],
@@ -150,14 +147,12 @@ const buildUpscaler = async (platform: Platform, _outputFormats?: OutputFormat[]
   const start = performance.now();
   const outputFormats = _outputFormats || getDefaultOutputFormats(platform);
   if (outputFormats.length === 0) {
-    console.log('No output formats selected, nothing to do.')
-    process.exit(0);
+    throw new Error('No output formats selected, nothing to do.');
   }
 
   await scaffoldDependenciesForUpscaler(platform, { verbose });
 
-  for (let i = 0; i < outputFormats.length; i++) {
-    const outputFormat = outputFormats[i];
+  for (const outputFormat of outputFormats) {
     await OUTPUT_FORMAT_FNS[outputFormat](platform, opts);
   }
   return Number((performance.now() - start).toFixed(2));
@@ -169,6 +164,7 @@ export default buildUpscaler;
  * Functions to expose the main function as a CLI tool
  */
 
+/*
 type Answers = { platform: Platform, outputFormats: Array<OutputFormat>, verbose: boolean }
 
 const getArgs = async (): Promise<Answers> => {
@@ -203,3 +199,5 @@ const getArgs = async (): Promise<Answers> => {
   //   const args = await getArgs();
   //   await buildUpscaler(args.platform, args.outputFormats, undefined, { verbose: args.verbose });
   // })();
+
+  */

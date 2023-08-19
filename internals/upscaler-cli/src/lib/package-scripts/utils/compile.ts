@@ -38,8 +38,8 @@ export const compileTypescript: CompileTypescript = (modelFolder: string, output
   outDir,
   verbose,
 } = {}) => callExec([
-  `tsc`,
-  `-p`,
+  'tsc',
+  '-p',
   path.resolve(modelFolder, `tsconfig.${outputFormat}.json`),
   outDir ? `--outDir ${outDir}` : undefined,
 ].filter(Boolean).join(' '), {

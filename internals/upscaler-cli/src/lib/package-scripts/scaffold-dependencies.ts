@@ -1,4 +1,3 @@
-import yargs from 'yargs';
 import fs from 'fs';
 import path from 'path';
 import { getPackageJSON } from './utils/packages.js';
@@ -73,6 +72,17 @@ const findPlatformSpecificFiles = (folder: string) => new Set(fs.readdirSync(fol
   return /(.*).(browser|node).ts$/.test(file)
 }).map(file => file.split('.').slice(0, -2).join('.')));
 
+const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platform) => {
+  const srcFile = path.resolve(src, getFilePath(file, platform));
+  if (!fs.existsSync(srcFile)) {
+    throw new Error(`File ${srcFile} does not exist`)
+  }
+  const targetFile = path.resolve(src, `${file}.generated.ts`);
+  try { fs.unlinkSync(targetFile); } catch(err) {
+    // ignore
+  }
+  fs.symlinkSync(srcFile, targetFile, 'file');
+};
 
 export const scaffoldPlatformSpecificFiles = (folderSrc: string, platform: Platform, { verbose }: { verbose?: boolean } = {}) => {
   const files = findPlatformSpecificFiles(folderSrc);
@@ -84,16 +94,6 @@ export const scaffoldPlatformSpecificFiles = (folderSrc: string, platform: Platf
   }
   files.forEach(file => scaffoldPlatformSpecificFile(folderSrc, file, platform));
 }
-
-const scaffoldPlatformSpecificFile = (src: string, file: string, platform: Platform) => {
-  const srcFile = path.resolve(src, getFilePath(file, platform));
-  if (!fs.existsSync(srcFile)) {
-    throw new Error(`File ${srcFile} does not exist`)
-  }
-  const targetFile = path.resolve(src, `${file}.generated.ts`);
-  try { fs.unlinkSync(targetFile); } catch(err) {}
-  fs.symlinkSync(srcFile, targetFile, 'file');
-};
 
 /****
  * Utility methods
@@ -113,8 +113,8 @@ type ScaffoldDependencies = (
   config: ScaffoldDependenciesConfig, 
   platform?: Platform,
   opts?: { verbose?: boolean },
-) => Promise<void>;
-const scaffoldDependencies: ScaffoldDependencies = async (
+) => void;
+const scaffoldDependencies: ScaffoldDependencies = (
   packageRoot,
   {
     files,
@@ -148,46 +148,46 @@ export default scaffoldDependencies;
  * Functions to expose the main function as a CLI tool
  */
 
-interface Args {
-  targetPackage: string;
-  platform?: Platform;
-  config: string;
-}
+// interface Args {
+//   targetPackage: string;
+//   platform?: Platform;
+//   config: string;
+// }
 
-const isPlatform = (platform?: unknown): platform is Platform => typeof platform === 'string' && ['browser', 'node', 'node-gpu'].includes(platform);
+// const isPlatform = (platform?: unknown): platform is Platform => typeof platform === 'string' && ['browser', 'node', 'node-gpu'].includes(platform);
 
-const getPlatform = (platform?: unknown): Platform | undefined => {
-  if (isPlatform(platform)) {
-    return platform;
-  }
-}
+// const getPlatform = (platform?: unknown): Platform | undefined => {
+//   if (isPlatform(platform)) {
+//     return platform;
+//   }
+// }
 
-const getArgs = async (): Promise<Args> => {
-  const argv = await yargs.command('scaffold-dependencies <src> <config> [platform]', 'scaffold dependencies for a specific platform', yargs => {
-    yargs.positional('platform', {
-      describe: 'The platform to target',
-    }).options({
-      src: { type: 'string', demandOption: true },
-      config: { type: 'string', demandOption: true },
-    });
-  })
-  .help()
-  .argv;
+// const getArgs = async (): Promise<Args> => {
+//   const argv = await yargs.command('scaffold-dependencies <src> <config> [platform]', 'scaffold dependencies for a specific platform', yargs => {
+//     yargs.positional('platform', {
+//       describe: 'The platform to target',
+//     }).options({
+//       src: { type: 'string', demandOption: true },
+//       config: { type: 'string', demandOption: true },
+//     });
+//   })
+//   .help()
+//   .argv;
 
-  if (typeof argv.src !== 'string') {
-    throw new Error(`Invalid src, should be a string: ${argv.src}`);
-  }
+//   if (typeof argv.src !== 'string') {
+//     throw new Error(`Invalid src, should be a string: ${argv.src}`);
+//   }
 
-  if (typeof argv.config !== 'string') {
-    throw new Error(`Invalid config, should be a string: ${argv.config}`);
-  }
+//   if (typeof argv.config !== 'string') {
+//     throw new Error(`Invalid config, should be a string: ${argv.config}`);
+//   }
 
-  return {
-    targetPackage: argv.src,
-    config: argv.config,
-    platform: getPlatform(argv['_'][0]),
-  }
-}
+//   return {
+//     targetPackage: argv.src,
+//     config: argv.config,
+//     platform: getPlatform(argv['_'][0]),
+//   }
+// }
 
 
   // (async () => {

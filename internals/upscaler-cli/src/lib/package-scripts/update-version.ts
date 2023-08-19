@@ -1,4 +1,3 @@
-import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
 import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
@@ -51,7 +50,7 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
     },
     {
       name: 'updateDependencies',
-      message: `Since UpscalerJS's version will be updated, do you also want to update packages (like examples) that reference it?`,
+      message: "Since UpscalerJS's version will be updated, do you also want to update packages (like examples) that reference it?",
       type: 'confirm',
       default: true,
       when: ({ packages }: Omit<Answers, 'updateDependencies'>) => packages.includes('UpscalerJS'),
@@ -75,8 +74,7 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
 
     const setVersionForPackageJSON = makeSetVersionForPackageJSON(version);
 
-    for (let i = 0; i < packages.length; i++) {
-      const packageKey = packages[i];
+    for (const packageKey of packages) {
       const pkg = DIRECTORIES[packageKey];
       if (pkg === undefined) {
         throw new Error(`Package ${packageKey} is not defined.`);
@@ -104,8 +102,7 @@ const updateVersion = (): Promise<void> => new Promise(resolve => {
       const dependencyLogger: PackageUpdaterLogger = dir => {
         return `- Updated "upscaler" dependency in ${getPreparedFolderName(dir)}`;
       };
-      for (let i = 0; i < dependencyDirectories.length; i++) {
-        const { directory, multiple } = dependencyDirectories[i];
+      for (const { directory, multiple } of dependencyDirectories) {
         const fn = multiple ? updateMultiplePackages : updateSinglePackage;
         fn(directory, dependencyUpdater, dependencyLogger);
       }

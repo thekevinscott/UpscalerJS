@@ -4,7 +4,7 @@ import levenshtein from 'fast-levenshtein';
  * For a particular query (e.g., one that is misspelled), 
  * find similar files in a directory
  */
-export const findSimilarFiles = async (
+export const findSimilarFiles = (
   files: string[],
   query: string, 
   {
@@ -14,7 +14,7 @@ export const findSimilarFiles = async (
     n?: number, 
     distance?: number,
   }
-): Promise<string[]> => {
+): string[] => {
   const filesWithDistance = files.reduce<{ file: string; distance: number; }[]>((arr, file) => {
     const distance = levenshtein.get(query, file);
     if (threshold === undefined || distance < threshold) {

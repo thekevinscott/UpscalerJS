@@ -9,7 +9,7 @@ export const getModel = async (model?: string | number | (string | number)[], al
     return modelPackages;
   }
 
-  if (typeof model == 'string') {
+  if (typeof model === 'string') {
     return [model];
   }
 

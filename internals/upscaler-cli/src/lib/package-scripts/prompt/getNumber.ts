@@ -1,7 +1,7 @@
 import inquirer from 'inquirer';
 
 export const getNumber = async (message: string, arg?: unknown) => {
-  if (typeof arg == 'number') {
+  if (typeof arg === 'number') {
     return arg;
   }
 

@@ -12,8 +12,7 @@ const findAllPackages = (dir: string, excluded: string[] = [], depth = 0): Array
     throw new Error('Maximum depth reached');
   }
   const files = fs.readdirSync(dir);
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+  for (const file of files) {
     const fullFile = path.resolve(dir, file);
     if (file === 'package.json') {
       const strippedFile = fullFile.split(`${ROOT}/`).pop();
@@ -23,7 +22,7 @@ const findAllPackages = (dir: string, excluded: string[] = [], depth = 0): Array
       packages.push(strippedFile);
     } else if (!EXCLUDED.includes(file) && !excluded.includes(fullFile)) {
       const stat = fs.statSync(fullFile);
-      if (stat && stat.isDirectory()) {
+      if (stat?.isDirectory()) {
         const dirFiles = findAllPackages(fullFile, excluded, depth + 1);
         packages = packages.concat(dirFiles);
       }

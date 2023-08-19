@@ -59,7 +59,7 @@ export const getAllAvailableModels = (packageName: string): AvailableModel[] => 
 export const getFilteredModels = ({
   specificModel,
   specificPackage,
-  filter = () => true,
+  filter = (_packageName, _model) => true,
   includeExperimental = false,
 }: {
   specificPackage?: string;
@@ -73,7 +73,7 @@ export const getFilteredModels = ({
       return [packageName, model];
     }));
   }, [] as ([string, AvailableModel])[])
-  .filter(([packageName, model]) => {
+  .filter(([packageName]) => {
     if (specificPackage !== undefined) {
       return packageName === specificPackage;
     }

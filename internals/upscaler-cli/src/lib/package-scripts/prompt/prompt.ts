@@ -11,7 +11,7 @@ async function prompt<T extends unknown[]>(...options: PromptOption<T>[]) {
   const yargsOptions: {
     [key: string]: Options;
   } = options.reduce((obj, option) => {
-    const { name, isValidType, ...yargsOption } = option;
+    const { name, isValidType: _isValidType, ...yargsOption } = option;
     return {
       ...obj,
       [name]: yargsOption,
@@ -19,8 +19,7 @@ async function prompt<T extends unknown[]>(...options: PromptOption<T>[]) {
   }, {});
   const argv = await yargs(process.argv.slice(2)).options(yargsOptions).argv;
 
-  for (let i = 0; i < options.length; i++) {
-    const option = options[i];
+  for (const option of options) {
     if (option.isValidType && option.prompt) {
       argv[option.name] = await getArg(argv[option.name], option.isValidType, option.prompt);
     }
@@ -28,7 +27,7 @@ async function prompt<T extends unknown[]>(...options: PromptOption<T>[]) {
   return argv;
 }
 
-export type IsValidType<ExpectedType> = (arg: any) => arg is ExpectedType;
+export type IsValidType<ExpectedType> = (arg: unknown) => arg is ExpectedType;
 
 async function getArg<ExpectedType>(defaultArg: ExpectedType, isValidType: IsValidType<ExpectedType>, promptOption: QuestionCollection): Promise<ExpectedType> {
   if (isValidType(defaultArg)) {

@@ -75,11 +75,7 @@ function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
 
   // if running in IE, it appears TFJS is already available? Ignore warnings
   // about the TFJS backend already being registered
-  if (entry.level.name === 'WARNING' && capabilities?.browserName === 'edge') {
-    return false;
-  }
-
-  return true;
+  return entry.level.name !== 'WARNING' && capabilities?.browserName !== 'edge';
 }
 
 
@@ -88,7 +84,7 @@ function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
  */
 export const getBrowserstackAccessKey = () => getEnv().BROWSERSTACK_ACCESS_KEY;
 
-export const startBrowserstack = async ({
+export const startBrowserstack = ({
   key,
   bs,
   verbose = true,
@@ -125,7 +121,7 @@ export const startBrowserstack = async ({
     if (verbose) {
       console.log('Browserstack started');
     }
-    resolve(bs);
+    return resolve(bs);
   });
 });
 
@@ -192,7 +188,7 @@ export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, 
   }
 }
 
-export const takeScreenshot = async (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
+export const takeScreenshot = (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
   driver.takeScreenshot().then(data => {
     const base64Data = data.replace(/^data:image\/png;base64,/, "");
     writeFileSync(target, base64Data, 'base64');
@@ -200,7 +196,7 @@ export const takeScreenshot = async (driver: ThenableWebDriver, target: string) 
   });
 });
 
-export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (args?: any) => T, args?: any, {
+export async function executeAsyncScript<T, A>(driver: webdriver.WebDriver, fn: (args?: A) => T, args?: A, {
   pollTime = 100, 
   timeout = 60 * 1000 * 5,
 }: {
@@ -230,7 +226,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
   let response: T | undefined;
   let err: string | undefined;
   const start = performance.now();
-  let iterations = 0;
   while (!response && !err) {
     if (performance.now() - start > timeout) {
       throw new Error(`Failed to execute script after ${timeout} ms`);
@@ -248,7 +243,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
       }
     }
     await wait(pollTime);
-    iterations += 1;
   }
   if (!response) {
     throw new Error('Bug with code');
@@ -260,6 +254,6 @@ export async function executeAsyncScript<T>(driver: webdriver.WebDriver, fn: (ar
 // we need to declare that window can adopt any kind of variable
 declare global {
   interface Window {
-    [index: string]: any;
+    [index: string]: string | number | boolean | object;
   }
 }

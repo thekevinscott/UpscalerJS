@@ -72,15 +72,13 @@ const OUTPUT_FORMAT_FNS: Record<OutputFormat, BuildFn> = {
   esm: buildESM,
 }
 
-const buildCore = async (outputFormats: OutputFormat[], opts?: BuildFnOptions, { verbose = false } = {}): Promise<number> => {
+const buildCore = async (outputFormats: OutputFormat[], opts?: BuildFnOptions, _args = {}): Promise<number> => {
   const start = performance.now();
   if (outputFormats.length === 0) {
-    console.log('No output formats selected, nothing to do.')
-    process.exit(0);
+    throw new Error('No output formats selected, nothing to do.');
   }
 
-  for (let i = 0; i < outputFormats.length; i++) {
-    const outputFormat = outputFormats[i];
+  for (const outputFormat of outputFormats) {
     await OUTPUT_FORMAT_FNS[outputFormat](opts);
   }
   return Number((performance.now() - start).toFixed(2));

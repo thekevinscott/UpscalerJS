@@ -24,13 +24,12 @@ const NUMBER_OF_CONCURRENT_THREADS = 5;
 /****
  * Utility functions
  */
-const exec = async (cmd: string, { verbose, ...opts }: { verbose?: boolean; } & ExecOptions = {}) => new Promise<string>((resolve, reject) => {
-  let output = '';
+const exec = (cmd: string, { verbose, ...opts }: { verbose?: boolean; } & ExecOptions = {}) => new Promise<void>((resolve, reject) => {
   const spawnedProcess = _exec(cmd, opts, (error) => {
     if (error) {
       reject(error);
     } else {
-      resolve(output);
+      resolve();
     }
   });
 
@@ -38,7 +37,7 @@ const exec = async (cmd: string, { verbose, ...opts }: { verbose?: boolean; } & 
     spawnedProcess.stdout?.pipe(process.stdout);
   }
 });
-const getOutput = async (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
+const getOutput = (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
   let output = '';
   const spawnedProcess = _exec(cmd, opts, (error) => {
     if (error) {
@@ -75,11 +74,13 @@ const getAllNonPNPMPackages = async () => {
 const updateNPMDependencies = async ({ verbose }: Args) => {
   const filteredFiles = await getAllNonPNPMPackages();
   for await (const _ of asyncPool(NUMBER_OF_CONCURRENT_THREADS, filteredFiles, async (file: string) => {
-    const output = await exec('npm update --save', {
+    await exec('npm update --save', {
       cwd: path.resolve(ROOT_DIR, path.dirname(file)),
       verbose,
     });
-  })) { }
+  })) { 
+    // empty
+  }
 };
 
 export default updateNPMDependencies;

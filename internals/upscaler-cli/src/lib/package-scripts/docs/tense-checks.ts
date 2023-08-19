@@ -4,8 +4,7 @@
 import { sync } from 'glob';
 import { readFile } from 'fs-extra';
 import path from 'path';
-import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
-import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
+import { DOCS_DIR, } from '../utils/constants';
 
 /****
  * Constants
@@ -21,7 +20,7 @@ const EXCLUDED_DIRECTORIES = [
  */
 
 const getDocumentationFiles = (): string[] => {
-  return sync(path.resolve(DOCS_DIR, `**/*.{md,mdx}`)).filter(file => {
+  return sync(path.resolve(DOCS_DIR, '**/*.{md,mdx}')).filter(file => {
     return EXCLUDED_DIRECTORIES.reduce((include, dir) => {
       return !include ? false : !file.includes(dir);
     }, true);

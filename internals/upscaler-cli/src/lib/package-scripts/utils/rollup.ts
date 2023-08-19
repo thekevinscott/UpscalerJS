@@ -3,7 +3,7 @@ import path from 'path';
 import { OutputOptions, rollup, RollupBuild, RollupOptions } from 'rollup';
 
 export async function rollupBuild(inputOptions: RollupOptions, outputOptionsList: Array<OutputOptions>, dist: string) {
-  let bundle: RollupBuild | undefined = undefined;
+  let bundle: RollupBuild | undefined;
   let buildFailed = false;
   try {
     // create a bundle

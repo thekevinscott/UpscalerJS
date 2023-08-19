@@ -5,6 +5,16 @@ import { getHashedName } from './getHashedName.js';
 import { TMP_DIR } from './constants.js';
 const { existsSync, mkdirpSync } = fsExtra;
 
+export const makeTmpDir = (root = TMP_DIR): string => {
+  const hashedName = getHashedName(`${Math.random()}`);
+  const folder = path.resolve(root, hashedName);
+  mkdirpSync(folder);
+  if (!existsSync(folder)) {
+    throw new Error(`Tmp directory ${folder} was not created`);
+  }
+  return folder;
+};
+
 interface WithTmpDirOpts {
   rootDir?: string;
   removeTmpDir?: boolean;
@@ -27,14 +37,4 @@ export const withTmpDir: WithTmpDir = async (callback, { rootDir, removeTmpDir =
       console.error(`An error has occurred while removing the temp folder at ${tmpDir}. Please remove it manually. Error: ${e}`);
     }
   }
-};
-
-export const makeTmpDir = (root = TMP_DIR): string => {
-  const hashedName = getHashedName(`${Math.random()}`);
-  const folder = path.resolve(root, hashedName);
-  mkdirpSync(folder);
-  if (!existsSync(folder)) {
-    throw new Error(`Tmp directory ${folder} was not created`);
-  }
-  return folder;
 };

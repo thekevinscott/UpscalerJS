@@ -39,8 +39,7 @@ class Logger {
 const makeSetVersionForPackageJSON = (dependencies: string[], version: string): TransformPackageJsonFn => (packageJSON, dir) => {
   const packageJSONKeys = ['dependencies', 'peerDependencies', 'devDependencies', 'pnpm.overrides'];
   const logger = new Logger(`- Updated ${getPreparedFolderName(getPackageJSONPath(dir))}`);
-  for (let i = 0; i < packageJSONKeys.length; i++) {
-    const packageJSONKey = packageJSONKeys[i];
+  for (const packageJSONKey of packageJSONKeys) {
     const packageJSONListOfDependencies = getPackageJSONValue(packageJSON, packageJSONKey);
     if (packageJSONListOfDependencies) {
       const gen = getMatchingDependency(dependencies, packageJSONListOfDependencies);
@@ -64,10 +63,8 @@ const makeSetVersionForPackageJSON = (dependencies: string[], version: string): 
 export function* getMatchingDependency(matchingDependencies: string[], packageJSONListOfDependencies?: Dependency) {
   if (packageJSONListOfDependencies) {
     const entries = Object.entries(packageJSONListOfDependencies);
-    for (let i = 0; i < entries.length; i++) {
-      const [key, val] = entries[i];
-      for (let j = 0; j < matchingDependencies.length; j++) {
-        const matchingDependency = matchingDependencies[j];
+    for (const [key, val] of entries) {
+      for (const matchingDependency of matchingDependencies) {
         if (key === matchingDependency) {
           yield [key, val];
           break;
@@ -122,7 +119,7 @@ const getDependency = (dependency?: unknown) => {
   return inquirer.prompt([
     {
       name: 'dependency',
-      message: `Specify the dependency to update`,
+      message: 'Specify the dependency to update',
     },
   ]).then(r => r.dependency);
 }
@@ -135,13 +132,13 @@ const getVersion = (version?: unknown) => {
   return inquirer.prompt([
     {
       name: 'version',
-      message: `Specify the version to update to`,
+      message: 'Specify the version to update to',
     },
   ]).then(r => r.version);
 };
 
 const isPackages = (packages?: unknown): packages is Package[] => {
-  return !!(Array.isArray(packages) && packages.length && typeof packages[0] === 'string');
+  return Boolean(Array.isArray(packages) && packages.length && typeof packages[0] === 'string');
 }
 
 const getPackages = (packages?: unknown) => {

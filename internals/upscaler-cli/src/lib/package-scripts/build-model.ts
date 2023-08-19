@@ -1,4 +1,4 @@
-import fs, { mkdirp, existsSync, chmod, exists } from 'fs-extra';
+import fs, { mkdirp, existsSync, } from 'fs-extra';
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
@@ -74,7 +74,7 @@ const getUMDNames = (modelFolder: string): Record<string, string> => {
   return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
-const getIndexDefinition = (exports: Record<string, any>, modelFolder: string) => {
+const getIndexDefinition = (exports: Record<string, Record<string, string>>, modelFolder: string) => {
   if (!exports) {
     throw new Error(`No exports defined in package.json for ${modelFolder}`)
   }
@@ -134,8 +134,7 @@ const buildUMD = async (modelFolder: string, opts: Opts = {}) => {
 
   const files = getPackageJSONExports(modelFolder);
   const umdNames = getUMDNames(modelFolder);
-  for (let i = 0; i < files.length; i++) {
-    const [exportName] = files[i];
+  for (const [exportName] of files) {
     const umdName = umdNames[exportName];
     if (!umdName) {
       throw new Error(`No UMD name defined in ${modelFolder}/umd-names.json for ${exportName}`);
@@ -233,8 +232,7 @@ const buildModel = async (
     outputFormats.includes('esm') ? () => buildESM(MODEL_ROOT, opts) : undefined,
   ]
 
-  for (let i = 0; i < outputFormatFns.length; i++) {
-    const outputFormatFn = outputFormatFns[i];
+  for (const outputFormatFn of outputFormatFns) {
     if (outputFormatFn) {
       await outputFormatFn();
     }
@@ -247,15 +245,13 @@ export const buildModels = async (
   models: Array<string> = AVAILABLE_MODELS, 
   outputFormats: Array<OutputFormat> = DEFAULT_OUTPUT_FORMATS, 
   opts: Opts = {}
-) => {
+): Promise<number[]> => {
   if (models.length === 0) {
-    console.log('No models selected, nothing to do.')
-    return;
+    throw new Error('No models selected, nothing to do.')
   }
 
   if (outputFormats.length === 0) {
-    console.log('No output formats selected, nothing to do.')
-    return;
+    throw new Error('No output formats selected, nothing to do.')
   }
 
   const start = performance.now();

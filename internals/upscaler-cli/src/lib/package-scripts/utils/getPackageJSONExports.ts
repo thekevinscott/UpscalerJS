@@ -1,7 +1,9 @@
 import path from 'path';
 import fs from 'fs';
 
-const shouldIncludeExportName = (exportName: string) => {
+const shouldIncludeExportName = (_exportName: string) => {
+  throw new Error('Not implemented');
+  /*
   if (exportName === '.') {
     return false;
   }
@@ -12,8 +14,10 @@ const shouldIncludeExportName = (exportName: string) => {
     return false;
   }
 
-  return true;
+  // return true;
+  */
 }
+
 
 export type PackageJSONExport = string | {
   require: string;
@@ -26,7 +30,7 @@ const isPackageJSONExports = (exports: unknown): exports is {
   if (typeof exports !== 'object' || exports === null) {
     return false;
   };
-  return Object.entries(exports).reduce((isValid, [exportName, exportValue]) => {
+  return Object.entries(exports).reduce((isValid, [_exportName, exportValue]) => {
     return isValid === false ? false : typeof exportValue === 'string' || (typeof exportValue === 'object' && 'require' in exportValue && 'import' in exportValue);
   }, true);
 }

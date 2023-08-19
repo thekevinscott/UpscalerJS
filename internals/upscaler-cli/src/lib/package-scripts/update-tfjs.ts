@@ -1,5 +1,4 @@
 import yargs from 'yargs';
-import path from 'path';
 import inquirer, { DistinctQuestion } from 'inquirer';
 import {
   AVAILABLE_PACKAGES,
@@ -54,12 +53,12 @@ function getArg<T>(typecheckFunction: TypecheckFunction<T>, question: { name: st
 const isVersion = (version?: unknown): version is string => typeof version === 'string';
 const getVersion = getArg(isVersion, {
   name: 'value',
-  message: `Specify the version to update to`,
+  message: 'Specify the version to update to',
   default: getTFJSVersion(),
 });
 
 const isPackages = (packages?: unknown): packages is Package[] => {
-  return !!(Array.isArray(packages) && packages.length && typeof packages[0] === 'string');
+  return Boolean(Array.isArray(packages) && packages.length && typeof packages[0] === 'string');
 }
 const getPackages = getArg(isPackages, {
   type: 'checkbox',

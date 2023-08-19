@@ -39,7 +39,7 @@ const getSnippets = (model: string): Record<string, string> => {
   const snippetPaths = readdirSync(docSnippetsPath);
 
   for (const snippetPath of snippetPaths) {
-    const snippet = readFileSync(path.resolve(docSnippetsPath, snippetPath), 'utf-8') || '';
+    const snippet = readFileSync(path.resolve(docSnippetsPath, snippetPath), 'utf-8') ?? '';
     const snippetKey = snippetPath.split('.').slice(0, -1).join('.');
     if (typeof snippetKey !== 'string') {
       throw new Error(`Bad snippet key: ${snippetKey}`)
@@ -50,13 +50,13 @@ const getSnippets = (model: string): Record<string, string> => {
 
 }
 
-const getPackageJSONArgs = (model: string, packageJSON: JSONSchema): Record<string, any> => {
+const getPackageJSONArgs = (model: string, packageJSON: JSONSchema): Record<string, string> => {
   const name = packageJSON.name;
   if (!name) {
     throw new Error(`No name defined for packageJSON for model ${model}`);
   }
   return {
-    key: name.split("@upscalerjs/").pop(),
+    key: name.split("@upscalerjs/").pop() ?? '',
     description: `Overview of @upscalerjs/${model} model`,
     title: packageJSON['@upscalerjs']?.title,
     ...getSnippets(model)
@@ -74,7 +74,7 @@ const getPreparedDoc = async (model: string, { verbose }: Opts) => {
 
   const sharedDoc = await getSharedDoc(modelFamily);
   const args = getPackageJSONArgs(model, packageJSON);
-  const matches = sharedDoc.matchAll(/\<\%.+?\%\>/g);
+  const matches = sharedDoc.matchAll(/<%.+?%>/g);
   const chunks: string[] = [];
   let start = 0;
   for (const match of matches) {
@@ -86,8 +86,8 @@ const getPreparedDoc = async (model: string, { verbose }: Opts) => {
     } else if (typeof args[key] !== 'string') {
       throw new Error(`Key "${key}" for model family ${modelFamily} and model ${model} is not a string, it is: ${typeof args[key]}`)
     } else {
-      const matchStart = match?.index || 0;
-      const matchEnd = matchStart + (match[0]?.length || 0);
+      const matchStart = match?.index ?? 0;
+      const matchEnd = matchStart + (match[0]?.length ?? 0);
       
       chunks.push(sharedDoc.slice(start, matchStart));
       chunks.push(args[key])
@@ -95,7 +95,7 @@ const getPreparedDoc = async (model: string, { verbose }: Opts) => {
 
       if (verbose) {
         console.log(
-          `Found ${match[0]} (${key}) start=${match?.index} end=${(match?.index || 0) + match[0]?.length
+          `Found ${match[0]} (${key}) start=${match?.index} end=${(match?.index ?? 0) + match[0]?.length
           }.`,
         );
       }

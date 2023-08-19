@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env ts-node 
 import { CLI } from '../src/index.js';
 
 (async () => {
