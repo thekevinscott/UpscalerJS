@@ -1,6 +1,6 @@
 import { program } from 'commander';
 import * as commands from './commands/index.js';
-import { isFunction } from './types.js';
+import { isFunction } from './cli-types.js';
 import fsExtra from 'fs-extra';
 const { readFileSync } = fsExtra;
 

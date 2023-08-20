@@ -2,7 +2,7 @@ import levenshtein from 'fast-levenshtein';
 
 /**
  * For a particular query (e.g., one that is misspelled), 
- * find similar files in a directory
+ * find most similar files from an array
  */
 export const findSimilarFiles = (
   files: string[],
@@ -13,7 +13,7 @@ export const findSimilarFiles = (
   }: {
     n?: number, 
     distance?: number,
-  }
+  } = {}
 ): string[] => {
   const filesWithDistance = files.reduce<{ file: string; distance: number; }[]>((arr, file) => {
     const distance = levenshtein.get(query, file);

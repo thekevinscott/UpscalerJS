@@ -1,4 +1,4 @@
-import { RegisterCommand } from '../../types.js';
+import { RegisterCommand } from '../../cli-types.js';
 import { registerGuideStart } from './start.js';
 
   //   "example:start": "pnpm __run_command ./start-example.ts",
