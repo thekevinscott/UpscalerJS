@@ -111,7 +111,7 @@
     "prettier": "3.0.1",
     "puppeteer": "^21.0.3",
     "rimraf": "5.0.1",
-    "rollup": "2.75.7",
+    "rollup": "3.28.0",
     "seedrandom": "3.0.5",
     "selenium-webdriver": "4.3.0",
     "serve": "13.0.2",
