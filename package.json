@@ -54,12 +54,12 @@
     "@tensorflow/tfjs-node-gpu": "4.8.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.44",
-    "@babel/core": "7.18.6",
+    "@babel/cli": "7.22.10",
+    "@babel/core": "7.22.10",
     "@babel/plugin-proposal-export-namespace-from": "7.18.9",
-    "@babel/plugin-transform-modules-commonjs": "7.18.6",
-    "@babel/preset-env": "7.0.0-beta.44",
-    "@babel/preset-typescript": "7.18.6",
+    "@babel/plugin-transform-modules-commonjs": "7.22.5",
+    "@babel/preset-env": "7.22.10",
+    "@babel/preset-typescript": "7.22.5",
     "@rollup/plugin-commonjs": "22.0.1",
     "@rollup/plugin-node-resolve": "13.3.0",
     "@schemastore/package": "0.0.6",
