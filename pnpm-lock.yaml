@@ -110,8 +110,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4
       browserstack-local:
-        specifier: 1.5.1
-        version: 1.5.1
+        specifier: 1.5.4
+        version: 1.5.4
       chai:
         specifier: 4.3.7
         version: 4.3.7
@@ -6626,8 +6626,8 @@ packages:
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
 
-  /browserstack-local@1.5.1:
-    resolution: {integrity: sha512-T/wxyWDzvBHbDvl7fZKpFU7mYze6nrUkBhNy+d+8bXBqgQX10HTYvajIGO0wb49oGSLCPM0CMZTV/s7e6LF0sA==}
+  /browserstack-local@1.5.4:
+    resolution: {integrity: sha512-OueHCaQQutO+Fezg+ZTieRn+gdV+JocLjiAQ8nYecu08GhIt3ms79cDHfpoZmECAdoQ6OLdm7ODd+DtQzl4lrA==}
     dependencies:
       agent-base: 6.0.2
       https-proxy-agent: 5.0.1
