@@ -254,6 +254,6 @@ export async function executeAsyncScript<T, A>(driver: webdriver.WebDriver, fn: 
 // we need to declare that window can adopt any kind of variable
 declare global {
   interface Window {
-    [index: string]: string | number | boolean | object;
+    [index: string]: string | number | boolean | Record<string, unknown>;
   }
 }
