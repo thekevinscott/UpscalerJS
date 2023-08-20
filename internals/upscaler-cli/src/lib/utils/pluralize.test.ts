@@ -18,6 +18,6 @@ describe("pluralize", () => {
   });
 
   it('accepts a custom separator', () => {
-    expect(pluralize(['foo', 'bar', 'baz'], 'and')).toEqual(`foo, bar, and baz`);
+    expect(pluralize(['foo', 'bar', 'baz'], 'and')).toEqual('foo, bar, and baz');
   });
 });

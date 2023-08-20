@@ -17,9 +17,9 @@ describe('getTFJSLibraryTarget', () => {
   });
 
   const makeMock = (dependencies: Record<string, string>) => {
-    vi.mocked(readFile).mockImplementation(async () => Buffer.from(JSON.stringify({
+    vi.mocked(readFile).mockImplementation(() => Promise.resolve(Buffer.from(JSON.stringify({
       dependencies,
-    })));
+    }))));
   }
 
   it('loads the correct package json from the right directory', async () => {

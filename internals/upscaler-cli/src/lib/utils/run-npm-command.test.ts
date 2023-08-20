@@ -30,7 +30,7 @@ describe('run-npm-command', () => {
     vi.mocked(spawn).mockImplementation(() => ({
       on: (event: string, callback: (...args: unknown[]) => unknown) => {
         if (event === 'close') {
-          callback(`${code}`);
+          callback(`${code}`); // skipcq: JS-0255
         }
       },
     }));
@@ -41,7 +41,7 @@ describe('run-npm-command', () => {
     vi.mocked(spawn).mockImplementation(() => ({
       on: (event: string, callback: (...args: unknown[]) => unknown) => {
         if (event === 'close') {
-          callback(0);
+          callback(0); // skipcq: JS-0255
         }
       },
     }));

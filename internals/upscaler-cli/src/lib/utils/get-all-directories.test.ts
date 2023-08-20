@@ -18,7 +18,7 @@ describe("getAllDirectories", () => {
   });
 
   it('returns only directories', async () => {
-    const mockReadDir = async () => ([
+    const mockReadDir = () => Promise.resolve([
       'foo-dir',
       'bar-dir',
       'foo-non-dir',
@@ -26,7 +26,7 @@ describe("getAllDirectories", () => {
       'baz-dir',
       'baz-non-dir',
     ]);
-    const mockStat = async (name: string) => ({
+    const mockStat = (name: string) => Promise.resolve({
       isDirectory: () => {
         return name.endsWith('non-dir') === false;
       },

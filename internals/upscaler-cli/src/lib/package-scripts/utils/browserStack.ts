@@ -254,6 +254,6 @@ export async function executeAsyncScript<T, A>(driver: webdriver.WebDriver, fn: 
 // we need to declare that window can adopt any kind of variable
 declare global {
   interface Window {
-    [index: string]: any; // skipcq: JS-0128
+    [index: string]: any; // skipcq: JS-0323
   }
 }
