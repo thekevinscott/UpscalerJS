@@ -15,10 +15,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -33,10 +33,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -57,10 +57,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -83,10 +83,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -110,10 +110,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Install dependencies'
         run: pnpm liteinstall
@@ -138,10 +138,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -176,10 +176,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -216,10 +216,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -255,10 +255,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -287,10 +287,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -319,10 +319,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -351,10 +351,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -383,10 +383,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM'
+      - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          nodeversion: ${{ matrix.node-version }}
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3

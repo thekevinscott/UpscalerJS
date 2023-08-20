@@ -10,10 +10,10 @@ runs:
         version: 8
         run_install: true
 
-    - name: Use Node.js ${{ inputs.node-version }}
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ inputs.node-version }}
+        node-version: ${{ inputs.nodeversion }}
         cache: 'pnpm'
 
     - name: Install dependencies
