@@ -1,8 +1,9 @@
 import { program } from 'commander';
-import * as commands from './commands/index.js';
-import { isFunction } from './cli-types.js';
+import path from 'path';
 import fsExtra from 'fs-extra';
-const { readFileSync } = fsExtra;
+import { ROOT_DIR } from './lib/package-scripts/utils/constants.js';
+import { buildCommandsTree } from './lib/cli/build-commands-tree.js';
+const { readFileSync, readdir, stat, } = fsExtra;
 
   // "scripts": {
   //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
@@ -33,6 +34,22 @@ const { readFileSync } = fsExtra;
   //   "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
   // },
 
+const getName = (fullPath: string): string => {
+  const parts = fullPath.split('/');
+  const file = parts.pop();
+  if (!file) {
+    throw new Error(`Bad full path provided: ${fullPath}`);
+  }
+  const name = file.split('.').slice(0, -1).join('.');
+  if (name === 'index') {
+    const dir = parts.pop();
+    if (!dir) {
+      throw new Error(`Bad full path provided, could not get dir: ${fullPath}`);
+    }
+    return dir;
+  }
+  return name;
+};
 
 
 export class CLI {
@@ -44,14 +61,12 @@ export class CLI {
       .name(name)
       .description(description)
       .version(version);
-
-    for (const [key, command] of Object.entries(commands)) {
-      if (!isFunction(command)) {
-        throw new Error(`Error for file ${key}, does not appear to be a function`)
-      }
-      command(program);
-    }
   }
 
-  run = () => program.parseAsync(); // skipcq: JS-0105
+  run = async () => {
+    const srcDir = path.resolve(ROOT_DIR, './internals/upscaler-cli/src/commands');
+    const root = await buildCommandsTree(srcDir);
+    await root.registerProgram(program);
+    return program.parseAsync();
+  };
 }
