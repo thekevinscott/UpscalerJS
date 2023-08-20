@@ -194,8 +194,8 @@ importers:
         specifier: 3.0.5
         version: 3.0.5
       selenium-webdriver:
-        specifier: 4.11.1
-        version: 4.11.1
+        specifier: 4.3.0
+        version: 4.3.0
       serve:
         specifier: 14.2.0
         version: 14.2.0
@@ -7074,11 +7074,6 @@ packages:
   /cli-width@4.1.0:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
-<<<<<<< HEAD
-    dev: false
-=======
-    dev: true
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
 
   /clipboardy@3.0.0:
     resolution: {integrity: sha512-Su+uU5sr1jkUy1sGRpLKjKrvEOVXgSgiSInwa/qeID6aJ07yh+5NWc3h2QfjHjBnfX4LhtFcuAWKUsJ3r+fjbg==}
@@ -9135,11 +9130,6 @@ packages:
     dependencies:
       escape-string-regexp: 5.0.0
       is-unicode-supported: 1.2.0
-<<<<<<< HEAD
-    dev: false
-=======
-    dev: true
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
 
   /file-entry-cache@6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}
@@ -10340,11 +10330,6 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
-<<<<<<< HEAD
-    dev: false
-=======
-    dev: true
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
 
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
@@ -12378,11 +12363,6 @@ packages:
   /mute-stream@1.0.0:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-<<<<<<< HEAD
-    dev: false
-=======
-    dev: true
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
 
   /mylas@2.1.13:
     resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
@@ -14843,11 +14823,6 @@ packages:
   /run-async@3.0.0:
     resolution: {integrity: sha512-540WwVDOMxA6dN6We19EcT9sc3hkXPw5mzRNGM3FkdN/vtE9NFvj5lFAPNwUDmJjXidm3v7TC1cTE7t17Ulm1Q==}
     engines: {node: '>=0.12.0'}
-<<<<<<< HEAD
-    dev: false
-=======
-    dev: true
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
 
   /run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -15017,9 +14992,9 @@ packages:
   /select-hose@2.0.0:
     resolution: {integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg==}
 
-  /selenium-webdriver@4.11.1:
-    resolution: {integrity: sha512-bvrnr3UZlLScErOmn8gV6cqc+1PYDHn0575CxUR2U14fMWt7OKxSy0lAThhZq4sq4d1HqP8ebz11oiHSlAQ2WA==}
-    engines: {node: '>= 14.20.0'}
+  /selenium-webdriver@4.3.0:
+    resolution: {integrity: sha512-9XFr8w95BO7jageR61AtiB83fJNem3fdtOQcUpqIIDHWSxihomyG/yBlL1H4y/shi/dO/Ai3PJMAOG+OW3+JHw==}
+    engines: {node: '>= 10.15.0'}
     dependencies:
       jszip: 3.10.1
       tmp: 0.2.1
@@ -16246,7 +16221,6 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-<<<<<<< HEAD
   /ts-node@10.9.1(@types/node@16.18.40)(typescript@5.1.6):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -16278,39 +16252,6 @@ packages:
       yn: 3.1.1
     dev: false
 
-  /ts-node@10.9.1(@types/node@18.11.9)(typescript@5.1.6):
-    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 18.11.9
-      acorn: 8.10.0
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.1.6
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
-
-=======
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
   /ts-node@10.9.1(@types/node@20.5.0)(typescript@5.1.6):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -16925,8 +16866,6 @@ packages:
       vfile-message: 3.1.4
     dev: false
 
-<<<<<<< HEAD
-<<<<<<< HEAD
   /vite-node@0.34.1(@types/node@20.5.0):
     resolution: {integrity: sha512-odAZAL9xFMuAg8aWd7nSPT+hU8u2r9gU3LRm9QKjxBEF2rRdWpMuqkrkjvyVQEdNFiBctqr2Gg4uJYizm5Le6w==}
     engines: {node: '>=v14.18.0'}
@@ -16947,74 +16886,6 @@ packages:
       - sugarss
       - supports-color
       - terser
-    dev: true
-
-  /vite@3.1.5:
-    resolution: {integrity: sha512-V4Avke0b7h2zTWVJf8vq6TE3aH061NQ3b1ixHQyqdoE/5HIVsxVLCyTLjJtHVcsJ5fIKSHvOtflWpgavHS8RPw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.15.18
-      postcss: 8.4.27
-      resolve: 1.22.4
-      rollup: 2.78.1
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
-
-=======
->>>>>>> fbaa63e7 (Upgrade vite and jest)
-  /vite@4.4.9(@types/node@18.11.9):
-=======
-  /vite@4.4.9(@types/node@20.5.0):
->>>>>>> 43ed0722 (Revert selenium web driver, upgrade all the rest)
-    resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': '>= 14'
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.5.0
-      esbuild: 0.18.14
-      postcss: 8.4.27
-      rollup: 3.28.0
-    optionalDependencies:
-      fsevents: 2.3.2
     dev: true
 
   /vite@4.4.9(@types/node@20.5.0):
