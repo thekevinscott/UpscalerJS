@@ -82,12 +82,9 @@ importers:
       '@types/pngjs':
         specifier: 6.0.1
         version: 6.0.1
-      '@types/rimraf':
-        specifier: 3.0.2
-        version: 3.0.2
       '@types/selenium-webdriver':
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.1.15
+        version: 4.1.15
       '@types/serve-handler':
         specifier: 6.1.1
         version: 6.1.1
@@ -5059,6 +5056,7 @@ packages:
     dependencies:
       '@types/minimatch': 5.1.2
       '@types/node': 20.5.0
+    dev: false
 
   /@types/graceful-fs@4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
@@ -5158,6 +5156,7 @@ packages:
 
   /@types/minimatch@5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
+    dev: false
 
   /@types/mkdirp@2.0.0:
     resolution: {integrity: sha512-c/iUqMymAlxLAyIK3u5SzrwkrkyOdv1XDc91T+b5FsY7Jr6ERhUD19jJHOhPW4GD6tmN6mFEorfSdks525pwdQ==}
@@ -5273,13 +5272,6 @@ packages:
   /@types/retry@0.12.0:
     resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
 
-  /@types/rimraf@3.0.2:
-    resolution: {integrity: sha512-F3OznnSLAUxFrCEu/L5PY8+ny8DtcFRjx7fZZ9bycvXRi3KPTRS9HOitGZwvPg0juRhXFWIeKX58cnX5YqLohQ==}
-    dependencies:
-      '@types/glob': 8.1.0
-      '@types/node': 20.5.0
-    dev: true
-
   /@types/sax@1.2.4:
     resolution: {integrity: sha512-pSAff4IAxJjfAXUG6tFkO7dsSbTmf8CtUpfhhZ5VhkRpC4628tJhh3+V6H1E+/Gs9piSzYKT5yzHO5M4GG9jkw==}
     dependencies:
@@ -5292,8 +5284,8 @@ packages:
   /@types/seedrandom@2.4.30:
     resolution: {integrity: sha512-AnxLHewubLVzoF/A4qdxBGHCKifw8cY32iro3DQX9TPcetE95zBeVt3jnsvtvAUf1vwzMfwzp4t/L2yqPlnjkQ==}
 
-  /@types/selenium-webdriver@4.1.1:
-    resolution: {integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg==}
+  /@types/selenium-webdriver@4.1.15:
+    resolution: {integrity: sha512-oQ15G3q3EZ0dS049SB/5zx2tQkIS2kmDQWC/TSfAHJYKvXLZoUiLaPXnfSwbLP8Q5lcJeu5oYjKVSEV0t3H6Bg==}
     dependencies:
       '@types/ws': 8.5.3
     dev: true
