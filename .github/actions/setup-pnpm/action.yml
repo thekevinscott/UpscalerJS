@@ -10,14 +10,11 @@ runs:
   using: "composite"
   steps:
     - uses: pnpm/action-setup@v2
-      name: Install pnpm
-      id: pnpm-install
       with:
         version: 8
-        run_install: true
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
+    - name: Use Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
