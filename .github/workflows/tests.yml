@@ -18,7 +18,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -36,7 +36,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -60,7 +60,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -86,7 +86,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -113,7 +113,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Install dependencies'
         run: pnpm liteinstall
@@ -141,7 +141,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -179,7 +179,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -219,7 +219,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -258,7 +258,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -290,7 +290,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -322,7 +322,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -354,7 +354,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -386,7 +386,7 @@ jobs:
       - name: 'Setup PNPM with Node {{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
-          nodeversion: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-version }}
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
