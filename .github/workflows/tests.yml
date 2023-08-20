@@ -15,13 +15,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -36,13 +33,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -63,13 +57,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
@@ -92,13 +83,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -122,13 +110,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
         run: pnpm liteinstall
@@ -153,13 +138,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -194,8 +176,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -203,9 +185,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -237,8 +216,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -246,9 +225,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -279,8 +255,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -288,9 +264,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -314,8 +287,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -323,9 +296,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -349,8 +319,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -358,9 +328,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -384,8 +351,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -393,9 +360,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Build Upscaler'
         run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -419,8 +383,8 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -433,9 +397,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Setup PNPM'
-        uses: ./.github/actions/setup-pnpm
 
       - name: 'Install dependencies'
         run: pnpm install
