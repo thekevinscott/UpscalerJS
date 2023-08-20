@@ -1,5 +1,5 @@
 import Upscaler from "upscaler";
-import img from "./public/flower.png";
+import img from "/flower.png?url";
 const target = document.getElementById("target");
 const button = document.getElementById("button");
 const info = document.getElementById("info");

@@ -1,6 +1,7 @@
 packages:
   - 'dev/**'
   - 'packages/**'
+  - 'internals/**'
   - 'models/**'
   - 'scripts/**'
   - 'docs/**'

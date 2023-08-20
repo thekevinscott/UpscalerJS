@@ -18,8 +18,6 @@ app.get("/", async (req, res) => {
   res.end(null, 'binary');
 });
 
-app.listen(8080);
-
 const getUpscaledImage = async () => {
   const file = fs.readFileSync(path.resolve(__dirname, './flower-small.png'));
   const image = tf.node.decodeImage(file, 3);
@@ -34,3 +32,6 @@ const getUpscaledImage = async () => {
   tensor.dispose();
   return upscaledTensor;
 }
+
+app.listen(8080);
+console.log('Running on http://localhost:8080/');

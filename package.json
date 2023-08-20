@@ -103,6 +103,7 @@
     "inquirer": "9.2.10",
     "jest": "29.6.2",
     "jest-canvas-mock": "2.5.2",
+    "@internals/upscaler-cli": "workspace:*",
     "jsdom": "22.1.0",
     "mocha": "10.2.0",
     "pixelmatch": "5.3.0",
