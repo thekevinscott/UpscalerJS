@@ -19,9 +19,9 @@
     "tsc-alias": "^1.8.7"
   },
   "devDependencies": {
-    "@types/node": "^16.18.40",
+    "@types/node": "^20.5.1",
     "@types/uglify-js": "^3.17.1",
-    "vitest": "^0.34.1"
+    "vitest": "^0.34.2"
   },
   "scripts": {
     "test": "vitest"

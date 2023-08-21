@@ -4,13 +4,13 @@
   "version": "1.0.0-beta.10",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230814.0",
-    "@types/node": "^20.5.0",
+    "@types/node": "^20.5.1",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/workers.shared": "workspace:*",
     "seedrandom": "3.0.5",
     "typescript": "^5.1.6",
     "upscaler": "workspace:*",
-    "wrangler": "^3.5.0"
+    "wrangler": "^3.5.1"
   },
   "private": true,
   "scripts": {
@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "@tensorflow/tfjs": "~4.8.0",
-    "aws-sdk": "^2.1436.0",
+    "aws-sdk": "^2.1440.0",
     "jpeg-js": "^0.4.4",
     "mock-aws-s3": "^4.0.2",
-    "nock": "^13.3.2"
+    "nock": "^13.3.3"
   }
 }
