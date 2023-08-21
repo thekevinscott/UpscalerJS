@@ -8,14 +8,6 @@ import { getTFJSLibraryTarget } from '../../lib/utils/get-tfjs-library-target.js
 import { getAllDirectories } from '../../lib/utils/get-all-directories.js';
 import { findSimilarFiles } from '../../lib/utils/find-similar-files.js';
 
-export default (program: Command) => program.command('start')
-    .description('Start an example')
-    .argument('<string>', 'example to start')
-    .option('--skipUpscalerBuild', 'if true, skip building UpscalerJS when starting up')
-    .option('--verbose', 'verbose mode')
-    .action(start);
-
-
 interface Options {
   verbose?: boolean;
   skipUpscalerBuild?: boolean;
@@ -50,3 +42,11 @@ export const start: Action<[string, Options]> = async (guide, { skipUpscalerBuil
   await runNPMCommand(['install', '--no-package-lock'], guidePath);
   await runNPMCommand(['run', 'dev'], guidePath);
 }
+
+export default (program: Command) => program.command('start')
+    .description('Start an example')
+    .argument('<string>', 'example to start')
+    .option('--skipUpscalerBuild', 'if true, skip building UpscalerJS when starting up')
+    .option('--verbose', 'verbose mode')
+    .action(start);
+

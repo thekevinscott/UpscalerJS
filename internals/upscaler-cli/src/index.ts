@@ -3,7 +3,7 @@ import path from 'path';
 import fsExtra from 'fs-extra';
 import { ROOT_DIR } from './lib/package-scripts/utils/constants.js';
 import { buildCommandsTree } from './lib/cli/build-commands-tree.js';
-const { readFileSync, readdir, stat, } = fsExtra;
+const { readFileSync, } = fsExtra;
 
   // "scripts": {
   //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
@@ -34,23 +34,6 @@ const { readFileSync, readdir, stat, } = fsExtra;
   //   "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
   // },
 
-const getName = (fullPath: string): string => {
-  const parts = fullPath.split('/');
-  const file = parts.pop();
-  if (!file) {
-    throw new Error(`Bad full path provided: ${fullPath}`);
-  }
-  const name = file.split('.').slice(0, -1).join('.');
-  if (name === 'index') {
-    const dir = parts.pop();
-    if (!dir) {
-      throw new Error(`Bad full path provided, could not get dir: ${fullPath}`);
-    }
-    return dir;
-  }
-  return name;
-};
-
 
 export class CLI {
   constructor() {
@@ -63,7 +46,7 @@ export class CLI {
       .version(version);
   }
 
-  run = async () => {
+  run = async () => { // skipcq: JS-0105
     const srcDir = path.resolve(ROOT_DIR, './internals/upscaler-cli/src/commands');
     const root = await buildCommandsTree(srcDir);
     await root.registerProgram(program);

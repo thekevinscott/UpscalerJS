@@ -60,7 +60,7 @@ class Node {
     throw new Error(`No child found for name ${name}`);
   }
 
-  async getIndex() {
+  getIndex() {
     try {
       return this.getChild('index');
     } catch (err) {

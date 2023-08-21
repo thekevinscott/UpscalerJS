@@ -219,7 +219,7 @@ describe('buildCommandsTree', () => {
         'index.js',
       ]);
 
-      const registerFunction = () => { };
+      function registerFunction () { };
       fakeFile.default = registerFunction;
 
       vi.mocked(readdir).mockImplementation(mockReadDir);
@@ -233,7 +233,7 @@ describe('buildCommandsTree', () => {
         'index.js',
       ]);
 
-      const registerFunction = () => { };
+      function registerFunction () { };
       fakeFile.default = registerFunction;
 
       vi.mocked(readdir).mockImplementation(mockReadDir);
@@ -270,7 +270,7 @@ describe('buildCommandsTree', () => {
       throw new Error(`Unexpected directory: ${name}`);
     });
     const root = await buildCommandsTree('foo');
-    let subFakePrograms: FakeProgram[] = [];
+    const subFakePrograms: FakeProgram[] = [];
     class FakeProgram {
       command = vi.fn().mockImplementation(() => {
         const subFakeProgram = new FakeProgram();
