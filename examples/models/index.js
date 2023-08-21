@@ -1,6 +1,6 @@
 import Upscaler from 'upscaler';
 import model from '@upscalerjs/esrgan-thick/2x';
-import img from "./public/flower.png";
+import img from "/flower.png?url";
 const target = document.getElementById("target");
 const button = document.getElementById("upscale");
 const info = document.getElementById("info");
