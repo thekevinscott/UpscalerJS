@@ -174,6 +174,8 @@ export class BrowserTestRunner {
   public async startBrowser() {
     this.browser = await launch({
       headless: 'new',
+      // executablePath: `/usr/bin/google-chrome`,
+      // args: [`--no-sandbox`, `--headless`, `--disable-gpu`, `--disable-dev-shm-usage`],
     });
   }
 
