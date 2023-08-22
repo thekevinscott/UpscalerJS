@@ -219,6 +219,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       }
     }
 
+    // TODO: Update positional args, if an arg is passed without a = then add it in for jest's sake
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const args = [
       'pnpm',
@@ -227,6 +228,8 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       jestConfigPath,
       '--detectOpenHandles',
       watch ? '--watch' : undefined,
+      // '--',
+      // '-u',
       ...positionalArgs,
     ].filter(Boolean).map(arg => `${arg}`);
 
@@ -328,7 +331,9 @@ const getRunner = (runner?: string): Runner => {
 const getArgs = async (): Promise<Args> => {
   const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
 
-  const argv = await yargs(process.argv.slice(2)).options({
+  const argv = await yargs(process.argv.slice(2))
+  .parserConfiguration({'unknown-options-as-args': true})
+  .options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
     skipUpscalerBuild: { type: 'boolean' },
