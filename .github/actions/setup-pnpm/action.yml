@@ -22,3 +22,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: pnpm install
+
+    - name: Install Puppeteer explicitly
+      shell: bash
+      run: node node_modules/puppeteer/install.js

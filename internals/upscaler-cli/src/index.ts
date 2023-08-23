@@ -1,8 +1,9 @@
 import { program } from 'commander';
-import * as commands from './commands/index.js';
-import { isFunction } from './cli-types.js';
+import path from 'path';
 import fsExtra from 'fs-extra';
-const { readFileSync } = fsExtra;
+import { ROOT_DIR } from './lib/package-scripts/utils/constants.js';
+import { buildCommandsTree } from './lib/cli/build-commands-tree.js';
+const { readFileSync, } = fsExtra;
 
   // "scripts": {
   //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
@@ -34,7 +35,6 @@ const { readFileSync } = fsExtra;
   // },
 
 
-
 export class CLI {
   constructor() {
     const packageJSON = new URL('../package.json', import.meta.url);
@@ -44,14 +44,12 @@ export class CLI {
       .name(name)
       .description(description)
       .version(version);
-
-    for (const [key, command] of Object.entries(commands)) {
-      if (!isFunction(command)) {
-        throw new Error(`Error for file ${key}, does not appear to be a function`)
-      }
-      command(program);
-    }
   }
 
-  run = () => program.parseAsync(); // skipcq: JS-0105
+  run = async () => { // skipcq: JS-0105
+    const srcDir = path.resolve(ROOT_DIR, './internals/upscaler-cli/src/commands');
+    const root = await buildCommandsTree(srcDir);
+    await root.registerProgram(program);
+    return program.parseAsync();
+  };
 }

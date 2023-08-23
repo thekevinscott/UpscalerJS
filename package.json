@@ -130,6 +130,9 @@
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
+  "engines": {
+    "node": ">=16.0"
+  },
   "babel": {
     "env": {
       "test": {
