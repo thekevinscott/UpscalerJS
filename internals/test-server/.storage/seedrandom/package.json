@@ -1,0 +1,1815 @@
+{
+	"name": "seedrandom",
+	"versions": {
+		"2.3.1": {
+			"name": "seedrandom",
+			"version": "2.3.1",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"scripts": {
+				"test": "grunt"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "BSD",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "https://github.com/davidbau/seedrandom",
+			"devDependencies": {
+				"grunt": "0.4.2",
+				"grunt-bowercopy": "0.4.1",
+				"grunt-cli": "0.1.11",
+				"grunt-contrib-uglify": "0.2.7",
+				"grunt-contrib-qunit": "0.3.0",
+				"grunt-release": "0.6.0",
+				"phantomjs": "1.9.2-6"
+			},
+			"_id": "seedrandom@2.3.1",
+			"dist": {
+				"shasum": "16e0d43f4a0ba5d8c26db69558d559bf602a0dc1",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.1.tgz",
+				"integrity": "sha512-gQxriCSKZn6iOy3vdMVPYJFumug5kwgXGNfmRJ6vt9ECEnFmeaiZmlM2/EccnxwnuQfZicDgOwKLbtzH7FbfzA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIF2KzsCFCLOubx+Pkde6IT8JNfhzr7CbdAz7vQt1mAJrAiAtIGMsZe0+unPrRuZLAJZXiveD9GvlvnRyCbrLinieug=="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.3.21",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.3": {
+			"name": "seedrandom",
+			"version": "2.3.3",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"scripts": {
+				"test": "grunt"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "https://github.com/davidbau/seedrandom",
+			"devDependencies": {
+				"grunt": "0.4.2",
+				"grunt-bowercopy": "0.4.1",
+				"grunt-cli": "0.1.11",
+				"grunt-contrib-uglify": "0.2.7",
+				"grunt-contrib-qunit": "0.3.0",
+				"grunt-release": "0.6.0",
+				"phantomjs": "1.9.2-6"
+			},
+			"_id": "seedrandom@2.3.3",
+			"dist": {
+				"shasum": "6f17cce46781ad3b24d4df498a54af9b4f508abc",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.3.tgz",
+				"integrity": "sha512-Dd6AW+vllmgoLr87/KdO3M6+unHxdvogE3Vd2NvnMyy9KfSDn5H5K31WLnXgTb+a2GWBC6LTCve3akmYqDu9cA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIFen7AEGaPGAF9AUjqZUZbvkTsV4JGk1CPWmxYMvUqDvAiEA07O7uVnBVzVEefwiq58gWVTnYsbvDg805MnKzelbifI="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.3.21",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.4": {
+			"name": "seedrandom",
+			"version": "2.3.4",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "https://github.com/davidbau/seedrandom",
+			"devDependencies": {
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-release": "latest",
+				"phantomjs": "latest"
+			},
+			"_id": "seedrandom@2.3.4",
+			"dist": {
+				"shasum": "9a846f55cb8ab5487072b30f59b0ca403a0f2fea",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.4.tgz",
+				"integrity": "sha512-EpyuVD8KucFbDqFm+Nf6blk28Fpf+cefSG1d9kaPfYsrxcXi33r3jG/5+0pD1PE3mVBT1J+GXZdjKhVwyLGaIQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCICC8pPoNaZurr+bJ1DFl8XM8z1909OtdzVSObvG8jeRaAiAa6fxkjLXEClx5gZWfSHSDEqZMj0vgQw+wLOBPbbiFMg=="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.4.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.5": {
+			"name": "seedrandom",
+			"version": "2.3.5",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"devDependencies": {
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest"
+			},
+			"_id": "seedrandom@2.3.5",
+			"dist": {
+				"shasum": "893df4419f5e77d2d3a85deca898a22d4da3206a",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.5.tgz",
+				"integrity": "sha512-Kibp/yggl7JS1xAd1UX1DMltcOb86yB9UvOxPtYGjheZL64WkMyetCHq39mVkL7KAE2DaeDp6etL5xjIIzUIyw==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQCHUVdsomVwo+Sp6fNT45GiPLDoJ1eQCwTl1bxb6OMQ4QIhAPu+qRar3Em4G82+zNn5TOYfl7iWQLADjQU/z80Z2Y+s"
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.3.21",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.6": {
+			"name": "seedrandom",
+			"version": "2.3.6",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"devDependencies": {
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest"
+			},
+			"_id": "seedrandom@2.3.6",
+			"dist": {
+				"shasum": "6039164376fb210a068c276c43343bfc8af7999e",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.6.tgz",
+				"integrity": "sha512-6xdq2TnAyTbYHuRKZdWcbo8VKO6AP0CEbjS90gvSBGXEvdRTWrRgzUq4qDlgTjlUrVLYurUrJjpUQkUvcVP5Ow==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIExrN+fNHe1AAthqsCl78onLZxomGZwzmK1kTGHeHtvfAiBEc8gk4pxRakPiT1lBFe5lXKtaYBsiKfls9+JrkrsXmw=="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.3.21",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.7": {
+			"name": "seedrandom",
+			"version": "2.3.7",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "git://github.com/davidbau/proxyquire.git#nullstub"
+			},
+			"_id": "seedrandom@2.3.7",
+			"dist": {
+				"shasum": "e1237bb7803fa8ed6b0334a636c7047253124877",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.7.tgz",
+				"integrity": "sha512-ojm/1sqF2RiOdjynPniqBjly5auwOSJOpt5z8b+aloRaD77Krh2y/Gr10Fl/9cDKEnbmlw7pwTH3mveGCkq2Kg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDPin20zEQ7WAPaNhRk+eS4eugxRcx3M1kb5o+1rxBUMgIgTZiRMzHhF6U4WWpFkh8tEIx/tdPT0iYksGszinF7aJQ="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.4.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.8": {
+			"name": "seedrandom",
+			"version": "2.3.8",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "git://github.com/davidbau/proxyquire.git#nullstub"
+			},
+			"_id": "seedrandom@2.3.8",
+			"dist": {
+				"shasum": "afb3d77a381c1369b2b514b477ddf56d048708d4",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.8.tgz",
+				"integrity": "sha512-3D9t0kTHwZlSeU3+i+K02uZhHkJLise+d7xSKUcJ1VmVnQ7iCPYpl3jY1lad0AMYLfGJmO6/F5qAUwFKFIPgEg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQCWZilWxVjroTd6J5xHpk9E5aoahnmo+HHr0L7WpRpxXwIgdpZmLbKy+h5wL/QbNOYihebZ8CfAASPQe9hgvADQbiY="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.4.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.9": {
+			"name": "seedrandom",
+			"version": "2.3.9",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "git://github.com/davidbau/proxyquire.git#nullstub"
+			},
+			"_id": "seedrandom@2.3.9",
+			"dist": {
+				"shasum": "d32c92b4bcf8aec69a14fcca073d70adf41cbbc2",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.9.tgz",
+				"integrity": "sha512-Wl1jdf3HYaQtjIR/hlODMCZFVtPtO/wgcIhbnnYB/VcSWGUzB47T1WMzovHGxnpJsXcEEelO/mYgeIsbHe48WA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDMQQm8ARngVneAY7aMK32iBis9HIIYfP/EfgyFbrHxtwIgddgGkptRTbWQxsLiZ5txRPCIZNRhI8QbnBfnWFiJRqA="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.4.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.10": {
+			"name": "seedrandom",
+			"version": "2.3.10",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "git://github.com/gruntjs/grunt-contrib-qunit.git#master",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "git://github.com/davidbau/proxyquire.git#nullstub"
+			},
+			"_id": "seedrandom@2.3.10",
+			"dist": {
+				"shasum": "2e73464f12fea21a429a13aa4d9cb9e58af438ad",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.10.tgz",
+				"integrity": "sha512-l/WnbbQ0Lb/PfbtrhETx12VRSKYGE8AiOCubtYuz0bIKR2jrhRtQI4RKJvOT4+NMreoTgtyKRzWGS2h1t/v89g==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIEZXm8HUbhjtIgdJgSNgmAoU2zfn5jx8H6s5NKOF4pGvAiEA7k4qm51XQhKQ13g8LTqJYxkLP5XvoM6GbKZFR6bEeKo="
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.4.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.11": {
+			"name": "seedrandom",
+			"version": "2.3.11",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "seedrandom.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "git://github.com/gruntjs/grunt-contrib-qunit.git#master",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "git://github.com/davidbau/proxyquire.git#nullstub",
+				"requirejs": "latest"
+			},
+			"gitHead": "efa1d8762beb4bc3add604bbe6b079bc513cec7a",
+			"_id": "seedrandom@2.3.11",
+			"_shasum": "29b19afc7e8108d7fd845f19337d991aad423f08",
+			"_from": ".",
+			"_npmVersion": "2.1.5",
+			"_nodeVersion": "0.10.26",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"dist": {
+				"shasum": "29b19afc7e8108d7fd845f19337d991aad423f08",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.11.tgz",
+				"integrity": "sha512-qMqGuVp954I9hYEcgCIT4/y1DyFSwGOHp1ZjvIlRfMXSTbncKYK1DE4G04rZP7YLeT7ioty9idO1ESH3K/eFuQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQD6I9WGQjV46tkv3o7giUhebhGU4mDLxrPYZSWISbDa0AIgFyGhqh96QnQGw4YrK+l9H+E2gBwE/mXA0XV+YtsM5Gc="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.0": {
+			"name": "seedrandom",
+			"version": "2.4.0",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "<=0.5.2",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "2db70112f66f31de2ea3f82f112c932adb0f515a",
+			"_id": "seedrandom@2.4.0",
+			"_shasum": "0bf588feec90e2ad84eaa3b6c9b9cef9ffe6fc94",
+			"_from": ".",
+			"_npmVersion": "2.7.4",
+			"_nodeVersion": "0.12.2",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"dist": {
+				"shasum": "0bf588feec90e2ad84eaa3b6c9b9cef9ffe6fc94",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.0.tgz",
+				"integrity": "sha512-r5xQSSfonQlk03amcuBQkdI1LfbLH5v3ik8rqoYZ+rrUpn7oSRCLdK9H/KmNFz/5IjJwNul6jpPyCvBObTsUTg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIDvMnSRZUrvIJDzQM6FTxJo6pbs4RCOsBZNRAK353BKbAiEAtsqYBn226q40quL0IVu4drY6uQE3XJ5zoCrJD3x4qMM="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.1": {
+			"name": "seedrandom",
+			"version": "2.4.1",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "<=0.5.2",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "721a4ca47c59ec54c96cb50ce4ac56824a3f363e",
+			"_id": "seedrandom@2.4.1",
+			"_shasum": "eeca6a7d2718a48c496691f0b366e01aaa5ea495",
+			"_from": ".",
+			"_npmVersion": "2.7.4",
+			"_nodeVersion": "0.12.2",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"dist": {
+				"shasum": "eeca6a7d2718a48c496691f0b366e01aaa5ea495",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.1.tgz",
+				"integrity": "sha512-wj3BFJNjQX2/lOlm76kG9O9M7k8/2vLkmxyjiyhRyiTYb7hK4F4ILajPpFjSTBOl6BjM2qNYevKZp6EoIPzHwQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIAYh5hSKI2NW4CGd1assiDuAofskN2fEa5vlj76NnBZfAiEAoSDppAzwwAs55S8T2s//+MqWOhRvdf7937Uc5yofLhs="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.2": {
+			"name": "seedrandom",
+			"version": "2.4.2",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"random",
+				"seed",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-qunit": "<=0.5.2",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"grunt-sed": "latest",
+				"phantomjs": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "1b530945501d4bc4fb467b7d865cbadd0374cc31",
+			"_id": "seedrandom@2.4.2",
+			"_shasum": "18d78c41287d13aff8eadb29e235938b248aa9ff",
+			"_from": ".",
+			"_npmVersion": "2.7.4",
+			"_nodeVersion": "0.12.2",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"dist": {
+				"shasum": "18d78c41287d13aff8eadb29e235938b248aa9ff",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.2.tgz",
+				"integrity": "sha512-uQ72txMoObtuJooiBLSVs5Yu2e9d/lHQz0boaqHjW8runXB9vR8nFtaZV54wYii613N0C8ZqTBLsfwDhAdpvqQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDdRZHFMSyJrn5CrwnyGHOoD7Q+bauyr6eYtHayMoQ76gIgLLGLmZ2IjE1LB0/W0UUqZz+cLwE3F/AihO4z/GFy7YE="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.3": {
+			"name": "seedrandom",
+			"version": "2.4.3",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-browserify": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"phantomjs-prebuilt": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "fb0b577c76938ba2b438835073de218fae3e2c3a",
+			"_id": "seedrandom@2.4.3",
+			"_shasum": "2438504dad33917314bff18ac4d794f16d6aaecc",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"shasum": "2438504dad33917314bff18ac4d794f16d6aaecc",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.3.tgz",
+				"integrity": "sha512-2CkZ9Wn2dS4mMUWQaXLsOAfGD+irMlLEeSP3cMxpGbgyOOzJGFa+MWCOMTOCMyZinHRPxyOj/S/C57li/1to6Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDOwWctA+9fJzrvXt1boFhgsh8jWlHmcI47Hdt5xYTl5wIhAOd7uf8i1RGAlj7DO0cAuMVmQZXgNhS7gIrKkBArPC87"
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "packages-12-west.internal.npmjs.com",
+				"tmp": "tmp/seedrandom-2.4.3.tgz_1492464071331_0.735693046124652"
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.4": {
+			"name": "seedrandom",
+			"version": "2.4.4",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-browserify": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"phantomjs-prebuilt": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "62fd63021c1736ef77de2888ddf3d5d25bb882d8",
+			"_id": "seedrandom@2.4.4",
+			"_npmVersion": "5.6.0",
+			"_nodeVersion": "8.11.3",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-9A+PDmgm+2du77B5i0Ip2cxOqqHjgNxnBgglxLcX78A2D6c2rTo61z4jnVABpF4cKeDMDG+cmXXvdnqse2VqMA==",
+				"shasum": "b25ea98632c73e45f58b77cfaa931678df01f9ba",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.4.tgz",
+				"fileCount": 42,
+				"unpackedSize": 324498,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJbcrQ2CRA9TVsSAnZWagAAcmcQAJ6G0+xno2CKHmQ8HD6W\nQvEjjzYV69lVFL9AJ9oSO/HCWiZAEaEb8dbGbxSOpFn8ah3Z2qWQBUj2qSme\n3Xl5p4STKHIAzRIbnCIP3ZRgCXO++SPdHBm7jh3ZGeVytPOKMi7NKP6r+FBT\nbLCrXnTPVq7/IlmEV0rPB6Tyr7wojnp8kh2D07i3gFMWp7IiSmfCpnXSBrNy\nARZKLGjtpQx66zKHBENhHqgrtVbZqOJN00OhffoJO4/7OpE1nGymANlJWgkd\nJgZ0r+84QPNIVhV1boVQxZYghW8W+8KOH7vhOcaE86Y8Eoh1VmVEG6/kD/ie\ncQHpGBFHHAAvyQC1IXLWtVR4E+u0KPvz2akS3JHsptDbtxUSTz53EgtySHVI\n+rT0Ox7Z7aLFBk2rOm307rnLFXK0sxLhnaZFam54ptJPY2bqLrJ6SutJxr+Y\nAJnhljfF174zc3LlFoTHMp6tXrpLp25wVBCtm0tFN3EXSz8yMHY0U774/+ah\n5Fn47k2YfQE0T+NUeU2VD+vjuy1w7ZkrrXsiXa3x/vVOJ0QjdVIpH9nVrUnd\nzhI2vP63I4+mI90sh+hPG7WmLef3GE4de0eMz92BFqOstxHB6+AHaDOdDJbI\nb9A0bLj7Jmd/OqownuXD3GIHhVt6t7X4PaQjPZ4x9pZWQE26gV9LGBLJySqF\n9S8e\r\n=QIW0\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQCBD7O4BW1AyeVUsHGSf07hMAjbK2grrLmYUMdUT/1shQIhALI+zqDh+A3+uTbQSh3eYqS79ArlifC2hx9WpyYP3shC"
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_2.4.4_1534243894212_0.5415344845174441"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.0": {
+			"name": "seedrandom",
+			"version": "3.0.0",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"grunt": "latest",
+				"grunt-bowercopy": "latest",
+				"grunt-browserify": "latest",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-cov": "latest",
+				"grunt-release": "latest",
+				"phantomjs-prebuilt": "latest",
+				"proxyquire": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "1925ec0b58bdf9e94e2bef7f1f402eaccaecdee5",
+			"_id": "seedrandom@3.0.0",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-+PS8kPqxEhdx0ALu9m7/nSF7M5rNmeCBMCFc+xLh9tRdM4WAeTEl/qGqoMlU9MU8azfOh/asYAgrhphLbpobFQ==",
+				"shasum": "3b5e740429a85517d7b5718472093a2a08452ca0",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.0.tgz",
+				"fileCount": 24,
+				"unpackedSize": 50600,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcfHJcCRA9TVsSAnZWagAAWZYP/i1JbjHT4t0OO0c088Kq\nDlOkcXAWBAw8HOy1ZZfJSYOXpFG3V9+0ahBUqC3TeRrep3ht0b+vxNs3yH4r\nvbFGN8Sr9Z5ClgeBfZfN63iiLCkyX9Bwnnq+CRCaG+/2TkdTbQGjaIJ3lZvD\na/02dwmaMQdBPm7rqFsOvv9KZ8ykax70hPCTib4hyzNXZumxpJvPzJbl5MQV\nvXIym0Oi9LRabVhazlQcmlBMsYAJCaBfbLMNbmw1+ihNliSop/EuHBsYhIVY\nE05dFCC8sF1bzIyobKIFqFHwqcODzzIGbgvnpq+fK/pNR7iRaMLyjVzJkJDn\n2Vi2eOwoJbcGaxLh+G6dCW00a9R5phM24DRLVUXPJy5wyrUPwGJClLOc1u3L\n+fAtt1Om1+zRO9iIkySSnfftwk+qL7TTOF+PbUWvM6lqvlqyuDGydkQVBfBW\n9Aia+JlAHvLC5SRa4+Lf4sRydF1bfg9ukwMPJ4lP5z9IXzyOhq9JcIRwQoE1\nbc0d7wJPGe4+dkzJlU1W2wH6VNyY5usbqrHbKYrfuWjl1JK3mIl0PrwwjTe5\n5qiESVtn7QsL8aIaMglU21V9g2llSalLSivTRxFrIKB38v9wB/OOVBaWVGyN\nQ/7zcG7nFZHSn+DLCInmhILFd8VY4ku1NswJuLltuYZnIuY1XvlGI4scs2bq\nrUY8\r\n=/OJB\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCICxpL0bc8cNpjmZ0BpR4DSfh7MkkndQU7DY7KHsnsWv/AiBTGnoSuNCh96P0QVik84soxfNQ/qMME86ovyBH1Uywwg=="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.0_1551659611067_0.14600471201124932"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.1": {
+			"name": "seedrandom",
+			"version": "3.0.1",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"coveralls": "latest",
+				"grunt": "latest",
+				"grunt-browserify": "latest",
+				"grunt-release": "github:davidbau/grunt-release",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-copy": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-nyc": "latest",
+				"mocha": "latest",
+				"nyc": "latest",
+				"proxyquire": "latest",
+				"qunit": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "326f7dfa469a602a7b43d830c0e970f2b9a67932",
+			"_id": "seedrandom@3.0.1",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-1/02Y/rUeU1CJBAGLebiC5Lbo5FnB22gQbIFFYTLkwvp1xdABZJH1sn4ZT1MzXmPpzv+Rf/Lu2NcsLJiK4rcDg==",
+				"shasum": "eb3dde015bcf55df05a233514e5df44ef9dce083",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.1.tgz",
+				"fileCount": 43,
+				"unpackedSize": 371979,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcfRhYCRA9TVsSAnZWagAA1fkQAKG/Ag80lySR2b8U0yDt\nqlwimdCZ94ddsRDs1K9etDYjR3g/4DV2FApKo357e5QgQBh3FeQJW57COBhc\nbnvioqAh7hECqbXlW1HrJ6CAIk+P7oCPHVzpd8cWNcUS1UeIInPygPpvBTWF\n/SiLBFq7QlbYkCf5DITO91IHUljb8hT61CLhhUtU08zhH8jjZ4lMMnUBafmx\nu56cNsLfMWSek9q5+7cksHxWNLKdYp9UHctR4oj7h8/lMFwe1I7PfInLBZJ2\nq0fXVfEI3UVlwLR8gd1TM8l9uDHD7DEBqSxbNR9YP7/SXTTXLM0bd27EYBTJ\nlP2zu0ekaYlUtUwroVI3izfVUpF25O6y11r/JcydN1PwKBmQHepGhfWr3BvL\n03t+DSxX/NMagrrSkTCRjsA5CSyqi1dSPUEU5LeYUOLgshRJY9e91wamia1Z\nkiGofFUzy7VszJgr8trUSTMoZ0yEOicNb8zqlN3iPBbYgMLHCJUL8GiwKoCy\nrJijvukCFnxp7OglxO6sH/sd7pjv/feD45/9X3TPmSlu0BTIJcyN2b3iLDJ+\nnmXiGY1bBAwEycmDHhiWRhMNMS23AjIQ1VbS2cqCq4DB/uuvNDZCKai5kdl2\nwKZdve42Xd1yBZ96z7mP5WaLJWFSvppCCoWpYpdI8psdLz+tmuDWlL1XOtnM\nc+Ec\r\n=U7H+\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDsIMBNX2eAXgbPBb6Jk/IBHQfaS3eAntJdxykTGKA1KAIgf0bHwLpaSo+zphsmlCX5gGAqXfEbNT4jwSkUNmOjgiA="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.1_1551702103735_0.6504446196639007"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.2": {
+			"name": "seedrandom",
+			"version": "3.0.2",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"jsdelivr": "seedrandom.min.js",
+			"unpkg": "seedrandom.min.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"coveralls": "latest",
+				"grunt": "latest",
+				"grunt-browserify": "latest",
+				"grunt-release": "github:davidbau/grunt-release",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-copy": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-nyc": "latest",
+				"mocha": "latest",
+				"nyc": "latest",
+				"proxyquire": "latest",
+				"qunit": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "a01a2d7c62366201b55e10b494b7ff720a13d535",
+			"_id": "seedrandom@3.0.2",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-e4z0gwz2JsjG1gh17bPk0J4hUll44WU3e8n9B7Ss+p0nvx0SvTaxzy8GDSN6OEFK1QGsIMcU4qyKLMDmQ+ilUQ==",
+				"shasum": "25333bc95ca577c77d7a9d77a0743a26c36d1162",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.2.tgz",
+				"fileCount": 45,
+				"unpackedSize": 373638,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJdTPEnCRA9TVsSAnZWagAAtc8P/iokqnzRrxr6Ajw+efrw\nMBwSzUdFhuKaG/E1USvOiECa5u/PwY2UO1NHmTaE+3QK+5r4n0TKjJpB4Lfy\nrI6CnofnwSxNsmNkuy/RIbjXnAqjCdiHrzjV0+A+x2Ad/fa1dT3me10MFNsf\nfAIqYzfkM4udAQdSwc1x2OGBvhg58sQEuPxxFdcejn0H3kdSO+6zXE0Gpyeq\noxTIOnniNvEEKgSQJ1VgL+g3RLnwG8S2pupmQi0AdtbGM7bGf368PReo4iOl\nnGixuwvWpncrzG/W68uZa8cY5vdCnYjlt7wjAKJRyh/eB1P7JDSxJiam9Myy\nhFbLtzeSeGXiT/hOv4gMr7/rNH2nAgEaqxxFkgRZXa+1VmNpi+3uuKstLPnT\nlUztVkSHEJGxy1KCN9BR6fSaKbU5bfZFLxjjJKVagy/BM6QrfK51zjJlDID5\nkX5kCuPnpGmN1DA3Gk4GzS/A/l7QtzZXbE5UPoCKRvGZaZphVq7aIm5Yk1Xh\nsPrN5f/VqO3nG8rUvBcyQBGRA2hFKG7gITtnK3xzVWW2/lFth43QI/z6ElL9\nUs5wliL3OYKP0FIWVmJvPJW9JKZItE7ETJ2PpcQifhPFZwH22yqsPV1ivOB2\nGPLjN8ORr2F8FNpgH621R83VytzLnsrraEGG7pRu/HHayh7lagVGoHXYdC34\nEEtG\r\n=2rRe\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQD0U5bE/ES1NQzCeFyioXkudX17bKv9yMON00h0LJkQMQIgCXaq1DKgKlNPa66LNqebA7ic5uNELvadvFGio+fgnh0="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.2_1565323558608_0.5222714082200133"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.3": {
+			"name": "seedrandom",
+			"version": "3.0.3",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"jsdelivr": "seedrandom.min.js",
+			"unpkg": "seedrandom.min.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"coveralls": "latest",
+				"grunt": "latest",
+				"grunt-browserify": "latest",
+				"grunt-release": "github:davidbau/grunt-release",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-copy": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-nyc": "latest",
+				"mocha": "latest",
+				"nyc": "latest",
+				"proxyquire": "latest",
+				"qunit": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "d5ebbe4c88e446a116f128af088a24c6a82f7f77",
+			"_id": "seedrandom@3.0.3",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-PJLhhxIMjlMJaiIRtqiVW061EZn3cS+waZkbFe7eCa2R3g88HbNdWmw4NTFG1w5unxd0GeNaUUxZJP7gPAzSDQ==",
+				"shasum": "74efcc324533b417b8f3e2cf2a70797aa4a94441",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.3.tgz",
+				"fileCount": 45,
+				"unpackedSize": 373638,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJdTPIGCRA9TVsSAnZWagAAHw0P/j6+PL96i6lPcpDvvuuT\nh+cvO492bYt6yt0nxgOmza+K6ShgYP7BTrRQxuIRxcCk3fqB1Vaa3RNQ36AF\nXEB15XNxmpNVXyEc5deTYWlt/bUno/yIGscME00JeukhXI2VyNzgeYVnSQzZ\ne1aORC7QmWG5cOrbE/IkIc0WDPO5Vg4nr+Mv1c+Xh7jcXrl42Ye15tfs53Q4\nxL3ackdx3tpTsf8GIS/1C1mPB0eVOWckM0uemlhOh2wOMv5puuCe+wrR6WBN\nrGfBBy4h7bDvsYpCTIqEMVeKxDNydY25/z/GDBwpLjSORZSmjMUGFRWafNAz\nJFGLL2wOBgYPa6VqQlWLuTV2plvNzOKskVUzmUEATb1IUHJVHJKdY7t8d49H\neHCOahsMlm03OEUMDBsDWpI8zOIxLo+ANHzzgg//+EV6iJtd2ib0mXPvNy5V\n7+lG3nAsbNK95BZq4DPIPh+O9JEkia/cS2qmuKQzlnsFKgAIcFh8V+Dok0qx\nvcoCPljgcFfUy7pxrvCEUE45hVBxFIQFvf9UnuPVMCBcuIHT+6ocnYN4jayV\nJFWJ4xIY+QR76mJvJfdTLdFL3RMUL98oAa3BP+zwwvPwwoG4k/p5+anFnEH+\nttpxRWBWZAVKgiEy9stFlN3cURgy5GvqdDYXdVBWMqrcz0tuHheoZf0g3fcl\n+co/\r\n=8Q+v\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQD59R9b82UOBabmLyT3BY8hlM+lqsNNXb2KdWZaKFTYOgIgTBEH97k4BPJUcplcnM/hpKLhBnGVl46XDg3Tm8yuXpg="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.3_1565323782177_0.7671523933914193"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.4": {
+			"name": "seedrandom",
+			"version": "3.0.4",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"jsdelivr": "seedrandom.min.js",
+			"unpkg": "seedrandom.min.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"coveralls": "latest",
+				"grunt": "latest",
+				"grunt-browserify": "latest",
+				"grunt-release": "github:davidbau/grunt-release",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-copy": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-nyc": "latest",
+				"mocha": "latest",
+				"nyc": "latest",
+				"proxyquire": "latest",
+				"qunit": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "f38648743a80fef0319d0d66c2cd37bec116a5a7",
+			"_id": "seedrandom@3.0.4",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-EKdhtGGFKPObqIxn2kB6EzfnBVJtnaws0xQDDJoV6EVmdXiO3XhtJ4fkPMhtMCphx955N394yExZjT6ij4SEOg==",
+				"shasum": "766e25e6cd5996ee5003a799844b14a14a0ea635",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.4.tgz",
+				"fileCount": 45,
+				"unpackedSize": 374034,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJdgLasCRA9TVsSAnZWagAANPoP/jnWsHsLhNkdc2TZ9WvQ\ngylB65Drxs3D2bjtdr7z7fwCfdctxGvHgJ2w6fAH0/LLLSGB5Rbvu0ahURv6\nvauEY/ADxDtxFPSVC/nV55D8RD+k4Qy3J/ifGtWHC1Ia+W0jbWdnxN1GPACY\nQmDmDK2ySoFwsi4KCEF1zCPS2JEWjPXeW/fB835yn64oJfwIHcr+HJzWKgwV\nZgxs1BHx4tvKxxI9SpWPRn0IySJWL9N9334TSG/tEFaQw6p7KfvKUDavDjhJ\nRk6mxdLVfJUpCcq9jUrGBTLIDGMxQbBnzO6HAOJFkbRn1MZTavQ6zAK/qCfv\nGRVnONNwOoJu1pImtDf+k8EvYMZXmEs45V80oB8wCeuYlVMuQhFCOb5K+yLB\n8lHijAApgiv23ZFmY0YuuK4nmSzVlqe7anmPbB8j1+0Y98cRFQb0I1aSetZO\ndzqML6LHAiYrfBANPdnGN2upQgfVEo0FvtEV2XBPjz+1AQySP0cyGAH5kgSv\n+16xPY+gEhalOCMYKttqe6MNGob1LuyIth8rMhOhTXDSuoyBL+4Xt9gg8Rrw\nmkZn4YEc5a7bRXotFxlUpKnz53xp9Lyv+CHT5d4AY4oNbuRrTInJh56IgKc5\nVaY7V6h/dKu+blkIb0pmRBu8Syu/moN/oIRb0G1NWX5tpxKAaUYzDYSw9kV4\n9t5I\r\n=aURb\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQCV68K+wBnyBEH1FkZO8PxDjBS2SEpUFL7AeTxAPGhjkgIgB0JaD4Ab1HBgtDo3O5o4Blsx5uAmI1Vug3fuBAocJL8="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.4_1568716459343_0.41719402073243317"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"3.0.5": {
+			"name": "seedrandom",
+			"version": "3.0.5",
+			"description": "Seeded random number generator for Javascript.",
+			"main": "index.js",
+			"jsdelivr": "seedrandom.min.js",
+			"unpkg": "seedrandom.min.js",
+			"keywords": [
+				"seed",
+				"random",
+				"crypto"
+			],
+			"scripts": {
+				"test": "grunt travis"
+			},
+			"repository": {
+				"type": "git",
+				"url": "git://github.com/davidbau/seedrandom.git"
+			},
+			"author": {
+				"name": "David Bau"
+			},
+			"license": "MIT",
+			"bugs": {
+				"url": "https://github.com/davidbau/seedrandom/issues"
+			},
+			"homepage": "http://davidbau.com/archives/2010/01/30/random_seeds_coded_hints_and_quintillions.html",
+			"config": {
+				"blanket": {
+					"pattern": [
+						"seedrandom.js",
+						"lib/alea.js",
+						"lib/xor128.js",
+						"lib/xorwow.js",
+						"lib/xorshift7.js",
+						"lib/tychei.js",
+						"lib/xor4096.js"
+					]
+				}
+			},
+			"browser": {
+				"crypto": false
+			},
+			"devDependencies": {
+				"blanket": "latest",
+				"coveralls": "latest",
+				"grunt": "latest",
+				"grunt-browserify": "latest",
+				"grunt-release": "github:davidbau/grunt-release",
+				"grunt-cli": "latest",
+				"grunt-contrib-connect": "latest",
+				"grunt-contrib-copy": "latest",
+				"grunt-contrib-qunit": "latest",
+				"grunt-contrib-uglify": "latest",
+				"grunt-mocha-nyc": "latest",
+				"mocha": "latest",
+				"nyc": "latest",
+				"proxyquire": "latest",
+				"qunit": "latest",
+				"requirejs": "latest"
+			},
+			"gitHead": "4460ad325a0a15273a211e509f03ae0beb99511a",
+			"_id": "seedrandom@3.0.5",
+			"_npmVersion": "6.5.0",
+			"_nodeVersion": "11.9.0",
+			"_npmUser": {
+				"name": "davidbau",
+				"email": "david.bau@gmail.com"
+			},
+			"dist": {
+				"integrity": "sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==",
+				"shasum": "54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7",
+				"tarball": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.5.tgz",
+				"fileCount": 45,
+				"unpackedSize": 374034,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJdgLdoCRA9TVsSAnZWagAAhDsP/A7X5NaETC8S4jAFJP8b\nhWq72iYGWDBtEmNvG4TWXcDiGtCWL3WZ8sT4IanfvfUMc7lc02CrhzrFq+/2\nl8Ty2KiCM/HZduYXbeCp7BqC/NUZ7E5bS9ke+HDyUrPhrtmrVsbxlcvNAvQF\n3vEczQybHajvynSL1kXz2l4X8c3xeHgx6WGbFzDx3uR+aErrgPpPMDEBQiXU\n3oNV2ntLDyheShgRvbftmFj5daBVG97CFEsnRAAjEt/BiPtDgcFex2K/Rbj1\n6l7+lh+MHg5r5H5KTEpzAnnDhqncAE0lXTDLDD+7cUEUmt/inM+dQXmEhdVg\nFTuqgdtZE9X1qPKvSwFDDn/2ZqYQDdlXJlCwbLCLgfN/J+QOHBY24cyQ8zC2\nwOUQgXB/Xt2qz3YJMMw0fwVLF+lIAlZoLu63TSxd65qJD3k/jAikJw4d2LR/\nbHBkpi9v/isgsdaDVGwmLU+7o+iY+uI3JdXW8kE1Onxi6b4ZoWaV1ILvIk25\nnxFEzNGqbZX7NcsbxE7eD/9jA/dPBT7Cky5a6oTMS1s3DN9fVMIySRmchE/3\nroUGyjom2JNbVANNEemescEc/HyFTeeoP1U7XzRb3pN1Ftc/PAvrlWtkcBc0\nudJBIWWlFC7Vq4bQTxPbAD3ASzq2Oz7r6YfLh9n4KOG+ZVsctjLp4Bioux02\nkC38\r\n=8VS8\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIEBq+9Z1nzEkyFGsJee+fURnF31VTGj/gX3KDOgvoMwkAiAxQXLMTB2X9U5USlBzTVuGZS8sAjRNQMk0622fdq3WwQ=="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "davidbau",
+					"email": "david.bau@gmail.com"
+				}
+			],
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/seedrandom_3.0.5_1568716647864_0.1931605675925252"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2022-06-26T17:18:21.815Z",
+		"created": "2013-12-24T19:52:54.860Z",
+		"2.3.1": "2013-12-24T19:52:54.860Z",
+		"2.3.2": "2014-02-04T14:07:35.890Z",
+		"2.3.3": "2014-02-04T14:09:59.966Z",
+		"2.3.4": "2014-03-26T02:00:50.768Z",
+		"2.3.5": "2014-05-13T02:26:52.313Z",
+		"2.3.6": "2014-05-14T08:52:56.197Z",
+		"2.3.7": "2014-09-18T15:02:46.102Z",
+		"2.3.8": "2014-09-18T15:16:40.167Z",
+		"2.3.9": "2014-09-18T15:21:09.819Z",
+		"2.3.10": "2014-09-20T19:27:36.720Z",
+		"2.3.11": "2014-12-11T16:30:59.091Z",
+		"2.4.0": "2015-05-02T15:59:04.671Z",
+		"2.4.1": "2015-07-04T21:15:22.383Z",
+		"2.4.2": "2015-07-04T21:20:27.684Z",
+		"2.4.3": "2017-04-17T21:21:13.294Z",
+		"2.4.4": "2018-08-14T10:51:34.299Z",
+		"3.0.0": "2019-03-04T00:33:31.288Z",
+		"3.0.1": "2019-03-04T12:21:43.929Z",
+		"3.0.2": "2019-08-09T04:05:58.726Z",
+		"3.0.3": "2019-08-09T04:09:42.299Z",
+		"3.0.4": "2019-09-17T10:34:19.474Z",
+		"3.0.5": "2019-09-17T10:37:28.111Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "3.0.5"
+	},
+	"_uplinks": {
+		"npmjs": {
+			"etag": "W/\"44e3bd30e64d60e430d11e6fb1f863e7\"",
+			"fetched": 1693524461696
+		}
+	},
+	"_distfiles": {
+		"seedrandom-2.3.1.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.1.tgz",
+			"sha": "16e0d43f4a0ba5d8c26db69558d559bf602a0dc1",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.3.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.3.tgz",
+			"sha": "6f17cce46781ad3b24d4df498a54af9b4f508abc",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.4.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.4.tgz",
+			"sha": "9a846f55cb8ab5487072b30f59b0ca403a0f2fea",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.5.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.5.tgz",
+			"sha": "893df4419f5e77d2d3a85deca898a22d4da3206a",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.6.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.6.tgz",
+			"sha": "6039164376fb210a068c276c43343bfc8af7999e",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.7.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.7.tgz",
+			"sha": "e1237bb7803fa8ed6b0334a636c7047253124877",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.8.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.8.tgz",
+			"sha": "afb3d77a381c1369b2b514b477ddf56d048708d4",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.9.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.9.tgz",
+			"sha": "d32c92b4bcf8aec69a14fcca073d70adf41cbbc2",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.10.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.10.tgz",
+			"sha": "2e73464f12fea21a429a13aa4d9cb9e58af438ad",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.3.11.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.3.11.tgz",
+			"sha": "29b19afc7e8108d7fd845f19337d991aad423f08",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.4.0.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.0.tgz",
+			"sha": "0bf588feec90e2ad84eaa3b6c9b9cef9ffe6fc94",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.4.1.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.1.tgz",
+			"sha": "eeca6a7d2718a48c496691f0b366e01aaa5ea495",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.4.2.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.2.tgz",
+			"sha": "18d78c41287d13aff8eadb29e235938b248aa9ff",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.4.3.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.3.tgz",
+			"sha": "2438504dad33917314bff18ac4d794f16d6aaecc",
+			"registry": "npmjs"
+		},
+		"seedrandom-2.4.4.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-2.4.4.tgz",
+			"sha": "b25ea98632c73e45f58b77cfaa931678df01f9ba",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.0.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.0.tgz",
+			"sha": "3b5e740429a85517d7b5718472093a2a08452ca0",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.1.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.1.tgz",
+			"sha": "eb3dde015bcf55df05a233514e5df44ef9dce083",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.2.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.2.tgz",
+			"sha": "25333bc95ca577c77d7a9d77a0743a26c36d1162",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.3.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.3.tgz",
+			"sha": "74efcc324533b417b8f3e2cf2a70797aa4a94441",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.4.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.4.tgz",
+			"sha": "766e25e6cd5996ee5003a799844b14a14a0ea635",
+			"registry": "npmjs"
+		},
+		"seedrandom-3.0.5.tgz": {
+			"url": "https://registry.npmjs.org/seedrandom/-/seedrandom-3.0.5.tgz",
+			"sha": "54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7",
+			"registry": "npmjs"
+		}
+	},
+	"_attachments": {},
+	"_rev": "1-4211dd61c880d3b7",
+	"_id": "seedrandom",
+	"readme": "seedrandom.js\n=============\n[![Build Status](https://travis-ci.org/davidbau/seedrandom.svg?branch=master)](https://travis-ci.org/davidbau/seedrandom)\n[![NPM version](https://badge.fury.io/js/seedrandom.svg)](http://badge.fury.io/js/seedrandom)\n[![Bower version](https://badge.fury.io/bo/seedrandom.svg)](http://badge.fury.io/bo/seedrandom)\n\nSeeded random number generator for JavaScript.\n\nVersion 3.0.5\n\nAuthor: David Bau\n\nDate: 2019-09-14\n\nCan be used as a plain script, a Node.js module or an AMD module.\n\n\nScript tag usage\n----------------\n\n```html\n<script src=\"//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js\">\n</script>\n```\n\n```js\n// Make a predictable pseudorandom number generator.\nvar myrng = new Math.seedrandom('hello.');\nconsole.log(myrng());                // Always 0.9282578795792454\nconsole.log(myrng());                // Always 0.3752569768646784\n\n// Use \"quick\" to get only 32 bits of randomness in a float.\nconsole.log(myrng.quick());          // Always 0.7316977467853576\n\n// Use \"int32\" to get a 32 bit (signed) integer\nconsole.log(myrng.int32());          // Always 1966374204\n\n// Calling seedrandom with no arguments creates an ARC4-based PRNG\n// that is autoseeded using the current time, dom state, and other\n// accumulated local entropy.\nvar prng = new Math.seedrandom();\nconsole.log(prng());                // Reasonably unpredictable.\n\n// Seeds using the given explicit seed mixed with accumulated entropy.\nprng = new Math.seedrandom('added entropy.', { entropy: true });\nconsole.log(prng());                // As unpredictable as added entropy.\n\n// Warning: if you call Math.seedrandom without `new`, it replaces\n// Math.random with the predictable new Math.seedrandom(...), as follows:\nMath.seedrandom('hello.');\nconsole.log(Math.random());          // Always 0.9282578795792454\nconsole.log(Math.random());          // Always 0.3752569768646784\n\n```\n\n**Note**: calling `Math.seedrandom('constant')` without `new` will make\n`Math.random()` predictable globally, which is intended to be useful for\nderandomizing code for testing, but should not be done in a production library.\nIf you need a local seeded PRNG, use `myrng = new Math.seedrandom('seed')`\ninstead.  For example, [cryptico](https://www.npmjs.com/package/cryptico),\nan RSA encryption package, [uses the wrong form](\nhttps://github.com/wwwtyro/cryptico/blob/9291ece6/api.js#L264),\nand thus secretly makes `Math.random()` perfectly predictable.\nThe cryptico library (and any other library that does this)\nshould not be trusted in a security-sensitive application.\n\n\nOther Fast PRNG Algorithms\n--------------------------\n\nThe package includes some other fast PRNGs.  To use Johannes Baagøe's\nextremely fast Alea PRNG:\n\n\n```html\n<script src=\"//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/lib/alea.min.js\">\n</script>\n```\n\n```js\n// Use alea for Johannes Baagøe's clever and fast floating-point RNG.\nvar arng = new alea('hello.');\n\n// By default provides 32 bits of randomness in a float.\nconsole.log(arng());               // Always 0.4783254903741181\n\n// Use \"double\" to get 56 bits of randomness.\nconsole.log(arng.double());        // Always 0.8297006866124559\n\n// Use \"int32\" to get a 32 bit (signed) integer.\nconsole.log(arng.int32());         // Always 1076136327\n```\n\nBesides alea, there are several other faster PRNGs available.\nNote that none of these fast PRNGs provide autoseeding: you\nneed to provide your own seed (or use the default autoseeded\nseedrandom to make a seed).\n\n|PRNG name  | Time vs native | Period      | Author               |\n|-----------|----------------|-------------|----------------------|\n|`alea`     |  1.95 ns, 0.9x | ~2^116      | Baagøe               |\n|`xor128`   |  2.04 ns, 0.9x | 2^128-1     | Marsaglia            |\n|`tychei`   |  2.32 ns, 1.1x | ~2^127      | Neves/Araujo (ChaCha)|\n|`xorwow`   |  2.40 ns, 1.1x | 2^192-2^32  | Marsaglia            |\n|`xor4096`  |  2.40 ns, 1.1x | 2^4096-2^32 | Brent (xorgens)      |\n|`xorshift7`|  2.64 ns, 1.3x | 2^256-1     | Panneton/L'ecuyer    |\n|`quick`    |  3.80 ns, 1.8x | ~2^1600     | Bau (ARC4)           |\n\n(Timings were done on node v0.12.2 on a single-core Google Compute Engine\ninstance.  `quick` is just the 32-bit version of the RC4-based PRNG\noriginally packaged with seedrandom.)\n\n\nCJS / Node.js usage\n-------------------\n\n```\nnpm install seedrandom\n```\n\n```js\n// Local PRNG: does not affect Math.random.\nvar seedrandom = require('seedrandom');\nvar rng = seedrandom('hello.');\nconsole.log(rng());                  // Always 0.9282578795792454\n\n// Global PRNG: set Math.random.\nseedrandom('hello.', { global: true });\nconsole.log(Math.random());          // Always 0.9282578795792454\n\n// Autoseeded ARC4-based PRNG.\nrng = seedrandom();\nconsole.log(rng());                  // Reasonably unpredictable.\n\n// Mixing accumulated entropy.\nrng = seedrandom('added entropy.', { entropy: true });\nconsole.log(rng());                  // As unpredictable as added entropy.\n\n// Using alternate algorithms, as listed above.\nvar rng2 = seedrandom.xor4096('hello.')\nconsole.log(rng2());\n```\n\nStarting in version 3, when using via require('seedrandom'), the global\n`Math.seedrandom` is no longer available.\n\n\nRequire.js usage\n----------------\n\nSimilar to Node.js usage:\n\n```\nbower install seedrandom\n```\n\n```\nrequire(['seedrandom'], function(seedrandom) {\n  var rng = seedrandom('hello.');\n  console.log(rng());                  // Always 0.9282578795792454\n});\n```\n\n\nNetwork seeding\n---------------\n\n```html\n<script src=//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js>\n</script>\n<!-- Seeds using urandom bits from a server. -->\n<script src=//jsonlib.appspot.com/urandom?callback=Math.seedrandom>\n</script>\n\n<!-- Seeds mixing in random.org bits -->\n<script>\n(function(x, u, s){\n  try {\n    // Make a synchronous request to random.org.\n    x.open('GET', u, false);\n    x.send();\n    s = unescape(x.response.trim().replace(/^|\\s/g, '%'));\n  } finally {\n    // Seed with the response, or autoseed on failure.\n    Math.seedrandom(s, !!s);\n  }\n})(new XMLHttpRequest, 'https://www.random.org/integers/' +\n  '?num=256&min=0&max=255&col=1&base=16&format=plain&rnd=new');\n</script>\n```\n\nReseeding using user input\n--------------------------\n\n```js\nvar seed = Math.seedrandom();        // Use prng with an automatic seed.\ndocument.write(Math.random());       // Pretty much unpredictable x.\n\nvar rng = new Math.seedrandom(seed); // A new prng with the same seed.\ndocument.write(rng());               // Repeat the 'unpredictable' x.\n\nfunction reseed(event, count) {      // Define a custom entropy collector.\n  var t = [];\n  function w(e) {\n    t.push([e.pageX, e.pageY, +new Date]);\n    if (t.length < count) { return; }\n    document.removeEventListener(event, w);\n    Math.seedrandom(t, { entropy: true });\n  }\n  document.addEventListener(event, w);\n}\nreseed('mousemove', 100);            // Reseed after 100 mouse moves.\n```\n\nThe \"pass\" option can be used to get both the prng and the seed.\nThe following returns both an autoseeded prng and the seed as an object,\nwithout mutating Math.random:\n\n```js\nvar obj = Math.seedrandom(null, { pass: function(prng, seed) {\n  return { random: prng, seed: seed };\n}});\n```\n\n\nSaving and Restoring PRNG state\n-------------------------------\n\n```js\nvar seedrandom = Math.seedrandom;\nvar saveable = seedrandom(\"secret-seed\", {state: true});\nfor (var j = 0; j < 1e5; ++j) saveable();\nvar saved = saveable.state();\nvar replica = seedrandom(\"\", {state: saved});\nassert(replica() == saveable());\n```\n\nIn normal use the prng is opaque and its internal state cannot be accessed.\nHowever, if the \"state\" option is specified, the prng gets a state() method\nthat returns a plain object the can be used to reconstruct a prng later in\nthe same state (by passing that saved object back as the state option).\n\n\nVersion notes\n-------------\n\nThe random number sequence is the same as version 1.0 for string seeds.\n\n* Version 2.0 changed the sequence for non-string seeds.\n* Version 2.1 speeds seeding and uses window.crypto to autoseed if present.\n* Version 2.2 alters non-crypto autoseeding to sweep up entropy from plugins.\n* Version 2.3 adds support for \"new\", module loading, and a null seed arg.\n* Version 2.3.1 adds a build environment, module packaging, and tests.\n* Version 2.3.4 fixes bugs on IE8, and switches to MIT license.\n* Version 2.3.6 adds a readable options object argument.\n* Version 2.3.10 adds support for node.js crypto (contributed by ctd1500).\n* Version 2.3.11 adds an option to load and save internal state.\n* Version 2.4.0 adds implementations of several other fast PRNGs.\n* Version 2.4.2 adds an implementation of Baagoe's very fast Alea PRNG.\n* Version 2.4.3 ignores nodejs crypto when under browserify.\n* Version 2.4.4 avoids strict mode problem with global this reference.\n* Version 3.0.1 removes Math.seedrandom for require('seedrandom') users.\n* Version 3.0.3 updates package.json for CDN entrypoints.\n* Version 3.0.5 removes eval to avoid triggering content-security policy.\n\nThe standard ARC4 key scheduler cycles short keys, which means that\nseedrandom('ab') is equivalent to seedrandom('abab') and 'ababab'.\nTherefore it is a good idea to add a terminator to avoid trivial\nequivalences on short string seeds, e.g., Math.seedrandom(str + '\\0').\nStarting with version 2.0, a terminator is added automatically for\nnon-string seeds, so seeding with the number 111 is the same as seeding\nwith '111\\0'.\n\nWhen seedrandom() is called with zero args or a null seed, it uses a\nseed drawn from the browser crypto object if present.  If there is no\ncrypto support, seedrandom() uses the current time, the native rng,\nand a walk of several DOM objects to collect a few bits of entropy.\n\nEach time the one- or two-argument forms of seedrandom are called,\nentropy from the passed seed is accumulated in a pool to help generate\nfuture seeds for the zero- and two-argument forms of seedrandom.\n\nOn speed - This javascript implementation of Math.random() is several\ntimes slower than the built-in Math.random() because it is not native\ncode, but that is typically fast enough.  Some details (timings on\nChrome 25 on a 2010 vintage macbook):\n\n* seeded Math.random()          - avg less than 0.0002 milliseconds per call\n* seedrandom('explicit.')       - avg less than 0.2 milliseconds per call\n* seedrandom('explicit.', true) - avg less than 0.2 milliseconds per call\n* seedrandom() with crypto      - avg less than 0.2 milliseconds per call\n\nAutoseeding without crypto is somewhat slow, about 20-30 milliseconds on\na 2012 windows 7 1.5ghz i5 laptop, as seen on Firefox 19, IE 10, and Opera.\nSeeded rng calls themselves are fast across these browsers, with slowest\nnumbers on Opera at about 0.0005 ms per seeded Math.random().\n\n\nLICENSE (MIT)\n-------------\n\nCopyright 2019 David Bau.\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+}

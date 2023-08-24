@@ -1,0 +1,42 @@
+{
+  "name": "@internals/common",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./models": "./src/models.ts",
+    "./package-json": "./src/package-json.ts",
+    "./tmp-dir": "./src/tmp-dir.ts",
+    "./constants": "./src/constants.ts",
+    "./logger": "./src/logger.ts",
+    "./packages": "./src/packages.ts",
+    "./npm": "./src/npm.ts",
+    "./get-hashed-name": "./src/get-hashed-name.ts",
+    "./tfjs-library": "./src/tfjs-library.ts",
+    "./types": "./src/types.ts",
+    "./fs": "./src/fs.ts",
+    "./get-template": "./src/get-template.ts",
+    "./get-port": "./src/get-port.ts",
+    "./pluralize": "./src/pluralize.ts"
+  },
+  "version": "0.1.0",
+  "description": "Constants and shared utility functions for the UpscalerJS monorepo",
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ejs": "^3.1.9",
+    "fs-extra": "latest",
+    "get-port": "^7.0.0"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.2",
+    "vitest": "latest",
+    "vitest-mock-process": "^1.0.4"
+  }
+}

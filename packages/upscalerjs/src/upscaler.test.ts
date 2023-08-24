@@ -7,7 +7,7 @@ import { getImageAsTensor as _getImageAsTensor } from './image.generated';
 import { cancellableUpscale as _cancellableUpscale, } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
-import { mockFn } from '../../../test/lib/shared/mockers';
+import { mockFn } from './mockers';
 import * as _tf from '@tensorflow/tfjs-node';
 jest.mock('./image.generated', () => {
   const { getImageAsTensor, ...rest } = jest.requireActual('./image.generated');

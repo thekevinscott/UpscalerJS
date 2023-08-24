@@ -1,3 +1,3 @@
-export { default as x2, } from './2x';
-export { default as x3, } from './3x';
-export { default as x4, } from './4x';
+export { default as PixelUpsampler2x, } from './2x';
+export { default as PixelUpsampler3x, } from './3x';
+export { default as PixelUpsampler4x, } from './4x';

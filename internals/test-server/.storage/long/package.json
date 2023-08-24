@@ -1,0 +1,2483 @@
+{
+	"name": "long",
+	"versions": {
+		"1.0.0": {
+			"name": "long",
+			"version": "1.0.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "Long.js: A Long class for representing a 64-bit two's-complement integer value derived from the Closure Library.",
+			"main": "Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"nodeunit": ">=0.7",
+				"closurecompiler": ">=1.1"
+			},
+			"license": "Apache License, Version 2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs Long.js --compilation_level=ADVANCED_OPTIMIZATIONS > Long.min.js",
+				"test": "nodeunit tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"_id": "long@1.0.0",
+			"dist": {
+				"shasum": "515e5217ea3a6f5bcf0412a673024706dbccab82",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.0.0.tgz",
+				"integrity": "sha512-REddzSe1UYRJ83q8DwWWlj8cmRyzTl+p3i01QIBOSAgVN6cO5Lky4LYnLPBsUdyjvTdWOr5cZofBqa8trbdBoQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDqyLcEjEpSJRO0HfEO85254bLqzbH0rIWqPSqPeq0PSgIgLUz7ithSjJJmSKhPbPqEfNn9gj1g3BjjoLiFm2K4xZ8="
+					}
+				]
+			},
+			"_npmVersion": "1.2.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"1.0.1": {
+			"name": "long",
+			"version": "1.0.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "Long.js: A Long class for representing a 64-bit two's-complement integer value derived from the Closure Library.",
+			"main": "Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"nodeunit": ">=0.7",
+				"closurecompiler": ">=1.1"
+			},
+			"license": "Apache License, Version 2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs Long.js --compilation_level=ADVANCED_OPTIMIZATIONS > Long.min.js",
+				"test": "nodeunit tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"_id": "long@1.0.1",
+			"dist": {
+				"shasum": "239a6c6a6e0777d69aee13670f63cb0be2240b1a",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.0.1.tgz",
+				"integrity": "sha512-Hq/PWgnL3Q68yl4qO7JTHasQDxSf3nfc20ado3bTa9HD5ewUU+6n0Hqi/h5RDaIHH5d66Iyp3S8hPFEFdLl9Uw==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDk7y6FtkVW+Vl8ZsO/AQyUJ+ueSKuSNM/MMkFQdFjOPwIhAIgjHS8BG/82ymssE7JfNbhqhDraZTvicBV3WRyDHJ2T"
+					}
+				]
+			},
+			"_npmVersion": "1.2.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"1.1.0": {
+			"name": "long",
+			"version": "1.1.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "Long.js: A Long class for representing a 64-bit two's-complement integer value derived from the Closure Library extended with unsigned support.",
+			"main": "Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"nodeunit": ">=0.7",
+				"closurecompiler": ">=1.1"
+			},
+			"license": "Apache License, Version 2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs Long.js --compilation_level=ADVANCED_OPTIMIZATIONS > Long.min.js",
+				"test": "nodeunit tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"_id": "long@1.1.0",
+			"dist": {
+				"shasum": "efb9bf3eb8bcd3252056c88e05dc359767e00bbf",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.1.0.tgz",
+				"integrity": "sha512-segQAr7Bnj8Zx8xViO+rB7qnHZW6xYpdXeuEnNjLQShsq6Zgwn6B/koMZDFm1wO62ohNEePyPmFxzxv852+MPA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIBeVB5z812O8kclJCMR52aqyf9xZqns5x/BZK8qhbnxeAiAa7iMWKxxNT3+j/i3h9ln3Us7UdUn8wX0NVTP92mYRjA=="
+					}
+				]
+			},
+			"_npmVersion": "1.2.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"1.1.1": {
+			"name": "long",
+			"version": "1.1.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "Long.js: A Long class for representing a 64-bit two's-complement integer value derived from the Closure Library extended with unsigned support.",
+			"main": "Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"nodeunit": ">=0.7",
+				"closurecompiler": ">=1.1"
+			},
+			"license": "Apache License, Version 2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs Long.js --compilation_level=ADVANCED_OPTIMIZATIONS > Long.min.js",
+				"test": "nodeunit tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"_id": "long@1.1.1",
+			"dist": {
+				"shasum": "420fdff15142815e4404a9f63bfdf47829926f60",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.1.1.tgz",
+				"integrity": "sha512-vaBpQljVGEsD98kq5Dg5bTF6sNPgjKxq5Dvw7hb+TtxvrPe2WWwiIH7ZGRONZk1bEJrfxergaMlaCgi63S1r9w==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIGfQgrb8VKst0NPltFJTuZWVPTF+rcjH0qemjHw4AtNRAiEA1M+G0rrMa9oKwv4f7KOVjMuwRfAGNCN1QZ3ptLd0AD8="
+					}
+				]
+			},
+			"_npmVersion": "1.2.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"1.1.2": {
+			"name": "long",
+			"version": "1.1.2",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs Long.js --compilation_level=ADVANCED_OPTIMIZATIONS > Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"_id": "long@1.1.2",
+			"dist": {
+				"shasum": "eaef5951ca7551d96926b82da242db9d6b28fb53",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.1.2.tgz",
+				"integrity": "sha512-pjR3OP1X2VVQhCQlrq3s8UxugQsuoucwMOn9Yj/kN/61HMc+lDFJS5bvpNEHneZ9NVaSm8gNWxZvtGS7lqHb3Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDkhAZupgdHC92iBfnUVcuE08Y6BaBWWpcweaqG0e3NrwIhAMf/NHkJc9iqEkz0Olgf0gxCLLA7JnRvpfmaGEy5+uox"
+					}
+				]
+			},
+			"_from": ".",
+			"_npmVersion": "1.2.32",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"directories": {},
+			"contributors": []
+		},
+		"1.1.4": {
+			"name": "long",
+			"version": "1.1.4",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "cp src/Long.js dist/Long.js && npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" > dist/Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@1.1.4",
+			"_shasum": "3f007fad2d15dce7d1238f5deef2f0a52c4c68c7",
+			"_from": ".",
+			"_npmVersion": "1.4.9",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "3f007fad2d15dce7d1238f5deef2f0a52c4c68c7",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.1.4.tgz",
+				"integrity": "sha512-fDzqUaGPG1VyuV3+y+/xF4S5ksLchSLGBbIA6JzN0JDelOB/NXy143dHhhSJtR8IGtq5We4M/5t3LJ+vK4tBHg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQC9GMa4Km/yCxAcvpqH+8szYGD62UoABl2hAlzKW4Zf2gIhAI77N7DgIE8cP+vFZwvEV7FupcEs0RCtJ3tB/mZb7kWI"
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"1.1.5": {
+			"name": "long",
+			"version": "1.1.5",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "cp src/Long.js dist/Long.js && npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" > dist/Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@1.1.5",
+			"_shasum": "b5c2c10a3d83ee0ec0aaffb3e4e711d01f607e9a",
+			"_from": ".",
+			"_npmVersion": "1.4.9",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "b5c2c10a3d83ee0ec0aaffb3e4e711d01f607e9a",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.1.5.tgz",
+				"integrity": "sha512-TU6nAF5SdasnTr28c7e74P4Crbn9o3/zwo1pM22Wvg2i2vlZ4Eelxwu4QT7j21z0sDBlJDEnEZjXTZg2J8WJrg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQCRvftVCImW7K2F4iIE6k3B287LAtpyRKsmMfusXLc11QIgTbhPv9Ui0/T5Ax4d6wqfqNAI7vX92mNtxqMazoX+0jE="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"1.2.0": {
+			"name": "long",
+			"version": "1.2.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "cp src/Long.js dist/Long.js && npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" > dist/Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"gitHead": "9290c05acc052b717e09c985da9f5246f115d57d",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@1.2.0",
+			"_shasum": "b39b2730b9c135f91a57bcd73e8617a9b648468b",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "b39b2730b9c135f91a57bcd73e8617a9b648468b",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.2.0.tgz",
+				"integrity": "sha512-Pg/cOkJjFncmKAxwfIxTgtCoX+eLqQ2DewKvq4soQhot4Yg7UtD8spmGeCjyabtaRTCrxSrVGUMFFcpmNmW1Vw==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIHy5XeD0rDPi4MRaEB9gYTipd9n1Mk5yqxvsxU+LL4oOAiBubYMi76sgwu77AEKFtofmhit/Y+5eTXSSjW7CJCLMIw=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"1.2.1": {
+			"name": "long",
+			"version": "1.2.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"intn": "~1",
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "cp src/Long.js dist/Long.js && npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" > dist/Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"gitHead": "73572c8bd355f9dd4a7e9723b6e41385f1dacebb",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@1.2.1",
+			"_shasum": "825acb89d4d025f74dc0f7e63d5f5625a0b617e8",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "825acb89d4d025f74dc0f7e63d5f5625a0b617e8",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.2.1.tgz",
+				"integrity": "sha512-Smt8Cli9oGsMdd85u5MctO+JVEKok+AHXYG5aUmXX19hUnV0yKrwnm7qorhXXdbrzLjjGQfhUNNskn7T3OuuYQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIECaGKQGHRvVUyedtldGLUoFdGR4pQyfG5owXk/Pt6HuAiB9z2WQSQTKZHJJ2Y3AAZZ7xfwIrqemTOpSziLo/PN8Tw=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"1.2.3": {
+			"name": "long",
+			"version": "1.2.3",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"intn": "~1",
+				"testjs": "latest",
+				"closurecompiler": "latest"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"make": "cp src/Long.js dist/Long.js && npm run-script compile && npm test && npm run-script jsdoc",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" > dist/Long.min.js",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js",
+				"jsdoc": "jsdoc -c jsdoc.json"
+			},
+			"gitHead": "73572c8bd355f9dd4a7e9723b6e41385f1dacebb",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@1.2.3",
+			"_shasum": "117fe2e2b1c453d83e322776c8d470639faa2b7f",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "117fe2e2b1c453d83e322776c8d470639faa2b7f",
+				"tarball": "https://registry.npmjs.org/long/-/long-1.2.3.tgz",
+				"integrity": "sha512-YxkH60PDK3kd27OjbFApfpBuuwEUvcFc4zBVVk33v2UC+rzydqCOY78ny4gVYbc45876+OJ2v47pnDEu89OYCA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIF7PMiB1dSg7QWuAtIxFu533D3p1jmyKc2Pd2bk3JQZJAiAVUcDy0EI/yJ/TDCbEorEZlE0akRShKOR2WDdMrgUjSA=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.0.0": {
+			"name": "long",
+			"version": "2.0.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "a4d3518f8afbfef0f6c2c02bd48374bc21ef0449",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.0.0",
+			"_shasum": "cf1daa027ebbd412aec812219cdf8cddacc42b1a",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "cf1daa027ebbd412aec812219cdf8cddacc42b1a",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.0.0.tgz",
+				"integrity": "sha512-jUfU47Yqg/V8WwYvgQWQSIWL+DdVVuSEWNNFbG4xZ4+QRt1oBxsbhOOfyGZ3ipS3SLd8z30tuR5/WfuHe24A9Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCICNQ4B3aLwOQ79VaI+s7QLHd0mOzalXxkjNSriuPpsIjAiEA3g3OPuMvP5eZdFfguUTnQ2cbwiwUDTSO9EM42HJH9M8="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.0.1": {
+			"name": "long",
+			"version": "2.0.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "f12773ac0835eb7ac23095f94700c8e20be2e8ae",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.0.1",
+			"_shasum": "3afbab860b94c9f95f2fc4094da332db9e3274db",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "3afbab860b94c9f95f2fc4094da332db9e3274db",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.0.1.tgz",
+				"integrity": "sha512-oo4cedQ+nMqkcndj3dipW3CoCfVxc0YZj0OBXHtWrFU/Z0OqAYA9CElc/r815IcVd1gPs8UeDR0VE4V5bF10iw==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIAQWlggGXaZTrm6v7j6JnHj29MHmerq8SzPH9DAeBXY0AiBZ0/hiveFjCJwTvnl5sTx+bF9GCsLaKTX1DCJhijMu5A=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.1.0": {
+			"name": "long",
+			"version": "2.1.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "929a4fe2f4958b1f7ab447a1f5eff88e51a9d3d3",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.1.0",
+			"_shasum": "e97939a21a656b7a88ba871ca34aaf32b25c0cb1",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "e97939a21a656b7a88ba871ca34aaf32b25c0cb1",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.1.0.tgz",
+				"integrity": "sha512-34Y5SI/NQnO7mgQ0TkX//OC8H0jQiBYvM2WmRCDqmTYIGJBpOdi8Nq8r+3KgQP93rwuiYX3aSw9JbyHs5aeWfw==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCICqFvGFIJrx8RDN9NYouhDngECrnYFsEcKyWA4s9KMaOAiEAnl+cRv+mTC6zurNXavoKxvYeDeZa63VVltjIyUFjwo0="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.0": {
+			"name": "long",
+			"version": "2.2.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "0d0aea6cc4cf68829eada76fc44a63fa5699f8af",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.0",
+			"_shasum": "dc01d1fd385cd7c705d00333b73811598d316763",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "dc01d1fd385cd7c705d00333b73811598d316763",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.0.tgz",
+				"integrity": "sha512-SNZaAvTLpaofCQVyjshhDHcxaUySOo2VCFDtl5YvFi3te+V5Fq5RGlIK30yeXu83s9dQPMAFPEePqnWWrJn62Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDkvC5p0RZI4quIL0IeW1UbiB9jA3mwybu4FLqpde6U2wIhAOGB92CcMh7AEAeQWgt0wFZniJk3gJ0dt3t3l/nkIt7O"
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.1": {
+			"name": "long",
+			"version": "2.2.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "282785dcd8329dcdc4b0654a9f2911d9fd474b98",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.1",
+			"_shasum": "f386e04e3c290a78d5ca8d5146b8af4c5f446a90",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "f386e04e3c290a78d5ca8d5146b8af4c5f446a90",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.1.tgz",
+				"integrity": "sha512-hiiczdsqSXu3A8TXY3D/DoIuN5L8SzZo8X610t/bZ0LgQ00SvW3rreL2TPi6nohuJxUEzalbhw7JmiKcFrxxFA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDLyahPAUvBrrZOah1JJH7idib8e5ULMXPiLeIdubNmPQIgOZTlJbBdbr1g8uj9/W5KHZsbdDMN8CcojTmz85WjC/Y="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.2": {
+			"name": "long",
+			"version": "2.2.2",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "f71f9fcc47a51bf7bc197a2780a19ea1e6b4f0a6",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.2",
+			"_shasum": "6c2d4bfa181e65194c2f8d8d54636033d4e6a9d9",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "6c2d4bfa181e65194c2f8d8d54636033d4e6a9d9",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.2.tgz",
+				"integrity": "sha512-IqHcuI2UyTa+Tvf8/vZ/W1B6GAZUL4L596KWIYu2tUOF9txOhHTI88xDeurXX4zzhwahHPmwjWcTsLG539wy9Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDytt3DH8O9AUG23X7jiax86TNxhH3JxruXJevQNX+eAAIhAL6+cm/2yvFmNm0iPZNxViDMjZf/if5gXkx0ljpclzIN"
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.3": {
+			"name": "long",
+			"version": "2.2.3",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "index.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "da00464b3ad428843931bfa000a2f98fde95d5f7",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.3",
+			"_shasum": "635f5b530b3bd3ecb000a2ffb11281583c7f1e07",
+			"_from": ".",
+			"_npmVersion": "1.4.21",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "635f5b530b3bd3ecb000a2ffb11281583c7f1e07",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.3.tgz",
+				"integrity": "sha512-PrZIlTxq6xbY4TbNAiwgnZBds58VVacLPBRhqIRaJ1BFvAFsDSN3ZpJxRK0bTmLAfOg+oIaoBzjLp2aBJ0jm/A==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIFIE2/M4YM2T9gxGXMPYaDsOIJ+xyRuCTLo4gfKQmF0pAiBMvlqDZmYVOv4zGGl+1gHP/vR46AcD9MEt4C48q0aS5Q=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.4": {
+			"name": "long",
+			"version": "2.2.4",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "add49caa7456d1bc0898b42927672cfca11c8228",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.4",
+			"_shasum": "b04914750cfdce369bfeb68c1eba61f57b431c8d",
+			"_from": ".",
+			"_npmVersion": "1.4.28",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "b04914750cfdce369bfeb68c1eba61f57b431c8d",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.4.tgz",
+				"integrity": "sha512-/2b2tIcepxoSv+0a7uFM/1FjR+YWqDhS80i55nRezwACD/WTq5BpInEjx1WGP1LrWYOzuSr/qWqlzSOgVStKuA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDzG1obnb+fE9vSLpUDUT25L9bKPt05zngFGrvqYcKGUgIhAL6MKWqGnjC1ekTu4M2buW/17ITnzh5DaZrslg36x308"
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.2.5": {
+			"name": "long",
+			"version": "2.2.5",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/Long.js",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --output_wrapper=\"(function(){%output%})();\" --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "59ed8d33ff4a8fadf4eb3a56ac2242f4fef3b9a4",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js",
+			"_id": "long@2.2.5",
+			"_shasum": "5a286b6f86ea81a28720d2702948fddc7d61310e",
+			"_from": ".",
+			"_npmVersion": "1.4.28",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "5a286b6f86ea81a28720d2702948fddc7d61310e",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.2.5.tgz",
+				"integrity": "sha512-kpJMRtC/ilw/jnxN8ueH25mSQy1pDtvCQwgxKX6rcNmSC5QQeGc+ftRMjy9TTZwlVrRdlxkSXyodRemaUfI5eA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIEg4B4m8hkjpfsQWLVUP7ut6J+unXfkbq4+s79EeYiqIAiEA4uVu8L1Hc/NmKJaGxLiPD10eiYp+tGyRExyk/xuwqmc="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.3.0": {
+			"name": "long",
+			"version": "2.3.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/Long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "3ee947dad4b9d2b8b68237ee286421ac772e2ed9",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js#readme",
+			"_id": "long@2.3.0",
+			"_shasum": "f40cd708a0fecba4254302b213b3a180a1e1557d",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "f40cd708a0fecba4254302b213b3a180a1e1557d",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.3.0.tgz",
+				"integrity": "sha512-WIgz+P41x2cG2zBt5KhOl3gCtzyp7xgL01JpQCw2RC5AiOISNdKi2DGxXlQlfW5RHRt0XPPIrJ7e9YT7pl4syQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCICAnbzKSlaKJVqCIashmo1byOk5GDpQhsbB+lcCD22EwAiAQEAAjLkHJ/7zZXendVcqYiE3yLwyy7T+c7iwurrIvoA=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"2.4.0": {
+			"name": "long",
+			"version": "2.4.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/Long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/Long.js.git"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/Long.js --compilation_level=ADVANCED_OPTIMIZATIONS --create_source_map=dist/Long.min.map > dist/Long.min.js",
+				"compress": "gzip -c -9 dist/Long.min.js > dist/Long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "38baa953414256fb08177581c79ecdedf076c2de",
+			"bugs": {
+				"url": "https://github.com/dcodeIO/Long.js/issues"
+			},
+			"homepage": "https://github.com/dcodeIO/Long.js#readme",
+			"_id": "long@2.4.0",
+			"_shasum": "9fa180bb1d9500cdc29c4156766a1995e1f4524f",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "9fa180bb1d9500cdc29c4156766a1995e1f4524f",
+				"tarball": "https://registry.npmjs.org/long/-/long-2.4.0.tgz",
+				"integrity": "sha512-ijUtjmO/n2A5PaosNG9ZGDsQ3vxJg7ZW8vsY8Kp0f2yIZWhSJvjmegV7t+9RPQKxKrvj8yKGehhS+po14hPLGQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIHV5Ix8zvrCzMoQWmi5BbsqSEn0/C1FlW8KKr+1/+fELAiApZqYlWEk3vz1OiZ2Q5grz1eNbK/ZiYy3ESIErihswsQ=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"3.0.0": {
+			"name": "long",
+			"version": "3.0.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/long.js --compilation_level=ADVANCED_OPTIMIZATIONS --create_source_map=dist/long.min.map > dist/long.min.js",
+				"compress": "gzip -c -9 dist/long.min.js > dist/long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "4d479f3f0fb6be59b7bab83386837ff21737cc20",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@3.0.0",
+			"_shasum": "c914833463ee9efa55c9b88ac32106fd667ee20f",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "c914833463ee9efa55c9b88ac32106fd667ee20f",
+				"tarball": "https://registry.npmjs.org/long/-/long-3.0.0.tgz",
+				"integrity": "sha512-Z39I4WeXtK7zIP3VnWTNDKn5jq1TWqsaqVJYKbM9ESRNpkU3e9h/94Qzb8U19xXbkOIf+4FtLUh5SwzRh6LUvA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQCFcZCx+2+E4KYAuDbzeZayymapl/tf3IqfvxZK5/sasQIhAOTP3rtn7I/8pYu4w7f6dicGANr1nkdC3Y4hifzPHhU8"
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"3.0.1": {
+			"name": "long",
+			"version": "3.0.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/long.js --compilation_level=ADVANCED_OPTIMIZATIONS --create_source_map=dist/long.min.map > dist/long.min.js",
+				"compress": "gzip -c -9 dist/long.min.js > dist/long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "6156cb45b16f62d88e686a76de002a42344957fb",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@3.0.1",
+			"_shasum": "b99281fe798fa64ea3b7a74c8fe13151b3310b05",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "b99281fe798fa64ea3b7a74c8fe13151b3310b05",
+				"tarball": "https://registry.npmjs.org/long/-/long-3.0.1.tgz",
+				"integrity": "sha512-iALjSdmlI2T5K/Nx2NFNDnDW8XEsM53ctmgxrqwmXydTEJjf1hHR5siSSFaqsWnn9wk+vbLtm7JkQ+0FJ+OxgA==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIC/CAaVsJmnrxQzRwIxf5x+dPGNe6ATRDfqYKldaHUAZAiBBRiwuqYtD1JfTECOQb6wGeaoSmuvwzhXWAuRT5WYwKQ=="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"3.0.3": {
+			"name": "long",
+			"version": "3.0.3",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/long.js --compilation_level=SIMPLE_OPTIMIZATIONS --create_source_map=dist/long.min.map > dist/long.min.js",
+				"compress": "gzip -c -9 dist/long.min.js > dist/long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "27b43e5300285b61a6748f65cab34ff97eeae611",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@3.0.3",
+			"_shasum": "f1e6e21714f0945a9165f1b0636d0786df045ed7",
+			"_from": ".",
+			"_npmVersion": "2.11.3",
+			"_nodeVersion": "0.12.7",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"dist": {
+				"shasum": "f1e6e21714f0945a9165f1b0636d0786df045ed7",
+				"tarball": "https://registry.npmjs.org/long/-/long-3.0.3.tgz",
+				"integrity": "sha512-ByoEe/sOhyFr8p1Ls2vGF86Iw9cfkPuhg1laL3/p5MQSeCWMbTlu1LHHIL8LSIi30MoK0LKGPzd93hrfkxsx4Q==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIHxVngjVIEBjptzeoiAUkWNBXhl+MSFXpsLfRy7WlyA+AiEAmwB+4t0eZkLFt0rR1wBmWfkMgq2lz3gcofgvgOzHPtg="
+					}
+				]
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"3.1.0": {
+			"name": "long",
+			"version": "3.1.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "latest",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/long.js --compilation_level=SIMPLE_OPTIMIZATIONS --create_source_map=dist/long.min.map > dist/long.min.js",
+				"compress": "gzip -c -9 dist/long.min.js > dist/long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "9d7bc2f3c31b2faebacf4b60dcd03caf33f54a65",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@3.1.0",
+			"_shasum": "e465c877d6235da66d446c59ad814801e8739d42",
+			"_from": ".",
+			"_npmVersion": "3.6.0",
+			"_nodeVersion": "5.6.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"dist": {
+				"shasum": "e465c877d6235da66d446c59ad814801e8739d42",
+				"tarball": "https://registry.npmjs.org/long/-/long-3.1.0.tgz",
+				"integrity": "sha512-AeqetG9OiaS9PKNvOIu+65PZCJ9KRtKBRxzEwEF3dqX5VKYFqMnqPluMEeK1lJ6QepCvG0JRJxVAFFHDwoDQaQ==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIHFFr+5bVtFBxTWapPL0CZDhzteSZUPJluyRUqkHDuDJAiBgYsNeWKtmWpc2Ley7BCnIX+/0Eqnq0oUIDL632kSw0A=="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "packages-12-west.internal.npmjs.com",
+				"tmp": "tmp/long-3.1.0.tgz_1459552967445_0.7434808942489326"
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"3.2.0": {
+			"name": "long",
+			"version": "3.2.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "dist/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"testjs": "latest",
+				"closurecompiler": "^1.6",
+				"metascript": "~0"
+			},
+			"license": "Apache-2.0",
+			"engines": {
+				"node": ">=0.6"
+			},
+			"scripts": {
+				"build": "node scripts/build.js",
+				"make": "npm run-script build && npm run-script compile && npm run-script compress && npm test",
+				"compile": "ccjs dist/long.js --compilation_level=SIMPLE_OPTIMIZATIONS --create_source_map=dist/long.min.map > dist/long.min.js",
+				"compress": "gzip -c -9 dist/long.min.js > dist/long.min.js.gz",
+				"test": "node node_modules/testjs/bin/testjs tests/suite.js"
+			},
+			"gitHead": "8cdc1f74ced4f771aa844f1cbc565b1d4c4451b8",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@3.2.0",
+			"_shasum": "d821b7138ca1cb581c172990ef14db200b5c474b",
+			"_from": ".",
+			"_npmVersion": "3.8.6",
+			"_nodeVersion": "5.6.0",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode@dcode.io"
+			},
+			"dist": {
+				"shasum": "d821b7138ca1cb581c172990ef14db200b5c474b",
+				"tarball": "https://registry.npmjs.org/long/-/long-3.2.0.tgz",
+				"integrity": "sha512-ZYvPPOMqUwPoDsbJaR10iQJYnMuZhRTvHYl62ErLIEX7RgFlziSBUUvrt3OVfc47QlHHpzPZYP17g3Fv7oeJkg==",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIDu7TdyGDz4E8Z+/PcfOAPcVCpzDc2zzjGJRZxjFfQUfAiBI524usCvx6bFFmMJeUsg6Njl46ua5Vs0bM7IbZXm0eA=="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "packages-16-east.internal.npmjs.com",
+				"tmp": "tmp/long-3.2.0.tgz_1469205534720_0.04028846975415945"
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"4.0.0": {
+			"name": "long",
+			"version": "4.0.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"main": "src/long.js",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"dependencies": {},
+			"devDependencies": {
+				"webpack": "^3.10.0"
+			},
+			"license": "Apache-2.0",
+			"scripts": {
+				"build": "webpack",
+				"test": "node tests"
+			},
+			"files": [
+				"index.js",
+				"LICENSE",
+				"README.md",
+				"src/long.js",
+				"dist/long.js",
+				"dist/long.js.map"
+			],
+			"gitHead": "941c5c62471168b5d18153755c2a7b38d2560e58",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@4.0.0",
+			"_npmVersion": "5.6.0",
+			"_nodeVersion": "8.8.1",
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"dist": {
+				"integrity": "sha512-XsP+KhQif4bjX1kbuSiySJFNAehNxgLb6hPRGJ9QsUr8ajHkuXGdrHmFUTUUXhDwVX2R5bY4JNZEwbUiMhV+MA==",
+				"shasum": "9a7b71cfb7d361a194ea555241c92f7468d5bf28",
+				"tarball": "https://registry.npmjs.org/long/-/long-4.0.0.tgz",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIDF/ZFW3YDdRmP1fLQEP0+o+vMsyILBud0QQHciQvj/eAiEAxCAAKJ9C8lyT/apFSCcEUizaF0DFHJeIGBG+kEawvF8="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long-4.0.0.tgz_1517693730072_0.12624454963952303"
+			},
+			"directories": {},
+			"contributors": []
+		},
+		"5.0.0": {
+			"name": "long",
+			"version": "5.0.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "index.js",
+			"types": "index.d.ts",
+			"scripts": {
+				"test": "node tests"
+			},
+			"gitHead": "86410397c36ad64aa6c9a45293bff918ce0ea14d",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.0.0",
+			"_nodeVersion": "17.0.1",
+			"_npmVersion": "8.1.0",
+			"dist": {
+				"integrity": "sha512-tY7iSaAZGq/oWJLe3EMCWCKC4601zDA5pisYcyf+Aew2M092iuycFBTa0Ko0TOgPU2mQS56aYTDhyLsHXFaIog==",
+				"shasum": "f674d2dcf8f36b274a454ca5948e982be6d6f5a2",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.0.0.tgz",
+				"fileCount": 5,
+				"unpackedSize": 71695,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIGjPraaWKgvFXDP9WkTm647lm+JgjPqqmRU603+3+JZSAiA56ZS8WfrhkiSM93kfK+OaxOWddLYRXmftpN84Edc29g=="
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.0.0_1635399630874_0.7355410688923594"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.0.1": {
+			"name": "long",
+			"version": "5.0.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "index.js",
+			"types": "index.d.ts",
+			"scripts": {
+				"test": "node tests"
+			},
+			"gitHead": "bf6854993a73e94e7885b4f6022e57f238666591",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.0.1",
+			"_nodeVersion": "17.0.1",
+			"_npmVersion": "8.1.0",
+			"dist": {
+				"integrity": "sha512-JJw5qjAek98/w3mJjWG+pOd5FZOOlK+KgH7I4bHvlAalwqtfg4h0Ias+lkllzD6Zq+8q5o1YViv2Eze3FVaW9A==",
+				"shasum": "88f5ee5151a51033ccce7a710638e686cb0a1f8e",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.0.1.tgz",
+				"fileCount": 5,
+				"unpackedSize": 71736,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQDs8gSQXKgzA3BgDo215yHhbXWKxXo0B3w8XACxZiECIQIgRP4TkdaV8X5b3MeDD3liX3QKlRFYownLmo/btzUxLik="
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.0.1_1635468431162_0.2663382755051664"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.1.0": {
+			"name": "long",
+			"version": "5.1.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math",
+				"long",
+				"int64"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "umd/index.js",
+			"types": "index.d.ts",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./umd/index.js"
+				}
+			},
+			"scripts": {
+				"build": "esm2umd Long index.js > umd/index.js",
+				"test": "node tests"
+			},
+			"devDependencies": {
+				"esm2umd": "^0.2.0"
+			},
+			"gitHead": "45f1f37948f3acee988caeda23a86f65c6bb0d42",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.1.0",
+			"_nodeVersion": "17.0.1",
+			"_npmVersion": "8.1.0",
+			"dist": {
+				"integrity": "sha512-eNc10JP6ezXp/qxXZlKS4OHAKNae3je9LUkjmXPDEa+Iidlz0n4nFi/9LT+GOgcayMWhykLoISN+v0THeOiWQQ==",
+				"shasum": "5c0b82eaeea5907176b34bbd3bdcd1bf203ba714",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.1.0.tgz",
+				"fileCount": 8,
+				"unpackedSize": 115185,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIEJjhEkKQie83J8jZyKGcGKBXqwafOu0ENJxzmvUmT4rAiEAnlE3Y93B8PHz8oNmksnOxf1ZJNQ8uW+LJ19GKw9Cwko="
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.1.0_1635555551991_0.14099135101541038"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.2.0": {
+			"name": "long",
+			"version": "5.2.0",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math",
+				"long",
+				"int64"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "umd/index.js",
+			"types": "index.d.ts",
+			"exports": {
+				".": {
+					"import": "./index.js",
+					"require": "./umd/index.js"
+				}
+			},
+			"scripts": {
+				"build": "esm2umd Long index.js > umd/index.js",
+				"test": "node tests"
+			},
+			"devDependencies": {
+				"esm2umd": "^0.2.0"
+			},
+			"gitHead": "088e44e5e3343ef967698565678384fa474b003b",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.2.0",
+			"_nodeVersion": "17.1.0",
+			"_npmVersion": "8.1.2",
+			"dist": {
+				"integrity": "sha512-9RTUNjK60eJbx3uz+TEGF7fUr29ZDxR5QzXcyDpeSfeH28S9ycINflOgOlppit5U+4kNTe83KQnMEerw7GmE8w==",
+				"shasum": "2696dadf4b4da2ce3f6f6b89186085d94d52fd61",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.2.0.tgz",
+				"fileCount": 8,
+				"unpackedSize": 118698,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.13\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJhoC75CRA9TVsSAnZWagAAadIP/3SmlTrtf3UtXxmZCoGv\nTU8jEgZY4Lm7V9wO4J+LIZlPQJDnhtmL82fdfaDRV6rixY7ActWQhpyjrU9P\nYpqdcTFYIuDMJJ6elIxLKBG6BdFLxDdhZXyR6aswjBk0+nyReRyIU8Hhy209\nVig8scD7wknXB2YBgOeLAaIDb/uyrL+pHDNR6s/cWdR+TcyV1OAjiB3Bzo8k\nWywg0Saun8cxGYqQ5BumnFOlV2VSwnp+8kog+MoAZZgK0917Cz2Sle+hC27V\n5W+usC0tMcsa/LVQM6QKD2K7GRADcZJqhlxIPHlk9zq+E0tJ0JFQfedNxDZm\n/pTJXQTcKmxPMb/ZFpHQHYw2ARQ2KFq+ckZYzWqy44MgqVVvcy7baLRo5RkZ\nbr/LrUDNqaas62p4OASh/HM/4RI8B9R1c6lncaTapHiZ+eoG87T4zwVygu2w\nsvk8o+ESkNyOJzQvvQEsYaCWDvM1rLk0T2D7IoxY9AJLYrvbdkEdzIKk7V6K\nyEh7YSrLn9bGe9t9oPfZ7KqRb6VzEOtjx7lPdahDef7yCdfN8v9/C2C12IkJ\ng9O3vwzVhFYjgVNTe9najqSneeY5FtmfqVH1dyhFswvsujaYitTlLsjBLh24\nFQhkqCUsnDfCQMM+ADC4lS1pjXyZZVlJHo1nyJqHaO50eGWLP4szaokcLZdQ\naLQF\r\n=lbpk\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQC35zjqixQ9YXIORSuPQx08+cS+bK3/HbLlHFesx9IFswIgV2xHoPVSVvrc9aLTl7hcX2tCJh/2ZG5SB94ZUHIi9Cc="
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.2.0_1637887737397_0.4628034623528776"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.2.1": {
+			"name": "long",
+			"version": "5.2.1",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math",
+				"long",
+				"int64"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "umd/index.js",
+			"types": "index.d.ts",
+			"exports": {
+				".": {
+					"types": "./index.d.ts",
+					"import": "./index.js",
+					"require": "./umd/index.js"
+				}
+			},
+			"scripts": {
+				"build": "esm2umd Long index.js > umd/index.js",
+				"test": "node tests"
+			},
+			"devDependencies": {
+				"esm2umd": "^0.2.0"
+			},
+			"gitHead": "3cea40db4c29bc90deab06f0e013467b737db8e4",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.2.1",
+			"_nodeVersion": "19.0.0",
+			"_npmVersion": "8.19.2",
+			"dist": {
+				"integrity": "sha512-GKSNGeNAtw8IryjjkhZxuKB3JzlcLTwjtiQCHKvqQet81I93kXslhDQruGI/QsddO83mcDToBVy7GqGS/zYf/A==",
+				"shasum": "e27595d0083d103d2fa2c20c7699f8e0c92b897f",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.2.1.tgz",
+				"fileCount": 8,
+				"unpackedSize": 118729,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIEZKgoIHSXjNU3xjmr4clLt99GAtw7P3itzH22SKHiiaAiAaTXOdRn7bqnK83ccaHomtkH7n0mdxRpbRSMUwbBiFIQ=="
+					}
+				],
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJjYxwXACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmpShQ//ZbncVHqSvJ4c3ie3y+7/uXn+1CrleOytnFZBN00Co/dYqnRE\r\ndpn09uKqU4WfjvYC3TZMlQll41rlqyV5mGs1B6jq+y31kOvV8uyF5unhXSjx\r\nusG/qjNtObWDSsI9LO/Bf7RJb3mpEtKnQEAfS5N8bMQNeCKCcjMuz6oiDMzM\r\nQqXi5UiTnooeqtr6BLxsqyeVWVvCQd+XEs7gZ+D52F3MTCvPXxXrW6JaBtWW\r\n2B0p9CILtKjIf2Wf7o5SsQgfmdkoy2fU48l3VQzmM/QjN9rDyRtMDpkXOV1p\r\no+uTFybyJR3UtPKOxnR6jfc6X6V/JKxIf8bCtGeq+QXwdTZ6Nwx4VCfcj9i3\r\nO5PbSbO6rDh8VZebGMWumpd5RCJKkm0rOf+Px4lAuO0OKgG9oP42pXkdZ0sk\r\nBZ6SswzmhWXbs4wmdC8e3HF4we5Nofyn1anwYUTP45L2KaT5+uurW3Maa+0l\r\nitmGqUCCgFsnGwhyYrkhkcp0CvMm820V6b5UX+V89ndq/PrniuVSAaODIwGD\r\nUuYgMlh3MOA8yVJfr0yTTWty/iXMXpEkT323edc2H+DLUyk/DgpXetA8y645\r\nJ2R9OgBEVBFokbf8AU+xxZkXJQNowhWCo911a31VEzUNGMB2Pxhw09UcQeUt\r\nxBNozkTh2j9Spit8gxldWeimXCLIGmzSUB8=\r\n=SkQx\r\n-----END PGP SIGNATURE-----\r\n"
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.2.1_1667439639311_0.5758788214536166"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.2.2": {
+			"name": "long",
+			"version": "5.2.2",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math",
+				"long",
+				"int64"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "umd/index.js",
+			"types": "umd/index.d.ts",
+			"exports": {
+				".": {
+					"import": {
+						"default": "./index.js",
+						"types": "./index.d.ts"
+					},
+					"require": {
+						"default": "./umd/index.js",
+						"types": "./umd/index.d.ts"
+					}
+				}
+			},
+			"scripts": {
+				"build": "esm2umd Long index.js > umd/index.js",
+				"test": "node tests"
+			},
+			"devDependencies": {
+				"esm2umd": "^0.2.1"
+			},
+			"gitHead": "453de51b6aa9123bf18d0856ac220aff79920a92",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.2.2",
+			"_nodeVersion": "19.9.0",
+			"_npmVersion": "9.6.3",
+			"dist": {
+				"integrity": "sha512-FcRNYR7XWu4a9dHZfBTTpRy66IJgAg1dkRSQHQfrLKbTi8I7Awop0fUNqvcWPOSwu0/VX0CSDWlCcQz1LFUdoA==",
+				"shasum": "27afd2965a99275e1aafb42da092fdd19ad2c536",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.2.2.tgz",
+				"fileCount": 8,
+				"unpackedSize": 118892,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCIB8nH0FjIdEAIbq5fCwGqAowMQM001KYJDybtg9mklWEAiABL84eHCZiWNXjTTQ6mRNsMlnDDNw/i6mVvEjP6emgyQ=="
+					}
+				],
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJkO0r4ACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmoOww//UwKcOlHeIYzYv5ySBjTnOSTUHnznNNQdw4PJJx6LHVWpBhHb\r\nTZTCBuUsqtySkQ04wWJYtgAafaYZHK/Ry9rv/Urr0SfF5IjzPy4+flnXjBOn\r\nrQMRH/m+u2vWKEKD751UXa0fbCAhATZmV0v75dci3/XWVAt6BKTmW1R+8C3p\r\nTzgBYiJ4YRD/gnypbSmOkEAWUDXPgGqoyGPQ9pQnD+chFHMIhOH5k/eAdHjk\r\n/ZC1qDugrvpUuWt8IKnOOSkKbJYEKtexjJ5VKxg8Oz+JGSRPMykMY0Cq1h5f\r\nqLcz/aX1ei7WIC+NkmqCDNdHxa5RMrm59HUF7m0Rb3gzuTiVYNb2hKQl2Wxe\r\n25X0eA8olkVWha3JUE/RT/TPkZVC4ruURTj/Ar/02CELEhue6mlIxC4Ad4H2\r\nbpDO/ddP2OTJlYCm0W5FoCtBO52iGV8qxUfNrG61VbVB70A75GM0xP0PPQUN\r\n3XFJvies0SPjJz/CaGmGFEeobFs4dvVfo3678FnebB9Rx6PtqwvQHqi9z3M3\r\nOlEamwvcFM2HUfY7pB9YTfNvX1rKyShV+NceVYBSDKdGVI1OxnqonEt2bRqj\r\nhPIpKVeDMqBlBawaWXPFKCo0GtYfG+qAb2soq+vBWy6gzxkTI765xgRq7eZK\r\n12ngSrUx0iiq2m1atUuXJOLNc9qpvD7qv+o=\r\n=bHSd\r\n-----END PGP SIGNATURE-----\r\n"
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.2.2_1681607416364_0.5344876469013369"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		},
+		"5.2.3": {
+			"name": "long",
+			"version": "5.2.3",
+			"author": {
+				"name": "Daniel Wirtz",
+				"email": "dcode@dcode.io"
+			},
+			"description": "A Long class for representing a 64-bit two's-complement integer value.",
+			"repository": {
+				"type": "git",
+				"url": "git+https://github.com/dcodeIO/long.js.git"
+			},
+			"bugs": {
+				"url": "https://github.com/dcodeIO/long.js/issues"
+			},
+			"keywords": [
+				"math",
+				"long",
+				"int64"
+			],
+			"license": "Apache-2.0",
+			"type": "module",
+			"main": "umd/index.js",
+			"types": "umd/index.d.ts",
+			"exports": {
+				".": {
+					"import": {
+						"types": "./index.d.ts",
+						"default": "./index.js"
+					},
+					"require": {
+						"types": "./umd/index.d.ts",
+						"default": "./umd/index.js"
+					}
+				}
+			},
+			"scripts": {
+				"build": "esm2umd Long index.js > umd/index.js",
+				"test": "node tests"
+			},
+			"devDependencies": {
+				"esm2umd": "^0.2.1"
+			},
+			"gitHead": "cd84ddd10a963861652e59ac137c761e08b10e94",
+			"homepage": "https://github.com/dcodeIO/long.js#readme",
+			"_id": "long@5.2.3",
+			"_nodeVersion": "19.9.0",
+			"_npmVersion": "9.6.3",
+			"dist": {
+				"integrity": "sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==",
+				"shasum": "a3ba97f3877cf1d778eccbcb048525ebb77499e1",
+				"tarball": "https://registry.npmjs.org/long/-/long-5.2.3.tgz",
+				"fileCount": 8,
+				"unpackedSize": 118892,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQD/jmAzAQB0wPHaUj4bnxl5XPVHNJ+ZopYaQcLY0x+Q3QIhAP/JovWYMTmQTWLQBvNFzsX02/fQMAUFOs4mD9MK436Q"
+					}
+				],
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJkO8bRACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmoqWRAAnQqMPJwttsPl0IV6ek1jd9KlNO8u9HeLTKY41GN3uydDwVVA\r\na66HzpmxZFhNik0+VV7kBNiSm/LlsuQYXuMdoqyatXFUQOo1z9z3Qg+eWvxI\r\nFSxuGul0xiiHmLLpI/wGBhwcA+/A07elKUOc11W/qXnwnoWAu8iAnPgmsGxj\r\nTyjso80LuAk7VGHVnKVJMbCE/9iL2o3j+xbrteQVhcao89JCCAUo00tmeAiC\r\n+mZVCgHxJv3fRombsZo/O0ovnaD9mlOHTYcgeUHkFTG0ElBfo1Qh9mzIHk4h\r\n4Pph2zfAE6u5Ngea5rReergrKgH+VkpILtRGDJTiqq4PGEO+4Zk+L1eW0KTb\r\n8uKBy3ccxRD1UK+no1fK4X81+Scbo8DW0Mss3rFDViw8mJNfKDyOTEWVGHxa\r\nIz6ErGpfQHZB/VEyOhh7uSqbL08U/XFkXLl2y8KeVMKo4M/pch+0laTihYbO\r\nRgEdSFs3M5RYCMn+rmixF52jVkR6NgDzMs9BiZ+rt8BBGI5WpqrOEw/TC6oU\r\n32ClRCNIqZsvt0MynlDOkQhjB2EIGlNO8vcKLG49EjZSCohNLHOaFajADHwt\r\n2sfN60KGphHq2kqscyfANuVN/JoK0f2U8pNF7iNeBreUkk3dhH5Z5NNonJfF\r\nbMG2iFYI9Rx+9cqEbIZY6T0junhh6pTMR/A=\r\n=K8il\r\n-----END PGP SIGNATURE-----\r\n"
+			},
+			"_npmUser": {
+				"name": "dcode",
+				"email": "dcode+npm@dcode.io"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "dcode",
+					"email": "dcode+npm@dcode.io"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/long_5.2.3_1681639121418_0.79285330907339"
+			},
+			"_hasShrinkwrap": false,
+			"contributors": []
+		}
+	},
+	"time": {
+		"modified": "2023-04-16T09:58:41.683Z",
+		"created": "2013-03-12T13:25:34.140Z",
+		"1.0.0": "2013-03-12T13:25:37.003Z",
+		"1.0.1": "2013-03-18T21:29:06.807Z",
+		"1.1.0": "2013-03-19T13:09:06.977Z",
+		"1.1.1": "2013-03-19T15:42:48.062Z",
+		"1.1.2": "2013-12-09T18:31:38.448Z",
+		"1.1.4": "2014-06-18T14:09:50.780Z",
+		"1.1.5": "2014-06-26T14:17:59.850Z",
+		"1.2.0": "2014-08-07T14:36:20.538Z",
+		"1.2.1": "2014-08-07T20:48:17.517Z",
+		"1.2.2": "2014-08-11T21:51:22.189Z",
+		"1.2.3": "2014-08-11T21:56:38.242Z",
+		"2.0.0": "2014-08-11T22:03:39.433Z",
+		"2.0.1": "2014-08-14T14:31:42.075Z",
+		"2.1.0": "2014-08-22T20:34:33.755Z",
+		"2.2.0": "2014-10-14T14:40:19.384Z",
+		"2.2.1": "2014-10-22T13:36:30.641Z",
+		"2.2.2": "2014-10-22T14:58:37.433Z",
+		"2.2.3": "2014-10-23T15:28:34.219Z",
+		"2.2.4": "2015-06-11T14:38:06.914Z",
+		"2.2.5": "2015-06-12T13:46:09.657Z",
+		"2.3.0": "2015-09-26T16:06:38.853Z",
+		"2.4.0": "2015-10-14T23:33:40.103Z",
+		"3.0.0": "2015-10-23T18:58:31.047Z",
+		"3.0.1": "2015-10-26T22:46:55.792Z",
+		"3.0.3": "2016-01-07T17:49:48.013Z",
+		"3.1.0": "2016-04-01T23:22:50.080Z",
+		"3.2.0": "2016-07-22T16:38:56.823Z",
+		"4.0.0": "2018-02-03T21:35:31.149Z",
+		"5.0.0": "2021-10-28T05:40:31.069Z",
+		"5.0.1": "2021-10-29T00:47:11.435Z",
+		"5.1.0": "2021-10-30T00:59:12.172Z",
+		"5.2.0": "2021-11-26T00:48:57.554Z",
+		"5.2.1": "2022-11-03T01:40:39.481Z",
+		"5.2.2": "2023-04-16T01:10:16.546Z",
+		"5.2.3": "2023-04-16T09:58:41.576Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "5.2.3"
+	},
+	"_uplinks": {
+		"npmjs": {
+			"etag": "W/\"c9e1dcd426678136ba65c828c061f2b9\"",
+			"fetched": 1693524462258
+		}
+	},
+	"_distfiles": {
+		"long-1.0.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.0.0.tgz",
+			"sha": "515e5217ea3a6f5bcf0412a673024706dbccab82",
+			"registry": "npmjs"
+		},
+		"long-1.0.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.0.1.tgz",
+			"sha": "239a6c6a6e0777d69aee13670f63cb0be2240b1a",
+			"registry": "npmjs"
+		},
+		"long-1.1.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.1.0.tgz",
+			"sha": "efb9bf3eb8bcd3252056c88e05dc359767e00bbf",
+			"registry": "npmjs"
+		},
+		"long-1.1.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.1.1.tgz",
+			"sha": "420fdff15142815e4404a9f63bfdf47829926f60",
+			"registry": "npmjs"
+		},
+		"long-1.1.2.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.1.2.tgz",
+			"sha": "eaef5951ca7551d96926b82da242db9d6b28fb53",
+			"registry": "npmjs"
+		},
+		"long-1.1.4.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.1.4.tgz",
+			"sha": "3f007fad2d15dce7d1238f5deef2f0a52c4c68c7",
+			"registry": "npmjs"
+		},
+		"long-1.1.5.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.1.5.tgz",
+			"sha": "b5c2c10a3d83ee0ec0aaffb3e4e711d01f607e9a",
+			"registry": "npmjs"
+		},
+		"long-1.2.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.2.0.tgz",
+			"sha": "b39b2730b9c135f91a57bcd73e8617a9b648468b",
+			"registry": "npmjs"
+		},
+		"long-1.2.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.2.1.tgz",
+			"sha": "825acb89d4d025f74dc0f7e63d5f5625a0b617e8",
+			"registry": "npmjs"
+		},
+		"long-1.2.3.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-1.2.3.tgz",
+			"sha": "117fe2e2b1c453d83e322776c8d470639faa2b7f",
+			"registry": "npmjs"
+		},
+		"long-2.0.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.0.0.tgz",
+			"sha": "cf1daa027ebbd412aec812219cdf8cddacc42b1a",
+			"registry": "npmjs"
+		},
+		"long-2.0.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.0.1.tgz",
+			"sha": "3afbab860b94c9f95f2fc4094da332db9e3274db",
+			"registry": "npmjs"
+		},
+		"long-2.1.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.1.0.tgz",
+			"sha": "e97939a21a656b7a88ba871ca34aaf32b25c0cb1",
+			"registry": "npmjs"
+		},
+		"long-2.2.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.0.tgz",
+			"sha": "dc01d1fd385cd7c705d00333b73811598d316763",
+			"registry": "npmjs"
+		},
+		"long-2.2.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.1.tgz",
+			"sha": "f386e04e3c290a78d5ca8d5146b8af4c5f446a90",
+			"registry": "npmjs"
+		},
+		"long-2.2.2.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.2.tgz",
+			"sha": "6c2d4bfa181e65194c2f8d8d54636033d4e6a9d9",
+			"registry": "npmjs"
+		},
+		"long-2.2.3.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.3.tgz",
+			"sha": "635f5b530b3bd3ecb000a2ffb11281583c7f1e07",
+			"registry": "npmjs"
+		},
+		"long-2.2.4.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.4.tgz",
+			"sha": "b04914750cfdce369bfeb68c1eba61f57b431c8d",
+			"registry": "npmjs"
+		},
+		"long-2.2.5.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.2.5.tgz",
+			"sha": "5a286b6f86ea81a28720d2702948fddc7d61310e",
+			"registry": "npmjs"
+		},
+		"long-2.3.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.3.0.tgz",
+			"sha": "f40cd708a0fecba4254302b213b3a180a1e1557d",
+			"registry": "npmjs"
+		},
+		"long-2.4.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-2.4.0.tgz",
+			"sha": "9fa180bb1d9500cdc29c4156766a1995e1f4524f",
+			"registry": "npmjs"
+		},
+		"long-3.0.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-3.0.0.tgz",
+			"sha": "c914833463ee9efa55c9b88ac32106fd667ee20f",
+			"registry": "npmjs"
+		},
+		"long-3.0.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-3.0.1.tgz",
+			"sha": "b99281fe798fa64ea3b7a74c8fe13151b3310b05",
+			"registry": "npmjs"
+		},
+		"long-3.0.3.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-3.0.3.tgz",
+			"sha": "f1e6e21714f0945a9165f1b0636d0786df045ed7",
+			"registry": "npmjs"
+		},
+		"long-3.1.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-3.1.0.tgz",
+			"sha": "e465c877d6235da66d446c59ad814801e8739d42",
+			"registry": "npmjs"
+		},
+		"long-3.2.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-3.2.0.tgz",
+			"sha": "d821b7138ca1cb581c172990ef14db200b5c474b",
+			"registry": "npmjs"
+		},
+		"long-4.0.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-4.0.0.tgz",
+			"sha": "9a7b71cfb7d361a194ea555241c92f7468d5bf28",
+			"registry": "npmjs"
+		},
+		"long-5.0.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.0.0.tgz",
+			"sha": "f674d2dcf8f36b274a454ca5948e982be6d6f5a2",
+			"registry": "npmjs"
+		},
+		"long-5.0.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.0.1.tgz",
+			"sha": "88f5ee5151a51033ccce7a710638e686cb0a1f8e",
+			"registry": "npmjs"
+		},
+		"long-5.1.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.1.0.tgz",
+			"sha": "5c0b82eaeea5907176b34bbd3bdcd1bf203ba714",
+			"registry": "npmjs"
+		},
+		"long-5.2.0.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.2.0.tgz",
+			"sha": "2696dadf4b4da2ce3f6f6b89186085d94d52fd61",
+			"registry": "npmjs"
+		},
+		"long-5.2.1.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.2.1.tgz",
+			"sha": "e27595d0083d103d2fa2c20c7699f8e0c92b897f",
+			"registry": "npmjs"
+		},
+		"long-5.2.2.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.2.2.tgz",
+			"sha": "27afd2965a99275e1aafb42da092fdd19ad2c536",
+			"registry": "npmjs"
+		},
+		"long-5.2.3.tgz": {
+			"url": "https://registry.npmjs.org/long/-/long-5.2.3.tgz",
+			"sha": "a3ba97f3877cf1d778eccbcb048525ebb77499e1",
+			"registry": "npmjs"
+		}
+	},
+	"_attachments": {},
+	"_rev": "1-9e2849a3a621977b",
+	"_id": "long",
+	"readme": "long.js\n=======\n\nA Long class for representing a 64 bit two's-complement integer value derived from the [Closure Library](https://github.com/google/closure-library)\nfor stand-alone use and extended with unsigned support.\n\n[![Build Status](https://img.shields.io/github/workflow/status/dcodeIO/long.js/Test/main?label=test&logo=github)](https://github.com/dcodeIO/long.js/actions?query=workflow%3ATest) [![Publish Status](https://img.shields.io/github/workflow/status/dcodeIO/long.js/Publish/main?label=publish&logo=github)](https://github.com/dcodeIO/long.js/actions?query=workflow%3APublish) [![npm](https://img.shields.io/npm/v/long.svg?label=npm&color=007acc&logo=npm)](https://www.npmjs.com/package/long)\n\nBackground\n----------\n\nAs of [ECMA-262 5th Edition](http://ecma262-5.com/ELS5_HTML.htm#Section_8.5), \"all the positive and negative integers\nwhose magnitude is no greater than 2<sup>53</sup> are representable in the Number type\", which is \"representing the\ndoubleprecision 64-bit format IEEE 754 values as specified in the IEEE Standard for Binary Floating-Point Arithmetic\".\nThe [maximum safe integer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER)\nin JavaScript is 2<sup>53</sup>-1.\n\nExample: 2<sup>64</sup>-1 is 1844674407370955**1615** but in JavaScript it evaluates to 1844674407370955**2000**.\n\nFurthermore, bitwise operators in JavaScript \"deal only with integers in the range −2<sup>31</sup> through\n2<sup>31</sup>−1, inclusive, or in the range 0 through 2<sup>32</sup>−1, inclusive. These operators accept any value of\nthe Number type but first convert each such value to one of 2<sup>32</sup> integer values.\"\n\nIn some use cases, however, it is required to be able to reliably work with and perform bitwise operations on the full\n64 bits. This is where long.js comes into play.\n\nUsage\n-----\n\nThe package exports an ECMAScript module with an UMD fallback.\n\n```\n$> npm install long\n```\n\n```js\nimport Long from \"long\";\n\nvar value = new Long(0xFFFFFFFF, 0x7FFFFFFF);\nconsole.log(value.toString());\n...\n```\n\nNote that mixing ESM and CommonJS is not recommended as it yields different classes, albeit with the same functionality.\n\n### Usage with a CDN\n\n  * From GitHub via [jsDelivr](https://www.jsdelivr.com):<br />\n    `https://cdn.jsdelivr.net/gh/dcodeIO/long.js@TAG/index.js` (ESM)\n  * From npm via [jsDelivr](https://www.jsdelivr.com):<br />\n    `https://cdn.jsdelivr.net/npm/long@VERSION/index.js` (ESM)<br />\n    `https://cdn.jsdelivr.net/npm/long@VERSION/umd/index.js` (UMD)\n  * From npm via [unpkg](https://unpkg.com):<br />\n    `https://unpkg.com/long@VERSION/index.js` (ESM)<br />\n    `https://unpkg.com/long@VERSION/umd/index.js` (UMD)\n\n  Replace `TAG` respectively `VERSION` with a [specific version](https://github.com/dcodeIO/long.js/releases) or omit it (not recommended in production) to use main/latest.\n\nAPI\n---\n\n### Constructor\n\n* new **Long**(low: `number`, high?: `number`, unsigned?: `boolean`)<br />\n  Constructs a 64 bit two's-complement integer, given its low and high 32 bit values as *signed* integers. See the from* functions below for more convenient ways of constructing Longs.\n\n### Fields\n\n* Long#**low**: `number`<br />\n  The low 32 bits as a signed value.\n\n* Long#**high**: `number`<br />\n  The high 32 bits as a signed value.\n\n* Long#**unsigned**: `boolean`<br />\n  Whether unsigned or not.\n\n### Constants\n\n* Long.**ZERO**: `Long`<br />\n  Signed zero.\n\n* Long.**ONE**: `Long`<br />\n  Signed one.\n\n* Long.**NEG_ONE**: `Long`<br />\n  Signed negative one.\n\n* Long.**UZERO**: `Long`<br />\n  Unsigned zero.\n\n* Long.**UONE**: `Long`<br />\n  Unsigned one.\n\n* Long.**MAX_VALUE**: `Long`<br />\n  Maximum signed value.\n\n* Long.**MIN_VALUE**: `Long`<br />\n  Minimum signed value.\n\n* Long.**MAX_UNSIGNED_VALUE**: `Long`<br />\n  Maximum unsigned value.\n\n### Utility\n\n* Long.**isLong**(obj: `*`): `boolean`<br />\n  Tests if the specified object is a Long.\n\n* Long.**fromBits**(lowBits: `number`, highBits: `number`, unsigned?: `boolean`): `Long`<br />\n  Returns a Long representing the 64 bit integer that comes by concatenating the given low and high bits. Each is assumed to use 32 bits.\n\n* Long.**fromBytes**(bytes: `number[]`, unsigned?: `boolean`, le?: `boolean`): `Long`<br />\n  Creates a Long from its byte representation.\n\n* Long.**fromBytesLE**(bytes: `number[]`, unsigned?: `boolean`): `Long`<br />\n  Creates a Long from its little endian byte representation.\n\n* Long.**fromBytesBE**(bytes: `number[]`, unsigned?: `boolean`): `Long`<br />\n  Creates a Long from its big endian byte representation.\n\n* Long.**fromInt**(value: `number`, unsigned?: `boolean`): `Long`<br />\n  Returns a Long representing the given 32 bit integer value.\n\n* Long.**fromNumber**(value: `number`, unsigned?: `boolean`): `Long`<br />\n  Returns a Long representing the given value, provided that it is a finite number. Otherwise, zero is returned.\n\n* Long.**fromString**(str: `string`, unsigned?: `boolean`, radix?: `number`)<br />\n  Long.**fromString**(str: `string`, radix: `number`)<br />\n  Returns a Long representation of the given string, written using the specified radix.\n\n* Long.**fromValue**(val: `*`, unsigned?: `boolean`): `Long`<br />\n  Converts the specified value to a Long using the appropriate from* function for its type.\n\n### Methods\n\n* Long#**add**(addend: `Long | number | string`): `Long`<br />\n  Returns the sum of this and the specified Long.\n\n* Long#**and**(other: `Long | number | string`): `Long`<br />\n  Returns the bitwise AND of this Long and the specified.\n\n* Long#**compare**/**comp**(other: `Long | number | string`): `number`<br />\n  Compares this Long's value with the specified's. Returns `0` if they are the same, `1` if the this is greater and `-1` if the given one is greater.\n\n* Long#**divide**/**div**(divisor: `Long | number | string`): `Long`<br />\n  Returns this Long divided by the specified.\n\n* Long#**equals**/**eq**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value equals the specified's.\n\n* Long#**getHighBits**(): `number`<br />\n  Gets the high 32 bits as a signed integer.\n\n* Long#**getHighBitsUnsigned**(): `number`<br />\n  Gets the high 32 bits as an unsigned integer.\n\n* Long#**getLowBits**(): `number`<br />\n  Gets the low 32 bits as a signed integer.\n\n* Long#**getLowBitsUnsigned**(): `number`<br />\n  Gets the low 32 bits as an unsigned integer.\n\n* Long#**getNumBitsAbs**(): `number`<br />\n  Gets the number of bits needed to represent the absolute value of this Long.\n\n* Long#**greaterThan**/**gt**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value is greater than the specified's.\n\n* Long#**greaterThanOrEqual**/**gte**/**ge**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value is greater than or equal the specified's.\n\n* Long#**isEven**(): `boolean`<br />\n  Tests if this Long's value is even.\n\n* Long#**isNegative**(): `boolean`<br />\n  Tests if this Long's value is negative.\n\n* Long#**isOdd**(): `boolean`<br />\n  Tests if this Long's value is odd.\n\n* Long#**isPositive**(): `boolean`<br />\n  Tests if this Long's value is positive or zero.\n\n* Long#**isZero**/**eqz**(): `boolean`<br />\n  Tests if this Long's value equals zero.\n\n* Long#**lessThan**/**lt**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value is less than the specified's.\n\n* Long#**lessThanOrEqual**/**lte**/**le**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value is less than or equal the specified's.\n\n* Long#**modulo**/**mod**/**rem**(divisor: `Long | number | string`): `Long`<br />\n  Returns this Long modulo the specified.\n\n* Long#**multiply**/**mul**(multiplier: `Long | number | string`): `Long`<br />\n  Returns the product of this and the specified Long.\n\n* Long#**negate**/**neg**(): `Long`<br />\n  Negates this Long's value.\n\n* Long#**not**(): `Long`<br />\n  Returns the bitwise NOT of this Long.\n\n* Long#**countLeadingZeros**/**clz**(): `number`<br />\n  Returns count leading zeros of this Long.\n\n* Long#**countTrailingZeros**/**ctz**(): `number`<br />\n  Returns count trailing zeros of this Long.\n\n* Long#**notEquals**/**neq**/**ne**(other: `Long | number | string`): `boolean`<br />\n  Tests if this Long's value differs from the specified's.\n\n* Long#**or**(other: `Long | number | string`): `Long`<br />\n  Returns the bitwise OR of this Long and the specified.\n\n* Long#**shiftLeft**/**shl**(numBits: `Long | number | string`): `Long`<br />\n  Returns this Long with bits shifted to the left by the given amount.\n\n* Long#**shiftRight**/**shr**(numBits: `Long | number | string`): `Long`<br />\n  Returns this Long with bits arithmetically shifted to the right by the given amount.\n\n* Long#**shiftRightUnsigned**/**shru**/**shr_u**(numBits: `Long | number | string`): `Long`<br />\n  Returns this Long with bits logically shifted to the right by the given amount.\n\n* Long#**rotateLeft**/**rotl**(numBits: `Long | number | string`): `Long`<br />\n  Returns this Long with bits rotated to the left by the given amount.\n\n* Long#**rotateRight**/**rotr**(numBits: `Long | number | string`): `Long`<br />\n  Returns this Long with bits rotated to the right by the given amount.\n\n* Long#**subtract**/**sub**(subtrahend: `Long | number | string`): `Long`<br />\n  Returns the difference of this and the specified Long.\n\n* Long#**toBytes**(le?: `boolean`): `number[]`<br />\n  Converts this Long to its byte representation.\n\n* Long#**toBytesLE**(): `number[]`<br />\n  Converts this Long to its little endian byte representation.\n\n* Long#**toBytesBE**(): `number[]`<br />\n  Converts this Long to its big endian byte representation.\n\n* Long#**toInt**(): `number`<br />\n  Converts the Long to a 32 bit integer, assuming it is a 32 bit integer.\n\n* Long#**toNumber**(): `number`<br />\n  Converts the Long to a the nearest floating-point representation of this value (double, 53 bit mantissa).\n\n* Long#**toSigned**(): `Long`<br />\n  Converts this Long to signed.\n\n* Long#**toString**(radix?: `number`): `string`<br />\n  Converts the Long to a string written in the specified radix.\n\n* Long#**toUnsigned**(): `Long`<br />\n  Converts this Long to unsigned.\n\n* Long#**xor**(other: `Long | number | string`): `Long`<br />\n  Returns the bitwise XOR of this Long and the given one.\n\nWebAssembly support\n-------------------\n\n[WebAssembly](http://webassembly.org) supports 64-bit integer arithmetic out of the box, hence a [tiny WebAssembly module](./wasm.wat) is used to compute operations like multiplication, division and remainder more efficiently (slow operations like division are around twice as fast), falling back to floating point based computations in JavaScript where WebAssembly is not yet supported, e.g., in older versions of node.\n\nBuilding\n--------\n\nBuilding the UMD fallback:\n\n```\n$> npm run build\n```\n\nRunning the [tests](./tests):\n\n```\n$> npm test\n```"
+}

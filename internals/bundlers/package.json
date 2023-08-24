@@ -1,0 +1,33 @@
+{
+  "name": "@internals/bundlers",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Test servers for testing UpscalerJS against",
+  "exports": {
+    ".": "./src/index.ts",
+    "./webpack": "./src/bundlers/webpack/src/index.ts",
+    "./esbuild": "./src/bundlers/esbuild/src/index.ts",
+    "./node": "./src/bundlers/node/src/index.ts",
+    "./umd": "./src/bundlers/umd/src/index.ts"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "latest",
+    "@internals/common": "workspace:*",
+    "@internals/http-server": "workspace:*",
+    "@internals/registry": "workspace:*"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.34.2",
+    "@types/ejs": "^3.1.2",
+    "@types/js-yaml": "^4.0.5"
+  }
+}

@@ -17,11 +17,11 @@
   "scripts": {
     "test": "jest --config jestconfig.json",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
-    "build": "pnpm build:esm && pnpm build:cjs && pnpm validate:build",
-    "build:esm": "pnpm --filter @upscalerjs/scripts build:core browser -o esm",
-    "build:cjs": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
+    "build": "pnpm build:esm && pnpm build:cjs && pnpm validate",
+    "build:esm": "pnpm cli build core browser -o esm",
+    "build:cjs": "pnpm cli build core node -o cjs"
   },
   "dependencies": {
     "@tensorflow/tfjs-core": "~4.8.0"

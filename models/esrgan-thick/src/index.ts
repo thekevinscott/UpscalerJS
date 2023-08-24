@@ -1,4 +1,4 @@
-export { default as x2, } from './2x';
-export { default as x3, } from './3x';
-export { default as x4, } from './4x';
-export { default as x8, } from './8x';
+export { default as ESRGANThick2x, } from './2x';
+export { default as ESRGANThick3x, } from './3x';
+export { default as ESRGANThick4x, } from './4x';
+export { default as ESRGANThick8x, } from './8x';

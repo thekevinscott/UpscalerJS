@@ -40,16 +40,15 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts",
+    "scaffold": "pnpm cli scaffold model esrgan-slim",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
-    "build": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd",
-    "build:cjs": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs",
-    "build:esm": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o esm",
-    "build:umd": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o umd",
-    "clean": "pnpm --filter @upscalerjs/scripts model:clean esrgan-slim"
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate models/esrgan-slim",
+    "build": "pnpm cli build model esrgan-slim -o cjs -o esm -o umd",
+    "build:cjs": "pnpm cli build model esrgan-slim -o cjs",
+    "build:esm": "pnpm cli build model esrgan-slim -o esm",
+    "build:umd": "pnpm cli build model esrgan-slim -o umd"
   },
   "files": [
     "assets/**/*",

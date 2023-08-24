@@ -4217,12 +4217,12 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-experiments --config models/scaffolder.ts",
+    "scaffold": "pnpm cli scaffold model esrgan-experiments",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-experiments",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-experiments -o cjs -o esm -o umd"
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate models/esrgan-experiments",
+    "build": "pnpm cli build model esrgan-experiments -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",

@@ -1,0 +1,27 @@
+{
+  "name": "@internals/webdriver",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Wrapper for Selenium Webdriver",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "16.3.1",
+    "fs-extra": "^11.1.1",
+    "selenium-webdriver": "4.4.0"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/selenium-webdriver": "4.1.15",
+    "vitest": "^0.34.2"
+  }
+}

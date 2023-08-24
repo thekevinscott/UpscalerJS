@@ -1,0 +1,531 @@
+{
+	"name": "@types/offscreencanvas",
+	"versions": {
+		"2019.3.0": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.3.0",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				}
+			],
+			"main": "",
+			"types": "index",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {},
+			"typesPublisherContentHash": "056f77b7b89302825048174c0427ed47126998207221760a9f2c9b47e0bacead",
+			"typeScriptVersion": "2.0",
+			"_id": "@types/offscreencanvas@2019.3.0",
+			"dist": {
+				"integrity": "sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==",
+				"shasum": "3336428ec7e9180cf4566dfea5da04eb586a6553",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.3.0.tgz",
+				"fileCount": 4,
+				"unpackedSize": 5287,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcgvl/CRA9TVsSAnZWagAAEZ8QAIM+xt9Fhc5Rs+wZE1gx\n5hvDRYafSQoIZKpuFlUaZd/0mBVF1lBN0fPQgR+HBhJ9T743hICP6vJVzodi\naoXsmrGdHppvLBnRYHMxZM/JDwQHn24BCcJqHmvn4HZeIeSsBTvK3lzYf99X\nPH7fsiaJLIQx4lnIt0lnv/B2poTHxLwSs8r1zW9hN+CSzSQAuU69PxED4o96\nKsIxRf7VCRW9e5pCqhwqXcn/jyPDPPwvKK/oroCsTi4eviGQHPuccmcBrmI0\nJGTRZDjLlN8au3zHPrTP645TQWqYM2pV75VSzNxruwvzXmQLFm+Ai3QPYUwp\nT3JCCmHHWgLuxIA4rybU7BnUA/ynmpG4w/tGWhL1/KzCYzjxWsbn40ljZbPJ\nhd5+o4WPn0XiGRSEFKbKVATegwqHrjdqrfFox0DrdK2/11mfhHevT1UvLTkA\nRQRno2keu4QTqQza8KJzAwG6TE0e9OM9F7Wkp7eWcH5M3+xwe4je5crAipQJ\nkRJI7+sKf4ApVI4rcIEGZF+rtvjhn7GHPU4ygaIu8MgN29L31eQzhbFDo1kc\n+Yonjytl1JRYmtu1kggMXjxjgYecYEgasKMGeoycGukJ50a+ZkeeB1mZAqwP\n4S4M7aHs5K+kOGjo5vEUL4vLA1VABHGgzVHwdq+K6bHpML0A3ckvG7mu3r+D\ni192\r\n=IBqc\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQCDent7N9CRlJI1a0SoG9bO/snSX32ldnkkotn2SG0H/QIgRxrauM4ziQObyKV7x7XSNmdctAt5I4Xs8S2pvhfsz6E="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.3.0_1552087422688_0.8697144741301388"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.6.0": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.6.0",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				}
+			],
+			"main": "",
+			"types": "index",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {
+				"@types/webgl2": "*"
+			},
+			"typesPublisherContentHash": "aa4ab3637e45e571d1e0a480b99277fa5a23faedd0c3abf30ef2237d90648f15",
+			"typeScriptVersion": "3.4",
+			"_id": "@types/offscreencanvas@2019.6.0",
+			"dist": {
+				"integrity": "sha512-Mf1bgQd2si9fCdIhEIG5tq3PWEyBD8j6stPSQRsia3kKNIjYD5uBGbBmRFd0JqsVTu8K6a+YTQ3zCz+2dUD4uQ==",
+				"shasum": "a91e3df1aabdf297f6b903aadce01b33e6844bdf",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.0.tgz",
+				"fileCount": 4,
+				"unpackedSize": 6944,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJdFjgbCRA9TVsSAnZWagAAbJAP/2liBfO4QyQHB2J4Y53o\njbyI1fPSK8es0cClRSjdJLppl46D071w1QG+qok+4LlhPhutXkoVwrfzHiBz\noKzYBLHX0yUsiSQpISEmluXUowpkEoIGzfktygc04tCVe/gpkOyrCM4JXkGg\nur8D+doJdlifcbtqvHyOaWgGEjtCY5o9vOcVPjfgmY3bY0djABjmZSxG292J\nWsljbO2j66CS8IIAMabeYDdB4NWnHnkbeVVwImgwwJRZ6O9rTedVQ7HCNFRy\neR14CuoByKLaZ1znDZqLwiff7WJ40TQJcsiZF9FnhR4f3Cz2A6/gZEPyWZ5C\nBawV7IwoZ7X0K6bpqzBWBQKbxgnlXIYLVX6ElQH7w6Wts42gMhH0kOorMbA1\nSKec+ENpoPwTmltJ2Mqh62xMK7rWFnH6R9J0vNBtcTWZ1aKewVvLkNK7X1QL\nf2C7biFxPO6kIeqkGGtkq2/f15uOgkTMnMJKQMPBqOSwnGELDo7k3DZ59TZD\nmuHBol//Gj5tWvQwO1j+qki6b1e/2StC7v/TuyJBmZT2C5SE6rNAJ3BQbo3+\n6RRZXRGPbWKoQhFQbdmpu/ONkSbpd9ZI1MQJILkYsnvB/FDImkmyUVHmnqXH\noPq8dcezzAviJo4xetf9f9evYRqFfCxZCXThs+0GwR9RcgW3w07WgIfMIaBs\nfDNi\r\n=ubP6\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIE43QZjEumZLFJXp7HjfrG0dkMKmMjPk5//d0p1flzSXAiEAnJ+7JOSlsfSiTVeCSJbQ57IzS+vySoykGxFUJaeLSBA="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.6.0_1561737242527_0.6332443709285343"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.6.1": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.6.1",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				}
+			],
+			"main": "",
+			"types": "index.d.ts",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {
+				"@types/webgl2": "*"
+			},
+			"typesPublisherContentHash": "4e324aba2933345b722c996ceb3056eafadcc23d28e2d2f00cdbf2a39e652f6e",
+			"typeScriptVersion": "3.4",
+			"_id": "@types/offscreencanvas@2019.6.1",
+			"dist": {
+				"integrity": "sha512-V3uCxw0phT4+Mgy/gVWm5xinN7xhIb2d1JwQXBJh7FRt9GvuNUzgQUlKakO+4utgv+XaWMwy3Ok8Mz9ix3BJEw==",
+				"shasum": "3ec0b0cbf3d9c484b0628931e097f6ce8fccdadd",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.1.tgz",
+				"fileCount": 4,
+				"unpackedSize": 6961,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJeD9RzCRA9TVsSAnZWagAAAHcP/3Bct4jCjo2mZKIk4nBP\nX89fodf08nerAH06fFxmdb67UHFlwBUmbomUdHkKKZJBmDkwjhg5KFEs0W31\nz8CqXUHn2YnjPXu5UFygIpCi26ZihLjSOl3DdreTDH8+mRtcNJTmyM/tOaFi\ntmoyR07u/z7mDESyqAQRZF/H8/fyAC1ZypxGPMQv/QGXeqJT5UUMDa3lysYB\nPZ53+gpuJN5z27S2jnpWhDHX/TSjqXdzDvKZvHNlqm+I9bsihywUdxZiFoFJ\nuWsTzMULuij0ffrCMdaWPwr2dGq1tXlw3h2oAWrUaR8brr8PIo49L3h0mMii\nA7uVptXEoKKs6mSBm8Q8xg6Rto4GlgzK3YEERXEom34P4gY9Gv97XZf5vfJB\nNM1cwIIAfmbd/MG/y0ACaJXFXJftJhhw+dDWZTCM+XV41H4OR+T4CGi7Rt2L\nKOwYs2jUdyWeZLqWbiHuf+KNvEo4Vjmhlf0VVJiTdsFlJP7c714PzQGXOXW3\nnwfNcw81xGEXWm85zciVceo7r6ydtwAHBtNlff7v8y+wiDSSPc8Lk/fld2Zs\nNZBybykZWW5t0BdkyMVgOtTjrj60ua+7hLvzCTs39WCDtGYz1wVPytSpYzDZ\neDc1JrqjHvWs0XjhbLv4O3pbtqzr+w4mm2N4yF6zMvcTottZnauehTnKY8O/\nOLLH\r\n=U+UN\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEQCICepoG2kk85eqmLXv5mgGod01pCTVW/MfPeTcprmmtMZAiAb682y9pVN1bH2QPqQ4fhAysiHJfuluJXzy/YukP0GFQ=="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.6.1_1578095731003_0.2886864478903737"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.6.2": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.6.2",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				}
+			],
+			"main": "",
+			"types": "index.d.ts",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {
+				"@types/webgl2": "*"
+			},
+			"typesPublisherContentHash": "2bf9d1e2f4589991420de4ce3339806d51174921dadccb1404e026c16b8cffe9",
+			"typeScriptVersion": "3.4",
+			"_id": "@types/offscreencanvas@2019.6.2",
+			"dist": {
+				"integrity": "sha512-ndVeLKDF10p4hZswi0KKSUWAmNoTcgz8LUPiIIPeT3qD8bTaYe0pXyuyQ21+DmGRMkT8orxiISm4O+YpMLCDBw==",
+				"shasum": "9bd6f5a9a70459ec0ce7ecedf45d63e38d744c86",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.2.tgz",
+				"fileCount": 4,
+				"unpackedSize": 6701,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJeeikKCRA9TVsSAnZWagAAZh4QAKNsKwlJiCXNqekYvUPI\nBBbiE75S9XiXReIm9DdHfI2ysJX+LRqle5NZ4JuNYKLHHXS7PRlmRS1cE/cC\nTemwsPWvqSgpYTxiN1v9wuFTkxbw+KuPbv++kibt1hedZ75rYFoyft+Fm+5p\n7m1MbxZcA7mJUbS6eJVzySHYOsTnx/PXxL0E4u9wlOvSzhNN8EVrn0Seu8VF\nw5lQ6Jqez00DzZ9bV3yMJEBsY5oW0D5xk2gbC/jO7VW52r/KApHbvjBpBqS8\nYRP0KFqWt7gOAecS8/9uDHsAtizqXXfolC6EDq7wYmTAcwzHMmR5pOCocFy9\ncdrzwATP3Jij1Z9wERqnv3f9oDis74uIEuKpJEpX+FAgI2rCjG9MzdtY2+oU\nSfQcF735Np3egrTwhdq4IIP/E/SbJjcsRzuDL+BE9ODv3x2sLQIkFiQyreO+\n7uyf55OeLN0lbGoJcQQsF0jebNGg+XOT6mbxOLQW4XlREYgWLyf5xh6dyZwM\nkEvuDuzahsSgI8ACq2VsXiJ39CqYod3BvL0g8i3F8IyOLFuZWBEqEWz9vQkP\nlgkL7FkXYEWgxRIEziJTs+A8sw97VlNu5L4z+RvGIHWy4daaIct+8dYOP/dn\nMjoKLCSJn7VOduq8ye3sZD2pPlsjmOsrcodJq5Woa2HTuz9cNYj8VoedmxTs\nwUQg\r\n=uYsk\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQD2eOpSdMTJ3oHDfdHZcVtUCZn/ssyyQO/pGYo9Rhb/aQIgV7vUfhgFwR0yrkbFqkfLCx5wgWUmX51rR9zck7UmTfY="
+					}
+				]
+			},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.6.2_1585064202005_0.648325618445301"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.6.3": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.6.3",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/offscreencanvas",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				}
+			],
+			"main": "",
+			"types": "index.d.ts",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {
+				"@types/webgl2": "*"
+			},
+			"typesPublisherContentHash": "f899b28bb2e9a7109017bde1b649cb4e5f66fcf6928e58228fb7703cf582e574",
+			"typeScriptVersion": "3.6",
+			"_id": "@types/offscreencanvas@2019.6.3",
+			"dist": {
+				"integrity": "sha512-957DsU187Y90EmlXneuqrqnwmwCkC9oPyQ/IEGwmDRpMfuhcGtjIz72Me7HvdK04ZC16A0VWmv0TSNLwC9ZvXw==",
+				"shasum": "0508eec9641f3228bf8a27009670166887dc966c",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.3.tgz",
+				"fileCount": 4,
+				"unpackedSize": 6787,
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.13\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJg5dhTCRA9TVsSAnZWagAA2akP/AppTv8AXQbOzlluvK5x\nHjt92cgmKkqiYC6zZPhPGPh1SxxwZN3bl5OKMbU/rXFiPGQffz5BJRmeIVAj\nNmkRkRa2UlUEDFXKgwqFAgpeoUXduGhfwr2YMVtmQ4+L2sYDHWEsyb970KiQ\nZbxT6hqaMOtxNmN6bj1W7PpNiIHVzLlU9x0U0BxE//zfaUfyzaJ8fg3LurZP\nF7ogQkUm7GigeNT6KcboYgqUFXBBRw50aqIXvmITuo5b0q3v2cyKst2Ppru8\nPgyCsx8JKr5RGYVi3O9gb2WoHBQZtivyO2ij4F5AyfXsHr4z3hJRu8bo4MmF\n3Sk5SwY9nrlyqSbinLHDpfTIo8xBqEFWhmyOYkA1i3b5B30L6fFWjisqwVsJ\ngc8wlw5GGarqGOGncCCAjQHPeFWMQZEg12LX57n+oK1+gzNp9PRZ5Ne5VS6X\nOhZfoFxHWXRMJNZ4UBVZ6CzGUz8tQGOpCBg4vOrsTsO71B8E54tyDc2S2EN4\n41pwHyIi7tpxAQ2YOyibTtgq5DdcThjqFCR04PdWq0mGmd6TMDyw8aSMGpTD\n9qkWmFZRnkr0Ta8cIP86vP6SRkjTxOJ9f5da7UhcDoQ4wpVmoYCbXcT19tec\nNKCQF9p2A0lEBh9UlAAnVGrigfrYxffbvxMBMShFpUQUF4QERr8bFAodpZKu\nlpha\r\n=HcUu\r\n-----END PGP SIGNATURE-----\r\n",
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEYCIQDgQlpZZwVkh0QzXpSYm4Z+DT2B3ijo+5FPL3h6Gb0/EwIhAI9v5ml/3dGzI6XXLnDpVe7Q103dg2pknrqI5qXnPB/c"
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.6.3_1625675858654_0.04976282874313154"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.6.4": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.6.4",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/offscreencanvas",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				}
+			],
+			"main": "",
+			"types": "index.d.ts",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {},
+			"typesPublisherContentHash": "4a99ed630f1e3a9dae684a624b47f2eefa78bf3ece91ff84108c03e05eab5fd3",
+			"typeScriptVersion": "4.3",
+			"_id": "@types/offscreencanvas@2019.6.4",
+			"dist": {
+				"integrity": "sha512-u8SAgdZ8ROtkTF+mfZGOscl0or6BSj9A4g37e6nvxDc+YB/oDut0wHkK2PBBiC2bNR8TS0CPV+1gAk4fNisr1Q==",
+				"shasum": "64f6d120b53925028299c744fcdd32d2cd525963",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.4.tgz",
+				"fileCount": 4,
+				"unpackedSize": 6667,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQClnJcSXEB3C4AX+nJT6wngR/C7p77rjsD5uult2KIoPAIgPnE/k8qMPbvlvvOIwMT6qRRdm/fgYhAWgZif+B6RdJY="
+					}
+				]
+			},
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.6.4_1631907099144_0.42494102068589745"
+			},
+			"_hasShrinkwrap": false
+		},
+		"2019.7.0": {
+			"name": "@types/offscreencanvas",
+			"version": "2019.7.0",
+			"description": "TypeScript definitions for offscreencanvas-browser",
+			"homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/offscreencanvas",
+			"license": "MIT",
+			"contributors": [
+				{
+					"name": "Klaus Reimer",
+					"url": "https://github.com/kayahr",
+					"githubUsername": "kayahr"
+				},
+				{
+					"name": "Oleg Varaksin",
+					"url": "https://github.com/ova2",
+					"githubUsername": "ova2"
+				},
+				{
+					"name": "Sean T.McBeth",
+					"url": "https://github.com/capnmidnight",
+					"githubUsername": "capnmidnight"
+				}
+			],
+			"main": "",
+			"types": "index.d.ts",
+			"repository": {
+				"type": "git",
+				"url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+				"directory": "types/offscreencanvas"
+			},
+			"scripts": {},
+			"dependencies": {},
+			"typesPublisherContentHash": "1fddc05632decfd1e70a56dcd29f80aebbf8190beb77e0fb11dab6b094370677",
+			"typeScriptVersion": "4.3",
+			"_id": "@types/offscreencanvas@2019.7.0",
+			"dist": {
+				"integrity": "sha512-PGcyveRIpL1XIqK8eBsmRBt76eFgtzuPiSTyKHZxnGemp2yzGzWpjYKAfK3wIMiU7eH+851yEpiuP8JZerTmWg==",
+				"shasum": "e4a932069db47bb3eabeb0b305502d01586fa90d",
+				"tarball": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.7.0.tgz",
+				"fileCount": 4,
+				"unpackedSize": 9431,
+				"signatures": [
+					{
+						"keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+						"sig": "MEUCIQCxZufo04xOCxIrIHAAyJzZHLwaFXqzXXBKn+gEic1rkAIgZYkUSMJTvt957wKhdU7Me0kASwd+Q2tpUJlUhoQCz2M="
+					}
+				],
+				"npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJijyXiACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmpjkQ//VGCMV0gVfaqbKEXbPYHjrmLnzOZzbyHz27hXPpl3fCT4R+Dn\r\nKdmEGMaAYqLlMFJnpD7qNx6pzKet6crVW3UrbHZ1KaskynbN46WQ4IxHhKSG\r\nAnsDlXs0cDlrVtd+K9oVaoG4sTEr7wRG+WpIzXyU/8fjRewOsI4Ey76Q7WKT\r\nZmMUxcN+4X47znd94R7kuuvuVkyitb/NM/0YooHlWnMV31rcYnsC2edXjRni\r\nx3WNyot/BtYQ+fPkLFy8eyfuu5SEWQLU8kchSz3fNBMmZguLwSYKCMiDiFB2\r\n94aC4SfuSEYGt+RXZzw2pthWmrOARn7+9Va1uHqN3/UMHBCb+QcB3V+Zo9o7\r\nMoSiuKv3v7PKASSoG1lVC64sGmVcH4JflsGrLbDO/psqdOvVwcPi1x4gOmd8\r\n33xSH6iyH68dAt+Hh8ZordRxXzrr2DvyW9DMSM0H6sAw1rm5e8y0XLBq9i+D\r\nrymZyTQQ49uIPujiAGCxvff+yYkuc28hp7oSEMop+NKEzeR2clAKnCsv9Qnu\r\nR6D39JQz9ervQRwMVtYx+m8d31UfxeWhFUsPlcZf7BbfrLbVVvFnh5LDDtMh\r\njH2BhzD8OjfMHoLL3A2SuxOpFprSZuWwm4gtm2cNnz9gryv53L2bflJLTa4b\r\nCoUAw5tsGjLo4/T1mXiB86MR4w+thNniwHQ=\r\n=YqvE\r\n-----END PGP SIGNATURE-----\r\n"
+			},
+			"_npmUser": {
+				"name": "types",
+				"email": "ts-npm-types@microsoft.com"
+			},
+			"directories": {},
+			"maintainers": [
+				{
+					"name": "types",
+					"email": "ts-npm-types@microsoft.com"
+				}
+			],
+			"_npmOperationalInternal": {
+				"host": "s3://npm-registry-packages",
+				"tmp": "tmp/offscreencanvas_2019.7.0_1653548514492_0.4949501585235587"
+			},
+			"_hasShrinkwrap": false
+		}
+	},
+	"time": {
+		"created": "2019-03-08T23:23:42.511Z",
+		"2019.3.0": "2019-03-08T23:23:42.824Z",
+		"modified": "2023-08-14T15:05:24.776Z",
+		"2019.6.0": "2019-06-28T15:54:02.770Z",
+		"2019.6.1": "2020-01-03T23:55:31.170Z",
+		"2019.6.2": "2020-03-24T15:36:42.173Z",
+		"2019.6.3": "2021-07-07T16:37:38.860Z",
+		"2019.6.4": "2021-09-17T19:31:39.285Z",
+		"2019.7.0": "2022-05-26T07:01:54.613Z"
+	},
+	"users": {},
+	"dist-tags": {
+		"latest": "2019.7.0",
+		"ts2.0": "2019.3.0",
+		"ts2.1": "2019.3.0",
+		"ts2.2": "2019.3.0",
+		"ts2.3": "2019.3.0",
+		"ts2.4": "2019.3.0",
+		"ts2.5": "2019.3.0",
+		"ts2.6": "2019.3.0",
+		"ts2.7": "2019.3.0",
+		"ts2.8": "2019.3.0",
+		"ts2.9": "2019.3.0",
+		"ts3.0": "2019.3.0",
+		"ts3.1": "2019.3.0",
+		"ts3.2": "2019.3.0",
+		"ts3.3": "2019.3.0",
+		"ts3.4": "2019.6.2",
+		"ts3.5": "2019.6.2",
+		"ts3.6": "2019.6.3",
+		"ts3.7": "2019.6.3",
+		"ts3.8": "2019.6.3",
+		"ts3.9": "2019.6.3",
+		"ts4.0": "2019.6.3",
+		"ts4.1": "2019.6.3",
+		"ts4.2": "2019.6.3",
+		"ts4.3": "2019.7.0",
+		"ts4.4": "2019.7.0",
+		"ts4.5": "2019.7.0",
+		"ts4.6": "2019.7.0",
+		"ts4.7": "2019.7.0",
+		"ts4.8": "2019.7.0",
+		"ts4.9": "2019.7.0",
+		"ts5.0": "2019.7.0",
+		"ts5.1": "2019.7.0",
+		"ts5.2": "2019.7.0",
+		"ts5.3": "2019.7.0"
+	},
+	"_uplinks": {
+		"npmjs": {
+			"etag": "W/\"fe4669e2fe9d1d6adcb956158ca95642\"",
+			"fetched": 1693524462530
+		}
+	},
+	"_distfiles": {
+		"offscreencanvas-2019.3.0.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.3.0.tgz",
+			"sha": "3336428ec7e9180cf4566dfea5da04eb586a6553",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.6.0.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.0.tgz",
+			"sha": "a91e3df1aabdf297f6b903aadce01b33e6844bdf",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.6.1.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.1.tgz",
+			"sha": "3ec0b0cbf3d9c484b0628931e097f6ce8fccdadd",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.6.2.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.2.tgz",
+			"sha": "9bd6f5a9a70459ec0ce7ecedf45d63e38d744c86",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.6.3.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.3.tgz",
+			"sha": "0508eec9641f3228bf8a27009670166887dc966c",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.6.4.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.6.4.tgz",
+			"sha": "64f6d120b53925028299c744fcdd32d2cd525963",
+			"registry": "npmjs"
+		},
+		"offscreencanvas-2019.7.0.tgz": {
+			"url": "https://registry.npmjs.org/@types/offscreencanvas/-/offscreencanvas-2019.7.0.tgz",
+			"sha": "e4a932069db47bb3eabeb0b305502d01586fa90d",
+			"registry": "npmjs"
+		}
+	},
+	"_attachments": {},
+	"_rev": "2-20655a7725ceee03",
+	"_id": "@types/offscreencanvas",
+	"readme": "# Installation\r\n> `npm install --save @types/offscreencanvas`\r\n\r\n# Summary\r\nThis package contains type definitions for offscreencanvas-browser (https://html.spec.whatwg.org/multipage/canvas.html#the-offscreencanvas-interface).\r\n\r\n# Details\r\nFiles were exported from https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/offscreencanvas.\r\n\r\n### Additional Details\r\n * Last updated: Thu, 26 May 2022 07:01:28 GMT\r\n * Dependencies: none\r\n * Global values: `OffscreenCanvas`, `OffscreenCanvasRenderingContext2D`, `createImageBitmap`, `postMessage`\r\n\r\n# Credits\r\nThese definitions were written by [Klaus Reimer](https://github.com/kayahr), [Oleg Varaksin](https://github.com/ova2), and [Sean T.McBeth](https://github.com/capnmidnight)."
+}

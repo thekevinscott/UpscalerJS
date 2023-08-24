@@ -27,7 +27,7 @@ import {
   isTensor as _isTensor,
 } from '@upscalerjs/core';
 import { ModelPackage, MultiArgStringProgress, } from './types';
-import { mockFn } from '../../../test/lib/shared/mockers';
+import { mockFn } from './mockers';
 
 jest.mock('./utils', () => {
   const { warn, ...rest } = jest.requireActual('./utils');

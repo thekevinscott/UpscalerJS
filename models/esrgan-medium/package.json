@@ -40,16 +40,15 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-medium --config models/scaffolder.ts",
+    "scaffold": "pnpm cli scaffold model esrgan-medium",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-medium",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-medium"
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate models/esrgan-medium",
+    "build": "pnpm cli build model esrgan-medium -o cjs -o esm -o umd",
+    "build:cjs": "pnpm cli build model esrgan-medium -o cjs",
+    "build:esm": "pnpm cli build model esrgan-medium -o esm",
+    "build:umd": "pnpm cli build model esrgan-medium -o umd"
   },
   "files": [
     "assets/**/*",

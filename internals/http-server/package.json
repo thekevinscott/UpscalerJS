@@ -1,0 +1,30 @@
+{
+  "name": "@internals/http-server",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Class for starting up an http server",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@internals/common": "latest",
+    "cloudflared": "^0.5.0",
+    "fs-extra": "^11.1.1",
+    "localtunnel": "^2.0.2",
+    "ngrok": "5.0.0-beta.2",
+    "tunnelmole": "latest"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/localtunnel": "^2.0.2",
+    "vitest": "^0.34.2"
+  }
+}

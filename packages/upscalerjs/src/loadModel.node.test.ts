@@ -4,7 +4,7 @@ import {
   getModuleFolder,
   getMissingMatchesError,
 } from "./loadModel.node";
-import { mock, mockFn } from '../../../test/lib/shared/mockers';
+import { mock, mockFn } from './mockers';
 import { tf as _tf, } from './dependencies.generated';
 import path from 'path';
 import { resolver as _resolver } from './resolver';

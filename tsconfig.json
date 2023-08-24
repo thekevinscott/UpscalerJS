@@ -1,10 +1,20 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "target": "ESNext",
-    "experimentalDecorators": true,
-    "module": "commonjs",
+    "target": "esnext",
     "strict": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "nodenext",
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "./test/setup/vitest.d.ts",
+      "vitest/globals",
+    ]
+  },
+  "ts-node": {
+    "esm": true
   }
 }

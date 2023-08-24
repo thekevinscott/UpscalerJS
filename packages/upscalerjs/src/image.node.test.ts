@@ -1,5 +1,4 @@
 import { readFileSync as _readFileSync } from 'fs';
-import http from 'http';
 import path from 'path';
 import { 
   getImageAsTensor, 
@@ -8,10 +7,8 @@ import {
   getInvalidTensorError,
   getInvalidImageSrcInput,
 } from './image.node';
-import { mockFn } from '../../../test/lib/shared/mockers';
+import { mockFn } from './mockers';
 import { tf } from './dependencies.generated';
-import { startServer } from '../../../test/lib/shared/server';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import {
   hasValidChannels as _hasValidChannels,
 } from '@upscalerjs/core'
@@ -36,37 +33,37 @@ jest.setTimeout(1000);
 
 const readFileSync = mockFn(_readFileSync);
 
-const PORT = 8099;
+// const PORT = 8099;
 
 const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
 const getTensor = (height: number, width: number): tf.Tensor3D => tf.tidy(() => getTensorRange(width, height).reshape([height, width, 1]).tile([1, 1, 3]));
 
-const stopServer = (server: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
-  if (server) {
-    server.close(resolve);
-  } else {
-    console.warn('No server found');
-    resolve();
-  }
-});
+// const stopServer = (server: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
+//   if (server) {
+//     server.close(resolve);
+//   } else {
+//     console.warn('No server found');
+//     resolve();
+//   }
+// });
 
-const FLOWER = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small.jpg');
+const FLOWER = path.resolve('../test/__fixtures__/flower-small.jpg');
 const image = readFileSync(FLOWER);
 
 describe('Image', () => {
-  let server: http.Server;
+  // let server: http.Server;
   beforeEach(() => {
     readFileSync.mockClear();
   });
-  beforeAll(async () => {
-    server = await startServer(PORT);
-  });
+  // beforeAll(async () => {
+  //   server = await startServer(PORT);
+  // });
   afterEach(() => {
     hasValidChannels.mockClear();
   });
-  afterAll(async () => {
-    await stopServer(server);
-  });
+  // afterAll(async () => {
+  //   await stopServer(server);
+  // });
   describe('getImageAsTensor', () => {
     it('handles a uint array', async () => {
       const result = await getImageAsTensor(image);

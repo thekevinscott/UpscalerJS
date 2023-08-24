@@ -1,4 +1,4 @@
-import { mock, mockFn } from '../../../test/lib/shared/mockers';
+import { mock, mockFn } from './mockers';
 import { tf as _tf, } from './dependencies.generated';
 import { 
   parseModelDefinition,

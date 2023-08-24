@@ -8,3 +8,4 @@ packages:
   # exclude packages that are inside demo directories
   - '!models/**/demo/**'
   - '!dev/browser/public/models/**'
+  - '!internals/test-server/server/**'

@@ -1,0 +1,26 @@
+{
+  "name": "@internals/test-runner",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./clientside": "./src/ClientsideTestRunner.ts",
+    "./serverside": "./src/ServersideTestRunner.ts"
+  },
+  "version": "0.1.0",
+  "description": "Classes for managing the test runner process, including server boot up, puppeteer, and more",
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^21.1.0",
+    "fs-extra": "latest"
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "vitest": "latest"
+  }
+}

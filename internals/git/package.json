@@ -1,0 +1,23 @@
+{
+  "name": "@internals/git",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Interface to Git",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "scripts": {
+    "test": "vitest"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.34.2"
+  }
+}

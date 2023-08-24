@@ -3,12 +3,12 @@
   "version": "1.0.0-beta.10",
   "description": "Pixel Upsampler Model for UpscalerJS",
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",
+    "scaffold": "pnpm cli scaffold model pixel-upsampler",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/pixel-upsampler",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate models/pixel-upsampler",
+    "build": "pnpm cli build model pixel-upsampler -o cjs -o esm -o umd"
   },
   "exports": {
     "./2x": {
@@ -47,6 +47,11 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "seedrandom": "3.0.5"
+  },
+  "@upscalerjs": {
+    "model": {
+      "internal": true
+    }
   },
   "author": "Kevin Scott",
   "license": "MIT"

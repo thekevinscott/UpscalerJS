@@ -44,16 +44,15 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts",
+    "scaffold": "pnpm cli scaffold model esrgan-legacy",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-legacy",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-legacy"
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
+    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
+    "validate": "pnpm cli validate models/esrgan-legacy",
+    "build": "pnpm cli build model esrgan-legacy -o cjs -o esm -o umd",
+    "build:cjs": "pnpm cli build model esrgan-legacy -o cjs",
+    "build:esm": "pnpm cli build model esrgan-legacy -o esm",
+    "build:umd": "pnpm cli build model esrgan-legacy -o umd"
   },
   "files": [
     "assets/**/*",
