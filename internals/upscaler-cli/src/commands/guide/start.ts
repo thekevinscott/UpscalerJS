@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command } from '@commander-js/extra-typings';
 import path from 'path';
 import buildUpscaler from '../../lib/package-scripts/build-upscaler.js';
 import { EXAMPLES_DIR, isValidGuide } from '../../lib/guides/isValidGuide.js';
@@ -7,16 +7,16 @@ import { pluralize } from '../../lib/utils/pluralize.js';
 import { getTFJSLibraryTarget } from '../../lib/utils/get-tfjs-library-target.js';
 import { getAllDirectories } from '../../lib/utils/get-all-directories.js';
 import { findSimilarFiles } from '../../lib/utils/find-similar-files.js';
+import { info, verbose } from '../../lib/utils/log.js';
 
 interface Options {
-  verbose?: boolean;
   skipUpscalerBuild?: boolean;
 }
 
 type Action<T extends unknown[]> = (...args: T) => Promise<void>;
 
-export const start: Action<[string, Options]> = async (guide, { skipUpscalerBuild, verbose, }) => {
-  console.log(`Starting guide: "${guide}"`);
+export const start: Action<[string, Options]> = async (guide, { skipUpscalerBuild, }) => {
+  info(`Starting guide: "${guide}"`)
   if (!await isValidGuide(guide)) {
     const examples = await getAllDirectories(EXAMPLES_DIR);
     const similarFiles = await findSimilarFiles(examples, guide, { n: 3, distance: 5 });
@@ -34,9 +34,7 @@ export const start: Action<[string, Options]> = async (guide, { skipUpscalerBuil
 
   if (skipUpscalerBuild !== true) {
     await buildUpscaler(platform);
-    if (verbose) {
-      console.log(`** built upscaler: ${platform}`)
-    }
+    verbose(`** built upscaler: ${platform}`)
   }
 
   await runNPMCommand(['install', '--no-package-lock'], guidePath);
@@ -47,6 +45,5 @@ export default (program: Command) => program.command('start')
     .description('Start an example')
     .argument('<string>', 'example to start')
     .option('--skipUpscalerBuild', 'if true, skip building UpscalerJS when starting up')
-    .option('--verbose', 'verbose mode')
     .action(start);
 

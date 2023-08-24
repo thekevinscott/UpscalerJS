@@ -1,8 +1,8 @@
 import { program } from 'commander';
 import path from 'path';
 import fsExtra from 'fs-extra';
-import { ROOT_DIR } from './lib/package-scripts/utils/constants.js';
-import { buildCommandsTree } from './lib/cli/build-commands-tree.js';
+import { ROOT_DIR } from '../package-scripts/utils/constants.js';
+import { buildCommandsTree } from './build-commands-tree.js';
 const { readFileSync, } = fsExtra;
 
   // "scripts": {
@@ -43,7 +43,12 @@ export class CLI {
     program
       .name(name)
       .description(description)
+      .option('-', '--log-level', 'log level')
+      .on('option:log-level', (l) => {
+        console.log('YO WHATUP', l)
+      })
       .version(version);
+
   }
 
   run = async () => { // skipcq: JS-0105
