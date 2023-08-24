@@ -68,7 +68,7 @@ jobs:
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
-        run: pnpm test:unit:browser:playwright
+        run: pnpm --filter upscaler test:unit:browser:playwright
 
       - name: 'Upload Unit Browser Artifact'
         uses: actions/upload-artifact@v2
@@ -94,7 +94,7 @@ jobs:
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
-        run: pnpm test:unit:node
+        run: pnpm --filter upscaler test:unit:node
 
       - name: 'Upload Unit Node Artifact'
         uses: actions/upload-artifact@v2
@@ -120,23 +120,6 @@ jobs:
         working-directory: ./packages/shared
         run: pnpm test
 
-  internal-unit:
-    name: 'Internals / Unit'
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-        with:
-          lfs: 'true'
-
-      - name: 'Setup PNPM with Node 16'
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: 16
-
-      - name: 'Unit Tests'
-        working-directory: ./internals
-        run: pnpm test
 
   upload-to-codecov:
     name: 'Upload to CodeCov'
@@ -151,9 +134,14 @@ jobs:
         with:
           verbose: true
 
-  integration-browser-browserstack:
-    name: 'Integration / Browser / Browserstack'
+
+  integration:
+    name: 'Integration'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [clientside, serverside, memory-leaks, models, browserstack]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -171,6 +159,7 @@ jobs:
         with:
           node-version: 16
 
+<<<<<<< HEAD
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       #   with:

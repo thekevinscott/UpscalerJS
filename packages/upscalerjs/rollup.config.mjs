@@ -1,6 +1,10 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
 import DefaultUpscalerModel from '../../models/default-model/umd-names.json' assert { type: 'json' };
+// import DefaultUpscalerModel from '../../../../../models/default-model/umd-names.json' assert { type: "json" };
+const DefaultUpscalerModel = {
+  ".": "DefaultUpscalerJSModel"
+};
 
 const isValidUMDNameFile = (contents)  => typeof contents === 'object' && contents !== undefined && contents !== null && '.' in contents;
 
@@ -25,7 +29,7 @@ export default {
         /^(?!.*(@tensorflow\/tfjs-core))/, //skipcq: js-0113
       ],
     }),
-    commonjs(),
+    (commonjs as any)(), // skipcq: js-0323
   ],
   output: {
     globals: {
@@ -35,3 +39,4 @@ export default {
     },
   },
 };
+

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "declaration": true,
+    "importHelpers": true,
+    "module": "ESNext",
+    "outDir": "dist",
+    "rootDir": "src",
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "target": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "vitest/globals",
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+  ],
+  "ts-node": {
+    "esm": true
+  }
+}
