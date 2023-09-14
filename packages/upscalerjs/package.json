@@ -48,7 +48,7 @@
     "build": "pnpm build:dependencies && pnpm build:only && pnpm validate",
     "build:only": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
     "build:browser": "pnpm cli build upscaler browser -o esm -o umd",
-    "build:node": "pnpm cli build upcaler node -o cjs",
+    "build:node": "pnpm cli build upscaler node -o cjs",
     "build:node-gpu": "pnpm cli build upscaler node-gpu -o cjs",
     "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build",
     "scaffold": "pnpm cli scaffold upscaler",
