@@ -3,7 +3,6 @@ import path from 'path';
 import { TEST_DIR } from '@internals/common/constants';
 import { runTests } from '../../../lib/utils/run-tests.js';
 import { NodeBundler } from '@internals/bundlers/node';
-import { Bundler, BundlerName } from '@internals/bundlers';
 
 export default (program: Command) => program.command('serverside')
   .description('Test server side integration tests')

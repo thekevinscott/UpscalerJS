@@ -2,7 +2,7 @@ import { exists } from '@internals/common/fs';
 import { getLogLevel, verbose } from '@internals/common/logger';
 import { runPNPMCommand } from '@internals/common/npm';
 
-export const getPublishCommand = (registryURL: string, npmrc: string) => [
+export const getPublishCommand = (registryURL: string, _npmrc: string) => [
   'pnpm',
   'publish',
   getLogLevel() !== 'verbose' ? '--silent' : '',

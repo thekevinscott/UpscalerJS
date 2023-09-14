@@ -11,7 +11,7 @@ export interface BundleOptions {
 export class Bundler {
   packages: Promise<RegistryPackage[]> = Promise.resolve([]);
   server?: HttpServer;
-  public dist: string = 'dist';
+  public dist = 'dist';
   public outDir: string;
   public usesRegistry = true;
 
@@ -21,7 +21,6 @@ export class Bundler {
 
   get name(): string {
     throw new Error("Extend this class and implement the name getter");
-    return '';
   }
 
   get absoluteDistFolder() {

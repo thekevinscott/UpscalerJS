@@ -15,7 +15,7 @@ const isPackageJSONExports = (exports: unknown): exports is {
   if (typeof exports !== 'object' || exports === null) {
     return false;
   };
-  return Object.entries(exports).reduce((isValid, [exportName, exportValue]) => {
+  return Object.entries(exports).reduce((isValid, [_exportName, exportValue]) => {
     return isValid === false ? false : typeof exportValue === 'string' || (typeof exportValue === 'object' && 'require' in exportValue && 'import' in exportValue);
   }, true);
 };

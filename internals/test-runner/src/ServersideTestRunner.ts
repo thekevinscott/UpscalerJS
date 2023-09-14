@@ -3,7 +3,7 @@ import { exec, ExecOptions } from 'child_process';
 import path from 'path';
 import { withTmpDir } from "@internals/common/tmp-dir";
 import { getHashedName } from "@internals/common/get-hashed-name";
-import { info, verbose } from "@internals/common/logger";
+import { info } from "@internals/common/logger";
 import { exists } from "@internals/common/fs";
 import fsExtra from "fs-extra";
 import { getTemplate } from "@internals/common/get-template";
@@ -44,7 +44,7 @@ export class RunNodeScriptError extends Error {
   name = 'RunNodeScriptError';
   pertinentLine: string;
 
-  constructor(error: unknown, script?: string) {
+  constructor(error: unknown, _script?: string) {
     if (error instanceof Error) {
       const pertinentLine = getPertinentLine(error);
       const message = pertinentLine;

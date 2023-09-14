@@ -4,7 +4,6 @@ import { timeit } from './utils/timeit.js';
 import { catchFailures } from './utils/catchFailures.js';
 import { HttpServer } from '@internals/http-server';
 import { MODELS_DIR } from '@internals/common/constants';
-import { error, info } from '@internals/common/logger';
 
 // type Bundle = (opts?: Opts) => Promise<void>;
 type Bundle = () => Promise<void>;

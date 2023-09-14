@@ -10,9 +10,9 @@ const {
   mkdirp: (pathname: string) => Promise<void>;
 };
 
-export const writeFile = async (pathname: string, contents: string) => {
+export const writeFile = async (pathname: string, contents: string, encoding: 'utf-8' | 'base64' = 'utf-8') => {
   await _mkdirp(path.dirname(pathname));
-  await _writeFile(pathname, contents, 'utf-8');
+  await _writeFile(pathname, contents, encoding);
 };
 
 export const copyFile = async (srcpath: string, targetpath: string) => {

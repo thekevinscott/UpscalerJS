@@ -1,8 +1,7 @@
 import { Server as HTTPServer, createServer } from 'http';
 import handler from 'serve-handler';
 import { exists } from '@internals/common/fs';
-import { getLogLevel, verbose } from '@internals/common/logger';
-import { getPort } from '@internals/common/get-port';
+import { verbose } from '@internals/common/logger';
 import { Tunnel } from './Tunnel.js';
 
 const serverHeaders = [

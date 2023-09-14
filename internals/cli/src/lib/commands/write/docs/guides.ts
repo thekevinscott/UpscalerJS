@@ -245,7 +245,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
     ``,
     ...Object.entries(examplesByCategory).map(([category, examples]) => {
       let activeParent: undefined | string;
-      return `\n## ${uppercase(category)}\n\n${examples.map(([parent, example], i) => {
+      return `\n## ${uppercase(category)}\n\n${examples.map(([parent, example]) => {
         const { title } = examplesByName[example];
         const url = [
           '/documentation',

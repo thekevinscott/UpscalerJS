@@ -1,4 +1,4 @@
-import { exec, spawn } from 'child_process';
+import { spawn } from 'child_process';
 import { getLogLevel, verbose } from './logger.js';
 
 const parseCommand = (_command: string | string[]) => {
@@ -8,6 +8,29 @@ const parseCommand = (_command: string | string[]) => {
   }
   return command;
 };
+
+export const runNPMCommand = (
+  command: string | string[],
+  cwd: string,
+  runner: 'npm' | 'pnpm' = 'npm',
+) => new Promise<void>((resolve, reject) => {
+  const child = spawn(runner, parseCommand(command), {
+    shell: true,
+    cwd,
+    stdio: "inherit"
+  });
+
+  child.on('error', reject);
+
+  child.on('close', (code) => {
+    if (code === 0) {
+      resolve();
+    } else {
+      reject(code);
+    }
+  });
+});
+
 
 export const npmInstall = async (cwd: string, {
   isSilent = false,
@@ -32,28 +55,6 @@ export const npmInstall = async (cwd: string, {
   await runNPMCommand(command, cwd);
 
 };
-
-export const runNPMCommand = (
-  command: string | string[],
-  cwd: string,
-  runner: 'npm' | 'pnpm' = 'npm',
-) => new Promise<void>((resolve, reject) => {
-  const child = spawn(runner, parseCommand(command), {
-    shell: true,
-    cwd,
-    stdio: "inherit"
-  });
-
-  child.on('error', reject);
-
-  child.on('close', (code) => {
-    if (code === 0) {
-      resolve();
-    } else {
-      reject(code);
-    }
-  });
-});
 
 export const runPNPMCommand = (
   command: Parameters<typeof runNPMCommand>[0],

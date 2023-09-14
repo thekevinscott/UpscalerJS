@@ -4,6 +4,17 @@ import { TMP_DIR } from './constants.js';
 import { getHashedName } from './get-hashed-name.js';
 import { exists, mkdirp } from './fs.js';
 
+export const makeTmpDir = async (root = TMP_DIR): Promise<string> => {
+  const hashedName = getHashedName();
+  const folder = path.resolve(root, hashedName);
+  await mkdirp(folder);
+  if (!await exists(folder)) {
+    throw new Error(`Tmp directory ${folder} was not created`);
+  }
+  return folder;
+};
+
+
 interface WithTmpDirOpts {
   rootDir?: string;
   removeTmpDir?: boolean;
@@ -28,14 +39,3 @@ export async function withTmpDir<T>(callback: WithTmpDirFn<T>, { rootDir, remove
   }
   return response;
 };
-
-export const makeTmpDir = async (root = TMP_DIR): Promise<string> => {
-  const hashedName = getHashedName();
-  const folder = path.resolve(root, hashedName);
-  await mkdirp(folder);
-  if (!await exists(folder)) {
-    throw new Error(`Tmp directory ${folder} was not created`);
-  }
-  return folder;
-};
-

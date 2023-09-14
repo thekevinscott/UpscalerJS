@@ -166,7 +166,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16]
         test: [clientside, serverside, memory-leaks, models, browserstack]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -178,15 +177,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 20'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
+          node-version: 20
 
       - name: 'Build Upscaler'
         run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-model-build --skip-bundle --skip-test

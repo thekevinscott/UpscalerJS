@@ -1,4 +1,4 @@
-import { ROOT_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import { ROOT_DIR } from '@internals/common/constants';
 import { getPackageJSON } from '@internals/common/package-json';
 
 export const getTFJSVersion = async () => {

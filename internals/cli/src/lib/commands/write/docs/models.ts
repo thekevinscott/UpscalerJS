@@ -32,6 +32,17 @@ const copyAssets = async (packageName: string, targetDir: string) => {
 
 const createMarkdown = async (contents: string, targetPath: string) => writeFile(targetPath, contents);
 
+const getCategory = (packageName: string, readmeContents: string) => {
+  const lines = readmeContents.split('\n');
+  for (const line of lines) {
+    if (line.startsWith('category: ')) {
+      return line.split('category: ').pop() || '';
+    }
+  }
+
+  throw new Error(`Could not find category for package name ${packageName}`);
+};
+
 const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, targetDocDir: string) => {
   for (let i = 0; i < packages.length; i++) {
     const packageName = packages[i];
@@ -100,17 +111,6 @@ const getEnhancedSrc = (packageName: string, readmeContents: string) => {
   throw new Error(`Could not find enhanced_src for package name ${packageName}`);
 };
 
-const getCategory = (packageName: string, readmeContents: string) => {
-  const lines = readmeContents.split('\n');
-  for (const line of lines) {
-    if (line.startsWith('category: ')) {
-      return line.split('category: ').pop() || '';
-    }
-  }
-
-  throw new Error(`Could not find category for package name ${packageName}`);
-};
-
 const getPackageMetadata = async (packageName: string) => {
   const packagePath = path.resolve(MODELS_DIR, packageName);
   const docMdxPath = path.resolve(packagePath, 'DOC.mdx');
@@ -122,6 +122,20 @@ const getPackageMetadata = async (packageName: string) => {
     unenhancedSrc: `${packageName}/fixture.png`,
     category: getCategory(packageName, docMdxContents),
   };
+};
+
+const getAllPackagesWithMetadata = async (packageNames: string[]): Promise<PackageWithMetadata[]> => {
+  const packagesWithValidReadme = packageNames.filter(packageName => {
+    const packagePath = path.resolve(MODELS_DIR, packageName);
+    const readmePath = path.resolve(packagePath, 'DOC.mdx');
+    return exists(readmePath);
+  });
+  const packagesWithMetadata = await Promise.all(packagesWithValidReadme.map(async (packageName) => ({
+    packageName,
+    ...(await getPackageMetadata(packageName)),
+  })));
+
+  return packagesWithMetadata;
 };
 
 const getAllPackagesOrganizedByCategory = async (packageNames: string[]): Promise<{ category: string, packages: PackageWithMetadata[] }[]> => {
@@ -147,21 +161,7 @@ const getAllPackagesOrganizedByCategory = async (packageNames: string[]): Promis
   });
 };
 
-const getAllPackagesWithMetadata = async (packageNames: string[]): Promise<PackageWithMetadata[]> => {
-  const packagesWithValidReadme = packageNames.filter(packageName => {
-    const packagePath = path.resolve(MODELS_DIR, packageName);
-    const readmePath = path.resolve(packagePath, 'DOC.mdx');
-    return exists(readmePath);
-  });
-  const packagesWithMetadata = await Promise.all(packagesWithValidReadme.map(async (packageName) => ({
-    packageName,
-    ...(await getPackageMetadata(packageName)),
-  })));
-
-  return packagesWithMetadata;
-};
-
-const writeModelIndexFile = async (packageNames: string[], targetAssetDir: string) => {
+const writeModelIndexFile = async (packageNames: string[], _targetAssetDir: string) => {
   const packagesByCategory = getAllPackagesOrganizedByCategory(packageNames);
   const contents = `
 ---

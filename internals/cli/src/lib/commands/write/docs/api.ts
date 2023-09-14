@@ -59,7 +59,6 @@ const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
 const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
-const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
   'constructor', 
@@ -78,7 +77,22 @@ const INTRINSIC_TYPES = [
 const TYPES_TO_EXPAND: Record<string, string[]> = {
   'upscale': ['Input', 'Progress'],
   'warmup': ['WarmupSizes'],
-}
+};
+
+const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
+  const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
+  for (let i = 0; i< Object.values(definitions.types).length; i++) {
+    const type = Object.values(definitions.types)[i];
+    if (!isDeclarationReflection(type)) {
+      platformSpecificTypes.push(type);
+    }
+  }
+  return platformSpecificTypes.map(parameter => [
+    writePlatformSpecificParameter('Browser', parameter.browser, definitions),
+    writePlatformSpecificParameter('Node', parameter.node, definitions),
+  ].join('\n')).join('\n');
+};
+
 const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
   'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
   'WarmupSizes': () => ([
@@ -98,7 +112,7 @@ const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParam
   ].join('\n')),
 };
 // define special type information that is external
-const makeNewExternalType = (name: string, url: string): DeclarationReflection => {
+const makeNewExternalType = (name: string, _url: string): DeclarationReflection => {
   const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
   // const source = new SourceReference('', 0, 0);
   // source.url = url;
@@ -300,6 +314,18 @@ const getTextSummary = (name: string, comment?: Comment): {
   }
 };
 
+const rewriteURL = (url: string) => {
+  const parts = url.split(/blob\/(?<group>[^/]+)/)
+  if (parts.length !== 3) {
+    throw new Error(`Error with the regex: ${url}`);
+  }
+  return [
+    parts[0],
+    'tree/main',
+    parts[2],
+  ].join('');
+};
+
 const getSource = ([source]: SourceReference[]) => {
   let {
     fileName,
@@ -315,17 +341,6 @@ const getSource = ([source]: SourceReference[]) => {
   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
 };
 
-const rewriteURL = (url: string) => {
-  const parts = url.split(/blob\/(?<group>[^/]+)/)
-  if (parts.length !== 3) {
-    throw new Error(`Error with the regex: ${url}`);
-  }
-  return [
-    parts[0],
-    'tree/main',
-    parts[2],
-  ].join('');
-}
 
 const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection?.kind !== 'Platform Specific Type';
 const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
@@ -537,9 +552,9 @@ function sortChildrenByLineNumber<T extends (DeclarationReflection)>(children: T
   });
 };
 
-const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection): reflection is TypeParameterReflection => {
-  return 'parent' in reflection;
-}
+// const isTypeParameterReflection = (reflection: DecRef | TypeParameterReflection): reflection is TypeParameterReflection => {
+//   return 'parent' in reflection;
+// }
 
 const writeParameter = (methodName: string, parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DecRef | TypeParameterReflection, definitions: Definitions, childParameters: string) => {
   // if (matchingType !== undefined && !isTypeParameterReflection(matchingType) && !isDeclarationReflection(matchingType)) {
@@ -587,19 +602,6 @@ const writePlatformSpecificParameter = (platform: string, parameter: Declaration
   ].filter(Boolean).join(' ');
 };
 
-const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
-  const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
-  for (let i = 0; i< Object.values(definitions.types).length; i++) {
-    const type = Object.values(definitions.types)[i];
-    if (!isDeclarationReflection(type)) {
-      platformSpecificTypes.push(type);
-    }
-  }
-  return platformSpecificTypes.map(parameter => [
-    writePlatformSpecificParameter('Browser', parameter.browser, definitions),
-    writePlatformSpecificParameter('Node', parameter.node, definitions),
-  ].join('\n')).join('\n');
-};
 
 const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
   const { classes, interfaces, types } = definitions;
@@ -760,7 +762,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     throw new Error(`No sources found for ${name}`);
   }
   if (!signatures?.length) {
-    const { type, ...m } = method;
+    const { type: _type, ...m } = method;
     console.log(JSON.stringify(m, null, 2))
     throw new Error(`No signatures found in ${name}`);
   }

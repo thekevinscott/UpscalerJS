@@ -5,7 +5,6 @@ import { HttpServer } from '@internals/http-server';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';
 import { UMDBundler } from '@internals/bundlers/umd';
 import { NodeBundler } from '@internals/bundlers/node';
-import { Registry } from '@internals/registry';
 import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
 import { WebpackBundler } from '@internals/bundlers/webpack';
 

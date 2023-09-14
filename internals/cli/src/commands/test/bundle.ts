@@ -1,4 +1,4 @@
-import { Command, InvalidArgumentError } from '@commander-js/extra-typings';
+import { Command } from '@commander-js/extra-typings';
 import { output, verbose } from '@internals/common/logger';
 import { BundleOptions, Bundler, BundlerName, isValidBundlerName } from '@internals/bundlers';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';

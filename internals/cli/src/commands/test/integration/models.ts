@@ -5,7 +5,6 @@ import { runTests } from '../../../lib/utils/run-tests.js';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';
 import { UMDBundler } from '@internals/bundlers/umd';
 import { NodeBundler } from '@internals/bundlers/node';
-import { Bundler, BundlerName } from '@internals/bundlers';
 
 export default (program: Command) => program.command('models')
   .description('Test all available models')

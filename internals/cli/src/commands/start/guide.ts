@@ -6,27 +6,12 @@ import { pluralize } from '@internals/common/pluralize';
 import { getTFJSLibraryTargetFromPackageJSON } from '@internals/common/tfjs-library';
 import { getAllDirectories } from '../../lib/utils/get-all-directories.js';
 import { findSimilarFiles } from '../../lib/utils/find-similar-files.js';
-import { info, output, verbose } from '@internals/common/logger';
+import { info, verbose } from '@internals/common/logger';
 import { Action } from '@internals/common/types';
 import { buildUpscaler } from '../build/upscaler.js';
 
 interface Options {
   skipUpscalerBuild?: boolean;
-}
-
-export const startAction: Action<[string, Options]> = async (guide, { skipUpscalerBuild, }) => {
-  info(`Starting guide: "${guide}"`)
-  if (!await isValidGuide(guide)) {
-    const examples = await getAllDirectories(EXAMPLES_DIR);
-    const similarFiles = await findSimilarFiles(examples, guide, { n: 3, distance: 5 });
-
-    throw new Error([
-      `"${guide}" is not a valid guide, and was not found in the examples directory.`,
-      similarFiles.length > 0 ? `Did you mean ${pluralize(similarFiles)}?` : undefined,
-    ].filter(Boolean).join(' '));
-  }
-
-  await start(guide, { skipUpscalerBuild });
 }
 
 export const start = async (guide: string, { skipUpscalerBuild }: Options) => {
@@ -44,7 +29,23 @@ export const start = async (guide: string, { skipUpscalerBuild }: Options) => {
 
   await runNPMCommand(['install', '--no-package-lock'], guidePath);
   await runNPMCommand(['run', 'dev'], guidePath);
-}
+};
+
+export const startAction: Action<[string, Options]> = async (guide, { skipUpscalerBuild, }) => {
+  info(`Starting guide: "${guide}"`)
+  if (!await isValidGuide(guide)) {
+    const examples = await getAllDirectories(EXAMPLES_DIR);
+    const similarFiles = await findSimilarFiles(examples, guide, { n: 3, distance: 5 });
+
+    throw new Error([
+      `"${guide}" is not a valid guide, and was not found in the examples directory.`,
+      similarFiles.length > 0 ? `Did you mean ${pluralize(similarFiles)}?` : undefined,
+    ].filter(Boolean).join(' '));
+  }
+
+  await start(guide, { skipUpscalerBuild });
+};
+
 
 export default (program: Command) => program.command('guide')
     .description('Start a guide')

@@ -66,14 +66,8 @@ const makeHtpasswdFile = async (htpasswdPath: string) => {
   ]);
 };
 
-const startRegistryServer = (configPath: string, port: number) => new Promise<Server>(async (resolve, reject) => {
-  const app = await runServer(configPath);
-  app.listen(port, () => {
-    resolve(app);
-  }).on('error', (err: Error) => {
-    reject(err);
-  });
-  return app;
+const startRegistryServer = (app: Server, port: number) => new Promise<void>(async (resolve, reject) => {
+  app.listen(port, resolve).on('error', reject);
 });
 
 const getStorageDir = (outDir: string) => path.resolve(outDir, 'storage');
@@ -82,7 +76,9 @@ const startRegistry = (outDir: string, htpasswd: string, port: number) => withTm
   const configPath = path.resolve(tmpDir, 'config.yaml');
   const config = await getRegistryConfig(getStorageDir(outDir), htpasswd);
   await writeFile(configPath, config);
-  return startRegistryServer(configPath, port);
+  const app: Server = await runServer(configPath);
+  await startRegistryServer(app, port);
+  return app;
 }, {
   rootDir: path.resolve(ROOT_DIR, 'configs'),
 });
@@ -110,7 +106,7 @@ export interface Package {
 
 export class Registry {
   private _app?: Server;
-  public port: number = 0;
+  public port = 0;
   private listeners = 0;
   chosenPort: Promise<number>;
   outDirRoot: string = path.resolve(TMP_DIR, 'registry');

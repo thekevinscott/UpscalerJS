@@ -35,8 +35,8 @@ const getPackagesFromBundlers = async (bundlers: Bundler[]): Promise<RegistryPac
 export const runTests = async (
   environment: Environment | Environment[],
   vitestConfigPath: string,
-  bundlerDefinitions: (typeof Bundler)[] = [],
-  testFiles: string[] = [],
+  bundlerDefinitions: (typeof Bundler)[],
+  testFiles: string[],
   {
     skipUpscalerBuild,
     skipModelBuild,
@@ -63,7 +63,7 @@ export const runTests = async (
   if (skipModelBuild !== true) {
     await time(() => buildModels(packageDirectoryNames, outputFormats, { shouldClearDistFolder }), duration => info([
       `** built models in ${Math.round(duration) / 1000} s`,
-      ...packageDirectoryNames.map((modelPackage, i) => `  - ${modelPackage}`),
+      ...packageDirectoryNames.map((modelPackage) => `  - ${modelPackage}`),
     ].join('\n')));
   } else {
     if (shouldClearDistFolder) {

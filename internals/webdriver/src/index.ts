@@ -144,15 +144,13 @@ export const printLogs = async (driver: WebDriver, capabilities: BrowserOption, 
   }
 }
 
-export const takeScreenshot = async (driver: ThenableWebDriver, target: string) => new Promise<void>((resolve) => {
-  driver.takeScreenshot().then(data => {
-    var base64Data = data.replace(/^data:image\/png;base64,/, "");
-    writeFile(target, base64Data, 'base64');
-    resolve();
-  });
-});
+export const takeScreenshot = async (driver: ThenableWebDriver, target: string) => {
+  const data = await driver.takeScreenshot();
+  const base64Data = data.replace(/^data:image\/png;base64,/, "");
+  return writeFile(target, base64Data, 'base64');
+};
 
-export async function executeAsyncScript<T, A extends {}>(driver: webdriver.WebDriver, fn: (args: A) => T, args: A, {
+export async function executeAsyncScript<T, A extends Record<string, unknown>>(driver: webdriver.WebDriver, fn: (args: A) => T, args: A, {
   pollTime = 100, 
   timeout = 60 * 1000 * 5,
 }: {
@@ -182,7 +180,6 @@ export async function executeAsyncScript<T, A extends {}>(driver: webdriver.WebD
   let response: T | undefined;
   let err: string | undefined;
   const start = performance.now();
-  let iterations = 0;
   while (!response && !err) {
     if (performance.now() - start > timeout) {
       throw new Error(`Failed to execute script after ${timeout} ms`);
@@ -200,7 +197,6 @@ export async function executeAsyncScript<T, A extends {}>(driver: webdriver.WebD
       }
     }
     await wait(pollTime);
-    iterations += 1;
   }
   if (!response) {
     throw new Error('Bug with code');

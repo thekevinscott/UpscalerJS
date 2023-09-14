@@ -42,6 +42,27 @@ const getAllModelPackages = async (includeExperimental = false) => {
   return packageDirectoryNames.sort();
 }
 
+const getAllAvailableModels = async (packageName: string): Promise<AvailableModel[]> => {
+  const modelPackageDir = path.resolve(MODELS_DIR, packageName);
+  const umdNamesPath = path.resolve(modelPackageDir, 'umd-names.json');
+  if (!await exists(umdNamesPath)) {
+    throw new Error(`No umd-names.json file found at ${umdNamesPath}`);
+  }
+  const umdNames = JSON.parse(await readFile(umdNamesPath))
+  const packageJSONExports = await getPackageJSONExports(modelPackageDir);
+  return packageJSONExports.filter(k => k[0] !== '.').map(([key, value]) => {
+    const umdName = umdNames[key];
+    if (umdName === undefined) {
+      throw new Error(`No UMD name defined for ${packageName}/umd-names.json for ${key}`);
+    }
+    return {
+      key,
+      umdName,
+      value,
+    };
+  });
+};
+
 const getAllModels = async (packageDirectoryNames: Promise<string[]>) => {
   const modelPackagesAndModels: ModelInformation[] = [];
   await Promise.all((await packageDirectoryNames).map(async packageDirectoryName => {
@@ -91,27 +112,6 @@ interface AvailableModel {
   umdName: string;
   value: string | PackageJSONExport;
 }
-
-const getAllAvailableModels = async (packageName: string): Promise<AvailableModel[]> => {
-  const modelPackageDir = path.resolve(MODELS_DIR, packageName);
-  const umdNamesPath = path.resolve(modelPackageDir, 'umd-names.json');
-  if (!await exists(umdNamesPath)) {
-    throw new Error(`No umd-names.json file found at ${umdNamesPath}`);
-  }
-  const umdNames = JSON.parse(await readFile(umdNamesPath))
-  const packageJSONExports = await getPackageJSONExports(modelPackageDir);
-  return packageJSONExports.filter(k => k[0] !== '.').map(([key, value]) => {
-    const umdName = umdNames[key];
-    if (umdName === undefined) {
-      throw new Error(`No UMD name defined for ${packageName}/umd-names.json for ${key}`);
-    }
-    return {
-      key,
-      umdName,
-      value,
-    };
-  });
-};
 
 export const getSupportedPlatforms = async (packageName: string, modelName: string): Promise<Environment[]> => {
   if (!packageName) {

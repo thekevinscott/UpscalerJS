@@ -7,17 +7,15 @@ const ignoreFiles = (file: string) => !['.DS_Store'].includes(file);
 
 const VALID_EXTENSIONS = ['ts', 'js', 'json', ''];
 
-type Action<T extends unknown[]> = (...args: T) => Promise<void>;
-interface CommandDefinition<T extends unknown[]> {
+interface CommandDefinition {
   default: (program: Command) => Command;
   postProcess?: (program: Command) => Command;
-  // action?: Action<T>;
 }
-function isCommandDefinition<T extends unknown[]>(obj: unknown): obj is CommandDefinition<T> {
+function isCommandDefinition(obj: unknown): obj is CommandDefinition {
   return typeof obj === 'object' && obj !== null && 'default' in obj;
 };
 
-async function dynamicallyLoadCommand<T extends unknown[]>(fullPath: string): Promise<CommandDefinition<T>> {
+async function dynamicallyLoadCommand(fullPath: string): Promise<CommandDefinition> {
   const contents = await import(fullPath);
   if (!isCommandDefinition(contents)) {
     throw new Error(`Loaded file at ${fullPath} is not a valid command definition`);

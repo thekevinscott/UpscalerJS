@@ -1,7 +1,5 @@
-import path from 'path';
 import { ConfigBuilder } from 'verdaccio';
 import { dump } from 'js-yaml';
-import { ROOT_DIR } from '@internals/common/constants';
 
 const access = '$all';
 
