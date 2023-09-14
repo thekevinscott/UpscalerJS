@@ -103,7 +103,7 @@ export interface ModelInformation {
   packageDirectoryName: string;
   modelExport: string | PackageJSONExport;
 }
-export const isValidModelInformation = (model: unknown): model is ModelInformation => Boolean(model) && typeof model === 'object' && 'packageDirectoryName' in model;
+export const isValidModelInformation = (model: unknown): model is ModelInformation => Boolean(model) && model !== null && typeof model === 'object' && 'packageDirectoryName' in model;
 export const ALL_MODEL_PACKAGE_DIRECTORY_NAMES = getAllModelPackages();
 export const ALL_MODELS: Promise<ModelInformation[]> = getAllModels(ALL_MODEL_PACKAGE_DIRECTORY_NAMES);
 

@@ -101,7 +101,7 @@ export class ServersideTestRunner {
 
   run(script: string): Promise<Buffer> {
     const contentFn = (outputFile: string) => {
-      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.ejs'), {
+      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.t'), {
         outputFile,
         script,
       });

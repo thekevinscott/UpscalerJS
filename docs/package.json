@@ -5,7 +5,7 @@
   "scripts": {
     "build:dependencies": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
     "write-api": "pnpm cli write docs api",
-    "write-api:watch": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' -x \"pnpm run write-api\"",
+    "write-api:watch": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../internals/cli/src/lib/write/docs/api/**/*' -x \"pnpm run write-api\"",
     "write-guides": "pnpm cli write docs guides",
     "write-guides:watch": "nodemon -e md --watch '../examples/**/*' -x \"pnpm run write-guides\"",
     "write-model-readmes": "pnpm cli write docs models",

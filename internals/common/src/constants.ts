@@ -21,3 +21,4 @@ export const SHARED_DIR = path.resolve(PACKAGES_DIR, 'shared');
 export const WRAPPER_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs-wrapper');
 
 export const INTERNALS_DIR = path.resolve(ROOT_DIR, 'internals');
+export const CLI_DIR = path.resolve(INTERNALS_DIR, 'cli')

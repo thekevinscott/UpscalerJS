@@ -24,7 +24,7 @@
     "inquirer": "^9.2.10",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.7",
-    "typedoc": "^0.24.8"
+    "typedoc": "^0.25.1"
   },
   "devDependencies": {
     "@commander-js/extra-typings": "^11.0.0",

@@ -212,7 +212,6 @@ describe('buildCommandsTree', () => {
 
   const mockFakeFile = (pathname: string) => import(pathname);
   describe('commands', () => {
-
     it('a directory returns the command for its index file', async () => {
       const fakeFile = await mockFakeFile('foo/index.js');
       const mockReadDir = () => Promise.resolve([

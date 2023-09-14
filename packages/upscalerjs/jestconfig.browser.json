@@ -1,0 +1,16 @@
+{
+  "transform": {
+    "^.+\\.(t|j)sx?$": "ts-jest"
+  },
+  "testEnvironment": "node",
+  "setupFiles": ["jest-canvas-mock"],
+  "collectCoverage": true,
+  "coveragePathIgnorePatterns": [
+    "node_modules",
+    ".generated.ts",
+    ".node.ts"
+  ],
+  "modulePathIgnorePatterns": ["image.browser.test.ts", "node.test.ts"],
+  "testRegex": "test\\.ts$",
+  "moduleFileExtensions": ["js", "ts"]
+}
