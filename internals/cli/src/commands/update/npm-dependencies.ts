@@ -38,7 +38,7 @@ const exec = (cmd: string, opts: ExecOptions) => new Promise<void>((resolve, rej
     spawnedProcess.stdout?.pipe(process.stdout);
   }
 });
-const getOutput = async (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
+const getOutput = (cmd: string, { ...opts }: ExecOptions = {}) => new Promise<string>((resolve, reject) => {
   let output = '';
   const spawnedProcess = _exec(cmd, opts, (error) => {
     if (error) {
