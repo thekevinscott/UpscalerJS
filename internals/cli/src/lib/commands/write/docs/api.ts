@@ -168,13 +168,13 @@ const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions
     // if (definitions === undefined) {
     //   throw new Error('Intersection type was provided and a reference type was found in the union, but no definitions are present.')
     // }
-    const t = refType.typeArguments?.filter(t => t.type === 'reference').pop();
-    if (!t || !('name' in t)) {
+    const intersectionType = refType.typeArguments?.filter(t => t.type === 'reference').pop();
+    if (!intersectionType || !('name' in intersectionType)) {
       throw new Error('No type arguments found on intersection type.');
     }
     return {
       type: 'literal',
-      name: t.name,
+      name: intersectionType.name,
     };
   }
 
@@ -310,10 +310,10 @@ const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
 const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
   'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
   'WarmupSizes': () => ([
-    `- \`number\` - a number representing both the size (width and height) of the patch.`,
-    `- \`{patchSize: number; padding?: number}\` - an object with the \`patchSize\` and optional \`padding\` properties.`,
-    `- \`number[]\` - an array of numbers representing the size (width and height) of the patch.`,
-    `- \`{patchSize: number; padding?: number}[]\` - an array of objects with the \`patchSize\` and optional \`padding\` properties.`,
+    '- `number` - a number representing both the size (width and height) of the patch.',
+    '- `{patchSize: number; padding?: number}` - an object with the `patchSize` and optional `padding` properties.',
+    '- `number[]` - an array of numbers representing the size (width and height) of the patch.',
+    '- `{patchSize: number; padding?: number}[]` - an array of objects with the `patchSize` and optional `padding` properties.',
   ].join('\n')),
   'Progress': () => ([
     'The progress callback function has the following four parameters:',
@@ -586,7 +586,7 @@ const writeParameter = (methodName: string, parameter: ParameterReflection | Dec
   const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
 
-  let url: string | undefined = undefined;
+  let url: string | undefined;
   const typesToExpand = TYPES_TO_EXPAND[methodName === 'constructor' ? '_constructor' : methodName] || [];
   if (typesToExpand.includes(name)) {
     url = `#${name.toLowerCase()}`;
@@ -606,7 +606,7 @@ const writeParameter = (methodName: string, parameter: ParameterReflection | Dec
 const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
   const { classes, interfaces, types } = definitions;
   let { name: nameOfTypeDefinition } = getReferenceTypeOfParameter(parameter.type, definitions);
-  let matchingType: undefined | PlatformSpecificDeclarationReflection | DeclarationReflection | TypeParameterReflection = undefined;
+  let matchingType: undefined | PlatformSpecificDeclarationReflection | DeclarationReflection | TypeParameterReflection;
   if (!INTRINSIC_TYPES.includes(nameOfTypeDefinition) && parameter.type !== undefined && !isLiteralType(parameter.type)) {
     // first, check if it is a specially defined external type
     matchingType = EXTERNALLY_DEFINED_TYPES[nameOfTypeDefinition] || interfaces[nameOfTypeDefinition] || types[nameOfTypeDefinition];
@@ -753,7 +753,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
       ].join('\n'),
 
       `# ${name}`,
-      `Alias for [\`execute\`](execute)`,
+      'Alias for [`execute`](execute)',
     ].filter(Boolean).join('\n\n');
 
   }
@@ -797,11 +797,11 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
     ] : []),
     source,
     ...(parameters ? [
-      `## Parameters`,
+      '## Parameters',
       getParameters(name, parameters, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
     ] : []),
     writeExpandedTypeDefinitions(name, definitions, getAsObj<TypeParameterReflection>(typeParameters || [], t => t.name)),
-    `## Returns`,
+    '## Returns',
     getReturnType(signatures, blockTags),
   ].filter(Boolean).join('\n\n');
   return content;

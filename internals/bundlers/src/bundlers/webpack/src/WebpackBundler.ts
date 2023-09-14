@@ -39,7 +39,7 @@ const compile = (compiler: webpack.Compiler) => new Promise<void>((resolve, reje
   if (stats?.hasErrors()) {
     return reject(new Error(stats?.toJson('errors-only').errors?.map(e => e.message).join('\n')));
   }
-  resolve();
+  return resolve();
 }));
 
 export const writeIndex = async (target: string, imports: string[] = []) => {

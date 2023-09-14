@@ -36,7 +36,7 @@ const getCategory = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
     if (line.startsWith('category: ')) {
-      return line.split('category: ').pop() || '';
+      return line.split('category: ').pop() ?? '';
     }
   }
 
@@ -92,7 +92,7 @@ const getSidebarPosition = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
     if (line.startsWith('sidebar_position: ')) {
-      const pos = line.split('sidebar_position: ').pop() || '';
+      const pos = line.split('sidebar_position: ').pop() ?? '';
       return parseInt(pos, 10);
     }
   }
@@ -103,7 +103,7 @@ const getEnhancedSrc = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');
   for (const line of lines) {
     if (line.startsWith('enhanced_src: ')) {
-      return line.split('enhanced_src: ').pop() || '';
+      return line.split('enhanced_src: ').pop() ?? '';
     }
   }
 
@@ -205,7 +205,7 @@ const isExcluded = (folder: string) => !PRIVATE_MODEL_PACKAGE_NAMES.includes(fol
 
 export const writeModelReadmes = async (targetDocDir: string) => {
   const packages = (await ALL_MODEL_PACKAGE_DIRECTORY_NAMES).filter(isExcluded);
-  const targetAssetDir = path.resolve(DOCS_DIR, `assets/assets/sample-images`);
+  const targetAssetDir = path.resolve(DOCS_DIR, 'assets/assets/sample-images');
 
   await writeModelIndexFile(packages, targetAssetDir);
   verbose('Wrote model index file');

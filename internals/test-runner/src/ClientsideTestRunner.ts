@@ -5,7 +5,6 @@ import { catchFailures } from './utils/catchFailures.js';
 import { HttpServer } from '@internals/http-server';
 import { MODELS_DIR } from '@internals/common/constants';
 
-// type Bundle = (opts?: Opts) => Promise<void>;
 type Bundle = () => Promise<void>;
 
 // const DEFAULT_PORT = 8098;
@@ -14,7 +13,7 @@ const DEFAULT_PORT = 0;
 const USE_TUNNEL = process.env.useTunnel === '1';
 
 type MockCDN = (server: HttpServer, model: string, pathToModel: string) => string;
-export type AfterEachCallback = () => Promise<void | any>;
+export type AfterEachCallback = () => Promise<unknown>;
 
 const getURL = (server?: HttpServer) => {
   if (!server) {
@@ -101,7 +100,7 @@ export class ClientsideTestRunner {
   get server(): HttpServer { return this._getLocal('_server'); }
   set server(server: HttpServer | undefined) {
     if (server && this._server) {
-      throw new Error(this._getLogMessage(`Server is already active`));
+      throw new Error(this._getLogMessage('Server is already active'));
     }
     this._server = server;
   }
@@ -109,7 +108,7 @@ export class ClientsideTestRunner {
   get fixturesServer(): HttpServer { return this._getLocal('_fixtures'); }
   set fixturesServer(fixtures: HttpServer | undefined) {
     if (fixtures && this._fixtures) {
-      throw new Error(this._getLogMessage(`Fixtures Server is already active`));
+      throw new Error(this._getLogMessage('Fixtures Server is already active'));
     }
     this._fixtures = fixtures;
   }
@@ -117,7 +116,7 @@ export class ClientsideTestRunner {
   get browser(): Browser { return this._getLocal('_browser'); }
   set browser(browser: Browser | undefined) {
     if (browser && this._browser) {
-      throw new Error(this._getLogMessage(`Browser is already active`));
+      throw new Error(this._getLogMessage('Browser is already active'));
     }
     this._browser = browser;
   }
@@ -126,7 +125,7 @@ export class ClientsideTestRunner {
   get context(): BrowserContext { return this._getLocal('_context'); }
   set context(context: BrowserContext | undefined) {
     if (context && this._context) {
-      throw new Error(this._getLogMessage(`Context is already active`));
+      throw new Error(this._getLogMessage('Context is already active'));
     }
     this._context = context;
   }
@@ -140,7 +139,7 @@ export class ClientsideTestRunner {
   }
   set page(page: Page | undefined) {
     if (page && this._page) {
-      throw new Error(this._getLogMessage(`Page is already active`));
+      throw new Error(this._getLogMessage('Page is already active'));
     }
     this._page = page;
   }
@@ -339,10 +338,10 @@ export class ClientsideTestRunner {
 
   @catchFailures()
   @timeit<[AfterEachCallback], ClientsideTestRunner>('afterEach clean up')
-  async afterEach(callback: AfterEachCallback = async () => {}) {
+  async afterEach(callback?: AfterEachCallback) {
     await Promise.all([
       this._closeContext(),
-      callback(),
+      callback ? callback() : undefined,
     ]);
   }
 }

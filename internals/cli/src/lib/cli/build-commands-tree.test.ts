@@ -219,12 +219,12 @@ describe('buildCommandsTree', () => {
         'index.js',
       ]);
 
-      function registerFunction () { };
-      fakeFile.default = registerFunction;
+      const spy = vi.fn();
+      fakeFile.default = spy;
 
       vi.mocked(readdir).mockImplementation(mockReadDir);
       const root = await buildCommandsTree('foo');
-      expect(await root.getRegistrationFunction()).toEqual(registerFunction);
+      expect(await root.getRegistrationFunction()).toEqual(spy);
     });
 
     it('a file returns the command for itself', async () => {
@@ -233,12 +233,12 @@ describe('buildCommandsTree', () => {
         'index.js',
       ]);
 
-      function registerFunction () { };
-      fakeFile.default = registerFunction;
+      const spy = vi.fn();
+      fakeFile.default = spy;
 
       vi.mocked(readdir).mockImplementation(mockReadDir);
       const root = await buildCommandsTree('foo');
-      expect(await root.getChild('index').getRegistrationFunction()).toEqual(registerFunction);
+      expect(await root.getChild('index').getRegistrationFunction()).toEqual(spy);
     });
   });
 

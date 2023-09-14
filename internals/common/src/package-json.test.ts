@@ -84,7 +84,7 @@ describe('package-json', () => {
 
       vi.mocked(readFile).mockImplementation(mockReadFile as unknown as typeof readFile);
 
-      expect(() => getPackageJSONExports('foo')).rejects.toThrow();
+      await expect(() => getPackageJSONExports('foo')).rejects.toThrow();
     });
   });
 });

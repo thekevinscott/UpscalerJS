@@ -39,16 +39,15 @@ const PASSWORD = 'dummy-htpasswd-password';
 const login = async (registryURL: string) => {
   const name = 'upscaler-user';
   const password = 'dummy-password';
-  const r = await fetch(`${registryURL}/-/user/org.couchdb.user:${name}`, {
+  const json = await (await fetch(`${registryURL}/-/user/org.couchdb.user:${name}`, {
     method: 'PUT',
     body: JSON.stringify({ name, password }),
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
     }
-  });
-  const json = await r.json();
-  if (typeof json === 'object' && !!json && 'token' in json && typeof json.token === 'string') {
+  })).json();
+  if (Boolean(json) && json !== null && typeof json === 'object' && 'token' in json && typeof json.token === 'string') {
     return json.token;
   }
   throw new Error(`Bad response from registry: ${JSON.stringify(json)}`);
@@ -73,7 +72,7 @@ const getStorageDir = (outDir: string) => path.resolve(outDir, 'storage');
 
 const startRegistry = (outDir: string, htpasswd: string, port: number) => withTmpDir(async (tmpDir) => {
   const configPath = path.resolve(tmpDir, 'config.yaml');
-  const config = await getRegistryConfig(getStorageDir(outDir), htpasswd);
+  const config = getRegistryConfig(getStorageDir(outDir), htpasswd);
   await writeFile(configPath, config);
   const app: Server = await runServer(configPath);
   await startRegistryServer(app, port);

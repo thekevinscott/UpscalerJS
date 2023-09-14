@@ -12,6 +12,7 @@ export function catchFailures<T extends unknown[]>() {
         console.error(err);
         // process.exit(1);
       }
+      return undefined;
     };
     return descriptor;
   };

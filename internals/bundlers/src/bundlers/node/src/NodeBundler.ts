@@ -56,6 +56,7 @@ const clearExistingNodeModules = async (outDir: string, packages: RegistryPackag
       if (await exists(nodeModulePath)) {
         return rimraf(nodeModulePath);
       }
+      return undefined;
     }));
     verbose(`Cleared existing node_modules of packages: ${packageNames}...`);;
   }

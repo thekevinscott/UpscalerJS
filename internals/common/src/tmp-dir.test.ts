@@ -45,7 +45,7 @@ describe('makeTmpDir', () => {
 
   it('throws if folder was not created', async () => {
     vi.mocked(exists).mockResolvedValue(false);
-    expect(() => makeTmpDir()).rejects.toThrow();
+    await expect(() => makeTmpDir()).rejects.toThrow();
   });
 });
 
@@ -79,7 +79,7 @@ describe('withTmpDir', () => {
   it('if it fails to remove tmp directory, console.error', async () => {
     console.error = vi.fn();
     expect(console.error).not.toHaveBeenCalled();
-    vi.mocked(rimraf).mockImplementation(async () => {
+    vi.mocked(rimraf).mockImplementation(() => {
       throw new Error('WHOA')
     });
 

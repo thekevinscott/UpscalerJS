@@ -11,7 +11,7 @@ export const scaffoldModel = async (modelPackageDirectoryName: string) => {
   const PACKAGE_ROOT = path.resolve(ROOT_DIR, packageRoot);
   const PACKAGE_SRC = path.resolve(PACKAGE_ROOT, 'src');
   const { name, version } = await getPackageJSON(PACKAGE_ROOT);
-  const filePath = path.resolve(PACKAGE_SRC, `constants.generated.ts`);
+  const filePath = path.resolve(PACKAGE_SRC, 'constants.generated.ts');
   writeFile(filePath, [
     `export const NAME = "${name}";`,
     `export const VERSION = "${version}";`,

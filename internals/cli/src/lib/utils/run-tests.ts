@@ -11,7 +11,7 @@ import { ROOT_BUNDLER_OUTPUT_DIR, getBundlerOutputDir } from './get-bundler-outp
 import { TFJSLibrary, getTFJSLibraryFromEnvironment } from '@internals/common/tfjs-library';
 import { pluralize } from '@internals/common/pluralize';
 
-const time = async (fn: () => Promise<void | any>, done: (duration: number) => void) => {
+const time = async (fn: () => Promise<unknown>, done: (duration: number) => void) => {
   const start = performance.now();
   await fn();
   done(performance.now() - start);

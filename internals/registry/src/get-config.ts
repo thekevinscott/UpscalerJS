@@ -3,7 +3,7 @@ import { dump } from 'js-yaml';
 
 const access = '$all';
 
-export const getRegistryConfig = async (storageDir: string, htpasswd: string) => {
+export const getRegistryConfig = (storageDir: string, htpasswd: string) => {
   const config = ConfigBuilder
     .build()
     .addStorage(storageDir)

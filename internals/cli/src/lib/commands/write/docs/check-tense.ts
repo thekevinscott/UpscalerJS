@@ -20,7 +20,7 @@ const EXCLUDED_DIRECTORIES = [
  */
 
 const getDocumentationFiles = (): string[] => {
-  return sync(path.resolve(DOCS_DIR, `**/*.{md,mdx}`)).filter(file => {
+  return sync(path.resolve(DOCS_DIR, '**/*.{md,mdx}')).filter(file => {
     return EXCLUDED_DIRECTORIES.reduce((include, dir) => {
       return !include ? false : !file.includes(dir);
     }, true);

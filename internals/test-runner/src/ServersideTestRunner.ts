@@ -99,7 +99,7 @@ export class ServersideTestRunner {
    * Utility methods
    */
 
-  async run(script: string): Promise<Buffer> {
+  run(script: string): Promise<Buffer> {
     const contentFn = (outputFile: string) => {
       return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.ejs'), {
         outputFile,
@@ -115,8 +115,8 @@ export class ServersideTestRunner {
    * Test lifecycle methods
    */
 
-  @timeit<[Bundle], ServersideTestRunner>('beforeAll scaffolding')
-  async beforeAll(bundle: Bundle) { // skipcq: JS-0105
+  @timeit<[Bundle], ServersideTestRunner>('beforeAll scaffolding') // skipcq: JS-0105
+  async beforeAll(bundle: Bundle) { // skipcq: JS-0105 // don't think this one was picked up
     if (bundle) {
       await bundle();
     }

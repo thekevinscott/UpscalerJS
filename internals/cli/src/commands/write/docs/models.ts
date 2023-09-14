@@ -5,7 +5,7 @@ import { mkdirp } from '@internals/common/fs';
 import { clearOutMarkdownFiles } from '../../../lib/utils/clear-out-markdown-files.js';
 import { writeModelReadmes } from '../../../lib/commands/write/docs/models.js';
 
-const targetDocDir = path.resolve(DOCS_DIR, `docs/models/available`);
+const targetDocDir = path.resolve(DOCS_DIR, 'docs/models/available');
 
 export default (program: Command) => program.command('models')
   .description('Write Model readme documentation')

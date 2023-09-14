@@ -37,7 +37,7 @@ export const scaffoldUpscaler = async (tfjsLibrary: TFJSLibrary) => {
   /**
    * Create a dependencies.generated.ts file that exports the appropriate tfjs library and model
    */
-  await writeFile(path.resolve(SRC, `dependencies.generated.ts`), [
+  await writeFile(path.resolve(SRC, 'dependencies.generated.ts'), [
     `export * as tf from '${tfjs}';`,
     "export { default as DefaultUpscalerModel } from '@upscalerjs/default-model';",
   ].join('\n'));

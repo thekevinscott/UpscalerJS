@@ -28,7 +28,7 @@ const getSnippets = async (model: string): Promise<Record<string, string>> => {
   const snippetPaths = await readdir(docSnippetsPath);
 
   await Promise.all(snippetPaths.map(async (snippetPath) => {
-    const snippet = await readFile(path.resolve(docSnippetsPath, snippetPath)) || '';
+    const snippet = (await readFile(path.resolve(docSnippetsPath, snippetPath))) ?? '';
     const snippetKey = snippetPath.split('.').slice(0, -1).join('.');
     if (typeof snippetKey !== 'string') {
       throw new Error(`Bad snippet key: ${snippetKey}`)
@@ -63,7 +63,7 @@ const getPreparedDoc = async (model: string) => {
 
   const sharedDoc = await getSharedDoc(modelFamily);
   const args = await getPackageJSONArgs(model, packageJSON);
-  const matches = sharedDoc.matchAll(/\<\%.+?\%\>/g);
+  const matches = sharedDoc.matchAll(/<%.+?%>/g);
   const chunks: string[] = [];
   let start = 0;
   for (const match of matches) {
@@ -75,15 +75,15 @@ const getPreparedDoc = async (model: string) => {
     } else if (typeof args[key] !== 'string') {
       throw new Error(`Key "${key}" for model family ${modelFamily} and model ${model} is not a string, it is: ${typeof args[key]}`)
     } else {
-      const matchStart = match?.index || 0;
-      const matchEnd = matchStart + (match[0]?.length || 0);
+      const matchStart = match?.index ?? 0;
+      const matchEnd = matchStart + (match[0]?.length ?? 0);
       
       chunks.push(sharedDoc.slice(start, matchStart));
       chunks.push(args[key])
       start = matchEnd;
 
       verbose(
-        `Found ${match[0]} (${key}) start=${match?.index} end=${(match?.index || 0) + match[0]?.length
+        `Found ${match[0]} (${key}) start=${match?.index} end=${matchStart + match[0]?.length
         }.`,
       );
     }
