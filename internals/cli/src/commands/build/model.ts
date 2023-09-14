@@ -166,14 +166,15 @@ export default (program: Command) => program.command('model')
   .description('Build Model')
   .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
   .option('-o, --output-format <format...>', 'What output format to build for. esm, cjs, or umd')
+  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
   .action(async (
     _models,
     {
       outputFormat: _outputFormats,
-      // ...rest
+      validateModelsFolder,
     }
   ) => buildModels(
-    await validateModels(_models, false),
+    await validateModels(_models, { validateModelsFolder, }),
     validateOutputFormats(_outputFormats),
     // rest
   ));

@@ -26,7 +26,7 @@
   "scripts": {
     "scaffold": "pnpm cli scaffold model default-model",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold -s && eslint -c ../.eslintrc.js src --ext .ts",
+    "lint": "pnpm scaffold && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate",
     "validate": "pnpm cli validate models/default-model",
     "build": "pnpm cli build model default-model -o cjs -o esm -o umd",

@@ -112,10 +112,12 @@ export const writeModelDocs = async (modelPackageDirectoryNames: string[]) => {
 };
 
 export default (program: Command) => program.command('docs')
-    .description('Write docs for a model')
-    .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
+  .description('Write docs for a model')
+  .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
+  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
   .action(async (
     _models,
+    { validateModelsFolder, }
   ) => writeModelDocs(
-    await validateModels(_models),
+    await validateModels(_models, { validateModelsFolder }),
   ));

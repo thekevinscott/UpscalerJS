@@ -25,6 +25,6 @@ export const scaffoldModels = async (modelPackageDirectoryNames: string[]) => {
 export default (program: Command) => program.command('model')
   .description('Scaffold Model')
   .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
-  .option('-s, --skip-validate-models-folder', 'Whether to validate the existence of the models folder', false)
-  .action(async (models, { skipValidateModelsFolder }) => scaffoldModels(await validateModels(models, !skipValidateModelsFolder)));
+  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
+  .action(async (models, { validateModelsFolder }) => scaffoldModels(await validateModels(models, { validateModelsFolder })));
 

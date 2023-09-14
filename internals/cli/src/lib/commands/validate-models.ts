@@ -11,7 +11,7 @@ const hasModelFiles = async (modelsFolder: string) => {
   return modelFiles.length > 0;
 };
 
-export const validateModels = async (_models: unknown[], validateModelsFolder = true) => {
+export const validateModels = async (_models: unknown[], { validateModelsFolder }: { validateModelsFolder?: boolean } = {}) => {
   const modelPackageDirectoryNames: string[] = [];
   await Promise.all(_models.map(async modelPackageDirectoryName => {
     if (!isString(modelPackageDirectoryName)) {
