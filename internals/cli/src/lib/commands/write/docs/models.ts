@@ -44,8 +44,7 @@ const getCategory = (packageName: string, readmeContents: string) => {
 };
 
 const linkAllModelReadmes = async (packages: string[], targetAssetDir: string, targetDocDir: string) => {
-  for (let i = 0; i < packages.length; i++) {
-    const packageName = packages[i];
+  for (const packageName of packages) {
     const packagePath = path.resolve(MODELS_DIR, packageName);
     const docMdxPath = path.resolve(packagePath, 'DOC.mdx');
 

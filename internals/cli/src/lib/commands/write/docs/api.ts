@@ -98,282 +98,7 @@ const getLiteralTypeValue = (type: LiteralType): string => {
   throw new Error('Not yet implemented for literal');
 };
 
-const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
-  const comment = getSummary(parameter.comment);
-  const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
-  const url = getURLFromSources(parameter);
-  const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
-  return [
-    '-',
-    `**[${platform}](${url})**:`,
-    `\`${parsedName}\``,
-    comment ? ` - ${comment}` : undefined,
-  ].filter(Boolean).join(' ');
-};
-
-
-const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
-  const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
-  for (let i = 0; i< Object.values(definitions.types).length; i++) {
-    const type = Object.values(definitions.types)[i];
-    if (!isDeclarationReflection(type)) {
-      platformSpecificTypes.push(type);
-    }
-  }
-  return platformSpecificTypes.map(parameter => [
-    writePlatformSpecificParameter('Browser', parameter.browser, definitions),
-    writePlatformSpecificParameter('Node', parameter.node, definitions),
-  ].join('\n')).join('\n');
-};
-
-const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
-  'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
-  'WarmupSizes': () => ([
-    `- \`number\` - a number representing both the size (width and height) of the patch.`,
-    `- \`{patchSize: number; padding?: number}\` - an object with the \`patchSize\` and optional \`padding\` properties.`,
-    `- \`number[]\` - an array of numbers representing the size (width and height) of the patch.`,
-    `- \`{patchSize: number; padding?: number}[]\` - an array of objects with the \`patchSize\` and optional \`padding\` properties.`,
-  ].join('\n')),
-  'Progress': () => ([
-    'The progress callback function has the following four parameters:',
-    '- `progress` - a number between 0 and 1 representing the progress of the upscale.',
-    '- `slice` - a string or 3D tensor representing the current slice of the image being processed. The type returned is specified by the `progressOutput` option, or if not present, the `output` option, or if not present, string for the browser and tensor for node.',
-    '- `row` - the row of the image being processed.',
-    '- `col` - the column of the image being processed.',
-    '',
-    '[See the guide on progress for more information.](/documentation/guides/browser/usage/progress)',
-  ].join('\n')),
-};
-// define special type information that is external
-const makeNewExternalType = (name: string, _url: string): DeclarationReflection => {
-  const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
-  // const source = new SourceReference('', 0, 0);
-  // source.url = url;
-  type.sources = [];
-  return type as DeclarationReflection;
-};
-
-const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
-  'AbortSignal': makeNewExternalType(
-    'AbortSignal',
-    'https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal'
-  ),
-  'SerializableConstructor': makeNewExternalType(
-    'SerializableConstructor',
-    'https://github.com/tensorflow/tfjs/blob/38f8462fe642011ff1b7bcbb52e018f3451be58b/tfjs-core/src/serialization.ts#L54',
-  ),
-}
-
-/****
- * Utility functions
- */
-const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: string) => {
-  const app = new Application();
-
-  app.options.addReader(new TSConfigReader());
-  app.options.addReader(new TypeDocReader());
-
-  app.bootstrap({
-    entryPoints: [entryPoint],
-    tsconfig,
-  });
-
-  const project = app.convert();
-
-  if (project) {
-    return app.serializer.projectToObject(project, projectRoot);
-  }
-  throw new Error('No project was converted.')
-}
-
-const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: string) => {
-  const tfjsLibraries: TFJSLibrary[] = ['browser', 'node'];
-  const platformSpecificTypes: DeclarationReflection[] = [];
-  for (let i = 0; i < tfjsLibraries.length; i++) {
-    const tfjsLibrary = tfjsLibraries[i];
-    await scaffoldUpscaler(tfjsLibrary);
-    const imageBrowser = getPackageAsTree(
-      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${tfjsLibrary}.ts`),
-      path.resolve(UPSCALER_DIR, `tsconfig.docs.${tfjsLibrary}.json`),
-      UPSCALER_DIR,
-    );
-    const matchingType = imageBrowser.children?.filter(child => child.name === typeName).pop();
-    if (!matchingType) {
-      throw new Error(`Could not find input from ${fileName}.${tfjsLibrary}.ts`);
-    }
-    platformSpecificTypes.push(matchingType as any);
-  }
-
-  const platformSpecificType = {
-    name: typeName,
-    variant: 'declaration',
-    kind: 'Platform Specific Type',
-    browser: platformSpecificTypes[0],
-    node: platformSpecificTypes[1],
-    children: [],
-    type: platformSpecificTypes[0].type,
-  }
-
-  return platformSpecificType;
-}
-
-const getTypesFromPlatformSpecificFiles = async (): Promise<{
-  children: PlatformSpecificDeclarationReflection[];
-}> => {
-  return {
-    children: await Promise.all([
-      getTypeFromPlatformSpecificFiles('image', 'Input') as any,
-    ]),
-  };
-}
-
-function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
-  return arr.reduce((obj, item) => ({
-    ...obj,
-    [getKey(item)]: item,
-  }), {} as Record<string, T>);
-}
-
-const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind) => {
-  switch (kindString) {
-    case 'Platform Specific Type':
-      return 'types';
-    case ReflectionKind.Constructor:
-      return 'constructors';
-    case ReflectionKind.Method:
-      return 'methods';
-    case ReflectionKind.Interface:
-      return 'interfaces';
-    case ReflectionKind.TypeAlias:
-      return 'types';
-    case ReflectionKind.Class:
-      return 'classes';
-    case ReflectionKind.Function:
-      return 'functions';
-    case ReflectionKind.Enum:
-      return 'enums';
-    default:
-      throw new Error(`Unexpected kind string: ${kindString}`);
-  }
-}
-
-const getDefinitions = async (): Promise<Definitions> => {
-  await scaffoldUpscaler('node');
-  const upscalerTree = getPackageAsTree(
-    UPSCALER_SRC_PATH, 
-    UPSCALER_TSCONFIG_PATH,
-    UPSCALER_DIR,
-  );
-  const coreTree = getPackageAsTree(
-    CORE_SRC_PATH, 
-    CORE_TSCONFIG_PATH,
-    CORE_DIR,
-  );
-  const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
-  if (!upscalerTree.children) {
-    throw new Error('No children were found on upscaler tree object. Indicates an error in the returned structure from getPackageAsTree');
-  }
-  const children = [
-    ...upscalerTree.children,
-    ...(coreTree.children || []),
-    ...(platformSpecificTypes.children || []),
-  ];
-
-  const parsedChildren = children.reduce((obj, child) => {
-    const { kind } = child;
-    const key = getKindStringKey(kind);
-    if (!key) {
-      throw new Error(`Unexpected kind string: ${kind}`);
-    }
-    return {
-      ...obj,
-      [key]: obj[key].concat(child as any),
-    };
-  }, {
-    constructors: [] as DecRef[],
-    methods: [] as DecRef[],
-    functions: [] as DecRef[],
-    interfaces: [] as DecRef[],
-    types: [] as DecRef[],
-    classes: [] as DecRef[],
-    enums: [] as DecRef[],
-  });
-
-  return {
-    methods: getAsObj<DecRef>(parsedChildren.methods, i => i.name),
-    constructors: getAsObj<DecRef>(parsedChildren.constructors, i => i.name),
-    functions: getAsObj<DecRef>(parsedChildren.functions, i => i.name),
-    types: getAsObj<DecRef>(parsedChildren.types, i => i.name),
-    interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
-    classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
-    enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
-  };
-}
-
 const getSummary = (comment?: Comment) => comment?.summary.map(({ text }) => text).join('');
-
-const getTextSummary = (name: string, comment?: Comment): {
-  codeSnippet?: string;
-  description?: string;
-  blockTags?: Record<string, CommentDisplayPart[]>;
-} => {
-  if (comment === undefined) {
-    return {};
-  }
-  const { summary, blockTags } = comment;
-  const expectedCodeSnippet = summary.pop();
-  if (expectedCodeSnippet?.kind !== 'code') {
-    throw new Error(`Expected code snippet not found for ${name}`);
-  }
-  // const { text, code } = summary.reduce((obj, item) => {
-  //   return {
-  //     ...obj,
-  //     [item.kind]: item.text.trim(),
-  //   }
-  // }, {
-  //   text: '',
-  //   code: '',
-  // });
-  const text = summary.map(({ text }) => text).join('');
-  return {
-    blockTags: blockTags?.reduce((obj, blockTag) => {
-      return {
-        ...obj,
-        [blockTag.tag]: blockTag.content,
-      };
-    }, {}),
-    description: text.trim(),
-    codeSnippet: expectedCodeSnippet.text.trim(),
-  }
-};
-
-const rewriteURL = (url: string) => {
-  const parts = url.split(/blob\/(?<group>[^/]+)/)
-  if (parts.length !== 3) {
-    throw new Error(`Error with the regex: ${url}`);
-  }
-  return [
-    parts[0],
-    'tree/main',
-    parts[2],
-  ].join('');
-};
-
-const getSource = ([source]: SourceReference[]) => {
-  let {
-    fileName,
-    line,
-    // character, 
-    url,
-  } = source;
-  url = `${REPO_ROOT}/blob/main/${fileName}#L${line}`;
-  // if (!url) {
-  //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
-  // }
-  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
-  return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
-};
-
 
 const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions): {
   type: 'reference' | 'array' | 'literal' | 'intrinsic' | 'union',
@@ -553,6 +278,280 @@ const getURLFromSources = (matchingType: undefined | DecRef | TypeParameterRefle
 
   return undefined;
 };
+
+
+const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
+  const comment = getSummary(parameter.comment);
+  const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
+  const url = getURLFromSources(parameter);
+  const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
+  return [
+    '-',
+    `**[${platform}](${url})**:`,
+    `\`${parsedName}\``,
+    comment ? ` - ${comment}` : undefined,
+  ].filter(Boolean).join(' ');
+};
+
+
+const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
+  const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
+  for (const type of Object.values(definitions.types)) {
+    if (!isDeclarationReflection(type)) {
+      platformSpecificTypes.push(type);
+    }
+  }
+  return platformSpecificTypes.map(parameter => [
+    writePlatformSpecificParameter('Browser', parameter.browser, definitions),
+    writePlatformSpecificParameter('Node', parameter.node, definitions),
+  ].join('\n')).join('\n');
+};
+
+const EXPANDED_TYPE_CONTENT: Record<string, (definitions: Definitions, typeParameters: Record<string, TypeParameterReflection>) => string> = {
+  'Input': (definitions) => writePlatformSpecificDefinitions(definitions),
+  'WarmupSizes': () => ([
+    `- \`number\` - a number representing both the size (width and height) of the patch.`,
+    `- \`{patchSize: number; padding?: number}\` - an object with the \`patchSize\` and optional \`padding\` properties.`,
+    `- \`number[]\` - an array of numbers representing the size (width and height) of the patch.`,
+    `- \`{patchSize: number; padding?: number}[]\` - an array of objects with the \`patchSize\` and optional \`padding\` properties.`,
+  ].join('\n')),
+  'Progress': () => ([
+    'The progress callback function has the following four parameters:',
+    '- `progress` - a number between 0 and 1 representing the progress of the upscale.',
+    '- `slice` - a string or 3D tensor representing the current slice of the image being processed. The type returned is specified by the `progressOutput` option, or if not present, the `output` option, or if not present, string for the browser and tensor for node.',
+    '- `row` - the row of the image being processed.',
+    '- `col` - the column of the image being processed.',
+    '',
+    '[See the guide on progress for more information.](/documentation/guides/browser/usage/progress)',
+  ].join('\n')),
+};
+// define special type information that is external
+const makeNewExternalType = (name: string, _url: string): DeclarationReflection => {
+  const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
+  // const source = new SourceReference('', 0, 0);
+  // source.url = url;
+  type.sources = [];
+  return type as DeclarationReflection;
+};
+
+const EXTERNALLY_DEFINED_TYPES: Record<string, DeclarationReflection> = {
+  'AbortSignal': makeNewExternalType(
+    'AbortSignal',
+    'https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal'
+  ),
+  'SerializableConstructor': makeNewExternalType(
+    'SerializableConstructor',
+    'https://github.com/tensorflow/tfjs/blob/38f8462fe642011ff1b7bcbb52e018f3451be58b/tfjs-core/src/serialization.ts#L54',
+  ),
+}
+
+/****
+ * Utility functions
+ */
+const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: string) => {
+  const app = new Application();
+
+  app.options.addReader(new TSConfigReader());
+  app.options.addReader(new TypeDocReader());
+
+  app.bootstrap({
+    entryPoints: [entryPoint],
+    tsconfig,
+  });
+
+  const project = app.convert();
+
+  if (project) {
+    return app.serializer.projectToObject(project, projectRoot);
+  }
+  throw new Error('No project was converted.')
+}
+
+const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: string) => {
+  const tfjsLibraries: TFJSLibrary[] = ['browser', 'node'];
+  const platformSpecificTypes: DeclarationReflection[] = [];
+  for(const tfjsLibrary of tfjsLibraries) {
+    await scaffoldUpscaler(tfjsLibrary);
+    const imageBrowser = getPackageAsTree(
+      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${tfjsLibrary}.ts`),
+      path.resolve(UPSCALER_DIR, `tsconfig.docs.${tfjsLibrary}.json`),
+      UPSCALER_DIR,
+    );
+    const matchingType = imageBrowser.children?.filter(child => child.name === typeName).pop();
+    if (!matchingType) {
+      throw new Error(`Could not find input from ${fileName}.${tfjsLibrary}.ts`);
+    }
+    platformSpecificTypes.push(matchingType as any);
+  }
+
+  const platformSpecificType = {
+    name: typeName,
+    variant: 'declaration',
+    kind: 'Platform Specific Type',
+    browser: platformSpecificTypes[0],
+    node: platformSpecificTypes[1],
+    children: [],
+    type: platformSpecificTypes[0].type,
+  }
+
+  return platformSpecificType;
+}
+
+const getTypesFromPlatformSpecificFiles = async (): Promise<{
+  children: PlatformSpecificDeclarationReflection[];
+}> => {
+  return {
+    children: await Promise.all([
+      getTypeFromPlatformSpecificFiles('image', 'Input') as any,
+    ]),
+  };
+}
+
+function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
+  return arr.reduce((obj, item) => ({
+    ...obj,
+    [getKey(item)]: item,
+  }), {} as Record<string, T>);
+}
+
+const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind) => {
+  switch (kindString) {
+    case 'Platform Specific Type':
+      return 'types';
+    case ReflectionKind.Constructor:
+      return 'constructors';
+    case ReflectionKind.Method:
+      return 'methods';
+    case ReflectionKind.Interface:
+      return 'interfaces';
+    case ReflectionKind.TypeAlias:
+      return 'types';
+    case ReflectionKind.Class:
+      return 'classes';
+    case ReflectionKind.Function:
+      return 'functions';
+    case ReflectionKind.Enum:
+      return 'enums';
+    default:
+      throw new Error(`Unexpected kind string: ${kindString}`);
+  }
+}
+
+const getDefinitions = async (): Promise<Definitions> => {
+  await scaffoldUpscaler('node');
+  const upscalerTree = getPackageAsTree(
+    UPSCALER_SRC_PATH, 
+    UPSCALER_TSCONFIG_PATH,
+    UPSCALER_DIR,
+  );
+  const coreTree = getPackageAsTree(
+    CORE_SRC_PATH, 
+    CORE_TSCONFIG_PATH,
+    CORE_DIR,
+  );
+  const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
+  if (!upscalerTree.children) {
+    throw new Error('No children were found on upscaler tree object. Indicates an error in the returned structure from getPackageAsTree');
+  }
+  const children = [
+    ...upscalerTree.children,
+    ...(coreTree.children || []),
+    ...(platformSpecificTypes.children || []),
+  ];
+
+  const parsedChildren = children.reduce((obj, child) => {
+    const { kind } = child;
+    const key = getKindStringKey(kind);
+    if (!key) {
+      throw new Error(`Unexpected kind string: ${kind}`);
+    }
+    return {
+      ...obj,
+      [key]: obj[key].concat(child as any),
+    };
+  }, {
+    constructors: [] as DecRef[],
+    methods: [] as DecRef[],
+    functions: [] as DecRef[],
+    interfaces: [] as DecRef[],
+    types: [] as DecRef[],
+    classes: [] as DecRef[],
+    enums: [] as DecRef[],
+  });
+
+  return {
+    methods: getAsObj<DecRef>(parsedChildren.methods, i => i.name),
+    constructors: getAsObj<DecRef>(parsedChildren.constructors, i => i.name),
+    functions: getAsObj<DecRef>(parsedChildren.functions, i => i.name),
+    types: getAsObj<DecRef>(parsedChildren.types, i => i.name),
+    interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
+    classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
+    enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
+  };
+}
+
+const getTextSummary = (name: string, comment?: Comment): {
+  codeSnippet?: string;
+  description?: string;
+  blockTags?: Record<string, CommentDisplayPart[]>;
+} => {
+  if (comment === undefined) {
+    return {};
+  }
+  const { summary, blockTags } = comment;
+  const expectedCodeSnippet = summary.pop();
+  if (expectedCodeSnippet?.kind !== 'code') {
+    throw new Error(`Expected code snippet not found for ${name}`);
+  }
+  // const { text, code } = summary.reduce((obj, item) => {
+  //   return {
+  //     ...obj,
+  //     [item.kind]: item.text.trim(),
+  //   }
+  // }, {
+  //   text: '',
+  //   code: '',
+  // });
+  const text = summary.map(({ text }) => text).join('');
+  return {
+    blockTags: blockTags?.reduce((obj, blockTag) => {
+      return {
+        ...obj,
+        [blockTag.tag]: blockTag.content,
+      };
+    }, {}),
+    description: text.trim(),
+    codeSnippet: expectedCodeSnippet.text.trim(),
+  }
+};
+
+const rewriteURL = (url: string) => {
+  const parts = url.split(/blob\/(?<group>[^/]+)/)
+  if (parts.length !== 3) {
+    throw new Error(`Error with the regex: ${url}`);
+  }
+  return [
+    parts[0],
+    'tree/main',
+    parts[2],
+  ].join('');
+};
+
+const getSource = ([source]: SourceReference[]) => {
+  let {
+    fileName,
+    line,
+    // character, 
+    url,
+  } = source;
+  url = `${REPO_ROOT}/blob/main/${fileName}#L${line}`;
+  // if (!url) {
+  //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
+  // }
+  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
+  return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
+};
+
 
 function sortChildrenByLineNumber<T extends (DeclarationReflection)>(children: T[]) {
   return children.sort(({ sources: aSrc }, { sources: bSrc }) => {
@@ -811,8 +810,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
 const getSortedMethodsForWriting = (definitions: Definitions) => {
   const exports = Object.values(definitions.classes);
   const methods: DeclarationReflection[] = [];
-  for (let i = 0; i < exports.length; i++) {
-    const xport = exports[i];
+  for (const xport of exports) {
     if (VALID_EXPORTS_FOR_WRITING_DOCS.includes(xport.name)) {
       const { children } = xport;
       if (!children) {

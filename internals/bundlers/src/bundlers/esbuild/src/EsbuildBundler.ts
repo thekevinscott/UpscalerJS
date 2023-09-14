@@ -66,7 +66,7 @@ export class EsbuildBundler extends Bundler {
   port = 0;
   packages = PACKAGES;
 
-  get name() { 
+  get name() { // skipcq: JS-0105
     return 'esbuild bundler';
   }
 

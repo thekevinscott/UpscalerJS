@@ -16,6 +16,18 @@ const USE_TUNNEL = process.env.useTunnel === '1';
 type MockCDN = (server: HttpServer, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<void | any>;
 
+const getURL = (server?: HttpServer) => {
+  if (!server) {
+    throw new Error('No server defined');
+  }
+  const url = server.url;
+  if (!url) {
+    throw new Error('Server URL is not defined');
+  }
+  return url;
+}
+
+
 const mockCdn: MockCDN = (server, packageName, pathToModel) => {
   if (!server.url) {
     throw new Error('No URL was available on fixtures server');
@@ -83,19 +95,8 @@ export class ClientsideTestRunner {
     return this[key] as T;
   }
 
-  async getURL(server?: HttpServer) {
-    if (!server) {
-      throw new Error('No server defined');
-    }
-    const url = server.url;
-    if (!url) {
-      throw new Error('Server URL is not defined');
-    }
-    return url;
-  }
-
-  getServerURL = () => this.getURL(this.server);
-  getFixturesServerURL = () => this.getURL(this.fixturesServer);
+  getServerURL = () => getURL(this.server);
+  getFixturesServerURL = () => getURL(this.fixturesServer);
 
   get server(): HttpServer { return this._getLocal('_server'); }
   set server(server: HttpServer | undefined) {
@@ -138,12 +139,10 @@ export class ClientsideTestRunner {
     return page;
   }
   set page(page: Page | undefined) {
-    {
-      if (page && this._page) {
-        throw new Error(this._getLogMessage(`Page is already active`));
-      }
-      this._page = page;
+    if (page && this._page) {
+      throw new Error(this._getLogMessage(`Page is already active`));
     }
+    this._page = page;
   }
 
   /****

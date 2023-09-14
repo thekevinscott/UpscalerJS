@@ -9,10 +9,11 @@ import { tunnelmole } from 'tunnelmole';
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+const regexp = new RegExp(/^http(.*) is forwarding to(.*)/);
 const silenceTunnelmoleOutput = () => {
   const origInfo = console.info;
   console.info = (msg: string) => {
-    if (!msg.match(/^http(.*) is forwarding to(.*)/)) {
+    if (!regexp.test(msg)) {
       origInfo.call(console, msg);
     }
   };
@@ -74,7 +75,7 @@ export class Tunnel {
     // return url;
   }
 
-  async close() {
+  async close() { // skipcq: JS-0105
     // if (!this._stop) {
     //   throw new Error('No stop command was set')
     // }

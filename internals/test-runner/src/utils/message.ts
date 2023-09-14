@@ -7,8 +7,7 @@ const MESSAGES_TO_IGNORE = [
 ];
 
 export const isIgnoredMessage = (msg: string) => {
-  for (let i = 0; i < MESSAGES_TO_IGNORE.length; i++) {
-    const messageToIgnore = MESSAGES_TO_IGNORE[i];
+  for (const messageToIgnore of MESSAGES_TO_IGNORE) {
     if (msg.includes(messageToIgnore)) {
       return true;
     }

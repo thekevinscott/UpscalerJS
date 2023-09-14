@@ -116,7 +116,7 @@ export class ServersideTestRunner {
    */
 
   @timeit<[Bundle], ServersideTestRunner>('beforeAll scaffolding')
-  async beforeAll(bundle: Bundle) {
+  async beforeAll(bundle: Bundle) { // skipcq: JS-0105
     if (bundle) {
       await bundle();
     }

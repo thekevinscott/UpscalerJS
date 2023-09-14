@@ -56,8 +56,7 @@ const getFrontmatter = async (key: string): Promise<ExampleContent> => {
   const { body } = (fm as any)(readmeContents);
   const bodyParts = body.split('\n');
   let title: undefined | string;
-  for (let i = 0; i < bodyParts.length; i++) {
-    const line = bodyParts[i];
+  for (const line of bodyParts) {
     if (line.startsWith('#')) {
       title = line.split('#')?.pop()?.trim() || '';
       break;

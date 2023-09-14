@@ -30,7 +30,7 @@ export class UMDBundler extends Bundler {
   port = 0;
   usesRegistry = false;
 
-  get name() { 
+  get name() { // skipcq: JS-0105
     return 'umd bundler';
   }
 

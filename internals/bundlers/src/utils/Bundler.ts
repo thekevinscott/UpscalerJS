@@ -19,7 +19,7 @@ export class Bundler {
     this.outDir = outDir;
   }
 
-  get name(): string {
+  get name(): string { // skipcq: JS-0105
     throw new Error("Extend this class and implement the name getter");
   }
 
