@@ -18,7 +18,7 @@ vi.mock('@internals/common/fs', async () => {
   }
 });
 
-vi.mock('./package-json.js', async () => {
+vi.mock('./package-json.js', () => {
   // const actual = await vi.importActual("./package-json.js") as typeof fsExtra;
   return {
     getPackageJSONExports: vi.fn(),
@@ -34,7 +34,7 @@ describe('models', () => {
   describe('getAllAvailableModelPackages', () => {
     it('throws if no models are returned', async () => {
       vi.mocked(readdir).mockImplementation(() => Promise.resolve([ ]));
-      expect(() => getAllAvailableModelPackages()).rejects.toThrow();
+      await expect(() => getAllAvailableModelPackages()).rejects.toThrow();
     });
 
     it('gets all available model packages', async () => {
@@ -186,7 +186,7 @@ describe('models', () => {
 
       vi.mocked(readFile).mockImplementation(mockReadFile as unknown as typeof readFile);
       vi.mocked(getPackageJSONExports).mockImplementation(mockedGetPackageJSONExports as unknown as typeof getPackageJSONExports);
-      expect(() => getAllAvailableModels('foo')).rejects.toThrow();
+      await expect(() => getAllAvailableModels('foo')).rejects.toThrow();
     });
 
     it('gets all available models', async () => {

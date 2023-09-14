@@ -88,7 +88,7 @@ const getAllModels = async (packageDirectoryNames: Promise<string[]>) => {
         modelName: model.key,
         packageName,
         modelUMDName: model.umdName, 
-        packageDirectoryName: packageDirectoryName,
+        packageDirectoryName,
         modelExport: model.value,
       });
     }

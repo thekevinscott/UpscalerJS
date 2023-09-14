@@ -173,7 +173,7 @@ export default (program: Command) => program.command('model')
       // ...rest
     }
   ) => buildModels(
-    await validateModels(_models),
+    await validateModels(_models, false),
     validateOutputFormats(_outputFormats),
     // rest
   ));

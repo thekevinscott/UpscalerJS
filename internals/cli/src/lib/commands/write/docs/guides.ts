@@ -254,7 +254,7 @@ const writeIndexFile = async (exampleOrder: string[], examplesByName: Record<str
           parent,
           example
         ].filter(Boolean).join('/');
-        let strings: string[] = [];
+        const strings: string[] = [];
         if (activeParent !== parent) {
           activeParent = parent;
           strings.push(`- ### ${parent}`);

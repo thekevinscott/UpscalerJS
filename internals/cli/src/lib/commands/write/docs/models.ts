@@ -30,7 +30,7 @@ const copyAssets = async (packageName: string, targetDir: string) => {
   await copy(packagePath, targetPath);
 };
 
-const createMarkdown = async (contents: string, targetPath: string) => writeFile(targetPath, contents);
+const createMarkdown = (contents: string, targetPath: string) => writeFile(targetPath, contents);
 
 const getCategory = (packageName: string, readmeContents: string) => {
   const lines = readmeContents.split('\n');

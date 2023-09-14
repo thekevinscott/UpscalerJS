@@ -65,7 +65,7 @@ const runNodeScript = (contentFn: ContentFn, cwd: string): Promise<Buffer> => wi
   const contents = await contentFn(dataFile);
   
   await callExec(`node -e "${contents.replace(/"/g, '\\"')}"`, {
-    cwd: cwd,
+    cwd,
     env: {
       // Hide warnings about TFJS not being compiled to use AXA on the CPU 
       TF_CPP_MIN_LOG_LEVEL: '3',

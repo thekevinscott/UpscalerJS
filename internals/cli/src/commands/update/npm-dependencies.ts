@@ -25,13 +25,12 @@ const NUMBER_OF_CONCURRENT_THREADS = 5;
 /****
  * Utility functions
  */
-const exec = async (cmd: string, opts: ExecOptions) => new Promise<string>((resolve, reject) => {
-  let output = '';
+const exec = (cmd: string, opts: ExecOptions) => new Promise<void>((resolve, reject) => {
   const spawnedProcess = _exec(cmd, opts, (error) => {
     if (error) {
       reject(error);
     } else {
-      resolve(output);
+      resolve();
     }
   });
 

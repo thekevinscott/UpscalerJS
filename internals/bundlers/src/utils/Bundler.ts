@@ -27,7 +27,7 @@ export class Bundler {
     return path.resolve(this.outDir, this.dist);
   }
 
-  async bundle(_registryURL?: string, _options?: BundleOptions) {
+  bundle(_registryURL?: string, _options?: BundleOptions) {
     info(`Bundling ${this.name}...`);
     throw new Error('Bundle is a method that must be implemented by subclasses');
   }

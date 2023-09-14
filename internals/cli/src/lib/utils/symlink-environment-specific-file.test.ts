@@ -41,6 +41,6 @@ describe("symlinkEnvironmentSpecificFile", () => {
   it('throws if the src file does not exist', async () => {
     vi.mocked(exists).mockImplementation(() => Promise.resolve(false));
 
-    expect(() => symlinkEnvironmentSpecificFile('some/folder', 'image.browser.ts', 'browser')).rejects.toThrowError(`File ${path.resolve('some/folder/image.browser.ts')} does not exist`);
+    await expect(() => symlinkEnvironmentSpecificFile('some/folder', 'image.browser.ts', 'browser')).rejects.toThrowError(`File ${path.resolve('some/folder/image.browser.ts')} does not exist`);
   });
 });

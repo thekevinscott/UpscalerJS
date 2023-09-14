@@ -11,18 +11,17 @@ import { writeFile } from '@internals/common/fs'
 import { getServerPort } from '../../http-server/src/index.js';
 import { exists, readFile, mkdirp } from '@internals/common/fs';
 import { execFile } from 'child_process';
-import { getPort } from '@internals/common/get-port';
 
 import fetch from 'node-fetch';
 
 const runCommand = (parts: string[]) => {
   return new Promise((resolve, reject) => {
-    execFile(parts[0], parts.slice(1), function (err, stdout, stderr) {
+    execFile(parts[0], parts.slice(1), (err, stdout, stderr) => {
       if (err) {
         reject(err);
       } else {
         if (stderr) {
-          console.error(stderr);
+          error(stderr);
         }
         resolve(stdout);
       }
@@ -42,7 +41,7 @@ const login = async (registryURL: string) => {
   const password = 'dummy-password';
   const r = await fetch(`${registryURL}/-/user/org.couchdb.user:${name}`, {
     method: 'PUT',
-    body: JSON.stringify({"name": name, "password": password}),
+    body: JSON.stringify({ name, password }),
     headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -66,7 +65,7 @@ const makeHtpasswdFile = async (htpasswdPath: string) => {
   ]);
 };
 
-const startRegistryServer = (app: Server, port: number) => new Promise<void>(async (resolve, reject) => {
+const startRegistryServer = (app: Server, port: number) => new Promise<void>((resolve, reject) => {
   app.listen(port, resolve).on('error', reject);
 });
 

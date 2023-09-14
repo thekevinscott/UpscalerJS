@@ -26,7 +26,7 @@ import {
 } from 'typedoc';
 // import {
 // } from 'typedoc/dist/lib/serialization/schema';
-import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import { CORE_DIR, UPSCALER_DIR } from '@internals/common/constants';
 import { TFJSLibrary } from '@internals/common/tfjs-library';
 import { mkdirp, writeFile } from '@internals/common/fs';
 import { scaffoldUpscaler } from '../../../../commands/scaffold/upscaler.js';
@@ -78,6 +78,39 @@ const TYPES_TO_EXPAND: Record<string, string[]> = {
   'upscale': ['Input', 'Progress'],
   'warmup': ['WarmupSizes'],
 };
+
+const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection?.kind !== 'Platform Specific Type';
+const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
+const isReferenceType = (type: SomeType): type is ReferenceType => type.type === 'reference';
+const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
+const isInstrinsicType = (type: SomeType): type is IntrinsicType => type.type === 'intrinsic';
+const isUnionType = (type: SomeType): type is UnionType => type.type === 'union';
+const isIntersectionType = (type: SomeType): type is IntersectionType => type.type === 'intersection';
+
+const getLiteralTypeValue = (type: LiteralType): string => {
+  const { value } = type;
+  if (typeof value === 'number') {
+    return `${value}`;
+  } else if (typeof value === 'string') {
+    return value;
+  }
+
+  throw new Error('Not yet implemented for literal');
+};
+
+const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
+  const comment = getSummary(parameter.comment);
+  const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
+  const url = getURLFromSources(parameter);
+  const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
+  return [
+    '-',
+    `**[${platform}](${url})**:`,
+    `\`${parsedName}\``,
+    comment ? ` - ${comment}` : undefined,
+  ].filter(Boolean).join(' ');
+};
+
 
 const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
   const platformSpecificTypes: PlatformSpecificDeclarationReflection[] = [];
@@ -342,25 +375,6 @@ const getSource = ([source]: SourceReference[]) => {
 };
 
 
-const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection?.kind !== 'Platform Specific Type';
-const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
-const isReferenceType = (type: SomeType): type is ReferenceType => type.type === 'reference';
-const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
-const isInstrinsicType = (type: SomeType): type is IntrinsicType => type.type === 'intrinsic';
-const isUnionType = (type: SomeType): type is UnionType => type.type === 'union';
-const isIntersectionType = (type: SomeType): type is IntersectionType => type.type === 'intersection';
-
-const getLiteralTypeValue = (type: LiteralType): string => {
-  const { value } = type;
-  if (typeof value === 'number') {
-    return `${value}`;
-  } else if (typeof value === 'string') {
-    return value;
-  }
-
-  throw new Error('Not yet implemented for literal');
-}
-
 const getReferenceTypeOfParameter = (_type?: SomeType, definitions?: Definitions): {
   type: 'reference' | 'array' | 'literal' | 'intrinsic' | 'union',
   name: string;
@@ -589,19 +603,6 @@ const writeParameter = (methodName: string, parameter: ParameterReflection | Dec
   ].filter(Boolean).join(' ');
 };
 
-const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
-  const comment = getSummary(parameter.comment);
-  const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
-  const url = getURLFromSources(parameter);
-  const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
-  return [
-    '-',
-    `**[${platform}](${url})**:`,
-    `\`${parsedName}\``,
-    comment ? ` - ${comment}` : undefined,
-  ].filter(Boolean).join(' ');
-};
-
 
 const getMatchingType = (parameter: ParameterReflection | DeclarationReflection, definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}) => {
   const { classes, interfaces, types } = definitions;
@@ -668,7 +669,7 @@ const getReturnType = (signatures: (SignatureReflection & { typeParameter?: Type
     }
 
     if (isInstrinsicType(type)) {
-      let nameOfType = type.name;
+      const nameOfType = type.name;
       const returnDescription = blockTags?.['@returns']?.map(({ text }) => text).join('');
       return `\`${nameOfType}\`${returnDescription ? ` - ${returnDescription}` : ''}`;
     }
@@ -807,7 +808,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
   return content;
 };
 
-const getSortedMethodsForWriting = async (definitions: Definitions) => {
+const getSortedMethodsForWriting = (definitions: Definitions) => {
   const exports = Object.values(definitions.classes);
   const methods: DeclarationReflection[] = [];
   for (let i = 0; i < exports.length; i++) {
@@ -857,7 +858,7 @@ const writeIndexFile = async (dest: string, methods: DeclarationReflection[]) =>
 
 export async function writeAPIDocs(dest: string) {
   const definitions = await getDefinitions();
-  const methods = await getSortedMethodsForWriting(definitions);
+  const methods = getSortedMethodsForWriting(definitions);
 
   await Promise.all([
     writeAPIDocumentationFiles(dest, methods, definitions),
