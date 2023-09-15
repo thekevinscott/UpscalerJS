@@ -204,6 +204,6 @@ export async function executeAsyncScript<T, A extends Record<string, unknown>>(d
 // we need to declare that window can adopt any kind of variable
 declare global {
   interface Window {
-    [index: string]: any;
+    [index: string]: unknown;
   }
 }

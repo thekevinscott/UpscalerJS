@@ -1,7 +1,6 @@
 import { EXAMPLES_DIR } from "@internals/common/constants";
 import { copyFile, exists, mkdirp, readFile, readdir, stat, writeFile } from "@internals/common/fs";
 import { getPackageJSON } from "@internals/common/package-json";
-import fm from 'front-matter';
 import path from "path";
 
 /****
@@ -37,7 +36,9 @@ const getGuideFolders = async (root: string): Promise<string[]> => {
   return includedFiles;
 };
 
-const getDefaultCodeEmbedParameters = (category: Category, params: Record<string, any> = {}) => {
+const getBody = (contents: string) => contents.split('---').pop() ?? '';
+
+const getDefaultCodeEmbedParameters = (category: Category, params: Record<string, string> = {}) => {
   if (category === 'node') {
     return 'view=split,preview&module=index.js&hidenavigation=1';
   };
@@ -53,12 +54,12 @@ const getFrontmatter = async (key: string): Promise<ExampleContent> => {
   const packageJSON = await getPackageJSON(path.resolve(EXAMPLES_DIR, key, 'package.json'));
   const readmePath = path.resolve(EXAMPLES_DIR, key, 'README.md');
   const readmeContents = await readFile(readmePath);
-  const { body } = (fm as any)(readmeContents);
+  const body = getBody(readmeContents);
   const bodyParts = body.split('\n');
   let title: undefined | string;
   for (const line of bodyParts) {
     if (line.startsWith('#')) {
-      title = line.split('#')?.pop()?.trim() || '';
+      title = line.split('#')?.pop()?.trim() ?? '';
       break;
     }
   }

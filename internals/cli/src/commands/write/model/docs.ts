@@ -39,7 +39,7 @@ const getSnippets = async (model: string): Promise<Record<string, string>> => {
 
 }
 
-const getPackageJSONArgs = async (model: string, packageJSON: JSONSchema): Promise<Record<string, any>> => {
+const getPackageJSONArgs = async (model: string, packageJSON: JSONSchema): Promise<Record<string, string | undefined>> => {
   const name = packageJSON.name;
   if (!name) {
     throw new Error(`No name defined for packageJSON for model ${model}`);
@@ -107,7 +107,9 @@ export const writeModelDocs = async (modelPackageDirectoryNames: string[]) => {
     CONCURRENT_ASYNC_THREADS,
     modelPackageDirectoryNames,
     (modelPackageDirectoryName: string) => writeModelDoc(modelPackageDirectoryName)
-  )) { }
+  )) {
+    // empty
+  }
   info(`Wrote docs for ${modelPackageDirectoryNames.length} package${modelPackageDirectoryNames.length === 1 ? '' : 's'}`)
 };
 

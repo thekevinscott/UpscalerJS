@@ -199,7 +199,7 @@ export class ClientsideTestRunner {
   async stopServers(): Promise<void> {
     const stopServer = async (server?: HttpServer) => {
       if (!server) {
-        this._warn(`No server found`);
+        this._warn('No server found');
       } else {
         await server.close();
       }
@@ -278,7 +278,7 @@ export class ClientsideTestRunner {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this._warn(`No browser found`);
+      this._warn('No browser found');
     }
   }
 
@@ -288,7 +288,7 @@ export class ClientsideTestRunner {
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this._warn(`No context found`);
+      this._warn('No context found');
     }
   }
 

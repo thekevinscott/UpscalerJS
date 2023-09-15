@@ -66,10 +66,10 @@ export const getPackageJSONValue = (packageJSON: JSONSchema, depKey: string) => 
 
 type Value = JSONSchema[keyof JSONSchema];
 export const updatePackageJSONForKey = (packageJSON: JSONSchema, key: string, val: Value): JSONSchema => {
-  return getObj<JSONSchema>(packageJSON, key.split('.'), val);
+  return getObj(packageJSON, key.split('.'), val);
 }
 
-function getObj<T extends Record<string, any>>(obj: T, parts: string[], val: Value): T {
+function getObj(obj: JSONSchema, parts: string[], val: Value): JSONSchema {
   if (parts.length === 1) {
     return {
       ...obj,

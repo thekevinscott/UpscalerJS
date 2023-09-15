@@ -33,7 +33,7 @@ export default (program: Command) => program.command('api')
       return startWatch(
         `pnpm cli write docs api ${shouldClearMarkdown ? '-c' : ''}`,
         [
-          path.join(CORE_DIR, `**/*`),
+          path.join(CORE_DIR, '**/*'),
           path.join(UPSCALER_DIR, '**/*'),
         ], {
         ignored: path.join(UPSCALER_DIR, '**/*.generated.ts'),

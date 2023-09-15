@@ -23,7 +23,7 @@ export class Tunnel {
   port: number;
   // private localtunnel?: ReturnType<typeof localtunnel>;
   url?: string;
-  private _stop: any;
+  // private _stop: any;
   
   constructor(port: number) {
     this.port = port;

@@ -78,7 +78,9 @@ const updateNPMDependencies = async () => {
     await exec('npm update --save', {
       cwd: path.resolve(ROOT_DIR, path.dirname(file)),
     });
-  })) { }
+  })) {
+    // empty
+  }
 };
 
 export default (program: Command) => program.command('npm-dependencies')
