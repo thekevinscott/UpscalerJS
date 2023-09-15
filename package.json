@@ -9,7 +9,7 @@
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
   "scripts": {
-    "cli": "node --loader ts-node/esm internals/cli/bin/cli-dev.ts",
+    "cli": "node --no-warnings --loader ts-node/esm internals/cli/bin/cli-dev.ts",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
