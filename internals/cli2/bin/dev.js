@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const oclif = require('@oclif/core')
+import oclif from '@oclif/core'
+import path from 'path';
 
-const path = require('path')
 const project = path.join(__dirname, '..', 'tsconfig.json')
 
 // In dev mode -> use ts-node and dev plugins
-process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'development';
 
 require('ts-node').register({project})
 

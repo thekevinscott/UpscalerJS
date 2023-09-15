@@ -23,6 +23,10 @@ runs:
       shell: bash
       run: pnpm install --ignore-scripts
 
+    - name: 'test'
+      shell: bash
+      run: 'pnpm cli2'
+
     - name: postinstall
       shell: bash
       run: pnpm postinstall
