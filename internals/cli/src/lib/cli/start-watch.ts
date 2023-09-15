@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import { error, verbose } from '@internals/common/logger';
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess } from 'child_process';
 import path from 'path';
 import { CLI_DIR, ROOT_DIR } from '@internals/common/constants';
 import { SpawnError, spawnProcess } from './spawn-process.js';
@@ -22,7 +22,7 @@ export const startWatch = (
   let last: number;
   let iterations = 0;
   let spawnedProcess: ChildProcess | undefined;
-  watcher.on('all', async (event, file, stats) => {
+  watcher.on('all', (event, file) => {
     console.clear();
     if (spawnedProcess) {
       verbose(`>> Killing previous spawned process ${spawnedProcess.pid}`);

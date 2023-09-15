@@ -1,6 +1,8 @@
 import { getDefinitions } from "./get-definitions.js";
 import { getAllDeclarationReflections } from "./get-all-declaration-reflections.js";
-import { ReflectionKind } from "typedoc";
+import { DeclarationReference, DeclarationReflection, ReflectionKind } from "typedoc";
+import { Declaration } from "@schemastore/package";
+import { PlatformSpecificFileDeclarationReflection } from "../types.js";
 
 vi.mock('./get-all-declaration-reflections.js', () => ({
   getAllDeclarationReflections: vi.fn(),
@@ -13,14 +15,14 @@ describe('getDefinitions()', () => {
 
   it('throws if given a bad "kind"', async () => {
     vi.mocked(getAllDeclarationReflections).mockImplementation(() => {
-      return [
+      return Promise.resolve([
         {
           kind: 'foo',
         }
-      ] as any;
+      ] as unknown as (DeclarationReflection | PlatformSpecificFileDeclarationReflection)[]);
     });
 
-    expect(() => getDefinitions()).rejects.toThrow();
+    await expect(() => getDefinitions()).rejects.toThrow();
   });
 
   it('gets definitions', async () => {
@@ -61,7 +63,7 @@ describe('getDefinitions()', () => {
       node: {},
     };
     vi.mocked(getAllDeclarationReflections).mockImplementation(() => {
-      return [
+      return Promise.resolve([
         PlatformSpecific,
         Constructor,
         Method,
@@ -70,7 +72,7 @@ describe('getDefinitions()', () => {
         Class,
         Function,
         Enum,
-      ] as any;
+      ] as (DeclarationReflection | PlatformSpecificFileDeclarationReflection)[]);
     });
 
     const result = await getDefinitions();
@@ -92,7 +94,7 @@ describe('getDefinitions()', () => {
         Interface,
       },
       classes: {
-        Class: Class,
+        Class,
       },
       enums: {
         Enum,

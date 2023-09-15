@@ -7,3 +7,8 @@ export default (program: Command) => program.command('docs')
 export const postProcess = (program: Command) => program
   .option('-c, --should-clear-markdown', 'Whether to clear markdown files or not', false)
   .option('-w, --watch', 'Whether to run in watch mode or not', false)
+
+export interface Opts {
+  shouldClearMarkdown?: boolean;
+  watch?: boolean;
+}

@@ -1,7 +1,6 @@
 import { DeclarationReflection, SourceReference } from "typedoc";
 import { DecRef } from "../types.js";
 import { getURLFromSources, rewriteURL } from "./get-url-from-sources.js";
-import { REPO_ROOT } from "../constants.js";
 
 describe('rewriteURL', () => {
   it('rewrites the URL', () => {

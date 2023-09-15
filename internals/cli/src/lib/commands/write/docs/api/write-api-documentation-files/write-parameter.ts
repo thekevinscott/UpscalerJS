@@ -1,4 +1,4 @@
-import { DeclarationReflection, ParameterReflection, TypeParameterReflection } from "typedoc";
+import { Comment, DeclarationReflection, ParameterReflection, TypeParameterReflection } from "typedoc";
 import { DecRef, Definitions, PlatformSpecificFileDeclarationReflection, isDeclarationReflection, isPlatformSpecificFileDeclarationReflection } from "../types.js";
 import { getReferenceTypeOfParameter } from "./get-reference-type-of-parameter.js";
 import { getURLFromSources } from "./get-url-from-sources.js";
@@ -6,7 +6,7 @@ import { sortChildrenByLineNumber } from "../sort-children-by-line-number.js";
 import { getMatchingType } from "./get-matching-type.js";
 import { TYPES_TO_EXPAND } from "../constants.js";
 
-export const getSummary = (comment?: any) => comment?.summary.map(({ text }: any) => text).join('');
+export const getSummary = (comment?: Comment) => comment?.summary.map(({ text }) => text).join('');
 
 type MatchingType = undefined | DecRef | TypeParameterReflection;
 type Parameter = ParameterReflection | DeclarationReflection;
@@ -39,7 +39,7 @@ const writeParameter = (
 };
 
 const writePlatformSpecificParameter = (platform: string, parameter: DeclarationReflection, definitions: Definitions) => {
-  const comment = getSummary(parameter.comment as any);
+  const comment = getSummary(parameter.comment);
   const { type, name } = getReferenceTypeOfParameter(parameter.type, definitions);
   const url = getURLFromSources(parameter);
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
@@ -85,5 +85,6 @@ export const getParameters = (
         childParameters,
       ].filter(Boolean).map(line => Array(depth * 2).fill(' ').join('') + line).join('\n');
     }
+    return undefined;
   }).filter(Boolean).join('\n');
 };

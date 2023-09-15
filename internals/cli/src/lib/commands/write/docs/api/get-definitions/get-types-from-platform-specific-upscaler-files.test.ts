@@ -1,4 +1,4 @@
-import { DeclarationReflection, LiteralType, ProjectReflection, ReflectionKind, SomeType } from "typedoc";
+import { DeclarationReflection, ProjectReflection, ReflectionKind, SomeType } from "typedoc";
 import {
   getPlatformSpecificUpscalerDeclarationReflections,
   getTypesFromPlatformSpecificUpscalerFile,
@@ -112,11 +112,12 @@ describe('getTypesFromPlatformSpecificFiles', () => {
     });
     const result = await getTypesFromPlatformSpecificUpscalerFiles([{
       fileName: 'file1',
-      typeName: typeName,
+      typeName,
     }, {
       fileName: 'file2',
-      typeName: typeName,
+      typeName,
     }]);
+
     expect(result).toEqual([
       expect.objectContaining({
         declarationReflection: expect.any(DeclarationReflection),

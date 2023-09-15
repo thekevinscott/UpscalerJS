@@ -42,7 +42,7 @@ describe('writeAPIDocumentationFiles', () => {
 
   it('it to throw if no content is returned', async () => {
     vi.mocked(getContentForMethod).mockReturnValue('');
-    expect(() => writeAPIDocumentationFiles('/out', [{
+    await expect(() => writeAPIDocumentationFiles('/out', [{
       name: 'foo'
     }, {
       name: 'bar',

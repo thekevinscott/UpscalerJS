@@ -11,7 +11,7 @@ describe('getSortedMethodsForWriting()', () => {
     } as unknown as DecRef;
     const definitions = {
       classes: {
-        Class: Class,
+        Class,
       },
     } as unknown as Definitions;
     expect(getSortedMethodsForWriting(definitions)).toEqual([ ])
@@ -37,7 +37,7 @@ describe('getSortedMethodsForWriting()', () => {
     } as unknown as DecRef;
     const definitions = {
       classes: {
-        Class: Class,
+        Class,
       },
     } as unknown as Definitions;
     expect(getSortedMethodsForWriting(definitions)).toEqual([

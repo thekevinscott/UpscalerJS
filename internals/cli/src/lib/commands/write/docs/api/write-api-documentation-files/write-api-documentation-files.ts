@@ -3,7 +3,7 @@ import { mkdirp, writeFile } from '@internals/common/fs';
 import { getContentForMethod } from './get-content-for-method.js';
 import { Definitions } from '../types.js';
 import { DeclarationReflection } from 'typedoc';
-import { info, verbose } from '@internals/common/logger';
+import { verbose } from '@internals/common/logger';
 
 export const writeAPIDocumentationFiles = async (dest: string, methods: DeclarationReflection[], definitions: Definitions) => {
   await Promise.all(methods.map(async (method, i) => {

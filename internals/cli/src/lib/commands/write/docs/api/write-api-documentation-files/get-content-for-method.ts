@@ -49,19 +49,14 @@ export const getContentForMethod = async (method: DeclarationReflection, definit
     throw new Error(`No sources found for ${name}`);
   }
   if (!signatures?.length) {
-    const { type: _type, ...m } = method;
+    const { type: _type } = method;
     throw new Error(`No signatures found in ${name}`);
   }
   const signature = signatures[0] as SignatureReflection & { typeParameter?: TypeParameterReflection[] };
   const { comment, parameters, typeParameter: typeParameters } = signature;
 
   const { description, codeSnippet, blockTags } = getTextSummary(name, comment);
-  let source;
-  try {
-    source = await getSource(sources);
-  } catch(e) {
-    throw e;
-  }
+  const source = await getSource(sources);
 
   const content = [
     [

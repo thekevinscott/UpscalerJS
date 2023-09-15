@@ -1,3 +1,4 @@
+import { ProjectReflection } from "typedoc";
 import { getDeclarationReflectionsFromPackages } from "./get-declaration-reflections-from-packages.js";
 import { getPackageAsTree } from "./get-package-as-tree.js";
 
@@ -18,7 +19,7 @@ describe('getDeclarationReflectionsFromPackages', () => {
           'foo',
           'bar',
         ],
-      } as any;
+      } as unknown as ProjectReflection;
     });
     expect(getDeclarationReflectionsFromPackages([
       {
@@ -32,7 +33,7 @@ describe('getDeclarationReflectionsFromPackages', () => {
     vi.mocked(getPackageAsTree).mockImplementation(() => {
       return {
         children: [],
-      } as any;
+      } as unknown as ProjectReflection;
     });
     expect(() => getDeclarationReflectionsFromPackages([
       {

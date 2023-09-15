@@ -28,15 +28,17 @@ export const getReturnType = (signatures: (SignatureReflection & { typeParameter
     throw new Error(`Return Type function not yet implemented for type ${type.type}`)
   }
 
-  let comment: Comment;
+  // let comment: Comment;
+  let commentSeen = false;
   const validReturnTypes = new Set();
   let returnType = '';
   signatures.forEach(signature => {
     if (signature.comment) {
-      if (comment !== undefined) {
+      if (commentSeen) {
         throw new Error('Multiple comments defined for return signatures');
       }
-      comment = signature.comment as any;
+      commentSeen = true;
+      // comment = signature.comment;
     }
     const { type } = signature;
     if (type === undefined) {

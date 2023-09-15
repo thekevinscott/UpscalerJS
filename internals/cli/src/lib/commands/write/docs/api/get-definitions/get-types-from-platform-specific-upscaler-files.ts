@@ -3,7 +3,7 @@ import { DeclarationReflection, ReflectionKind, SomeType } from "typedoc";
 import { getPackageAsTree } from "./get-package-as-tree.js";
 import { UPSCALER_DIR } from "@internals/common/constants";
 import path from "path";
-import { Definitions, PlatformSpecificFileDeclarationReflection } from "../types.js";
+import { PlatformSpecificFileDeclarationReflection } from "../types.js";
 
 export interface PlatformSpecificFileDefinition {
   fileName: string;
@@ -89,6 +89,6 @@ export const getTypesFromPlatformSpecificUpscalerFile = ({ fileName, typeName }:
   };
 };
 
-export const getTypesFromPlatformSpecificUpscalerFiles = async (
+export const getTypesFromPlatformSpecificUpscalerFiles = (
   fileNames: PlatformSpecificFileDefinition[]
 ): Promise<PlatformSpecificFileDeclarationReflection[]> => Promise.all(fileNames.map(getTypesFromPlatformSpecificUpscalerFile));

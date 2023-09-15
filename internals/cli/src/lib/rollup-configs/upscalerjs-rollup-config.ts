@@ -28,7 +28,7 @@ export const inputOptions: InputOptions = {
         /^(?!.*(@tensorflow\/tfjs-core))/, //skipcq: js-0113
       ],
     }),
-    (commonjs as any)(),
+    (commonjs as any)(), // skipcq: js-0323
   ],
 };
 

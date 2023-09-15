@@ -33,7 +33,7 @@ describe('getPackageAsTree', () => {
         },
         bootstrap: vi.fn(),
         convert: vi.fn(),
-      } as any;
+      } as unknown as typedoc.Application;
     });
     await expect(async () => {
       await getPackageAsTree('entryPoint', 'tsconfig', 'projectRoot')
@@ -52,7 +52,7 @@ describe('getPackageAsTree', () => {
         serializer: {
           projectToObject,
         }
-      } as any;
+      } as unknown as typedoc.Application;
     });
     const result = await getPackageAsTree('entryPoint', 'tsconfig', 'projectRoot');
     expect(result).toEqual('projectToObject');
