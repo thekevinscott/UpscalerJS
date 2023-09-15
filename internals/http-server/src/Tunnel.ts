@@ -8,6 +8,7 @@ import { tunnelmole } from 'tunnelmole';
 // import * as url from 'url';
 
 // const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+process.env.TUNNELMOLE_TELEMETRY = '0';
 
 const regexp = new RegExp(/^http(.*) is forwarding to(.*)/);
 const silenceTunnelmoleOutput = () => {

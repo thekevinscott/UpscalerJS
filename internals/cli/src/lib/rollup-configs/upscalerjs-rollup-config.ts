@@ -1,7 +1,10 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
 import type { InputOptions, OutputOptions, } from 'rollup';
-import DefaultUpscalerModel from '../../../../../models/default-model/umd-names.json' assert { type: "json" };
+// import DefaultUpscalerModel from '../../../../../models/default-model/umd-names.json' assert { type: "json" };
+const DefaultUpscalerModel = {
+  ".": "DefaultUpscalerJSModel"
+};
 
 const isValidUMDNameFile = (contents: unknown): contents is {
    '.': string

@@ -6,7 +6,8 @@
   "description": "CLI for managing the UpscalerJS repo",
   "author": "Kevin Scott",
   "bin": {
-    "cli": "./bin/cli.ts"
+    "cli": "./bin/cli.js",
+    "cli-dev": "./bin/cli.ts"
   },
   "license": "MIT",
   "dependencies": {
@@ -32,6 +33,7 @@
     "vitest": "^0.34.2"
   },
   "scripts": {
+    "build": "tsc",
     "test": "vitest"
   },
   "engines": {

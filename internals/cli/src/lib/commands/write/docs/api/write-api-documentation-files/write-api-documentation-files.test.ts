@@ -19,7 +19,7 @@ describe('writeAPIDocumentationFiles', () => {
   });
 
   it('it to write API documentation files', async () => {
-    vi.mocked(getContentForMethod).mockReturnValue('foobarbaz');
+    vi.mocked(getContentForMethod).mockResolvedValue('foobarbaz');
     await writeAPIDocumentationFiles('/out', [{
       name: 'foo'
     } as DeclarationReflection], {} as unknown as Definitions);
@@ -29,7 +29,7 @@ describe('writeAPIDocumentationFiles', () => {
   });
 
   it('it to write API documentation files for multiple methods', async () => {
-    vi.mocked(getContentForMethod).mockReturnValue('foobarbaz');
+    vi.mocked(getContentForMethod).mockResolvedValue('foobarbaz');
     await writeAPIDocumentationFiles('/out', [{
       name: 'foo'
     }, {
@@ -41,7 +41,7 @@ describe('writeAPIDocumentationFiles', () => {
   });
 
   it('it to throw if no content is returned', async () => {
-    vi.mocked(getContentForMethod).mockReturnValue('');
+    vi.mocked(getContentForMethod).mockResolvedValue('');
     await expect(() => writeAPIDocumentationFiles('/out', [{
       name: 'foo'
     }, {
