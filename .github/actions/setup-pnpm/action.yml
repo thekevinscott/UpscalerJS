@@ -21,7 +21,11 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install
+      run: pnpm install --ignore-scripts
+
+    - name: postinstall
+      shell: bash
+      run: pnpm postinstall
 
     - name: Install Puppeteer explicitly
       shell: bash
