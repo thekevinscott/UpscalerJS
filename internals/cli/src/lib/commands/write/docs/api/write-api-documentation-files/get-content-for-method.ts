@@ -1,11 +1,10 @@
-import { TYPES_TO_EXPAND } from './constants.js';
 import { DeclarationReflection, SignatureReflection, TypeParameterReflection } from 'typedoc';
-import { Definitions } from './types.js';
 import { getSource } from './get-source.js';
 import { getTextSummary } from './get-text-summary.js';
 import { getParameters } from './write-parameter.js';
 import { getReturnType } from './get-return-type.js';
-import { EXPANDED_TYPE_CONTENT } from '../constants.js';
+import { EXPANDED_TYPE_CONTENT, TYPES_TO_EXPAND } from '../constants.js';
+import { Definitions } from '../types.js';
 
 function getAsObj <T>(arr: T[], getKey: (item: T) => string) {
   return arr.reduce((obj, item) => ({

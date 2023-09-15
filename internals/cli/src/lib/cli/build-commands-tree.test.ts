@@ -18,10 +18,10 @@ vi.mock('fs-extra', () => {
   }
 });
 
-vi.mock('foo/index.js', () => ({ default: vi.fn(), }));
-vi.mock('foo/guide/index.js', () => ({ default: vi.fn(), }));
-vi.mock('foo/guide/file1.ts', () => ({ default: vi.fn(), }));
-vi.mock('foo/model/index.js', () => ({ default: vi.fn(), }));
+vi.mock('foo/index.js', () => ({       postProcess: vi.fn(), default: vi.fn(), }));
+vi.mock('foo/guide/index.js', () => ({ postProcess: vi.fn(), default: vi.fn(), }));
+vi.mock('foo/guide/file1.ts', () => ({ postProcess: vi.fn(), default: vi.fn(), }));
+vi.mock('foo/model/index.js', () => ({ postProcess: vi.fn(), default: vi.fn(), }));
 
 describe('buildCommandsTree', () => {
   it('returns a single node for an empty directory, where that node is the directory', async () => {

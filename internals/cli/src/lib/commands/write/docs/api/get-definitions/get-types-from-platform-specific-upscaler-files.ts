@@ -1,15 +1,9 @@
 import { TFJSLibrary } from "@internals/common/tfjs-library";
 import { DeclarationReflection, ReflectionKind, SomeType } from "typedoc";
-import { scaffoldUpscaler } from "../../../../../../commands/scaffold/upscaler.js";
 import { getPackageAsTree } from "./get-package-as-tree.js";
 import { UPSCALER_DIR } from "@internals/common/constants";
 import path from "path";
-
-export interface PlatformSpecificFileDeclarationReflection {
-  declarationReflection: DeclarationReflection;
-  browser: DeclarationReflection;
-  node: DeclarationReflection;
-}
+import { Definitions, PlatformSpecificFileDeclarationReflection } from "../types.js";
 
 export interface PlatformSpecificFileDefinition {
   fileName: string;
@@ -18,11 +12,32 @@ export interface PlatformSpecificFileDefinition {
 
 const tfjsLibraries: TFJSLibrary[] = ['browser', 'node'];
 
-export const isPlatformSpecificFileDeclarationReflection = (
-  child: DeclarationReflection | PlatformSpecificFileDeclarationReflection
-): child is PlatformSpecificFileDeclarationReflection => 'browser' in child;
+const reverseKindStringKey: Record<string, ReflectionKind> = {
+  constructors: ReflectionKind.Constructor,
+  methods: ReflectionKind.Method,
+  interfaces: ReflectionKind.Interface,
+  types: ReflectionKind.TypeAlias,
+  classes: ReflectionKind.Class,
+  functions: ReflectionKind.Function,
+  enums: ReflectionKind.Enum,
+};
 
-export const makeDeclarationReflection = (typeName: string, kind: ReflectionKind, type?: SomeType) => {
+export const makeDeclarationReflection = (typeName: string, type: SomeType): DeclarationReflection => {
+  if (type.type === 'union') {
+    // const childType = type.types?.[0];
+    // console.log(typeName, type.types);
+    // if (!childType) {
+    //   throw new Error('No child type for union');
+    // }
+    // return makeDeclarationReflection(typeName, childType);
+    const declarationReflection = new DeclarationReflection(typeName, ReflectionKind.Interface);
+    declarationReflection.type = type;
+    return declarationReflection;
+  }
+  const kind = reverseKindStringKey[type.type];
+  if (kind === undefined) {
+    throw new Error(`Kind is undefined for type ${type.type}`);
+  }
   const declarationReflection = new DeclarationReflection(typeName, kind);
   declarationReflection.type = type;
   return declarationReflection;
@@ -49,12 +64,26 @@ export const getPlatformSpecificUpscalerDeclarationReflections = (
 
 export const getTypesFromPlatformSpecificUpscalerFile = ({ fileName, typeName }: PlatformSpecificFileDefinition) => {
   const [browser, node] = tfjsLibraries.map(tfjsLibrary => getPlatformSpecificUpscalerDeclarationReflections(tfjsLibrary, { fileName, typeName }));
-  if (browser.type !== node.type) {
-    throw new Error('Some mismatch between browser and node types');
+  if (browser.type?.type !== node.type?.type) {
+    throw new Error([
+      'Some mismatch for file name',
+      fileName,
+      'and type name',
+      typeName,
+      'between browser type:', 
+      `\n\n${JSON.stringify(browser.type)}\n\n`, 
+      'and node type:',
+      `\n\n${JSON.stringify(node.type)}`,
+    ].join(' '));
+  }
+
+  const type = browser.type;
+  if (!type) {
+    throw new Error('No type defined on browser type');
   }
 
   return {
-    declarationReflection: makeDeclarationReflection(typeName, ReflectionKind.Function, browser.type),
+    declarationReflection: makeDeclarationReflection(typeName, type),
     browser,
     node,
   };

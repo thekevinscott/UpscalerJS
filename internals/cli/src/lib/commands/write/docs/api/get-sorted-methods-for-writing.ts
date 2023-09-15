@@ -1,7 +1,6 @@
 import { DeclarationReflection } from "typedoc";
-import { DecRef, Definitions } from "./types.js";
+import { DecRef, Definitions, isPlatformSpecificFileDeclarationReflection } from "./types.js";
 import { VALID_EXPORTS_FOR_WRITING_DOCS, VALID_METHODS_FOR_WRITING_DOCS } from "./constants.js";
-import { isPlatformSpecificFileDeclarationReflection } from "./get-definitions/get-types-from-platform-specific-upscaler-files.js";
 import { info } from "@internals/common/logger";
 import { sortChildrenByLineNumber } from "./sort-children-by-line-number.js";
 

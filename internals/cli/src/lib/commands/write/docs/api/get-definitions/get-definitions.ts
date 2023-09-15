@@ -1,9 +1,9 @@
 import { ReflectionKind } from "typedoc";
-import { DecRef, Definitions } from "../types.js";
+import { Definitions, isPlatformSpecificFileDeclarationReflection } from "../types.js";
 import { getAllDeclarationReflections } from "./get-all-declaration-reflections.js";
-import { isPlatformSpecificFileDeclarationReflection } from "./get-types-from-platform-specific-upscaler-files.js";
+import {  } from "./get-types-from-platform-specific-upscaler-files.js";
 
-const KindStringKey: Partial<Record<ReflectionKind, keyof Definitions>> = {
+export const KindStringKey: Partial<Record<ReflectionKind, keyof Definitions>> = {
   [ReflectionKind.Constructor]: 'constructors',
   [ReflectionKind.Method]: 'methods',
   [ReflectionKind.Interface]: 'interfaces',

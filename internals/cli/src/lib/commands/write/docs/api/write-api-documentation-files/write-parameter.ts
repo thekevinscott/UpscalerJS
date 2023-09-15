@@ -1,15 +1,23 @@
-import { DeclarationReflection, ParameterReflection } from "typedoc";
-import { PlatformSpecificFileDeclarationReflection } from "../get-definitions/get-types-from-platform-specific-upscaler-files.js";
-import { Definitions, isDeclarationReflection } from "../types.js";
+import { DeclarationReflection, ParameterReflection, TypeParameterReflection } from "typedoc";
+import { DecRef, Definitions, PlatformSpecificFileDeclarationReflection, isDeclarationReflection, isPlatformSpecificFileDeclarationReflection } from "../types.js";
 import { getReferenceTypeOfParameter } from "./get-reference-type-of-parameter.js";
 import { getURLFromSources } from "./get-url-from-sources.js";
 import { sortChildrenByLineNumber } from "../sort-children-by-line-number.js";
 import { getMatchingType } from "./get-matching-type.js";
 import { TYPES_TO_EXPAND } from "../constants.js";
 
-const getSummary = (comment?: any) => comment?.summary.map(({ text }: any) => text).join('');
+export const getSummary = (comment?: any) => comment?.summary.map(({ text }: any) => text).join('');
 
-const writeParameter = (methodName: string, parameter: ParameterReflection | DeclarationReflection, matchingType: undefined | DecRef | TypeParameterReflection, definitions: Definitions, childParameters: string) => {
+type MatchingType = undefined | DecRef | TypeParameterReflection;
+type Parameter = ParameterReflection | DeclarationReflection;
+
+const writeParameter = (
+  methodName: string,
+  parameter: Parameter,
+  matchingType: MatchingType,
+  definitions: Definitions,
+  childParameters: string
+) => {
   const comment = getSummary(parameter.comment);
   const { type, name, includeURL = true } = getReferenceTypeOfParameter(parameter.type, definitions);
   const parsedName = `${name}${type === 'array' ? '[]' : ''}`;
@@ -57,17 +65,25 @@ export const writePlatformSpecificDefinitions = (definitions: Definitions): stri
   ].join('\n')).join('\n');
 };
 
-export const getParameters = (methodName: string, parameters: (ParameterReflection | DeclarationReflection)[], definitions: Definitions, typeParameters: Record<string, TypeParameterReflection> = {}, depth = 0): string => {
+export const getParameters = (
+  methodName: string,
+  parameters: Parameter[],
+  definitions: Definitions,
+  typeParameters: Record<string, TypeParameterReflection> = {},
+  depth = 0
+): string => {
   if (depth > 5) {
     throw new Error('Too many levels of depth');
   }
   return parameters.map((parameter) => {
-    const matchingType: any = getMatchingType(parameter, definitions, typeParameters);
-    const { children = [] } = matchingType || {};
-    const childParameters = getParameters(methodName, sortChildrenByLineNumber(children), definitions, typeParameters, depth + 1);
-    return [
-      writeParameter(methodName, parameter, matchingType, definitions, childParameters),
-      childParameters,
-    ].filter(Boolean).map(line => Array(depth * 2).fill(' ').join('') + line).join('\n');
+    const matchingType = getMatchingType(parameter, definitions, typeParameters);
+    if (matchingType) {
+      const { children } = isPlatformSpecificFileDeclarationReflection(matchingType) ? matchingType.declarationReflection : matchingType;
+      const childParameters = children ? getParameters(methodName, sortChildrenByLineNumber(children), definitions, typeParameters, depth + 1) : '';
+      return [
+        writeParameter(methodName, parameter, matchingType, definitions, childParameters),
+        childParameters,
+      ].filter(Boolean).map(line => Array(depth * 2).fill(' ').join('') + line).join('\n');
+    }
   }).filter(Boolean).join('\n');
 };

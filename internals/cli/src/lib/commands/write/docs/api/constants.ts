@@ -33,7 +33,7 @@ export const TYPES_TO_EXPAND: Record<string, string[]> = {
 };
 export const TEMPLATES_DIR = path.resolve(__dirname, '_templates');
 
-const makeNewExternalType = (name: string, _url: string): DeclarationReflection => {
+export const makeNewExternalType = (name: string, _url: string): DeclarationReflection => {
   const type = new DeclarationReflection(name, ReflectionKind['SomeType']);
   type.sources = [];
   return type;

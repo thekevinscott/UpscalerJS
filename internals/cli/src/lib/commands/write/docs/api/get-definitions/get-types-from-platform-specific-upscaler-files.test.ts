@@ -18,10 +18,14 @@ describe('makeDeclarationReflection', () => {
     vi.resetAllMocks();
   });
   it('gets a declaration reflection', () => {
-    const decRef = makeDeclarationReflection('foo', ReflectionKind.Function, 'bar' as unknown as SomeType);
+    const decRef = makeDeclarationReflection('foo', {
+      type: 'functions',
+    } as unknown as SomeType);
     expect(decRef.name).toEqual('foo');
     expect(decRef.kind).toEqual(ReflectionKind.Function);
-    expect(decRef.type).toEqual('bar');
+    expect(decRef.type).toEqual({
+      type: 'functions',
+    });
   })
 });
 
@@ -70,6 +74,9 @@ describe('getTypesFromPlatformSpecificUpscalerFile', () => {
     const typeName = 'typeName';
     const child = {
       name: typeName,
+      type: {
+        type: 'functions',
+      },
     };
     vi.mocked(getPackageAsTree).mockImplementation(() => {
       return {
@@ -84,26 +91,6 @@ describe('getTypesFromPlatformSpecificUpscalerFile', () => {
     expect(result.browser).toEqual(child);
     expect(result.node).toEqual(child);
   });
-
-  it('throws if there is a mismatch between platforms', () => {
-    const typeName = 'typeName';
-    vi.mocked(getPackageAsTree).mockImplementation((srcPath: string) => {
-      const child = srcPath.includes('browser') ? {
-        name: typeName,
-        type: 'browser',
-      } : {
-        name: typeName,
-        type: 'node',
-      };
-      return {
-        children: [child],
-      } as unknown as ProjectReflection;
-    });
-    expect(() => getTypesFromPlatformSpecificUpscalerFile({
-      fileName: 'fileName',
-      typeName,
-    })).toThrow();
-  });
 });
 
 describe('getTypesFromPlatformSpecificFiles', () => {
@@ -114,7 +101,9 @@ describe('getTypesFromPlatformSpecificFiles', () => {
     const typeName = 'typeName';
     const child = {
       name: typeName,
-      type: 'sometype',
+      type: {
+        type: 'functions',
+      },
     };
     vi.mocked(getPackageAsTree).mockImplementation(() => {
       return {

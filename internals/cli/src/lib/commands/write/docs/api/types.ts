@@ -8,7 +8,12 @@ import {
   SomeType,
   UnionType,
 } from "typedoc";
-import { PlatformSpecificFileDeclarationReflection } from './get-definitions/get-types-from-platform-specific-upscaler-files.js';
+
+export interface PlatformSpecificFileDeclarationReflection {
+  declarationReflection: DeclarationReflection;
+  browser: DeclarationReflection;
+  node: DeclarationReflection;
+}
 
 export type DecRef = DeclarationReflection | PlatformSpecificFileDeclarationReflection;
 export interface Definitions {
@@ -21,7 +26,11 @@ export interface Definitions {
   enums: Record<string, DecRef>;
 }
 
-export const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection?.kind !== 'Platform Specific Type';
+export const isPlatformSpecificFileDeclarationReflection = (
+  child: DeclarationReflection | PlatformSpecificFileDeclarationReflection
+): child is PlatformSpecificFileDeclarationReflection => 'browser' in child;
+
+export const isDeclarationReflection = (reflection?: DecRef): reflection is DeclarationReflection => reflection !== undefined && !isPlatformSpecificFileDeclarationReflection(reflection);
 export const isArrayType = (type: SomeType): type is ArrayType => type.type === 'array';
 export const isReferenceType = (type: SomeType): type is ReferenceType => type.type === 'reference';
 export const isLiteralType = (type: SomeType): type is LiteralType => type.type === 'literal';
