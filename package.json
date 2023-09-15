@@ -15,7 +15,9 @@
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
-    "postinstall": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+    "build:core": "pnpm cli build core browser -o esm && pnpm cli build core node -o cjs && pnpm cli validate packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
+    "build:default-model": "pnpm cli build model default-model -o cjs -o esm -o umd && pnpm cli validate models/default-model",
+    "postinstall": "pnpm cli scaffold upscaler browser && pnpm build:core && pnpm build:default-model"
   },
   "type": "module",
   "private": true,
