@@ -19,6 +19,10 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
+    - name: Install Deno
+      shell: bash
+      run: curl -fsSL https://deno.land/x/install/install.sh | sh
+
     - name: Install dependencies
       shell: bash
       run: pnpm install --ignore-scripts
