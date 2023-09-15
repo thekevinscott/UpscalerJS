@@ -27,6 +27,10 @@ runs:
       shell: bash
       run: pnpm postinstall
 
+    - name: TFJS-node
+      shell: bash
+      run: pnpm rebuild @tensorflow/tfjs-node --build-addon-from-source
+
     - name: Install Puppeteer explicitly
       shell: bash
       run: node node_modules/puppeteer/install.js
