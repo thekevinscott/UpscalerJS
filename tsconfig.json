@@ -9,6 +9,7 @@
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
     "types": [
       "./test/setup/vitest.d.ts",
       "vitest/globals",

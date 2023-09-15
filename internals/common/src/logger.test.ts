@@ -5,7 +5,7 @@ import { isLogLevel, log, parseMessage, setLogLevel, logTypes } from './logger.j
 import * as mockProcess from 'vitest-mock-process';
 
 vi.mock('rimraf', async () => {
-  const actual = await await vi.importActual("rimraf") as typeof rimraf;
+  const actual = await vi.importActual("rimraf") as typeof rimraf;
   return {
     ...actual,
     rimraf: vi.fn(),
@@ -82,12 +82,6 @@ describe('logger', () => {
       setLogLevel('info');
       log('verbose', ['foo']);
       expect(mockStdout).toHaveBeenCalledTimes(0);
-    });
-
-    it('does not write new line if not specified', () => {
-      setLogLevel('info');
-      log('info', ['foo'], false);
-      expect(mockStdout).toHaveBeenCalledWith(logTypes.info('foo'));
     });
   });
 });

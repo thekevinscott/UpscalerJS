@@ -8,10 +8,10 @@ import { CLI_DIR } from '@internals/common/constants';
 export class CLI {
   constructor() {
     const packageJSON = path.resolve(CLI_DIR, './package.json');
-    const { name, description, version } = JSON.parse(readFileSync(packageJSON, 'utf-8'));
+    const { description, version } = JSON.parse(readFileSync(packageJSON, 'utf-8'));
 
     program
-      .name(name)
+      .name('cli')
       .description(description)
       .option('-l, --log-level <level>', 'What level to log at', DEFAULT_LOG_LEVEL)
       .on('option:log-level', () => {

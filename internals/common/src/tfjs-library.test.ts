@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import fsExtra from "fs-extra";
-import { TFJS_LIBRARY_TARGET_ERROR, getTFJSLibraryTargetFromPackageJSON } from './tfjs-library';
+import { TFJS_LIBRARY_TARGET_ERROR, getTFJSLibraryTargetFromPackageJSON } from './tfjs-library.js';
 const { readFile } = fsExtra;
 
 vi.mock('fs-extra', () => {

@@ -9,15 +9,12 @@
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
   "scripts": {
-    "cli": "node --no-warnings --loader ts-node/esm internals/cli/bin/cli-dev.ts",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
-    "build:core": "pnpm cli build core browser -o esm && pnpm cli build core node -o cjs && pnpm cli validate packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
-    "build:default-model": "pnpm cli build model default-model -o cjs -o esm -o umd && pnpm cli validate models/default-model",
-    "postinstall": "pnpm cli scaffold upscaler browser && pnpm build:core && pnpm build:default-model"
+    "postinstall": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
   },
   "type": "module",
   "private": true,
@@ -34,11 +31,11 @@
     "@babel/preset-env": "7.22.10",
     "@babel/preset-typescript": "7.22.5",
     "@internals/bundlers": "workspace:*",
+    "@internals/cli": "workspace:*",
     "@internals/common": "workspace:*",
     "@internals/git": "workspace:*",
     "@internals/http-server": "workspace:*",
     "@internals/test-runner": "workspace:*",
-    "@internals/cli": "workspace:*",
     "@internals/webdriver": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
@@ -57,7 +54,6 @@
     "@types/node": "20.5.1",
     "@types/pixelmatch": "5.2.4",
     "@types/pngjs": "6.0.1",
-    "@types/puppeteer": "^7.0.4",
     "@types/serve-handler": "6.1.1",
     "@types/tar": "6.1.5",
     "@types/tiny-async-pool": "2.0.0",
@@ -135,5 +131,8 @@
       "@tensorflow/tfjs-node": "4.10.0",
       "@tensorflow/tfjs-node-gpu": "4.8.0"
     }
+  },
+  "dependencies": {
+    "tsx": "^3.12.10"
   }
 }

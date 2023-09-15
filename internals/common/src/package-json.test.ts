@@ -5,7 +5,7 @@ import * as fs from '@internals/common/fs';
 const { readFile } = fs;
 
 vi.mock('@internals/common/fs', async () => {
-  const actual = await await vi.importActual("@internals/common/fs") as typeof fs;
+  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
   return {
     default: {
       ...actual,

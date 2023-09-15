@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: 'test'
+        run: 'pnpm cli2'
+
       - name: 'Lint'
         run: 'pnpm lint'
 

@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { runNPMCommand } from "./npm.js";
 
 vi.mock('child_process', () => {
@@ -20,6 +20,7 @@ describe('run-npm-command', () => {
         if (event === 'error') {
           callback(error);
         }
+        return 'foo' as unknown as ChildProcess;
       },
     }));
     await expect(() => runNPMCommand([], 'foo')).rejects.toThrow(error);

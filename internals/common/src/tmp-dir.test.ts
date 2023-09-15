@@ -6,7 +6,7 @@ import { makeTmpDir, withTmpDir } from "./tmp-dir.js";
 const { exists, mkdirp } = fs;
 
 vi.mock("@internals/common/fs", async () => {
-  const actual = await await vi.importActual("@internals/common/fs") as typeof fs;
+  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
   return {
     default: {
       ...actual,
@@ -17,7 +17,7 @@ vi.mock("@internals/common/fs", async () => {
 });
 
 vi.mock('rimraf', async () => {
-  const actual = await await vi.importActual("rimraf") as typeof rimraf;
+  const actual = await vi.importActual("rimraf") as typeof rimraf;
   return {
     ...actual,
     rimraf: vi.fn(),
@@ -30,7 +30,7 @@ describe('makeTmpDir', () => {
   });
 
   it('makes a random folder and returns it', async () => {
-    vi.mocked(exists).mockResolvedValue(true);
+    vi.mocked(exists).mockImplementation(() => Promise.resolve(true));
     const folder = await makeTmpDir();
     expect(typeof folder).toBe('string');
     expect(mkdirp).toHaveBeenCalledWith(folder);
@@ -38,20 +38,20 @@ describe('makeTmpDir', () => {
   });
 
   it('makes a random folder at a given directory', async () => {
-    vi.mocked(exists).mockResolvedValue(true);
+    vi.mocked(exists).mockImplementation(() => Promise.resolve(true));
     const folder = await makeTmpDir('foobarbaz');
     expect(folder).toContain('foobarbaz')
   });
 
   it('throws if folder was not created', async () => {
-    vi.mocked(exists).mockResolvedValue(false);
+    vi.mocked(exists).mockImplementation(() => Promise.resolve(false));
     await expect(() => makeTmpDir()).rejects.toThrow();
   });
 });
 
 describe('withTmpDir', () => {
   beforeEach(() => {
-    vi.mocked(exists).mockResolvedValue(true);
+    vi.mocked(exists).mockImplementation(() => Promise.resolve(true));
   });
 
   afterEach(() => {

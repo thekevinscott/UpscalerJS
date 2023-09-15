@@ -6,7 +6,7 @@
   "description": "CLI for managing the UpscalerJS repo",
   "author": "Kevin Scott",
   "bin": {
-    "cli-dev": "./bin/cli-dev.ts"
+    "cli": "./bin/cli.ts"
   },
   "license": "MIT",
   "dependencies": {
