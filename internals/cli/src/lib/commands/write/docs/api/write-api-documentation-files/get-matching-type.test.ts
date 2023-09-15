@@ -117,7 +117,7 @@ describe('getMatchingType', () => {
     parameter.type = undefined;
     vi.mocked(getReferenceTypeOfParameter).mockImplementation(() => ({
       name: 'foo',
-      type: 'literal' as 'literal',
+      type: 'literal'
     }) as ReturnType<typeof getReferenceTypeOfParameter>);
     expect(getMatchingType(parameter, definitions, {})).toEqual(undefined);
   });
@@ -128,7 +128,7 @@ describe('getMatchingType', () => {
     parameter.type = { type: 'array' } as ArrayType;
     vi.mocked(getReferenceTypeOfParameter).mockImplementation(() => ({
       name: 'foo',
-      type: 'literal' as 'literal',
+      type: 'literal'
     }) as ReturnType<typeof getReferenceTypeOfParameter>);
     vi.mocked(isLiteralType).mockImplementation(() => true)
     expect(getMatchingType(parameter, definitions, {})).toEqual(undefined);
@@ -144,7 +144,7 @@ describe('getMatchingType', () => {
     });
     vi.mocked(getReferenceTypeOfParameter).mockImplementation(() => ({
       name: 'Foo',
-      type: 'literal' as 'literal',
+      type: 'literal'
     }) as ReturnType<typeof getReferenceTypeOfParameter>);
     expect(getMatchingType(parameter, definitions, {})).toEqual(externalType);
   });
@@ -155,7 +155,7 @@ describe('getMatchingType', () => {
     parameter.type = { type: 'array' } as ArrayType;
     vi.mocked(getReferenceTypeOfParameter).mockImplementation(() => ({
       name: Interface.name,
-      type: 'literal' as 'literal',
+      type: 'literal'
     }) as ReturnType<typeof getReferenceTypeOfParameter>);
     expect(getMatchingType(parameter, definitions, {})).toEqual(Interface);
   });
@@ -166,7 +166,7 @@ describe('getMatchingType', () => {
     parameter.type = { type: 'array' } as ArrayType;
     vi.mocked(getReferenceTypeOfParameter).mockImplementation(() => ({
       name: TypeAlias.name,
-      type: 'literal' as 'literal',
+      type: 'literal'
     }) as ReturnType<typeof getReferenceTypeOfParameter>);
     expect(getMatchingType(parameter, definitions, {})).toEqual(TypeAlias);
   });

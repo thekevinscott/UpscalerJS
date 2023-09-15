@@ -10,7 +10,7 @@ describe('getTextSummary', () => {
     expect(() => getTextSummary('foo', {
       summary: [],
       blockTags: [],
-    } as unknown as Comment)).toThrow(`Expected code snippet not found for foo`);
+    } as unknown as Comment)).toThrow('Expected code snippet not found for foo');
   });
 
   it('throws an error if receiving a summary with kind not code', () => {
@@ -19,7 +19,7 @@ describe('getTextSummary', () => {
         kind: 'foo',
       }],
       blockTags: [],
-    } as unknown as Comment)).toThrow(`Expected code snippet not found for foo`);
+    } as unknown as Comment)).toThrow('Expected code snippet not found for foo');
   });
 
   it('returns a text summary', () => {

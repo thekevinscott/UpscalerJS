@@ -23,7 +23,7 @@ const writeGuideDocumentation = async ({ shouldClearMarkdown }: Pick<Opts, 'shou
 
 export default (program: Command) => program.command('guides')
   .description('Write Guides documentation')
-  .action(async ({ watch, shouldClearMarkdown }: Opts) => {
+  .action(({ watch, shouldClearMarkdown }: Opts) => {
     if (watch) {
       return startWatch(
         `pnpm cli write docs model ${shouldClearMarkdown ? '-c' : ''}`,

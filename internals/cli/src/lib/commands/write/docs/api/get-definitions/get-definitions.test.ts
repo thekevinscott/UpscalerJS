@@ -1,7 +1,6 @@
 import { getDefinitions } from "./get-definitions.js";
 import { getAllDeclarationReflections } from "./get-all-declaration-reflections.js";
-import { DeclarationReference, DeclarationReflection, ReflectionKind } from "typedoc";
-import { Declaration } from "@schemastore/package";
+import { DeclarationReflection, ReflectionKind } from "typedoc";
 import { PlatformSpecificFileDeclarationReflection } from "../types.js";
 
 vi.mock('./get-all-declaration-reflections.js', () => ({

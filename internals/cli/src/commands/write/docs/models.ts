@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 import path from 'path';
-import { CORE_DIR, DOCS_DIR, MODELS_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import { DOCS_DIR, MODELS_DIR } from '@internals/common/constants';
 import { mkdirp } from '@internals/common/fs';
 import { clearOutMarkdownFiles } from '../../../lib/utils/clear-out-markdown-files.js';
 import { writeModelReadmes } from '../../../lib/commands/write/docs/models.js';

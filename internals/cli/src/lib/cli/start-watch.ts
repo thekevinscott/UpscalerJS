@@ -7,7 +7,7 @@ import { SpawnError, spawnProcess } from './spawn-process.js';
 
 const TIMEOUT_LENGTH = 250;
 
-const d = (now: number) => ((performance.now() - now) / 1000).toFixed(2);
+const renderDuration = (now: number) => ((performance.now() - now) / 1000).toFixed(2);
 
 export const startWatch = (
   cmd: string, 
@@ -31,7 +31,7 @@ export const startWatch = (
     clearTimeout(timer);
     timer = setTimeout(async () => {
       try {
-        verbose(`Running command "${cmd.trim()}" in watch mode, iteration ${iterations++} at ${new Date().toLocaleTimeString()}, ${last ? `last run was ${d(last)}s ago` : 'no last run'}`);
+        verbose(`Running command "${cmd.trim()}" in watch mode, iteration ${iterations++} at ${new Date().toLocaleTimeString()}, ${last ? `last run was ${renderDuration(last)}s ago` : 'no last run'}`);
         verbose(`>> Running because of event "${event}" on file "${file.split(ROOT_DIR).pop()}"`);
         const now = performance.now();
         const [child, promise] = spawnProcess(cmd);
@@ -41,7 +41,7 @@ export const startWatch = (
             error(err.message);
           }
         });
-        verbose(`Ran command "${cmd.trim()}" in watch mode, took ${d(now)}s`);
+        verbose(`Ran command "${cmd.trim()}" in watch mode, took ${renderDuration(now)}s`);
         spawnedProcess = undefined;
       } finally {
         last = performance.now();
