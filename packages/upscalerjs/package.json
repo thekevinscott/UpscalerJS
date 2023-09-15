@@ -65,8 +65,8 @@
     "test": "pnpm build:dependencies && pnpm run test:unit",
     "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
     "test:unit:browser:playwright": "pnpm scaffold 'browser' && playwright-test --config playwright.config.json",
-    "test:unit:browser:jest": "pnpm scaffold 'browser' && jest --config jestconfig.browser.json",
-    "test:unit:node": "pnpm scaffold 'node' && jest --config jestconfig.node.json",
+    "test:unit:browser:vite": "pnpm scaffold 'browser' && vitest --config vite.browser.ts",
+    "test:unit:node": "pnpm scaffold 'node' && vitest --config vite.node.ts",
     "validate": "pnpm --filter @upscalerjs/scripts validate packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
     "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
@@ -98,6 +98,7 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/jest": "^29.5.3",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "vitest": "^0.34.4"
   }
 }

@@ -79,7 +79,7 @@ const getPreparedDoc = async (model: string) => {
       const matchEnd = matchStart + (match[0]?.length ?? 0);
       
       chunks.push(sharedDoc.slice(start, matchStart));
-      chunks.push(args[key])
+      chunks.push(args[key] ?? '');
       start = matchEnd;
 
       verbose(

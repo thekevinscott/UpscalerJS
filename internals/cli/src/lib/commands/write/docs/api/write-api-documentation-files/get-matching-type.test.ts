@@ -97,7 +97,7 @@ describe('getMatchingType', () => {
   });
 
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('returns undefined if intrinsic types includes the name of the type definition', () => {

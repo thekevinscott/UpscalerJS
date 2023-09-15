@@ -153,9 +153,4 @@ declare global {
     'esrgan-legacy': Record<string, ModelDefinition>;
     PixelUpsampler2x: ModelDefinition;
   }
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithin: (expected: [number, number, number]) => CustomMatcherResult;
-    }
-  }
 }

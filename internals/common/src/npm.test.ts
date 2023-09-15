@@ -10,7 +10,7 @@ vi.mock('child_process', () => {
 
 describe('run-npm-command', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('if the command throws an error, it should reject', async () => {

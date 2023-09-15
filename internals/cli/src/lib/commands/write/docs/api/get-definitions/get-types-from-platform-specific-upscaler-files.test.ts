@@ -15,7 +15,7 @@ vi.mock('./get-package-as-tree.js', () => {
 
 describe('makeDeclarationReflection', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('gets a declaration reflection', () => {
     const decRef = makeDeclarationReflection('foo', {
@@ -31,7 +31,7 @@ describe('makeDeclarationReflection', () => {
 
 describe('getPlatformSpecificUpscalerDeclarationReflections', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('throws if it cannot find a matching type', () => {
     vi.mocked(getPackageAsTree).mockImplementation(() => {
@@ -68,7 +68,7 @@ describe('getPlatformSpecificUpscalerDeclarationReflections', () => {
 
 describe('getTypesFromPlatformSpecificUpscalerFile', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('gets types from platform specific upscaler file', () => {
     const typeName = 'typeName';
@@ -95,7 +95,7 @@ describe('getTypesFromPlatformSpecificUpscalerFile', () => {
 
 describe('getTypesFromPlatformSpecificFiles', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('iterates through files array', async () => {
     const typeName = 'typeName';

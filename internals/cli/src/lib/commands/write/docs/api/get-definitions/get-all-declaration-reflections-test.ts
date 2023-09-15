@@ -12,7 +12,7 @@ vi.mock('./get-types-from-platform-specific-upscaler-files.js'), () => ({
 
 describe('getAllDeclarationReflections()', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('gets merged declaration reflections', async () => {
     vi.mocked(getDeclarationReflectionsFromPackages).mockImplementation(() => {

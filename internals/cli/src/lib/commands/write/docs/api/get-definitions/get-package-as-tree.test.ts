@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 import { getPackageAsTree } from './get-package-as-tree.js';
 
 vi.mock('typedoc', async () => {
-  const actual = await vi.importActual('typedoc') as typeof typedoc;
+  const actual = await await vi.importActual('typedoc') as typeof typedoc;
   return {
     ...actual,
     Application: vi.fn().mockImplementation(() => ({
@@ -23,7 +23,7 @@ vi.mock('typedoc', async () => {
 
 describe('getPackageAsTree', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('throws if project is not converted', async () => {
     vi.mocked(typedoc.Application).mockImplementation(() => {

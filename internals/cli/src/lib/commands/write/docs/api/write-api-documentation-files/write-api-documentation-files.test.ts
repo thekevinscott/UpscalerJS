@@ -15,7 +15,7 @@ vi.mock('./get-content-for-method.js', () => ({
 
 describe('writeAPIDocumentationFiles', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('it to write API documentation files', async () => {

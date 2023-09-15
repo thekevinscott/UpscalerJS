@@ -5,16 +5,16 @@ import { REPO_ROOT } from "../constants.js";
 
 describe('rewriteURL', () => {
   it('rewrites the URL', () => {
-    const URL = 'https://github.com/thekevinscott/UpscalerJS/blob/foobabaz/packages/upscalerjs/jest.setup.ts';
+    const URL = 'https://github.com/thekevinscott/UpscalerJS/blob/foobabaz/packages/upscalerjs/foo.setup.ts';
     expect(rewriteURL(URL)).toEqual([
       "https://github.com/thekevinscott/UpscalerJS/",
       "tree/main",
-      "/packages/upscalerjs/jest.setup.ts",
+      "/packages/upscalerjs/foo.setup.ts",
     ].join(''));
   });
 
   it('throws if given a non-matching url', () => {
-    const URL = 'https://github.com/thekevinscott/UpscalerJS/foobabaz/packages/upscalerjs/jest.setup.ts';
+    const URL = 'https://github.com/thekevinscott/UpscalerJS/foobabaz/packages/upscalerjs/foo.setup.ts';
     expect(() => rewriteURL(URL)).toThrow();
   });
 });
@@ -35,7 +35,7 @@ describe('getURLFromSources', () => {
   });
 
   it('returns rewritten URL if beginning with repo root', () => {
-    const url = 'https://github.com/thekevinscott/UpscalerJS/blob/foobabaz/packages/upscalerjs/jest.setup.ts';
+    const url = 'https://github.com/thekevinscott/UpscalerJS/blob/foobabaz/packages/upscalerjs/foo.setup.ts';
     expect(getURLFromSources({
       sources: [{
         url,

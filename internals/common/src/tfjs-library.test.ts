@@ -13,7 +13,7 @@ vi.mock('fs-extra', () => {
 
 describe('getTFJSLibraryTarget', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   const makeMock = (dependencies: Record<string, string>) => {

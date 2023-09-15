@@ -13,7 +13,7 @@ vi.mock('fs-extra', () => {
 
 describe("findEnvironmentSpecificFiles", () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('finds only platform specific files', async () => {

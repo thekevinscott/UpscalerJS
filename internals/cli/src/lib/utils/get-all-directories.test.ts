@@ -14,7 +14,7 @@ vi.mock('fs-extra', () => {
 
 describe("getAllDirectories", () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('returns only directories', async () => {

@@ -193,9 +193,6 @@ importers:
       mocha:
         specifier: 10.2.0
         version: 10.2.0
-      n:
-        specifier: latest
-        version: 9.1.0
       pixelmatch:
         specifier: 5.3.0
         version: 5.3.0
@@ -611,9 +608,6 @@ importers:
       fast-levenshtein:
         specifier: ^3.0.0
         version: 3.0.0
-      front-matter:
-        specifier: ^4.0.2
-        version: 4.0.2
       fs-extra:
         specifier: latest
         version: 11.1.1
@@ -1016,6 +1010,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      vitest:
+        specifier: ^0.34.4
+        version: 0.34.4(jsdom@22.1.0)
 
   packages/upscalerjs-models: {}
 
@@ -10901,12 +10898,6 @@ packages:
     resolution: {integrity: sha512-twe20eF1OxVxp/ML/kq2p1uc6KvFK/+vs8WjEbeKmV2He22MKm7YF2ANIt+EOqhJ5L3K/SuuPhk0hWQDjOM23g==}
     dev: true
 
-  /front-matter@4.0.2:
-    resolution: {integrity: sha512-I8ZuJ/qG92NWX8i5x1Y8qyj3vizhXS31OxjKDu3LKP+7/qBgfIKValiZIEwoVoJKUHlhWtYrktkxV1XsX+pPlg==}
-    dependencies:
-      js-yaml: 3.14.1
-    dev: false
-
   /fs-constants@1.0.0:
     resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
     dev: true
@@ -14020,12 +14011,6 @@ packages:
     resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
     engines: {node: '>=12.0.0'}
     dev: false
-
-  /n@9.1.0:
-    resolution: {integrity: sha512-fFezMcaE/xD1UXIeC1vKgxzCrAwOjlj4AaX3x7slEdxA/NTQhFKK2JK7iU1d897xf5dJyv8HDrDzk83PEkaZAA==}
-    os: ['!win32']
-    hasBin: true
-    dev: true
 
   /nan@2.17.0:
     resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}

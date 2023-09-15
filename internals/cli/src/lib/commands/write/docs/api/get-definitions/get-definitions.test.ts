@@ -8,7 +8,7 @@ vi.mock('./get-all-declaration-reflections.js', () => ({
 
 describe('getDefinitions()', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('throws if given a bad "kind"', async () => {

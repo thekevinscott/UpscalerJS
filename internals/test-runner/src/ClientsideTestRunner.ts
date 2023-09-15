@@ -300,7 +300,7 @@ export class ClientsideTestRunner {
   // }
 
   /****
-   * Jest lifecycle methods
+   * Test lifecycle methods
    */
 
   @catchFailures()

@@ -9,7 +9,7 @@ vi.mock('./get-package-as-tree.js', () => {
 
 describe('getDeclarationReflectionsFromPackages', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
   it('returns an array of DeclarationReflections', () => {
     vi.mocked(getPackageAsTree).mockImplementation(() => {

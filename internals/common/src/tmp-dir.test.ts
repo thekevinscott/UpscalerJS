@@ -6,7 +6,7 @@ import { makeTmpDir, withTmpDir } from "./tmp-dir.js";
 const { exists, mkdirp } = fs;
 
 vi.mock("@internals/common/fs", async () => {
-  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
+  const actual = await await vi.importActual("@internals/common/fs") as typeof fs;
   return {
     default: {
       ...actual,
@@ -17,7 +17,7 @@ vi.mock("@internals/common/fs", async () => {
 });
 
 vi.mock('rimraf', async () => {
-  const actual = await vi.importActual("rimraf") as typeof rimraf;
+  const actual = await await vi.importActual("rimraf") as typeof rimraf;
   return {
     ...actual,
     rimraf: vi.fn(),
@@ -26,7 +26,7 @@ vi.mock('rimraf', async () => {
 
 describe('makeTmpDir', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('makes a random folder and returns it', async () => {
@@ -55,7 +55,7 @@ describe('withTmpDir', () => {
   });
 
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('makes a tmp dir and calls a callback in it', async () => {

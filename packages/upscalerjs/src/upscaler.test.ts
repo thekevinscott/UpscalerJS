@@ -1,71 +1,69 @@
 import { Upscaler } from './upscaler';
+import { vi } from 'vitest';
 import type { LayersModel } from '@tensorflow/tfjs';
-import { loadModel as _loadModel, } from './loadModel.generated';
-import { getModel as _getModel, } from './model-utils';
-import { cancellableWarmup as _cancellableWarmup, } from './warmup';
-import { getImageAsTensor as _getImageAsTensor } from './image.generated';
-import { cancellableUpscale as _cancellableUpscale, } from './upscale';
+import { loadModel } from './loadModel.generated';
+import { getModel } from './model-utils';
+import { cancellableWarmup } from './warmup';
+import { getImageAsTensor } from './image.generated';
+import { cancellableUpscale } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
-import { mockFn } from './mockers';
-import * as _tf from '@tensorflow/tfjs-node';
-jest.mock('./image.generated', () => {
-  const { getImageAsTensor, ...rest } = jest.requireActual('./image.generated');
+import * as tf from '@tensorflow/tfjs-node';
+
+import type * as imageGenerated from './image.generated';
+import type * as upscale from './upscale';
+import type * as loadModelGenerated from './loadModel.generated';
+import type * as modelUtils from './model-utils';
+import type * as warmup from './warmup';
+import type * as dependenciesGenerated from './dependencies.generated';
+
+vi.mock('./image.generated', async () => {
+  const { getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
   return {
     ...rest,
-    getImageAsTensor: jest.fn(getImageAsTensor),
+    getImageAsTensor: vi.fn(getImageAsTensor),
   };
 });
-jest.mock('./upscale', () => {
-  const { cancellableUpscale, ...rest } = jest.requireActual('./upscale');
+vi.mock('./upscale', async () => {
+  const { cancellableUpscale, ...rest } = await vi.importActual('./upscale') as typeof upscale;
   return {
     ...rest,
-    cancellableUpscale: jest.fn(cancellableUpscale),
+    cancellableUpscale: vi.fn(cancellableUpscale),
   };
 });
-jest.mock('./loadModel.generated', () => {
-  const { loadModel, ...rest } = jest.requireActual('./loadModel.generated');
+vi.mock('./loadModel.generated', async () => {
+  const { loadModel, ...rest } = await vi.importActual('./loadModel.generated') as typeof loadModelGenerated;
   return {
     ...rest,
-    loadModel: jest.fn(loadModel),
+    loadModel: vi.fn(loadModel),
   };
 });
-jest.mock('./model-utils', () => {
-  const { getModel, ...rest } = jest.requireActual('./model-utils');
+vi.mock('./model-utils', async () => {
+  const { getModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
     ...rest,
-    getModel: jest.fn(getModel),
+    getModel: vi.fn(getModel),
   };
 });
-jest.mock('./warmup', () => {
-  const { cancellableWarmup, ...rest } = jest.requireActual('./warmup');
+vi.mock('./warmup', async () => {
+  const { cancellableWarmup, ...rest } = await vi.importActual('./warmup') as typeof warmup;
   return {
     ...rest,
-    cancellableWarmup: jest.fn(cancellableWarmup),
+    cancellableWarmup: vi.fn(cancellableWarmup),
   };
 });
-jest.mock('./dependencies.generated', () => {
-  const dependencies = jest.requireActual('./dependencies.generated');
+vi.mock('./dependencies.generated', async () => {
+  const dependencies = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
   return {
     ...dependencies,
   };
 });
 
-const cancellableUpscale = mockFn(_cancellableUpscale);
-const cancellableWarmup = mockFn(_cancellableWarmup);
-const loadModel = mockFn(_loadModel);
-const getModel = mockFn(_getModel);
-const getImageAsTensor = mockFn(_getImageAsTensor);
-
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Upscaler', () => {
-  beforeEach(() => {
-    cancellableUpscale.mockClear();
-    cancellableWarmup.mockClear();
-    loadModel.mockClear();
-    getModel.mockClear();
-    getImageAsTensor.mockClear();
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it('is able to abort multiple times', (): Promise<void> => new Promise(async (resolve, reject) => {
@@ -74,23 +72,23 @@ describe('Upscaler', () => {
       modelType: 'layers',
       scale: 2,
     };
-    getModel.mockImplementation(async () => modelDefinition);
-    loadModel.mockImplementation(async () => {
+    vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+    vi.mocked(loadModel).mockImplementation(async () => {
       return {
         modelDefinition,
         model: {
-          predict: jest.fn(() => _tf.ones([1,2,2,3])),
+          predict: vi.fn(() => tf.ones([1,2,2,3])),
           inputs: [{
             shape: [null, null, null, 3],
           }]
         } as unknown as LayersModel,
       };
     });
-    getImageAsTensor.mockImplementation(async () => _tf.ones([1,2,2,3]));
+    vi.mocked(getImageAsTensor).mockImplementation(() => Promise.resolve(tf.ones([1,2,2,3])));
 
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
-    cancellableUpscale.mockImplementation(async function (_1, _2, { signal }: {
+    vi.mocked(cancellableUpscale).mockImplementation(async function (_1, _2, { signal }: {
       signal: AbortSignal;
     }) {
       try {
@@ -119,7 +117,7 @@ describe('Upscaler', () => {
 
   describe('dispose', () => {
     it('is able to dispose of a model', async () => {
-      const dispose = jest.fn();
+      const dispose = vi.fn();
       const mockModel = {
         dispose,
       };
@@ -128,8 +126,8 @@ describe('Upscaler', () => {
         modelType: 'layers',
         scale: 2,
       };
-      getModel.mockImplementation(async () => modelDefinition);
-      loadModel.mockImplementation(async () => ({
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(loadModel).mockImplementation(async () => ({
         modelDefinition,
         model: mockModel as unknown as LayersModel,
       }));
@@ -139,19 +137,19 @@ describe('Upscaler', () => {
     });
 
     it('is able to call teardown function, if one is present', async () => {
-      const dispose = jest.fn();
+      const dispose = vi.fn();
       const mockModel = {
         dispose,
       };
-      const teardown = jest.fn().mockImplementation(() => {});
+      const teardown = vi.fn().mockImplementation(() => {});
       const modelDefinition: ModelDefinition = {
         teardown,
         path: 'foo',
         modelType: 'layers',
         scale: 2,
       };
-      getModel.mockImplementation(async () => modelDefinition);
-      loadModel.mockImplementation(async () => ({
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(loadModel).mockImplementation(async () => ({
         modelDefinition,
         model: mockModel as unknown as LayersModel,
       }));
@@ -161,12 +159,12 @@ describe('Upscaler', () => {
     });
 
     it('is able to call an async teardown function, if one is present', async () => {
-      const dispose = jest.fn();
+      const dispose = vi.fn();
       const mockModel = {
         dispose,
       };
       let complete = false;
-      const teardown = jest.fn().mockImplementation(async () => {
+      const teardown = vi.fn().mockImplementation(async () => {
         await wait(0);
         complete = true;
       });
@@ -176,12 +174,12 @@ describe('Upscaler', () => {
         modelType: 'layers',
         scale: 2,
       };
-      getModel.mockImplementation(async () => modelDefinition);
-      loadModel.mockImplementation(async () => ({
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(loadModel).mockImplementation(async () => ({
         modelDefinition: {
           teardown,
           path: 'foo',
-          modelType: 'layers',
+          modelType: 'layers' as 'layers',
           scale: 2,
         },
         model: mockModel as unknown as LayersModel,
@@ -193,8 +191,8 @@ describe('Upscaler', () => {
     });
   });
 
-  it('can handle a failing loadModel', (done) => {
-    loadModel.mockImplementation(async () => {
+  it('can handle a failing loadModel', () => new Promise<void>(done => {
+    vi.mocked(loadModel).mockImplementation(async () => {
       await new Promise(r => setTimeout(r));
       throw new Error('Fail!')
     });
@@ -205,7 +203,7 @@ describe('Upscaler', () => {
       expect(err.message).toEqual('Fail!');
       done();
     });
-  });
+  }));
 
   describe('warmups', () => {
     it('calls warmup from constructor', async () => {
@@ -221,9 +219,9 @@ describe('Upscaler', () => {
         modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
-      loadModel.mockImplementation(() => modelDefinitionPromise);
-      getModel.mockImplementation(async () => modelDefinition);
-      cancellableWarmup.mockImplementation(async () => { });
+      vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
       const warmupSizes: WarmupSizes = [2,];
       new Upscaler({
         warmupSizes,
@@ -246,9 +244,9 @@ describe('Upscaler', () => {
         modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
-      loadModel.mockImplementation(() => modelDefinitionPromise);
-      getModel.mockImplementation(async () => modelDefinition);
-      cancellableWarmup.mockImplementation(async () => { });
+      vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
@@ -268,9 +266,9 @@ describe('Upscaler', () => {
         modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
-      loadModel.mockImplementation(() => modelDefinitionPromise);
-      getModel.mockImplementation(async () => modelDefinition);
-      cancellableWarmup.mockImplementation(async () => { });
+      vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
       await upscaler.warmup(warmupSizes);
@@ -290,9 +288,9 @@ describe('Upscaler', () => {
         modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
-      loadModel.mockImplementation(() => modelDefinitionPromise);
-      getModel.mockImplementation(async () => modelDefinition);
-      cancellableWarmup.mockImplementation(async () => { });
+      vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
       await upscaler.warmup(warmupSizes);
@@ -312,9 +310,9 @@ describe('Upscaler', () => {
         modelDefinition,
         model: 'foo' as unknown as LayersModel,
       }));
-      loadModel.mockImplementation(() => modelDefinitionPromise);
-      getModel.mockImplementation(async () => modelDefinition);
-      cancellableWarmup.mockImplementation(async () => { });
+      vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
+      vi.mocked(getModel).mockImplementation(async () => modelDefinition);
+      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = { patchSize: 32, padding: 2 };
       await upscaler.warmup(warmupSizes);

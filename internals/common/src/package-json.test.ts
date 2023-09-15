@@ -5,7 +5,7 @@ import * as fs from '@internals/common/fs';
 const { readFile } = fs;
 
 vi.mock('@internals/common/fs', async () => {
-  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
+  const actual = await await vi.importActual("@internals/common/fs") as typeof fs;
   return {
     default: {
       ...actual,
@@ -19,7 +19,7 @@ vi.mock('@internals/common/fs', async () => {
 
 describe('package-json', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getPackageJSONExports', () => {

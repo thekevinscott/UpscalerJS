@@ -6,7 +6,7 @@ import { getPackageJSON, getPackageJSONExports, } from './package-json.js';
 const { readFile, readdir, exists, stat } = fs;
 
 vi.mock('@internals/common/fs', async () => {
-  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
+  const actual = await await vi.importActual("@internals/common/fs") as typeof fs;
   return {
     default: {
       ...actual,
@@ -19,7 +19,7 @@ vi.mock('@internals/common/fs', async () => {
 });
 
 vi.mock('./package-json.js', () => {
-  // const actual = await vi.importActual("./package-json.js") as typeof fsExtra;
+  // const actual = await await vi.importActual("./package-json.js") as typeof fsExtra;
   return {
     getPackageJSONExports: vi.fn(),
     getPackageJSON: vi.fn(),
@@ -28,7 +28,7 @@ vi.mock('./package-json.js', () => {
 
 describe('models', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getAllAvailableModelPackages', () => {

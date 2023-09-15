@@ -25,7 +25,7 @@ describe('getFilePath', () => {
 
 describe("symlinkEnvironmentSpecificFile", () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('symlinks a particular file', async () => {

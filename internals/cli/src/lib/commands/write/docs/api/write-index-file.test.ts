@@ -13,7 +13,7 @@ vi.mock('@internals/common/get-template', () => ({
 
 describe('writeIndexFile', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('writes an index file', async () => {

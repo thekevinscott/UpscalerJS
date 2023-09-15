@@ -9,7 +9,7 @@ const getMockDeclarationReflection = (...sources: Partial<SourceReference>[]): D
 
 describe('sortChildrenByLineNumber', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('sorts children', () => {

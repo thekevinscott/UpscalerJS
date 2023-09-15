@@ -29,10 +29,6 @@ const PORT = 8099;
 const LOG = true;
 const VERBOSE = process.env.verbose === '1';
 
-// const JEST_TIMEOUT = 60 * 1000 * 1;
-// jest.setTimeout(JEST_TIMEOUT);
-// jest.retryTimes(2);
-
 const browserOptions = getBrowserOptions(() => {
   // return option?.os !== 'windows' && option?.os !== 'OS X';
   // return option?.browserName === 'chrome';

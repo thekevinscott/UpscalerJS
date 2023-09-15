@@ -15,7 +15,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "pnpm cli test unit core",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate",
     "validate": "pnpm cli validate packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",

@@ -5,7 +5,7 @@ import { isLogLevel, log, parseMessage, setLogLevel, logTypes } from './logger.j
 import * as mockProcess from 'vitest-mock-process';
 
 vi.mock('rimraf', async () => {
-  const actual = await vi.importActual("rimraf") as typeof rimraf;
+  const actual = await await vi.importActual("rimraf") as typeof rimraf;
   return {
     ...actual,
     rimraf: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock('rimraf', async () => {
 
 describe('logger', () => {
   afterEach(() => {
-    vi.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('isLogLevel', () => {
