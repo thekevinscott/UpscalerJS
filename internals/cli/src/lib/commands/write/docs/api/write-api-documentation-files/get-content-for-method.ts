@@ -69,7 +69,7 @@ export const getContentForMethod = async (method: DeclarationReflection, definit
 `# \`${name}\``,
     description,
     ...(codeSnippet ? [
-      `## Example`,
+      '## Example',
       codeSnippet,
     ] : []),
     source,
