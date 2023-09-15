@@ -19,10 +19,6 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
-    - name: Install Deno
-      shell: bash
-      run: curl -fsSL https://deno.land/x/install/install.sh | sh
-
     - name: Install dependencies
       shell: bash
       run: pnpm install --ignore-scripts
@@ -31,9 +27,9 @@ runs:
       shell: bash
       run: pnpm postinstall
 
-    - name: TFJS-node
-      shell: bash
-      run: pnpm rebuild @tensorflow/tfjs-node --build-addon-from-source
+    # - name: TFJS-node
+    #   shell: bash
+    #   run: pnpm rebuild @tensorflow/tfjs-node --build-addon-from-source
 
     - name: Install Puppeteer explicitly
       shell: bash
