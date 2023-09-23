@@ -64,7 +64,7 @@ jobs:
 
       - name: 'Unit Tests / Jest'
         working-directory: ./packages/upscalerjs
-        run: pnpm cli test unit upscaler browser vite
+        run: pnpm --filter upscaler test:unit:browser:vite
 
       - name: 'Upload Unit Browser Artifact'
         uses: actions/upload-artifact@v2
@@ -90,7 +90,7 @@ jobs:
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
-        run: pnpm cli test unit upscaler browser playwright
+        run: pnpm --filter upscaler test:unit:browser:playwright
 
       - name: 'Upload Unit Browser Artifact'
         uses: actions/upload-artifact@v2
@@ -120,7 +120,7 @@ jobs:
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
-        run: pnpm cli test unit upscaler node
+        run: pnpm --filter upscaler test:unit:node
 
       - name: 'Upload Unit Node Artifact'
         uses: actions/upload-artifact@v2
