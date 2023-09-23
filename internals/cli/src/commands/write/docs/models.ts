@@ -7,7 +7,7 @@ import { writeModelReadmes } from '../../../lib/commands/write/docs/models.js';
 import { verbose } from '@internals/common/logger';
 import { info } from 'console';
 import { startWatch } from '../../../lib/utils/start-watch.js';
-import { BaseCommand } from '../../base-command.js';
+import { BaseCommand } from '../../../lib/utils/base-command.js';
 
 const targetDocDir = path.resolve(DOCS_DIR, 'docs/models/available');
 

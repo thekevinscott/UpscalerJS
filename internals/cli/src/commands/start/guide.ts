@@ -9,7 +9,7 @@ import { findSimilarFiles } from '../../lib/utils/find-similar-files.js';
 import { info, verbose } from '@internals/common/logger';
 import { Action } from '@internals/common/types';
 import { buildUpscaler } from '../build/upscaler.js';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 interface Options {
   skipUpscalerBuild?: boolean;

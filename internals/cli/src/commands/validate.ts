@@ -4,7 +4,7 @@ import { exists } from '@internals/common/fs';
 import { getPackageJSON, JSONSchema } from '@internals/common/package-json';
 import { sync } from 'glob';
 import { ROOT_DIR } from '@internals/common/constants';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../lib/utils/base-command.js';
 
 /****
  * Utility methods

@@ -4,7 +4,7 @@ import { glob } from 'glob';
 import asyncPool from "tiny-async-pool";
 import { ROOT_DIR } from '@internals/common/constants';
 import { getLogLevel } from '@internals/common/logger';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 /****
  * Types

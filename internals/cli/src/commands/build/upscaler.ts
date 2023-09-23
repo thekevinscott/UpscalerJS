@@ -16,8 +16,8 @@ import { getEnvironmentFromTFJSLibrary } from '@internals/common/tfjs-library';
 import { rollupBuild } from '../../lib/utils/rollup.js';
 import { compileTypescript } from '../../lib/utils/compile-typescript.js';
 import { scaffoldUpscaler } from '../scaffold/upscaler.js';
-import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
+import { collectStringArgs } from '../../lib/utils/collect-string-args.js';
 
 
 const DIST = path.resolve(UPSCALER_DIR, 'dist');
@@ -113,13 +113,13 @@ export default class BuildUpscaler extends BaseCommand<typeof BuildUpscaler> {
   static strict = false;
 
   static args = {
-    tfjsLibraries: Args.string({description: 'The model package to build. Must be a valid model in the /models folder', required: true}),
+    tfjsLibraries: Args.string({description: 'The TFJS library to target', required: true}),
   }
 
   async run(): Promise<void> {
     const {args, flags} = await this.parse(BuildUpscaler);
     const outputFormats = validateOutputFormats(flags.outputFormats);
-    const _tjfsLibraries = collectVariadicArgs(this.argv);
+    const _tjfsLibraries = collectStringArgs(this.argv);
     return buildUpscaler(
       validateTFJSLibraries(_tjfsLibraries).map(tfjsLibrary => ({
         tfjsLibrary,

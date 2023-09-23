@@ -1,5 +1,5 @@
 import {Interfaces, Args, Flags} from '@oclif/core';
-import { BaseCommand } from '../commands/base-command.js';
+import { BaseCommand } from './base-command.js';
 
 export type Flags<T extends typeof BaseIntegrationTestCommand> = Interfaces.InferredFlags<typeof BaseIntegrationTestCommand['baseFlags'] & T['flags']>
 export type Args<T extends typeof BaseIntegrationTestCommand> = Interfaces.InferredArgs<T['args']>

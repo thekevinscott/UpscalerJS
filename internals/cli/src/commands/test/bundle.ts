@@ -7,7 +7,7 @@ import { NodeBundler } from '@internals/bundlers/node';
 import { Registry } from '@internals/registry';
 import { WebpackBundler } from '@internals/bundlers/webpack';
 import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 const bundlers: Record<BundlerName, typeof Bundler> = {
   esbuild: EsbuildBundler,

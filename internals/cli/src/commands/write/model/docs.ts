@@ -7,7 +7,7 @@ import { exists, readFile, readdir, writeFile } from '@internals/common/fs';
 import { info, verbose } from '@internals/common/logger';
 import { validateModels } from '../../../lib/commands/validate-models.js';
 import { collectVariadicArgs } from '../../../lib/utils/collect-variadic-args.js';
-import { BaseCommand } from '../../base-command.js';
+import { BaseCommand } from '../../../lib/utils/base-command.js';
 
 const CONCURRENT_ASYNC_THREADS = 5;
 

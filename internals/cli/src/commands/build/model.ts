@@ -17,7 +17,7 @@ import { rollupBuild } from '../../lib/utils/rollup.js';
 import { compileTypescript } from '../../lib/utils/compile-typescript.js';
 import { scaffoldModel } from '../scaffold/model.js';
 import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 import { collectStringArgs } from '../../lib/utils/collect-string-args.js';
 
 const CONCURRENT_ASYNC_THREADS = 5;

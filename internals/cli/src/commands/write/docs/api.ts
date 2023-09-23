@@ -6,7 +6,7 @@ import { writeAPIDocs } from '../../../lib/commands/write/docs/api/index.js';
 import { clearOutMarkdownFiles } from '../../../lib/utils/clear-out-markdown-files.js';
 import { info, verbose } from '@internals/common/logger';
 import { startWatch } from '../../../lib/utils/start-watch.js';
-import { BaseCommand } from '../../base-command.js';
+import { BaseCommand } from '../../../lib/utils/base-command.js';
 
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 

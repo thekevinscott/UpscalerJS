@@ -1,5 +1,5 @@
 import { checkTenses } from '../../../lib/commands/write/docs/check-tense.js';
-import { BaseCommand } from '../../base-command.js';
+import { BaseCommand } from '../../../lib/utils/base-command.js';
 
 export default class CheckTenses extends BaseCommand<typeof CheckTenses> {
   static description = 'Check tenses of docs'

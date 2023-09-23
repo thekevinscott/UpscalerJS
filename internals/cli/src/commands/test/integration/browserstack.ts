@@ -1,9 +1,9 @@
 import path from 'path';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';
 import { TEST_DIR } from '@internals/common/constants';
-import { BaseIntegrationTestCommand } from '../../../lib/base-integration-test-command.js';
 import { runTests } from '../../../lib/utils/run-tests.js';
 import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
+import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-test-command.js';
 
 
 export default class Browserstack extends BaseIntegrationTestCommand<any> {

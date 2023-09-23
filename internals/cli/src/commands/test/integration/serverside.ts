@@ -1,7 +1,7 @@
 import path from 'path';
 import { TEST_DIR } from '@internals/common/constants';
 import { NodeBundler } from '@internals/bundlers/node';
-import { BaseIntegrationTestCommand } from '../../../lib/base-integration-test-command.js';
+import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-test-command.js';
 import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
 import { runTests } from '../../../lib/utils/run-tests.js';
 

@@ -5,7 +5,7 @@ import { validateModels } from '../../lib/commands/validate-models.js';
 import { MODELS_DIR, ROOT_DIR } from '@internals/common/constants';
 import { getPackageJSON } from '@internals/common/package-json';
 import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 export const scaffoldModel = async (modelPackageDirectoryName: string) => {
   const MODEL_ROOT = path.resolve(MODELS_DIR, modelPackageDirectoryName);

@@ -7,7 +7,7 @@ import { findEnvironmentSpecificFiles } from '../../lib/utils/find-environment-s
 import { writeFile } from '@internals/common/fs';
 import { symlinkEnvironmentSpecificFile } from '../../lib/utils/symlink-environment-specific-file.js';
 import { UPSCALER_DIR } from '@internals/common/constants';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 const SRC = path.resolve(UPSCALER_DIR, 'src');
 

@@ -1,5 +1,5 @@
 import path from 'path';
-import {Command, Flags} from '@oclif/core';
+import {Args, Command, Flags} from '@oclif/core';
 import { info } from '@internals/common/logger';
 import { OutputFormat } from '@internals/common/types';
 import { rimraf } from 'rimraf';
@@ -7,7 +7,7 @@ import { validateOutputFormats } from '../../lib/commands/build/validate-build-o
 import { buildCJS } from '../../lib/commands/build/build-cjs.js';
 import { buildESM } from '../../lib/commands/build/build-esm.js';
 import { CORE_DIR } from '@internals/common/constants';
-import { BaseCommand } from '../base-command.js';
+import { BaseCommand } from '../../lib/utils/base-command.js';
 
 const DIST = path.resolve(CORE_DIR, 'dist');
 
@@ -39,6 +39,8 @@ export default class BuildCore extends BaseCommand<typeof BuildCore> {
   static flags = {
     outputFormats: Flags.string({char: 'o', multiple: true, description: 'What output format to build for. esm, cjs, or umd'}),
   }
+
+  static strict = false;
 
   async run(): Promise<void> {
     const {flags} = await this.parse(BuildCore);
