@@ -165,6 +165,7 @@ jobs:
     name: 'Integration'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         test: [clientside, serverside, memory-leaks, models, browserstack]
     steps:
