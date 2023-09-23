@@ -28,7 +28,10 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
 
-    setLogLevel(this.flags['log-level']);
+    const logLevel = this.flags['log-level'];
+    if (logLevel !== undefined) {
+      setLogLevel(logLevel);
+    }
   }
 
   // protected async catch(err: Error & {exitCode?: number}): Promise<any> {
