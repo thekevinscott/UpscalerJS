@@ -7,6 +7,7 @@ export type Args<T extends typeof Command> = Interfaces.InferredArgs<T['args']>
 export abstract class BaseCommand<T extends typeof Command> extends Command {
   static baseFlags = {
     'log-level': Flags.custom<LogLevel>({
+      char: 'l',
       summary: 'Specify level for logging.',
       options: logLevels,
       helpGroup: 'GLOBAL',

@@ -38,23 +38,23 @@ export const runTests = async (
   bundlerDefinitions: (typeof Bundler)[],
   testFiles: string[],
   {
-    skipUpscalerBuild,
-    skipModelBuild,
-    skipBundle,
-    skipTest,
-    useGPU,
-    useTunnel,
+    'skip-upscaler-build': skipUpscalerBuild,
+    'skip-model-build': skipModelBuild,
+    'skip-bundle': skipBundle,
+    'skip-test': skipTest,
+    'use-gpu': useGPU,
+    'use-tunnel': useTunnel,
     watch,
-    shouldClearDistFolder,
+    'should-clear-dist-folder': shouldClearDistFolder,
   }: {
-    skipUpscalerBuild?: boolean;
-    skipModelBuild?: boolean;
-    skipBundle?: boolean;
-    skipTest?: boolean;
-    useGPU?: boolean,
-    useTunnel?: boolean;
+    'skip-upscaler-build'?: boolean;
+    'skip-model-build'?: boolean;
+    'skip-bundle'?: boolean;
+    'skip-test'?: boolean;
+    'use-gpu'?: boolean,
+    'use-tunnel'?: boolean;
     watch?: boolean;
-    shouldClearDistFolder?: boolean;
+    'should-clear-dist-folder'?: boolean;
   }) => {
   const environments = ([] as Environment[]).concat(environment);
   const outputFormats = environments.reduce<OutputFormat[]>((arr, environment) => arr.concat(getOutputFormatsForEnvironment(environment)), []);

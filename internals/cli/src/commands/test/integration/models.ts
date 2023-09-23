@@ -11,7 +11,7 @@ export default class Models extends BaseIntegrationTestCommand<typeof BaseIntegr
   static description = 'Test all available models'
 
   async run(): Promise<void> {
-    const { flags } = await this.parse(Models);
+    const { flags, args } = await this.parse(Models);
     const files = collectStringArgs(this.argv);
     const viteConfigPath = path.resolve(TEST_DIR, 'integration/models/vite.config.ts');
     await runTests(['clientside', 'serverside'], viteConfigPath, [

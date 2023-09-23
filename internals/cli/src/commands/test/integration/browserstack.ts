@@ -12,13 +12,13 @@ export default class Browserstack extends BaseIntegrationTestCommand<typeof Base
   async run(): Promise<void> {
     const { flags } = await this.parse(Browserstack);
     const viteConfigPath = path.resolve(TEST_DIR, 'integration/browserstack/vite.config.ts');
-    if (flags.useTunnel === false) {
+    if (flags['use-tunnel'] === false) {
       throw new Error('Cannot run browserstack tests without a tunnel');
     }
     const files = collectStringArgs(this.argv);
     await runTests('clientside', viteConfigPath, [EsbuildBundler], files, {
       ...flags,
-      useTunnel: true,
+      'use-tunnel': true,
     });
   }
 }

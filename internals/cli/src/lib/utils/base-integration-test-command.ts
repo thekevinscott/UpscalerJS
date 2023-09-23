@@ -6,16 +6,17 @@ export type Args<T extends typeof BaseIntegrationTestCommand> = Interfaces.Infer
 
 export abstract class BaseIntegrationTestCommand<T extends typeof BaseIntegrationTestCommand> extends BaseCommand<T> {
   // define flags that can be inherited by any command that extends BaseCommand
-  static baseFlags = {
+  static flags = {
     ...BaseCommand.baseFlags,
-    skipUpscalerBuild: Flags.boolean({ char: 'u', description: 'Skip the UpscalerJS build', default: false }),
-    skipModelBuild: Flags.boolean({ char: 'm', description: 'Skip the model builds', default: false }),
-    skipBundle: Flags.boolean({ char: 'b', description: 'Skip the bundling step', default: false }),
-    skipTest: Flags.boolean({ char: 't', description: 'Skip the actual tests (for example, if performing the other scaffolding steps)', default: false }),
-    useGPU: Flags.boolean({ char: 'g', description: 'Whether to run tests on the GPU', default: false }),
-    useTunnel: Flags.boolean({ char: 'n', description: 'Whether to expose servers over a tunnel and make them available over the internet' }),
-    shouldClearDistFolder: Flags.boolean({ char: 'd', description: 'Whether to clear model dist folders or not, effectively, forcing a rebuild', default: false }),
+    'skip-upscaler-build': Flags.boolean({ char: 'u', description: 'Skip the UpscalerJS build', default: false }),
+    'skip-model-build': Flags.boolean({ char: 'm', description: 'Skip the model builds', default: false }),
+    'skip-bundle': Flags.boolean({ char: 'b', description: 'Skip the bundling step', default: false }),
+    'skip-test': Flags.boolean({ char: 't', description: 'Skip the actual tests (for example, if performing the other scaffolding steps)', default: false }),
+    'use-gpu': Flags.boolean({ char: 'g', description: 'Whether to run tests on the GPU', default: false }),
+    'use-tunnel': Flags.boolean({ char: 'n', description: 'Whether to expose servers over a tunnel and make them available over the internet' }),
+    'should-clear-dist-folder': Flags.boolean({ char: 'd', description: 'Whether to clear model dist folders or not, effectively, forcing a rebuild', default: false }),
     watch: Flags.boolean({ char: 'w', description: 'Watch mode', default: false }),
+    ci: Flags.boolean({ description: 'Whether to run in CI mode', default: false }),
   }
 
   static strict = false;
@@ -28,7 +29,7 @@ export abstract class BaseIntegrationTestCommand<T extends typeof BaseIntegratio
     await super.init()
     const {args, flags} = await this.parse({
       flags: this.ctor.flags,
-      baseFlags: (super.ctor as typeof BaseIntegrationTestCommand).baseFlags,
+      // baseFlags: (super.ctor as typeof BaseIntegrationTestCommand).baseFlags,
       args: this.ctor.args,
       strict: this.ctor.strict,
     })
