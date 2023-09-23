@@ -15,7 +15,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "jest --config jestconfig.json",
+    "test": "pnpm vitest -c vite.conf.ts",
     "lint": "eslint -c .eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
