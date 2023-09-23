@@ -9,7 +9,7 @@ import { getTFJSVersion } from '../../../utils/get-tfjs-version.js';
 import { copyFile, writeFile } from '@internals/common/fs';
 import { getHashedName } from '@internals/common/get-hashed-name';
 import { getPackagesForRegistry } from '../../../utils/get-packages-for-registry.js';
-import { npmInstall } from '@internals/common/npm';
+import { pnpmInstall } from '@internals/common/npm';
 import { removeIfExists } from '../../../utils/remove-if-exists.js';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { removePackages } from '../../../shared/remove-packages.js';
@@ -60,9 +60,9 @@ const writePackageJSON = async (outFile: string) => {
   const tfjsVersion = await getTFJSVersion();
   const dependencies = JSON.stringify(packages.reduce((obj, { name }) => ({
     ...obj,
-    [name]: 'latest',
+    [name]: 'workspace:*',
   }), {
-    "upscaler": "latest",
+    "upscaler": "workspace:*",
     "@tensorflow/tfjs": tfjsVersion,
   }), null, 2);
   const contents = await getTemplate('package.json.ejs', {
@@ -104,9 +104,9 @@ export class WebpackBundler extends Bundler {
 
       if (skipNpmInstall !== true) {
         await removePackages(path.resolve(this.outDir, 'node_modules'), this.packages);
-        await npmInstall(this.outDir, {
-          isSilent: getLogLevel() !== 'verbose',
-          registryURL,
+        await pnpmInstall(this.outDir, {
+          // isSilent: getLogLevel() !== 'verbose',
+          // registryURL,
         });
       }
 

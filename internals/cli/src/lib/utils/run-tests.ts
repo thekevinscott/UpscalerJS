@@ -91,21 +91,22 @@ export const runTests = async (
     await time(async () => {
       const bundlers = bundlerDefinitions.map((Bundler) => new Bundler(getBundlerOutputDir(Bundler)));
 
-      const registry = new Registry(getPackagesFromBundlers(bundlers));
-      await registry.resetPackages();
-      await registry.start();
-      await registry.bootstrapPackages();
+      // const registry = new Registry(getPackagesFromBundlers(bundlers));
+      // await registry.resetPackages();
+      // await registry.start();
+      // await registry.bootstrapPackages();
       try {
         for (const bundler of bundlers) {
           try {
-            await bundler.bundle(registry.url);
+            await bundler.bundle();
+            // await bundler.bundle(registry.url);
           } catch (err) {
             error(`Bundler name: "${bundler.name}"`);
             throw err;
           }
         }
       } finally {
-        await registry.stop();
+        // await registry.stop();
       }
     }, duration => info([
       `** bundled: ${environment} in ${Math.round(duration) / 1000} s`,

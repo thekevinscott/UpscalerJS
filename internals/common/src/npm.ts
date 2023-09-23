@@ -56,6 +56,31 @@ export const npmInstall = async (cwd: string, {
 
 };
 
+export const pnpmInstall = async (cwd: string, {
+  // isSilent = false,
+  // registryURL,
+}: {
+  // isSilent?: boolean;
+  // registryURL?: string;
+} = {}) => {
+  // const logLevel = getLogLevel();
+  const command = [
+    'pnpm',
+    'install',
+    '--ignore-scripts',
+    // isSilent ? '--silent' : '',
+    // '--no-fund',
+    // '--no-audit',
+    // '--no-package-lock',
+    // '--loglevel',
+    // logLevel,
+    // registryURL ? `--registry ${registryURL}` : '',
+  ].filter(Boolean);
+  verbose(`${command.join(' ')} in ${cwd}`);
+  await runNPMCommand(command, cwd);
+
+};
+
 export const runPNPMCommand = (
   command: Parameters<typeof runNPMCommand>[0],
   cwd: Parameters<typeof runNPMCommand>[1]

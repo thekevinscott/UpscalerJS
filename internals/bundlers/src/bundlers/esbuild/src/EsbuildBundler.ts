@@ -4,7 +4,7 @@ import { build as esbuild } from 'esbuild';
 import { getPackagesAndModelsForEnvironment } from '@internals/common/models';
 import { BundleOptions, Bundler } from '../../../utils/Bundler.js';
 import { getLogLevel, info } from '@internals/common/logger';
-import { npmInstall } from '@internals/common/npm';
+import { pnpmInstall } from '@internals/common/npm';
 import { writeFile } from '@internals/common/fs';
 import { getHashedName } from '@internals/common/get-hashed-name';
 import { getTemplate as _getTemplate } from '@internals/common/get-template';
@@ -99,9 +99,9 @@ export class EsbuildBundler extends Bundler {
 
       if (skipNpmInstall !== true) {
         await removePackages(path.resolve(this.outDir, 'node_modules'), this.packages);
-        await npmInstall(this.outDir, {
-          isSilent: getLogLevel() !== 'verbose',
-          registryURL,
+        await pnpmInstall(this.outDir, {
+          // isSilent: getLogLevel() !== 'verbose',
+          // registryURL,
         });
       }
 

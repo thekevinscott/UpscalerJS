@@ -6,7 +6,7 @@ import { getTemplate } from '@internals/common/get-template';
 import { getTFJSVersion } from '../../../utils/get-tfjs-version.js';
 import { exists, writeFile } from '@internals/common/fs';
 import { getPackagesForRegistry } from '../../../utils/get-packages-for-registry.js';
-import { npmInstall } from '@internals/common/npm';
+import { pnpmInstall } from '@internals/common/npm';
 import { TMP_DIR } from '@internals/common/constants';
 import { RegistryPackage } from '@internals/registry';
 import { pluralize } from '@internals/common/pluralize';
@@ -77,9 +77,9 @@ export class NodeBundler extends Bundler {
     const isSilent = logLevel !== 'verbose';
 
     await clearExistingNodeModules(this.outDir, await this.packages);
-    await npmInstall(this.outDir, {
-      isSilent,
-      registryURL,
+    await pnpmInstall(this.outDir, {
+      // isSilent,
+      // registryURL,
     });
 
     info('Bundled Node successfully');
