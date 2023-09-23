@@ -44,13 +44,35 @@
     "CHANGELOG.md",
     "dist/**/*"
   ],
+  "wireit": {
+    "build": {
+      "command": "pnpm build:only && pnpm validate:build",
+      "dependencies": [
+        "../core:build",
+        "../../models/default-model:build"
+      ]
+    },
+    "build:only": {
+      "command": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser"
+    },
+    "build:browser": {
+      "command": "pnpm cli build upscaler browser -o esm -o umd"
+    },
+    "build:node": {
+      "command": "pnpm cli build upscaler node -o cjs"
+    },
+    "build:node-gpu": {
+      "command": "pnpm cli build upscaler node-gpu -o cjs"
+    }
+  },
   "scripts": {
-    "build": "pnpm build:dependencies && pnpm build:only && pnpm validate",
-    "build:only": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
-    "build:browser": "pnpm cli build upscaler browser -o esm -o umd",
-    "build:node": "pnpm cli build upscaler node -o cjs",
-    "build:node-gpu": "pnpm cli build upscaler node-gpu -o cjs",
-    "build:dependencies": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build",
+    "build": "wireit",
+    "build:only": "wireit",
+    "build:browser": "wireit",
+    "build:browser:esm": "wireit",
+    "build:browser:umd": "wireit",
+    "build:node": "wireit",
+    "build:node-gpu": "wireit",
     "scaffold": "pnpm cli scaffold upscaler",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
@@ -67,14 +89,7 @@
     "test:unit:browser:playwright": "pnpm scaffold 'browser' && playwright-test --config playwright.config.json",
     "test:unit:browser:vite": "pnpm scaffold 'browser' && vitest --config vite.browser.ts",
     "test:unit:node": "pnpm scaffold 'node' && vitest --config vite.node.ts",
-    "validate": "pnpm --filter @upscalerjs/scripts validate packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
-    "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:umd": "chokidar \"src\" -c \"pnpm build:umd\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:cjs": "chokidar \"src\" -c \"pnpm build:cjs\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:browser": "chokidar \"src\" -c \"pnpm build:browser\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:node": "chokidar \"src\" -c \"pnpm build:node\" -i \"test.ts\" -i \"generated.ts\"",
-    "watch:node-gpu": "chokidar \"src\" -c \"pnpm build:node-gpu\" -i \"test.ts\" -i \"generated.ts\""
+    "validate": "pnpm --filter @upscalerjs/scripts validate packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
   },
   "repository": {
     "type": "git",
@@ -91,7 +106,8 @@
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
-    "@upscalerjs/default-model": "workspace:*"
+    "@upscalerjs/default-model": "workspace:*",
+    "wireit": "^0.14.0"
   },
   "devDependencies": {
     "@tensorflow/tfjs": "~4.8.0",
