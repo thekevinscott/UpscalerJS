@@ -84,7 +84,8 @@
   },
   "dependencies": {
     "@upscalerjs/core": "workspace:*",
-    "@upscalerjs/default-model": "workspace:*"
+    "@upscalerjs/default-model": "workspace:*",
+    "wireit": "^0.14.0"
   },
   "devDependencies": {
     "@tensorflow/tfjs": "~4.8.0",

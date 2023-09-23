@@ -806,6 +806,9 @@ importers:
       '@upscalerjs/default-model':
         specifier: workspace:*
         version: link:../../models/default-model
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
