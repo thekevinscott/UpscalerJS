@@ -158,5 +158,8 @@
       "@tensorflow/tfjs-node": "4.8.0",
       "@tensorflow/tfjs-node-gpu": "4.8.0"
     }
+  },
+  "dependencies": {
+    "wireit": "^0.14.0"
   }
 }
