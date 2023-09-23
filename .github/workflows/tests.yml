@@ -178,10 +178,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 16
 
       - name: 'Build Upscaler'
         run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-model-build --skip-bundle --skip-test

@@ -37,18 +37,13 @@ export const parseMessage = (...message: unknown[]): string => message.map(m => 
   return m;
 }).filter(Boolean).join(' ');
 
+const getConsoleLogger = (type: LogLevel) => type === 'error' || type === 'warn' ? console.error : console.log;
+
 export const log = (type: LogLevel, message: unknown[]) => {
   if (logLevels.indexOf(type) <= logLevels.indexOf(level.level)) {
     const chalkType = logTypes[type];
     const parsedMessage = chalkType(`${parseMessage(...message)}`);
-    if (type === 'error' || type === 'warn') {
-      // process.stderr.write(parsedMessage);
-      console.error(parsedMessage);
-    } else {
-      console.log(parsedMessage);
-      // // console.log('write it out', parsedMessage)
-      // process.stdout.write(parsedMessage);
-    }
+    getConsoleLogger(type)(parsedMessage);
   }
 };
 
