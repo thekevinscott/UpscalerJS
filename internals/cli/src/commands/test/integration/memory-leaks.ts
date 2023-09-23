@@ -5,7 +5,7 @@ import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-
 import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
 import { runTests } from '../../../lib/utils/run-tests.js';
 
-export default class MemoryLeaks extends BaseIntegrationTestCommand<any> {
+export default class MemoryLeaks extends BaseIntegrationTestCommand<typeof BaseIntegrationTestCommand> {
   static description = 'Test the memory leaks suite of tests'
 
   async run(): Promise<void> {

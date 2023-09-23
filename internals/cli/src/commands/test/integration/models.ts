@@ -7,7 +7,7 @@ import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-
 import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
 import { runTests } from '../../../lib/utils/run-tests.js';
 
-export default class Models extends BaseIntegrationTestCommand<any> {
+export default class Models extends BaseIntegrationTestCommand<typeof BaseIntegrationTestCommand> {
   static description = 'Test all available models'
 
   async run(): Promise<void> {

@@ -7,7 +7,7 @@ import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-
 import { runTests } from '../../../lib/utils/run-tests.js';
 import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
 
-export default class Clientside extends BaseIntegrationTestCommand<any> {
+export default class Clientside extends BaseIntegrationTestCommand<typeof BaseIntegrationTestCommand> {
   static description = 'Test client side integration tests'
 
   async run(): Promise<void> {
