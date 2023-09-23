@@ -1,4 +1,4 @@
-import { LogLevel, logLevels } from '@internals/common/logger';
+import { LogLevel, logLevels, setLogLevel } from '@internals/common/logger';
 import {Interfaces, Args, Command, Flags} from '@oclif/core';
 
 export type Flags<T extends typeof Command> = Interfaces.InferredFlags<typeof BaseCommand['baseFlags'] & T['flags']>
@@ -27,6 +27,8 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     })
     this.flags = flags as Flags<T>
     this.args = args as Args<T>
+
+    setLogLevel(this.flags['log-level']);
   }
 
   // protected async catch(err: Error & {exitCode?: number}): Promise<any> {

@@ -11,6 +11,8 @@ export const getPublishCommand = (registryURL: string, _npmrc: string) => [
   '--registry',
   registryURL,
   '--force',
+  '-l',
+  getLogLevel(),
   // '--config',
   // npmrc,
 ].join(' ');
