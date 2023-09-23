@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import { Flags } from '@oclif/core';
 import path from 'path';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '@internals/common/constants';
 import { mkdirp } from '@internals/common/fs';

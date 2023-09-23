@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import path from 'path';
 import { writeFile } from '@internals/common/fs';
 import { validateModels } from '../../lib/commands/validate-models.js';

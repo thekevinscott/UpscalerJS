@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import path from 'path';
 import { EXAMPLES_DIR, isValidGuide } from '../../lib/guides/isValidGuide.js';
 import { runNPMCommand } from '@internals/common/npm';

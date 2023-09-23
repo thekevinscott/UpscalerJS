@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import path from 'path';
 import asyncPool from 'tiny-async-pool';
 import { MODELS_DIR, SHARED_DIR } from '@internals/common/constants';

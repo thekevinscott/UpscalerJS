@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import { output, verbose } from '@internals/common/logger';
 import { BundleOptions, Bundler, BundlerName, isValidBundlerName } from '@internals/bundlers';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';

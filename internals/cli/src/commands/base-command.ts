@@ -28,14 +28,14 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.args = args as Args<T>
   }
 
-  protected async catch(err: Error & {exitCode?: number}): Promise<any> {
-    // add any custom logic to handle errors from the command
-    // or simply return the parent class error handling
-    return super.catch(err)
-  }
+  // protected async catch(err: Error & {exitCode?: number}): Promise<any> {
+  //   // add any custom logic to handle errors from the command
+  //   // or simply return the parent class error handling
+  //   return super.catch(err)
+  // }
 
-  protected async finally(_: Error | undefined): Promise<any> {
-    // called after run and catch regardless of whether or not the command errored
-    return super.finally(_)
-  }
+  // protected async finally(_: Error | undefined): Promise<any> {
+  //   // called after run and catch regardless of whether or not the command errored
+  //   return super.finally(_)
+  // }
 }

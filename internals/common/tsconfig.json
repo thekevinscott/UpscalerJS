@@ -1,13 +1,5 @@
-// {
-//   "extends": "../tsconfig.json",
-//   "compilerOptions": {
-//     "rootDir": "./",
-//     "types": ["vitest/globals"]
-//   },
-// }
-
 {
-  // "extends": "../tsconfig.json",
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
     "importHelpers": true,
@@ -18,14 +10,11 @@
     "target": "es2022",
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node16",
+      "types": ["vitest/globals"]
   },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./src/**/*.test.ts",
-  ],
+  "include": ["./src/**/*"],
+  "exclude": ["./src/**/*.test.ts"],
   "ts-node": {
-    "esm": true,
+    "esm": true
   }
 }

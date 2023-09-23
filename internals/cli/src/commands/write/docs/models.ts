@@ -3,7 +3,7 @@ import path from 'path';
 import { DOCS_DIR, MODELS_DIR } from '@internals/common/constants';
 import { mkdirp } from '@internals/common/fs';
 import { clearOutMarkdownFiles } from '../../../lib/utils/clear-out-markdown-files.js';
-import { writeModelReadmes } from '../../..//lib/commands/write/docs/models.js';
+import { writeModelReadmes } from '../../../lib/commands/write/docs/models.js';
 import { verbose } from '@internals/common/logger';
 import { info } from 'console';
 import { startWatch } from '../../../lib/utils/start-watch.js';

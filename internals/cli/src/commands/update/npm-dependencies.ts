@@ -1,4 +1,3 @@
-import {Args, Command, Flags} from '@oclif/core';
 import { exec as _exec, ExecOptions } from 'child_process';
 import path from 'path';
 import { glob } from 'glob';
@@ -86,7 +85,7 @@ const updateNPMDependencies = async () => {
 export default class UpdateNPMDependencies extends BaseCommand<typeof UpdateNPMDependencies> {
   static description = 'Update NPM dependencies across monorepo'
 
-  async run(): Promise<void> {
+  async run(): Promise<void> { // skipcq: JS-0105
     return await updateNPMDependencies();
   }
 }

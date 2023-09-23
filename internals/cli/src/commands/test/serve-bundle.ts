@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import { output } from '@internals/common/logger';
 import { Bundler, BundlerName, isValidBundlerName } from '@internals/bundlers';
 import { HttpServer } from '@internals/http-server';

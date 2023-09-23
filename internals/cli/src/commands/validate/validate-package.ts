@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args, Flags} from '@oclif/core';
 import path from 'path';
 import { exists } from '@internals/common/fs';
 import { getPackageJSON, JSONSchema } from '@internals/common/package-json';

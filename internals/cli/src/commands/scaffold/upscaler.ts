@@ -1,4 +1,4 @@
-import {Args, Command, Flags} from '@oclif/core';
+import {Args} from '@oclif/core';
 import path from 'path';
 import { getEnvironmentFromTFJSLibrary, getTFJSLibraryFromTarget } from '@internals/common/tfjs-library';
 import { verbose } from '@internals/common/logger';
