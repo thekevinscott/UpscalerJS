@@ -145,7 +145,7 @@ jobs:
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
-        run: pnpm cli test unit core
+        run: pnpm --filter @upscalerjs/core test 
 
   upload-to-codecov:
     name: 'Upload to CodeCov'
