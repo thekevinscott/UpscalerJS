@@ -187,13 +187,13 @@ jobs:
         run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-model-build --skip-bundle --skip-test
 
       - name: 'Build Models'
-        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler --skip-bundle --skip-test
+        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler-build --skip-bundle --skip-test
 
       - name: 'Bundle'
-        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler --skip-model-build --skip-test
+        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler-build --skip-model-build --skip-test
 
       - name: 'Integration Tests'
-        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler --skip-model-build --skip-bundle
+        run: pnpm cli test integration ${{ matrix.test }} --ci -l verbose --skip-upscaler-build --skip-model-build --skip-bundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
