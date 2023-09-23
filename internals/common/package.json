@@ -3,20 +3,21 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./models": "./src/models.ts",
-    "./package-json": "./src/package-json.ts",
-    "./tmp-dir": "./src/tmp-dir.ts",
-    "./constants": "./src/constants.ts",
-    "./logger": "./src/logger.ts",
-    "./packages": "./src/packages.ts",
-    "./npm": "./src/npm.ts",
-    "./get-hashed-name": "./src/get-hashed-name.ts",
-    "./tfjs-library": "./src/tfjs-library.ts",
-    "./types": "./src/types.ts",
-    "./fs": "./src/fs.ts",
-    "./get-template": "./src/get-template.ts",
-    "./get-port": "./src/get-port.ts",
-    "./pluralize": "./src/pluralize.ts"
+    "./models": "./dist/models.js",
+    "./package-json": "./dist/package-json.js",
+    "./tmp-dir": "./dist/tmp-dir.js",
+    "./constants": "./dist/constants.js",
+    "./logger": "./dist/logger.js",
+    "./git": "./dist/git.js",
+    "./packages": "./dist/packages.js",
+    "./npm": "./dist/npm.js",
+    "./get-hashed-name": "./dist/get-hashed-name.js",
+    "./tfjs-library": "./dist/tfjs-library.js",
+    "./types": "./dist/types.js",
+    "./fs": "./dist/fs.js",
+    "./get-template": "./dist/get-template.js",
+    "./get-port": "./dist/get-port.js",
+    "./pluralize": "./dist/pluralize.js"
   },
   "version": "0.1.0",
   "description": "Constants and shared utility functions for the UpscalerJS monorepo",
@@ -28,9 +29,27 @@
     "fs-extra": "latest",
     "get-port": "^7.0.0"
   },
+  "wireit": {
+    "build": {
+      "command": "tsc",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest"
+    }
+  },
   "scripts": {
-    "build": "tsc",
-    "test": "vitest"
+    "build": "wireit",
+    "test": "wireit"
   },
   "engines": {
     "node": ">=16.0.0"

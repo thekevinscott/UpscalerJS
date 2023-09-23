@@ -2,7 +2,7 @@ import chalk, { ChalkInstance } from 'chalk';
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'verbose';
 
-const logs = [
+export const logLevels = [
   'error',
   'warn',
   'info',
@@ -38,7 +38,7 @@ export const parseMessage = (...message: unknown[]): string => message.map(m => 
 }).filter(Boolean).join(' ');
 
 export const log = (type: LogLevel, message: unknown[]) => {
-  if (logs.indexOf(type) <= logs.indexOf(level.level)) {
+  if (logLevels.indexOf(type) <= logLevels.indexOf(level.level)) {
     const chalkType = logTypes[type];
     const parsedMessage = chalkType(`${parseMessage(...message)}`);
     if (type === 'error' || type === 'warn') {

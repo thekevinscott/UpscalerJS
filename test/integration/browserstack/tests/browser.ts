@@ -8,7 +8,7 @@ import * as tf from '@tensorflow/tfjs';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 import { executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
 import { MODELS_DIR } from '@internals/common/constants';
-import { getCurrentBranch } from '@internals/git';
+import { getCurrentBranch } from '@internals/common/git';
 // import { TEST_TIMEOUT } from '../vite.config.js';
 
 export interface BrowserOption {

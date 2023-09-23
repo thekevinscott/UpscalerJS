@@ -1,4 +1,4 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { EXAMPLES_DIR, isValidGuide } from '../../lib/guides/isValidGuide.js';
 import { runNPMCommand } from '@internals/common/npm';
@@ -9,6 +9,7 @@ import { findSimilarFiles } from '../../lib/utils/find-similar-files.js';
 import { info, verbose } from '@internals/common/logger';
 import { Action } from '@internals/common/types';
 import { buildUpscaler } from '../build/upscaler.js';
+import { BaseCommand } from '../base-command.js';
 
 interface Options {
   skipUpscalerBuild?: boolean;
@@ -46,10 +47,19 @@ export const startAction: Action<[string, Options]> = async (guide, { skipUpscal
   await start(guide, { skipUpscalerBuild });
 };
 
+export default class StartGuide extends BaseCommand<typeof StartGuide> {
+  static description = 'Start a guide'
 
-export default (program: Command) => program.command('guide')
-    .description('Start a guide')
-    .argument('<string>', 'guide to start')
-    .option('-u, --skipUpscalerBuild', 'if true, skip building UpscalerJS when starting up')
-    .action(start);
+  static args = {
+    guide: Args.string({description: 'Guide to start', required: true}),
+  }
 
+  static flags = {
+    skipUpscalerBuild: Flags.boolean({ char: 'u', description: 'if true, skip building UpscalerJS when starting up', default: false })
+  }
+
+  async run(): Promise<void> {
+    const { args: { guide }, flags: { skipUpscalerBuild } } = await this.parse(StartGuide);
+    return start(guide, { skipUpscalerBuild });
+  }
+}

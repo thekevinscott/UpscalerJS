@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./clientside": "./src/ClientsideTestRunner.ts",
-    "./serverside": "./src/ServersideTestRunner.ts"
+    "./clientside": "./dist/ClientsideTestRunner.js",
+    "./serverside": "./dist/ServersideTestRunner.js"
   },
   "version": "0.1.0",
   "description": "Classes for managing the test runner process, including server boot up, puppeteer, and more",
@@ -14,13 +14,36 @@
     "puppeteer": "^21.1.0",
     "fs-extra": "latest"
   },
+  "wireit": {
+    "build": {
+      "command": "shx rm -rf dist && tsc -b",
+      "dependencies": [
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest"
+    }
+  },
   "scripts": {
-    "test": "vitest"
+    "build": "wireit",
+    "test": "wireit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
+    "shx": "^0.3.4",
+    "wireit": "latest",
     "vitest": "latest"
   }
 }

@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "description": "Class for starting up an http server",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "author": "Kevin Scott",
   "license": "MIT",
@@ -17,13 +17,37 @@
     "ngrok": "5.0.0-beta.2",
     "tunnelmole": "latest"
   },
+  "wireit": {
+    "build": {
+      "command": "shx rm -rf dist && tsc -b",
+      "dependencies": [
+        "../common:build"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest"
+    }
+  },
   "scripts": {
-    "test": "vitest"
+    "build": "wireit",
+    "test": "wireit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
+    "shx": "^0.3.4",
+    "wireit": "latest",
     "@types/localtunnel": "^2.0.2",
     "vitest": "^0.34.2"
   }

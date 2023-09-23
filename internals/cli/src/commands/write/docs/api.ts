@@ -1,16 +1,16 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '@internals/common/constants';
 import { mkdirp } from '@internals/common/fs';
 import { writeAPIDocs } from '../../../lib/commands/write/docs/api/index.js';
 import { clearOutMarkdownFiles } from '../../../lib/utils/clear-out-markdown-files.js';
-import { startWatch } from '../../../lib/cli/start-watch.js';
 import { info, verbose } from '@internals/common/logger';
-import { Opts } from './index.js';
+import { startWatch } from '../../../lib/utils/start-watch.js';
+import { BaseCommand } from '../../base-command.js';
 
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 
-const writeAPIDocumentation = async ({ shouldClearMarkdown }: Pick<Opts, 'shouldClearMarkdown'>) => {
+const writeAPIDocumentation = async ({ shouldClearMarkdown }: { shouldClearMarkdown: boolean }) => {
   info('Writing API documentation');
   await mkdirp(EXAMPLES_DOCS_DEST);
   if (shouldClearMarkdown) {
@@ -21,9 +21,19 @@ const writeAPIDocumentation = async ({ shouldClearMarkdown }: Pick<Opts, 'should
   return writeAPIDocs(EXAMPLES_DOCS_DEST);
 };
 
-export default (program: Command) => program.command('api')
-  .description('Write API documentation')
-  .action(({ watch, shouldClearMarkdown }: Opts) => {
+
+export default class WriteAPIDocs extends BaseCommand<typeof WriteAPIDocs> {
+  static description = 'Write API documentation'
+
+  static strict = false;
+
+  static flags = {
+    watch: Flags.boolean({char: 'w', description: 'Watch mode', default: false}),
+    shouldClearMarkdown: Flags.boolean({char: 'm', description: 'Whether to clear markdown or not', default: false}),
+  }
+
+  async run(): Promise<void> {
+    const { flags: { watch, shouldClearMarkdown } } = await this.parse(WriteAPIDocs);
     if (watch) {
       return startWatch(
         `pnpm cli write docs api ${shouldClearMarkdown ? '-c' : ''}`,
@@ -36,4 +46,5 @@ export default (program: Command) => program.command('api')
       });
     }
     return writeAPIDocumentation({ shouldClearMarkdown });
-  });
+  }
+}

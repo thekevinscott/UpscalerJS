@@ -1,40 +1,122 @@
 {
   "name": "@internals/cli",
   "private": true,
-  "type": "module",
   "version": "0.1.0",
-  "description": "CLI for managing the UpscalerJS repo",
+  "description": "CLI for UpscalerJS monorepo",
   "author": "Kevin Scott",
   "bin": {
-    "cli": "./bin/cli.ts"
+    "cli": "./bin/run.js"
   },
   "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "/bin",
+    "/dist",
+    "/oclif.manifest.json"
+  ],
   "dependencies": {
-    "@internals/bundlers": "workspace:*",
-    "@internals/common": "workspace:*",
-    "@internals/http-server": "workspace:*",
-    "@internals/registry": "workspace:*",
-    "@rollup/plugin-commonjs": "^25.0.4",
+    "@internals/common": "workspace:^",
+    "@internals/bundlers": "workspace:^",
+    "@internals/registry": "workspace:^",
+    "@oclif/core": "^3.0.0-beta.13",
+    "@oclif/plugin-help": "^5",
+    "@oclif/plugin-plugins": "^3.7.0",
     "@types/fast-levenshtein": "^0.0.2",
-    "commander": "^11.0.0",
+    "@types/uglify-js": "^3.17.1",
     "fast-levenshtein": "^3.0.0",
-    "fs-extra": "latest",
-    "glob": "^10.3.3",
-    "inquirer": "^9.2.10",
-    "ts-node": "^10.9.1",
-    "tsc-alias": "^1.8.7",
-    "typedoc": "^0.24.0"
+    "glob": "^10.3.5",
+    "rimraf": "5.0.1",
+    "tsc-alias": "^1.8.8",
+    "typedoc": "^0.24.8",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.5",
+    "wireit": "^0.14.0"
   },
   "devDependencies": {
-    "@commander-js/extra-typings": "^11.0.0",
-    "@types/node": "^20.5.1",
-    "@types/uglify-js": "^3.17.1",
-    "vitest": "^0.34.2"
+    "@oclif/test": "^2.5.4",
+    "@types/node": "^18",
+    "chai": "^4",
+    "eslint": "^8",
+    "eslint-config-oclif": "^5",
+    "eslint-config-oclif-typescript": "^2",
+    "oclif": "^3.16.0",
+    "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2",
+    "typescript": "^4.9.5",
+    "wireit": "latest"
+  },
+  "oclif": {
+    "bin": "cli",
+    "dirname": "cli",
+    "commands": "./dist/commands",
+    "plugins": [
+      "@oclif/plugin-help",
+      "@oclif/plugin-plugins"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "build": {
+        "description": "Build a package"
+      },
+      "scaffold": {
+        "description": "Scaffold a package"
+      },
+      "start": {
+        "description": "Start something like an example"
+      },
+      "test": {
+        "description": "Run a test"
+      },
+      "update": {
+        "description": "Update something"
+      },
+      "validate": {
+        "description": "Validate something"
+      },
+      "write": {
+        "description": "Write something"
+      }
+    }
+  },
+  "wireit": {
+    "build": {
+      "command": "shx rm -rf dist && tsc -b",
+      "dependencies": [
+        "../common:build",
+        "../bundlers:build",
+        "../registry:build"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "clidev": {
+      "command": "./bin/run.js",
+      "dependencies": [
+        "../common:build",
+        "../bundlers:build",
+        "../registry:build",
+        "build"
+      ]
+    }
   },
   "scripts": {
-    "test": "vitest"
+    "clidev": "wireit",
+    "build": "wireit",
+    "postpack": "shx rm -f oclif.manifest.json",
+    "prepack": "npm run build && oclif manifest && oclif readme"
   },
   "engines": {
-    "node": ">=16.0.0"
-  }
+    "node": ">=18.0.0"
+  },
+  "types": "dist/index.d.ts",
+  "type": "module"
 }

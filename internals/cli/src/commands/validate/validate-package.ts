@@ -1,9 +1,10 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { exists } from '@internals/common/fs';
 import { getPackageJSON, JSONSchema } from '@internals/common/package-json';
 import { sync } from 'glob';
 import { ROOT_DIR } from '@internals/common/constants';
+import { BaseCommand } from '../base-command.js';
 
 /****
  * Utility methods
@@ -64,11 +65,20 @@ export const validateBuild = async (packageName: string, include: string[] = [],
   return files;
 };
 
-export default (program: Command) => program.command('validate')
-  .description('Validate')
-  .argument('<string>', 'package')
-  .option('-c, --include <file...>', 'Extra files to include in validation')
-  .option('--include-files-from-package-json', 'Whether to include files from package.json')
-  .action(async (pkg, { include, includeFilesFromPackageJson }) => {
-    await validateBuild(pkg, include, { includeFilesFromPackageJson });
-  });
+export default class ValidatePackage extends BaseCommand<typeof ValidatePackage> {
+  static description = 'Validate a package'
+
+  static args = {
+    package: Args.string({description: 'Package to validate', required: true}),
+  }
+
+  static flags = {
+    include: Flags.string({ char: 'c', description: 'Extra files to include in validation', multiple: true }),
+    includeFilesFromPackageJson: Flags.boolean({ char: 'i', description: 'Whether to include files from package.json', default: false })
+  }
+
+  async run(): Promise<void> {
+    const { args, flags: { include, includeFilesFromPackageJson } } = await this.parse(ValidatePackage);
+    await validateBuild(args.package, include, { includeFilesFromPackageJson });
+  }
+}

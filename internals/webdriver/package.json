@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "description": "Wrapper for Selenium Webdriver",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "author": "Kevin Scott",
   "license": "MIT",
@@ -14,13 +14,35 @@
     "fs-extra": "^11.1.1",
     "selenium-webdriver": "4.4.0"
   },
+  "wireit": {
+    "build": {
+      "command": "shx rm -rf dist && tsc -b",
+      "dependencies": [ ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest"
+    }
+  },
   "scripts": {
-    "test": "vitest"
+    "build": "wireit",
+    "test": "wireit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
+    "shx": "^0.3.4",
+    "wireit": "latest",
     "@types/selenium-webdriver": "4.1.15",
     "vitest": "^0.34.2"
   }

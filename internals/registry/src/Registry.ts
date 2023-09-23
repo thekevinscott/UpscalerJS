@@ -8,7 +8,7 @@ import { removePackages } from './remove-packages.js';
 import { publishPackage } from './publish-package.js';
 import { getRegistryConfig } from './get-config.js';
 import { writeFile } from '@internals/common/fs'
-import { getServerPort } from '../../http-server/src/index.js';
+import { getServerPort } from '@internals/http-server';
 import { exists, readFile, mkdirp } from '@internals/common/fs';
 import { execFile } from 'child_process';
 

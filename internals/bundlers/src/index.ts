@@ -9,7 +9,6 @@ import { UMDBundler } from './bundlers/umd/src/UMDBundler.js';
 import { WebpackBundler } from './bundlers/webpack/src/WebpackBundler.js';
 import type { Bundler } from './utils/Bundler.js';
 
-
 class BundlerMap {
   byBundler = new Map<typeof Bundler, BundlerName>([
     [EsbuildBundler, 'esbuild'],

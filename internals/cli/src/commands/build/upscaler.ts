@@ -1,4 +1,4 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { info, verbose, warn } from '@internals/common/logger';
 import { OutputFormat, TFJSLibrary } from '@internals/common/types';
@@ -10,12 +10,14 @@ import { mkdirp, readdir } from '@internals/common/fs';
 import { validateOutputFormats, validateTFJSLibraries } from '../../lib/commands/build/validate-build-options.js';
 import { buildCJS } from '../../lib/commands/build/build-cjs.js';
 import { buildESM } from '../../lib/commands/build/build-esm.js';
-import { scaffoldUpscaler } from '../scaffold/upscaler.js';
 import { withTmpDir } from '@internals/common/tmp-dir';
 import { getOutputFormatsForEnvironment } from '../../lib/utils/get-output-formats-for-environment.js';
 import { getEnvironmentFromTFJSLibrary } from '@internals/common/tfjs-library';
 import { rollupBuild } from '../../lib/utils/rollup.js';
 import { compileTypescript } from '../../lib/utils/compile-typescript.js';
+import { scaffoldUpscaler } from '../scaffold/upscaler.js';
+import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
+import { BaseCommand } from '../base-command.js';
 
 
 const DIST = path.resolve(UPSCALER_DIR, 'dist');
@@ -100,23 +102,29 @@ export const buildUpscaler = async (
   }
 };
 
-export default (program: Command) => program.command('upscaler')
-  .description('Build UpscalerJS')
-  .argument('<tfjs-library...>', 'The TFJS Library to build for. browser, node, or node-gpu')
-  .option('-o, --output-format <format...>', 'What output format to build for. esm, cjs, or umd')
-  .action((
-    tfjsLibraries,
-    {
-      outputFormat: _outputFormats,
-      // ...rest
-    }
-  ) => {
-    const outputFormats = validateOutputFormats(_outputFormats);
+export default class BuildUpscaler extends BaseCommand<typeof BuildUpscaler> {
+  static description = 'Build UpscalerJS'
+
+  static flags = {
+    outputFormats: Flags.string({char: 'o', description: 'What output format to build for. esm, cjs, or umd', multiple: true }),
+    validateModelsFolder: Flags.boolean({char: 'v', description: 'Whether to validate the existence of the models folder', default: false}),
+  }
+
+  static strict = false;
+
+  static args = {
+    tfjsLibraries: Args.string({description: 'The model package to build. Must be a valid model in the /models folder', required: true}),
+  }
+
+  async run(): Promise<void> {
+    const {args, flags} = await this.parse(BuildUpscaler);
+    const outputFormats = validateOutputFormats(flags.outputFormats);
+    const _tjfsLibraries = collectVariadicArgs(this.argv);
     return buildUpscaler(
-      validateTFJSLibraries(tfjsLibraries).map(tfjsLibrary => ({
+      validateTFJSLibraries(_tjfsLibraries).map(tfjsLibrary => ({
         tfjsLibrary,
         outputFormats,
       })),
-      // rest
     );
-  });
+  }
+}

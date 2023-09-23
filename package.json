@@ -9,12 +9,18 @@
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
   "scripts": {
+    "clidev": "pnpm --filter @internals/cli clidev --",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
     "dev:node": "pnpm --filter=\"@upscalerjs/dev-node\" run dev",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
-    "postinstall": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+    "postinstall": "wireit"
+  },
+  "wireit": {
+    "postinstall": {
+      "command": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @internals/cli --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+    }
   },
   "type": "module",
   "private": true,
@@ -33,7 +39,6 @@
     "@internals/bundlers": "workspace:*",
     "@internals/cli": "workspace:*",
     "@internals/common": "workspace:*",
-    "@internals/git": "workspace:*",
     "@internals/http-server": "workspace:*",
     "@internals/test-runner": "workspace:*",
     "@internals/webdriver": "workspace:*",
@@ -133,6 +138,7 @@
     }
   },
   "dependencies": {
-    "tsx": "^3.12.10"
+    "tsx": "^3.12.10",
+    "wireit": "^0.14.0"
   }
 }

@@ -1,12 +1,13 @@
-import { Command, InvalidArgumentError } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import { output } from '@internals/common/logger';
 import { Bundler, BundlerName, isValidBundlerName } from '@internals/bundlers';
 import { HttpServer } from '@internals/http-server';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';
 import { UMDBundler } from '@internals/bundlers/umd';
 import { NodeBundler } from '@internals/bundlers/node';
-import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
 import { WebpackBundler } from '@internals/bundlers/webpack';
+import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
+import { BaseCommand } from '../base-command.js';
 
 const bundlers: Record<BundlerName, typeof Bundler> = {
   esbuild: EsbuildBundler,
@@ -15,21 +16,20 @@ const bundlers: Record<BundlerName, typeof Bundler> = {
   umd: UMDBundler,
 };
 
-export default (program: Command) => program.command('serve-bundle')
-  .description('Run a bundling command')
-  .argument('<string>', 'bundler')
-  .option('--use-tunnel', 'Whether to use a tunnel or not, which exposes the server to the web', true)
-  .option('-p, --port <number>', 'port to run the test server on', (value) => {
-    if (value === undefined) {
-      return undefined;
-    }
-    const parsedValue = parseInt(value, 10);
-    if (isNaN(parsedValue)) {
-      throw new InvalidArgumentError(`Port was not a valid integer: ${value}`);
-    }
-    return parsedValue;
-  })
-  .action(async (bundlerName, { port, useTunnel }) => {
+export default class ServeBundle extends BaseCommand<typeof ServeBundle> {
+  static description = 'Bundle and serve the content'
+
+  static args = {
+    bundlerName: Args.string({required: true, description: 'Bundler to use'}),
+  }
+
+  static flags = {
+    skipTunnel: Flags.boolean({char: 't', description: 'Whether to use a tunnel or not, which exposes the server to the web', default: false}),
+    port: Flags.integer({char: 'p', description: 'Port to run the test server on'}),
+  }
+
+  async run(): Promise<void> {
+    const { args: { bundlerName }, flags: { port, skipTunnel } } = await this.parse(ServeBundle);
     if (!isValidBundlerName(bundlerName)) {
       throw new Error(`Invalid bundler provided: ${bundlerName}`)
     }
@@ -38,7 +38,7 @@ export default (program: Command) => program.command('serve-bundle')
     }
     const Bundler = bundlers[bundlerName];
     const bundler = new Bundler(getBundlerOutputDir(Bundler));
-    const server = new HttpServer({ port, dist: bundler.absoluteDistFolder, useTunnel });
+    const server = new HttpServer({ port, dist: bundler.absoluteDistFolder, useTunnel: !skipTunnel });
     await server.start();
     process.on('exit', () => server.close());
     const url = await server.url;
@@ -50,5 +50,5 @@ export default (program: Command) => program.command('serve-bundle')
       `- type: ${bundlerName}`,
       `- serving folder: ${server.dist}`,
     ].join('\n'));
-  });
-
+  }
+}

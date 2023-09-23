@@ -17,8 +17,12 @@ export const validateModels = async (_models: unknown[], { validateModelsFolder 
     if (!isString(modelPackageDirectoryName)) {
       throw new Error(`Invalid model argument provided: ${JSON.stringify(modelPackageDirectoryName)}`)
     }
+    const modelPackageDirectory = path.resolve(MODELS_DIR, modelPackageDirectoryName);
+    if (!await exists(modelPackageDirectory)) {
+      throw new Error(`Model directory does not exist: ${modelPackageDirectoryName}`)
+    }
     if (validateModelsFolder) {
-      const modelsFolder = path.resolve(MODELS_DIR, modelPackageDirectoryName, 'models');
+      const modelsFolder = path.resolve(modelPackageDirectory, 'models');
       if (!await hasModelFiles(modelsFolder)) {
         throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${modelPackageDirectoryName}?`);
       }

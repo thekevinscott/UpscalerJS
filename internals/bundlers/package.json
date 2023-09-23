@@ -5,11 +5,11 @@
   "version": "0.1.0",
   "description": "Test servers for testing UpscalerJS against",
   "exports": {
-    ".": "./src/index.ts",
-    "./webpack": "./src/bundlers/webpack/src/index.ts",
-    "./esbuild": "./src/bundlers/esbuild/src/index.ts",
-    "./node": "./src/bundlers/node/src/index.ts",
-    "./umd": "./src/bundlers/umd/src/index.ts"
+    ".": "./dist/index.js",
+    "./webpack": "./dist/bundlers/webpack/src/index.js",
+    "./esbuild": "./dist/bundlers/esbuild/src/index.js",
+    "./node": "./dist/bundlers/node/src/index.js",
+    "./umd": "./dist/bundlers/umd/src/index.js"
   },
   "author": "Kevin Scott",
   "license": "MIT",
@@ -19,14 +19,40 @@
     "@internals/http-server": "workspace:*",
     "@internals/registry": "workspace:*"
   },
+  "wireit": {
+    "build": {
+      "command": "shx rm -rf dist && tsc -b",
+      "dependencies": [
+        "../common:build",
+        "../http-server:build",
+        "../registry:build"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test": {
+      "command": "vitest"
+    }
+  },
   "scripts": {
-    "test": "vitest"
+    "build": "wireit",
+    "test": "wireit"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
+    "wireit": "latest",
     "vitest": "^0.34.2",
+    "shx": "^0.3.4",
     "@types/ejs": "^3.1.2",
     "@types/js-yaml": "^4.0.5"
   }

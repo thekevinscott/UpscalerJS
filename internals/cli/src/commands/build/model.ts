@@ -1,4 +1,4 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { verbose } from '@internals/common/logger';
 import { OutputFormat } from '@internals/common/types';
@@ -13,9 +13,12 @@ import { uglify } from '../../lib/utils/uglify.js';
 import { babelTransform } from '../../lib/utils/babel-transform.js';
 import { inputOptions } from '../../lib/rollup-configs/models-rollup-config.js';
 import { validateModels } from '../../lib/commands/validate-models.js';
-import { scaffoldModel } from '../scaffold/model.js';
 import { rollupBuild } from '../../lib/utils/rollup.js';
 import { compileTypescript } from '../../lib/utils/compile-typescript.js';
+import { scaffoldModel } from '../scaffold/model.js';
+import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
+import { BaseCommand } from '../base-command.js';
+import { collectStringArgs } from '../../lib/utils/collect-string-args.js';
 
 const CONCURRENT_ASYNC_THREADS = 5;
 
@@ -162,20 +165,28 @@ export const buildModels = async (modelPackageDirectoryNames: string[], outputFo
   )) { }
 };
 
-export default (program: Command) => program.command('model')
-  .description('Build Model')
-  .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
-  .option('-o, --output-format <format...>', 'What output format to build for. esm, cjs, or umd')
-  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
-  .action(async (
-    _models,
-    {
-      outputFormat: _outputFormats,
-      validateModelsFolder,
-    }
-  ) => buildModels(
-    await validateModels(_models, { validateModelsFolder, }),
-    validateOutputFormats(_outputFormats),
-    // rest
-  ));
+export default class BuildModel extends BaseCommand<typeof BuildModel> {
+  static description = 'Build a model in upscalerjs'
 
+  static flags = {
+    outputFormats: Flags.string({char: 'o', multiple: true, description: 'What output format to build for. esm, cjs, or umd'}),
+    validateModelsFolder: Flags.boolean({char: 'v', description: 'Whether to validate the existence of the models folder', default: false}),
+  }
+
+  static strict = false;
+
+  static args = {
+    models: Args.string({description: 'The model package to build. Must be a valid model in the /models folder', required: true}),
+  }
+
+  async run(): Promise<void> {
+    const {flags} = await this.parse(BuildModel);
+    const _models = collectStringArgs(this.argv);
+    const models = await validateModels(_models, { validateModelsFolder: flags.validateModelsFolder, });
+    const outputFormats = validateOutputFormats(flags.outputFormats);
+    return buildModels(
+      models,
+      outputFormats,
+    );
+  }
+}

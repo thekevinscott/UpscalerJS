@@ -1,11 +1,11 @@
-import { Command } from '@commander-js/extra-typings';
-
+import {Args, Command, Flags} from '@oclif/core';
 import { exec as _exec, ExecOptions } from 'child_process';
 import path from 'path';
 import { glob } from 'glob';
 import asyncPool from "tiny-async-pool";
 import { ROOT_DIR } from '@internals/common/constants';
 import { getLogLevel } from '@internals/common/logger';
+import { BaseCommand } from '../base-command.js';
 
 /****
  * Types
@@ -83,8 +83,10 @@ const updateNPMDependencies = async () => {
   }
 };
 
-export default (program: Command) => program.command('npm-dependencies')
-  .description('Update NPM dependencies across monorepo')
-  .action(async () => {
+export default class UpdateNPMDependencies extends BaseCommand<typeof UpdateNPMDependencies> {
+  static description = 'Update NPM dependencies across monorepo'
+
+  async run(): Promise<void> {
     return await updateNPMDependencies();
-  });
+  }
+}

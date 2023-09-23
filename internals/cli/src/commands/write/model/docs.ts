@@ -1,11 +1,13 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
-import { validateModels } from '../../../lib/commands/validate-models.js';
 import asyncPool from 'tiny-async-pool';
 import { MODELS_DIR, SHARED_DIR } from '@internals/common/constants';
 import { JSONSchema, getPackageJSON } from '@internals/common/package-json';
 import { exists, readFile, readdir, writeFile } from '@internals/common/fs';
 import { info, verbose } from '@internals/common/logger';
+import { validateModels } from '../../../lib/commands/validate-models.js';
+import { collectVariadicArgs } from '../../../lib/utils/collect-variadic-args.js';
+import { BaseCommand } from '../../base-command.js';
 
 const CONCURRENT_ASYNC_THREADS = 5;
 
@@ -113,13 +115,23 @@ export const writeModelDocs = async (modelPackageDirectoryNames: string[]) => {
   info(`Wrote docs for ${modelPackageDirectoryNames.length} package${modelPackageDirectoryNames.length === 1 ? '' : 's'}`)
 };
 
-export default (program: Command) => program.command('docs')
-  .description('Write docs for a model')
-  .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
-  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
-  .action(async (
-    _models,
-    { validateModelsFolder, }
-  ) => writeModelDocs(
-    await validateModels(_models, { validateModelsFolder }),
-  ));
+export default class WriteModelDocs extends BaseCommand<typeof WriteModelDocs> {
+  static description = 'Write docs for a model'
+
+  static strict = false;
+
+  static args = {
+    model: Args.string({description: 'The model package to build. Must be a valid model in the /models folder', required: true}),
+  }
+
+  static flags = {
+    validateModelsFolder: Flags.boolean({char: 'v', description: 'Whether to validate the existence of the models folder', default: false}),
+  }
+
+  async run(): Promise<void> {
+    const { flags: { validateModelsFolder } } = await this.parse(WriteModelDocs);
+    const _models = collectVariadicArgs(this.argv);
+    const models = await validateModels(_models, { validateModelsFolder });
+    return writeModelDocs(models);
+  }
+}

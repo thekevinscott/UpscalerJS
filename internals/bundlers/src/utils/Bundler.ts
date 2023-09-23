@@ -1,6 +1,6 @@
 import path from 'path';
 import { RegistryPackage } from "@internals/registry";
-import { HttpServer } from "../../../http-server/src/index.js";
+import { HttpServer } from "@internals/http-server";
 import { info } from "@internals/common/logger";
 
 export interface BundleOptions {

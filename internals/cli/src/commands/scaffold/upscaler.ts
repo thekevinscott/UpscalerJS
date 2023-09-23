@@ -1,4 +1,4 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { getEnvironmentFromTFJSLibrary, getTFJSLibraryFromTarget } from '@internals/common/tfjs-library';
 import { verbose } from '@internals/common/logger';
@@ -7,6 +7,7 @@ import { findEnvironmentSpecificFiles } from '../../lib/utils/find-environment-s
 import { writeFile } from '@internals/common/fs';
 import { symlinkEnvironmentSpecificFile } from '../../lib/utils/symlink-environment-specific-file.js';
 import { UPSCALER_DIR } from '@internals/common/constants';
+import { BaseCommand } from '../base-command.js';
 
 const SRC = path.resolve(UPSCALER_DIR, 'src');
 
@@ -44,14 +45,19 @@ export const scaffoldUpscaler = async (tfjsLibrary: TFJSLibrary) => {
   verbose('- dependencies.generated.ts');
 };
 
-export default (program: Command) => program.command('upscaler')
-  .description('Scaffold UpscalerJS')
-  .argument('tfjs-library', 'The TFJS Library to scaffold for. browser, node, or node-gpu')
-  .action((
-    tfjsLibrary,
-  ) => {
+export default class ScaffoldUpscaler extends BaseCommand<typeof ScaffoldUpscaler> {
+  static description = 'Scaffold a UpscalerJS'
+
+  static args = {
+    tfjsLibrary: Args.string({description: 'The TFJS Library to scaffold for. browser, node, or node-gpu', required: true}),
+  }
+
+  async run(): Promise<void> {
+    const {args} = await this.parse(ScaffoldUpscaler);
+    const { tfjsLibrary } = args;
     if (!isTFJSLibrary(tfjsLibrary)) {
       throw new Error('tfjsLibrary must be either browser, node or node-gpu')
     }
     return scaffoldUpscaler(tfjsLibrary);
-  });
+  }
+}

@@ -1,5 +1,5 @@
-import { Command } from '@commander-js/extra-typings';
 import path from 'path';
+import {Command, Flags} from '@oclif/core';
 import { info } from '@internals/common/logger';
 import { OutputFormat } from '@internals/common/types';
 import { rimraf } from 'rimraf';
@@ -7,6 +7,7 @@ import { validateOutputFormats } from '../../lib/commands/build/validate-build-o
 import { buildCJS } from '../../lib/commands/build/build-cjs.js';
 import { buildESM } from '../../lib/commands/build/build-esm.js';
 import { CORE_DIR } from '@internals/common/constants';
+import { BaseCommand } from '../base-command.js';
 
 const DIST = path.resolve(CORE_DIR, 'dist');
 
@@ -32,13 +33,16 @@ export const buildCore = async (outputFormats: OutputFormat[], { shouldClearDist
   }
 };
 
-export default (program: Command) => program.command('core')
-  .description('Build Core')
-  .option('-o, --output-format <format...>', 'What output format to build for. esm, cjs, or umd')
-  .action(({
-    outputFormat: _outputFormats,
-    // ...rest
-  }) => buildCore(
-    validateOutputFormats(_outputFormats),
-    // rest
-  ));
+export default class BuildCore extends BaseCommand<typeof BuildCore> {
+  static description = 'Build the @upscalerjs/core package'
+
+  static flags = {
+    outputFormats: Flags.string({char: 'o', multiple: true, description: 'What output format to build for. esm, cjs, or umd'}),
+  }
+
+  async run(): Promise<void> {
+    const {flags} = await this.parse(BuildCore);
+    const outputFormats = validateOutputFormats(flags.outputFormats);
+    return buildCore(outputFormats);
+  }
+}

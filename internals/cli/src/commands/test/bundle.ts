@@ -1,12 +1,13 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import { output, verbose } from '@internals/common/logger';
 import { BundleOptions, Bundler, BundlerName, isValidBundlerName } from '@internals/bundlers';
 import { EsbuildBundler } from '@internals/bundlers/esbuild';
 import { UMDBundler } from '@internals/bundlers/umd';
 import { NodeBundler } from '@internals/bundlers/node';
 import { Registry } from '@internals/registry';
-import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
 import { WebpackBundler } from '@internals/bundlers/webpack';
+import { getBundlerOutputDir } from '../../lib/utils/get-bundler-output-dir.js';
+import { BaseCommand } from '../base-command.js';
 
 const bundlers: Record<BundlerName, typeof Bundler> = {
   esbuild: EsbuildBundler,
@@ -45,13 +46,21 @@ export const bundle = async (bundlerName: BundlerName, {
   return bundler;
 }
 
-export default (program: Command) => program.command('bundle')
-  .description('Run a bundling command')
-  .argument('<string>', 'bundler')
-  .option('-p, --skip-reset-packages', 'Skip the reset packages step', false)
-  .option('-n, --skip-npm-install', 'Skip the NPM install', false)
-  .option('-k, --keep-working-files', 'Keep the working files that are generated during bundling for later inspection', false)
-  .action(async (bundlerName, { skipResetPackages, skipNpmInstall, keepWorkingFiles }) => {
+export default class Bundle extends BaseCommand<typeof Bundle> {
+  static description = 'Run a bundling command'
+
+  static args = {
+    bundlerName: Args.string({required: true, description: 'Bundler to use'}),
+  }
+
+  static flags = {
+    skipResetPackages: Flags.boolean({ char: 'p', description: 'Skip the reset packages step', default: false }),
+    skipNpmInstall: Flags.boolean({ char: 'n', description: 'Skip the NPM install', default: false }),
+    keepWorkingFiles: Flags.boolean({ char: 'k', description: 'Keep the working files that are generated during bundling for later inspection', default: false }),
+  }
+
+  async run(): Promise<void> {
+    const { args: { bundlerName }, flags: { skipResetPackages, skipNpmInstall, keepWorkingFiles } } = await this.parse(Bundle);
     if (!isValidBundlerName(bundlerName)) {
       throw new Error(`Invalid bundler provided: ${bundlerName}`)
     }
@@ -60,4 +69,5 @@ export default (program: Command) => program.command('bundle')
     // const duration = Math.round((performance.now() - start) / 100) * 10;
     const duration = ((performance.now() - start) / 1000).toFixed(2);
     output(`Bundled ${bundlerName} in ${duration}s`);
-  });
+  }
+}

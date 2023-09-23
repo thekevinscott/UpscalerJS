@@ -1,9 +1,11 @@
-import { Command } from '@commander-js/extra-typings';
+import {Args, Command, Flags} from '@oclif/core';
 import path from 'path';
 import { writeFile } from '@internals/common/fs';
 import { validateModels } from '../../lib/commands/validate-models.js';
 import { MODELS_DIR, ROOT_DIR } from '@internals/common/constants';
 import { getPackageJSON } from '@internals/common/package-json';
+import { collectVariadicArgs } from '../../lib/utils/collect-variadic-args.js';
+import { BaseCommand } from '../base-command.js';
 
 export const scaffoldModel = async (modelPackageDirectoryName: string) => {
   const MODEL_ROOT = path.resolve(MODELS_DIR, modelPackageDirectoryName);
@@ -22,9 +24,23 @@ export const scaffoldModels = async (modelPackageDirectoryNames: string[]) => {
   await Promise.all(modelPackageDirectoryNames.map(scaffoldModel));
 };
 
-export default (program: Command) => program.command('model')
-  .description('Scaffold Model')
-  .argument('<model...>', 'The model package to build. Must be a valid model in the /models folder')
-  .option('-v, --validate-models-folder', 'Whether to validate the existence of the models folder', false)
-  .action(async (models, { validateModelsFolder }) => scaffoldModels(await validateModels(models, { validateModelsFolder })));
+export default class ScaffoldModel extends BaseCommand<typeof ScaffoldModel> {
+  static description = 'Scaffold a model'
 
+  static flags = {
+    validateModelsFolder: Flags.boolean({char: 'v', description: 'Whether to validate the existence of the models folder', default: false}),
+  }
+
+  static strict = false;
+
+  static args = {
+    models: Args.string({description: 'The model package to build. Must be a valid model in the /models folder', required: true}),
+  }
+
+  async run(): Promise<void> {
+    const {flags} = await this.parse(ScaffoldModel);
+    const _models = collectVariadicArgs(this.argv);
+    const models = await validateModels(_models, { validateModelsFolder: flags.validateModelsFolder, });
+    return scaffoldModels(await validateModels(models));
+  }
+}

@@ -58,7 +58,7 @@ async function getEnv () {
   if (await exists(localEnvPath)) {
     return {
       ...process.env,
-      ...dotenv.parse(readFile(localEnvPath)),
+      ...dotenv.parse(await readFile(localEnvPath)),
     };
   }
 

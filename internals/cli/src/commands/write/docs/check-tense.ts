@@ -1,7 +1,10 @@
-import { Command } from '@commander-js/extra-typings';
 import { checkTenses } from '../../../lib/commands/write/docs/check-tense.js';
+import { BaseCommand } from '../../base-command.js';
 
-export default (program: Command) => program.command('check-tense')
-  .description('Check tense of docs')
-  .action(checkTenses);
+export default class CheckTenses extends BaseCommand<typeof CheckTenses> {
+  static description = 'Check tenses of docs'
 
+  async run(): Promise<void> {
+    return checkTenses();
+  }
+}

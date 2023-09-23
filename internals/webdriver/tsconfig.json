@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "target": "ESNext",
     "strict": true,
     "esModuleInterop": true,
@@ -8,6 +9,7 @@
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
+    "outDir": "./dist",
     "forceConsistentCasingInFileNames": true,
     "types": ["vitest/globals"]
   },
