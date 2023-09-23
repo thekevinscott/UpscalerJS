@@ -19,7 +19,10 @@
   },
   "wireit": {
     "postinstall": {
-      "command": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @internals/cli --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+      "command": "pnpm --filter upscaler run scaffold 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build",
+      "dependencies": [
+        "./internals/cli:build"
+      ]
     }
   },
   "type": "module",
