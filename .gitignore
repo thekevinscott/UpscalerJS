@@ -35,3 +35,4 @@ service-account.json
 .pnpm-store
 .ipynb_checkpoints
 notebooks
+.wireit

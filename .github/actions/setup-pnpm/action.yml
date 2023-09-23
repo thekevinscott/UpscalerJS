@@ -17,7 +17,7 @@ runs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'pnpm'
+        # cache: 'pnpm'
 
     - name: Install dependencies
       shell: bash
@@ -26,3 +26,7 @@ runs:
     - name: Install Puppeteer explicitly
       shell: bash
       run: node node_modules/puppeteer/install.js
+
+    - name: Re-install tfjs/node
+      shell: bash
+      run: cd node_modules/@tensorflow/tfjs-node && pnpm run install
