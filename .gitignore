@@ -21,6 +21,7 @@ yarn-error.log
 .yarnrc
 .parcel-cache
 *.tsbuildinfo
+.npmrc
 .yarn
 .pnpm-debug.log
 umd-tmp
