@@ -1,28 +1,27 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { 
-  isTensor as _isTensor, 
+  isTensor,
 } from '@upscalerjs/core';
 import { 
   AbortError,
 } from './errors-and-warnings';
 import { makeTick } from './makeTick';
-import { mockFn } from '../../../test/lib/shared/mockers';
 
-const isTensor = mockFn(_isTensor);
+import type * as core from '@upscalerjs/core';
 
-jest.mock('@upscalerjs/core', () => {
-  const { isTensor, ...rest} = jest.requireActual('@upscalerjs/core');
+vi.mock('@upscalerjs/core', async () => {
+  const { isTensor, ...rest} = await vi.importActual('@upscalerjs/core') as typeof core;
   return {
     ...rest,
-    isTensor: jest.fn(isTensor),
+    isTensor: vi.fn(isTensor),
   };
 });
 
 describe('makeTick', () => {
-  it('disposes of an in-flight tensor', (done) => {
-    isTensor.mockImplementation(() => true);
+  it('disposes of an in-flight tensor', () => new Promise<void>(done => {
+    vi.mocked(isTensor).mockImplementation(() => true);
     const abortController = new AbortController();
-    const dispose = jest.fn();
+    const dispose = vi.fn();
     const t = {
       dispose,
     } as unknown as tf.Tensor3D;
@@ -35,12 +34,12 @@ describe('makeTick', () => {
       done();
     });
     abortController.abort();
-  }, 100);
+  }), 100);
 
-  it('disposes of a multiple in-flight tensors', (done) => {
-    isTensor.mockImplementation(() => false);
+  it('disposes of a multiple in-flight tensors', () => new Promise<void>(done => {
+    vi.mocked(isTensor).mockImplementation(() => false);
     const abortController = new AbortController();
-    const dispose = jest.fn();
+    const dispose = vi.fn();
     const getTensor = () => ({
       dispose,
     }) as unknown as tf.Tensor3D;
@@ -56,10 +55,10 @@ describe('makeTick', () => {
       done();
     });
     abortController.abort();
-  }, 100);
+  }), 100);
 
-  it('ignores any non-tensor results', (done) => {
-    isTensor.mockImplementation(() => false);
+  it('ignores any non-tensor results', () => new Promise<void>(done => {
+    vi.mocked(isTensor).mockImplementation(() => false);
     const abortController = new AbortController();
     const tick = makeTick(abortController.signal, true);
     tick(undefined).then(() => {
@@ -69,5 +68,5 @@ describe('makeTick', () => {
       done();
     });
     abortController.abort();
-  }, 100);
+  }), 100);
 });

@@ -3,9 +3,18 @@
   "version": "1.0.0-beta.17",
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
-    "./node": "./dist/node/cjs/cjs.js",
-    "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
-    ".": "./dist/browser/esm/index.js"
+    "./node": {
+      "types": "./dist/node/cjs/cjs.d.js",
+      "require": "./dist/node/cjs/cjs.js"
+    },
+    "./node-gpu": {
+      "types": "./dist/node-gpu/cjs/cjs.d.js",
+      "require": "./dist/node-gpu/cjs/cjs.js"
+    },
+    ".": {
+      "types": "./dist/browser/esm/index.d.js",
+      "import": "./dist/browser/esm/index.js"
+    }
   },
   "engines": {
     "node": ">=16.0"
@@ -47,20 +56,20 @@
     "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
     "docs:serve": "docsify serve docs --port 3030",
     "preversion": "pnpm lint",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
     "lint": "pnpm lint:browser && pnpm lint:node",
     "lint:fix": "pnpm lint:browser:fix && pnpm lint:node:fix",
-    "lint:browser": "pnpm scaffold:dependencies 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
-    "lint:browser:fix": "pnpm scaffold:dependencies 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
-    "lint:node": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
-    "lint:node:fix": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
+    "lint:browser": "pnpm scaffold 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
+    "lint:browser:fix": "pnpm scaffold 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
+    "lint:node": "pnpm scaffold 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
+    "lint:node:fix": "pnpm scaffold 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
     "test": "pnpm build:dependencies && pnpm run test:unit",
     "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
-    "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json",
-    "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
-    "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
-    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
+    "test:unit:browser:playwright": "pnpm scaffold 'browser' && playwright-test --config playwright.config.json",
+    "test:unit:browser:vite": "pnpm scaffold 'browser' && vitest --config vite.browser.ts",
+    "test:unit:node": "pnpm scaffold 'node' && vitest --config vite.node.ts",
+    "validate": "pnpm --filter @upscalerjs/scripts validate packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'",
     "watch": "chokidar \"src\" -c \"pnpm build\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:esm": "chokidar \"src\" -c \"pnpm build:esm\" -i \"test.ts\" -i \"generated.ts\"",
     "watch:umd": "chokidar \"src\" -c \"pnpm build:umd\" -i \"test.ts\" -i \"generated.ts\"",
@@ -91,6 +100,7 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/jest": "^29.5.3",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "vitest": "^0.34.4"
   }
 }

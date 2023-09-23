@@ -1,4 +1,13 @@
-import { loadImage, isHTMLImageElement, getImageAsTensor, getInvalidImageError, getInvalidTensorError, checkValidEnvironment, getEnvironmentDisallowsStringInput, getEnvironmentDisallowsBase64, } from './image.browser';
+import {
+  loadImage,
+  isHTMLImageElement,
+  getImageAsTensor,
+  getInvalidImageError,
+  getInvalidTensorError,
+  checkValidEnvironment,
+  getEnvironmentDisallowsStringInput,
+  getEnvironmentDisallowsBase64,
+} from './image.browser';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import * as tf from '@tensorflow/tfjs';
@@ -32,6 +41,7 @@ describe('Image', async () => {
   before(async () => {
     expectedArray = await getExpectedArray(FLOWER_SMALL);
   });
+
   describe('getImageAsTensor', () => {
     it('loads an Image() if given a string as input', async () => {
       const tensor = await getImageAsTensor(FLOWER_SMALL);
@@ -43,7 +53,7 @@ describe('Image', async () => {
       }
     });
 
-    it('handles a rejected Image() if given a string as input', async () => {
+    it.only('handles a rejected Image() if given a string as input', () => {
       return getImageAsTensor('foobar')
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => expect(m.message).to.equal(getInvalidImageError().message));

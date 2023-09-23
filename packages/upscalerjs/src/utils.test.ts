@@ -1,4 +1,5 @@
 import { Tensor3D } from '@tensorflow/tfjs-node';
+import { vi } from 'vitest';
 import { 
   processAndDisposeOfTensor,
   wrapGenerator, 
@@ -41,7 +42,7 @@ describe('warn', () => {
   });
 
   it('logs a string to console', () => {
-    const fn = jest.fn();
+    const fn = vi.fn();
     console.warn = fn;
     warn('foo');
     expect(fn).toHaveBeenCalledTimes(1);
@@ -49,7 +50,7 @@ describe('warn', () => {
   });
 
   it('logs an array of strings to console', () => {
-    const fn = jest.fn();
+    const fn = vi.fn();
     console.warn = fn;
     warn([
       'foo',
@@ -91,7 +92,7 @@ describe('wrapGenerator', () => {
       return 'baz';
     }
 
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     await wrapGenerator(foo(), callback);
     expect(callback).toHaveBeenCalledTimes(2);
@@ -107,7 +108,7 @@ describe('wrapGenerator', () => {
       return 'baz';
     }
 
-    const callback = jest.fn(async () => {});
+    const callback = vi.fn(async () => {});
     await wrapGenerator(foo(), callback);
     expect(callback).toHaveBeenCalledTimes(2);
     expect(callback).toHaveBeenCalledWith('foo');
@@ -115,7 +116,7 @@ describe('wrapGenerator', () => {
     expect(callback).not.toHaveBeenCalledWith('baz');
   });
 
-  it('should await the async callback function', (done) => {
+  it('should await the async callback function', () => new Promise<void>(done => {
     async function* foo() {
       yield 'foo';
       yield 'bar';
@@ -124,7 +125,7 @@ describe('wrapGenerator', () => {
 
     const wait = () => new Promise(resolve => setTimeout(resolve));
     let called = 0;
-    const callback = jest.fn(async () => {
+    const callback = vi.fn(async () => {
       called++;
       await wait();
       if (called < 2) {
@@ -134,7 +135,7 @@ describe('wrapGenerator', () => {
       }
     });
     wrapGenerator(foo(), callback);
-  }, 100);
+  }), 100);
 });
 
 describe('isSingleArgProgress', () => {
@@ -200,13 +201,13 @@ describe('processAndDisposeOfTensor', () => {
     isDisposed = false;
 
     value?: number;
-    mockDispose: typeof jest.fn = jest.fn().mockImplementation(() => {});
+    mockDispose: typeof vi.fn = vi.fn().mockImplementation(() => {});
 
     constructor({
       mockDispose,
       value,
     }: {
-      mockDispose?: typeof jest.fn;
+      mockDispose?: typeof vi.fn;
       value?: number;
     }) {
       if (mockDispose) {
@@ -259,7 +260,7 @@ describe('processAndDisposeOfTensor', () => {
   }
 
   it('returns a tensor as is if given no process function', () => {
-    const mockDispose = jest.fn();
+    const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose });
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D);
     expect(returnedTensor).toEqual(mockedTensor);
@@ -267,7 +268,7 @@ describe('processAndDisposeOfTensor', () => {
   });
 
   it('does not dispose of tensor if no transformations are done to that tensor', () => {
-    const mockDispose = jest.fn();
+    const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose });
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, t => t);
     expect(returnedTensor).toEqual(mockedTensor);
@@ -275,8 +276,8 @@ describe('processAndDisposeOfTensor', () => {
   });
 
   it('processes a tensor and disposes of it if given a process function', () => {
-    const mockDispose = jest.fn();
-    const process = jest.fn().mockImplementation(t => t.clone()); // return the tensor through
+    const mockDispose = vi.fn();
+    const process = vi.fn().mockImplementation(t => t.clone()); // return the tensor through
     const mockedTensor = new MockTensor({ mockDispose });
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
     expect(process).toHaveBeenCalledTimes(1);
@@ -286,9 +287,9 @@ describe('processAndDisposeOfTensor', () => {
   });
 
   it('processes a tensor and does not dispose of it if it is already disposed', () => {
-    const mockDispose = jest.fn();
+    const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose });
-    const process = jest.fn().mockImplementation((t: Tensor3D) => {
+    const process = vi.fn().mockImplementation((t: Tensor3D) => {
       t.dispose();
       return t;
     });
@@ -299,11 +300,11 @@ describe('processAndDisposeOfTensor', () => {
   });
 
   it('processes a tensor multiple times if given multiple process functions', () => {
-    const mockDispose = jest.fn();
+    const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose, value: 1 });
-    const processA = jest.fn().mockImplementation((t) => t.add(2)); // 3
-    const processB = jest.fn().mockImplementation((t) => t.mul(3)); // 9
-    const processC = jest.fn().mockImplementation((t) => t.div(2)); // 4.5
+    const processA = vi.fn().mockImplementation((t) => t.add(2)); // 3
+    const processB = vi.fn().mockImplementation((t) => t.mul(3)); // 9
+    const processC = vi.fn().mockImplementation((t) => t.div(2)); // 4.5
     const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, processA, processB, processC);
     expect(returnedTensor.value).toEqual(4.5);
     expect(processA).toHaveBeenCalledTimes(1);
