@@ -1,7 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { MODELS_DIR, UPSCALERJS_DIR } from './constants';
-import { ModelDefinitionFn } from "../../../../packages/core/src";
 
 export const isValidEnv = (env: string): env is ValidEnv => ['node', 'node-gpu'].includes(env);
 export type ValidEnv = 'node' | 'node-gpu';
