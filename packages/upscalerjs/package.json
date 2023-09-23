@@ -60,7 +60,7 @@
     },
     "build:node-gpu": {
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
-    },
+    }
   },
   "scripts": {
     "build": "wireit",
