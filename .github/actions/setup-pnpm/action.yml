@@ -21,11 +21,11 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install --ignore-scripts
+      run: pnpm install
 
-    - name: postinstall
-      shell: bash
-      run: pnpm postinstall
+    # - name: postinstall
+    #   shell: bash
+    #   run: pnpm postinstall
 
     # - name: TFJS-node
     #   shell: bash
