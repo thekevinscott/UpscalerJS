@@ -6,7 +6,7 @@ import { collectStringArgs } from '../../../lib/utils/collect-string-args.js';
 import { BaseIntegrationTestCommand } from '../../../lib/utils/base-integration-test-command.js';
 
 
-export default class Browserstack extends BaseIntegrationTestCommand<any> {
+export default class Browserstack extends BaseIntegrationTestCommand<typeof BaseIntegrationTestCommand> {
   static description = 'Test the browserstack suite of tests'
 
   async run(): Promise<void> {
