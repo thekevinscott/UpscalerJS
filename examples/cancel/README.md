@@ -18,7 +18,7 @@ import imagePath from '/path/to/image.png'
 
 const upscaler = new Upscaler()
 const abortController = new AbortController()
-upcaler.upscale(imagePath, {
+upscaler.upscale(imagePath, {
   signal: abortController.signal,
 }).catch(abortError => {
   console.log('UpscalerJS has been aborted', abortError)
