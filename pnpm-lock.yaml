@@ -12,6 +12,10 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
     devDependencies:
       '@babel/cli':
         specifier: 7.22.10
@@ -13765,6 +13769,14 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
+  /proper-lockfile@4.1.2:
+    resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
+    dependencies:
+      graceful-fs: 4.2.11
+      retry: 0.12.0
+      signal-exit: 3.0.7
+    dev: false
+
   /property-information@5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==}
     dependencies:
@@ -14526,7 +14538,6 @@ packages:
     engines: {node: '>= 4'}
     requiresBuild: true
     dev: false
-    optional: true
 
   /retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
@@ -17068,6 +17079,18 @@ packages:
 
   /wildcard@2.0.0:
     resolution: {integrity: sha512-JcKqAHLPxcdb9KM49dufGXn2x3ssnfjbcaQdLlfZsL9rH9wgDQjUtDxbo8NE0F6SFvydeu1VhZe7hZuHsB2/pw==}
+
+  /wireit@0.14.0:
+    resolution: {integrity: sha512-CwHhyWduARI7zOoyyQvxH6U/5GTy8p6RxTe2LpwIhE4Y8PbaTk0iH8dLkeGMvxETVBkxCgQnF2GfzYKXMSmYSw==}
+    engines: {node: '>=14.14.0'}
+    hasBin: true
+    dependencies:
+      braces: 3.0.2
+      chokidar: 3.5.3
+      fast-glob: 3.3.1
+      jsonc-parser: 3.2.0
+      proper-lockfile: 4.1.2
+    dev: false
 
   /wkx@0.5.0:
     resolution: {integrity: sha512-Xng/d4Ichh8uN4l0FToV/258EjMGU9MGcA0HV2d9B/ZpZB3lqQm7nkOdZdm5GhKtLLhAE7PiVQwN4eN+2YJJUg==}
