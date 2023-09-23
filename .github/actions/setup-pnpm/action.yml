@@ -34,3 +34,7 @@ runs:
     - name: Install Puppeteer explicitly
       shell: bash
       run: node node_modules/puppeteer/install.js
+
+    - name: Rebuild tfjs node
+      shell: bash
+      run: pnpm rebuild @tensorflow/tfjs-node
