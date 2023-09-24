@@ -577,33 +577,6 @@ importers:
         specifier: ^0.34.2
         version: 0.34.2(jsdom@22.1.0)
 
-  models:
-    devDependencies:
-      '@types/fs-extra':
-        specifier: ^11.0.1
-        version: 11.0.1
-      '@types/mkdirp':
-        specifier: ^2.0.0
-        version: 2.0.0
-      '@types/node':
-        specifier: ^20.5.1
-        version: 20.5.1
-      '@types/uglify-js':
-        specifier: ^3.17.1
-        version: 3.17.1
-      fs-extra:
-        specifier: ^11.1.1
-        version: 11.1.1
-      mkdirp:
-        specifier: ^3.0.1
-        version: 3.0.1
-      typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
-      uglify-js:
-        specifier: ^3.17.4
-        version: 3.17.4
-
   models/default-model:
     dependencies:
       '@upscalerjs/core':
@@ -5230,13 +5203,6 @@ packages:
   /@types/minimatch@5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
     dev: false
-
-  /@types/mkdirp@2.0.0:
-    resolution: {integrity: sha512-c/iUqMymAlxLAyIK3u5SzrwkrkyOdv1XDc91T+b5FsY7Jr6ERhUD19jJHOhPW4GD6tmN6mFEorfSdks525pwdQ==}
-    deprecated: This is a stub types definition. mkdirp provides its own type definitions, so you do not need this installed.
-    dependencies:
-      mkdirp: 3.0.1
-    dev: true
 
   /@types/mocha@10.0.1:
     resolution: {integrity: sha512-/fvYntiO1GeICvqbQ3doGDIP97vWmvFt83GKguJ6prmQM2iXZfFcq6YE8KteFyRtX2/h5Hf91BYvPodJKFYv5Q==}
@@ -12261,12 +12227,6 @@ packages:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
     hasBin: true
-
-  /mkdirp@3.0.1:
-    resolution: {integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dev: true
 
   /mlly@1.4.0:
     resolution: {integrity: sha512-ua8PAThnTwpprIaU47EPeZ/bPUVp2QYBbWMphUQpVdBI3Lgqzm5KZQ45Agm3YJedHXaIHl6pBGabaLSUPPSptg==}
