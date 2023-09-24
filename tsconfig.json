@@ -5,6 +5,7 @@
     "target": "ESNext",
     "experimentalDecorators": true,
     "module": "commonjs",
+    "moduleResolution": "nodenext",
     "strict": true,
   }
 }

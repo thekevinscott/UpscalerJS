@@ -187,16 +187,16 @@ jobs:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 

@@ -6,6 +6,14 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
+  "wireit": {
+    "test:integration:browserstack": {
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+      "dependencies": [
+        "./internals/webdriver:build"
+      ]
+    }
+  },
   "scripts": {
     "build": "pnpm --filter=\"upscaler\" build",
     "dev:browser": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev",
@@ -25,7 +33,7 @@
     "model:write-docs": "pnpm --filter @upscalerjs/scripts model:write-docs",
     "update:npm:dependencies": "pnpm --filter @upscalerjs/scripts update:npm:dependencies",
     "test:start-test-server": "ts-node test/lib/start-test-server.ts",
-    "test:integration:browserstack": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+    "test:integration:browserstack": "wireit",
     "test:integration:browser": "pnpm --filter @upscalerjs/scripts test:integration:browser",
     "test:integration:node": "pnpm --filter @upscalerjs/scripts test:integration:node",
     "test:model": "pnpm --filter @upscalerjs/scripts test:model",
