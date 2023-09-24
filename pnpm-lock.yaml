@@ -628,6 +628,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-experiments:
     dependencies:
@@ -653,6 +656,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-legacy:
     dependencies:
@@ -678,6 +684,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-medium:
     dependencies:
@@ -703,6 +712,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-slim:
     dependencies:
@@ -728,6 +740,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-thick:
     dependencies:
@@ -753,6 +768,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/pixel-upsampler:
     dependencies:
@@ -778,6 +796,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   packages/core:
     dependencies:
@@ -13719,7 +13740,6 @@ packages:
       graceful-fs: 4.2.11
       retry: 0.12.0
       signal-exit: 3.0.7
-    dev: false
 
   /property-information@5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==}
@@ -14479,7 +14499,6 @@ packages:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
     engines: {node: '>= 4'}
     requiresBuild: true
-    dev: false
 
   /retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
@@ -17007,7 +17026,6 @@ packages:
       fast-glob: 3.3.1
       jsonc-parser: 3.2.0
       proper-lockfile: 4.1.2
-    dev: false
 
   /wkx@0.5.0:
     resolution: {integrity: sha512-Xng/d4Ichh8uN4l0FToV/258EjMGU9MGcA0HV2d9B/ZpZB3lqQm7nkOdZdm5GhKtLLhAE7PiVQwN4eN+2YJJUg==}

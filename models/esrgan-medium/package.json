@@ -40,16 +40,16 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-medium --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-medium",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-medium"
+    "scaffold:dependencies": "wireit",
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "clean": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -69,7 +69,8 @@
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
   },
   "@upscalerjs": {
     "title": "ESRGAN Medium",
@@ -80,6 +81,38 @@
           "node"
         ]
       }
+    }
+  },
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "wireit"
+    },
+    "lint:fix": {
+      "command": "wireit"
+    },
+    "lint": {
+      "command": "wireit"
+    },
+    "prepublishOnly": {
+      "command": "wireit"
+    },
+    "validate:build": {
+      "command": "wireit"
+    },
+    "build": {
+      "command": "wireit"
+    },
+    "build:cjs": {
+      "command": "wireit"
+    },
+    "build:esm": {
+      "command": "wireit"
+    },
+    "build:umd": {
+      "command": "wireit"
+    },
+    "clean": {
+      "command": "wireit"
     }
   }
 }

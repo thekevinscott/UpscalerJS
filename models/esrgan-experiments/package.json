@@ -4217,12 +4217,12 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-experiments --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-experiments",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-experiments -o cjs -o esm -o umd"
+    "scaffold:dependencies": "wireit",
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit"
   },
   "keywords": [
     "image super resolution",
@@ -4250,7 +4250,8 @@
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
   },
   "@upscalerjs": {
     "model": {
@@ -4258,5 +4259,25 @@
     }
   },
   "author": "Kevin Scott",
-  "license": "MIT"
+  "license": "MIT",
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "wireit"
+    },
+    "lint:fix": {
+      "command": "wireit"
+    },
+    "lint": {
+      "command": "wireit"
+    },
+    "prepublishOnly": {
+      "command": "wireit"
+    },
+    "validate:build": {
+      "command": "wireit"
+    },
+    "build": {
+      "command": "wireit"
+    }
+  }
 }
