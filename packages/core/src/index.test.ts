@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node';
+import { vi } from 'vitest';
 import { 
   makeIsNDimensionalTensor,
   isFourDimensionalTensor, 
@@ -16,12 +17,17 @@ import {
   isDynamicShape4D,
 } from './index';
 
-jest.mock('@tensorflow/tfjs', () => ({
-  ...(jest.requireActual('@tensorflow/tfjs') ),
-  serialization: {
-    registerClass: jest.fn(),
-  },
-}));
+import * as tfNode from '@tensorflow/tfjs-node';
+
+vi.mock('@tensorflow/tfjs', async () => {
+  const { ...rest } = await vi.importActual('@tensorflow/tfjs') as typeof tfNode;
+  return {
+    ...rest,
+    serialization: {
+      registerClass: vi.fn(),
+    },
+  };
+});
 
 describe('makeIsNDimensionalTensor', () => {
   it('checks for a 1-dimensional tensor', () => {
@@ -193,11 +199,7 @@ describe('isFixedShape4D', () => {
     [[null, null, null, 3], false],
     [[null, -1, -1, 3], false],
     [[null, 2, 2, 3], true],
-  ])(
-    [
-      '%p',
-    ].join(' | '),
-    (args, expectation) => {
+  ])('%s | %s',(args, expectation) => {
       expect(isFixedShape4D(args)).toEqual(expectation);
     });
 });
@@ -207,11 +209,7 @@ describe('isDynamicShape', () => {
     [[null, null, null, 3], true],
     [[null, -1, -1, 3], true],
     [[null, 2, 2, 3], false],
-  ])(
-    [
-      '%p',
-    ].join(' | '),
-    (args, expectation) => {
+  ])('%s | %s', (args, expectation) => {
       expect(isDynamicShape4D(args)).toEqual(expectation);
     });
 });
