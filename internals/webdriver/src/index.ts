@@ -26,7 +26,7 @@ export type FilterBrowserOption = (option: BrowserOption) => boolean;
 
 const env = await getEnv();
 
-const browserOptions: Array<BrowserOption> = JSON.parse(await readFile(path.resolve(__dirname, './browserStackOptions.json')));
+const browserOptions: Array<BrowserOption> = JSON.parse(await readFile(path.resolve(__dirname, '../browserStackOptions.json')));
 // const mobileBrowserOptions: Array<BrowserOption> = JSON.parse(await readFile(path.resolve(__dirname, './browserStackMobileOptions.json'))).map((option: BrowserOption[]) => ({
 //   "real_mobile": "true",
 //   // "localhost": "bs-local.com",

@@ -59,9 +59,9 @@
     "@babel/plugin-transform-modules-commonjs": "7.22.5",
     "@babel/preset-env": "7.22.10",
     "@babel/preset-typescript": "7.22.5",
+    "@internals/common": "workspace:*",
     "@internals/upscaler-cli": "workspace:*",
     "@internals/webdriver": "workspace:*",
-    "@internals/common": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
@@ -128,6 +128,7 @@
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
     "vite": "4.4.9",
+    "vitest": "^0.34.5",
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },

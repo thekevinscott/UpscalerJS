@@ -242,6 +242,9 @@ importers:
       vite:
         specifier: 4.4.9
         version: 4.4.9(@types/node@20.5.1)
+      vitest:
+        specifier: ^0.34.5
+        version: 0.34.5(jsdom@22.1.0)
       webpack:
         specifier: 5.88.2
         version: 5.88.2(esbuild@0.19.2)(uglify-js@3.17.4)

@@ -13,7 +13,7 @@ import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
-import { TEST_DIR } from './package-scripts/utils/constants';
+import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
  * Types
@@ -220,7 +220,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     }
 
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = [
+    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.ts')] : [
       'pnpm',
       'jest',
       '--config',
@@ -231,7 +231,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     ].filter(Boolean).map(arg => `${arg}`);
 
     if (verbose) {
-      console.log(args);
+      console.log(args.join(' '));
       if (bsLocal) {
         console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
       }
