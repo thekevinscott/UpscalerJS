@@ -14,20 +14,44 @@
     "LICENSE",
     "dist/**/*"
   ],
+  "wireit": {
+    "test": {
+      "command": "pnpm vitest -c vite.conf.ts"
+    },
+    "lint": {
+      "command": "eslint -c .eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate"
+    },
+    "validate": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' "
+    },
+    "build": {
+      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate"
+    },
+    "build:esm": {
+      "command": "pnpm --filter @upscalerjs/scripts build:core browser -o esm"
+    },
+    "build:cjs": {
+      "command": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
+    }
+  },
   "scripts": {
-    "test": "pnpm vitest -c vite.conf.ts",
-    "lint": "eslint -c .eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' ",
-    "build": "pnpm build:esm && pnpm build:cjs && pnpm validate:build",
-    "build:esm": "pnpm --filter @upscalerjs/scripts build:core browser -o esm",
-    "build:cjs": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
+    "test": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate": "wireit",
+    "build": "wireit",
+    "build:esm": "wireit",
+    "build:cjs": "wireit"
   },
   "dependencies": {
-    "@tensorflow/tfjs-core": "~4.8.0",
-    "vitest": "^0.34.2"
+    "@tensorflow/tfjs-core": "~4.8.0"
   },
   "devDependencies": {
+    "vitest": "^0.34.2",
+    "wireit": "^0.14.0",
     "@types/jest": "^29.5.3"
   }
 }
