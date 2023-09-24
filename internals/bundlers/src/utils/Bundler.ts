@@ -1,6 +1,5 @@
 import path from 'path';
 import { RegistryPackage } from "@internals/registry";
-import { HttpServer } from "@internals/http-server";
 import { info } from "@internals/common/logger";
 
 export interface BundleOptions {
@@ -10,7 +9,6 @@ export interface BundleOptions {
 
 export class Bundler {
   packages: Promise<RegistryPackage[]> = Promise.resolve([]);
-  server?: HttpServer;
   public dist = 'dist';
   public outDir: string;
   public usesRegistry = true;
