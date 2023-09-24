@@ -151,10 +151,6 @@
     "lint:browser:fix": "wireit",
     "lint:node": "wireit",
     "lint:node:fix": "wireit",
-<<<<<<< HEAD
-=======
-    "test:unit": "wireit",
->>>>>>> main
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:jest": "wireit",
     "test:unit:node": "wireit",
