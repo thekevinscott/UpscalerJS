@@ -1,0 +1,35 @@
+{
+  "name": "@internals/bundlers.webpack",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.js",
+  "dependencies": <%- dependencies %> ,
+  "devDependencies": {
+    "html-webpack-plugin": "^5.5.3",
+    "seedrandom": "3.0.5",
+    "webpack": "^5.88.2",
+    "@babel/plugin-transform-modules-commonjs": "latest",
+    "@babel/preset-env": "latest",
+    "@babel/preset-typescript": "latest"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ]
+      }
+    },
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
+  }
+}
