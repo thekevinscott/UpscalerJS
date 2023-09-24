@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@tensorflow/tfjs-core': 4.8.0
   '@tensorflow/tfjs': 4.8.0
   '@tensorflow/tfjs-node': 4.8.0
   '@tensorflow/tfjs-node-gpu': 4.8.0
@@ -12,10 +13,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      wireit:
-        specifier: ^0.14.0
-        version: 0.14.0
     devDependencies:
       '@babel/cli':
         specifier: 7.22.10
@@ -50,6 +47,9 @@ importers:
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-core':
+        specifier: 4.8.0
+        version: 4.8.0
       '@tensorflow/tfjs-node':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
@@ -236,9 +236,15 @@ importers:
       vite:
         specifier: 4.4.9
         version: 4.4.9(@types/node@20.5.1)
+      vitest:
+        specifier: ^0.34.2
+        version: 0.34.2(jsdom@22.1.0)
       webpack:
         specifier: 5.88.2
         version: 5.88.2(esbuild@0.19.2)(uglify-js@3.17.4)
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
       yargs:
         specifier: 17.7.2
         version: 17.7.2
@@ -614,7 +620,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -639,7 +645,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -664,7 +670,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -689,7 +695,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -714,7 +720,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -739,7 +745,7 @@ importers:
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -757,7 +763,7 @@ importers:
   models/pixel-upsampler:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       '@tensorflow/tfjs-layers':
         specifier: ~4.8.0
@@ -782,7 +788,7 @@ importers:
   packages/core:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
       vitest:
         specifier: ^0.34.2
@@ -795,11 +801,8 @@ importers:
   packages/shared:
     dependencies:
       '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
+        specifier: 4.8.0
         version: 4.8.0
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../core
 
   packages/upscalerjs:
     dependencies:
@@ -10954,7 +10957,7 @@ packages:
       chalk: 4.1.2
       jest-diff: 29.6.2
       jest-get-type: 29.4.3
-      pretty-format: 29.6.2
+      pretty-format: 29.6.3
     dev: true
 
   /jest-matcher-utils@29.6.3:
@@ -10977,7 +10980,7 @@ packages:
       chalk: 4.1.2
       graceful-fs: 4.2.11
       micromatch: 4.0.5
-      pretty-format: 29.6.2
+      pretty-format: 29.6.3
       slash: 3.0.0
       stack-utils: 2.0.6
     dev: true
@@ -13719,7 +13722,6 @@ packages:
       graceful-fs: 4.2.11
       retry: 0.12.0
       signal-exit: 3.0.7
-    dev: false
 
   /property-information@5.6.0:
     resolution: {integrity: sha512-YUHSPk+A30YPv+0Qf8i9Mbfe/C0hdPXk1s1jPVToV8pk8BQtpw10ct89Eo7OWkutrwqvT0eicAxlOg3dOAu8JA==}
@@ -14479,7 +14481,6 @@ packages:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
     engines: {node: '>= 4'}
     requiresBuild: true
-    dev: false
 
   /retry@0.13.1:
     resolution: {integrity: sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==}
@@ -17007,7 +17008,6 @@ packages:
       fast-glob: 3.3.1
       jsonc-parser: 3.2.0
       proper-lockfile: 4.1.2
-    dev: false
 
   /wkx@0.5.0:
     resolution: {integrity: sha512-Xng/d4Ichh8uN4l0FToV/258EjMGU9MGcA0HV2d9B/ZpZB3lqQm7nkOdZdm5GhKtLLhAE7PiVQwN4eN+2YJJUg==}

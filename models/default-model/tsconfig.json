@@ -3,14 +3,14 @@
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"],
   "compilerOptions": {
-    "rootDirs": ["./src", "../../../packages/shared/src"],
+    "rootDirs": ["./src", "../../../lib/src"],
     "paths": {
-      "@upscalerjs/shared/*": ["../../../packages/shared/src/*"]
+      "@upscalerjs/core/*": ["../../../lib/src/*"]
     }
   },
   "references": [
     {
-      "@upscalerjs/shared": "../../../packages/shared/src"
+      "@upscalerjs/core": "../../../lib/src"
     }
   ],
 }

@@ -5,7 +5,7 @@
   "scripts": {
     "build:dependencies": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
     "build-api": "pnpm --filter @upscalerjs/scripts docs:build-api",
-    "build-api:watch": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\"",
+    "build-api:watch": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\"",
     "build-guides": "pnpm --filter @upscalerjs/scripts docs:build-guides",
     "build-guides:watch": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/build-guides.ts' -x \"pnpm run build-guides\"",
     "link-model-readmes": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes",

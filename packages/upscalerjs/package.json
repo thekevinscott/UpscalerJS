@@ -39,7 +39,6 @@
     "build": {
       "command": "pnpm build:only && pnpm validate:build",
       "dependencies": [
-        "../core:build",
         "../../models/default-model:build"
       ]
     },
@@ -101,7 +100,6 @@
     "@tensorflow/tfjs": "~4.8.0"
   },
   "dependencies": {
-    "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "wireit": "^0.14.0"
   },

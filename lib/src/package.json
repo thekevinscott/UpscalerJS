@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "test": "vitest -c vite.conf.ts"
+  }
+}

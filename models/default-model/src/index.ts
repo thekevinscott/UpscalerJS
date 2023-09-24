@@ -1,4 +1,4 @@
-import { ModelDefinition, } from '@upscalerjs/core';
+import { ModelDefinition, } from '../../../lib/src';
 import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
 import { NAME, VERSION, } from './constants.generated';
 

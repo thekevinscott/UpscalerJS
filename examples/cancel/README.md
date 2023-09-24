@@ -29,7 +29,7 @@ upscaler.upscale(imagePath, {
 abortController.abort()
 ```
 
-When `abort` is triggered during an upscale request, an `AbortError` is thrown. (`AbortError` is exported from the core UpscalerJS package.)
+When `abort` is triggered during an upscale request, an `AbortError` is thrown.
 
 ## Cancelling all requests
 

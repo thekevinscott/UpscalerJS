@@ -18,8 +18,17 @@
     "removeComments": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "rootDirs": ["./src", "../../lib/src"],
+    "paths": {
+      "@upscalerjs/core/*": ["../../lib/src/*"]
+    }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.test.ts"],
+  "references": [
+    {
+      "@upscalerjs/core": "../../lib/src"
+    }
+  ],
 }

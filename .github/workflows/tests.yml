@@ -128,8 +128,8 @@ jobs:
           name: artifacts-test-unit-node
           path: ./packages/upscalerjs/coverage/coverage-final.json
 
-  core-unit:
-    name: 'Core / Unit'
+  shared-lib-unit:
+    name: 'Shared lib / Unit'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -144,7 +144,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests'
-        working-directory: ./packages/core
+        working-directory: ./lib
         run: pnpm test
 
   upload-to-codecov:

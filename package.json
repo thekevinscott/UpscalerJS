@@ -14,7 +14,7 @@
     "docs:start": "pnpm --filter=\"@upscalerjs/docs\" start",
     "preinstall": "npx only-allow pnpm",
     "liteinstall": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install",
-    "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build",
+    "postinstall": "pnpm --filter upscaler run scaffold:dependencies 'browser' && pnpm --filter @upscalerjs/default-model build",
     "update:dependency": "pnpm --filter @upscalerjs/scripts update:dependency",
     "update:tfjs": "pnpm --filter @upscalerjs/scripts update:tfjs",
     "update:version": "pnpm --filter @upscalerjs/scripts update:version && pnpm liteinstall",
@@ -54,6 +54,8 @@
     "@tensorflow/tfjs-node-gpu": "4.8.0"
   },
   "devDependencies": {
+    "@tensorflow/tfjs-core": "4.8.0",
+    "wireit": "^0.14.0",
     "@babel/cli": "7.22.10",
     "@babel/core": "7.22.10",
     "@babel/plugin-proposal-export-namespace-from": "7.18.9",
@@ -127,6 +129,7 @@
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
     "vite": "4.4.9",
+    "vitest": "^0.34.2",
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
@@ -155,12 +158,10 @@
   },
   "pnpm": {
     "overrides": {
+      "@tensorflow/tfjs-core": "4.8.0",
       "@tensorflow/tfjs": "4.8.0",
       "@tensorflow/tfjs-node": "4.8.0",
       "@tensorflow/tfjs-node-gpu": "4.8.0"
     }
-  },
-  "dependencies": {
-    "wireit": "^0.14.0"
   }
 }
