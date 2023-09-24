@@ -126,6 +126,7 @@
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
     "vite": "4.4.9",
+    "vitest": "^0.34.5",
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },

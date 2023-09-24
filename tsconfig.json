@@ -6,5 +6,8 @@
     "experimentalDecorators": true,
     "module": "commonjs",
     "strict": true,
+    "types": [
+      "vitest/globals",
+    ]
   }
 }
