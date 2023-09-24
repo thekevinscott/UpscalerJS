@@ -61,6 +61,24 @@
     "build:node-gpu": {
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
     },
+    "scaffold:dependencies:browser": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    },
+    "scaffold:dependencies:node": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    },
+    "docs:serve": {
+      "command": "docsify serve docs --port 3030"
+    },
+    "preversion": {
+      "command": "pnpm lint"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+    },
+    "format": {
+      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
+    },
     "lint": {
       "command": "pnpm lint:browser && pnpm lint:node"
     },
@@ -90,18 +108,6 @@
       "dependencies": [
         "scaffold:dependencies:node"
       ]
-    },
-    "scaffold:dependencies:browser": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
-    },
-    "scaffold:dependencies:node": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
-    },
-    "prepublishOnly": {
-      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
-    },
-    "format": {
-      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
     },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json",
@@ -135,7 +141,8 @@
     "build:node-gpu": "wireit",
     "scaffold:dependencies:browser": "wireit",
     "scaffold:dependencies:node": "wireit",
-    "preversion": "pnpm lint",
+    "docs:serve": "wireit",
+    "preversion": "wireit",
     "prepublishOnly": "wireit",
     "format": "wireit",
     "lint": "wireit",
@@ -144,6 +151,10 @@
     "lint:browser:fix": "wireit",
     "lint:node": "wireit",
     "lint:node:fix": "wireit",
+<<<<<<< HEAD
+=======
+    "test:unit": "wireit",
+>>>>>>> main
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:jest": "wireit",
     "test:unit:node": "wireit",
