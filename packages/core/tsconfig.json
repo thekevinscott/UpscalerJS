@@ -16,7 +16,10 @@
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": [
+      "vitest/globals",
+    ]
   },
   "include": ["src/**/*.ts"],
 }
