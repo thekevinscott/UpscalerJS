@@ -69,6 +69,24 @@
     },
     "build:node-gpu": {
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
+    },
+    "lint": {
+      "command": "pnpm lint:browser && pnpm lint:node"
+    },
+    "lint:fix": {
+      "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
+    },
+    "lint:browser": {
+      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
+    },
+    "lint:browser:fix": {
+      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
+    },
+    "lint:node": {
+      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
+    },
+    "lint:node:fix": {
+      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
     }
   },
   "scripts": {
@@ -79,22 +97,21 @@
     "build:browser:umd": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
-    "scaffold": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
-    "docs:serve": "docsify serve docs --port 3030",
+    "scaffold:dependencies:browser": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser",
+    "scaffold:dependencies:node": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node",
     "preversion": "pnpm lint",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate",
+    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
     "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "pnpm lint:browser && pnpm lint:node",
-    "lint:fix": "pnpm lint:browser:fix && pnpm lint:node:fix",
-    "lint:browser": "pnpm scaffold 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
-    "lint:browser:fix": "pnpm scaffold 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
-    "lint:node": "pnpm scaffold 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
-    "lint:node:fix": "pnpm scaffold 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
-    "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
-    "test:unit:browser:playwright": "pnpm scaffold 'browser' && playwright-test --config playwright.config.json",
-    "test:unit:browser:vite": "pnpm scaffold 'browser' && vitest --config vite.browser.ts",
-    "test:unit:node": "pnpm scaffold 'node' && vitest --config vite.node.ts",
-    "validate": "pnpm --filter @upscalerjs/scripts validate packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+    "lint": "wireit",
+    "lint:fix": "wireit",
+    "lint:browser": "wireit",
+    "lint:browser:fix": "wireit",
+    "lint:node": "wireit",
+    "lint:node:fix": "wireit",
+    "test:unit:browser:playwright": "pnpm scaffold:dependencies:browser && playwright-test --config playwright.config.json",
+    "test:unit:browser:vite": "pnpm scaffold:dependencies:browser && vitest --config vite.browser.ts",
+    "test:unit:node": "pnpm scaffold:dependencies:node && vitest --config vite.node.ts",
+    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
   },
   "repository": {
     "type": "git",
