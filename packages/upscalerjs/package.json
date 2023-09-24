@@ -78,6 +78,18 @@
     },
     "lint:node:fix": {
       "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
+    },
+    "scaffold:dependencies:browser": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    },
+    "scaffold:dependencies:node": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+    },
+    "format": {
+      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
     }
   },
   "scripts": {
@@ -88,11 +100,11 @@
     "build:browser:umd": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
-    "scaffold:dependencies:browser": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser",
-    "scaffold:dependencies:node": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node",
+    "scaffold:dependencies:browser": "wireit",
+    "scaffold:dependencies:node": "wireit",
     "preversion": "pnpm lint",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
-    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
+    "prepublishOnly": "wireit",
+    "format": "wireit",
     "lint": "wireit",
     "lint:fix": "wireit",
     "lint:browser": "wireit",
