@@ -82,7 +82,7 @@
     "lint:node": {
       "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
       "dependencies": [
-        "scaffold:dependencies:browser"
+        "scaffold:dependencies:node"
       ]
     },
     "lint:node:fix": {
