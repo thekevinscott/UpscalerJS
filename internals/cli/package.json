@@ -115,7 +115,7 @@
     "prepack": "npm run build && oclif manifest && oclif readme"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=16.0.0"
   },
   "types": "dist/index.d.ts",
   "type": "module"
