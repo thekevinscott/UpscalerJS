@@ -4,7 +4,7 @@
     "esModuleInterop": true,
     "target": "ESNext",
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "nodenext",
     "strict": true,
   }

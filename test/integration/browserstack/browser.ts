@@ -8,7 +8,7 @@ import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/p
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { BrowserOption, executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
+const { executeAsyncScript, getBrowserOptions, getDriver, printLogs } = await import('@internals/webdriver');
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
