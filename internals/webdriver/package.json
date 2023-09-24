@@ -17,7 +17,9 @@
   "wireit": {
     "build": {
       "command": "shx rm -rf dist && tsc -b",
-      "dependencies": [ ],
+      "dependencies": [ 
+        "../common:build"
+      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
