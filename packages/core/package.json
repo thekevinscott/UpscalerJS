@@ -51,7 +51,6 @@
   },
   "devDependencies": {
     "vitest": "^0.34.2",
-    "wireit": "^0.14.0",
-    "@types/jest": "^29.5.3"
+    "wireit": "^0.14.0"
   }
 }
