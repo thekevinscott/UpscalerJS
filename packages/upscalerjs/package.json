@@ -60,6 +60,66 @@
     },
     "build:node-gpu": {
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
+    },
+    "scaffold:dependencies:browser": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    },
+    "scaffold:dependencies:node": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    },
+    "docs:serve": {
+      "command": "docsify serve docs --port 3030"
+    },
+    "preversion": {
+      "command": "pnpm lint"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+    },
+    "format": {
+      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
+    },
+    "lint": {
+      "command": "pnpm lint:browser && pnpm lint:node"
+    },
+    "lint:fix": {
+      "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
+    },
+    "lint:browser": {
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
+    },
+    "lint:browser:fix": {
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
+    },
+    "lint:node": {
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
+    },
+    "lint:node:fix": {
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
+    },
+    "test:unit:browser:playwright": {
+      "command": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json"
+    },
+    "test:unit:browser:jest": {
+      "command": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json"
+    },
+    "test:unit:node": {
+      "command": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json"
+    },
+    "validate:build": {
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {
@@ -70,22 +130,23 @@
     "build:browser:umd": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts",
-    "docs:serve": "docsify serve docs --port 3030",
-    "preversion": "pnpm lint",
-    "prepublishOnly": "pnpm lint && pnpm test && pnpm build && pnpm validate:build",
-    "format": "echo 'Formatting code' && prettier --write \"src/**/*.ts\"",
-    "lint": "pnpm lint:browser && pnpm lint:node",
-    "lint:fix": "pnpm lint:browser:fix && pnpm lint:node:fix",
-    "lint:browser": "pnpm scaffold:dependencies 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
-    "lint:browser:fix": "pnpm scaffold:dependencies 'browser' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
-    "lint:node": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
-    "lint:node:fix": "pnpm scaffold:dependencies 'node' && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
-    "test:unit": "pnpm run test:unit:node && pnpm run test:unit:browser:jest && pnpm run test:unit:browser:playwright",
-    "test:unit:browser:playwright": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json",
-    "test:unit:browser:jest": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json",
-    "test:unit:node": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json",
-    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+    "scaffold:dependencies:browser": "wireit",
+    "scaffold:dependencies:node": "wireit",
+    "docs:serve": "wireit",
+    "preversion": "wireit",
+    "prepublishOnly": "wireit",
+    "format": "wireit",
+    "lint": "wireit",
+    "lint:fix": "wireit",
+    "lint:browser": "wireit",
+    "lint:browser:fix": "wireit",
+    "lint:node": "wireit",
+    "lint:node:fix": "wireit",
+    "test:unit": "wireit",
+    "test:unit:browser:playwright": "wireit",
+    "test:unit:browser:jest": "wireit",
+    "test:unit:node": "wireit",
+    "validate:build": "wireit"
   },
   "repository": {
     "type": "git",
