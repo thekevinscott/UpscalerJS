@@ -1,95 +1,122 @@
-import http from 'http';
 import { Page, Browser, BrowserContext, launch, } from 'puppeteer';
-import { startServer } from '../../lib/shared/server';
-import { Opts } from '../../lib/shared/prepare';
-import { isIgnoredMessage } from './messages';
-import { timeit } from './timeit';
-import { catchFailures } from './catchFailures';
+import { isIgnoredMessage } from './utils/message.js';
+import { timeit } from './utils/timeit.js';
+import { catchFailures } from './utils/catchFailures.js';
+import { HttpServer } from '@internals/http-server';
+import { MODELS_DIR } from '@internals/common/constants';
 
-type Bundle = (opts?: Opts) => Promise<void>;
+type Bundle = () => Promise<void>;
 
-const DEFAULT_PORT = 8098;
+// const DEFAULT_PORT = 8098;
+const DEFAULT_PORT = 0;
 
-export type MockCDN = (port: number, model: string, pathToModel: string) => string;
-export type AfterEachCallback = () => Promise<void | any>;
+const USE_TUNNEL = process.env.useTunnel === '1';
 
-export class BrowserTestRunner {
+type MockCDN = (server: HttpServer, model: string, pathToModel: string) => string;
+export type AfterEachCallback = () => Promise<unknown>;
+
+const getURL = (server?: HttpServer) => {
+  if (!server) {
+    throw new Error('No server defined');
+  }
+  const url = server.url;
+  if (!url) {
+    throw new Error('Server URL is not defined');
+  }
+  return url;
+}
+
+
+const mockCdn: MockCDN = (server, packageName, pathToModel) => {
+  if (!server.url) {
+    throw new Error('No URL was available on fixtures server');
+  }
+  const pathToAsset = [
+    server.url,
+    packageName,
+    pathToModel,
+  ].join('/');
+  return pathToAsset;
+};
+
+export class ClientsideTestRunner {
   trackTime: boolean;
   showWarnings: boolean;
   log: boolean;
   port: number;
-  dist: string;
-  private _mockCDN: MockCDN | undefined;
-  private _server: http.Server | undefined;
+  dist?: string;
+  useTunnel: boolean;
+  private mock: boolean;
+  private _server: HttpServer | undefined;
+  private _fixtures: HttpServer | undefined;
   private _browser: Browser | undefined;
   private _page: Page | undefined;
   private _context: BrowserContext | undefined;
   private _name?: string;
-  private _verbose?: boolean;
-  private _usePNPM?: boolean;
 
   constructor({
     name,
-    mockCDN = undefined,
-    dist = '',
+    mock = false,
+    dist,
     port = DEFAULT_PORT,
     trackTime = false,
     log = true,
     showWarnings = false,
-    verbose = false,
-    usePNPM = false,
+    useTunnel = USE_TUNNEL,
   }: {
     name?: string;
-    mockCDN?: MockCDN;
+    mock?: boolean;
     dist?: string;
     port?: number;
     trackTime?: boolean;
     log?: boolean;
     showWarnings?: boolean;
-    verbose?: boolean;
-    usePNPM?: boolean;
-  } = {}) {
+    useTunnel?: boolean;
+  }) {
     this._name = name;
-    this.mockCDN = mockCDN;
+    this.mock = mock;
     this.dist = dist;
     this.showWarnings = showWarnings;
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
-    this._verbose = verbose;
-    this._usePNPM = usePNPM;
+    this.useTunnel = useTunnel;
   }
 
   /****
    * Getters and setters
    */
 
-  private _getLocal<T extends Browser | Page | BrowserContext | http.Server>(key: '_server' | '_browser' | '_page' | '_context'): T {
+  private _getLocal<T extends Browser | Page | BrowserContext | HttpServer>(key: '_server' | '_fixtures' | '_browser' | '_page' | '_context'): T {
     if (!this[key]) {
       throw new Error(this._getLogMessage(`${key.substring(1)} is undefined`));
     }
     return this[key] as T;
   }
 
-  get serverURL() {
-    return `http://localhost:${this.port}`;
-  }
+  getServerURL = () => getURL(this.server);
+  getFixturesServerURL = () => getURL(this.fixturesServer);
 
-  get mockCDN(): MockCDN | undefined { return this._mockCDN; }
-  set mockCDN(mockCDN: MockCDN | undefined) { this._mockCDN = mockCDN; }
-
-  get server(): http.Server { return this._getLocal('_server'); }
-  set server(server: http.Server | undefined) {
+  get server(): HttpServer { return this._getLocal('_server'); }
+  set server(server: HttpServer | undefined) {
     if (server && this._server) {
-      throw new Error(this._getLogMessage(`Server is already active`));
+      throw new Error(this._getLogMessage('Server is already active'));
     }
     this._server = server;
+  }
+
+  get fixturesServer(): HttpServer { return this._getLocal('_fixtures'); }
+  set fixturesServer(fixtures: HttpServer | undefined) {
+    if (fixtures && this._fixtures) {
+      throw new Error(this._getLogMessage('Fixtures Server is already active'));
+    }
+    this._fixtures = fixtures;
   }
 
   get browser(): Browser { return this._getLocal('_browser'); }
   set browser(browser: Browser | undefined) {
     if (browser && this._browser) {
-      throw new Error(this._getLogMessage(`Browser is already active`));
+      throw new Error(this._getLogMessage('Browser is already active'));
     }
     this._browser = browser;
   }
@@ -98,7 +125,7 @@ export class BrowserTestRunner {
   get context(): BrowserContext { return this._getLocal('_context'); }
   set context(context: BrowserContext | undefined) {
     if (context && this._context) {
-      throw new Error(this._getLogMessage(`Context is already active`));
+      throw new Error(this._getLogMessage('Context is already active'));
     }
     this._context = context;
   }
@@ -111,12 +138,10 @@ export class BrowserTestRunner {
     return page;
   }
   set page(page: Page | undefined) {
-    {
-      if (page && this._page) {
-        throw new Error(this._getLogMessage(`Page is already active`));
-      }
-      this._page = page;
+    if (page && this._page) {
+      throw new Error(this._getLogMessage('Page is already active'));
     }
+    this._page = page;
   }
 
   /****
@@ -138,7 +163,7 @@ export class BrowserTestRunner {
   }
 
   public async navigateToServer(pageTitleToAwait: string | null) {
-    await this.page.goto(this.serverURL);
+    await this.page.goto(await this.getServerURL());
     if (pageTitleToAwait !== null) {
       await this.waitForTitle(pageTitleToAwait);
     }
@@ -148,27 +173,43 @@ export class BrowserTestRunner {
    * Start and stop methods
    */
 
-  async startServer(dist?: string, port?: number) {
-    this.server = await startServer(port || this.port, dist || this.dist);
-    return this.server;
+  async startServers({ dist: _dist, name }: { dist?: string; name?: string } = {}): Promise<void> {
+    const dist = _dist || this.dist;
+    if (!dist) {
+      throw new Error('No dist was supplied, either in the constructor to ClientsideTestRunner or as an argument to startServers. Please explicitly provide a dist argument');
+    }
+    this.server = new HttpServer({
+      name: name || this._name,
+      port: this.port,
+      dist,
+      useTunnel: this.useTunnel,
+    });
+
+    this.fixturesServer = new HttpServer({
+      name: `${this._name}-fixtures`,
+      dist: MODELS_DIR,
+      useTunnel: this.useTunnel,
+    });
+
+    // Note: these must be done sequentially; there's a race condition bug in tunnelmole
+    await this.server.start();
+    await this.fixturesServer.start();
   }
 
-  stopServer(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      try {
-        this.server.close(err => {
-          if (err) {
-            reject(err);
-          } else {
-            this.server = undefined;
-            resolve();
-          }
-        });
-      } catch (err) {
-        this._warn(`No server found`);
-        resolve();
+  async stopServers(): Promise<void> {
+    const stopServer = async (server?: HttpServer) => {
+      if (!server) {
+        this._warn('No server found');
+      } else {
+        await server.close();
       }
-    })
+    }
+    await Promise.all([
+      stopServer(this.server),
+      stopServer(this.fixturesServer),
+    ]);
+    this.server = undefined;
+    this.fixturesServer = undefined;
   }
 
   public async startBrowser() {
@@ -183,25 +224,24 @@ export class BrowserTestRunner {
         const type = message.type();
         const text = message.text();
         if (!isIgnoredMessage(text)) {
-          console.log(`${type} ${text}`);
+          console.log(`[PAGE][${type}] ${text}`);
         }
       })
         .on('pageerror', ({ message }) => console.log(message))
         .on('response', response => {
           const status = response.status();
           if (`${status}` !== `${200}`) {
-            console.log(`${status} ${response.url()}`);
+            console.log(`[PAGE][response][${status}] ${response.url()}`);
           }
         })
         .on('requestfailed', request => { 
-            console.log(`${request.failure()?.errorText} ${request.url()}`);
+            console.log(`[PAGE][requestfailed][${request.failure()?.errorText}] ${request.url()}`);
       })
     }
   }
 
   private _bootstrapCDN() {
-    const mockCDN = this.mockCDN;
-    if (mockCDN !== undefined) {
+    if (this.mock) {
       this.page.setRequestInterception(true);
       this.page.on('request', (request) => {
         const url = request.url();
@@ -214,7 +254,7 @@ export class BrowserTestRunner {
           }
           const [model, restOfModelPath] = modelPath;
           const [_, ...pathToModel] = restOfModelPath.split('/');
-          const redirectedURL = mockCDN(this.port, model, pathToModel.join('/'));
+          const redirectedURL = mockCdn(this.fixturesServer, model, pathToModel.join('/'));
           // console.log(`mock request ${url} to ${redirectedURL}`);
           request.continue({
             url: redirectedURL,
@@ -238,7 +278,7 @@ export class BrowserTestRunner {
       await this.browser.close();
       this.browser = undefined;
     } catch (err) {
-      this._warn(`No browser found`);
+      this._warn('No browser found');
     }
   }
 
@@ -248,30 +288,31 @@ export class BrowserTestRunner {
       this.context = undefined;
       this.page = undefined;
     } catch (err) {
-      this._warn(`No context found`);
+      this._warn('No context found');
     }
   }
 
-  private _makeOpts(): Opts {
-    return {
-      verbose: this._verbose,
-      usePNPM: this._usePNPM,
-    }
-  }
+  // private _makeOpts(): Opts {
+  //   return {
+  //     verbose: this._verbose,
+  //     usePNPM: this._usePNPM,
+  //   }
+  // }
 
   /****
-   * Jest lifecycle methods
+   * Test lifecycle methods
    */
 
   @catchFailures()
-  @timeit<[Bundle], BrowserTestRunner>('beforeAll scaffolding')
+  @timeit<[Bundle], ClientsideTestRunner>('beforeAll scaffolding')
   async beforeAll(bundle?: Bundle) {
-    const opts = this._makeOpts();
+    // const opts = this._makeOpts();
     const _bundle = async () => {
       if (bundle) {
-        await bundle(opts);
+        await bundle();
+        // await bundle(opts);
       }
-      return this.startServer();
+      return this.startServers();
     };
     await Promise.all([
       _bundle(),
@@ -283,24 +324,25 @@ export class BrowserTestRunner {
   @timeit('afterAll clean up')
   async afterAll() {
     await Promise.all([
-      this.stopServer(),
+      this.stopServers(),
       this.closeBrowser(),
     ]);
   }
 
   @catchFailures()
-  @timeit<[string], BrowserTestRunner>('beforeEach scaffolding')
+  @timeit<[string], ClientsideTestRunner>('beforeEach scaffolding')
   async beforeEach(pageTitleToAwait: string | null = '| Loaded') {
     await this.createNewPage();
     await this.navigateToServer(pageTitleToAwait);
   }
 
   @catchFailures()
-  @timeit<[AfterEachCallback], BrowserTestRunner>('afterEach clean up')
-  async afterEach(callback: AfterEachCallback = async () => {}) {
+  @timeit<[AfterEachCallback], ClientsideTestRunner>('afterEach clean up')
+  async afterEach(callback?: AfterEachCallback) {
     await Promise.all([
       this._closeContext(),
-      callback(),
+      callback ? callback() : undefined,
     ]);
   }
 }
+

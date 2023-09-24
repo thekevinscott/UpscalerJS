@@ -2,14 +2,14 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
 import path from 'path';
 import type { Page } from 'puppeteer';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { MODELS_DIR } from '@internals/common/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -23,13 +23,11 @@ jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
 jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
-    dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
-  });
+  const testRunner = new ClientsideTestRunner({
+     mock: false,
+     dist: ESBUILD_DIST_FOLDER,
+     trackTime: TRACK_TIME,
+   });
   const page = (): Page => testRunner.page;
 
   beforeAll(async function beforeAll() {

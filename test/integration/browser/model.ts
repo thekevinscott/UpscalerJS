@@ -2,14 +2,14 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { MODELS_DIR } from '@internals/common/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -23,15 +23,11 @@ jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
 jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    name: 'esm',
-    mockCDN: esbuildMockCDN,
-    dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    log: LOG,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
-  });
+  const testRunner = new ClientsideTestRunner({
+     mock: false,
+     dist: ESBUILD_DIST_FOLDER,
+     trackTime: TRACK_TIME,
+   });
   const page = () => testRunner.page;
 
   beforeAll(async function beforeAll() {

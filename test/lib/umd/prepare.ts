@@ -4,7 +4,6 @@ import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } from 'fs-extra';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');

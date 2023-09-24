@@ -2,22 +2,22 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
+import { DIST as UMD_DIST_FOLDER } from '../../lib/umd/prepare';
+import { NODE_ROOT as NODE_DIST_FOLDER } from '../../lib/node/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import path from 'path';
-import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { MODELS_DIR, TMP_DIR } from '@internals/common/constants';
+import { getPackageJSON } from 'import { getPackageJSON } from '@internals/common/package-json';
+import { getTemplate } from '@internals/common/get-template';
 
 const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = true;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
 
@@ -27,6 +27,14 @@ jest.retryTimes(0);
 
 const SPECIFIC_PACKAGE: string | undefined = undefined;
 const SPECIFIC_MODEL: string | undefined = undefined;
+
+const getFixturePath = (packageName: string, modelName?: string) => path.resolve(...[
+  MODELS_DIR,
+  packageName,
+  'test/__fixtures__',
+  modelName === undefined || modelName === 'index' ? '' : modelName,
+  'result.png'
+].filter(Boolean));
 
 if (PLATFORMS === undefined || PLATFORMS.length === 0) {
   throw new Error('You must provide at least one valid platform of "node" or "browser".')
@@ -58,14 +66,12 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
     describe.each(PLATFORMS)('%s', (platform) => {
       if (platform === 'browser') {
         describe('ESM', () => {
-          const esmTestRunner = new BrowserTestRunner({
+          const esmTestRunner = new ClientsideTestRunner({
             name: 'esm',
-            mockCDN: esbuildMockCDN,
-            dist: ESBUILD_DIST,
+            mock: true,
+            dist: ESBUILD_DIST_FOLDER,
             trackTime: TRACK_TIME,
             log: LOG,
-            verbose: VERBOSE,
-            usePNPM: USE_PNPM,
           });
 
           beforeAll(async function beforeAll() {
@@ -108,12 +114,12 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
         describe('UMD', () => {
           const UMD_PORT = 8096;
-          const umdTestRunner = new BrowserTestRunner({
+          const umdTestRunner = new ClientsideTestRunner({
             name: 'umd',
-            mockCDN: umdMockCDN,
-            dist: UMD_DIST,
-            port: UMD_PORT,
-            verbose: VERBOSE,
+            mock: true,
+            dist: UMD_DIST_FOLDER,
+            // port: UMD_PORT,
+            // verbose: VERBOSE,
           });
 
           beforeAll(async function modelBeforeAll() {
@@ -196,45 +202,38 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             result.dispose();
             return base64ArrayBuffer(upscaledImage);
           };
-          const cjsTestRunner = new NodeTestRunner({
-            main,
+          const cjsTestRunner = new ServersideTestRunner({
+            cwd: NODE_DIST_FOLDER,
             trackTime: false,
-            dependencies: {
-              'tf': `@tensorflow/tfjs-node${USE_GPU ? '-gpu' : ''}`,
-              'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
-              'fs': 'fs',
-              'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
-            },
-            verbose: VERBOSE,
           });
 
-          describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
-            test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageName}/%s as cjs`, async (modelName) => {
-              if (VERBOSE) {
-                console.log('CJS Test', packageName, modelName)
+          describe.each(filteredPackagesAndModels)('%s', (packageDirectoryName, preparedModels) => {
+            test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageDirectoryName}/%s as cjs`, async (modelName) => {
+              const { name } = await getPackageJSON(path.resolve(MODELS_DIR, packageDirectoryName));
+              if (!name) {
+                throw new Error(`Could not get package name for ${packageDirectoryName}`);
               }
-              const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, modelName === 'index' ? '' : `/${modelName}`);
-              const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
+              const importPath = path.join(name, modelName === 'index' ? '' : `/${modelName}`);
+              const modelPackageDir = path.resolve(MODELS_DIR, packageDirectoryName, 'test/__fixtures__');
               const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
-              const result = await cjsTestRunner.run({
-                dependencies: {
-                  customModel: importPath,
-                },
-                globals: {
-                  model: 'customModel',
-                  imagePath: JSON.stringify(fixturePath),
-                }
+              const script = await getTemplate(path.resolve(__dirname, '../_templates/cjs.js.t'), {
+                tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+                customModel: importPath,
+                fixturePath,
               });
+              const buffer = await cjsTestRunner.run(script);
+              const result = `data:image/png;base64,${buffer.toString('utf-8')}`
 
-              expect(result).not.toEqual('');
               const formattedResult = `data:image/png;base64,${result}`;
-              const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
-              const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, modelName);
+              const resultPath = path.resolve(MODELS_DIR, packageDirectoryName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
+              const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageDirectoryName, modelName);
               const diffPath = path.resolve(outputsPath, `diff.png`);
               const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
               checkImage(formattedResult, resultPath, diffPath, upscaledPath);
+              // expect(result).toMatchImage(getFixturePath(packageDirectoryName, modelName));
             });
           });
+
         });
       }
     });

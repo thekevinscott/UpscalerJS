@@ -5,10 +5,8 @@ import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { Bundle } from '../../integration/utils/NodeTestRunner';
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');
@@ -31,7 +29,7 @@ const PACKAGES = [
   })),
 ];
 
-export const prepareScriptBundleForESM: Bundle = async ({ verbose = false } = {}) => {
+export const prepareScriptBundleForESM = async ({ verbose = false } = {}) => {
   await installNodeModules(ROOT, { verbose });
   await installLocalPackages(ROOT, [
     {
@@ -109,13 +107,3 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
 
   return compiler;
 });
-
-export const mockCDN: MockCDN = (port, model, pathToModel) => {
-  return [
-    `http://localhost:${port}`,
-    'node_modules',
-    '@upscalerjs',
-    model,
-    pathToModel,
-  ].join('/');
-};

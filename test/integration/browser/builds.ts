@@ -7,21 +7,19 @@ import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-w
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { MODELS_DIR } from '@internals/common/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const TRACK_TIME = false;
 const JEST_TIMEOUT_IN_SECONDS = 120;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
 jest.retryTimes(0);
 
 describe('Build Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    showWarnings: true,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
+  const testRunner = new ClientsideTestRunner({
+    trackTime: TRACK_TIME,
+    mock: true,
   });
 
   beforeAll(async () => {

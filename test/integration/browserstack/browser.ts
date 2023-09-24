@@ -4,12 +4,12 @@
 import path from 'path';
 import webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
 import Upscaler from '../../../packages/upscalerjs';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 import { BrowserOption, executeAsyncScript, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '@internals/common/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -33,13 +33,13 @@ const browserOptions = getBrowserOptions(option => {
 });
 
 describe('Browser Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
+  const testRunner = new ClientsideTestRunner({
     // TODO: Not sure how to proxy with Selenium
-    // mockCDN: esbuildMockCDN,
-    dist: ESBUILD_DIST,
+    // mock: true
+    dist: ESBUILD_DIST_FOLDER,
     trackTime: TRACK_TIME,
     port: PORT,
-    verbose: VERBOSE,
+    // verbose: VERBOSE,
     log: LOG,
   });
 

@@ -1,10 +1,10 @@
 /****
  * Tests that loading models via CDN works
  */
-import { ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 import type { Page } from 'puppeteer';
 
 // TODO: Figure out how to import this from upscaler
@@ -17,19 +17,16 @@ const CDNS = [
 const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
 
 const TRACK_TIME = false;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 jest.setTimeout(30000);
 jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    log: false,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
-  });
+  const testRunner = new ClientsideTestRunner({
+     mock: false,
+     dist: ESBUILD_DIST_FOLDER,
+     trackTime: TRACK_TIME,
+     log: false,
+   });
   const page = (): Page => {
     testRunner.page.setRequestInterception(true);
     return testRunner.page;

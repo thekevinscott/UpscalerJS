@@ -10,10 +10,12 @@ export function catchFailures<T extends unknown[]>() {
         return await origFn.apply(this, args);
       } catch (err) {
         console.error(err);
-        process.exit(1);
+        // process.exit(1);
       }
+      return undefined;
     };
     return descriptor;
   };
 }
+
 

@@ -4,10 +4,8 @@ import { build } from 'esbuild';
 import { copyFixtures } from '../utils/copyFixtures';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
 import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { Bundle } from '../../integration/utils/NodeTestRunner';
 import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 
 /***
@@ -63,7 +61,7 @@ const indexImports: Import[] = PACKAGES.reduce((arr, { packageName, models }) =>
  * Functions
  */
 
-export const bundleEsbuild: Bundle<BundleOpts> = async ({ 
+export const bundleEsbuild = async ({ 
   verbose = false, 
   skipInstallNodeModules = false, 
   skipInstallLocalPackages = false,
@@ -139,14 +137,4 @@ export const bundleEsbuild: Bundle<BundleOpts> = async ({
   try {
     fs.symlinkSync(path.resolve(ESBUILD_ROOT, 'node_modules'), path.join(ESBUILD_DIST, 'node_modules'));
   } catch(err) {}
-};
-
-export const mockCDN: MockCDN = (port, model, pathToModel) => {
-  return [
-    `http://localhost:${port}`,
-    'node_modules',
-    LOCAL_UPSCALER_NAMESPACE,
-    model,
-    pathToModel,
-  ].join('/');
 };

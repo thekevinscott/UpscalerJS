@@ -1,16 +1,13 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER} from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import type { Page } from 'puppeteer';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const TRACK_TIME = false;
-const LOG = true;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
@@ -19,14 +16,12 @@ const JEST_TIMEOUT = 60 * 1000 * 5;
 jest.setTimeout(JEST_TIMEOUT);
 
 describe('Speed Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    name: 'esm',
-    mockCDN: esbuildMockCDN,
-    dist: ESBUILD_DIST,
+  const testRunner = new ClientsideTestRunner({
+    name: 'speed',
+    mock: true,
+    dist: ESBUILD_DIST_FOLDER,
     trackTime: TRACK_TIME,
-    log: LOG,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
+    log: true,
   });
 
   let pages: Page[] = [];
