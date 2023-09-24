@@ -110,13 +110,13 @@
       ]
     },
     "test:unit:browser:playwright": {
-      "command": "pnpm scaffold:dependencies 'browser' && playwright-test --config playwright.config.json"
+      "command": "pnpm scaffold:dependencies:browser && playwright-test --config playwright.config.json"
     },
     "test:unit:browser:jest": {
-      "command": "pnpm scaffold:dependencies 'browser' && jest --config jestconfig.browser.json"
+      "command": "pnpm scaffold:dependencies:browser && jest --config jestconfig.browser.json"
     },
     "test:unit:node": {
-      "command": "pnpm scaffold:dependencies 'node' && jest --config jestconfig.node.json"
+      "command": "pnpm scaffold:dependencies:node && jest --config jestconfig.node.json"
     },
     "validate:build": {
       "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
