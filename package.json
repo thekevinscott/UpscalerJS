@@ -22,7 +22,6 @@
     "example:start": "pnpm --filter @upscalerjs/scripts example:start",
     "lint": "pnpm --filter upscaler --filter @upscalerjs/* lint",
     "model:build": "pnpm --filter @upscalerjs/scripts model:build",
-    "model:create": "pnpm --filter @upscalerjs/scripts model:create",
     "model:write-docs": "pnpm --filter @upscalerjs/scripts model:write-docs",
     "update:npm:dependencies": "pnpm --filter @upscalerjs/scripts update:npm:dependencies",
     "test:start-test-server": "ts-node test/lib/start-test-server.ts",
