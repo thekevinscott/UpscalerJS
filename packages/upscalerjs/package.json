@@ -4,15 +4,15 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/cjs/cjs.d.js",
+      "types": "./dist/node/cjs/cjs.d.ts",
       "require": "./dist/node/cjs/cjs.js"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/cjs/cjs.d.js",
+      "types": "./dist/node-gpu/cjs/cjs.d.ts",
       "require": "./dist/node-gpu/cjs/cjs.js"
     },
     ".": {
-      "types": "./dist/browser/esm/index.d.js",
+      "types": "./dist/browser/esm/index.d.ts",
       "import": "./dist/browser/esm/index.js"
     }
   },
