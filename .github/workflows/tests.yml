@@ -221,6 +221,11 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
       - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
@@ -230,11 +235,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      # - name: Setup tmate session
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     detached: true
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
