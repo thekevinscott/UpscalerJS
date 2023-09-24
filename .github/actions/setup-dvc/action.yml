@@ -11,8 +11,8 @@ runs:
   steps:
     - name: 'Setup DVC'
       shell: bash
-      # run: pip install dvc[s3]==3.14.0 dvc[gdrive]==3.14.0
-      run: pip install dvc[s3]=='2.45.1' dvc[gdrive]=='2.45.1'
+      run: pip install dvc[s3]==3.14.0 dvc[gdrive]==3.14.0
+      # run: pip install dvc[s3]=='2.45.1' dvc[gdrive]=='2.45.1'
       # run: pip install dvc[all]=='3.2.1'
       # uses: iterative/setup-dvc@v1
       # with:
