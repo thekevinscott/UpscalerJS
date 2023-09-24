@@ -68,16 +68,28 @@
       "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
     },
     "lint:browser": {
-      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "lint:browser:fix": {
-      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "lint:node": {
-      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "lint:node:fix": {
-      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
     },
     "scaffold:dependencies:browser": {
       "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
@@ -92,13 +104,22 @@
       "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
     },
     "test:unit:browser:playwright": {
-      "command": "pnpm scaffold:dependencies:browser && playwright-test --config playwright.config.json"
+      "command": "playwright-test --config playwright.config.json",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "test:unit:browser:jest": {
-      "command": "pnpm scaffold:dependencies:browser && jest --config jestconfig.browser.json"
+      "command": "jest --config jestconfig.browser.json",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "test:unit:node": {
-      "command": "pnpm scaffold:dependencies:node && jest --config jestconfig.node.json"
+      "command": "jest --config jestconfig.node.json",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
     },
     "validate:build": {
       "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
