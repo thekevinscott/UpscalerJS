@@ -14,7 +14,6 @@ import buildUpscaler from './package-scripts/build-upscaler';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { TEST_DIR } from './package-scripts/utils/constants';
-import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
  * Types
  */
@@ -72,6 +71,8 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
   return files.map(file => file.split('/').pop() || '');
 };
+
+type Bundle = () => Promise<void>;
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
   const sharedDependenciesSet = new Set<Bundle>();
