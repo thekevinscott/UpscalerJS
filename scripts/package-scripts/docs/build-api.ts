@@ -1,8 +1,6 @@
 import path from 'path';
-import {
-  mkdirp,
-  writeFile,
-} from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { mkdirp, writeFile, } = fsExtra;
 import {
   Application,
   DeclarationReflection as TypedocDeclarationReflection,

@@ -2,7 +2,8 @@
  * Script for linking model readmes locally in docs folder
  */
 import path from 'path';
-import { copy, existsSync, mkdirp, readFile, writeFile } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { copy, existsSync, mkdirp, readFile, writeFile } = fsExtra;
 import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
 import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
 import { getSharedArgs, SharedArgs } from './types';

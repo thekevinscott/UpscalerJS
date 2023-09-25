@@ -1,4 +1,5 @@
-import { mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { mkdirp } = fsExtra;
 import {hideBin} from "yargs/helpers";
 import * as url from 'url';
 import { sync as rimraf } from 'rimraf';

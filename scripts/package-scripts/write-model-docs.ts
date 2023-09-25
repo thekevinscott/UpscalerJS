@@ -1,4 +1,5 @@
-import { existsSync, readdirSync, readFile, readFileSync, writeFile } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { existsSync, readdirSync, readFile, readFileSync, writeFile } = fsExtra;
 import path from 'path';
 import yargs from 'yargs';
 import { ifDefined as _ifDefined } from './prompt/ifDefined.mjs';

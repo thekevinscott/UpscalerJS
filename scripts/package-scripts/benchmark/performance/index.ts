@@ -7,7 +7,8 @@ import { BenchmarkedResult, PerformanceBenchmarker } from './utils/PerformanceBe
 import { DatasetDefinition } from './utils/types';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined.mjs';
 import Table from 'cli-table';
-import { writeFileSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { writeFileSync } = fsExtra;
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR, TMP_DIR } from '../../utils/constants.mjs';
 import { prebuild } from '../shared/prebuild';

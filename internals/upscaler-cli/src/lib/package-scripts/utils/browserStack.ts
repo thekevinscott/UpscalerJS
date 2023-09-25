@@ -3,7 +3,8 @@ import browserstack from 'browserstack-local';
 import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
 import { ROOT_DIR } from './constants';
-import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { existsSync, readFileSync, writeFileSync } = fsExtra;
 
 /****
  * Types

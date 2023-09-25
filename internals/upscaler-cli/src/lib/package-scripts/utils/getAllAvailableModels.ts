@@ -1,4 +1,5 @@
-import { readdirSync, lstatSync, readFileSync, existsSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { readdirSync, lstatSync, readFileSync, existsSync } = fsExtra;
 import path from 'path';
 import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports';
 

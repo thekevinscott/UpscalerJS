@@ -1,5 +1,6 @@
 import path from 'path';
-import { copyFile, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, writeFile } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { copyFile, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, writeFile } = fsExtra;
 import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
 import { getPackageJSON } from '../utils/packages';
 import fm from 'front-matter';

@@ -1,5 +1,6 @@
 import { glob } from 'glob';
-import { unlink } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { unlink } = fsExtra;
 
 const getAllMarkdownFiles = (target: string) => glob(`${target}/**/*.md?(x)`);
 

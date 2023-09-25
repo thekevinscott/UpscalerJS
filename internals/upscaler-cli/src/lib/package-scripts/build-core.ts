@@ -1,4 +1,5 @@
-import { mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { mkdirp } = fsExtra;
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import yargs from 'yargs';

@@ -11,7 +11,8 @@ import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrow
 import { BenchmarkedSpeedResult, SpeedBenchmarker } from '../performance/utils/SpeedBenchmarker';
 import { TF } from "../performance/utils/types";
 import Table from 'cli-table';
-import { writeFileSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { writeFileSync } = fsExtra;
 import { Device } from '../performance/utils/Device';
 import { Local } from 'browserstack-local';
 import { QueryTypes, Sequelize } from 'sequelize';

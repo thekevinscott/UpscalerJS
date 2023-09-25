@@ -1,4 +1,5 @@
-import { mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { mkdirp, mkdirpSync } = fsExtra;
 import {hideBin} from "yargs/helpers";
 import * as url from 'url';
 import { sync as rimraf } from 'rimraf';
@@ -6,7 +7,6 @@ import path from 'path';
 import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies.mjs';
 import { rollupBuild } from './utils/rollup.mjs';
 import { uglify } from './utils/uglify.mjs';
-import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { inputOptions, outputOptions, } from '../../packages/upscalerjs/rollup.config.mjs';
 import { OutputFormat, Platform } from './prompt/types.mjs';

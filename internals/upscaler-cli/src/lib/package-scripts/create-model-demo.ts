@@ -1,4 +1,5 @@
-import { writeFile, copy, mkdirp, } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { writeFile, copy, mkdirp, } = fsExtra;
 import path from 'path';
 import yargs from 'yargs';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';

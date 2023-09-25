@@ -3,7 +3,8 @@ import { sync as rimraf } from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
-import { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } = fsExtra;
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 
 const UMD_ROOT = path.join(__dirname);

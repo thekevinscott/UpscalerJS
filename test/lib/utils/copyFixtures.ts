@@ -1,4 +1,5 @@
-import { copySync, mkdirpSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { copySync, mkdirpSync } = fsExtra;
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { getAllAvailableModelPackages } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';

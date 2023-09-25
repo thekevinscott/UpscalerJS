@@ -1,5 +1,6 @@
 import { Dependency } from '@schemastore/package';
-import { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } = fsExtra;
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';

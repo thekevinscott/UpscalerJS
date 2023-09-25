@@ -1,10 +1,10 @@
-import { mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { mkdirp, mkdirpSync } = fsExtra;
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import scaffoldDependencies, { ScaffoldDependenciesConfig, writeTFJSDependency } from './scaffold-dependencies.js';
 import { rollupBuild } from './utils/rollup.js';
 import { uglify } from './utils/uglify.js';
-import { mkdirpSync } from 'fs-extra';
 import * as rollupConfig from './upscalerjs-rollup-config.js';
 import { OutputFormat, Platform } from './prompt/types.js';
 import { compileTypescript } from './utils/compile.js';

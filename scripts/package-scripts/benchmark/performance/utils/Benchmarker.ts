@@ -1,4 +1,5 @@
-import { readFileSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { readFileSync } = fsExtra;
 import path from 'path';
 import { Database } from "./Database";
 import { Package } from "./Package";

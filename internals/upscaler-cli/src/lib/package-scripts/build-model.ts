@@ -5,7 +5,6 @@ import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
-import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import { inputOptions, } from '../../../../../models/rollup.config.mjs';
@@ -20,7 +19,7 @@ import { MODELS_DIR } from './utils/constants';
 import { replaceTscAliasPaths } from 'tsc-alias';
 import asyncPool from "tiny-async-pool";
 
-const { mkdirp, existsSync, } = fsExtra;
+const { mkdirpSync, mkdirp, existsSync, } = fsExtra;
 
 /***
  * Types
