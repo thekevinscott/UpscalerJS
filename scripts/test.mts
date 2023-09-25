@@ -2,6 +2,7 @@
  * Script for wrapping and running integration tests for Browser and Node
  */
 
+import * as url from 'url';
 import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
@@ -376,6 +377,11 @@ const main = async () => {
   });
 }
 
-if (require.main === module) {
-  main();
+if (import.meta.url.startsWith('file:')) { // (A)
+  const modulePath = url.fileURLToPath(import.meta.url);
+  if (process.argv[1] === modulePath) { // (B)
+    (async () => {
+      await main();
+    })();
+  }
 }
