@@ -1,4 +1,3 @@
-import fsExtra from 'fs-extra';
 import {hideBin} from "yargs/helpers";
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
