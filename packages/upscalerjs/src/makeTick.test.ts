@@ -1,3 +1,4 @@
+import { vi, expect, } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
 import { 
   isTensor,
@@ -18,7 +19,7 @@ vi.mock('@upscalerjs/core', async () => {
 });
 
 describe('makeTick', () => {
-  it('disposes of an in-flight tensor', () => new Promise<void>(done => {
+  it('disposes of an in-flight tensor', () => {
     vi.mocked(isTensor).mockImplementation(() => true);
     const abortController = new AbortController();
     const dispose = vi.fn();
@@ -26,17 +27,17 @@ describe('makeTick', () => {
       dispose,
     } as unknown as tf.Tensor3D;
     const tick = makeTick(abortController.signal, true);
-    tick(t).then(() => {
-      throw new Error('Should have thrown.');
+    const result = tick(t).then(() => {
+      expect.unreachable('Should have thrown.')
     }).catch(err => {
       expect(dispose).toHaveBeenCalled();
       expect(err instanceof AbortError).toBe(true);
-      done();
     });
     abortController.abort();
-  }), 100);
+    return result;
+  }, 100);
 
-  it('disposes of a multiple in-flight tensors', () => new Promise<void>(done => {
+  it('disposes of a multiple in-flight tensors', () => {
     vi.mocked(isTensor).mockImplementation(() => false);
     const abortController = new AbortController();
     const dispose = vi.fn();
@@ -45,28 +46,28 @@ describe('makeTick', () => {
     }) as unknown as tf.Tensor3D;
     const mockTensors = Array(3).fill('').map(() => getTensor());
     const tick = makeTick(abortController.signal, true);
-    tick(mockTensors).then(() => {
-      throw new Error('Should have thrown.');
+    const result = tick(mockTensors).then(() => {
+      expect.unreachable('Should have thrown.')
     }).catch(err => {
       mockTensors.forEach(t => {
         expect(t.dispose).toHaveBeenCalled();
       });
       expect(err instanceof AbortError).toBe(true);
-      done();
     });
     abortController.abort();
-  }), 100);
+    return result;
+  }, 100);
 
-  it('ignores any non-tensor results', () => new Promise<void>(done => {
+  it('ignores any non-tensor results', () => {
     vi.mocked(isTensor).mockImplementation(() => false);
     const abortController = new AbortController();
     const tick = makeTick(abortController.signal, true);
-    tick(undefined).then(() => {
-      throw new Error('Should have thrown.');
+    const result = tick(undefined).then(() => {
+      expect.unreachable('Should have thrown.')
     }).catch(err => {
       expect(err instanceof AbortError).toBe(true);
-      done();
     });
     abortController.abort();
-  }), 100);
+    return result;
+  }, 100);
 });
