@@ -125,19 +125,13 @@
       ]
     },
     "test:unit:browser:vite": {
-      "command": "vitest --config vite.browser.ts",
+      "command": "vitest --config vitest.browser.ts --no-isolate",
       "dependencies": [
         "scaffold:dependencies:browser"
       ]
     },
     "test:unit:node": {
-      "command": "vitest --config vite.node.ts",
-      "dependencies": [
-        "scaffold:dependencies:node"
-      ]
-    },
-    "test:unit:node:vitest": {
-      "command": "vitest --config vite.node.ts --no-isolate",
+      "command": "vitest --config vitest.node.ts --no-isolate",
       "dependencies": [
         "scaffold:dependencies:node"
       ]
@@ -169,7 +163,6 @@
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
-    "test:unit:node:vitest": "wireit",
     "validate:build": "wireit"
   },
   "repository": {
