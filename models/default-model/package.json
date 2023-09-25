@@ -24,16 +24,16 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
+    "scaffold:dependencies": "wireit",
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "clean": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -48,15 +48,39 @@
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
+    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-core": "~4.8.0",
     "@tensorflow/tfjs-layers": "~4.8.0",
-    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
   },
   "@upscalerjs": {
     "title": "Default Model",
     "modelFamily": "esrgan"
+  },
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts"
+    },
+    "lint:fix": {
+      "command": "pnpm lint --fix"
+    },
+    "lint": {
+      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold:dependencies"
+      ]
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
+    },
+    "build": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist"
+    }
   }
 }

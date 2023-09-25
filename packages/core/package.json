@@ -16,7 +16,7 @@
   ],
   "wireit": {
     "test": {
-      "command": "pnpm vitest -c vite.conf.ts"
+      "command": "pnpm vitest -c vitest.config.ts"
     },
     "lint": {
       "command": "eslint -c .eslintrc.js src --ext .ts"
@@ -27,14 +27,42 @@
     "validate": {
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' "
     },
+    "clean:esm": {
+      "command": "rimraf dist/esm"
+    },
+    "clean:cjs": {
+      "command": "rimraf dist/cjs"
+    },
     "build": {
       "command": "pnpm build:esm && pnpm build:cjs && pnpm validate"
     },
     "build:esm": {
-      "command": "pnpm --filter @upscalerjs/scripts build:core browser -o esm"
+      "command": "tsc -p tsconfig.esm.json --outDir ./dist/esm",
+      "dependencies": ["clean:esm"],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.esm.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
     },
     "build:cjs": {
-      "command": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
+      "command": "tsc -p tsconfig.cjs.json --outDir ./dist/cjs",
+      "dependencies": ["clean:cjs"],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vitest.config.ts",
+        "tsconfig.cjs.json"
+      ],
+      "output": [
+        "dist/cjs/**"
+      ]
     }
   },
   "scripts": {

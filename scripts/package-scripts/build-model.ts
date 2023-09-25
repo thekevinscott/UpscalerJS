@@ -8,7 +8,7 @@ import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
 import { inputOptions, } from '../../models/rollup.config';
-import scaffoldDependenciesConfig from '../../models/scaffolder';
+// import scaffoldDependenciesConfig from '../../models/scaffolder';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
@@ -33,6 +33,18 @@ interface Opts {
  * Constants
  */
 const CONCURRENT_ASYNC_THREADS = 3;
+const scaffoldDependenciesConfig = {
+  files: [
+    {
+      name: 'constants',
+      contents: [
+        ({ packageJSON: { name = '', }, }) => `export const NAME = "${name}";`,
+        ({ packageJSON: { version = '', }, }) => `export const VERSION = "${version}";`,
+      ],
+    },
+  ],
+};
+
 
 /****
  * Utility functions
