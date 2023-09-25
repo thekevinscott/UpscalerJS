@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import findAllPackages from '../find-all-packages';
+import findAllPackages from '../find-all-packages.js';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
-import { CORE_DIR, DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, PACKAGES_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants';
+import { CORE_DIR, DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, PACKAGES_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants.mjs';
 
 interface FakeExports {
   [index: string]: string | FakeExports;
@@ -12,7 +12,6 @@ export type JSONSchema = JSONSchemaForNPMPackageJsonFiles & {
   exports: FakeExports;
 };
 
-const DIRNAME = __dirname;
 
 export type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper' | 'Dev' | 'Packages';
 export type TransformPackageJsonFn = (packageJSON: JSONSchema, dir: string) => JSONSchema;

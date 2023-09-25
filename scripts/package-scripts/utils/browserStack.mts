@@ -2,7 +2,7 @@ import path from 'path';
 import browserstack from 'browserstack-local';
 import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
-import { ROOT_DIR } from './constants';
+import { ROOT_DIR } from './constants.mjs';
 import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
 
 /****

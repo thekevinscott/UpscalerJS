@@ -1,7 +1,7 @@
 import path from 'path';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 
 const JEST_TIMEOUT = 60 * 1000;
 jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout

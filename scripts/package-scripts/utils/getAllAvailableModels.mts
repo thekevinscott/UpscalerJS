@@ -1,6 +1,11 @@
-import { readdirSync, lstatSync, readFileSync, existsSync } from 'fs-extra';
+import _fsExtra from 'fs-extra';
 import path from 'path';
-import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports';
+import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports.mjs';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+const { readdirSync, lstatSync, readFileSync, existsSync } = _fsExtra;
 
 const ROOT = path.resolve(__dirname, '../../../');
 const MODELS_DIR = path.resolve(ROOT, 'models');

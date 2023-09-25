@@ -1,10 +1,10 @@
 import { existsSync, readdirSync, readFile, readFileSync, writeFile } from 'fs-extra';
 import path from 'path';
 import yargs from 'yargs';
-import { ifDefined as _ifDefined } from './prompt/ifDefined';
-import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
-import { SHARED_DIR, MODELS_DIR } from './utils/constants';
-import { getPackageJSON, JSONSchema } from './utils/packages';
+import { ifDefined as _ifDefined } from './prompt/ifDefined.mjs';
+import { AVAILABLE_MODELS, getModel } from './prompt/getModel.mjs';
+import { SHARED_DIR, MODELS_DIR } from './utils/constants.mjs';
+import { getPackageJSON, JSONSchema } from './utils/packages.mjs';
 
 /***
  * Types

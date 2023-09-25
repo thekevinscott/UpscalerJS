@@ -1,7 +1,7 @@
 import { copySync, mkdirpSync } from 'fs-extra';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { getAllAvailableModelPackages } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
+import { getAllAvailableModelPackages } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
 
 interface CopyFixtureOpts {
   includeFixtures?: boolean;

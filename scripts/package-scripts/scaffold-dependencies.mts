@@ -1,8 +1,12 @@
 import yargs from 'yargs';
+import {hideBin} from "yargs/helpers";
 import fs from 'fs';
 import path from 'path';
-import { getPackageJSON } from './utils/packages';
+import { getPackageJSON } from './utils/packages.mjs';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 /****
  * Type Definitions
@@ -162,7 +166,9 @@ const getPlatform = (platform?: unknown): Platform | undefined => {
 }
 
 const getArgs = async (): Promise<Args> => {
-  const argv = await yargs.command('scaffold-dependencies <src> <config> [platform]', 'scaffold dependencies for a specific platform', yargs => {
+
+  const argv = await yargs(hideBin(process.argv))
+  .command('scaffold-dependencies <src> <config> [platform]', 'scaffold dependencies for a specific platform', yargs => {
     yargs.positional('platform', {
       describe: 'The platform to target',
     }).options({
@@ -189,10 +195,14 @@ const getArgs = async (): Promise<Args> => {
 }
 
 
-if (require.main === module) {
-  (async () => {
-    const argv = await getArgs();
-    const { default: config } = await loadScaffoldDependenciesConfig(path.resolve(ROOT, argv.config));
-    await scaffoldDependencies(argv.targetPackage, config, argv.platform);
-  })();
+
+if (import.meta.url.startsWith('file:')) { // (A)
+  const modulePath = url.fileURLToPath(import.meta.url);
+  if (process.argv[1] === modulePath) { // (B)
+    (async () => {
+      const argv = await getArgs();
+      const { default: config } = await loadScaffoldDependenciesConfig(path.resolve(ROOT, argv.config));
+      await scaffoldDependencies(argv.targetPackage, config, argv.platform);
+    })();
+  }
 }

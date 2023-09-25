@@ -6,7 +6,7 @@ import util from 'util';
 import webdriver from 'selenium-webdriver';
 import callExec from '../../../../../test/lib/utils/callExec';
 import asyncPool from "tiny-async-pool";
-import { ProgressBar } from "../../../utils/ProgressBar";
+import { ProgressBar } from "../../../utils/ProgressBar.mjs";
 
 const sizeOf = util.promisify(imageSize);
 

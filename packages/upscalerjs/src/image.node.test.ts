@@ -11,7 +11,7 @@ import {
 import { mockFn } from '../../../test/lib/shared/mockers';
 import { tf } from './dependencies.generated';
 import { startServer } from '../../../test/lib/shared/server';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import {
   hasValidChannels as _hasValidChannels,
 } from '@upscalerjs/core'

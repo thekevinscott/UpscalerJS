@@ -1,6 +1,6 @@
-import buildModels from '../../build-model.cjs';
-import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import buildUpscaler from '../../build-upscaler.cjs';
+import buildModels from '../../build-model.mjs';
+import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels.mjs';
+import buildUpscaler from '../../build-upscaler.mjs';
 
 const getOutputFormats = (): ('cjs' | 'esm' | 'umd')[] => {
   return ['cjs', 'esm', 'umd'];

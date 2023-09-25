@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import * as url from 'url';
 
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const ROOT = path.resolve(__dirname, '../..');
 const EXCLUDED = ['node_modules', 'scratch'];
 const MAX_DEPTH = 100;
@@ -32,8 +34,3 @@ const findAllPackages = (dir: string, excluded: string[] = [], depth = 0): Array
 };
 
 export default findAllPackages;
-
-if (require.main === module) {
-  const packages = findAllPackages(ROOT);
-  console.log(packages);
-}

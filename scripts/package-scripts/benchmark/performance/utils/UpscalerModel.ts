@@ -6,7 +6,7 @@ import { Meta, ModelDefinition } from "@upscalerjs/core";
 import { Package } from "./Package";
 import _Upscaler from 'upscaler';
 import { TF } from "./types";
-import { MODELS_DIR } from "../../../utils/constants";
+import { MODELS_DIR } from "../../../utils/constants.mjs";
 
 export class UpscalerModel extends Model {
   declare id: number;

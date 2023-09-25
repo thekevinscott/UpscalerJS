@@ -1,7 +1,7 @@
 import { CreationAttributes, DataTypes } from "sequelize";
 import sequelize from './sequelize';
 import { BaseModel } from "./BaseModel";
-import { BrowserOption } from "../../../utils/browserStack";
+import { BrowserOption } from "../../../utils/browserStack.mjs";
 
 export class Device extends BaseModel {
   declare id: number;

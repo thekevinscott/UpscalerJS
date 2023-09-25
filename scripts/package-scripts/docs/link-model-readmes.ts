@@ -3,8 +3,8 @@
  */
 import path from 'path';
 import { copy, existsSync, mkdirp, readFile, unlinkSync, writeFile, writeFileSync } from 'fs-extra';
-import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
-import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
+import { DOCS_DIR, MODELS_DIR } from '../utils/constants.mjs';
+import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels.mjs";
 import { getSharedArgs, SharedArgs } from './types';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 

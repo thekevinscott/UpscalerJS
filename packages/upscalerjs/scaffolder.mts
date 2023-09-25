@@ -1,4 +1,4 @@
-// import { ScaffoldDependenciesConfig, writeTFJSDependency, } from "../../scripts/package-scripts/scaffold-dependencies.cts";
+// import { ScaffoldDependenciesConfig, writeTFJSDependency, } from "../../scripts/package-scripts/scaffold-dependencies.mts";
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
 
 export type Platform = 'browser' | 'node' | 'node-gpu';

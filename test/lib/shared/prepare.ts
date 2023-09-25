@@ -3,15 +3,15 @@ import { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } from '
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
 import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
-import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
+import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages.mjs';
 import callExec from "../utils/callExec";
 import tar from 'tar';
 import crypto from 'crypto';
-import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
+import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir.mjs';
 import asyncPool from "tiny-async-pool";
-import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { promisify } from 'util';
-import buildModels from '../../../scripts/package-scripts/build-model.cjs';
+import buildModels from '../../../scripts/package-scripts/build-model.mjs';
 const fastFolderSize = promisify(require('fast-folder-size'));
 
 

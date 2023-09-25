@@ -1,7 +1,7 @@
 import path from 'path';
 import { copyFile, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, writeFile } from 'fs-extra';
-import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
-import { getPackageJSON } from '../utils/packages';
+import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants.mjs';
+import { getPackageJSON } from '../utils/packages.mjs';
 import fm from 'front-matter';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 import { getSharedArgs, SharedArgs } from './types';

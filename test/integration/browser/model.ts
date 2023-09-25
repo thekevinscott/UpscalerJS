@@ -9,7 +9,7 @@ import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');

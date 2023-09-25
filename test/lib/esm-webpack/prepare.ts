@@ -6,8 +6,8 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { Bundle } from '../../integration/utils/NodeTestRunner';
 
 const ROOT = path.join(__dirname);

@@ -1,19 +1,21 @@
 import { mkdirp } from 'fs-extra';
+import {hideBin} from "yargs/helpers";
+import * as url from 'url';
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
-import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies.cjs';
-import { rollupBuild } from './utils/rollup';
-import { uglify } from './utils/uglify';
+import scaffoldDependencies, { loadScaffoldDependenciesConfig } from './scaffold-dependencies.mjs';
+import { rollupBuild } from './utils/rollup.mjs';
+import { uglify } from './utils/uglify.mjs';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { inputOptions, outputOptions, } from 'upscaler/rollup.config';
-import { OutputFormat, Platform } from './prompt/types';
-import { compileTypescript } from './utils/compile';
-import { getOutputFormats } from './prompt/getOutputFormats';
-import { getPlatform } from './prompt/getPlatform';
-import { withTmpDir } from './utils/withTmpDir';
-import { UPSCALER_DIR } from './utils/constants';
-import { ifDefined as _ifDefined} from './prompt/ifDefined';
+import { inputOptions, outputOptions, } from '../../packages/upscalerjs/rollup.config.mjs';
+import { OutputFormat, Platform } from './prompt/types.mjs';
+import { compileTypescript } from './utils/compile.mjs';
+import { getOutputFormats } from './prompt/getOutputFormats.mjs';
+import { getPlatform } from './prompt/getPlatform.mjs';
+import { withTmpDir } from './utils/withTmpDir.mjs';
+import { UPSCALER_DIR } from './utils/constants.mjs';
+import { ifDefined as _ifDefined} from './prompt/ifDefined.mjs';
 
 /****
  * Types
@@ -126,7 +128,7 @@ const getDefaultOutputFormats = (platform: Platform): OutputFormat[] => {
 };
 
 export const scaffoldDependenciesForUpscaler = async (platform: Platform, { verbose }: { verbose?: boolean } = {}) => {
-  const { default: scaffoldConfig } = await loadScaffoldDependenciesConfig(path.resolve(UPSCALER_DIR, 'scaffolder.ts'));
+  const { default: scaffoldConfig } = await loadScaffoldDependenciesConfig(path.resolve(UPSCALER_DIR, 'scaffolder.mts'));
   await scaffoldDependencies(UPSCALER_DIR, scaffoldConfig, platform, { verbose });
 }
 
@@ -156,7 +158,8 @@ export default buildUpscaler;
 type Answers = { platform: Platform, outputFormats: Array<OutputFormat>, verbose: boolean }
 
 const getArgs = async (): Promise<Answers> => {
-  const argv = await yargs.command('build upscaler', 'build upscaler', yargs => {
+  const argv = await yargs(hideBin(process.argv))
+  .command('build upscaler', 'build upscaler', yargs => {
     yargs.positional('platforms', {
       describe: 'The platforms to build for',
     }).option('v', {
@@ -183,9 +186,12 @@ const getArgs = async (): Promise<Answers> => {
   }
 }
 
-if (require.main === module) {
-  (async () => {
-    const args = await getArgs();
-    await buildUpscaler(args.platform, args.outputFormats, undefined, { verbose: args.verbose });
-  })();
+if (import.meta.url.startsWith('file:')) { // (A)
+  const modulePath = url.fileURLToPath(import.meta.url);
+  if (process.argv[1] === modulePath) { // (B)
+    (async () => {
+      const args = await getArgs();
+      await buildUpscaler(args.platform, args.outputFormats, undefined, { verbose: args.verbose });
+    })();
+  }
 }

@@ -1,7 +1,7 @@
 import path from 'path';
 // import ts, { ProjectReference } from 'typescript';
 // import callExec from '../../../test/lib/utils/callExec';
-import { OutputFormat } from '../prompt/types';
+import { OutputFormat } from '../prompt/types.mjs';
 import { exec, ExecOptions } from 'child_process';
 
 export type StdOut = (chunk: string) => void;

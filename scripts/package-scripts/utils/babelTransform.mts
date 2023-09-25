@@ -1,6 +1,6 @@
 import { transformAsync } from '@babel/core';
 import fs from 'fs';
-import { getAllFilesRecursively } from "./getAllFilesRecursively";
+import { getAllFilesRecursively } from "./getAllFilesRecursively.mjs";
 
 export const babelTransform = async (directory: string) => {
   const files = getAllFilesRecursively(directory, file => file.endsWith('.js'));

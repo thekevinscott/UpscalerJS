@@ -40,11 +40,11 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src models/esrgan-slim --config models/scaffolder.cts",
+    "scaffold:dependencies": "ts-node-esm ../../scripts/package-scripts/scaffold-dependencies.mts --src models/esrgan-slim --config models/scaffolder.mts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
+    "validate:build": "ts-node-esm ../../scripts/package-scripts/validate-build.mts models/esrgan-slim",
     "build": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd",
     "build:cjs": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs",
     "build:esm": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o esm",

@@ -2,7 +2,7 @@ import path from 'path';
 import { sync as rimraf } from 'rimraf';
 import { getTFJSVersion } from '../utils/getTFJSVersion';
 import { copyFixtures } from '../utils/copyFixtures';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
 import { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } from 'fs-extra';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 

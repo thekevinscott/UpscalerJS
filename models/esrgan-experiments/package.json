@@ -4217,12 +4217,12 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src models/esrgan-experiments --config models/scaffolder.cts",
+    "scaffold:dependencies": "ts-node-esm ../../scripts/package-scripts/scaffold-dependencies.mts --src models/esrgan-experiments --config models/scaffolder.mts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-experiments",
-    "build": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-experiments -o cjs -o esm -o umd"
+    "validate:build": "ts-node-esm ../../scripts/package-scripts/validate-build.mts models/esrgan-experiments",
+    "build": "ts-node-esm ../../scripts/package-scripts/build-model.mts esrgan-experiments -o cjs -o esm -o umd"
   },
   "keywords": [
     "image super resolution",

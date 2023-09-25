@@ -10,9 +10,9 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { scaffoldDependenciesForUpscaler } from '../build-upscaler.cjs';
-import { Platform } from '../prompt/types';
-import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
+import { scaffoldDependenciesForUpscaler } from '../build-upscaler.mjs';
+import { Platform } from '../prompt/types.mjs';
+import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants.mjs';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 import { getSharedArgs, SharedArgs } from './types';
 import {

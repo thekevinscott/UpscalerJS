@@ -4,7 +4,13 @@
     "esModuleInterop": true,
     "target": "ESNext",
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
+    "resolveJsonModule": true,
+    // "module": "nodenext",
+    // "moduleResolution": "nodenext",
+    // "target": "ES2022",
+  
   }
 }

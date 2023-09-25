@@ -1,8 +1,10 @@
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import { existsSync, mkdirpSync } from 'fs-extra';
-import { getHashedName } from './getHashedName';
-import { TMP_DIR } from './constants';
+import fsExtra from 'fs-extra';
+import { getHashedName } from './getHashedName.mjs';
+import { TMP_DIR } from './constants.mjs';
+
+const { existsSync, mkdirpSync } = fsExtra;
 
 interface WithTmpDirOpts {
   rootDir?: string;

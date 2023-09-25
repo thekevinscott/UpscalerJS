@@ -1,6 +1,6 @@
 import yargs from 'yargs';
 import inquirer from 'inquirer';
-import isValidVersion from './utils/isValidVersion';
+import isValidVersion from './utils/isValidVersion.mjs';
 import { 
   AVAILABLE_PACKAGES, 
   DIRECTORIES, 
@@ -12,7 +12,7 @@ import {
   updateMultiplePackages, 
   updatePackageJSONForKey, 
   updateSinglePackage,
- } from './utils/packages';
+ } from './utils/packages.mjs';
 import { Dependency } from '@schemastore/package';
 
 /****

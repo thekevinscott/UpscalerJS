@@ -1,8 +1,8 @@
 import path from 'path';
 import inquirer from 'inquirer';
-import isValidVersion from './utils/isValidVersion';
-import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
-import { ROOT_DIR } from './utils/constants';
+import isValidVersion from './utils/isValidVersion.mjs';
+import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages.mjs';
+import { ROOT_DIR } from './utils/constants.mjs';
 
 /****
  * Type Definitions

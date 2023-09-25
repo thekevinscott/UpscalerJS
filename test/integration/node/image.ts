@@ -4,7 +4,7 @@ import * as tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';
 import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 
 const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/4x.json');
 

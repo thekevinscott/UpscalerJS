@@ -1,8 +1,12 @@
 import path from 'path';
+import {hideBin} from "yargs/helpers";
+import * as url from 'url';
 import yargs from 'yargs';
 import fs from 'fs';
-import { getPackageJSON, JSONSchema } from './utils/packages';
+import { getPackageJSON, JSONSchema } from './utils/packages.mjs';
 import { sync } from 'glob';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const ROOT = path.resolve(__dirname, '../..');
 const UPSCALER_JS = path.resolve(ROOT, 'packages/upscalerjs');
@@ -85,7 +89,8 @@ interface Args {
 const isValidStringArray = (arr: unknown): arr is string[] => Array.isArray(arr) && typeof arr[0] === 'string';
 
 const getArgs = async (): Promise<Args> => {
-  const argv = await yargs.command('validate-build [platform]', 'validate a build', yargs => {
+  const argv = await yargs(hideBin(process.argv))
+  .command('validate-build [platform]', 'validate a build', yargs => {
     yargs.positional('src', {
       describe: 'The package to validate',
     }).options({
@@ -111,16 +116,19 @@ const getArgs = async (): Promise<Args> => {
   }
 }
 
-if (require.main === module) {
-  (async () => {
-    const argv = await getArgs();
-    const checkedFiles = Array.from(await validateBuild(argv.src, argv.include));
-    console.log([
-      'The following files are present: ',
-      ...checkedFiles.map(file => {
-        return ` - ${file}`;
-      }),
-    ].join('\n'))
-  })();
+if (import.meta.url.startsWith('file:')) { // (A)
+  const modulePath = url.fileURLToPath(import.meta.url);
+  if (process.argv[1] === modulePath) { // (B)
+    (async () => {
+      const argv = await getArgs();
+      const checkedFiles = Array.from(await validateBuild(argv.src, argv.include));
+      console.log([
+        'The following files are present: ',
+        ...checkedFiles.map(file => {
+          return ` - ${file}`;
+        }),
+      ].join('\n'))
+    })();
+  }
 }
 

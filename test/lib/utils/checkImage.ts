@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import pixelmatch from 'pixelmatch';
 import { getFixtureAsBuffer } from './getFixtureAsBuffer';
-import { TMP_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { TMP_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { PNG } from 'pngjs';
 
 const TEST_OUTPUT_DIR = path.resolve(TMP_DIR, 'test-output');

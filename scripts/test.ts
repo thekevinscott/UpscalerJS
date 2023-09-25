@@ -6,14 +6,14 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import buildModels from './package-scripts/build-model.cjs';
-import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
-import { OutputFormat } from './package-scripts/prompt/types';
-import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import buildUpscaler from './package-scripts/build-upscaler.cjs';
-import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
-import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
-import { TEST_DIR } from './package-scripts/utils/constants';
+import buildModels from './package-scripts/build-model.mjs';
+import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels.mjs';
+import { OutputFormat } from './package-scripts/prompt/types.mjs';
+import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined.mjs';
+import buildUpscaler from './package-scripts/build-upscaler.mjs';
+import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack.mjs';
+import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats.mjs';
+import { TEST_DIR } from './package-scripts/utils/constants.mjs';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
  * Types

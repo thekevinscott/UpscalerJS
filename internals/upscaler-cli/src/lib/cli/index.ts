@@ -6,8 +6,8 @@ import { buildCommandsTree } from './build-commands-tree.js';
 const { readFileSync, } = fsExtra;
 
   // "scripts": {
-  //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.cts",
-  //   "build:core": "pnpm __run_command ./package-scripts/build-core.cts",
+  //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.mts",
+  //   "build:core": "pnpm __run_command ./package-scripts/build-core.mts",
   //   "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
   //   "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
   //   "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
@@ -15,7 +15,7 @@ const { readFileSync, } = fsExtra;
   //   "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance/index.ts",
   //   "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
   //   "model:benchmark:speed": "pnpm __run_command ./package-scripts/benchmark/speed/index.ts",
-  //   "model:build": "pnpm __run_command ./package-scripts/build-model.cts",
+  //   "model:build": "pnpm __run_command ./package-scripts/build-model.mts",
   //   "model:clean": "pnpm __run_command ./package-scripts/clean-model.ts",
   //   "model:convert-python-model": "pnpm __run_command ./package-scripts/convert-python-model.ts",
   //   "model:convert-python-model-folder": "pnpm __run_command ./package-scripts/convert-python-model-folder.ts",
@@ -31,7 +31,7 @@ const { readFileSync, } = fsExtra;
   //   "update:tfjs": "pnpm __run_command ./package-scripts/update-tfjs.ts",
   //   "update:dependency": "pnpm __run_command ./package-scripts/update-dependency.ts",
   //   "update:npm:dependencies": "pnpm __run_command ./package-scripts/update-npm-dependencies.ts",
-  //   "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
+  //   "validate:build": "pnpm __run_command ./package-scripts/validate-build.mts"
   // },
 
 

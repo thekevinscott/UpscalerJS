@@ -1,12 +1,14 @@
 import { mkdirp } from 'fs-extra';
+import {hideBin} from "yargs/helpers";
+import * as url from 'url';
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import yargs from 'yargs';
-import { OutputFormat as _OutputFormat } from './prompt/types';
-import { compileTypescript } from './utils/compile';
-import { getOutputFormats } from './prompt/getOutputFormats';
-import { CORE_DIR } from './utils/constants';
-import { ifDefined as _ifDefined} from './prompt/ifDefined';
+import { OutputFormat as _OutputFormat } from './prompt/types.mjs';
+import { compileTypescript } from './utils/compile.mjs';
+import { getOutputFormats } from './prompt/getOutputFormats.mjs';
+import { CORE_DIR } from './utils/constants.mjs';
+import { ifDefined as _ifDefined} from './prompt/ifDefined.mjs';
 
 /****
  * Types
@@ -95,7 +97,8 @@ export default buildCore;
 type Answers = { outputFormats: Array<OutputFormat>, verbose: boolean }
 
 const getArgs = async (): Promise<Answers> => {
-  const argv = await yargs.command('build upscaler', 'build upscaler', yargs => {
+  const argv = await yargs(hideBin(process.argv))
+  .command('build core', 'build core', yargs => {
     yargs.option('v', {
       alias: 'verbose',
       default: false,
@@ -123,6 +126,11 @@ const main = async () => {
   await buildCore(args.outputFormats, undefined, { verbose: args.verbose });
 }
 
-if (require.main === module) {
-  main();
+if (import.meta.url.startsWith('file:')) { // (A)
+  const modulePath = url.fileURLToPath(import.meta.url);
+  if (process.argv[1] === modulePath) { // (B)
+    (async () => {
+      await main();
+    })();
+  }
 }

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-const Uglify = require('uglify-js');
+import Uglify from 'uglify-js';
 
 export const uglify = (folder: string, filename: string) => {
   const filenameWithoutExt = filename.split('.').slice(0, -1).join('.');

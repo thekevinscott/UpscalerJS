@@ -2,12 +2,12 @@ import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/pr
 import type Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
-import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
+import { ifDefined as _ifDefined } from '../../prompt/ifDefined.mjs';
 import yargs from 'yargs';
 import { startServer } from '../../../../test/lib/shared/server';
 import http from 'http';
-import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack';
+import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels.mjs';
+import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack.mjs';
 import { BenchmarkedSpeedResult, SpeedBenchmarker } from '../performance/utils/SpeedBenchmarker';
 import { TF } from "../performance/utils/types";
 import Table from 'cli-table';
@@ -15,7 +15,7 @@ import { writeFileSync } from 'fs-extra';
 import { Device } from '../performance/utils/Device';
 import { Local } from 'browserstack-local';
 import { QueryTypes, Sequelize } from 'sequelize';
-import { ASSETS_DIR } from '../../utils/constants';
+import { ASSETS_DIR } from '../../utils/constants.mjs';
 import { prebuild } from '../shared/prebuild';
 
 /****

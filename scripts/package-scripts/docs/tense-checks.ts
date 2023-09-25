@@ -4,8 +4,8 @@
 import { sync } from 'glob';
 import { readFile } from 'fs-extra';
 import path from 'path';
-import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
-import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
+import { DOCS_DIR, MODELS_DIR } from '../utils/constants.mjs';
+import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels.mjs";
 
 /****
  * Constants

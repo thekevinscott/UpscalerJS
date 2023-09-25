@@ -12,9 +12,9 @@ import { Metric } from './Metric';
 import { PerformanceMeasurement } from "./PerformanceMeasurement";
 import sequelize from "./sequelize";
 import { Model, QueryTypes } from "sequelize";
-import { ProgressBar } from "../../../utils/ProgressBar";
+import { ProgressBar } from "../../../utils/ProgressBar.mjs";
 import { Benchmarker } from "./Benchmarker";
-import { MODELS_DIR } from '../../../utils/constants';
+import { MODELS_DIR } from '../../../utils/constants.mjs';
 
 const AGGREGATED_RESULTS_NAME = 'performance_aggregated_results';
 

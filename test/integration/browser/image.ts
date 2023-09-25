@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import type { Page } from 'puppeteer';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 

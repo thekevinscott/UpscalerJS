@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');

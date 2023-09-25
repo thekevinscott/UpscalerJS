@@ -5,9 +5,9 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "__run_command": "ts-node --esm --project ./tsconfig.json",
-    "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.cts",
-    "build:core": "pnpm __run_command ./package-scripts/build-core.cts",
+    "__run_command": "ts-node-esm --project ../tsconfig.json",
+    "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.mts",
+    "build:core": "pnpm __run_command ./package-scripts/build-core.mts",
     "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
     "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
     "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
@@ -16,7 +16,7 @@
     "find-all-packages": "pnpm __run_command ./package-scripts/find-all-packages.ts",
     "model:benchmark:performance": "pnpm __run_command ./package-scripts/benchmark/performance/index.ts",
     "model:benchmark:speed": "pnpm __run_command ./package-scripts/benchmark/speed/index.ts",
-    "model:build": "pnpm __run_command ./package-scripts/build-model.cts",
+    "model:build": "pnpm __run_command ./package-scripts/build-model.mts",
     "model:clean": "pnpm __run_command ./package-scripts/clean-model.ts",
     "model:convert-python-model": "pnpm __run_command ./package-scripts/convert-python-model.ts",
     "model:convert-python-model-folder": "pnpm __run_command ./package-scripts/convert-python-model-folder.ts",
@@ -32,10 +32,11 @@
     "update:tfjs": "pnpm __run_command ./package-scripts/update-tfjs.ts",
     "update:dependency": "pnpm __run_command ./package-scripts/update-dependency.ts",
     "update:npm:dependencies": "pnpm __run_command ./package-scripts/update-npm-dependencies.ts",
-    "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
+    "validate:build": "pnpm __run_command ./package-scripts/validate-build.mts"
   },
   "dependencies": {
     "@types/glob": "^8.1.0",
+    "@types/uglify-js": "^3.17.1",
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
@@ -62,5 +63,6 @@
     "inquirer": "^8.2.4",
     "sharp": "^0.32.5",
     "yargs": "^17.7.2"
-  }
+  },
+  "type": "module"
 }

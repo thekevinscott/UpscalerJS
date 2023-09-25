@@ -24,16 +24,16 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src models/default-model --config models/scaffolder.cts",
+    "scaffold:dependencies": "ts-node-esm ../../scripts/package-scripts/scaffold-dependencies.mts --src models/default-model --config models/scaffolder.mts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
-    "build": "ts-node ../../scripts/package-scripts/build-model.cts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.cts default-model -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.cts default-model -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.cts default-model -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
+    "validate:build": "ts-node-esm ../../scripts/package-scripts/validate-build.mts models/default-model",
+    "build": "ts-node-esm ../../scripts/package-scripts/build-model.mts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
+    "build:cjs": "ts-node-esm ../../scripts/package-scripts/build-model.mts default-model -o cjs",
+    "build:esm": "ts-node-esm ../../scripts/package-scripts/build-model.mts default-model -o esm",
+    "build:umd": "ts-node-esm ../../scripts/package-scripts/build-model.mts default-model -o umd",
+    "clean": "ts-node-esm ../../scripts/package-scripts/clean-model.ts default-model"
   },
   "files": [
     "assets/**/*",

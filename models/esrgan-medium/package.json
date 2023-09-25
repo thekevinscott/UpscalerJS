@@ -40,16 +40,16 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src models/esrgan-medium --config models/scaffolder.cts",
+    "scaffold:dependencies": "ts-node-esm ../../scripts/package-scripts/scaffold-dependencies.mts --src models/esrgan-medium --config models/scaffolder.mts",
     "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-medium",
-    "build": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-medium -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-medium -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-medium -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-medium -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-medium"
+    "validate:build": "ts-node-esm ../../scripts/package-scripts/validate-build.mts models/esrgan-medium",
+    "build": "ts-node-esm ../../scripts/package-scripts/build-model.mts esrgan-medium -o cjs -o esm -o umd",
+    "build:cjs": "ts-node-esm ../../scripts/package-scripts/build-model.mts esrgan-medium -o cjs",
+    "build:esm": "ts-node-esm ../../scripts/package-scripts/build-model.mts esrgan-medium -o esm",
+    "build:umd": "ts-node-esm ../../scripts/package-scripts/build-model.mts esrgan-medium -o umd",
+    "clean": "ts-node-esm ../../scripts/package-scripts/clean-model.ts esrgan-medium"
   },
   "files": [
     "assets/**/*",

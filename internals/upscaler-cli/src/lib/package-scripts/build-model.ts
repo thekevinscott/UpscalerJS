@@ -1,4 +1,5 @@
-import fs, { mkdirp, existsSync, } from 'fs-extra';
+import fsExtra from 'fs-extra';
+import {hideBin} from "yargs/helpers";
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
 import scaffoldDependencies from './scaffold-dependencies';
@@ -7,17 +8,19 @@ import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
-import { inputOptions, } from '../../../../../models/rollup.config';
-import scaffoldDependenciesConfig from '../../../../../models/scaffolder';
+import { inputOptions, } from '../../../../../models/rollup.config.mjs';
+import scaffoldDependenciesConfig from '../../../../../models/scaffolder.mjs';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { DEFAULT_OUTPUT_FORMATS, getOutputFormats } from './prompt/getOutputFormats';
 import { AVAILABLE_MODELS, getModel } from './prompt/getModel';
-import { babelTransform } from './utils/babelTransform';
+import { babelTransform } from './utils/babelTransform.mjs';
 import { MODELS_DIR } from './utils/constants';
 import { replaceTscAliasPaths } from 'tsc-alias';
 import asyncPool from "tiny-async-pool";
+
+const { mkdirp, existsSync, } = fsExtra;
 
 /***
  * Types
@@ -71,7 +74,7 @@ const buildESM = async (modelFolder: string, opts: Opts = {}) => {
  * UMD build function
  */
 const getUMDNames = (modelFolder: string): Record<string, string> => {
-  return JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
+  return JSON.parse(fsExtra.readFileSync(path.resolve(modelFolder, 'umd-names.json'), 'utf8'));
 }
 
 const getIndexDefinition = (exports: Record<string, Record<string, string>>, modelFolder: string) => {
@@ -98,7 +101,7 @@ const getIndexDefinition = (exports: Record<string, Record<string, string>>, mod
 }
 
 const getTypescriptFileOutputPath = (modelFolder: string) => {
-  const { exports } = JSON.parse(fs.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
+  const { exports } = JSON.parse(fsExtra.readFileSync(path.resolve(modelFolder, 'package.json'), 'utf8'));
 
   const indexDefinition = getIndexDefinition(exports, modelFolder).split('dist/esm/').pop();
 
@@ -213,7 +216,7 @@ const buildModel = async (
   const MODEL_ROOT = path.resolve(MODELS_DIR, model);
   if (opts.skipCheckModelsExist !== true) {
     const modelsFolder = path.resolve(MODELS_DIR, model, 'models');
-    const modelFiles = fs.readdirSync(modelsFolder);
+    const modelFiles = fsExtra.readdirSync(modelsFolder);
     if (modelFiles.length === 0) {
       throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${model}?`);
     }
@@ -280,7 +283,9 @@ interface Answers {
 }
 
 const getArgs = async (): Promise<Answers> => {
-  const argv = await yargs.command('build models', 'build models', yargs => {
+
+  const argv = await yargs(hideBin(process.argv))
+  .command('build models', 'build models', yargs => {
     yargs.positional('model', {
       describe: 'The model to build',
     }).option('o', {

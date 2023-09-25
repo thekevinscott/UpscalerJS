@@ -2,7 +2,7 @@ import { readFileSync } from 'fs-extra';
 import path from 'path';
 import { Database } from "./Database";
 import { Package } from "./Package";
-import { MODELS_DIR } from '../../../utils/constants';
+import { MODELS_DIR } from '../../../utils/constants.mjs';
 
 const getIsExperimentalPackage = (packageName: string) => {
   const packageJSON = JSON.parse(readFileSync(path.resolve(MODELS_DIR, packageName, 'package.json'), 'utf-8'));
