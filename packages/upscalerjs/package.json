@@ -125,13 +125,13 @@
       ]
     },
     "test:unit:browser:vite": {
-      "command": "vitest --config vitest.browser.ts --no-isolate",
+      "command": "vitest --config vitest.browser.ts",
       "dependencies": [
         "scaffold:dependencies:browser"
       ]
     },
     "test:unit:node": {
-      "command": "vitest --config vitest.node.ts --no-isolate",
+      "command": "vitest --config vitest.node.ts",
       "dependencies": [
         "scaffold:dependencies:node"
       ]
