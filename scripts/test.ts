@@ -70,7 +70,7 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
     return ['model'];
   }
   const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
-  return files.map(file => file.split('/').pop() || '');
+  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -220,7 +220,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     }
 
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.ts')] : [
+    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vitest.config.ts')] : [
       'pnpm',
       'jest',
       '--config',
