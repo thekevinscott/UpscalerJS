@@ -15,6 +15,11 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
+
       - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
         uses: ./.github/actions/setup-pnpm
         with:
