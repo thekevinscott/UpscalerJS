@@ -38,7 +38,6 @@
     "test:integration:node": "pnpm --filter @upscalerjs/scripts test:integration:node",
     "test:model": "pnpm --filter @upscalerjs/scripts test:model",
     "test:memory-leaks": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
-    "test:unit": "pnpm --filter upscaler test:unit",
     "test:unit:browser:playwright": "pnpm --filter upscaler test:unit:browser:playwright",
     "test:unit:browser:jest": "pnpm --filter upscaler test:unit:browser:jest",
     "test:unit:node": "pnpm --filter upscaler test:unit:node"
