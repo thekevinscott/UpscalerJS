@@ -3,9 +3,9 @@
  */
 import path from 'path';
 import webdriver from 'selenium-webdriver';
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import Upscaler from '../../../packages/upscalerjs';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare.mjs';
+import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { BrowserOption, executeAsyncScript, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack.mjs';
@@ -69,7 +69,8 @@ describe('Browser Integration Tests', () => {
       const TIMEOUT = JEST_TIMEOUT - 1000 - 3000;
 
       const result = await executeAsyncScript(driver, () => {
-        const upscaler = new window['Upscaler']({
+        const _Upscaler = (window['Upscaler']);
+        const upscaler = new (_Upscaler as unknown as typeof Upscaler)({
           model: window['pixel-upsampler']['4x'],
         });
         const data = upscaler.execute(window['fixtures']['pixel-upsampler']);

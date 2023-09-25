@@ -2,13 +2,13 @@
   "testRunner": "jest-circus/runner",
   "preset": "ts-jest",
   "transform": {
-     "^.+\\.(ts|tsx)?$": [
+     "^.+\\.(mts|ts|tsx)?$": [
       "ts-jest", {
       "tsconfig": {
         "importHelpers": false,
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "nodenext",
         "esModuleInterop": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -24,6 +24,6 @@
   },
   "setupFilesAfterEnv": ["./jest.setup.ts"],
   "collectCoverage": false,
-  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+  "testRegex": "(/.*|(\\.|/)(test|spec))\\.(mts|jsx?|tsx?)$",
+  "moduleFileExtensions": ["mts", "ts", "tsx", "js", "jsx", "json", "node"]
 }

@@ -1,5 +1,5 @@
 import { JSHandle, Page } from 'puppeteer';
-import { ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST } from '../../lib/esm-esbuild/prepare.mjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';

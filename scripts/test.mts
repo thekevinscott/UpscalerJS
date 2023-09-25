@@ -100,15 +100,15 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
 
 const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
   if (kind === 'memory') {
-    return path.resolve(TEST_DIR, 'misc/memory/jestconfig.js');
+    return path.resolve(TEST_DIR, 'misc/memory/jestconfig.cjs');
   }
   if (kind === 'model') {
-    return path.resolve(TEST_DIR, 'jestconfig.model.js');
+    return path.resolve(TEST_DIR, 'jestconfig.model.cjs');
   }
   if (Array.isArray(platform)) {
     throw new Error(`An array of platforms was provided, but test kind does not support multiple platforms. Please provide an explicit platform`);
   }
-  return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
+  return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.cjs`);
 };
 
 const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] => {

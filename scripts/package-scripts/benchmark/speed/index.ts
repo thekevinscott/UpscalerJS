@@ -1,4 +1,4 @@
-import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare';
+import { bundleEsbuild, ESBUILD_DIST } from '../../../../test/lib/esm-esbuild/prepare.mjs';
 import type Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';

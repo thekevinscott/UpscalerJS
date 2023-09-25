@@ -1,9 +1,9 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
-import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-webpack/prepare';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare.mjs';
+import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-webpack/prepare.mjs';
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
