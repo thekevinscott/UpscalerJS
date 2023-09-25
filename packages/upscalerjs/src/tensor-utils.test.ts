@@ -1,7 +1,7 @@
 import * as tfn from '@tensorflow/tfjs-node';
+import { vi } from 'vitest';
 import { Tensor4D, ones, tensor } from '@tensorflow/tfjs-node';
-import { tf as _tf, } from './dependencies.generated';
-import { mock, mockFn } from '../../../test/lib/shared/mockers.cjs';
+import { tf } from './dependencies.generated';
 import {
   padInput,
   trimInput,
@@ -13,66 +13,62 @@ import {
   getCopyOfInput,
 } from './tensor-utils';
 import {
-  isValidRange as _isValidRange,
-  isFixedShape4D as _isFixedShape4D,
-  isTensor as _isTensor,
+  isValidRange,
+  isFixedShape4D,
+  isTensor,
  } from '@upscalerjs/core';
 import {
-  tensorAsBase64 as _tensorAsBase64,
-  getImageAsTensor as _getImageAsTensor,
+  tensorAsBase64,
+  getImageAsTensor,
 } from './image.generated';
 import {
   GET_INVALID_SHAPED_TENSOR,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
 
-jest.mock('./image.generated', () => {
-  const { tensorAsBase64, getImageAsTensor, ...rest } = jest.requireActual('./image.generated');
+import type * as imageGenerated from './image.generated';
+import type * as dependenciesGenerated from './dependencies.generated';
+import type * as core from '@upscalerjs/core';
+
+vi.mock('./image.generated', async () => {
+  const { tensorAsBase64, getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
   return {
     ...rest,
-    tensorAsBase64: jest.fn(tensorAsBase64),
-    getImageAsTensor: jest.fn(getImageAsTensor),
+    tensorAsBase64: vi.fn(tensorAsBase64),
+    getImageAsTensor: vi.fn(getImageAsTensor),
   };
 });
 
-jest.mock('./dependencies.generated', () => {
-  const { tf, ...dependencies } = jest.requireActual('./dependencies.generated');
+vi.mock('./dependencies.generated', async () => {
+  const { tf, ...dependencies } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
   return {
     ...dependencies,
     tf: {
       ...tf,
-      registerOp: jest.fn(),
-      loadLayersModel: jest.fn(),
-      loadGraphModel: jest.fn(),
+      registerOp: vi.fn(),
+      loadLayersModel: vi.fn(),
+      loadGraphModel: vi.fn(),
     },
   };
 });
 
-jest.mock('@upscalerjs/core', () => {
-  const { isTensor, isValidRange, isFixedShape4D, ...core } = jest.requireActual('@upscalerjs/core');
+vi.mock('@upscalerjs/core', async () => {
+  const { isTensor, isValidRange, isFixedShape4D, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
   return {
-    ...core,
-    isTensor: jest.fn().mockImplementation(isTensor),
-    isFixedShape4D: jest.fn().mockImplementation(isFixedShape4D),
-    isValidRange: jest.fn().mockImplementation(isValidRange),
+    ...rest,
+    isTensor: vi.fn().mockImplementation(isTensor),
+    isFixedShape4D: vi.fn().mockImplementation(isFixedShape4D),
+    isValidRange: vi.fn().mockImplementation(isValidRange),
   };
 });
 
-const mockedTf = mock(_tf);
-const isFixedShape4D = mockFn(_isFixedShape4D);
-const isValidRange = mockFn(_isValidRange);
-
-const isTensor = mockFn(_isTensor);
-const tensorAsBase64 = mockFn(_tensorAsBase64);
-const getImageAsTensor = mockFn(_getImageAsTensor);
-
 describe('padInput', () => {
   beforeEach(() => {
-    isFixedShape4D.mockImplementation(() => true);
+    vi.mocked(isFixedShape4D).mockImplementation(() => true);
   });
 
   afterEach(() => {
-    isFixedShape4D.mockClear();
+    vi.mocked(isFixedShape4D).mockClear();
   });
 
   it('just returns the input if inputSize is less than the shape of the tensor', () => {
@@ -138,19 +134,19 @@ describe('scaleOutput', () => {
     isValidRange.mockClear();
   });
 
-  it('returns tensor unchanged if input shape is not valid', () => mockedTf.tidy(() => {
+  it('returns tensor unchanged if input shape is not valid', () => tf.tidy(() => {
     isValidRange.mockImplementationOnce(() => false);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput()(tensor).dataSync())).toEqual(Array.from(tensor.dataSync()));
   }));
 
-  it('returns same tensor values if input shape is 0-255', () => mockedTf.tidy(() => {
+  it('returns same tensor values if input shape is 0-255', () => tf.tidy(() => {
     isValidRange.mockImplementationOnce(() => true);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput([0, 255])(tensor).dataSync())).toEqual(Array.from(tensor.dataSync()));
   }));
 
-  it('returns multiplied tensor values if input shape is 0-1', () => mockedTf.tidy(() => {
+  it('returns multiplied tensor values if input shape is 0-1', () => tf.tidy(() => {
     isValidRange.mockImplementationOnce(() => true);
     const tensor = ones([1, 2, 2, 1]) as Tensor4D;
     expect(Array.from(scaleOutput([0, 1])(tensor).dataSync())).toEqual([255, 255, 255, 255,]);
@@ -159,21 +155,21 @@ describe('scaleOutput', () => {
 
 describe('getWidthAndHeight', () => {
   it('throws if given a too small tensor', () => {
-    const t = mockedTf.zeros([2, 2]) as unknown as _tf.Tensor3D;
+    const t = tf.zeros([2, 2]) as unknown as tf.Tensor3D;
     expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t.shape));
   });
 
   it('throws if given a too large tensor', () => {
-    const t = mockedTf.zeros([2, 2, 2, 2, 2]) as unknown as _tf.Tensor3D;
+    const t = tf.zeros([2, 2, 2, 2, 2]) as unknown as tf.Tensor3D;
     expect(() => getWidthAndHeight(t)).toThrow(GET_INVALID_SHAPED_TENSOR(t.shape));
   });
 
   it('returns width and height for a 4d tensor', () => {
-    expect(getWidthAndHeight(mockedTf.zeros([1, 2, 3, 4]) as _tf.Tensor4D)).toEqual([2, 3]);
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3, 4]) as tf.Tensor4D)).toEqual([2, 3]);
   });
 
   it('returns width and height for a 3d tensor', () => {
-    expect(getWidthAndHeight(mockedTf.zeros([1, 2, 3]) as _tf.Tensor3D)).toEqual([1, 2]);
+    expect(getWidthAndHeight(tf.zeros([1, 2, 3]) as tf.Tensor3D)).toEqual([1, 2]);
   });
 });
 
@@ -182,18 +178,18 @@ describe('scaleIncomingPixels', () => {
     isValidRange.mockClear();
   });
 
-  it('returns unadulterated incoming pixels if given no range', () => mockedTf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels()(mockedTf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+  it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
     expect(result).toEqual([0, 127, 255]);
   }));
 
-  it('returns unadulterated incoming pixels if given a range of 0-1', () => mockedTf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,255])(mockedTf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+  it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
     expect(result).toEqual([0, 127, 255]);
   }));
 
-  it('scales incoming pixels if given a range of 0-255', () => mockedTf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,1])(mockedTf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
+  it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
+    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
     expect(result).toEqual([0,.5,1]);
   }));
 });
@@ -217,16 +213,16 @@ describe('concatTensors', () => {
     isTensor.mockClear();
   });
   it('concats two tensors together', () => {
-    const a: tfn.Tensor3D = mockedTf.tensor(
+    const a: tfn.Tensor3D = tf.tensor(
       [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4],
       [2, 2, 3,],
     );
-    const b: tfn.Tensor3D = mockedTf.tensor(
+    const b: tfn.Tensor3D = tf.tensor(
       [10, 10, 10, 20, 20, 20, 30, 30, 30, 40, 40, 40],
       [2, 2, 3,],
     );
     const axis = 1;
-    const expected = mockedTf.concat([a, b], axis);
+    const expected = tf.concat([a, b], axis);
     const result = concatTensors([a, b], axis);
     expect(result.shape).toEqual([2, 4, 3])
     expect(result.dataSync()).toEqual(expected.dataSync());

@@ -3,9 +3,18 @@
   "version": "1.0.0-beta.17",
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
-    "./node": "./dist/node/cjs/cjs.js",
-    "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
-    ".": "./dist/browser/esm/index.js"
+    "./node": {
+      "types": "./dist/node/cjs/cjs.d.ts",
+      "require": "./dist/node/cjs/cjs.js"
+    },
+    "./node-gpu": {
+      "types": "./dist/node-gpu/cjs/cjs.d.ts",
+      "require": "./dist/node-gpu/cjs/cjs.js"
+    },
+    ".": {
+      "types": "./dist/browser/esm/index.d.ts",
+      "import": "./dist/browser/esm/index.js"
+    }
   },
   "engines": {
     "node": ">=16.0"
@@ -115,14 +124,14 @@
         "scaffold:dependencies:browser"
       ]
     },
-    "test:unit:browser:jest": {
-      "command": "jest --config jestconfig.browser.json",
+    "test:unit:browser:vite": {
+      "command": "vitest --config vitest.browser.ts",
       "dependencies": [
         "scaffold:dependencies:browser"
       ]
     },
     "test:unit:node": {
-      "command": "jest --config jestconfig.node.json",
+      "command": "vitest --config vitest.node.ts",
       "dependencies": [
         "scaffold:dependencies:node"
       ]
@@ -152,7 +161,7 @@
     "lint:node": "wireit",
     "lint:node:fix": "wireit",
     "test:unit:browser:playwright": "wireit",
-    "test:unit:browser:jest": "wireit",
+    "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
     "validate:build": "wireit"
   },
@@ -179,6 +188,7 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/jest": "^29.5.3",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "vitest": "^0.34.5"
   }
 }
