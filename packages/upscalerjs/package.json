@@ -62,10 +62,10 @@
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
     },
     "scaffold:dependencies:browser": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
     },
     "scaffold:dependencies:node": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
     },
     "docs:serve": {
       "command": "docsify serve docs --port 3030"

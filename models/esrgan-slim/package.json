@@ -40,9 +40,9 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts",
+    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.cts --src models/esrgan-slim --config models/scaffolder.cts",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
     "build": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd",

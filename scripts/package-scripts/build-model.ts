@@ -1,7 +1,7 @@
 import fs, { mkdirp, existsSync, chmod, exists } from 'fs-extra';
 import { sync as rimraf } from 'rimraf';
 import path from 'path';
-import scaffoldDependencies from './scaffold-dependencies';
+import scaffoldDependencies from './scaffold-dependencies.cjs';
 import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';

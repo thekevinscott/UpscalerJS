@@ -1,4 +1,4 @@
-import { ScaffoldDependenciesConfig, } from "../scripts/package-scripts/scaffold-dependencies";
+import { ScaffoldDependenciesConfig, } from "../scripts/package-scripts/scaffold-dependencies.cjs";
 
 const config: ScaffoldDependenciesConfig = {
   files: [
