@@ -155,5 +155,6 @@
   },
   "dependencies": {
     "wireit": "^0.14.0"
-  }
+  },
+  "type": "module"
 }
