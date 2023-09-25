@@ -72,7 +72,7 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   return files.map(file => file.split('/').pop() || '');
 };
 
-type Bundle = () => Promise<void>;
+type Bundle = (opts: Record<string, string| boolean | undefined>) => Promise<void>;
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
   const sharedDependenciesSet = new Set<Bundle>();
