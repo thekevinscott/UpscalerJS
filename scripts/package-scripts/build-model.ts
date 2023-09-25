@@ -7,8 +7,8 @@ import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
 import { getPackageJSONExports } from './utils/getPackageJSONExports';
-// import { inputOptions, } from '../../models/rollup.config';
-// import scaffoldDependenciesConfig from '../../models/scaffolder';
+import { inputOptions, } from '../../models/rollup.config.cjs';
+import scaffoldDependenciesConfig from '../../models/scaffolder.cjs';
 import { ifDefined as _ifDefined } from './prompt/ifDefined';
 import { OutputFormat } from './prompt/types';
 import { compileTypescript } from './utils/compile';
@@ -18,10 +18,6 @@ import { babelTransform } from './utils/babelTransform';
 import { MODELS_DIR } from './utils/constants';
 import { replaceTscAliasPaths } from 'tsc-alias';
 import asyncPool from "tiny-async-pool";
-// This file is extended via build-model.ts
-import commonjs from '@rollup/plugin-commonjs';
-import { nodeResolve, } from '@rollup/plugin-node-resolve';
-import type { InputOptions, } from 'rollup';
 
 /***
  * Types
@@ -36,35 +32,7 @@ interface Opts {
 /***
  * Constants
  */
-const scaffoldDependenciesConfig = {
-  files: [
-    {
-      name: 'constants',
-      contents: [
-        ({ packageJSON: { name = '', }, }) => `export const NAME = "${name}";`,
-        ({ packageJSON: { version = '', }, }) => `export const VERSION = "${version}";`,
-      ],
-    },
-  ],
-};
 const CONCURRENT_ASYNC_THREADS = 3;
-
-export const inputOptions: InputOptions = {
-  context: 'window',
-  external: [
-    '@tensorflow/tfjs',
-  ],
-  plugins: [
-    nodeResolve({
-      preferBuiltins: true,
-      resolveOnly: [
-        /^(?!.*(@tensorflow\/tfjs))/,
-      ],
-    }),
-    commonjs(),
-  ],
-};
-
 
 /****
  * Utility functions
