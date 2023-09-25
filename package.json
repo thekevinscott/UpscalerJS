@@ -30,7 +30,6 @@
     "test:integration:node": "pnpm --filter @upscalerjs/scripts test:integration:node",
     "test:model": "pnpm --filter @upscalerjs/scripts test:model",
     "test:memory-leaks": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
-    "test:unit": "pnpm --filter upscaler test:unit",
     "test:unit:browser:playwright": "pnpm --filter upscaler test:unit:browser:playwright",
     "test:unit:browser:jest": "pnpm --filter upscaler test:unit:browser:jest",
     "test:unit:node": "pnpm --filter upscaler test:unit:node"
@@ -120,6 +119,7 @@
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
     "vite": "4.4.9",
+    "vitest": "^0.34.2",
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
