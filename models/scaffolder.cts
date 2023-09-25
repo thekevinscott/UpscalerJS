@@ -1,6 +1,6 @@
-import { ScaffoldDependenciesConfig, } from "../scripts/package-scripts/scaffold-dependencies.cjs";
+// import { ScaffoldDependenciesConfig, } from "../scripts/package-scripts/scaffold-dependencies.cjs";
 
-const config: ScaffoldDependenciesConfig = {
+const config = {
   files: [
     {
       name: 'constants',
