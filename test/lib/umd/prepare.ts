@@ -87,10 +87,3 @@ export const prepareScriptBundleForUMD = async () => {
   copyFixtures(DIST);
   writeFileSync(path.join(DIST, 'index.html'), getContent(scriptsToInclude, fixturesToInclude));
 };
-
-export const mockCDN: MockCDN = (port, model, pathToModel) => [
-  `http://localhost:${port}`,
-  'models',
-  model,
-  pathToModel,
-].join('/');
