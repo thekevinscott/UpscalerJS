@@ -1,10 +1,13 @@
 import path from 'path';
 import fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants.mjs';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
+import * as url from 'url';
+// const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/4x.json');
 

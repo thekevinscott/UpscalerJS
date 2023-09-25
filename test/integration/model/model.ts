@@ -1,9 +1,9 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare.mjs';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare.mjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
@@ -11,8 +11,12 @@ import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages.mjs';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants.mjs';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+
+import * as url from 'url';
+// const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const TRACK_TIME = false;
 const LOG = true;

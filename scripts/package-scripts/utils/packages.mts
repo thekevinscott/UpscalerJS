@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import findAllPackages from '../find-all-packages.js';
+import findAllPackages from '../find-all-packages.mjs';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
 import { CORE_DIR, DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, PACKAGES_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants.mjs';
 

@@ -18,6 +18,9 @@ import { Local } from 'browserstack-local';
 import { QueryTypes, Sequelize } from 'sequelize';
 import { ASSETS_DIR } from '../../utils/constants.mjs';
 import { prebuild } from '../shared/prebuild';
+import * as url from 'url';
+// const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 /****
  * Constants

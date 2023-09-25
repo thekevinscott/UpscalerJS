@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import pixelmatch from 'pixelmatch';
-import { getFixtureAsBuffer } from './getFixtureAsBuffer';
+import { getFixtureAsBuffer } from './getFixtureAsBuffer.mjs';
 import { TMP_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { PNG } from 'pngjs';
 

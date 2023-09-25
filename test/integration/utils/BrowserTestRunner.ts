@@ -1,7 +1,7 @@
 import http from 'http';
 import { Page, Browser, BrowserContext, launch, } from 'puppeteer';
-import { startServer } from '../../lib/shared/server.cjs';
-import { Opts } from '../../lib/shared/prepare.cjs';
+import { startServer } from '../../lib/shared/server.mjs';
+import { Opts } from '../../lib/shared/prepare.mjs';
 import { isIgnoredMessage } from './messages';
 import { timeit } from './timeit';
 import { catchFailures } from './catchFailures';

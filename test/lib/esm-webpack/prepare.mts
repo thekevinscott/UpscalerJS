@@ -1,14 +1,16 @@
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import { copyFixtures } from '../utils/copyFixtures';
+import { copyFixtures } from '../utils/copyFixtures.mjs';
 import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare.cjs';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare.mjs';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants.mjs';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import { Bundle } from '../../integration/utils/NodeTestRunner';
+import * as url from 'url';
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const ROOT = path.join(__dirname);
 export const DIST = path.join(ROOT, '/dist');

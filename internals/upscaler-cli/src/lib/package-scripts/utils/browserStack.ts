@@ -5,6 +5,9 @@ import * as dotenv from 'dotenv';
 import { ROOT_DIR } from './constants';
 import fsExtra from 'fs-extra';
 const { existsSync, readFileSync, writeFileSync } = fsExtra;
+import * as url from 'url';
+// const __filename = url.fileURLToPath(import.meta.url);
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 /****
  * Types

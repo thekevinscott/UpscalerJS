@@ -1,7 +1,7 @@
 import { timeit } from "./timeit";
 import path from 'path';
-import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare";
-import { Opts } from '../../lib/shared/prepare.cjs';
+import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare.mjs";
+import { Opts } from '../../lib/shared/prepare.mjs';
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir.mjs";
 
 export type Bundle<T = {}> = (opts?: T & {

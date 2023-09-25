@@ -1,4 +1,4 @@
-import { bundleEsbuild } from "../lib/esm-esbuild/prepare";
+import { bundleEsbuild } from "../lib/esm-esbuild/prepare.mjs";
 
 const dependencies = {
   browser: [
