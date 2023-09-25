@@ -128,6 +128,28 @@ jobs:
           name: artifacts-test-unit-node
           path: ./packages/upscalerjs/coverage/coverage-final.json
 
+  unit-node-loadModel:
+    name: 'Unit / Node / Load Model'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Install dependencies'
+        run: pnpm liteinstall
+
+      - name: 'Unit Tests'
+        working-directory: ./packages/upscalerjs
+        run: pnpm test:unit:node -- loadModel.node.test.ts
+
 
   core-unit:
     name: 'Core / Unit'
