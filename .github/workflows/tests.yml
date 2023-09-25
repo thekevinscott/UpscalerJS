@@ -7,7 +7,7 @@ env:
 jobs:
   lint:
     name: 'Lint'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -25,7 +25,7 @@ jobs:
 
   build:
     name: 'Build'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -49,7 +49,7 @@ jobs:
 
   unit-browser-jest:
     name: 'Unit / Browser / Jest'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -75,7 +75,7 @@ jobs:
 
   unit-browser-playwright:
     name: 'Unit / Browser / Playwright'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -102,7 +102,7 @@ jobs:
 
   unit-node:
     name: 'Unit / Node'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -130,7 +130,7 @@ jobs:
 
   unit-node-vitest:
     name: 'Unit / Node / Vitest'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -158,7 +158,7 @@ jobs:
 
   core-unit:
     name: 'Core / Unit'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -177,7 +177,7 @@ jobs:
 
   upload-to-codecov:
     name: 'Upload to CodeCov'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [ unit-node, unit-browser-jest, unit-browser-playwright ]
     steps:
       - name: Download artifacts
@@ -190,7 +190,7 @@ jobs:
 
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -230,7 +230,7 @@ jobs:
 
   integration-browser-local:
     name: 'Integration / Browser / Local'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -275,7 +275,7 @@ jobs:
 
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -307,7 +307,7 @@ jobs:
 
   models-browser:
     name: 'Models / Browser'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -339,7 +339,7 @@ jobs:
 
   models-node:
     name: 'Models / Node'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -371,7 +371,7 @@ jobs:
 
   memory-leaks:
     name: 'Memory Leaks'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
@@ -403,7 +403,7 @@ jobs:
 
   build-docs:
     name: 'Build Documentation'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [16]
