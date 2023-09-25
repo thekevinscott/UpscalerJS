@@ -73,14 +73,14 @@ describe('Browser Integration Tests', () => {
 
   test.each(browserOptions)("%j", async (capabilities: BrowserOption) => {
     driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
-    const ROOT_URL = await testRunner.getServerURL();;
+    const ROOT_URL = testRunner.serverURL;
     await driver.get(ROOT_URL);
     await driver.wait(async () => {
       const title = await driver.getTitle();
       return title.endsWith('| Loaded');
     }, 3000);
 
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const fixturePath = `${testRunner.serverURL}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const result = await executeAsyncScript(driver, ({ fixturePath }) => {
       const Upscaler = window['Upscaler'] as any;
       const upscaler = new Upscaler({
