@@ -10,7 +10,7 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
+import { scaffoldDependenciesForUpscaler } from '../build-upscaler.cjs';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';

@@ -6,7 +6,7 @@ import { rollupBuild } from './utils/rollup';
 import { uglify } from './utils/uglify';
 import { mkdirpSync } from 'fs-extra';
 import yargs from 'yargs';
-import { inputOptions, outputOptions, } from '../../packages/upscalerjs/rollup.config';
+import { inputOptions, outputOptions, } from 'upscaler/rollup.config';
 import { OutputFormat, Platform } from './prompt/types';
 import { compileTypescript } from './utils/compile';
 import { getOutputFormats } from './prompt/getOutputFormats';

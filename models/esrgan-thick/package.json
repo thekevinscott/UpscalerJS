@@ -45,10 +45,10 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-thick",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-thick -o umd",
+    "build": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-thick -o cjs -o esm -o umd",
+    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-thick -o cjs",
+    "build:esm": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-thick -o esm",
+    "build:umd": "ts-node ../../scripts/package-scripts/build-model.cts esrgan-thick -o umd",
     "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-thick"
   },
   "files": [

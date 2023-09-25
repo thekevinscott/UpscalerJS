@@ -1,4 +1,4 @@
-// This file is extended via build-model.ts
+// This file is extended via build-model.cts
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
 import type { InputOptions, } from 'rollup';

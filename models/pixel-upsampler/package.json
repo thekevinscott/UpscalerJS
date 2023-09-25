@@ -8,7 +8,7 @@
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.cjs src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/pixel-upsampler",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+    "build": "ts-node ../../scripts/package-scripts/build-model.cts pixel-upsampler -o cjs -o esm -o umd"
   },
   "exports": {
     "./2x": {
