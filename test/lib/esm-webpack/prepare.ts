@@ -3,7 +3,7 @@ import { sync as rimraf } from 'rimraf';
 import { copyFixtures } from '../utils/copyFixtures';
 import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare.cjs';
 import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
 import { MockCDN } from '../../integration/utils/BrowserTestRunner';
 import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';

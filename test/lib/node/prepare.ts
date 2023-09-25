@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare";
+import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare.cjs";
 import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
 import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels.mjs";
 import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir.mjs";

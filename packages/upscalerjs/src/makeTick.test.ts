@@ -6,7 +6,7 @@ import {
   AbortError,
 } from './errors-and-warnings';
 import { makeTick } from './makeTick';
-import { mockFn } from '../../../test/lib/shared/mockers';
+import { mockFn } from '../../../test/lib/shared/mockers.cjs';
 
 const isTensor = mockFn(_isTensor);
 

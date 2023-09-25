@@ -4,7 +4,7 @@ import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ifDefined as _ifDefined } from '../../prompt/ifDefined.mjs';
 import yargs from 'yargs';
-import { startServer } from '../../../../test/lib/shared/server';
+import { startServer } from '../../../../test/lib/shared/server.cjs';
 import http from 'http';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels.mjs';
 import { getBrowserstackAccessKey, getMobileBrowserOptions, serverURL, startBrowserstack as _startBrowserstack, stopBrowserstack } from '../../utils/browserStack.mjs';

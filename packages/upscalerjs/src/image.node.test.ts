@@ -8,9 +8,9 @@ import {
   getInvalidTensorError,
   getInvalidImageSrcInput,
 } from './image.node';
-import { mockFn } from '../../../test/lib/shared/mockers';
+import { mockFn } from '../../../test/lib/shared/mockers.cjs';
 import { tf } from './dependencies.generated';
-import { startServer } from '../../../test/lib/shared/server';
+import { startServer } from '../../../test/lib/shared/server.cjs';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants.mjs';
 import {
   hasValidChannels as _hasValidChannels,
