@@ -70,6 +70,24 @@
     "build:node-gpu": {
       "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
     },
+    "scaffold:dependencies:browser": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    },
+    "scaffold:dependencies:node": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    },
+    "docs:serve": {
+      "command": "docsify serve docs --port 3030"
+    },
+    "preversion": {
+      "command": "pnpm lint"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+    },
+    "format": {
+      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
+    },
     "lint": {
       "command": "pnpm lint:browser && pnpm lint:node"
     },
@@ -77,28 +95,49 @@
       "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
     },
     "lint:browser": {
-      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "lint:browser:fix": {
-      "command": "pnpm scaffold:dependencies:browser && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
     "lint:node": {
-      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
     },
     "lint:node:fix": {
-      "command": "pnpm scaffold:dependencies:node && eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
     },
-    "scaffold:dependencies:browser": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
+    "test:unit:browser:playwright": {
+      "command": "playwright-test --config playwright.config.json",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
-    "scaffold:dependencies:node": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    "test:unit:browser:vite": {
+      "command": "vitest --config vite.browser.ts",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ]
     },
-    "prepublishOnly": {
-      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+    "test:unit:node": {
+      "command": "vitest --config vite.node.ts",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
     },
-    "format": {
-      "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
+    "validate:build": {
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {
@@ -111,7 +150,8 @@
     "build:node-gpu": "wireit",
     "scaffold:dependencies:browser": "wireit",
     "scaffold:dependencies:node": "wireit",
-    "preversion": "pnpm lint",
+    "docs:serve": "wireit",
+    "preversion": "wireit",
     "prepublishOnly": "wireit",
     "format": "wireit",
     "lint": "wireit",
@@ -120,10 +160,10 @@
     "lint:browser:fix": "wireit",
     "lint:node": "wireit",
     "lint:node:fix": "wireit",
-    "test:unit:browser:playwright": "pnpm scaffold:dependencies:browser && playwright-test --config playwright.config.json",
-    "test:unit:browser:vite": "pnpm scaffold:dependencies:browser && vitest --config vite.browser.ts",
-    "test:unit:node": "pnpm scaffold:dependencies:node && vitest --config vite.node.ts",
-    "validate:build": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+    "test:unit:browser:playwright": "wireit",
+    "test:unit:browser:vite": "wireit",
+    "test:unit:node": "wireit",
+    "validate:build": "wireit"
   },
   "repository": {
     "type": "git",
