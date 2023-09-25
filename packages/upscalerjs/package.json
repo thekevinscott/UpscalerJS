@@ -136,6 +136,12 @@
         "scaffold:dependencies:node"
       ]
     },
+    "test:unit:node:vitest": {
+      "command": "vitest --config vite.node.ts --no-isolate",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ]
+    },
     "validate:build": {
       "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
@@ -163,6 +169,7 @@
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
+    "test:unit:node:vitest": "wireit",
     "validate:build": "wireit"
   },
   "repository": {
