@@ -1,13 +1,17 @@
 FROM myoung34/github-runner:latest
 ARG RUNNER_VERSION="2.309.0"
-ENV NODE_VERSION=16
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
+ARG RUNNER_NAME="UpscalerJS"
+ENV NODE_VERSION="16"
+ARG REPO="UpscalerJS"
+ENV REPO_URL="https://github.com/thekevinscott/$REPO"
+ENV RUNNER_WORKDIR="/_work"
+ENV EPHEMERAL=true
 ARG DEBIAN_FRONTEND=noninteractive
 
 ######## 
 # system prep
 ######## 
+RUN echo '1'
 RUN apt update -y \
 	&& apt upgrade -y \
   && apt install -y --no-install-recommends \
@@ -39,20 +43,34 @@ RUN apt update -y \
   ######## 
   # prepare start script
   ######## 
-  && cd /_work
+  && mkdir -p /_work/$RUNNER_NAME/$REPO \
+  && cd /_work/$RUNNER_NAME/$REPO
 
-  RUN git clone https://github.com/thekevinscott/upscalerjs
-  # RUN ls
-  # RUN cd upscalerjs
-  # RUN ls
-  # RUN pnpm install
-  # RUN node node_modules/puppeteer/install.js
-  # RUN pip install dvc[s3]=='2.45.1' dvc[gdrive]=='2.45.1'
-  # RUN dvc --version
-  # RUN dvc doctor
-  # RUN mkdir /dvc-cache-dir
-  # RUN dvc cache dir /dvc-cache-dir
-  # RUN dvc config cache.shared group
-  # RUN dvc config cache.type hardlink,symlink
-  # RUN dvc pull -vv -r gdrive-service-account
-  # # GDRIVE_CREDENTIALS_DATA : ${{ inputs.gdrive_credentials_data }}          
+RUN pip install \
+    dvc[s3]=='2.45.1' \
+    dvc[gdrive]=='2.45.1' \
+    dvc-gdrive \
+    dvc-s3
+
+RUN git clone $REPO_URL /_work/$RUNNER_NAME/$REPO
+WORKDIR /_work/$RUNNER_NAME/$REPO
+######## 
+# DVC 
+######## 
+COPY env/github-actions-dvc.json /_work/github-actions-dvc.json
+RUN dvc remote modify \
+    gdrive-service-account --local \
+    gdrive_service_account_json_file_path /_work/github-actions-dvc.json \
+    && dvc pull -vv -r gdrive-service-account \
+    && rm /_work/github-actions-dvc.json
+######## 
+# Refresh
+######## 
+RUN git fetch
+######## 
+# Install dependencies
+######## 
+RUN pnpm install \
+  && node node_modules/puppeteer/install.js
+
+WORKDIR /actions-runner
