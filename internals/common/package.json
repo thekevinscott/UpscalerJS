@@ -1,0 +1,14 @@
+{
+  "name": "@internals/common",
+  "private": true,
+  "dependencies": {
+    "wireit": "^0.14.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.34.5"
+  },
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

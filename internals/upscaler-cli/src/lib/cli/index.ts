@@ -6,8 +6,6 @@ import { buildCommandsTree } from './build-commands-tree.js';
 const { readFileSync, } = fsExtra;
 
   // "scripts": {
-  //   "build:upscaler": "pnpm __run_command ./package-scripts/build-upscaler.ts",
-  //   "build:core": "pnpm __run_command ./package-scripts/build-core.ts",
   //   "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
   //   "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
   //   "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",

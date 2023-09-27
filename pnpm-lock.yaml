@@ -35,6 +35,9 @@ importers:
       '@babel/preset-typescript':
         specifier: 7.22.5
         version: 7.22.5(@babel/core@7.22.10)
+      '@internals/common':
+        specifier: workspace:*
+        version: link:internals/common
       '@internals/upscaler-cli':
         specifier: workspace:*
         version: link:internals/upscaler-cli
@@ -540,8 +543,21 @@ importers:
         specifier: ^3.5.1
         version: 3.5.1
 
+  internals/common:
+    dependencies:
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
+    devDependencies:
+      vitest:
+        specifier: ^0.34.5
+        version: 0.34.5(jsdom@22.1.0)
+
   internals/upscaler-cli:
     dependencies:
+      '@internals/common':
+        specifier: workspace:*
+        version: link:../common
       '@types/commander':
         specifier: ^2.12.2
         version: 2.12.2

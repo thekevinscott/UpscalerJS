@@ -28,13 +28,47 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' "
     },
     "build": {
-      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate"
+      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
     },
     "build:esm": {
-      "command": "pnpm --filter @upscalerjs/scripts build:core browser -o esm"
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
     },
     "build:cjs": {
-      "command": "pnpm --filter @upscalerjs/scripts build:core node -o cjs"
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/cjs/**"
+      ]
     }
   },
   "scripts": {

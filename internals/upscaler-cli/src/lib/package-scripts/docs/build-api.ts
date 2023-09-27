@@ -10,7 +10,7 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { scaffoldDependenciesForUpscaler } from '../build-upscaler';
+import { runPNPMScript } from '@internals/common';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
@@ -388,7 +388,7 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   const platforms: Platform[] = ['browser', 'node'];
   const platformSpecificTypes: DeclarationReflection[] = [];
   for (const platform of platforms) {
-    await scaffoldDependenciesForUpscaler(platform);
+    await runPNPMScript(`scaffold:dependencies:${platform}`, 'upscaler');
     const imageBrowser = getPackageAsTree(
       path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
@@ -455,7 +455,7 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  await scaffoldDependenciesForUpscaler('node');
+  await runPNPMScript(`scaffold:dependencies:node`, 'upscaler');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,
