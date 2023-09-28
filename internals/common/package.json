@@ -2,7 +2,6 @@
   "name": "@internals/common",
   "private": true,
   "main": "./src/index.ts",
-  "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./models": "./dist/models.js",
