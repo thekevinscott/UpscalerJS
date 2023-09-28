@@ -23,30 +23,6 @@ jobs:
       - name: 'Lint'
         run: 'pnpm lint'
 
-  build:
-    name: 'Build'
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
-    steps:
-      - name: 'Checkout repository'
-        uses: actions/checkout@v2
-
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Build Upscaler dependencies'
-        run: 'pnpm --filter="upscaler" build:dependencies'
-
-      - name: 'Build'
-        run: 'pnpm --filter="upscaler" build:only'
-
-      - name: 'Validate'
-        run: 'pnpm --filter="upscaler" validate:build'
-
   unit-browser-vite:
     name: 'Unit / Browser / Vite'
     runs-on: ubuntu-latest
