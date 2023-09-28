@@ -152,7 +152,7 @@
     "build:node-gpu": {
       "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/node-gpu/cjs",
       "dependencies": [
-        "scaffold:dependencies:node"
+        "scaffold:dependencies:node-gpu"
       ],
       "files": [
         "src/**/*.ts",
@@ -173,6 +173,9 @@
     },
     "scaffold:dependencies:node": {
       "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    },
+    "scaffold:dependencies:node-gpu": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node-gpu"
     },
     "docs:serve": {
       "command": "docsify serve docs --port 3030"
