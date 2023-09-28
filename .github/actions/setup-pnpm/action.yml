@@ -1,0 +1,32 @@
+name: Setup PNPM
+description: "Sets up PNPM"
+
+inputs:
+  node-version:
+    description: 'Node Version'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: pnpm/action-setup@v2
+      with:
+        version: 8
+
+    - name: Use Node.js ${{ inputs.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+        # cache: 'pnpm'
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install
+
+    - name: Install Puppeteer explicitly
+      shell: bash
+      run: node node_modules/puppeteer/install.js
+
+    # - name: Re-install @tensorflow/tfjs-node
+    #   shell: bash
+    #   run: cd node_modules/@tensorflow/tfjs-node && pnpm run install
