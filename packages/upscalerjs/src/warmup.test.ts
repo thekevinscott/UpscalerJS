@@ -8,7 +8,7 @@ import {
 import { PostProcess, PreProcess } from '@upscalerjs/core';
 
 const getFakeModel = () => {
-  const predict = jest.fn(() => {
+  const predict = vi.fn(() => {
     return {
       dataSync: () => {},
       dispose: () => {},
@@ -215,7 +215,7 @@ describe('cancellableWarmup', () => {
     it('is able to cancel an in-flight request', async () => {
       const controller = new AbortController();
 
-      const predict = jest.fn(() => {
+      const predict = vi.fn(() => {
         controller.abort();
         return {
           dataSync: () => {},
@@ -249,7 +249,7 @@ describe('cancellableWarmup', () => {
     it('is able to cancel an in-flight request with an internal signal', async () => {
       const controller = new AbortController();
 
-      const predict = jest.fn(() => {
+      const predict = vi.fn(() => {
         controller.abort();
         return {
           dataSync: () => {},
@@ -284,7 +284,7 @@ describe('cancellableWarmup', () => {
 describe('Warmup', () => {
   it('should clear up all memory while running without pre or post functions', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -327,7 +327,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a pre function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -373,7 +373,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a post function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -419,7 +419,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a pre and post function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -468,7 +468,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with sizes of different formats', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,

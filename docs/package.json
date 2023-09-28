@@ -3,27 +3,27 @@
   "version": "1.0.0-beta.10",
   "private": true,
   "scripts": {
-    "build:dependencies": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build",
-    "build-api": "pnpm --filter @upscalerjs/scripts docs:build-api",
-    "build-api:watch": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\"",
-    "build-guides": "pnpm --filter @upscalerjs/scripts docs:build-guides",
-    "build-guides:watch": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/build-guides.ts' -x \"pnpm run build-guides\"",
-    "link-model-readmes": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes",
-    "link-model-readmes:watch": "nodemon -e md -e mdx --watch '../models/**/*' --watch '../scripts/package-scripts/docs/link-model-readmes.ts' -x \"pnpm run link-model-readmes\"",
-    "docusaurus": "docusaurus",
-    "start": "pnpm run start:all",
-    "start:all": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\"",
-    "docusaurus:start": "docusaurus start --host 0.0.0.0",
-    "build:only": "docusaurus build",
-    "build": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "tense-checks": "pnpm --filter @upscalerjs/scripts docs:tense-checks",
-    "typecheck": "tsc"
+    "build:dependencies": "wireit",
+    "build-api": "wireit",
+    "build-api:watch": "wireit",
+    "build-guides": "wireit",
+    "build-guides:watch": "wireit",
+    "link-model-readmes": "wireit",
+    "link-model-readmes:watch": "wireit",
+    "docusaurus": "wireit",
+    "start": "wireit",
+    "start:all": "wireit",
+    "docusaurus:start": "wireit",
+    "build:only": "wireit",
+    "build": "wireit",
+    "swizzle": "wireit",
+    "deploy": "wireit",
+    "clear": "wireit",
+    "serve": "wireit",
+    "write-translations": "wireit",
+    "write-heading-ids": "wireit",
+    "tense-checks": "wireit",
+    "typecheck": "wireit"
   },
   "dependencies": {
     "@docusaurus/core": "^2.4.1",
@@ -93,5 +93,70 @@
   },
   "engines": {
     "node": ">=16.14"
+  },
+  "wireit": {
+    "build:dependencies": {
+      "command": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build"
+    },
+    "build-api": {
+      "command": "pnpm --filter @upscalerjs/scripts docs:build-api"
+    },
+    "build-api:watch": {
+      "command": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\""
+    },
+    "build-guides": {
+      "command": "pnpm --filter @upscalerjs/scripts docs:build-guides"
+    },
+    "build-guides:watch": {
+      "command": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/build-guides.ts' -x \"pnpm run build-guides\""
+    },
+    "link-model-readmes": {
+      "command": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes"
+    },
+    "link-model-readmes:watch": {
+      "command": "nodemon -e md -e mdx --watch '../models/**/*' --watch '../scripts/package-scripts/docs/link-model-readmes.ts' -x \"pnpm run link-model-readmes\""
+    },
+    "docusaurus": {
+      "command": "docusaurus"
+    },
+    "start": {
+      "command": "pnpm run start:all"
+    },
+    "start:all": {
+      "command": "concurrently \"pnpm run docusaurus:start\" \"pnpm run link-model-readmes:watch\" \"pnpm run build-guides:watch\" \"pnpm run build-api:watch\""
+    },
+    "docusaurus:start": {
+      "command": "docusaurus start --host 0.0.0.0"
+    },
+    "build:only": {
+      "command": "docusaurus build"
+    },
+    "build": {
+      "command": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only"
+    },
+    "swizzle": {
+      "command": "docusaurus swizzle"
+    },
+    "deploy": {
+      "command": "docusaurus deploy"
+    },
+    "clear": {
+      "command": "docusaurus clear"
+    },
+    "serve": {
+      "command": "docusaurus serve"
+    },
+    "write-translations": {
+      "command": "docusaurus write-translations"
+    },
+    "write-heading-ids": {
+      "command": "docusaurus write-heading-ids"
+    },
+    "tense-checks": {
+      "command": "pnpm --filter @upscalerjs/scripts docs:tense-checks"
+    },
+    "typecheck": {
+      "command": "tsc"
+    }
   }
 }

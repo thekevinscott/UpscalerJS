@@ -3,9 +3,18 @@
   "version": "1.0.0-beta.17",
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
-    "./node": "./dist/node/cjs/cjs.js",
-    "./node-gpu": "./dist/node-gpu/cjs/cjs.js",
-    ".": "./dist/browser/esm/index.js"
+    "./node": {
+      "types": "./dist/node/cjs/cjs.d.ts",
+      "require": "./dist/node/cjs/cjs.js"
+    },
+    "./node-gpu": {
+      "types": "./dist/node-gpu/cjs/cjs.d.ts",
+      "require": "./dist/node-gpu/cjs/cjs.js"
+    },
+    ".": {
+      "types": "./dist/browser/esm/index.d.ts",
+      "import": "./dist/browser/esm/index.js"
+    }
   },
   "engines": {
     "node": ">=16.0"
@@ -37,35 +46,136 @@
   ],
   "wireit": {
     "build": {
-      "command": "pnpm build:only && pnpm validate:build",
+      "command": "pnpm run build:node-gpu && pnpm run build:node && pnpm run build:browser",
       "dependencies": [
         "../core:build",
         "../../models/default-model:build"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.cjs.json",
+        "tsconfig.umd.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
       ]
     },
-    "build:only": {
-      "command": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser"
-    },
-    "build:browser": {
-      "command": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm -o umd"
-    },
     "build:browser:esm": {
-      "command": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o esm"
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/browser/esm",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.node.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/browser/esm/**"
+      ]
     },
     "build:browser:umd": {
-      "command": "pnpm --filter @upscalerjs/scripts build:upscaler browser -o umd"
+      "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/umd-tmp",
+      "dependencies": [
+        "scaffold:dependencies:browser"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.node.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.umd.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/browser/umd/**"
+      ]
+    },
+    "build:browser:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/browser/umd-tmp"
+    },
+    "build:browser:umd:rollup": {
+      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/umd-tmp/umd.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
+    },
+    "build:browser:umd:uglify": {
+      "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
+    },
+    "build:browser": {
+      "command": "pnpm run build:browser:esm && pnpm run build:browser:umd",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.node.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.umd.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/browser/**"
+      ]
     },
     "build:node": {
-      "command": "pnpm --filter @upscalerjs/scripts build:upscaler node -o cjs"
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/node/cjs",
+      "dependencies": [
+        "scaffold:dependencies:node"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.browser.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node/**"
+      ]
     },
     "build:node-gpu": {
-      "command": "pnpm --filter @upscalerjs/scripts build:upscaler node-gpu -o cjs"
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/node-gpu/cjs",
+      "dependencies": [
+        "scaffold:dependencies:node-gpu"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.browser.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node-gpu/**"
+      ]
     },
     "scaffold:dependencies:browser": {
       "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
     },
     "scaffold:dependencies:node": {
       "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
+    },
+    "scaffold:dependencies:node-gpu": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node-gpu"
     },
     "docs:serve": {
       "command": "docsify serve docs --port 3030"
@@ -74,7 +184,7 @@
       "command": "pnpm lint"
     },
     "prepublishOnly": {
-      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate:build"
+      "command": "pnpm lint && pnpm test && pnpm build"
     },
     "format": {
       "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
@@ -115,14 +225,14 @@
         "scaffold:dependencies:browser"
       ]
     },
-    "test:unit:browser:jest": {
-      "command": "jest --config jestconfig.browser.json",
+    "test:unit:browser:vite": {
+      "command": "vitest --config vite.browser.ts",
       "dependencies": [
         "scaffold:dependencies:browser"
       ]
     },
     "test:unit:node": {
-      "command": "jest --config jestconfig.node.json",
+      "command": "vitest --config vite.node.ts",
       "dependencies": [
         "scaffold:dependencies:node"
       ]
@@ -133,10 +243,12 @@
   },
   "scripts": {
     "build": "wireit",
-    "build:only": "wireit",
-    "build:browser": "wireit",
     "build:browser:esm": "wireit",
     "build:browser:umd": "wireit",
+    "build:browser:umd:tsc": "wireit",
+    "build:browser:umd:rollup": "wireit",
+    "build:browser:umd:uglify": "wireit",
+    "build:browser": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
     "scaffold:dependencies:browser": "wireit",
@@ -152,7 +264,7 @@
     "lint:node": "wireit",
     "lint:node:fix": "wireit",
     "test:unit:browser:playwright": "wireit",
-    "test:unit:browser:jest": "wireit",
+    "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
     "validate:build": "wireit"
   },
@@ -179,6 +291,7 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/jest": "^29.5.3",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "vitest": "^0.34.5"
   }
 }
