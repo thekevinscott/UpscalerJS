@@ -213,7 +213,7 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  await runPNPMScript(`scaffold:dependencies:node`, 'upscaler');
+  await runPNPMScript('scaffold:dependencies:node', 'upscaler');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,

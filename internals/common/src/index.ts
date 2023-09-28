@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 
-export const runPNPMScript = async (script: string, ...filter: string[]): Promise<void> => new Promise((resolve, reject) => {
+export const runPNPMScript = (script: string, ...filter: string[]): Promise<void> => new Promise((resolve, reject) => {
   const command = [
     'pnpm',
     filter.map(f => `--filter ${f}`).join(' '),
