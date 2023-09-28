@@ -245,7 +245,6 @@ jobs:
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
-    container: upscalerjs/actions-image:latest
     strategy:
       matrix:
         node-version: [16]
