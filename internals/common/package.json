@@ -8,10 +8,10 @@
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
     "./constants": "./dist/constants.js",
-    "./logger": "./dist/logger.js",
+    "./logger": "./dist/logger.mjs",
     "./git": "./dist/git.js",
     "./packages": "./dist/packages.js",
-    "./npm": "./dist/npm.js",
+    "./npm": "./dist/npm.mjs",
     "./get-hashed-name": "./dist/get-hashed-name.js",
     "./tfjs-library": "./dist/tfjs-library.js",
     "./types": "./dist/types.js",
@@ -38,12 +38,12 @@
   },
   "wireit": {
     "build": {
-      "command": "tsc",
+      "command": "tsc -p ./tsconfig.json",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
-        "vitest.config.ts",
+        "vite.config.ts",
         "tsconfig.json"
       ],
       "output": [
@@ -51,7 +51,7 @@
       ]
     },
     "test": {
-      "command": "vitest"
+      "command": "vitest --config vite.config.js"
     }
   },
   "scripts": {

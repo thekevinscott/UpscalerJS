@@ -4,11 +4,11 @@
 import path from 'path';
 import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../../lib/esm-esbuild/prepare.js';
 import { executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
 import { getCurrentBranch } from '@internals/common/git';
-import { checkImage } from '../../lib/utils/checkImage';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import { MODELS_DIR } from '@internals/common/constants';
 
 

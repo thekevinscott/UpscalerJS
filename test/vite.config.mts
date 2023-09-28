@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
@@ -10,6 +9,8 @@ export default defineConfig({
   test: {
     include: [
       'tests/**/*.ts',
+      'tests/**/*.mts',
+      'tests/**/*.cts',
     ],
     globals: true,
     testTimeout: TEST_TIMEOUT,

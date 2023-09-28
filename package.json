@@ -212,7 +212,10 @@
       "command": "ts-node test/lib/start-test-server.ts"
     },
     "test:integration:browserstack": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack"
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+      "dependencies": [
+        "./internals/common:build"
+      ]
     },
     "test:integration:browser": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browser"

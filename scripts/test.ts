@@ -222,7 +222,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     }
 
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vitest.config.ts')] : [
+    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
       'pnpm',
       'jest',
       '--config',
