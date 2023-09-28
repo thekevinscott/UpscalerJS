@@ -7,26 +7,36 @@ env:
 jobs:
   lint:
     name: 'Lint'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Lint'
         run: 'pnpm lint'
 
   build:
     name: 'Build'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Build Upscaler dependencies'
         run: 'pnpm --filter="upscaler" build:dependencies'
@@ -39,13 +49,18 @@ jobs:
 
   unit-browser-vite:
     name: 'Unit / Browser / Vite'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Vite'
         working-directory: ./packages/upscalerjs
@@ -60,13 +75,18 @@ jobs:
 
   unit-browser-playwright:
     name: 'Unit / Browser / Playwright'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -82,13 +102,18 @@ jobs:
 
   unit-node:
     name: 'Unit / Node'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -102,13 +127,18 @@ jobs:
 
   core-unit:
     name: 'Core / Unit'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -116,7 +146,7 @@ jobs:
 
   upload-to-codecov:
     name: 'Upload to CodeCov'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [ unit-node, unit-browser-vite, unit-browser-playwright ]
     steps:
       - name: Download artifacts
@@ -129,19 +159,29 @@ jobs:
 
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
         with:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
       
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -159,13 +199,29 @@ jobs:
 
   integration-browser-local:
     name: 'Integration / Browser / Local'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
+        uses: browserstack/github-actions/setup-env@master
+        with:
+          username: ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -188,13 +244,24 @@ jobs:
 
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    container: upscalerjs/actions-image:latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
         run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -210,13 +277,23 @@ jobs:
 
   models-browser:
     name: 'Models / Browser'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
         run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -232,13 +309,23 @@ jobs:
 
   models-node:
     name: 'Models / Node'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
         run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -254,13 +341,23 @@ jobs:
 
   memory-leaks:
     name: 'Memory Leaks'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
         run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
@@ -276,18 +373,28 @@ jobs:
 
   build-docs:
     name: 'Build Documentation'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16]
     steps:
-      - name: 'Checkout branch'
-        run: 'git fetch origin ks/self-hosted-runner-config && git reset --hard origin/ks/self-hosted-runner-config && git checkout ks/self-hosted-runner-config && git pull origin ks/self-hosted-runner-config'
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
 
-      - name: 'Setup'
-        uses: ./.github/actions/setup
+      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: ${{ matrix.node-version }}
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
+
+      - name: 'Setup DVC & Pull Models'
+        uses: ./.github/actions/setup-dvc
+        with:
+          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Install dependencies'
         run: pnpm install

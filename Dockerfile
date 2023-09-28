@@ -8,6 +8,7 @@ ENV REPO_URL="https://github.com/thekevinscott/$REPO"
 ENV RUNNER_WORKDIR="/_work"
 ENV EPHEMERAL=true
 ARG DEBIAN_FRONTEND=noninteractive
+WORKDIR /_work/$RUNNER_NAME/$REPO
 
 ######## 
 # system prep
@@ -73,10 +74,15 @@ RUN apt update -y \
   ######## 
   # move to correct dir
   ######## 
-  && mkdir -p /_work/$RUNNER_NAME/$REPO
+  && mkdir -p /_work/$RUNNER_NAME/$REPO \
+  && git clone $REPO_URL /_work/$RUNNER_NAME/$REPO \
+######## 
+# Refresh & Install dependencies
+######## 
+  # && git fetch \
+  && pnpm install \
+  && node node_modules/puppeteer/install.js
 
-WORKDIR /_work/$RUNNER_NAME/$REPO
-RUN git clone $REPO_URL /_work/$RUNNER_NAME/$REPO
 ######## 
 # DVC 
 ######## 
@@ -84,19 +90,9 @@ RUN --mount=type=secret,id=GDRIVE_CREDENTIALS_DATA \
     dvc remote modify \
     gdrive-service-account --local \
     gdrive_service_account_json_file_path /run/secrets/GDRIVE_CREDENTIALS_DATA \
-    && dvc pull -vv -r gdrive-service-account
-
-RUN dvc remote modify \
+    && dvc pull -vv -r gdrive-service-account \
+    && dvc remote modify \
     gdrive-service-account --local \
     gdrive_service_account_json_file_path false
-######## 
-# Refresh
-######## 
-RUN git fetch
-######## 
-# Install dependencies
-######## 
-RUN pnpm install \
-  && node node_modules/puppeteer/install.js
 
 ARG CACHEBUST=1 
