@@ -1,4 +1,5 @@
-FROM myoung34/github-runner:latest
+FROM ubuntu:22.04
+# FROM myoung34/github-runner:latest
 ARG RUNNER_VERSION="2.309.0"
 ARG RUNNER_NAME="UpscalerJS"
 ENV NODE_VERSION="16"
@@ -11,7 +12,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 ######## 
 # system prep
 ######## 
-RUN echo '1'
 RUN apt update -y \
 	&& apt upgrade -y \
   && apt install -y --no-install-recommends \
@@ -41,28 +41,54 @@ RUN apt update -y \
   && apt-get install nodejs -y \
   && corepack enable \
   ######## 
-  # prepare start script
+  # deps for playwright
   ######## 
-  && mkdir -p /_work/$RUNNER_NAME/$REPO \
-  && cd /_work/$RUNNER_NAME/$REPO
-
-RUN pip install \
+  && apt-get install -y \
+    libnss3 \                         
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxcb1 \
+    libxkbcommon0 \
+    libatspi2.0-0 \
+    libx11-6 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    # libcairo \
+    libpango-1.0-0 \
+  ######## 
+  # install DVC
+  ######## 
+  && pip install \
     dvc[s3]=='2.45.1' \
     dvc[gdrive]=='2.45.1' \
     dvc-gdrive \
-    dvc-s3
+    dvc-s3 \
+  ######## 
+  # move to correct dir
+  ######## 
+  && mkdir -p /_work/$RUNNER_NAME/$REPO
 
-RUN git clone $REPO_URL /_work/$RUNNER_NAME/$REPO
 WORKDIR /_work/$RUNNER_NAME/$REPO
+RUN git clone $REPO_URL /_work/$RUNNER_NAME/$REPO
 ######## 
 # DVC 
 ######## 
-COPY env/github-actions-dvc.json /_work/github-actions-dvc.json
+RUN --mount=type=secret,id=GDRIVE_CREDENTIALS_DATA \
+    dvc remote modify \
+    gdrive-service-account --local \
+    gdrive_service_account_json_file_path /run/secrets/GDRIVE_CREDENTIALS_DATA \
+    && dvc pull -vv -r gdrive-service-account
+
 RUN dvc remote modify \
     gdrive-service-account --local \
-    gdrive_service_account_json_file_path /_work/github-actions-dvc.json \
-    && dvc pull -vv -r gdrive-service-account \
-    && rm /_work/github-actions-dvc.json
+    gdrive_service_account_json_file_path false
 ######## 
 # Refresh
 ######## 
@@ -73,4 +99,4 @@ RUN git fetch
 RUN pnpm install \
   && node node_modules/puppeteer/install.js
 
-WORKDIR /actions-runner
+ARG CACHEBUST=1 
