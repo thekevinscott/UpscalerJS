@@ -3,7 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 import { makeImg } from './image';
 import { AVAILABLE_PACKAGES, loadAvailableModels } from './filters';
 // import Upscaler, { ModelDefinition } from 'upscaler';
-import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/index';
+import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/esm';
 import { getFixture, getModelPath, getRoot, importModel, loadPackageJSON } from './utils';
 
 const packages = document.getElementById('packages') as HTMLSelectElement;

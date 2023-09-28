@@ -12,15 +12,15 @@
       "require": "./dist/node-gpu/cjs/cjs.js"
     },
     ".": {
-      "types": "./dist/browser/esm/index.d.ts",
-      "import": "./dist/browser/esm/index.js"
+      "types": "./dist/browser/esm/esm.d.ts",
+      "import": "./dist/browser/esm/esm.js"
     }
   },
   "engines": {
     "node": ">=16.0"
   },
-  "module": "dist/browser/esm/index.js",
-  "types": "dist/browser/esm/index.d.ts",
+  "module": "dist/browser/esm/esm.js",
+  "types": "dist/browser/esm/esm.d.ts",
   "umd:main": "dist/browser/umd/upscaler.min.js",
   "keywords": [
     "image enhancement",
@@ -238,7 +238,7 @@
       ]
     },
     "validate:build": {
-      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/esm.js' -c './dist/browser/esm/esm.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {

@@ -5,7 +5,7 @@ import path from 'path';
 import webdriver from 'selenium-webdriver';
 import { checkImage } from '../../lib/utils/checkImage';
 import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import Upscaler from '../../../packages/upscalerjs';
+import Upscaler from '../../../packages/upscalerjs/dist/browser/esm/esm';
 import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import { BrowserOption, executeAsyncScript, getBrowserOptions, getDriver, printLogs, serverURL } from '../../../scripts/package-scripts/utils/browserStack';
