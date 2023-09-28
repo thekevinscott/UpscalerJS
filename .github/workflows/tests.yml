@@ -141,9 +141,6 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
         run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -177,9 +174,6 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
         run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -207,9 +201,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
         run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
@@ -245,9 +236,6 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Build Upscaler'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
         run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -274,9 +262,6 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
         run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -302,9 +287,6 @@ jobs:
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Build Upscaler'
-        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
         run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle

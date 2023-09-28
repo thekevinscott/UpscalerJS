@@ -211,19 +211,37 @@
       "command": "ts-node test/lib/start-test-server.ts"
     },
     "test:integration:browserstack": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack"
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:integration:browser": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser"
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:integration:node": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:node"
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
+      "dependencies": [
+        "./packages/upscalerjs:build:node-gpu",
+        "./packages/upscalerjs:build:node"
+      ]
     },
     "test:model": {
-      "command": "pnpm --filter @upscalerjs/scripts test:model"
+      "command": "pnpm --filter @upscalerjs/scripts test:model",
+      "dependencies": [
+        "./packages/upscalerjs:build:node-gpu",
+        "./packages/upscalerjs:build:node",
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:memory-leaks": {
-      "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks"
+      "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:unit:browser:playwright": {
       "command": "pnpm --filter upscaler test:unit:browser:playwright"
