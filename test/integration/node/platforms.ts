@@ -63,8 +63,6 @@ describe('Node Platforms Integration Tests', () => {
           'tf': `@tensorflow/tfjs-${platform}`,
           'Upscaler': `${LOCAL_UPSCALER_NAME}/${platform}`,
         },
-      }, {
-        removeTmpDir: false,
       });
       const formattedResult = `data:image/png;base64,${result}`;
       checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
