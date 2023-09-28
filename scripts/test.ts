@@ -251,7 +251,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   runner: Runner;

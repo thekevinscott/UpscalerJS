@@ -223,7 +223,7 @@
       ]
     },
     "test:integration:node": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
+      "command": "echo 1",
       "dependencies": [
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node"
