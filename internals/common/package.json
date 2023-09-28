@@ -4,6 +4,7 @@
   "main": "./src/index.ts",
   "type": "module",
   "exports": {
+    ".": "./src/index.ts",
     "./models": "./dist/models.js",
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
