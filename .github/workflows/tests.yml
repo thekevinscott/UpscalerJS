@@ -250,30 +250,18 @@ jobs:
       matrix:
         node-version: [16]
     steps:
+      - name: Delete unnecessary tools folder
+        run: rm -rf /opt/hostedtoolcache
+
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
+      - name: Run integration tests
+        uses: docker://upscalerjs/actions-image:latest
+        with: 
+          entrypoint: /bin/bash
+          args: pnpm install && dvc pull && pnpm test:integration:node --ci --verbose
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
-
-      - name: 'Build Models'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
-      - name: 'Bundle'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
-
-      - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   models-browser:
     name: 'Models / Browser'
