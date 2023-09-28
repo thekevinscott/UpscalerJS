@@ -1,4 +1,5 @@
-import { tf, } from './dependencies.generated';
+import * as tf from '@tensorflow/tfjs';
+import type { TF, } from '@upscalerjs/core';
 import { CheckValidEnvironment, } from './types';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
@@ -40,7 +41,7 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise
 
 const fromPixels = (input: Exclude<Input, string | tf.Tensor>) => tf.browser.fromPixelsAsync(input);
 
-const getTensorFromInput = async (input: Input): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = async (input: Input, _tf: typeof tf): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isTensor(input)) {
     return input;
   }
@@ -56,8 +57,9 @@ const getTensorFromInput = async (input: Input): Promise<tf.Tensor3D | tf.Tensor
 export type Input = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
 export const getImageAsTensor = async (
   input: Input,
+  _tf: typeof tf,
 ): Promise<tf.Tensor4D> => {
-  const tensor = await getTensorFromInput(input);
+  const tensor = await getTensorFromInput(input, _tf);
 
   if (isThreeDimensionalTensor(tensor)) {
     // https://github.com/tensorflow/tfjs/issues/1125
@@ -82,8 +84,8 @@ export const isHTMLImageElement = (pixels: Input): pixels is HTMLImageElement =>
   }
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
-  const arr = tensorAsClampedArray(tensor);
+export const tensorAsBase64 = (tf: TF, tensor: tf.Tensor3D): string => {
+  const arr = tensorAsClampedArray(tf, tensor);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
   imageData.data.set(arr);

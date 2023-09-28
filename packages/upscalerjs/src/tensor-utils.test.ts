@@ -1,7 +1,7 @@
 import * as tfn from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
 import { Tensor4D, ones, tensor } from '@tensorflow/tfjs-node';
-import { tf } from './dependencies.generated';
+import * as tf from '@tensorflow/tfjs-node';
 import {
   padInput,
   trimInput,
@@ -27,7 +27,6 @@ import {
 } from './errors-and-warnings';
 
 import type * as imageGenerated from './image.generated';
-import type * as dependenciesGenerated from './dependencies.generated';
 import type * as core from '@upscalerjs/core';
 
 vi.mock('./image.generated', async () => {
@@ -39,16 +38,13 @@ vi.mock('./image.generated', async () => {
   };
 });
 
-vi.mock('./dependencies.generated', async () => {
-  const { tf, ...dependencies } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
+vi.mock('@tensorflow/tfjs-node', async () => {
+  const tf = await vi.importActual('@tensorflow/tfjs-node') as typeof tf;
   return {
-    ...dependencies,
-    tf: {
-      ...tf,
-      registerOp: vi.fn(),
-      loadLayersModel: vi.fn(),
-      loadGraphModel: vi.fn(),
-    },
+    ...tf,
+    registerOp: vi.fn(),
+    loadLayersModel: vi.fn(),
+    loadGraphModel: vi.fn(),
   };
 });
 
@@ -73,36 +69,36 @@ describe('padInput', () => {
 
   it('just returns the input if inputSize is less than the shape of the tensor', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(padInput([null, 2, 2, 3])(t)).toEqual(t);
+    expect(padInput(tf, [null, 2, 2, 3])(t)).toEqual(t);
   });
 
   it('just returns the input if inputSize is equal to the width of the tensor', () => {
     const t = ones([1, 4, 8, 3]) as Tensor4D;
-    expect(padInput([null, 4, 4, 3])(t)).toEqual(t);
+    expect(padInput(tf, [null, 4, 4, 3])(t)).toEqual(t);
   });
 
   it('just returns the input if inputSize is equal to the height of the tensor', () => {
     const t = ones([1, 8, 4, 3]) as Tensor4D;
-    expect(padInput([null, 4, 4, 3])(t)).toEqual(t);
+    expect(padInput(tf, [null, 4, 4, 3])(t)).toEqual(t);
   });
 
   it('returns an image with padding if input size is greater than image', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = padInput([null, 6, 6, 3])(t);
+    const result = padInput(tf, [null, 6, 6, 3])(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 6, 6, 3]);
   });
 
   it('returns an image with padding if input size is greater than the height', () => {
     const t = ones([1, 4, 8, 3]) as Tensor4D;
-    const result = padInput([null, 6, 6, 3])(t);
+    const result = padInput(tf, [null, 6, 6, 3])(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 6, 8, 3]);
   });
 
   it('returns an image with padding if input size is greater than the width', () => {
     const t = ones([1, 8, 4, 3]) as Tensor4D;
-    const result = padInput([null, 6, 6, 3])(t);
+    const result = padInput(tf, [null, 6, 6, 3])(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 8, 6, 3]);
   });
@@ -111,19 +107,19 @@ describe('padInput', () => {
 describe('trimInput', () => {
   it('just returns the input if width and height are equal to pixels shape', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    expect(trimInput([1, 4, 4, 3], 1)(t)).toEqual(t);
+    expect(trimInput(tf, [1, 4, 4, 3], 1)(t)).toEqual(t);
   });
 
   it('returns a sliced image if image height is smaller than pixels height', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 2, 4, 3], 1)(t);
+    const result = trimInput(tf, [1, 2, 4, 3], 1)(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 2, 4, 3]);
   });
 
   it('returns a sliced image if image width is smaller than pixels width', () => {
     const t = ones([1, 4, 4, 3]) as Tensor4D;
-    const result = trimInput([1, 4, 2, 3], 1)(t);
+    const result = trimInput(tf, [1, 4, 2, 3], 1)(t);
     expect(result).not.toEqual(t);
     expect(result.shape).toEqual([1, 4, 2, 3]);
   });
@@ -179,29 +175,29 @@ describe('scaleIncomingPixels', () => {
   });
 
   it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels()(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    const result = Array.from(scaleIncomingPixels(tf)(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
     expect(result).toEqual([0, 127, 255]);
   }));
 
   it('returns unadulterated incoming pixels if given a range of 0-1', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
+    const result = Array.from(scaleIncomingPixels(tf, [0,255])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync());
     expect(result).toEqual([0, 127, 255]);
   }));
 
   it('scales incoming pixels if given a range of 0-255', () => tf.tidy(() => {
-    const result = Array.from(scaleIncomingPixels([0,1])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
+    const result = Array.from(scaleIncomingPixels(tf, [0,1])(tf.tensor4d([[[[0, 127, 255]]]])).dataSync().map(n => Math.round(n * 100) / 100));
     expect(result).toEqual([0,.5,1]);
   }));
 });
 
 describe('tensorAsClampedArray', () => {
   it('returns an array', () => {
-    const result = tensorAsClampedArray(tensor([[[2, 2, 3], [2, 1, 4], [5, 5, 5], [6, 6, 6], [7, 7, 7], [8, 8, 8]]]))
+    const result = tensorAsClampedArray(tf, tensor([[[2, 2, 3], [2, 1, 4], [5, 5, 5], [6, 6, 6], [7, 7, 7], [8, 8, 8]]]))
     expect(Array.from(result)).toEqual([2, 2, 3, 255, 2, 1, 4, 255, 5, 5, 5, 255, 6, 6, 6, 255, 7, 7, 7, 255, 8, 8, 8, 255]);
   });
 
   it('returns a clamped array', () => {
-    const result = tensorAsClampedArray(tensor([[[-100, 2, 3], [256, 1, 4], [500, 5, 5], [6, 6, 6]]]))
+    const result = tensorAsClampedArray(tf, tensor([[[-100, 2, 3], [256, 1, 4], [500, 5, 5], [6, 6, 6]]]))
     expect(Array.from(result)).toEqual([0, 2, 3, 255, 255, 1, 4, 255, 255, 5, 5, 255, 6, 6, 6, 255]);
   });
 });
@@ -223,7 +219,7 @@ describe('concatTensors', () => {
     );
     const axis = 1;
     const expected = tf.concat([a, b], axis);
-    const result = concatTensors([a, b], axis);
+    const result = concatTensors(tf, [a, b], axis);
     expect(result.shape).toEqual([2, 4, 3])
     expect(result.dataSync()).toEqual(expected.dataSync());
     expect(a.isDisposed).toBe(true);
@@ -231,7 +227,7 @@ describe('concatTensors', () => {
   });
 
   it('throws if given no tensors', () => {
-    expect(() => concatTensors([undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR);
+    expect(() => concatTensors(tf, [undefined, undefined])).toThrowError(GET_UNDEFINED_TENSORS_ERROR);
   });
 });
 

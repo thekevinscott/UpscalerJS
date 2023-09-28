@@ -88,7 +88,7 @@ describe('Upscaler', () => {
 
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
-    vi.mocked(cancellableUpscale).mockImplementation(async function (_1, _2, { signal }: {
+    vi.mocked(cancellableUpscale).mockImplementation(async function (_0, _1, _2, { signal }: {
       signal: AbortSignal;
     }) {
       try {
@@ -228,7 +228,7 @@ describe('Upscaler', () => {
       });
       await new Promise(r => setTimeout(r));
       expect(cancellableWarmup).toBeCalled();
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(expect.anything(), modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric array of warmup sizes', async () => {
@@ -250,7 +250,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(expect.anything(), modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize array of warmup sizes', async () => {
@@ -272,7 +272,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(expect.anything(), modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric warmup size', async () => {
@@ -294,7 +294,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(expect.anything(), modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize warmup sizes', async () => {
@@ -316,7 +316,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = { patchSize: 32, padding: 2 };
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(expect.anything(), modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
   });
 });

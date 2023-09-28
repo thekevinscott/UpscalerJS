@@ -282,6 +282,8 @@
     "@tensorflow/tfjs": "~4.8.0"
   },
   "dependencies": {
+    "@tensorflow/tfjs-core": "~4.8.0",
+    "@tensorflow/tfjs-layers": "~4.8.0",
     "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "wireit": "^0.14.0"

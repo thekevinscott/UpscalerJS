@@ -5,6 +5,7 @@ import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   isValidModelDefinition,
+  TF,
 } from '@upscalerjs/core';
 import {
   ERROR_MODEL_DEFINITION_BUG,
@@ -42,6 +43,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
 };
 
 export const loadModel = async (
+  tf: TF,
   _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
   const modelDefinition = await _modelDefinition;
@@ -57,7 +59,7 @@ export const loadModel = async (
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
   const modelPath = getModelPath(parsedModelDefinition);
-  const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);
+  const model = await loadTfModel(tf, modelPath, parsedModelDefinition.modelType);
 
   return {
     model,

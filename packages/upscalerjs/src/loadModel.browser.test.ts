@@ -1,6 +1,5 @@
 import type { GraphModel, io, LayersModel } from '@tensorflow/tfjs';
 import { vi } from 'vitest';
-import { tf } from './dependencies.generated';
 import {
   CDNS,
   CDN_PATH_DEFINITIONS,
@@ -11,6 +10,7 @@ import {
 import {
   loadTfModel,
 } from './model-utils';
+import * as tf from '@tensorflow/tfjs-node';
 
 import {
   getModelDefinitionError,
@@ -24,7 +24,6 @@ import {
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 
-import type * as dependenciesGenerated from './dependencies.generated';
 import type * as core from '@upscalerjs/core';
 import type * as modelUtils from './model-utils';
 import type * as errorsAndWarnings from './errors-and-warnings';
@@ -41,7 +40,7 @@ vi.mock('./model-utils', async () => {
   const { loadTfModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
     ...rest,
-    loadTfModel: vi.fn(loadTfModel),
+    loadTfModel: vi.fn(),
   }
 });
 
@@ -58,18 +57,6 @@ vi.mock('@upscalerjs/core', async () => {
   return {
     ...rest,
     isValidModelDefinition: vi.fn(isValidModelDefinition),
-  }
-});
-
-vi.mock('./dependencies.generated', async () => {
-  const { tf, ...rest } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
-  return {
-    ...rest,
-    tf: {
-      ...tf,
-      loadLayersModel: vi.fn(),
-      loadGraphModel: vi.fn(),
-    }
   }
 });
 
@@ -91,9 +78,9 @@ describe('loadModel browser tests', () => {
             version: 'version',
           },
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'layers');
       });
 
       it('loads the given model path as a graph model if path is provided', async () => {
@@ -107,9 +94,9 @@ describe('loadModel browser tests', () => {
             version: 'version',
           },
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'graph');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'graph');
       });
 
       it('loads the given model if _internals is not defined but path is', async () => {
@@ -118,9 +105,9 @@ describe('loadModel browser tests', () => {
           path: 'foo',
           modelType: 'layers',
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'layers');
       });
     });
 
@@ -138,9 +125,9 @@ describe('loadModel browser tests', () => {
           },
           modelType: 'layers',
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
       });
 
       it('attempts to load a graph model from a CDN if provided no custom path', async () => {
@@ -156,16 +143,16 @@ describe('loadModel browser tests', () => {
           },
           modelType: 'graph',
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
       });
 
       it('attempts to load a model from a subsequent CDN if a prior one fails', async () => {
         const packageName = 'packageName';
         const version = 'version';
         const modelPath = 'modelPath';
-        vi.mocked(loadTfModel).mockImplementation(async (url: string | io.IOHandler) => {
+        vi.mocked(loadTfModel).mockImplementation(async (_tf: typeof tf, url: string | io.IOHandler) => {
           if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
             throw new Error('next');
           }
@@ -180,9 +167,9 @@ describe('loadModel browser tests', () => {
           },
           modelType: 'layers',
         };
-        await fetchModel(modelDefinition);
+        await fetchModel(tf, modelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
       });
 
       it('throws if all attempts to fetch a model fail', async () => {
@@ -201,7 +188,7 @@ describe('loadModel browser tests', () => {
           },
           modelType: 'layers',
         };
-        await expect(() => fetchModel(modelDefinition))
+        await expect(() => fetchModel(tf, modelDefinition))
           .rejects
           .toThrowError(getLoadModelErrorMessage(CDNS.map((cdn, i) => [cdn, new Error(`next: ${i}`)]), modelPath, {
             path: modelPath,
@@ -220,7 +207,7 @@ describe('loadModel browser tests', () => {
       });
       vi.mocked(vi).mocked(getModelDefinitionError).mockImplementation(() => e);
 
-      await expect(() => loadModel(Promise.resolve({
+      await expect(() => loadModel(tf, Promise.resolve({
         path: 'foo',
         scale: 2,
         modelType: 'layers',
@@ -239,10 +226,10 @@ describe('loadModel browser tests', () => {
         modelType: 'layers',
       };
 
-      const result = await loadModel(Promise.resolve(modelDefinition));
+      const result = await loadModel(tf, Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, modelDefinition.path, 'layers');
 
       expect(result).toStrictEqual({
         modelDefinition,
@@ -253,9 +240,6 @@ describe('loadModel browser tests', () => {
     it('loads a valid graph model successfully', async () => {
       vi.mocked(vi).mocked(isValidModelDefinition).mockImplementation(() => true);
       const model = 'foo' as unknown as GraphModel;
-      tf.loadLayersModel.mockImplementation(async () => 'layers model' as any);
-      tf.loadGraphModel.mockImplementation(async () => model);
-      expect(tf.loadLayersModel).toHaveBeenCalledTimes(0);
 
       const modelDefinition: ModelDefinition = {
         path: 'foo',
@@ -263,10 +247,10 @@ describe('loadModel browser tests', () => {
         modelType: 'graph',
       };
 
-      const result = await loadModel(Promise.resolve(modelDefinition));
+      const result = await loadModel(tf, Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, modelDefinition.path, 'graph');
 
       expect(result).toStrictEqual({
         modelDefinition,

@@ -1,8 +1,9 @@
-import { ModelDefinitionValidationError, } from '@upscalerjs/core';
-import { tf, } from './dependencies.generated';
+import type { Tensor, } from '@tensorflow/tfjs-core';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import { 
-  ProcessFn, 
+import type {
+  ProcessFn,
+  TF,
+  ModelDefinitionValidationError,
 } from '@upscalerjs/core';
 
 export const warn = (msg: string | string[]): void => {
@@ -48,7 +49,8 @@ export function nonNullable<T>(value: T): value is NonNullable<T> {
 }
 
 // this function disposes of any input tensors
-export function processAndDisposeOfTensor<T extends tf.Tensor>(
+export function processAndDisposeOfTensor<T extends Tensor>(
+  tf: TF,
   tensor: T,
   ..._processFns: (ProcessFn<T> | undefined)[]
 ): T {

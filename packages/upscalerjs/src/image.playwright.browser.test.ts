@@ -44,7 +44,7 @@ describe('Image', async () => {
 
   describe('getImageAsTensor', () => {
     it('loads an Image() if given a string as input', async () => {
-      const tensor = await getImageAsTensor(FLOWER_SMALL);
+      const tensor = await getImageAsTensor(FLOWER_SMALL, tf);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
       expect(result.length).to.equal(expectedArray.length);
       for (let i = 0; i < result.length; i++) {
@@ -54,14 +54,14 @@ describe('Image', async () => {
     });
 
     it.only('handles a rejected Image() if given a string as input', () => {
-      return getImageAsTensor('foobar')
+      return getImageAsTensor('foobar', tf)
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => expect(m.message).to.equal(getInvalidImageError().message));
     });
 
     it('reads a given Image() directly', async () => {
       const img = await loadImage(FLOWER_SMALL);
-      const tensor = await getImageAsTensor(img);
+      const tensor = await getImageAsTensor(img, tf);
       const result = await tf.browser.toPixels(tensor.squeeze() as tf.Tensor3D)
       expect(result.length).to.equal(expectedArray.length);
       for (let i = 0; i < result.length; i++) {
@@ -72,21 +72,21 @@ describe('Image', async () => {
 
     it('reads a rank 4 tensor directly without manipulation', async () => {
       const input: tf.Tensor4D = tf.tensor([[[[1,],],],]);
-      const tensor = await getImageAsTensor(input);
+      const tensor = await getImageAsTensor(input, tf);
       expect(input.dataSync()).to.deep.equal(tensor.dataSync());
       input.dispose();
     });
 
     it('reads a rank 3 tensor and expands to rank 4', async () => {
       const input: tf.Tensor3D = tf.tensor([[[1,],],]);
-      const tensor = await getImageAsTensor(input);
+      const tensor = await getImageAsTensor(input, tf);
       expect(tensor.shape).to.deep.equal([1,1,1,1,]);
       input.dispose();
     });
 
     it('handles an invalid (too small) tensor input', async () => {
       const input = tf.tensor([[1,],]);
-      return getImageAsTensor(input as any)
+      return getImageAsTensor(input as any, tf)
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => {
           input.dispose();
@@ -96,7 +96,7 @@ describe('Image', async () => {
 
     it('handles an invalid (too large) tensor input', async () => {
       const input = tf.tensor([[[[[1,],],],],]);
-      return getImageAsTensor(input as any)
+      return getImageAsTensor(input as any, tf)
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => {
           input.dispose();
