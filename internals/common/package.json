@@ -1,8 +1,9 @@
 {
   "name": "@internals/common",
   "private": true,
-  "type": "module",
+  "main": "./src/index.ts",
   "exports": {
+    ".": "./src/index.ts",
     "./models": "./dist/models.js",
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
@@ -27,7 +28,13 @@
     "chalk": "^5.3.0",
     "ejs": "^3.1.9",
     "fs-extra": "latest",
-    "get-port": "^7.0.0"
+    "get-port": "^7.0.0",
+    "wireit": "^0.14.0"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.2",
+    "vitest-mock-process": "^1.0.4",
+    "vitest": "^0.34.5"
   },
   "wireit": {
     "build": {
@@ -53,10 +60,5 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "devDependencies": {
-    "@types/ejs": "^3.1.2",
-    "vitest": "latest",
-    "vitest-mock-process": "^1.0.4"
   }
 }

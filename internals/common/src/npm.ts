@@ -56,13 +56,7 @@ export const npmInstall = async (cwd: string, {
 
 };
 
-export const pnpmInstall = async (cwd: string, {
-  // isSilent = false,
-  // registryURL,
-}: {
-  // isSilent?: boolean;
-  // registryURL?: string;
-} = {}) => {
+export const pnpmInstall = async (cwd: string, _opts = {}) => {
   // const logLevel = getLogLevel();
   const command = [
     'pnpm',

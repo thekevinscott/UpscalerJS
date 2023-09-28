@@ -60,10 +60,10 @@ const validateBuild = async (packageName: string, include: string[] = [], {
   files.forEach(file => {
     if (!fs.existsSync(path.resolve(packageDistPath, file))) {
       const existingFiles: string[] = sync(path.resolve(packageDistPath, '**/*'));
-      console.log('files that we checked', files);
+      // console.log('files that we checked', files);
       throw new Error([
         `File ${file} was not built or does not exist.`,
-        `Existing files include: \n${existingFiles.map(f => ` - ${f}`).join('\n')}`,
+        existingFiles.length === 0 ? 'No existing files were found' : `Existing files include: \n${existingFiles.map(f => ` - ${f}`).join('\n')}`,
         `Files we are checking include: \n${Array.from(files).map(f => ` - ${f}`).join('\n')}`,
       ].join('\n'));
     }
