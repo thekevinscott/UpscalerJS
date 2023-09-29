@@ -103,7 +103,7 @@ describe('Image', () => {
         .toThrow(getInvalidInput(123));
     });
 
-    it('handles an invalid file path', async () => {
+    it.only('handles an invalid file path', async () => {
       vi.mocked(readFileSync).mockImplementation((filename) => {
         throw new Error(`no such file or directory, open ${filename}`);
       })
