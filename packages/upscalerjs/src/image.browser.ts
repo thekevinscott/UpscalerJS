@@ -1,5 +1,5 @@
 import { tf, } from './dependencies.generated';
-import { CheckValidEnvironment, } from './types';
+import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
 
@@ -54,9 +54,9 @@ const getTensorFromInput = async (input: Input): Promise<tf.Tensor3D | tf.Tensor
 };
 
 export type Input = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
-export const getImageAsTensor = async (
-  input: Input,
-): Promise<tf.Tensor4D> => {
+export const getImageAsTensor: GetImageAsTensor<Input> = async (
+  input,
+) => {
   const tensor = await getTensorFromInput(input);
 
   if (isThreeDimensionalTensor(tensor)) {
@@ -82,7 +82,7 @@ export const isHTMLImageElement = (pixels: Input): pixels is HTMLImageElement =>
   }
 };
 
-export const tensorAsBase64 = (tensor: tf.Tensor3D): string => {
+export const tensorAsBase64: TensorAsBase64 = (tensor) => {
   const arr = tensorAsClampedArray(tensor);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);

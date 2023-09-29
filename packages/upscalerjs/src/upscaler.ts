@@ -29,7 +29,12 @@ import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
-import type { Input, } from './image.generated';
+import {
+  getImageAsTensor,
+  tensorAsBase64,
+  checkValidEnvironment,
+  Input,
+} from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './model-utils';
 
@@ -146,6 +151,10 @@ export class Upscaler {
     return cancellableUpscale(image, getUpscaleOptions(options), {
       ...modelPackage,
       signal: this._abortController.signal,
+    }, {
+      checkValidEnvironment,
+      getImageAsTensor,
+      tensorAsBase64,
     });
   }
 
