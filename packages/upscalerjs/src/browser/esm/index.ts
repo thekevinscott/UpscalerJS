@@ -1,1 +1,1 @@
-export * from '../../shared/esm';
+export * from '../../shared';
