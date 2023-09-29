@@ -3,7 +3,7 @@ import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import { TFN, } from '@upscalerjs/core';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
-import { CheckValidEnvironment, } from './types';
+import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 
 export const getInvalidTensorError = (input: Tensor): Error => new Error(
   [
@@ -62,11 +62,10 @@ const getTensorFromInput = (input: Input, tf: TFN): Tensor3D | Tensor4D => {
 export type Input = Tensor3D | Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
-export const getImageAsTensor = (
-  input: Input,
-  tf: TFN,
-): Promise<Tensor4D> => {
-  const tensor = getTensorFromInput(input, tf);
+export const getImageAsTensor: GetImageAsTensor<Input> = async (
+  input,
+) => {
+  const tensor = getTensorFromInput(input);
 
   if (!hasValidChannels(tensor)) {
     throw getInvalidChannelsOfTensor(tensor);
@@ -85,8 +84,8 @@ export const getImageAsTensor = (
   throw getInvalidTensorError(tensor);
 };
 
-export const tensorAsBase64 = (tf: TFN, tensor: Tensor3D): string => {
-  const arr = tensorAsClampedArray(tf, tensor);
+export const tensorAsBase64: TensorAsBase64 = (tensor) => {
+  const arr = tensorAsClampedArray(tensor);
   return Buffer.from(arr).toString('base64');
 };
 

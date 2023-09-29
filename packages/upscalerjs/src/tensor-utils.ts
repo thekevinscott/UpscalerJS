@@ -18,9 +18,6 @@ import {
   nonNullable,
 } from './utils';
 import {
-  Input,
-} from './image.generated';
-import {
   Coordinate,
 } from './types';
 
@@ -88,7 +85,7 @@ export const tensorAsClampedArray = (tf: TF, tensor: Tensor3D): Uint8Array | Flo
 // if given a tensor, we copy it; otherwise, we pass input through unadulterated
 // this allows us to safely dispose of memory ourselves without having to manage
 // what input is in which format
-export const getCopyOfInput = (input: Input): Input => (isTensor(input) ? input.clone() : input);
+export function getCopyOfInput<T>(input: T): T { return (isTensor(input) ? input.clone() : input); }
 
 export function concatTensors<T extends Tensor3D | Tensor4D> (tf: TF, tensors: Array<T | undefined>, axis = 0): T {
   const definedTensors: Array<Tensor3D | Tensor4D> = tensors.filter(nonNullable);

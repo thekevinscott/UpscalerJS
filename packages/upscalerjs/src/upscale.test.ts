@@ -14,11 +14,6 @@ import {
   AbortError,
 } from './errors-and-warnings';
 import {
-  checkValidEnvironment,
-  tensorAsBase64,
-  getImageAsTensor,
-} from './image.generated';
-import {
   wrapGenerator,
   warn,
 } from './utils';
@@ -41,15 +36,6 @@ vi.mock('./utils', async () => {
   };
 });
 
-vi.mock('./image.generated', async () => {
-  const { tensorAsBase64, getImageAsTensor, checkValidEnvironment, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
-  return {
-    ...rest,
-    tensorAsBase64: vi.fn(tensorAsBase64),
-    getImageAsTensor: vi.fn(getImageAsTensor),
-    checkValidEnvironment: vi.fn(checkValidEnvironment),
-  };
-});
 vi.mock('@upscalerjs/core', async () => {
   const { isFourDimensionalTensor, isTensor, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
   return {
@@ -150,6 +136,8 @@ describe('predict', () => {
       modelPackage,
       {
         originalImageSize: [null, ...tensor.shape],
+      }, {
+        tensorAsBase64: () => '',
       })
     );
     expect(spy).toHaveBeenCalledWith(
@@ -174,6 +162,8 @@ describe('predict', () => {
         originalImageSize: [null, ...tensor.shape],
         patchSize: 1,
         padding: 0,
+      }, {
+        tensorAsBase64: () => '',
       }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
@@ -193,6 +183,8 @@ describe('predict', () => {
         originalImageSize: [null, ...tensor.shape],
         patchSize: 1,
         padding: 0,
+      }, {
+        tensorAsBase64: () => '',
       }
     ));
     checkStartingTensorAgainstUpscaledTensor(tensor, result);
@@ -213,6 +205,8 @@ describe('predict', () => {
           originalImageSize: tensor.shape,
           patchSize,
           padding: 0,
+        }, {
+          tensorAsBase64: () => '',
         })
     );
     expect(progress).toHaveBeenCalledWith(0.25);
@@ -224,7 +218,6 @@ describe('predict', () => {
 
   it('should invoke progress callback with percent and slice', async () => {
     const mockResponse = 'foobarbaz1';
-    tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = vi.fn((_1: any, _2: any) => { });
@@ -240,6 +233,8 @@ describe('predict', () => {
         originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
+      }, {
+        tensorAsBase64: () => mockResponse,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
@@ -251,7 +246,6 @@ describe('predict', () => {
 
   it('should invoke progress callback with percent and a rescaled slice if given an output range', async () => {
     const mockResponse = 'foobarbaz1';
-    tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = vi.fn((_1: any, _2: any) => { });
@@ -272,6 +266,8 @@ describe('predict', () => {
       patchSize,
       padding: 0,
       originalImageSize: tensor.shape,
+    }, {
+      tensorAsBase64: () => mockResponse,
     })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
@@ -283,7 +279,6 @@ describe('predict', () => {
 
   it('should invoke progress callback with percent, slice, and slice data', async () => {
     const mockResponse = 'foobarbaz1';
-    tensorAsBase64.mockImplementation(() => mockResponse);
     const tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     const patchSize = 2;
     const progress = vi.fn<ReturnType<MultiArgStringProgress>, Parameters<MultiArgStringProgress>>((_1: any, _2: any, _3: any) => { });
@@ -299,6 +294,8 @@ describe('predict', () => {
         patchSize,
         padding: 0,
         originalImageSize: tensor.shape,
+      }, {
+        tensorAsBase64: () => mockResponse,
       })
     );
     expect(progress).toHaveBeenCalledWith(0.25, mockResponse, expect.objectContaining({ row: 0, col: 0, }));
@@ -335,6 +332,8 @@ describe('predict', () => {
         originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
+      }, {
+        tensorAsBase64: () => '',
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -384,6 +383,8 @@ describe('predict', () => {
         originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
+      }, {
+        tensorAsBase64: () => '',
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -433,6 +434,8 @@ describe('predict', () => {
         originalImageSize: tensor.shape,
         patchSize,
         padding: 0,
+      }, {
+        tensorAsBase64: () => '',
       })
     );
     expect(progress).toHaveBeenCalledWith(0.5,
@@ -469,6 +472,8 @@ describe('predict', () => {
       modelPackage,
       {
         originalImageSize: tensor.shape,
+      }, {
+        tensorAsBase64: () => '',
       })
     );
     expect(warn).toHaveBeenCalledWith(WARNING_PROGRESS_WITHOUT_PATCH_SIZE);
@@ -484,6 +489,8 @@ describe('predict', () => {
         progressOutput: 'base64',
       }, modelPackage, {
         originalImageSize: tensor.shape,
+      }, {
+        tensorAsBase64: () => '',
       });
 
 
@@ -527,6 +534,8 @@ describe('predict', () => {
         {
           originalImageSize: tensor.shape,
           patchSize,
+        }, {
+          tensorAsBase64: () => '',
         }
       );
 
@@ -599,8 +608,7 @@ describe('predict', () => {
 
 describe('upscale', () => {
   afterEach(() => {
-    getImageAsTensor.mockClear();
-    tensorAsBase64.mockClear();
+    vi.clearAllMocks();
   });
 
   it('should return a base64 string by default', async () => {
@@ -614,20 +622,22 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: vi.fn(() => tf.ones([1, 2, 2, 3,])),
       inputs: [{
         shape: [null, null, null, 3],
       }]
     } as unknown as tf.LayersModel;
-    tensorAsBase64.mockImplementation(() => 'foobarbaz4');
+    const tensorAsBase64 = vi.fn().mockImplementation(() => 'foobarbaz4');
     const result = await wrapGenerator(upscale(tf, img, {
       output: 'base64',
       progressOutput: 'base64',
     }, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
+    }, {
+      getImageAsTensor: () => Promise.resolve(img.expandDims(0) as tf.Tensor4D),
+      tensorAsBase64,
     }));
     expect(result).toEqual('foobarbaz4');
     expect(tensorAsBase64).toHaveBeenCalled();
@@ -644,14 +654,12 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const model = {
       predict: vi.fn(() => tf.ones([1, 2, 2, 3,])),
       inputs: [{
         shape: [null, null, null, 3],
       }]
     } as unknown as tf.LayersModel;
-    tensorAsBase64.mockImplementation(() => 'foobarbaz4');
     const result = await wrapGenerator(upscale(tf, img, {
       output: 'base64',
       progressOutput: 'base64',
@@ -661,6 +669,9 @@ describe('upscale', () => {
         scale: 2,
         outputRange: [0, 1],
       } as ModelDefinition,
+    }, {
+      getImageAsTensor: () => Promise.resolve(img.expandDims(0) as tf.Tensor4D),
+      tensorAsBase64: () => 'foobarbaz4',
     }));
     expect(result).toEqual('foobarbaz4');
   });
@@ -676,7 +687,6 @@ describe('upscale', () => {
         [4, 4, 4,],
       ],
     ]);
-    getImageAsTensor.mockImplementation(async () => img.expandDims(0) as tf.Tensor4D);
     const upscaledTensor = tf.ones([1, 2, 2, 3,]);
     const model = {
       predict: vi.fn(() => upscaledTensor.clone()),
@@ -688,6 +698,9 @@ describe('upscale', () => {
     const result = await wrapGenerator(upscale(tf, img, { output: 'tensor', progressOutput: 'tensor', }, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
+    }, {
+      getImageAsTensor: () => Promise.resolve(img.expandDims(0) as tf.Tensor4D),
+      tensorAsBase64: () => 'foobarbaz5',
     }));
     if (typeof result === 'string') {
       throw new Error('Unexpected string type');
@@ -697,13 +710,8 @@ describe('upscale', () => {
 });
 
 describe('cancellableUpscale', () => {
-  beforeEach(() => {
-    checkValidEnvironment.mockImplementation(() => true);
-  });
-
   it('is able to cancel an in-flight request', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    getImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -736,6 +744,10 @@ describe('cancellableUpscale', () => {
       model,
       modelDefinition: { scale, } as ModelDefinition,
       signal: new AbortController().signal,
+    }, {
+      checkValidEnvironment: () => true,
+      getImageAsTensor: () => Promise.resolve(img),
+      tensorAsBase64: () => 'foo',
     }))
       .rejects
       .toThrow(AbortError);
@@ -747,7 +759,6 @@ describe('cancellableUpscale', () => {
 
   it('is able to cancel an in-flight request with an internal signal', async () => {
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    getImageAsTensor.mockImplementation(async () => img);
     const scale = 2;
     const patchSize = 2;
     const model = {
@@ -779,6 +790,10 @@ describe('cancellableUpscale', () => {
       model,
       modelDefinition: { scale, } as ModelDefinition,
       signal: controller.signal,
+    }, {
+      checkValidEnvironment: () => true,
+      getImageAsTensor: () => Promise.resolve(img),
+      tensorAsBase64: () => 'foo',
     }))
       .rejects
       .toThrow(AbortError);
@@ -790,10 +805,7 @@ describe('cancellableUpscale', () => {
 
   it('returns processed pixels', async () => {
     const mockResponse = 'foobarbaz6';
-    tensorAsBase64.mockImplementation(() => mockResponse);
-    checkValidEnvironment.mockImplementation(() => true);
     const img: tf.Tensor4D = tf.ones([4, 4, 3,]).expandDims(0);
-    getImageAsTensor.mockImplementation(async () => img);
     const controller = new AbortController();
     const scale = 2;
     const patchSize = 2;
@@ -815,6 +827,10 @@ describe('cancellableUpscale', () => {
       model,
       modelDefinition: { scale, } as ModelDefinition,
       signal: controller.signal,
+    }, {
+      checkValidEnvironment: () => true,
+      getImageAsTensor: () => Promise.resolve(img),
+      tensorAsBase64: () => mockResponse,
     });
     expect(result).toEqual(mockResponse);
   });
@@ -822,8 +838,7 @@ describe('cancellableUpscale', () => {
 
 describe('executeModel', () => {
   afterEach(() => {
-    isTensor.mockClear();
-    isFourDimensionalTensor.mockClear();
+    vi.clearAllMocks();
   });
   it('throws if the model does not return a valid tensor', () => {
     const model = {

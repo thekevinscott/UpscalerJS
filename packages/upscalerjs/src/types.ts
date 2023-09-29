@@ -89,6 +89,8 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
+export type GetImageAsTensor<T> = (input: T) => Promise<tf.Tensor4D>;
+export type TensorAsBase64 = (tensor: tf.Tensor3D) => string;
 
 export type Coordinate = [number, number];
 
