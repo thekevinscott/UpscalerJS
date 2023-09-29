@@ -100,7 +100,9 @@ export const tensorAsBase64: TensorAsBase64 = (tensor) => {
 
 const checkIfValidEnvironment = (errFn: () => Error) => {
   try {
-    (new Image() && 'createElement' in document) === true; // skipcq: JS-0354
+    if ((new Image() && 'createElement' in document) !== true){ // skipcq: JS-0354
+      throw errFn();
+    }
   } catch(err) {
     throw errFn();
   }
