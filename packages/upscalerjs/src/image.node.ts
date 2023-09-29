@@ -62,7 +62,7 @@ const getTensorFromInput = (input: Input, tf: TFN): Tensor3D | Tensor4D => {
 export type Input = Tensor3D | Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
-export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async (
+export const getImageAsTensor: GetImageAsTensor<TFN, Input> = (
   tf,
   input,
 ) => {
@@ -75,11 +75,11 @@ export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async (
   if (isThreeDimensionalTensor(tensor)) {
     const expandedTensor: Tensor4D = tensor.expandDims(0);
     tensor.dispose();
-    return expandedTensor;
+    return Promise.resolve(expandedTensor);
   }
 
   if (isFourDimensionalTensor(tensor)) {
-    return tensor;
+    return Promise.resolve(tensor);
   }
 
   throw getInvalidTensorError(tensor);
