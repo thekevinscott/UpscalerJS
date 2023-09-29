@@ -18,26 +18,12 @@ import {
   isTensor,
  } from '@upscalerjs/core';
 import {
-  tensorAsBase64,
-  getImageAsTensor,
-} from './image.generated';
-import {
   GET_INVALID_SHAPED_TENSOR,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings';
 
-import type * as imageGenerated from './image.generated';
 import type * as dependenciesGenerated from './dependencies.generated';
 import type * as core from '@upscalerjs/core';
-
-vi.mock('./image.generated', async () => {
-  const { tensorAsBase64, getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
-  return {
-    ...rest,
-    tensorAsBase64: vi.fn(tensorAsBase64),
-    getImageAsTensor: vi.fn(getImageAsTensor),
-  };
-});
 
 vi.mock('./dependencies.generated', async () => {
   const { tf, ...dependencies } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
@@ -68,7 +54,7 @@ describe('padInput', () => {
   });
 
   afterEach(() => {
-    vi.mocked(isFixedShape4D).mockClear();
+    vi.clearAllMocks();
   });
 
   it('just returns the input if inputSize is less than the shape of the tensor', () => {
@@ -131,7 +117,7 @@ describe('trimInput', () => {
 
 describe('scaleOutput', () => {
   afterEach(() => {
-    isValidRange.mockClear();
+    vi.clearAllMocks();
   });
 
   it('returns tensor unchanged if input shape is not valid', () => tf.tidy(() => {
@@ -175,7 +161,7 @@ describe('getWidthAndHeight', () => {
 
 describe('scaleIncomingPixels', () => {
   beforeEach(() => {
-    isValidRange.mockClear();
+    vi.clearAllMocks();
   });
 
   it('returns unadulterated incoming pixels if given no range', () => tf.tidy(() => {
@@ -208,9 +194,7 @@ describe('tensorAsClampedArray', () => {
 
 describe('concatTensors', () => {
   beforeEach(() => {
-    tensorAsBase64.mockClear();
-    getImageAsTensor.mockClear();
-    isTensor.mockClear();
+    vi.clearAllMocks();
   });
   it('concats two tensors together', () => {
     const a: tfn.Tensor3D = tf.tensor(
