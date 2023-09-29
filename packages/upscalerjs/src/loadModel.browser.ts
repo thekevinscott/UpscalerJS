@@ -69,6 +69,7 @@ export const loadModel = async (
   _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
   const modelDefinition = await _modelDefinition;
+  
   try {
     isValidModelDefinition(modelDefinition);
   } catch (err: unknown) {

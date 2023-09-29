@@ -58,10 +58,11 @@ const getTensorFromInput = async (
 };
 
 export type Input = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
-export const getImageAsTensor: GetImageAsTensor<Input> = async (
+export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
+  tf,
   input,
 ) => {
-  const tensor = await getTensorFromInput(input);
+  const tensor = await getTensorFromInput(input, tf);
 
   if (isThreeDimensionalTensor(tensor)) {
     // https://github.com/tensorflow/tfjs/issues/1125
@@ -86,8 +87,8 @@ export const isHTMLImageElement = (pixels: Input): pixels is HTMLImageElement =>
   }
 };
 
-export const tensorAsBase64: TensorAsBase64 = (tensor) => {
-  const arr = tensorAsClampedArray(tensor);
+export const tensorAsBase64: TensorAsBase64 = (tf, tensor) => {
+  const arr = tensorAsClampedArray(tf, tensor);
   const [height, width, ] = tensor.shape;
   const imageData = new ImageData(width, height);
   imageData.data.set(arr);

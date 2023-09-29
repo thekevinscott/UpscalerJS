@@ -108,7 +108,7 @@ describe('Image', () => {
         throw new Error(`no such file or directory, open ${filename}`);
       })
       const filename = 'foo';
-      await expect(() => getImageAsTensor(filename, tf))
+      await expect(() => getImageAsTensor(tf, filename))
         .rejects
         .toThrow(getInvalidImageSrcInput(filename));
     });
@@ -116,7 +116,7 @@ describe('Image', () => {
 });
 
 describe('tensorAsBase64', () => {
-  it('returns a tensor as base64', () => {
+  it.only('returns a tensor as base64', () => {
     const t: tf.Tensor3D = tf.ones([2,2,3]);
     expect(tensorAsBase64(tf, t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
   });

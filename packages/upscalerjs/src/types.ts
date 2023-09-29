@@ -1,6 +1,6 @@
 import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { LayersModel, layers, } from '@tensorflow/tfjs-layers';
-import type { GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+import type { TF, GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -89,8 +89,8 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
-export type GetImageAsTensor<T> = (input: T) => Promise<tf.Tensor4D>;
-export type TensorAsBase64 = (tensor: tf.Tensor3D) => string;
+export type GetImageAsTensor<T extends TF, I> = (tf: T, input: I) => Promise<Tensor4D>;
+export type TensorAsBase64 = (tf: TF, tensor: Tensor3D) => string;
 
 export type Coordinate = [number, number];
 

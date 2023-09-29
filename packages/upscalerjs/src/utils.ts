@@ -3,6 +3,8 @@ import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress,
 import type {
   ProcessFn,
   TF,
+} from '@upscalerjs/core';
+import {
   ModelDefinitionValidationError,
 } from '@upscalerjs/core';
 

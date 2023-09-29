@@ -62,10 +62,11 @@ const getTensorFromInput = (input: Input, tf: TFN): Tensor3D | Tensor4D => {
 export type Input = Tensor3D | Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
-export const getImageAsTensor: GetImageAsTensor<Input> = async (
+export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async (
+  tf,
   input,
 ) => {
-  const tensor = getTensorFromInput(input);
+  const tensor = getTensorFromInput(input, tf);
 
   if (!hasValidChannels(tensor)) {
     throw getInvalidChannelsOfTensor(tensor);
@@ -84,8 +85,8 @@ export const getImageAsTensor: GetImageAsTensor<Input> = async (
   throw getInvalidTensorError(tensor);
 };
 
-export const tensorAsBase64: TensorAsBase64 = (tensor) => {
-  const arr = tensorAsClampedArray(tensor);
+export const tensorAsBase64: TensorAsBase64 = (tf, tensor) => {
+  const arr = tensorAsClampedArray(tf, tensor);
   return Buffer.from(arr).toString('base64');
 };
 

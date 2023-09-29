@@ -68,8 +68,8 @@ export const executeModel = (model: LayersModel | GraphModel, pixels: Tensor4D):
 };
 
 /* eslint-disable @typescript-eslint/require-await */
-export async function* processPixels(
-  tf: TF,
+export async function* processPixels<T extends TF, I>(
+  tf: T,
   pixels: Tensor4D,
   { output, progress, progressOutput, }: Pick<PrivateUpscaleArgs, 'output' | 'progress' | 'progressOutput'>,
   modelPackage: ModelPackage,
@@ -79,11 +79,10 @@ export async function* processPixels(
     padding = 0,
   }: {
     originalImageSize: FixedShape4D;
-  } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
   } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>,
   {
     tensorAsBase64,
-  }: Pick<InternalConfig<Input>, 'tensorAsBase64'>
+  }: Pick<InternalConfig<T, I>, 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
   const scale = modelDefinition.scale ?? 1;
@@ -201,35 +200,35 @@ export async function* processPixels(
   return squeezedTensor;
 }
 
-export function upscale<I>(
-  tf: TF,
+export function upscale<T extends TF, I>(
+  tf: T,
   input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64;
   },
   modelPackage: ModelPackage,
-  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
+  internalConfig: Pick<InternalConfig<T, I>, 'getImageAsTensor' | 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, string>;
-export function upscale<I>(
-  tf: TF,
+export function upscale<T extends TF, I>(
+  tf: T,
   input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: TENSOR;
   },
   modelPackage: ModelPackage,
-  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
+  internalConfig: Pick<InternalConfig<T, I>, 'getImageAsTensor' | 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, Tensor3D>;
-export function upscale<I>(
-  tf: TF,
+export function upscale<T extends TF, I>(
+  tf: T,
   input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
   modelPackage: ModelPackage,
-  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
-): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
-export async function* upscale<I>(
-  tf: TF,
+  internalConfig: Pick<InternalConfig<T, I>, 'getImageAsTensor' | 'tensorAsBase64'>
+): AsyncGenerator<YieldedIntermediaryValue, string | Tensor3D>;
+export async function* upscale<T extends TF, I>(
+  tf: T,
   input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
@@ -238,10 +237,10 @@ export async function* upscale<I>(
   {
     getImageAsTensor,
     tensorAsBase64,
-  }: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
+  }: Pick<InternalConfig<T, I>, 'getImageAsTensor' | 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, string | Tensor3D> {
   const parsedInput = getCopyOfInput<I>(input);
-  const startingPixels = await getImageAsTensor(parsedInput);
+  const startingPixels = await getImageAsTensor(tf, parsedInput);
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
@@ -301,42 +300,42 @@ export async function* upscale<I>(
   return base64Src;
 };
 
-interface InternalConfig<I> {
+interface InternalConfig<T extends TF, I> {
   checkValidEnvironment: CheckValidEnvironment<I>;
-  getImageAsTensor: GetImageAsTensor<I>,
+  getImageAsTensor: GetImageAsTensor<T, I>,
   tensorAsBase64: TensorAsBase64,
 }
 
-export function cancellableUpscale(
-  tf: TF,
-  input: Input,
+export function cancellableUpscale<T extends TF, I>(
+  tf: T,
+  input: I,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: TENSOR},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
-  internalConfig: InternalConfig<Input>,
+  internalConfig: InternalConfig<T, I>,
 ): Promise<Tensor3D>;
-export function cancellableUpscale(
-  tf: TF,
-  input: Input,
+export function cancellableUpscale<T extends TF, I>(
+  tf: T,
+  input: I,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
-  internalConfig: InternalConfig<Input>,
+  internalConfig: InternalConfig<T, I>,
 ): Promise<string>;
-export function cancellableUpscale(
-  tf: TF,
-  input: Input,
+export function cancellableUpscale<T extends TF, I>(
+  tf: T,
+  input: I,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR },
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
-  internalConfig: InternalConfig<Input>,
+  internalConfig: InternalConfig<T, I>,
 ): Promise<Tensor3D | string>;
-export async function cancellableUpscale(
-  tf: TF,
-  input: Input,
+export async function cancellableUpscale<T extends TF, I>(
+  tf: T,
+  input: I,
   { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR},
   internalArgs: ModelPackage & {
     signal: AbortSignal;
@@ -344,7 +343,7 @@ export async function cancellableUpscale(
   {
     checkValidEnvironment,
     ...internalConfig
-  }: InternalConfig<Input>
+  }: InternalConfig<T, I>
 ) {
   checkValidEnvironment(input, {
     output: args.output,
