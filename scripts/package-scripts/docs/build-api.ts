@@ -58,7 +58,7 @@ interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflecti
  */
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
-const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src/shared');
+const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
@@ -127,6 +127,7 @@ const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: str
 
   app.options.addReader(new TSConfigReader());
   app.options.addReader(new TypeDocReader());
+  console.log(entryPoint)
 
   app.bootstrap({
     entryPoints: [entryPoint],
@@ -148,7 +149,7 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
     const platform = platforms[i];
     await runPNPMScript(`scaffold:dependencies:${platform}`, 'upscaler');
     const imageBrowser = getPackageAsTree(
-      path.resolve(UPSCALER_DIR, 'src/shared', `${fileName}.${platform}.ts`),
+      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
       UPSCALER_DIR,
     );
