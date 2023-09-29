@@ -84,7 +84,7 @@ export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | A
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface WarmupArgs extends SharedArgs {}
-export type CheckValidEnvironment<T> = (input: T, opts: {
+export type CheckValidEnvironment<I> = (input: I, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
