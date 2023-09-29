@@ -51,17 +51,17 @@ describe('Image', () => {
 
   describe('getImageAsTensor', () => {
     it('handles a uint array', async () => {
-      const result = await getImageAsTensor(image, tf);
+      const result = await getImageAsTensor(tf, image);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
     it('handles a buffer', async () => {
-      const result = await getImageAsTensor(image, tf);
+      const result = await getImageAsTensor(tf, image);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
     it('handles a local string path to a file', async () => {
-      const result = await getImageAsTensor(FLOWER, tf);
+      const result = await getImageAsTensor(tf, FLOWER);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
@@ -69,7 +69,7 @@ describe('Image', () => {
       const height = 3;
       const width = 2;
       const input = getTensor(height, width).expandDims(0) as tf.Tensor4D;
-      const result = await getImageAsTensor(input, tf);
+      const result = await getImageAsTensor(tf, input);
       expect(result.shape).toEqual([1,height, width, 3,]);
     });
 
@@ -77,14 +77,14 @@ describe('Image', () => {
       const height = 3;
       const width = 2;
       const input = getTensor(height, width);
-      const result = await getImageAsTensor(input, tf);
+      const result = await getImageAsTensor(tf, input);
       expect(result.shape).toEqual([1,height, width, 3,]);
     });
 
     it('handles an invalid (too small) tensor input', async () => {
       vi.mocked(hasValidChannels).mockReturnValue(true);
       const input = tf.tensor([[1,],]);
-      await expect(() => getImageAsTensor(input as any, tf))
+      await expect(() => getImageAsTensor(tf, input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
@@ -92,13 +92,13 @@ describe('Image', () => {
     it('handles an invalid (too large) tensor input', async () => {
       vi.mocked(hasValidChannels).mockReturnValue(true);
       const input = tf.tensor([[[[[1,],],],],]);
-      await expect(() => getImageAsTensor(input as tf.Tensor3D, tf))
+      await expect(() => getImageAsTensor(tf, input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
 
     it('handles invalid input', async () => {
-      await expect(() => getImageAsTensor(123 as any, tf))
+      await expect(() => getImageAsTensor(tf, 123 as any))
         .rejects
         .toThrow(getInvalidInput(123));
     });
@@ -116,7 +116,7 @@ describe('Image', () => {
 });
 
 describe('tensorAsBase64', () => {
-  it.only('returns a tensor as base64', () => {
+  it('returns a tensor as base64', () => {
     const t: tf.Tensor3D = tf.ones([2,2,3]);
     expect(tensorAsBase64(tf, t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
   });
