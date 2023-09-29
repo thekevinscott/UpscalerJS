@@ -75,11 +75,11 @@ export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async ( // skipcq:
   if (isThreeDimensionalTensor(tensor)) {
     const expandedTensor: Tensor4D = tensor.expandDims(0);
     tensor.dispose();
-    return resolve(expandedTensor);
+    return expandedTensor;
   }
 
   if (isFourDimensionalTensor(tensor)) {
-    return resolve(tensor);
+    return tensor;
   }
 
   throw getInvalidTensorError(tensor);
