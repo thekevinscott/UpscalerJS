@@ -1,4 +1,3 @@
-import { tf, } from './dependencies.generated';
 import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import type {
   PrivateUpscaleArgs,

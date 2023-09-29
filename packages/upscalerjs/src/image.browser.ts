@@ -41,7 +41,11 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise
 
 const fromPixels = (input: Exclude<Input, string | tf.Tensor>) => tf.browser.fromPixelsAsync(input);
 
-const getTensorFromInput = async (input: Input, _tf: typeof tf): Promise<tf.Tensor3D | tf.Tensor4D> => {
+const getTensorFromInput = async (
+  input: Input, 
+   /* eslint-disable @typescript-eslint/no-unused-vars */
+  _tf: typeof tf,
+): Promise<tf.Tensor3D | tf.Tensor4D> => {
   if (isTensor(input)) {
     return input;
   }
