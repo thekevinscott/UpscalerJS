@@ -1,6 +1,6 @@
-import { Upscaler, } from './upscaler';
-import { AbortError, } from './errors-and-warnings';
-import { getPatchesFromImage, } from './image-utils';
+import { Upscaler, } from '../../shared/upscaler';
+import { AbortError, } from '../../shared/errors-and-warnings';
+import { getPatchesFromImage, } from '../../shared/image-utils';
 
 (
   Upscaler as typeof Upscaler & {

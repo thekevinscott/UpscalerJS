@@ -126,7 +126,7 @@ const scaffoldDependencies: ScaffoldDependencies = async (
     if (!platform) {
       throw new Error('You must provide a platform to scaffold platform specific files');
     }
-    scaffoldPlatformSpecificFiles(PACKAGE_SRC, platform, { verbose });
+    scaffoldPlatformSpecificFiles(path.resolve(PACKAGE_SRC, 'shared'), platform, { verbose });
   }
   const tfjs = getPlatformSpecificTensorflow(platform);
   const packageJSON = getPackageJSON(PACKAGE_ROOT);

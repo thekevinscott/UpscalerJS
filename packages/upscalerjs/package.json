@@ -4,12 +4,12 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/cjs/cjs.d.ts",
-      "require": "./dist/node/cjs/cjs.js"
+      "types": "./dist/node/cjs/index.d.ts",
+      "require": "./dist/node/cjs/index.js"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/cjs/cjs.d.ts",
-      "require": "./dist/node-gpu/cjs/cjs.js"
+      "types": "./dist/node-gpu/cjs/index.d.ts",
+      "require": "./dist/node-gpu/cjs/index.js"
     },
     ".": {
       "types": "./dist/browser/esm/index.d.ts",
@@ -57,9 +57,10 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.esm.json",
-        "tsconfig.cjs.json",
-        "tsconfig.umd.json",
+        "tsconfig.browser.esm.json",
+        "tsconfig.node.cjs.json",
+        "tsconfig.node-gpu.cjs.json",
+        "tsconfig.browser.umd.json",
         "tsconfig.json"
       ],
       "output": [
@@ -67,7 +68,7 @@
       ]
     },
     "build:browser:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/browser/esm",
+      "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist",
       "dependencies": [
         "scaffold:dependencies:browser"
       ],
@@ -78,7 +79,7 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.esm.json",
+        "tsconfig.browser.esm.json",
         "tsconfig.json"
       ],
       "output": [
@@ -86,7 +87,7 @@
       ]
     },
     "build:browser:umd": {
-      "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/umd-tmp",
+      "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/tmp",
       "dependencies": [
         "scaffold:dependencies:browser"
       ],
@@ -97,7 +98,7 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.umd.json",
+        "tsconfig.browser.umd.json",
         "tsconfig.json"
       ],
       "output": [
@@ -105,10 +106,10 @@
       ]
     },
     "build:browser:umd:tsc": {
-      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/browser/umd-tmp"
+      "command": "tsc -p ./tsconfig.browser.umd.json --outDir ./dist/browser/tmp"
     },
     "build:browser:umd:rollup": {
-      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/umd-tmp/umd.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
+      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/tmp/browser/umd/index.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
     },
     "build:browser:umd:uglify": {
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
@@ -122,8 +123,8 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.esm.json",
-        "tsconfig.umd.json",
+        "tsconfig.browser.esm.json",
+        "tsconfig.browser.umd.json",
         "tsconfig.json"
       ],
       "output": [
@@ -131,7 +132,7 @@
       ]
     },
     "build:node": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/node/cjs",
+      "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist",
       "dependencies": [
         "scaffold:dependencies:node"
       ],
@@ -142,7 +143,7 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.cjs.json",
+        "tsconfig.node.cjs.json",
         "tsconfig.json"
       ],
       "output": [
@@ -150,7 +151,7 @@
       ]
     },
     "build:node-gpu": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/node-gpu/cjs",
+      "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist",
       "dependencies": [
         "scaffold:dependencies:node-gpu"
       ],
@@ -161,7 +162,7 @@
         "!src/**/*.generated.ts",
         "package.json",
         "vite.config.ts",
-        "tsconfig.cjs.json",
+        "tsconfig.node-gpu.cjs.json",
         "tsconfig.json"
       ],
       "output": [
@@ -238,7 +239,7 @@
       ]
     },
     "validate:build": {
-      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/upscaler.js' -c './dist/browser/upscaler.min.js'"
     }
   },
   "scripts": {

@@ -4,7 +4,7 @@ const config: ScaffoldDependenciesConfig = {
   scaffoldPlatformFiles: true,
   files: [
     {
-      name: 'dependencies',
+      name: 'shared/dependencies',
       contents: [
         writeTFJSDependency,
         () => `export { default as DefaultUpscalerModel } from '@upscalerjs/default-model';`,

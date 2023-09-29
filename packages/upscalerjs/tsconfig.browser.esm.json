@@ -4,6 +4,6 @@
     "target": "ESNext",
     "module": "ESNext",
   },
-  "include": ["src/index.ts"],
+  "include": ["src/browser/esm/index.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }
