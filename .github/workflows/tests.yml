@@ -8,17 +8,14 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -26,17 +23,14 @@ jobs:
   unit-browser-vite:
     name: 'Unit / Browser / Vite'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests / Vite'
         working-directory: ./packages/upscalerjs
@@ -52,17 +46,14 @@ jobs:
   unit-browser-playwright:
     name: 'Unit / Browser / Playwright'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -79,17 +70,14 @@ jobs:
   unit-node:
     name: 'Unit / Node'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -104,17 +92,14 @@ jobs:
   core-unit:
     name: 'Core / Unit'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -136,9 +121,6 @@ jobs:
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -149,10 +131,10 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -176,23 +158,14 @@ jobs:
   integration-browser-local:
     name: 'Integration / Browser / Local'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -221,17 +194,14 @@ jobs:
   integration-node-local-16:
     name: 'Integration / Node / Local / v16'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -253,17 +223,17 @@ jobs:
   models-browser:
     name: 'Models / Browser'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    # strategy:
+    #   matrix:
+    #     node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -285,17 +255,14 @@ jobs:
   models-node:
     name: 'Models / Node'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -317,17 +284,14 @@ jobs:
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -349,17 +313,14 @@ jobs:
   build-docs:
     name: 'Build Documentation'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
