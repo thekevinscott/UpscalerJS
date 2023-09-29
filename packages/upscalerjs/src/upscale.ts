@@ -11,9 +11,6 @@ import type {
   TensorAsBase64,
  } from './types';
 import {
-  Input,
-} from './image.generated';
-import {
   wrapGenerator,
   warn,
   isProgress,
