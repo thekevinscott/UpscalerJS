@@ -37,7 +37,7 @@ vi.mock('fs', async () => {
 const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
 const getTensor = (height: number, width: number): tf.Tensor3D => tf.tidy(() => getTensorRange(width, height).reshape([height, width, 1]).tile([1, 1, 3]));
 
-const FLOWER = path.resolve(__dirname, '../test/__fixtures__/flower-small.jpg');
+const FLOWER = path.resolve(__dirname, '../../test/__fixtures__/flower-small.jpg');
 const image = readFileSync(FLOWER);
 
 describe('Image', () => {
