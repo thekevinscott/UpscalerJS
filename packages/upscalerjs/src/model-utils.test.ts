@@ -214,7 +214,7 @@ describe('model-utils', () => {
           }],
         }
       } as ModelPackage;
-      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding: 8 }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
+      expect(() => parsePatchAndInputShapes(tfn, modelPackage, { patchSize, padding: 8 }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE(patchSize));
       expect(warn).not.toHaveBeenCalled();
     });
 
@@ -231,7 +231,7 @@ describe('model-utils', () => {
         },
         model,
       };
-      parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
+      parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
       expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
       expect(warn).toHaveBeenCalledTimes(1);
     });
@@ -246,7 +246,7 @@ describe('model-utils', () => {
           }],
         }
       } as ModelPackage;
-      expect(() => parsePatchAndInputShapes(modelPackage, { patchSize, padding }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE_AND_PADDING(patchSize, padding));
+      expect(() => parsePatchAndInputShapes(tfn, modelPackage, { patchSize, padding }, [null, 9, 9, 3])).toThrow(GET_INVALID_PATCH_SIZE_AND_PADDING(patchSize, padding));
     });
 
     describe('Input size', () => {
@@ -258,7 +258,7 @@ describe('model-utils', () => {
             }],
           },
         } as ModelPackage;
-        parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 2 }, [null, 9, 9, 3]);
+        parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 9, padding: 2 }, [null, 9, 9, 3]);
         expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
         expect(warn).toHaveBeenCalledTimes(1);
       });
@@ -271,7 +271,7 @@ describe('model-utils', () => {
             }],
           },
         } as ModelPackage;
-        expect(() => parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
+        expect(() => parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 9, padding: 1 }, [null, 9, 9, 3])).toThrowError(MODEL_INPUT_SIZE_MUST_BE_SQUARE);
         expect(warn).toHaveBeenCalledWith(WARNING_INPUT_SIZE_AND_PATCH_SIZE);
       });
 
@@ -283,7 +283,7 @@ describe('model-utils', () => {
             }],
           },
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, { patchSize: 3, padding: 1 }, [null, 9, 9, 3])).toEqual({
+        expect(parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 3, padding: 1 }, [null, 9, 9, 3])).toEqual({
           patchSize: 9,
           padding: 1,
           modelInputShape: [null, 9, 9, 3],
@@ -308,7 +308,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {}, [null, 4, 4, 3])).toEqual({
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {}, [null, 4, 4, 3])).toEqual({
           patchSize: undefined,
           padding: undefined,
           modelInputShape: [null, 4, 4, 3],
@@ -330,7 +330,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {}, [null, 3, 3, 3])).toEqual({
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {}, [null, 3, 3, 3])).toEqual({
           patchSize: undefined,
           padding: undefined,
           modelInputShape: [null, 4, 4, 3],
@@ -352,7 +352,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {
           patchSize: 8,
         }, [null, 3, 3, 3])).toEqual({
           patchSize: 8,
@@ -377,7 +377,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {
           patchSize: 7,
         }, [null, 3, 3, 3])).toEqual({
           patchSize: 8,
@@ -403,7 +403,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {
           patchSize: 4,
           padding: 1,
         }, [null, 3, 3, 3])).toEqual({
@@ -428,7 +428,7 @@ describe('model-utils', () => {
           },
           modelDefinition,
         } as ModelPackage;
-        expect(parsePatchAndInputShapes(modelPackage, {
+        expect(parsePatchAndInputShapes(tfn, modelPackage, {
           patchSize: 4,
           padding: 1,
         }, [null, 3, 3, 3])).toEqual({
@@ -454,7 +454,7 @@ describe('model-utils', () => {
         },
         model,
       };
-      expect(parsePatchAndInputShapes(modelPackage, { patchSize: 9, padding: 1 }, [null, 9, 9, 3])).toEqual({
+      expect(parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 9, padding: 1 }, [null, 9, 9, 3])).toEqual({
         patchSize: 9,
         padding: 1,
         modelInputShape: undefined,
@@ -471,7 +471,7 @@ describe('model-utils', () => {
         },
         modelDefinition: {},
       } as ModelPackage;
-      parsePatchAndInputShapes(modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
+      parsePatchAndInputShapes(tfn, modelPackage, { patchSize: 9 }, [null, 9, 9, 3]);
       expect(warn).toHaveBeenCalledWith(WARNING_UNDEFINED_PADDING);
     });
 
@@ -480,7 +480,7 @@ describe('model-utils', () => {
   describe('getModelInputShape', () => {
     it('returns layers model input shape if it is a layers model', () => {
       vi.mocked(isLayersModel.isLayersModel).mockImplementation(() => true);
-      expect(getModelInputShape({
+      expect(getModelInputShape(tfn, {
         model: {
           layers: [{
             batchInputShape: [1, 2, 3, 4],
@@ -491,7 +491,7 @@ describe('model-utils', () => {
 
     it('returns graph model input shape if it is a layers model', () => {
       vi.mocked(isLayersModel.isLayersModel).mockImplementation(() => false);
-      expect(getModelInputShape({
+      expect(getModelInputShape(tfn, {
         model: {
           inputs: [{
             shape: [1, 2, 3, 4],
@@ -503,7 +503,7 @@ describe('model-utils', () => {
     it('throws if a model returns a non rank 4 shape', () => {
       vi.mocked(isShape4D).mockImplementation(() => false);
       vi.mocked(isLayersModel.isLayersModel).mockImplementation(() => true);
-      expect(() => getModelInputShape({
+      expect(() => getModelInputShape(tfn, {
         model: {
           layers: [{
             batchInputShape: [1, 2, 3, 4, 5],
