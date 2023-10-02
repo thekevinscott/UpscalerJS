@@ -61,7 +61,7 @@ const getTensorFromInput = (input: Input): tf.Tensor3D | tf.Tensor4D => {
 export type Input = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
-export const getImageAsTensor: GetImageAsTensor<Input> = async (
+export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
   input,
 ) => {
   const tensor = getTensorFromInput(input);
