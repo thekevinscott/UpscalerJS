@@ -84,7 +84,7 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
+    this._model = loadModel(getModel(tf, this._opts.model || DEFAULT_MODEL));
     this.ready = new Promise((resolve, reject) => {
       this._model.then(() => cancellableWarmup(this._model, (this._opts.warmupSizes || []), undefined, {
         signal: this._abortController.signal,
