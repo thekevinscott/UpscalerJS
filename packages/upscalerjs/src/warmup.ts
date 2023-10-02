@@ -85,7 +85,7 @@ export const cancellableWarmup = async (
     signal: AbortSignal;
   },
 ): Promise<void> => {
-  const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
+  const tick = makeTick(tf, signal || internalArgs.signal, awaitNextFrame);
   await tick();
   await wrapGenerator(warmup(
     modelPackage,
