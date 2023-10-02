@@ -6,12 +6,12 @@ import {
   parsePatchAndInputShapes,
   getModelInputShape,
   getPatchSizeAsMultiple,
-} from './model-utils';
-import type * as utils  from './utils';
+} from './model-utils.js';
+import type * as utils  from './utils.js';
 import {
   warn,
 } from './utils';
-import * as isLayersModel from './isLayersModel';
+import * as isLayersModel from './isLayersModel.js';
 import type * as core from '@upscalerjs/core';
 import { 
   isShape4D,
@@ -19,7 +19,7 @@ import {
   ModelDefinition,
   ModelDefinitionFn,
  } from '@upscalerjs/core';
-import { ModelPackage } from './types';
+import { ModelPackage } from './types.js';
 import {
   ERROR_INVALID_MODEL_TYPE,
   ERROR_MODEL_DEFINITION_BUG, 
@@ -32,14 +32,14 @@ import {
   GET_INVALID_PATCH_SIZE_AND_PADDING,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
   WARNING_DEPRECATED_MODEL_DEFINITION_FN,
-} from './errors-and-warnings';
+} from './errors-and-warnings.js';
 import { GraphModel, LayersModel } from '@tensorflow/tfjs';
-import * as tfN from '@tensorflow/tfjs-node';
+import * as tfn from '@tensorflow/tfjs-node';
 
 vi.mock('@tensorflow/tfjs-node', async () => {
-  const tfN = await vi.importActual('@tensorflow/tfjs-node') as typeof tfN;
+  const tf = await vi.importActual('@tensorflow/tfjs-node') as typeof tfn;
   return {
-    ...tfN,
+    ...tf,
     registerOp: vi.fn(),
     loadLayersModel: vi.fn(),
     loadGraphModel: vi.fn(),
@@ -100,7 +100,7 @@ describe('model-utils', () => {
           scale: 2,
         };
 
-        expect(await getModel(tfN, modelDefinition)).toEqual(modelDefinition)
+        expect(await getModel(tfn, modelDefinition)).toEqual(modelDefinition)
         expect(warn).not.toHaveBeenCalled();
       });
 
@@ -113,7 +113,7 @@ describe('model-utils', () => {
           scale: 2,
         };
 
-        expect(await getModel(tfN, modelDefinition)).toEqual(modelDefinition)
+        expect(await getModel(tfn, modelDefinition)).toEqual(modelDefinition)
         expect(setup).toHaveBeenCalled();
         expect(warn).not.toHaveBeenCalled();
       });
@@ -131,7 +131,7 @@ describe('model-utils', () => {
           scale: 2,
         };
 
-        expect(await getModel(tfN, modelDefinition)).toEqual(modelDefinition)
+        expect(await getModel(tfn, modelDefinition)).toEqual(modelDefinition)
         expect(setup).toHaveBeenCalled();
         expect(complete).toEqual(true);
         expect(warn).not.toHaveBeenCalled();
@@ -147,7 +147,7 @@ describe('model-utils', () => {
         };
         const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
 
-        expect(await getModel(tfN, modelDefinitionFn)).toEqual(modelDefinition);
+        expect(await getModel(tfn, modelDefinitionFn)).toEqual(modelDefinition);
         expect(warn).toHaveBeenCalledWith(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
         expect(warn).toHaveBeenCalledTimes(1);
       });
@@ -163,7 +163,7 @@ describe('model-utils', () => {
 
         const modelDefinitionFn: ModelDefinitionFn = () => modelDefinition;
 
-        expect(await getModel(tfN, modelDefinitionFn)).toEqual(modelDefinition)
+        expect(await getModel(tfn, modelDefinitionFn)).toEqual(modelDefinition)
         expect(setup).toHaveBeenCalled();
         expect(warn).toHaveBeenCalledWith(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
         expect(warn).toHaveBeenCalledTimes(1);
@@ -173,30 +173,30 @@ describe('model-utils', () => {
 
   describe('loadTfModel', () => {
     it('loads a graph model if graph is specified', async () => {
-      tfN.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-      tfN.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
-      const model = await loadTfModel(tfN, 'foo', 'graph');
+      tfn.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+      tfn.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
+      const model = await loadTfModel(tfn, 'foo', 'graph');
       expect(model).toEqual('graph');
-      expect(tfN.loadLayersModel).not.toHaveBeenCalled();
-      expect(tfN.loadGraphModel).toHaveBeenCalled();
+      expect(tfn.loadLayersModel).not.toHaveBeenCalled();
+      expect(tfn.loadGraphModel).toHaveBeenCalled();
     });
 
     it('loads a layers model if layer is specified', async () => {
-      tfN.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-      tfN.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
-      const model = await loadTfModel(tfN, 'bar', 'layers');
+      tfn.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+      tfn.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
+      const model = await loadTfModel(tfn, 'bar', 'layers');
       expect(model).toEqual('layers');
-      expect(tfN.loadLayersModel).toHaveBeenCalled();
-      expect(tfN.loadGraphModel).not.toHaveBeenCalled();
+      expect(tfn.loadLayersModel).toHaveBeenCalled();
+      expect(tfn.loadGraphModel).not.toHaveBeenCalled();
     });
 
     it('loads a layers model if no argument is specified', async () => {
-      tfN.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
-      tfN.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
-      const model = await loadTfModel(tfN, 'bar');
+      tfn.loadGraphModel = vi.fn().mockImplementation((async () => 'graph' as any as GraphModel));
+      tfn.loadLayersModel = vi.fn().mockImplementation((async () => 'layers' as any as LayersModel));
+      const model = await loadTfModel(tfn, 'bar');
       expect(model).toEqual('layers');
-      expect(tfN.loadLayersModel).toHaveBeenCalled();
-      expect(tfN.loadGraphModel).not.toHaveBeenCalled();
+      expect(tfn.loadLayersModel).toHaveBeenCalled();
+      expect(tfn.loadGraphModel).not.toHaveBeenCalled();
     });
   });
 
