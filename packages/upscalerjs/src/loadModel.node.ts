@@ -1,5 +1,4 @@
 import path from 'path';
-import { tf, } from './dependencies.generated';
 import type { ModelDefinition, } from "@upscalerjs/core";
 import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
