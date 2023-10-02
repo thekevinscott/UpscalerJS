@@ -1,3 +1,3 @@
-import { tf, } from './dependencies.generated';
+import { LayersModel, } from '@tensorflow/tfjs-layers';
 
-export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
+export const isLayersModel = (model: unknown): model is LayersModel => model instanceof LayersModel;
