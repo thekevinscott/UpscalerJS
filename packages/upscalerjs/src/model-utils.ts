@@ -65,15 +65,15 @@ export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ?
   return tf.loadLayersModel(modelPath) as R;
 }
 
-const getBatchInputShape = (model: LayersModel | GraphModel): unknown => {
+const getBatchInputShape = (tf: TF, model: LayersModel | GraphModel): unknown => {
   if (isLayersModel(tf, model)) {
     return model.layers[0].batchInputShape;
   }
   return model.inputs[0].shape;
 };
 
-export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
-  const batchInputShape = getBatchInputShape(model);
+export const getModelInputShape = (tf: TF, { model, }: ModelPackage): Shape4D => {
+  const batchInputShape = getBatchInputShape(tf, model);
   if (!isShape4D(batchInputShape)) {
     throw new Error(ERROR_WITH_MODEL_INPUT_SHAPE(batchInputShape));
   }
@@ -97,14 +97,15 @@ export const getPatchSizeAsMultiple = (divisibilityFactor: number, patchSize: nu
  * - if a model has not defined its own input size, return the given user variables (which may be undefined)
  */
 type ParsePatchAndInputShapes = (
+  tf: TF,
   modelPackage: ModelPackage,
   args: UpscaleArgs,
   imageSize: FixedShape4D,
 ) => {
   modelInputShape?: Shape4D;
 } & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
-export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }, imageSize) => {
-  const modelInputShape = getModelInputShape(modelPackage);
+export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (tf, modelPackage, { patchSize, padding, }, imageSize) => {
+  const modelInputShape = getModelInputShape(tf, modelPackage);
   if (patchSize !== undefined) {
     if (patchSize <= 0) {
       throw GET_INVALID_PATCH_SIZE(patchSize);
