@@ -84,7 +84,7 @@ export const getImageAsTensor: GetImageAsTensor<Input> = async (
 };
 
 export const tensorAsBase64: TensorAsBase64 = (tensor) => {
-  const arr = tensorAsClampedArray(tensor);
+  const arr = tensorAsClampedArray(tf, tensor);
   return Buffer.from(arr).toString('base64');
 };
 
