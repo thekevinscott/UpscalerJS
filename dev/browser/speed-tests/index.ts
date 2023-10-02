@@ -1,4 +1,4 @@
-import Upscaler from '../../../packages/upscalerjs/src/esm';
+import Upscaler from '../../../packages/upscalerjs/src/index';
 import * as tf from '@tensorflow/tfjs';
 import PixelUpsampler from '../../../models/pixel-upsampler/src/4x';
 import GANs from '../../../models/esrgan-legacy/src/gans';
