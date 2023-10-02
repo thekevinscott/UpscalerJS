@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
-=======
-import { tf, } from './dependencies.generated';
-import type { Tensor3D, Tensor4D, Tensor, } from '@tensorflow/tfjs-core';
->>>>>>> main
 import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
