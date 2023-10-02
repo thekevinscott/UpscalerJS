@@ -152,7 +152,7 @@ describe('loadModel browser tests', () => {
         const packageName = 'packageName';
         const version = 'version';
         const modelPath = 'modelPath';
-        vi.mocked(loadTfModel).mockImplementation(async (_tf: typeof tf, url: string | io.IOHandler) => {
+        vi.mocked(loadTfModel).mockImplementation(async (_tf: unknown, url: string | io.IOHandler) => {
           if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
             throw new Error('next');
           }

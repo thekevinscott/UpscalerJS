@@ -4,6 +4,7 @@ import {
   getModuleFolder,
   getMissingMatchesError,
 } from "./loadModel.node";
+import { tf, } from './dependencies.generated';
 import { vi } from 'vitest';
 import path from 'path';
 import { resolver, } from './resolver';
