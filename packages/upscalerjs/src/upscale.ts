@@ -300,7 +300,7 @@ export async function* upscale<T extends TF, I>(
 interface InternalConfig<T extends TF, I> {
   checkValidEnvironment: CheckValidEnvironment<I>;
   getImageAsTensor: GetImageAsTensor<T, I>,
-  tensorAsBase64: TensorAsBase64,
+  tensorAsBase64: TensorAsBase64<T>;
 }
 
 export function cancellableUpscale<T extends TF, I>(

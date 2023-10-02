@@ -91,10 +91,10 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(tf, getModel(tf, this._opts.model || DEFAULT_MODEL));
+    this._model = loadModel(this.tf, getModel(this.tf, this._opts.model || DEFAULT_MODEL));
     this.ready = new Promise((resolve, reject) => {
       this._model.then(() => cancellableWarmup(
-        tf,
+        this.tf,
         this._model,
         (this._opts.warmupSizes || []),
         undefined,
@@ -161,7 +161,7 @@ export class Upscaler {
   ) {
     await this.ready;
     const modelPackage = await this._model;
-    return cancellableUpscale(tf, image, getUpscaleOptions(options), {
+    return cancellableUpscale(this.tf, image, getUpscaleOptions(options), {
       ...modelPackage,
       signal: this._abortController.signal,
     }, {
@@ -195,7 +195,7 @@ export class Upscaler {
   warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this.ready;
     return cancellableWarmup(
-      tf,
+      this.tf,
       this._model,
       warmupSizes,
       options, {

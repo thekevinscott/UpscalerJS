@@ -85,7 +85,7 @@ export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async ( // skipcq:
   throw getInvalidTensorError(tensor);
 };
 
-export const tensorAsBase64: TensorAsBase64 = (tf, tensor) => {
+export const tensorAsBase64: TensorAsBase64<TFN> = (tf, tensor) => {
   const arr = tensorAsClampedArray(tf, tensor);
   return Buffer.from(arr).toString('base64');
 };
