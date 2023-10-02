@@ -133,10 +133,10 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
           });
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
-            test.only.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
-              // if (VERBOSE) {
-              //   console.log('UMD Test', packageName, modelName)
-              // }
+            test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
+              if (VERBOSE) {
+                console.log('UMD Test', packageName, modelName)
+              }
               const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
                 const model = window[modelName] as unknown as ModelDefinition;
                 const upscaler = new window['Upscaler']({

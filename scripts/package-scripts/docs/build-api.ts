@@ -127,7 +127,6 @@ const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: str
 
   app.options.addReader(new TSConfigReader());
   app.options.addReader(new TypeDocReader());
-  console.log(entryPoint)
 
   app.bootstrap({
     entryPoints: [entryPoint],
