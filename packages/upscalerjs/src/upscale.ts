@@ -146,12 +146,12 @@ export async function* processPixels(
         }
         yield [upscaledTensor, colTensor, processedPrediction,];
 
-        colTensor = concatTensors<tf.Tensor4D>([colTensor, processedPrediction,], 2);
+        colTensor = concatTensors<tf.Tensor4D>(tf, [colTensor, processedPrediction,], 2);
         processedPrediction.dispose();
         yield [upscaledTensor, colTensor,];
       }
 
-      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
+      upscaledTensor = concatTensors<tf.Tensor4D>(tf, [upscaledTensor, colTensor,], 1);
 
       /* eslint-disable @typescript-eslint/no-non-null-assertion */
       colTensor!.dispose();
@@ -162,7 +162,7 @@ export async function* processPixels(
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const processedUpscaledTensor = processAndDisposeOfTensor(
       upscaledTensor!.clone(),
-      trimInput(originalImageSize, scale)
+      trimInput(tf, originalImageSize, scale)
     );
     upscaledTensor?.dispose();
     yield [processedUpscaledTensor,];
@@ -183,7 +183,7 @@ export async function* processPixels(
     prediction.clone(),
     modelDefinition.postprocess,
     scaleOutput(modelDefinition.outputRange),
-    trimInput(originalImageSize, scale)
+    trimInput(tf, originalImageSize, scale)
   );
 
   prediction.dispose();
@@ -244,8 +244,8 @@ export async function* upscale<I>(
   const preprocessedPixels = processAndDisposeOfTensor(
     startingPixels,
     modelPackage.modelDefinition.preprocess,
-    scaleIncomingPixels(modelPackage.modelDefinition.inputRange),
-    modelInputShape ? padInput(modelInputShape) : undefined,
+    scaleIncomingPixels(tf, modelPackage.modelDefinition.inputRange),
+    modelInputShape ? padInput(tf, modelInputShape) : undefined,
   );
   yield preprocessedPixels;
 
