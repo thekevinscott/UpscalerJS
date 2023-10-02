@@ -15,6 +15,7 @@ button.onclick = () => {
     .upscale(img, {
       patchSize: 2,
       padding: 2,
+      awaitNextFrame: true,
       progress: (amount) => {
         progressLabel.innerText = `${(amount * 100).toFixed(2)}%`;
       },
