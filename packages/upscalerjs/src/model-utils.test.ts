@@ -6,12 +6,12 @@ import {
   parsePatchAndInputShapes,
   getModelInputShape,
   getPatchSizeAsMultiple,
-} from './model-utils.js';
-import type * as utils  from './utils.js';
+} from './model-utils';
+import type * as utils  from './utils';
 import {
   warn,
 } from './utils';
-import * as isLayersModel from './isLayersModel.js';
+import * as isLayersModel from './isLayersModel';
 import type * as core from '@upscalerjs/core';
 import { 
   isShape4D,
@@ -19,7 +19,7 @@ import {
   ModelDefinition,
   ModelDefinitionFn,
  } from '@upscalerjs/core';
-import { ModelPackage } from './types.js';
+import { ModelPackage } from './types';
 import {
   ERROR_INVALID_MODEL_TYPE,
   ERROR_MODEL_DEFINITION_BUG, 
@@ -32,7 +32,7 @@ import {
   GET_INVALID_PATCH_SIZE_AND_PADDING,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
   WARNING_DEPRECATED_MODEL_DEFINITION_FN,
-} from './errors-and-warnings.js';
+} from './errors-and-warnings';
 import { GraphModel, LayersModel } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 
@@ -46,7 +46,7 @@ vi.mock('@tensorflow/tfjs-node', async () => {
   };
 });
 
-vi.mock('./isLayersModel.js', async () => {
+vi.mock('./isLayersModel', async () => {
   const { isLayersModel: _isLayersModel, ...rest } = await vi.importActual('./isLayersModel') as typeof isLayersModel;
   return {
     ...rest,
@@ -54,7 +54,7 @@ vi.mock('./isLayersModel.js', async () => {
   };
 });
 
-vi.mock('./utils.js', async () => {
+vi.mock('./utils', async () => {
   const { warn, ...rest } = await vi.importActual('./utils') as typeof utils;
   return {
     ...rest,

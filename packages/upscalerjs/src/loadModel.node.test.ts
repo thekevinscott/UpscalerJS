@@ -5,12 +5,10 @@ import {
   getMissingMatchesError,
 } from "./loadModel.node";
 import { vi } from 'vitest';
-import { tf } from './dependencies.generated';
 import path from 'path';
 import { resolver, } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
-  getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
 } from './errors-and-warnings';
 import {

@@ -43,7 +43,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
   const { modelType, _internals, path: modelPath, } = modelConfiguration;
   if (modelPath) {
-    return await loadTfModel(modelPath, modelType);
+    return await loadTfModel(tf, modelPath, modelType);
   }
   if (!_internals) {
     // This should never happen. This should have been caught by isValidModelDefinition.
@@ -54,7 +54,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
     const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
     try {
       const url = getCDNFn(_internals.name, _internals.version, _internals.path);
-      return await loadTfModel(url, modelType);
+      return await loadTfModel(tf, url, modelType);
     } catch (err: unknown) {
       // there was an issue with the CDN, try another
       errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
