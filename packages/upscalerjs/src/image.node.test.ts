@@ -8,7 +8,7 @@ import {
   getInvalidTensorError,
   getInvalidImageSrcInput,
 } from './image.node';
-import { tf } from './dependencies.generated';
+import * as tf from '@tensorflow/tfjs-node';
 import {
   hasValidChannels,
 } from '@upscalerjs/core'
@@ -84,7 +84,7 @@ describe('Image', () => {
     it('handles an invalid (too small) tensor input', async () => {
       vi.mocked(hasValidChannels).mockReturnValue(true);
       const input = tf.tensor([[1,],]);
-      await expect(() => getImageAsTensor(tf, input as any))
+      await expect(() => getImageAsTensor(tf, input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });

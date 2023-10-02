@@ -1,10 +1,11 @@
 import fs from 'fs';
-import { tf, } from './dependencies.generated';
+import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
+import { TFN, } from '@upscalerjs/core';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
 import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 
-export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
+export const getInvalidTensorError = (input: Tensor): Error => new Error(
   [
     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
     'Only 3 or 4 rank tensors are supported.',
@@ -21,7 +22,7 @@ export const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));
 
-export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error([
+export const getInvalidChannelsOfTensor = (input: Tensor): Error => new Error([
   `Invalid channels, only 3 channels are supported at this time. You provided: "${input.shape.slice(-1)[0]}".`,
   `Full tensor shape: ${JSON.stringify(input.shape)}`,
 ].join(' '));
@@ -29,7 +30,7 @@ export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error
 const isUint8Array = (input: Input): input is Uint8Array => input.constructor === Uint8Array;
 const isBuffer = (input: Input): input is Buffer => input.constructor === Buffer;
 
-const getTensorFromInput = (input: Input): tf.Tensor3D | tf.Tensor4D => {
+const getTensorFromInput = (input: Input, tf: TFN): Tensor3D | Tensor4D => {
   if (isUint8Array(input)) {
     return tf.node.decodeImage(input);
   }
@@ -58,21 +59,21 @@ const getTensorFromInput = (input: Input): tf.Tensor3D | tf.Tensor4D => {
   throw getInvalidInput(input); 
 };
 
-export type Input = tf.Tensor3D | tf.Tensor4D | string | Uint8Array | Buffer;
+export type Input = Tensor3D | Tensor4D | string | Uint8Array | Buffer;
 
 /* eslint-disable @typescript-eslint/require-await */
-export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
-  _tf,
+export const getImageAsTensor: GetImageAsTensor<TFN, Input> = async ( // skipcq: 
+  tf,
   input,
 ) => {
-  const tensor = getTensorFromInput(input);
+  const tensor = getTensorFromInput(input, tf);
 
   if (!hasValidChannels(tensor)) {
     throw getInvalidChannelsOfTensor(tensor);
   }
 
   if (isThreeDimensionalTensor(tensor)) {
-    const expandedTensor: tf.Tensor4D = tensor.expandDims(0);
+    const expandedTensor: Tensor4D = tensor.expandDims(0);
     tensor.dispose();
     return expandedTensor;
   }
