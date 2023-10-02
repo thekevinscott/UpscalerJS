@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
@@ -19,7 +20,7 @@ export const getEnvironmentDisallowsBase64 = () => new Error([
   `For more information, see ${ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL}.`,
 ].join('\n'));
 
-export const getInvalidTensorError = (input: tf.Tensor): Error => new Error(
+export const getInvalidTensorError = (input: Tensor): Error => new Error(
   [
     `Unsupported dimensions for incoming pixels: ${input.shape.length}.`,
     'Only 3 or 4 rank tensors are supported.',
@@ -38,13 +39,13 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise
   img.onerror = () => reject(getInvalidImageError());
 });
 
-const fromPixels = (input: Exclude<Input, string | tf.Tensor>) => tf.browser.fromPixelsAsync(input);
+const fromPixels = (input: Exclude<Input, string | Tensor>) => tf.browser.fromPixelsAsync(input);
 
 const getTensorFromInput = async (
   input: Input, 
    /* eslint-disable @typescript-eslint/no-unused-vars */
   _tf: typeof tf,
-): Promise<tf.Tensor3D | tf.Tensor4D> => {
+): Promise<Tensor3D | Tensor4D> => {
   if (isTensor(input)) {
     return input;
   }
@@ -57,7 +58,7 @@ const getTensorFromInput = async (
   return fromPixels(input);
 };
 
-export type Input = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
+export type Input = Tensor3D | Tensor4D | string | tf.FromPixelsInputs['pixels'];
 export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
   tf,
   input,
@@ -67,7 +68,7 @@ export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
   if (isThreeDimensionalTensor(tensor)) {
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-    const expandedTensor = tensor.expandDims(0) as tf.Tensor4D;
+    const expandedTensor = tensor.expandDims(0) as Tensor4D;
     tensor.dispose();
     return expandedTensor;
   }
