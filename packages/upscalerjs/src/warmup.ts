@@ -53,7 +53,7 @@ export async function* warmup(
     ].filter(Boolean);
 
     for (const fn of fns) {
-      dummyTensor = processAndDisposeOfTensor(dummyTensor, fn);
+      dummyTensor = processAndDisposeOfTensor(tf, dummyTensor, fn);
       yield [dummyTensor,];
     }
     dummyTensor.dispose();

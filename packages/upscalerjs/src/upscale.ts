@@ -115,7 +115,7 @@ export async function* processPixels(
         );
         prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction,];
-        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange));
+        const processedPrediction = processAndDisposeOfTensor(tf, slicedPrediction, modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange));
         yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
@@ -161,6 +161,7 @@ export async function* processPixels(
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const processedUpscaledTensor = processAndDisposeOfTensor(
+      tf,
       upscaledTensor!.clone(),
       trimInput(tf, originalImageSize, scale)
     );
@@ -180,6 +181,7 @@ export async function* processPixels(
   const prediction = executeModel(model, pixels);
   yield [prediction,];
   const postprocessedTensor = processAndDisposeOfTensor(
+    tf,
     prediction.clone(),
     modelDefinition.postprocess,
     scaleOutput(modelDefinition.outputRange),
@@ -242,6 +244,7 @@ export async function* upscale<I>(
   const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args, imageSize);
 
   const preprocessedPixels = processAndDisposeOfTensor(
+    tf,
     startingPixels,
     modelPackage.modelDefinition.preprocess,
     scaleIncomingPixels(tf, modelPackage.modelDefinition.inputRange),
