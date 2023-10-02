@@ -1,5 +1,6 @@
 import { makeTick, } from './makeTick';
-import { tf, } from './dependencies.generated';
+import type { Tensor4D, } from '@tensorflow/tfjs-core';
+import type { TF, } from '@upscalerjs/core';
 import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
 import { processAndDisposeOfTensor, wrapGenerator, } from './utils';
 
@@ -33,6 +34,7 @@ const getWidthAndHeight = (size: NumericWarmupSizes | WarmupSizesByPatchSize): n
 };
 
 export async function* warmup(
+  tf: TF,
   modelPackage: Promise<ModelPackage>,
   sizes: (NumericWarmupSizes | WarmupSizesByPatchSize)[],
 ): AsyncGenerator<YieldedIntermediaryValue> {
@@ -43,17 +45,17 @@ export async function* warmup(
     }
     const warmupSize = getWidthAndHeight(size);
 
-    let dummyTensor = tf.zeros([1, warmupSize, warmupSize, 3,]) as tf.Tensor4D;
+    let dummyTensor = tf.zeros([1, warmupSize, warmupSize, 3,]) as Tensor4D;
     yield [dummyTensor,];
 
     const fns = [
       modelDefinition.preprocess,
-      (t: tf.Tensor4D) => model.predict(t) as tf.Tensor4D,
+      (t: Tensor4D) => model.predict(t) as Tensor4D,
       modelDefinition.postprocess,
     ].filter(Boolean);
 
     for (const fn of fns) {
-      dummyTensor = processAndDisposeOfTensor(dummyTensor, fn);
+      dummyTensor = processAndDisposeOfTensor(tf, dummyTensor, fn);
       yield [dummyTensor,];
     }
     dummyTensor.dispose();
@@ -78,6 +80,7 @@ export const getSizesAsArray = (sizes: WarmupSizes): (NumericWarmupSizes | Warmu
 };
 
 export const cancellableWarmup = async (
+  tf: TF,
   modelPackage: Promise<ModelPackage>,
   sizes: WarmupSizes,
   { signal = undefined, awaitNextFrame = false, }: WarmupArgs = {},
@@ -88,6 +91,7 @@ export const cancellableWarmup = async (
   const tick = makeTick(tf, signal || internalArgs.signal, awaitNextFrame);
   await tick();
   await wrapGenerator(warmup(
+    tf,
     modelPackage,
     getSizesAsArray(sizes),
   ), tick);
