@@ -86,9 +86,9 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ esm }) => esm || 'index'))(`upscales with ${packageName}/%s as esm`, async (modelName) => {
-              // if (VERBOSE) {
-              //   console.log('ESM Test', packageName, modelName)
-              // }
+              if (VERBOSE) {
+                console.log('ESM Test', packageName, modelName)
+              }
               const fixture = packageName;
               const result = await esmTestRunner.page.evaluate(({ fixture, packageName, modelName }) => {
                 const model = window[packageName][modelName] as unknown as ModelDefinition;
@@ -210,9 +210,9 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageName}/%s as cjs`, async (modelName) => {
-              // if (VERBOSE) {
-              //   console.log('CJS Test', packageName, modelName)
-              // }
+              if (VERBOSE) {
+                console.log('CJS Test', packageName, modelName)
+              }
               const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, modelName === 'index' ? '' : `/${modelName}`);
               const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
               const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
