@@ -8,6 +8,6 @@ describe('isLayersModel', () => {
     const model = tfn.sequential();
     model.add(tfn.layers.dense({units: 1, inputShape: [1]}));
     model.compile({optimizer: 'sgd', loss: 'meanSquaredError'});
-    expect(isLayersModel(model)).toEqual(true);
+    expect(isLayersModel(tfn, model)).toEqual(true);
   });
 });

@@ -64,7 +64,7 @@ export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ?
 }
 
 const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
-  if (isLayersModel(model)) {
+  if (isLayersModel(tf, model)) {
     return model.layers[0].batchInputShape;
   }
   return model.inputs[0].shape;
