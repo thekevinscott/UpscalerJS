@@ -335,7 +335,7 @@ export async function cancellableUpscale(
     output: args.output,
     progressOutput: args.progressOutput,
   });
-  const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
+  const tick = makeTick(tf, signal || internalArgs.signal, awaitNextFrame);
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(
     input,

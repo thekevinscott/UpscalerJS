@@ -5,8 +5,8 @@ import {
 } from '@upscalerjs/core';
 import { 
   AbortError,
-} from './errors-and-warnings';
-import { makeTick } from './makeTick';
+} from './errors-and-warnings.js';
+import { makeTick } from './makeTick.js';
 
 import type * as core from '@upscalerjs/core';
 
@@ -26,7 +26,7 @@ describe('makeTick', () => {
     const t = {
       dispose,
     } as unknown as tf.Tensor3D;
-    const tick = makeTick(abortController.signal, true);
+    const tick = makeTick(tf, abortController.signal, true);
     const result = tick(t).then(() => {
       expect.unreachable('Should have thrown.')
     }).catch(err => {
@@ -45,7 +45,7 @@ describe('makeTick', () => {
       dispose,
     }) as unknown as tf.Tensor3D;
     const mockTensors = Array(3).fill('').map(() => getTensor());
-    const tick = makeTick(abortController.signal, true);
+    const tick = makeTick(tf, abortController.signal, true);
     const result = tick(mockTensors).then(() => {
       expect.unreachable('Should have thrown.')
     }).catch(err => {
@@ -61,7 +61,7 @@ describe('makeTick', () => {
   it('ignores any non-tensor results', () => {
     vi.mocked(isTensor).mockImplementation(() => false);
     const abortController = new AbortController();
-    const tick = makeTick(abortController.signal, true);
+    const tick = makeTick(tf, abortController.signal, true);
     const result = tick(undefined).then(() => {
       expect.unreachable('Should have thrown.')
     }).catch(err => {
