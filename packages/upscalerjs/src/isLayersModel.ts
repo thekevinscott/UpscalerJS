@@ -1,3 +1,4 @@
-import { tf, } from './dependencies.generated';
+import type { LayersModel, } from '@tensorflow/tfjs-layers';
+import type { TF, GraphModel, } from '@upscalerjs/core';
 
-export const isLayersModel = (model: tf.LayersModel | tf.GraphModel): model is tf.LayersModel => model instanceof tf.LayersModel;
+export const isLayersModel = (tf: TF, model: LayersModel | GraphModel): model is LayersModel => model instanceof tf.LayersModel;
