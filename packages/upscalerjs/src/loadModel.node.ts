@@ -1,11 +1,11 @@
 import path from 'path';
-import { tf, } from './dependencies.generated';
 import type { ModelDefinition, } from "@upscalerjs/core";
 import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   isValidModelDefinition,
+  TF,
 } from '@upscalerjs/core';
 import {
   ERROR_MODEL_DEFINITION_BUG,
@@ -43,6 +43,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
 };
 
 export const loadModel = async (
+  tf: TF,
   _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
   const modelDefinition = await _modelDefinition;

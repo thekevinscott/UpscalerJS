@@ -813,6 +813,12 @@ importers:
 
   packages/upscalerjs:
     dependencies:
+      '@tensorflow/tfjs-core':
+        specifier: ~4.8.0
+        version: 4.8.0
+      '@tensorflow/tfjs-layers':
+        specifier: ~4.8.0
+        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../core

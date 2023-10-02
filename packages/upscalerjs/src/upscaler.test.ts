@@ -89,7 +89,7 @@ describe('Upscaler', () => {
 
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
-    vi.mocked(cancellableUpscale).mockImplementation(async function (_1, _2, { signal }: {
+    vi.mocked(cancellableUpscale).mockImplementation(async function (_0, _1, _2, { signal }: {
       signal: AbortSignal;
     }) {
       try {
