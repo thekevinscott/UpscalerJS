@@ -1,5 +1,5 @@
-import { tf, } from './dependencies.generated';
-import type { Tensor3D, Tensor4D, Tensor, } from '@tensorflow/tfjs-core';
+import * as tf from '@tensorflow/tfjs';
+import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
 import { tensorAsClampedArray, } from './tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
@@ -41,7 +41,11 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => new Promise
 
 const fromPixels = (input: Exclude<Input, string | Tensor>) => tf.browser.fromPixelsAsync(input);
 
-const getTensorFromInput = async (input: Input): Promise<Tensor3D | Tensor4D> => {
+const getTensorFromInput = async (
+  input: Input, 
+   /* eslint-disable @typescript-eslint/no-unused-vars */
+  _tf: typeof tf,
+): Promise<Tensor3D | Tensor4D> => {
   if (isTensor(input)) {
     return input;
   }
@@ -56,10 +60,10 @@ const getTensorFromInput = async (input: Input): Promise<Tensor3D | Tensor4D> =>
 
 export type Input = Tensor3D | Tensor4D | string | tf.FromPixelsInputs['pixels'];
 export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
-  _tf,
+  tf,
   input,
 ) => {
-  const tensor = await getTensorFromInput(input);
+  const tensor = await getTensorFromInput(input, tf);
 
   if (isThreeDimensionalTensor(tensor)) {
     // https://github.com/tensorflow/tfjs/issues/1125
@@ -102,7 +106,9 @@ export const tensorAsBase64: TensorAsBase64 = (tf, tensor) => {
 
 const checkIfValidEnvironment = (errFn: () => Error) => {
   try {
-    (new Image() && 'createElement' in document) === true; // skipcq: JS-0354
+    if ((new Image() && 'createElement' in document) !== true) { // skipcq: JS-0354
+      throw errFn();
+    }
   } catch(err) {
     throw errFn();
   }

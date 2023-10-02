@@ -53,7 +53,7 @@ describe('Image', async () => {
       }
     });
 
-    it.only('handles a rejected Image() if given a string as input', () => {
+    it('handles a rejected Image() if given a string as input', () => {
       return getImageAsTensor(tf, 'foobar')
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => expect(m.message).to.equal(getInvalidImageError().message));
@@ -86,7 +86,7 @@ describe('Image', async () => {
 
     it('handles an invalid (too small) tensor input', async () => {
       const input = tf.tensor([[1,],]);
-      return getImageAsTensor(tf, input as any)
+      return getImageAsTensor(tf, input as tf.Tensor3D)
         .then(() => { throw new Error('was not supposed to succeed'); })
         .catch(m => {
           input.dispose();
