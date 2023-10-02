@@ -138,7 +138,7 @@ export async function* processPixels(
               progress(percent, squeezedTensor, sliceData);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(tf, squeezedTensor);
               squeezedTensor.dispose();
               progress(percent, src, sliceData);
             }
@@ -232,7 +232,7 @@ export async function* upscale<I>(
   }: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D> {
   const parsedInput = getCopyOfInput<I>(input);
-  const startingPixels = await getImageAsTensor(parsedInput);
+  const startingPixels = await getImageAsTensor(tf, parsedInput);
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
@@ -285,14 +285,14 @@ export async function* upscale<I>(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels);
+  const base64Src = tensorAsBase64(tf, upscaledPixels);
   upscaledPixels.dispose();
   return base64Src;
 };
 
 interface InternalConfig<I> {
   checkValidEnvironment: CheckValidEnvironment<I>;
-  getImageAsTensor: GetImageAsTensor<I>,
+  getImageAsTensor: GetImageAsTensor<typeof tf, I>,
   tensorAsBase64: TensorAsBase64,
 }
 
