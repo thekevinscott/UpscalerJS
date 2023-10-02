@@ -4,108 +4,103 @@ import {
   getModuleFolder,
   getMissingMatchesError,
 } from "./loadModel.node";
-import { mock, mockFn } from '../../../test/lib/shared/mockers';
-import { tf as _tf, } from './dependencies.generated';
+import { tf, } from './dependencies.generated';
+import { vi } from 'vitest';
 import path from 'path';
-import { resolver as _resolver } from './resolver';
+import { resolver, } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
-  getModelDefinitionError as _getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
 } from './errors-and-warnings';
 import {
-  loadTfModel as _loadTfModel,
+  loadTfModel,
 } from './model-utils';
 import {
-  isValidModelDefinition as _isValidModelDefinition,
+  isValidModelDefinition,
   ModelDefinitionValidationError,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 
-jest.mock('./model-utils', () => {
-  const { loadTfModel, getModuleFolder, ...rest } = jest.requireActual('./model-utils');
+import type * as dependenciesGenerated from './dependencies.generated';
+import type * as core from '@upscalerjs/core';
+import type * as modelUtils from './model-utils';
+import type * as errorsAndWarnings from './errors-and-warnings';
+import type * as resolverModule from './resolver';
+
+vi.mock('./model-utils', async () => {
+  const { loadTfModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
     ...rest,
-    getModuleFolder: jest.fn(getModuleFolder),
-    loadTfModel: jest.fn(loadTfModel),
+    loadTfModel: vi.fn(loadTfModel),
   }
 });
 
-jest.mock('./errors-and-warnings', () => {
-  const { getModelDefinitionError, ...rest } = jest.requireActual('./errors-and-warnings');
+vi.mock('./errors-and-warnings', async () => {
+  const { getModelDefinitionError, ...rest } = await vi.importActual('./errors-and-warnings') as typeof errorsAndWarnings;
   return {
     ...rest,
-    getModelDefinitionError: jest.fn(getModelDefinitionError),
+    getModelDefinitionError: vi.fn(getModelDefinitionError),
   }
 });
 
-jest.mock('@upscalerjs/core', () => {
-  const { isValidModelDefinition, ...rest } = jest.requireActual('@upscalerjs/core');
+vi.mock('@upscalerjs/core', async () => {
+  const { isValidModelDefinition, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
   return {
     ...rest,
-    isValidModelDefinition: jest.fn(isValidModelDefinition),
+    isValidModelDefinition: vi.fn(isValidModelDefinition),
   }
 });
-jest.mock('./resolver', () => {
-  const { resolver, ...rest } = jest.requireActual('./resolver');
+vi.mock('./resolver', async () => {
+  const { resolver, ...rest } = await vi.importActual('./resolver') as typeof resolverModule;
   return {
     ...rest,
-    resolver: jest.fn(resolver),
+    resolver: vi.fn(resolver),
   };
 });
-jest.mock('./dependencies.generated', () => {
-  const { tf, ...rest } = jest.requireActual('./dependencies.generated');
+vi.mock('./dependencies.generated', async () => {
+  const { tf, ...rest } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
   return {
     ...rest,
     tf: {
       ...tf,
-      loadLayersModel: jest.fn(),
-      loadGraphModel: jest.fn(),
+      loadLayersModel: vi.fn(),
+      loadGraphModel: vi.fn(),
     }
   }
 });
 
-const tf = mock(_tf);
-const resolver = mockFn(_resolver);
-const getModelDefinitionError = mockFn(_getModelDefinitionError);
-const isValidModelDefinition = mockFn(_isValidModelDefinition);
-const loadTfModel = mockFn(_loadTfModel);
-
 const getResolver = (fn: () => string) => (fn) as unknown as typeof require.resolve;
 
 describe('loadModel.node', () => {
-  beforeEach(() => {
-    getModelDefinitionError.mockClear();
-    isValidModelDefinition.mockClear();
-    resolver.mockClear();
-    tf.loadLayersModel.mockClear();
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe('getModuleFolder', () => {
     it('returns undefined if a module cannot be found', () => {
-      resolver.mockImplementation(getResolver(() => 'foo'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => 'foo'));
       expect(() => getModuleFolder('foo')).toThrowError(getMissingMatchesError('foo'));
     });
 
     it('returns the path to the module', () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
       expect(getModuleFolder('baz')).toEqual('./node_modules/@upscalerjs/default-model/');
     });
 
     it('returns the path to the module even if it is local', () => {
-      resolver.mockImplementation(getResolver(() => '/Users/foo/@upscalerjs/default-model/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => '/Users/foo/@upscalerjs/default-model/dist/foo/foo.ts'));
       expect(getModuleFolder('baz')).toEqual('/Users/foo/@upscalerjs/default-model/');
     });
 
     it('returns the path to the module even if the name is different', () => {
-      resolver.mockImplementation(getResolver(() => '/dist/Users/foo/baz/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => '/dist/Users/foo/baz/dist/foo/foo.ts'));
       expect(getModuleFolder('baz')).toEqual('/dist/Users/foo/baz/');
     });
   });
 
   describe('getModelPath', () => {
     it('returns model path if provided a path', () => {
-      resolver.mockImplementation(getResolver(() => ''));
+      vi.mocked(resolver).mockImplementation(getResolver(() => ''));
       expect(getModelPath({ 
         path: 'foo', 
         _internals: {
@@ -119,7 +114,7 @@ describe('loadModel.node', () => {
     });
 
     it('returns model path if not provided a path', () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
       expect(getModelPath({
         _internals: {
           path: 'some-model',
@@ -134,9 +129,9 @@ describe('loadModel.node', () => {
 
   describe('loadModel', () => {
     it('throws if given an undefined model definition', async () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
       const error = ERROR_MODEL_DEFINITION_BUG;
-      isValidModelDefinition.mockImplementation(() => {
+      vi.mocked(isValidModelDefinition).mockImplementation(() => {
         throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
       });
 
@@ -146,15 +141,15 @@ describe('loadModel.node', () => {
     });
 
     it('loads a valid layers model', async () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/baz'));
-      isValidModelDefinition.mockImplementation(() => true);
-      loadTfModel.mockImplementation(async () => 'layers model' as any);
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(isValidModelDefinition).mockImplementation(() => true);
+      vi.mocked(loadTfModel).mockImplementation(async () => 'layers model' as any);
 
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
       const response = await loadModel(Promise.resolve(modelDefinition));
-      expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
         modelDefinition,
@@ -162,15 +157,15 @@ describe('loadModel.node', () => {
     });
 
     it('loads a valid graph model', async () => {
-      resolver.mockImplementation(getResolver(() => './node_modules/baz'));
-      isValidModelDefinition.mockImplementation(() => true);
-      loadTfModel.mockImplementation(async () => 'graph model' as any);
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(isValidModelDefinition).mockImplementation(() => true);
+      vi.mocked(loadTfModel).mockImplementation(async () => 'graph model' as any);
 
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'graph' };
 
       const response = await loadModel(Promise.resolve(modelDefinition));
-      expect(loadTfModel).toHaveBeenCalledWith(path, 'graph');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'graph');
       expect(response).toEqual({
         model: 'graph model',
         modelDefinition,

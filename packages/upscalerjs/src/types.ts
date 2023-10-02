@@ -1,5 +1,6 @@
-import { tf, } from './dependencies.generated';
-import type { ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
+import type { LayersModel, layers, } from '@tensorflow/tfjs-layers';
+import type { TF, GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -30,7 +31,7 @@ export interface SliceData {
   }
 }
 export type MultiArgStringProgress = (amount: number, slice: string, sliceData: SliceData) => void;
-export type MultiArgTensorProgress = (amount: number, slice: tf.Tensor3D, sliceData: SliceData) => void;
+export type MultiArgTensorProgress = (amount: number, slice: Tensor3D, sliceData: SliceData) => void;
 export type SingleArgProgress = (amount: number) => void;
 export type Progress = SingleArgProgress | MultiArgStringProgress | MultiArgTensorProgress;
 
@@ -73,14 +74,14 @@ export interface PrivateUpscaleArgs extends Omit<UpscaleArgs, 'output' | 'progre
   progressOutput: BASE64 | TENSOR;
 }
 
-export type Layer = tf.layers.Layer;
+export type Layer = layers.Layer;
 
 export interface ModelPackage {
-  model: tf.LayersModel | tf.GraphModel;
+  model: LayersModel | GraphModel;
   modelDefinition: ParsedModelDefinition;
 }
 
-export type YieldedIntermediaryValue = undefined | tf.Tensor4D | tf.Tensor3D | Array<tf.Tensor3D | tf.Tensor4D | undefined>;
+export type YieldedIntermediaryValue = undefined | Tensor4D | Tensor3D | Array<Tensor3D | Tensor4D | undefined>;
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface WarmupArgs extends SharedArgs {}
@@ -88,6 +89,8 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
+export type GetImageAsTensor<T extends TF, I> = (tf: T, input: I) => Promise<Tensor4D>;
+export type TensorAsBase64 = (tf: TF, tensor: Tensor3D) => string;
 
 export type Coordinate = [number, number];
 

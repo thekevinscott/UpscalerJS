@@ -1,4 +1,5 @@
 import path from 'path';
+import { tf, } from './dependencies.generated';
 import type { ModelDefinition, } from "@upscalerjs/core";
 import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
@@ -57,7 +58,7 @@ export const loadModel = async (
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
   const modelPath = getModelPath(parsedModelDefinition);
-  const model = await loadTfModel(modelPath, parsedModelDefinition.modelType);
+  const model = await loadTfModel(tf, modelPath, parsedModelDefinition.modelType);
 
   return {
     model,

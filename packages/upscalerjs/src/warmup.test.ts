@@ -1,4 +1,5 @@
 import type { LayersModel } from '@tensorflow/tfjs-node';
+import { vi } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
 import { getInvalidValueError, cancellableWarmup, warmup, getSizesAsArray, isNumericWarmupSize, isWarmupSizeByPatchSize } from './warmup';
 import { ModelPackage, NumericWarmupSizes, WarmupSizesByPatchSize } from './types';
@@ -8,7 +9,7 @@ import {
 import { PostProcess, PreProcess } from '@upscalerjs/core';
 
 const getFakeModel = () => {
-  const predict = jest.fn(() => {
+  const predict = vi.fn(() => {
     return {
       dataSync: () => {},
       dispose: () => {},
@@ -80,7 +81,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await expect(cancellableWarmup(model, args as any, undefined, {
+      await expect(cancellableWarmup(tf, model, args as any, undefined, {
         signal: new AbortController().signal,
       })).rejects.toThrow(
         getInvalidValueError(args)
@@ -100,7 +101,7 @@ describe('cancellableWarmup', () => {
           },
         }),
     );
-    await cancellableWarmup(model, [], undefined, {
+    await cancellableWarmup(tf, model, [], undefined, {
       signal: new AbortController().signal,
     });
     expect((await model).model.predict).not.toHaveBeenCalled();
@@ -119,7 +120,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await cancellableWarmup(model, [20,], undefined, {
+      await cancellableWarmup(tf, model, [20,], undefined, {
         signal: new AbortController().signal,
       });
       expect((await model).model.predict).toHaveBeenCalledWith(
@@ -141,7 +142,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await cancellableWarmup(model, [
+      await cancellableWarmup(tf, model, [
         20,
         200,
       ], undefined, {
@@ -173,7 +174,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await cancellableWarmup(model, [{ patchSize: 10, },], undefined, {
+      await cancellableWarmup(tf, model, [{ patchSize: 10, },], undefined, {
         signal: new AbortController().signal,
       });
       expect((await model).model.predict).toHaveBeenCalledWith(
@@ -195,7 +196,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], undefined, {
+      await cancellableWarmup(tf, model, [{ patchSize: 10, }, { patchSize: 20, },], undefined, {
         signal: new AbortController().signal,
       });
       expect((await model).model.predict).toHaveBeenCalledWith(
@@ -215,7 +216,7 @@ describe('cancellableWarmup', () => {
     it('is able to cancel an in-flight request', async () => {
       const controller = new AbortController();
 
-      const predict = jest.fn(() => {
+      const predict = vi.fn(() => {
         controller.abort();
         return {
           dataSync: () => {},
@@ -236,7 +237,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
+      await expect(() => cancellableWarmup(tf, model, [{ patchSize: 10, }, { patchSize: 20, },], {
         signal: controller.signal,
         awaitNextFrame: true,
       }, {
@@ -249,7 +250,7 @@ describe('cancellableWarmup', () => {
     it('is able to cancel an in-flight request with an internal signal', async () => {
       const controller = new AbortController();
 
-      const predict = jest.fn(() => {
+      const predict = vi.fn(() => {
         controller.abort();
         return {
           dataSync: () => {},
@@ -270,7 +271,7 @@ describe('cancellableWarmup', () => {
           },
         }),
       );
-      await expect(() => cancellableWarmup(model, [{ patchSize: 10, }, { patchSize: 20, },], {
+      await expect(() => cancellableWarmup(tf, model, [{ patchSize: 10, }, { patchSize: 20, },], {
         awaitNextFrame: true,
       }, {
         signal: controller.signal,
@@ -284,7 +285,7 @@ describe('cancellableWarmup', () => {
 describe('Warmup', () => {
   it('should clear up all memory while running without pre or post functions', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -299,7 +300,7 @@ describe('Warmup', () => {
         },
       }),
     );
-    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+    const gen = warmup(tf, modelPackage, [{ patchSize: 10, },]);
 
     let currentExpectationIndex = 0;
     const expectations = [
@@ -327,7 +328,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a pre function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -344,7 +345,7 @@ describe('Warmup', () => {
         },
       }),
     );
-    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+    const gen = warmup(tf, modelPackage, [{ patchSize: 10, },]);
 
     let currentExpectationIndex = 0;
     const expectations = [
@@ -373,7 +374,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a post function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -390,7 +391,7 @@ describe('Warmup', () => {
         },
       }),
     );
-    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+    const gen = warmup(tf, modelPackage, [{ patchSize: 10, },]);
 
     let currentExpectationIndex = 0;
     const expectations = [
@@ -419,7 +420,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with a pre and post function', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -438,7 +439,7 @@ describe('Warmup', () => {
         },
       }),
     );
-    const gen = warmup(modelPackage, [{ patchSize: 10, },]);
+    const gen = warmup(tf, modelPackage, [{ patchSize: 10, },]);
 
     let currentExpectationIndex = 0;
     const expectations = [
@@ -468,7 +469,7 @@ describe('Warmup', () => {
 
   it('should clear up all memory while running with sizes of different formats', async () => {
     const startingTensors = tf.memory().numTensors;
-    const predict = jest.fn((tensor: tf.Tensor) => tensor.clone());
+    const predict = vi.fn((tensor: tf.Tensor) => tensor.clone());
 
     const fakeModel = {
       predict,
@@ -485,7 +486,7 @@ describe('Warmup', () => {
     );
     const patchSizeWarmUp: WarmupSizesByPatchSize = { patchSize: 10, };
     const numericWarmUpSize: NumericWarmupSizes = 10;
-    const gen = warmup(modelPackage, [patchSizeWarmUp, numericWarmUpSize]);
+    const gen = warmup(tf, modelPackage, [patchSizeWarmUp, numericWarmUpSize]);
 
     let currentExpectationIndex = 0;
     const expectations = [

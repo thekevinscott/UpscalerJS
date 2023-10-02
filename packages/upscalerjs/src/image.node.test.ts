@@ -1,5 +1,5 @@
-import { readFileSync as _readFileSync } from 'fs';
-import http from 'http';
+import { readFileSync } from 'fs';
+import { vi } from 'vitest';
 import path from 'path';
 import { 
   getImageAsTensor, 
@@ -8,78 +8,60 @@ import {
   getInvalidTensorError,
   getInvalidImageSrcInput,
 } from './image.node';
-import { mockFn } from '../../../test/lib/shared/mockers';
 import { tf } from './dependencies.generated';
-import { startServer } from '../../../test/lib/shared/server';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import {
-  hasValidChannels as _hasValidChannels,
+  hasValidChannels,
 } from '@upscalerjs/core'
-jest.mock('@upscalerjs/core', () => {
-  const { hasValidChannels, ...rest } = jest.requireActual('@upscalerjs/core');
+
+import type * as core from '@upscalerjs/core';
+import type * as fs from 'fs';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+vi.mock('@upscalerjs/core', async () => {
+  const { hasValidChannels, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
   return { 
     ...rest,
-    hasValidChannels: jest.fn(hasValidChannels),
+    hasValidChannels: vi.fn(hasValidChannels),
   }
 });
-jest.mock('fs', () => {
-  const { readFileSync, ...rest } = jest.requireActual('fs');
+vi.mock('fs', async () => {
+  const { readFileSync, ...rest } = await vi.importActual('fs') as typeof fs;
   return { 
     ...rest,
-    readFileSync: jest.fn(readFileSync),
+    readFileSync: vi.fn(readFileSync),
   }
 });
-
-const hasValidChannels = mockFn(_hasValidChannels);
-
-jest.setTimeout(1000);
-
-const readFileSync = mockFn(_readFileSync);
-
-const PORT = 8099;
 
 const getTensorRange = (width: number, height: number): tf.Tensor1D => tf.tidy(() => tf.range(1, 1 + (width * height), 1));
 const getTensor = (height: number, width: number): tf.Tensor3D => tf.tidy(() => getTensorRange(width, height).reshape([height, width, 1]).tile([1, 1, 3]));
 
-const stopServer = (server: http.Server): Promise<void | undefined | Error> => new Promise((resolve) => {
-  if (server) {
-    server.close(resolve);
-  } else {
-    console.warn('No server found');
-    resolve();
-  }
-});
-
-const FLOWER = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small.jpg');
+const FLOWER = path.resolve(__dirname, '../test/__fixtures__/flower-small.jpg');
 const image = readFileSync(FLOWER);
 
 describe('Image', () => {
-  let server: http.Server;
   beforeEach(() => {
-    readFileSync.mockClear();
+    vi.mocked(readFileSync);
   });
-  beforeAll(async () => {
-    server = await startServer(PORT);
-  });
+
   afterEach(() => {
-    hasValidChannels.mockClear();
+    vi.clearAllMocks();
   });
-  afterAll(async () => {
-    await stopServer(server);
-  });
+
   describe('getImageAsTensor', () => {
     it('handles a uint array', async () => {
-      const result = await getImageAsTensor(image);
+      const result = await getImageAsTensor(tf, image);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
     it('handles a buffer', async () => {
-      const result = await getImageAsTensor(image);
+      const result = await getImageAsTensor(tf, image);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
     it('handles a local string path to a file', async () => {
-      const result = await getImageAsTensor(FLOWER);
+      const result = await getImageAsTensor(tf, FLOWER);
       expect(result.shape).toEqual([1,16,16,3,]);
     });
 
@@ -87,7 +69,7 @@ describe('Image', () => {
       const height = 3;
       const width = 2;
       const input = getTensor(height, width).expandDims(0) as tf.Tensor4D;
-      const result = await getImageAsTensor(input);
+      const result = await getImageAsTensor(tf, input);
       expect(result.shape).toEqual([1,height, width, 3,]);
     });
 
@@ -95,38 +77,38 @@ describe('Image', () => {
       const height = 3;
       const width = 2;
       const input = getTensor(height, width);
-      const result = await getImageAsTensor(input);
+      const result = await getImageAsTensor(tf, input);
       expect(result.shape).toEqual([1,height, width, 3,]);
     });
 
     it('handles an invalid (too small) tensor input', async () => {
-      hasValidChannels.mockReturnValue(true);
+      vi.mocked(hasValidChannels).mockReturnValue(true);
       const input = tf.tensor([[1,],]);
-      await expect(() => getImageAsTensor(input as any))
+      await expect(() => getImageAsTensor(tf, input as any))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
 
     it('handles an invalid (too large) tensor input', async () => {
-      hasValidChannels.mockReturnValue(true);
+      vi.mocked(hasValidChannels).mockReturnValue(true);
       const input = tf.tensor([[[[[1,],],],],]);
-      await expect(() => getImageAsTensor(input as tf.Tensor3D))
+      await expect(() => getImageAsTensor(tf, input as tf.Tensor3D))
         .rejects
         .toThrow(getInvalidTensorError(input));
     });
 
     it('handles invalid input', async () => {
-      await expect(() => getImageAsTensor(123 as any))
+      await expect(() => getImageAsTensor(tf, 123 as any))
         .rejects
         .toThrow(getInvalidInput(123));
     });
 
     it('handles an invalid file path', async () => {
-      readFileSync.mockImplementation((filename) => {
+      vi.mocked(readFileSync).mockImplementation((filename) => {
         throw new Error(`no such file or directory, open ${filename}`);
       })
       const filename = 'foo';
-      await expect(() => getImageAsTensor(filename))
+      await expect(() => getImageAsTensor(tf, filename))
         .rejects
         .toThrow(getInvalidImageSrcInput(filename));
     });
@@ -136,6 +118,6 @@ describe('Image', () => {
 describe('tensorAsBase64', () => {
   it('returns a tensor as base64', () => {
     const t: tf.Tensor3D = tf.ones([2,2,3]);
-    expect(tensorAsBase64(t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
+    expect(tensorAsBase64(tf, t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
   });
 });

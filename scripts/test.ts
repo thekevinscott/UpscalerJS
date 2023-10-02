@@ -10,7 +10,7 @@ import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import buildUpscaler from './package-scripts/build-upscaler';
+import { runPNPMScript } from '@internals/common';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { TEST_DIR } from './package-scripts/utils/constants';
@@ -160,7 +160,9 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
-      const duration = await buildUpscaler(platformsToBuild[i]);
+      const start = performance.now();
+      await runPNPMScript(`build:${platformsToBuild[i]}`, 'upscaler')
+      const duration = performance.now() - start;
       durations.push(duration);
     }
     console.log([

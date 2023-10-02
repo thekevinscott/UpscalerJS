@@ -29,7 +29,12 @@ import { getUpscaleOptions, } from './args.generated';
 import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
-import type { Input, } from './image.generated';
+import {
+  getImageAsTensor,
+  tensorAsBase64,
+  checkValidEnvironment,
+  Input,
+} from './image.generated';
 import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './model-utils';
 
@@ -79,11 +84,17 @@ export class Upscaler {
     this._opts = {
       ...opts,
     };
-    this._model = loadModel(getModel(this._opts.model || DEFAULT_MODEL));
+    this._model = loadModel(getModel(tf, this._opts.model || DEFAULT_MODEL));
     this.ready = new Promise((resolve, reject) => {
-      this._model.then(() => cancellableWarmup(this._model, (this._opts.warmupSizes || []), undefined, {
-        signal: this._abortController.signal,
-      })).then(resolve).catch(reject);
+      this._model.then(() => cancellableWarmup(
+        tf,
+        this._model,
+        (this._opts.warmupSizes || []),
+        undefined,
+        {
+          signal: this._abortController.signal,
+        },
+      )).then(resolve).catch(reject);
     });
   }
 
@@ -146,6 +157,10 @@ export class Upscaler {
     return cancellableUpscale(image, getUpscaleOptions(options), {
       ...modelPackage,
       signal: this._abortController.signal,
+    }, {
+      checkValidEnvironment,
+      getImageAsTensor,
+      tensorAsBase64,
     });
   }
 
@@ -172,9 +187,14 @@ export class Upscaler {
    */
   warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this.ready;
-    return cancellableWarmup(this._model, warmupSizes, options, {
-      signal: this._abortController.signal,
-    });
+    return cancellableWarmup(
+      tf,
+      this._model,
+      warmupSizes,
+      options, {
+        signal: this._abortController.signal,
+      },
+    );
   };
 
   /**

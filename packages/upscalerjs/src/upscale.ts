@@ -6,11 +6,11 @@ import type {
   TENSOR,
   YieldedIntermediaryValue,
   SliceData,
+  CheckValidEnvironment,
+  GetImageAsTensor,
+  TensorAsBase64,
  } from './types';
 import {
-  checkValidEnvironment,
-  getImageAsTensor,
-  tensorAsBase64,
   Input,
 } from './image.generated';
 import {
@@ -77,7 +77,10 @@ export async function* processPixels(
     padding = 0,
   }: {
     originalImageSize: FixedShape4D;
-  } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>
+  } & Pick<PrivateUpscaleArgs, 'patchSize' | 'padding'>,
+  {
+    tensorAsBase64,
+  }: Pick<InternalConfig<Input>, 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D> {
   const { model, modelDefinition, } = modelPackage;
   const scale = modelDefinition.scale ?? 1;
@@ -112,7 +115,7 @@ export async function* processPixels(
         );
         prediction.dispose();
         yield [upscaledTensor, colTensor, slicedPrediction,];
-        const processedPrediction = processAndDisposeOfTensor(slicedPrediction, modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange));
+        const processedPrediction = processAndDisposeOfTensor(tf, slicedPrediction, modelDefinition.postprocess, scaleOutput(modelDefinition.outputRange));
         yield [upscaledTensor, colTensor, processedPrediction,];
 
         if (progress !== undefined && isProgress(progress)) {
@@ -135,7 +138,7 @@ export async function* processPixels(
               progress(percent, squeezedTensor, sliceData);
             } else {
               // because we are returning a string, we can safely dispose of our tensor
-              const src = tensorAsBase64(squeezedTensor);
+              const src = tensorAsBase64(tf, squeezedTensor);
               squeezedTensor.dispose();
               progress(percent, src, sliceData);
             }
@@ -143,12 +146,12 @@ export async function* processPixels(
         }
         yield [upscaledTensor, colTensor, processedPrediction,];
 
-        colTensor = concatTensors<tf.Tensor4D>([colTensor, processedPrediction,], 2);
+        colTensor = concatTensors<tf.Tensor4D>(tf, [colTensor, processedPrediction,], 2);
         processedPrediction.dispose();
         yield [upscaledTensor, colTensor,];
       }
 
-      upscaledTensor = concatTensors<tf.Tensor4D>([upscaledTensor, colTensor,], 1);
+      upscaledTensor = concatTensors<tf.Tensor4D>(tf, [upscaledTensor, colTensor,], 1);
 
       /* eslint-disable @typescript-eslint/no-non-null-assertion */
       colTensor!.dispose();
@@ -158,8 +161,9 @@ export async function* processPixels(
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const processedUpscaledTensor = processAndDisposeOfTensor(
+      tf,
       upscaledTensor!.clone(),
-      trimInput(originalImageSize, scale)
+      trimInput(tf, originalImageSize, scale)
     );
     upscaledTensor?.dispose();
     yield [processedUpscaledTensor,];
@@ -177,10 +181,11 @@ export async function* processPixels(
   const prediction = executeModel(model, pixels);
   yield [prediction,];
   const postprocessedTensor = processAndDisposeOfTensor(
+    tf,
     prediction.clone(),
     modelDefinition.postprocess,
     scaleOutput(modelDefinition.outputRange),
-    trimInput(originalImageSize, scale)
+    trimInput(tf, originalImageSize, scale)
   );
 
   prediction.dispose();
@@ -193,49 +198,57 @@ export async function* processPixels(
   return squeezedTensor;
 }
 
-export function upscale(
-  input: Input,
+export function upscale<I>(
+  input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64;
   },
   modelPackage: ModelPackage,
-  ): AsyncGenerator<YieldedIntermediaryValue, string>;
-export function upscale(
-  input: Input,
+  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
+): AsyncGenerator<YieldedIntermediaryValue, string>;
+export function upscale<I>(
+  input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: TENSOR;
   },
   modelPackage: ModelPackage,
+  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
   ): AsyncGenerator<YieldedIntermediaryValue, tf.Tensor3D>;
-export function upscale(
-  input: Input,
+export function upscale<I>(
+  input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
   modelPackage: ModelPackage,
-  ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
-export async function* upscale(
-  input: Input,
+  internalConfig: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
+): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D>;
+export async function* upscale<I>(
+  input: I,
   args: Omit<PrivateUpscaleArgs, 'output'> & {
     output: BASE64 | TENSOR;
   },
   modelPackage: ModelPackage,
+  {
+    getImageAsTensor,
+    tensorAsBase64,
+  }: Pick<InternalConfig<I>, 'getImageAsTensor' | 'tensorAsBase64'>
 ): AsyncGenerator<YieldedIntermediaryValue, string | tf.Tensor3D> {
-  const parsedInput = getCopyOfInput(input);
-  const startingPixels = await getImageAsTensor(parsedInput);
+  const parsedInput = getCopyOfInput<I>(input);
+  const startingPixels = await getImageAsTensor(tf, parsedInput);
   yield startingPixels;
 
   const imageSize = startingPixels.shape;
 
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
-  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args, imageSize);
+  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(tf, modelPackage, args, imageSize);
 
   const preprocessedPixels = processAndDisposeOfTensor(
+    tf,
     startingPixels,
     modelPackage.modelDefinition.preprocess,
-    scaleIncomingPixels(modelPackage.modelDefinition.inputRange),
-    modelInputShape ? padInput(modelInputShape) : undefined,
+    scaleIncomingPixels(tf, modelPackage.modelDefinition.inputRange),
+    modelInputShape ? padInput(tf, modelInputShape) : undefined,
   );
   yield preprocessedPixels;
 
@@ -251,7 +264,10 @@ export async function* upscale(
       originalImageSize: imageSize,
       patchSize,
       padding,
-    }
+    },
+    {
+      tensorAsBase64,
+    },
   );
   let result = await gen.next();
   yield result.value;
@@ -272,9 +288,15 @@ export async function* upscale(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels);
+  const base64Src = tensorAsBase64(tf, upscaledPixels);
   upscaledPixels.dispose();
   return base64Src;
+};
+
+interface InternalConfig<I> {
+  checkValidEnvironment: CheckValidEnvironment<I>;
+  getImageAsTensor: GetImageAsTensor<typeof tf, I>,
+  tensorAsBase64: TensorAsBase64,
 }
 
 export function cancellableUpscale(
@@ -283,6 +305,7 @@ export function cancellableUpscale(
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
+  internalConfig: InternalConfig<Input>,
   ): Promise<tf.Tensor3D>;
 export function cancellableUpscale(
   input: Input,
@@ -290,6 +313,7 @@ export function cancellableUpscale(
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
+  internalConfig: InternalConfig<Input>,
 ): Promise<string>;
 export function cancellableUpscale(
   input: Input,
@@ -297,6 +321,7 @@ export function cancellableUpscale(
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
+  internalConfig: InternalConfig<Input>,
 ): Promise<tf.Tensor3D | string>;
 export async function cancellableUpscale(
   input: Input,
@@ -304,17 +329,22 @@ export async function cancellableUpscale(
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
+  {
+    checkValidEnvironment,
+    ...internalConfig
+  }: InternalConfig<Input>
 ) {
   checkValidEnvironment(input, {
     output: args.output,
     progressOutput: args.progressOutput,
   });
-  const tick = makeTick(signal || internalArgs.signal, awaitNextFrame);
+  const tick = makeTick(tf, signal || internalArgs.signal, awaitNextFrame);
   await tick();
   const upscaledPixels = await wrapGenerator(upscale(
     input,
     args,
     internalArgs,
+    internalConfig,
   ), tick);
   await tick();
   return upscaledPixels;

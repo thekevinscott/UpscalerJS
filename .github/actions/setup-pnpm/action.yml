@@ -27,6 +27,6 @@ runs:
       shell: bash
       run: node node_modules/puppeteer/install.js
 
-    - name: Re-install @tensorflow/tfjs-node
-      shell: bash
-      run: cd node_modules/@tensorflow/tfjs-node && pnpm run install
+    # - name: Re-install @tensorflow/tfjs-node
+    #   shell: bash
+    #   run: cd node_modules/@tensorflow/tfjs-node && pnpm run install
