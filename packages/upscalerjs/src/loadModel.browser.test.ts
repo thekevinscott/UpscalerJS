@@ -93,7 +93,7 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'layers');
       });
 
       it('loads the given model path as a graph model if path is provided', async () => {
@@ -109,7 +109,7 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'graph');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'graph');
       });
 
       it('loads the given model if _internals is not defined but path is', async () => {
@@ -120,7 +120,7 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith('foo', 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, 'foo', 'layers');
       });
     });
 
@@ -140,7 +140,7 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'layers');
       });
 
       it('attempts to load a graph model from a CDN if provided no custom path', async () => {
@@ -158,14 +158,14 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(1);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath), 'graph');
       });
 
       it('attempts to load a model from a subsequent CDN if a prior one fails', async () => {
         const packageName = 'packageName';
         const version = 'version';
         const modelPath = 'modelPath';
-        vi.mocked(loadTfModel).mockImplementation(async (url: string | io.IOHandler) => {
+        vi.mocked(loadTfModel).mockImplementation(async (_tf: unknown, url: string | io.IOHandler) => {
           if (url === CDN_PATH_DEFINITIONS[CDNS[0]](packageName, version, modelPath)) {
             throw new Error('next');
           }
@@ -182,7 +182,7 @@ describe('loadModel browser tests', () => {
         };
         await fetchModel(modelDefinition);
         expect(loadTfModel).toBeCalledTimes(2);
-        expect(loadTfModel).toBeCalledWith(CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
+        expect(loadTfModel).toBeCalledWith(tf, CDN_PATH_DEFINITIONS[CDNS[1]](packageName, version, modelPath), 'layers');
       });
 
       it('throws if all attempts to fetch a model fail', async () => {
@@ -242,7 +242,7 @@ describe('loadModel browser tests', () => {
       const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'layers');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, modelDefinition.path, 'layers');
 
       expect(result).toStrictEqual({
         modelDefinition,
@@ -266,7 +266,7 @@ describe('loadModel browser tests', () => {
       const result = await loadModel(Promise.resolve(modelDefinition));
 
       expect(loadTfModel).toHaveBeenCalledTimes(1);
-      expect(loadTfModel).toHaveBeenCalledWith(modelDefinition.path, 'graph');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, modelDefinition.path, 'graph');
 
       expect(result).toStrictEqual({
         modelDefinition,

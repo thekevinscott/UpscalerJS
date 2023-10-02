@@ -4,13 +4,12 @@ import {
   getModuleFolder,
   getMissingMatchesError,
 } from "./loadModel.node";
+import { tf, } from './dependencies.generated';
 import { vi } from 'vitest';
-import { tf } from './dependencies.generated';
 import path from 'path';
 import { resolver, } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import {
-  getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
 } from './errors-and-warnings';
 import {
@@ -150,7 +149,7 @@ describe('loadModel.node', () => {
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
       const response = await loadModel(Promise.resolve(modelDefinition));
-      expect(loadTfModel).toHaveBeenCalledWith(path, 'layers');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
         modelDefinition,
@@ -166,7 +165,7 @@ describe('loadModel.node', () => {
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'graph' };
 
       const response = await loadModel(Promise.resolve(modelDefinition));
-      expect(loadTfModel).toHaveBeenCalledWith(path, 'graph');
+      expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'graph');
       expect(response).toEqual({
         model: 'graph model',
         modelDefinition,
