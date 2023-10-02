@@ -285,14 +285,14 @@ export async function* upscale<I>(
     return upscaledPixels;
   }
 
-  const base64Src = tensorAsBase64(upscaledPixels);
+  const base64Src = tensorAsBase64(tf, upscaledPixels);
   upscaledPixels.dispose();
   return base64Src;
 };
 
 interface InternalConfig<I> {
   checkValidEnvironment: CheckValidEnvironment<I>;
-  getImageAsTensor: GetImageAsTensor<I>,
+  getImageAsTensor: GetImageAsTensor<typeof tf, I>,
   tensorAsBase64: TensorAsBase64,
 }
 
