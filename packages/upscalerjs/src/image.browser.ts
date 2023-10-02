@@ -56,6 +56,7 @@ const getTensorFromInput = async (input: Input): Promise<Tensor3D | Tensor4D> =>
 
 export type Input = Tensor3D | Tensor4D | string | tf.FromPixelsInputs['pixels'];
 export const getImageAsTensor: GetImageAsTensor<typeof tf, Input> = async (
+  _tf,
   input,
 ) => {
   const tensor = await getTensorFromInput(input);
