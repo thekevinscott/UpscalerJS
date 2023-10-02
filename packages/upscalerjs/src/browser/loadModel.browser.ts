@@ -1,21 +1,21 @@
 import type { LayersModel, } from '@tensorflow/tfjs-layers';
 import type { ModelDefinition, ModelType, ModelConfigurationInternals, GraphModel, } from '@upscalerjs/core';
-import type { ParsedModelDefinition, ModelPackage, } from './types';
+import type { ParsedModelDefinition, ModelPackage, } from '../shared/types';
 import {
   loadTfModel,
   parseModelDefinition,
-} from './model-utils';
+} from '../shared/model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
-} from './errors-and-warnings';
+} from '../shared/errors-and-warnings';
 import {
   TF,
   isValidModelDefinition,
 } from '@upscalerjs/core';
 import {
   errIsModelDefinitionValidationError,
-} from './utils';
+} from '../shared/utils';
 
 type CDN = 'jsdelivr' | 'unpkg';
 

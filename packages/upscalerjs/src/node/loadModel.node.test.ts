@@ -4,18 +4,17 @@ import {
   getModuleFolder,
   getMissingMatchesError,
 } from "./loadModel.node";
-import { tf, } from './dependencies.generated';
 import { vi } from 'vitest';
 import path from 'path';
-import { resolver, } from './resolver';
+import { resolver, } from '../shared/resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import * as tf from '@tensorflow/tfjs-node';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from './errors-and-warnings';
+} from '../shared/errors-and-warnings';
 import {
   loadTfModel,
-} from './model-utils';
+} from '../shared/model-utils';
 import {
   isValidModelDefinition,
   ModelDefinitionValidationError,
@@ -23,9 +22,9 @@ import {
 } from '@upscalerjs/core';
 
 import type * as core from '@upscalerjs/core';
-import type * as modelUtils from './model-utils';
-import type * as errorsAndWarnings from './errors-and-warnings';
-import type * as resolverModule from './resolver';
+import type * as modelUtils from '../shared/model-utils';
+import type * as errorsAndWarnings from '../shared/errors-and-warnings';
+import type * as resolverModule from '../shared/resolver';
 
 vi.mock('./model-utils', async () => {
   const { loadTfModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;

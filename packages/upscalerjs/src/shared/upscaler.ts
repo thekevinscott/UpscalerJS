@@ -13,7 +13,6 @@
  *
  * @module UpscalerJS
  */
-import { tf, } from './dependencies.generated';
 import type { Tensor3D, } from '@tensorflow/tfjs-core';
 import DefaultUpscalerModel from '@upscalerjs/default-model';
 import type {
@@ -26,18 +25,15 @@ import type {
   MultiArgStringProgress,
   MultiArgTensorProgress,
   WarmupSizes,
+  GetUpscaleOptions,
+  LoadModel,
+  GetImageAsTensor,
+  TensorAsBase64,
+  CheckValidEnvironment,
 } from './types';
-import { getUpscaleOptions, } from './args.generated';
-import { loadModel, } from './loadModel.generated';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
-import {
-  getImageAsTensor,
-  tensorAsBase64,
-  checkValidEnvironment,
-  Input,
-} from './image.generated';
-import type { ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import type { TF, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
 import { getModel, } from './model-utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
@@ -45,11 +41,11 @@ import { getModel, } from './model-utils';
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 const DEFAULT_MODEL: ModelDefinitionObjectOrFn = DefaultUpscalerModel;
 
-export class Upscaler {
+export class Upscaler<T extends TF, Input>{
   /**
    * @hidden
    */
-  private tf = tf;
+  protected internals?: Internals<T, Input>;
 
   /**
    * @hidden

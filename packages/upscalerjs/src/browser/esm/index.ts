@@ -1,1 +1,1 @@
-export * from '../../shared';
+export { Upscaler as default, } from '../';
