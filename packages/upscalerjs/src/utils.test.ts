@@ -1,5 +1,6 @@
 import { Tensor3D } from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
+import * as tf from '@tensorflow/tfjs-node';
 import { 
   processAndDisposeOfTensor,
   wrapGenerator, 
@@ -262,7 +263,7 @@ describe('processAndDisposeOfTensor', () => {
   it('returns a tensor as is if given no process function', () => {
     const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose });
-    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D);
+    const returnedTensor = processAndDisposeOfTensor(tf, mockedTensor as any as Tensor3D);
     expect(returnedTensor).toEqual(mockedTensor);
     expect(mockDispose).not.toHaveBeenCalled();
   });
@@ -270,7 +271,7 @@ describe('processAndDisposeOfTensor', () => {
   it('does not dispose of tensor if no transformations are done to that tensor', () => {
     const mockDispose = vi.fn();
     const mockedTensor = new MockTensor({ mockDispose });
-    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, t => t);
+    const returnedTensor = processAndDisposeOfTensor(tf, mockedTensor as any as Tensor3D, t => t);
     expect(returnedTensor).toEqual(mockedTensor);
     expect(mockDispose).not.toHaveBeenCalled();
   });
@@ -279,7 +280,7 @@ describe('processAndDisposeOfTensor', () => {
     const mockDispose = vi.fn();
     const process = vi.fn().mockImplementation(t => t.clone()); // return the tensor through
     const mockedTensor = new MockTensor({ mockDispose });
-    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
+    const returnedTensor = processAndDisposeOfTensor(tf, mockedTensor as any as Tensor3D, process);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
     expect(mockedTensor.isDisposed).toEqual(true);
@@ -293,7 +294,7 @@ describe('processAndDisposeOfTensor', () => {
       t.dispose();
       return t;
     });
-    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, process);
+    const returnedTensor = processAndDisposeOfTensor(tf, mockedTensor as any as Tensor3D, process);
     expect(returnedTensor).toEqual(mockedTensor);
     expect(process).toHaveBeenCalledTimes(1);
     expect(mockDispose).toHaveBeenCalledTimes(1);
@@ -305,7 +306,7 @@ describe('processAndDisposeOfTensor', () => {
     const processA = vi.fn().mockImplementation((t) => t.add(2)); // 3
     const processB = vi.fn().mockImplementation((t) => t.mul(3)); // 9
     const processC = vi.fn().mockImplementation((t) => t.div(2)); // 4.5
-    const returnedTensor = processAndDisposeOfTensor(mockedTensor as any as Tensor3D, processA, processB, processC);
+    const returnedTensor = processAndDisposeOfTensor(tf, mockedTensor as any as Tensor3D, processA, processB, processC);
     expect(returnedTensor.value).toEqual(4.5);
     expect(processA).toHaveBeenCalledTimes(1);
     expect(processB).toHaveBeenCalledTimes(1);
