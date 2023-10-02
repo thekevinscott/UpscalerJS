@@ -9,6 +9,7 @@ import { vi } from 'vitest';
 import path from 'path';
 import { resolver, } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
+import * as tf from '@tensorflow/tfjs-node';
 import {
   ERROR_MODEL_DEFINITION_BUG,
 } from './errors-and-warnings';
@@ -21,7 +22,6 @@ import {
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '@upscalerjs/core';
 
-import type * as dependenciesGenerated from './dependencies.generated';
 import type * as core from '@upscalerjs/core';
 import type * as modelUtils from './model-utils';
 import type * as errorsAndWarnings from './errors-and-warnings';
@@ -31,7 +31,7 @@ vi.mock('./model-utils', async () => {
   const { loadTfModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
     ...rest,
-    loadTfModel: vi.fn(loadTfModel),
+    loadTfModel: vi.fn(),
   }
 });
 
@@ -56,17 +56,6 @@ vi.mock('./resolver', async () => {
     ...rest,
     resolver: vi.fn(resolver),
   };
-});
-vi.mock('./dependencies.generated', async () => {
-  const { tf, ...rest } = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
-  return {
-    ...rest,
-    tf: {
-      ...tf,
-      loadLayersModel: vi.fn(),
-      loadGraphModel: vi.fn(),
-    }
-  }
 });
 
 const getResolver = (fn: () => string) => (fn) as unknown as typeof require.resolve;
@@ -135,7 +124,7 @@ describe('loadModel.node', () => {
         throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
       });
 
-      await expect(loadModel(Promise.resolve({}) as Promise<ModelDefinition>))
+      await expect(loadModel(tf, Promise.resolve({}) as Promise<ModelDefinition>))
         .rejects
         .toThrow(error);
     });
@@ -148,7 +137,7 @@ describe('loadModel.node', () => {
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'layers' };
 
-      const response = await loadModel(Promise.resolve(modelDefinition));
+      const response = await loadModel(tf, Promise.resolve(modelDefinition));
       expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'layers');
       expect(response).toEqual({
         model: 'layers model',
@@ -164,7 +153,7 @@ describe('loadModel.node', () => {
       const path = 'foo';
       const modelDefinition: ModelDefinition = { path, scale: 2, modelType: 'graph' };
 
-      const response = await loadModel(Promise.resolve(modelDefinition));
+      const response = await loadModel(tf, Promise.resolve(modelDefinition));
       expect(loadTfModel).toHaveBeenCalledWith(tf, path, 'graph');
       expect(response).toEqual({
         model: 'graph model',
