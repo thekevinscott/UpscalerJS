@@ -46,7 +46,7 @@ vi.mock('@tensorflow/tfjs-node', async () => {
   };
 });
 
-vi.mock('./isLayersModel', async () => {
+vi.mock('./isLayersModel.js', async () => {
   const { isLayersModel: _isLayersModel, ...rest } = await vi.importActual('./isLayersModel') as typeof isLayersModel;
   return {
     ...rest,
@@ -54,7 +54,7 @@ vi.mock('./isLayersModel', async () => {
   };
 });
 
-vi.mock('./utils', async () => {
+vi.mock('./utils.js', async () => {
   const { warn, ...rest } = await vi.importActual('./utils') as typeof utils;
   return {
     ...rest,
