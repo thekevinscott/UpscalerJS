@@ -25,10 +25,8 @@ import type {
   MultiArgStringProgress,
   MultiArgTensorProgress,
   WarmupSizes,
-  GetUpscaleOptions,
-  LoadModel,
-  GetImageAsTensor,
-  TensorAsBase64,
+  Internals,
+  InternalConfig,
   CheckValidEnvironment,
 } from './types';
 import { cancellableWarmup, } from './warmup';
@@ -68,6 +66,13 @@ export class Upscaler<T extends TF, Input>{
    */
   _abortController = new AbortController();
 
+  getInternal<K extends keyof Internals<T, Input>>(key: K): Internals<T, Input>[K] {
+    if (!this.internals) {
+      throw new Error('Internals not set');
+    }
+    return this.internals[key];
+  }
+
   /**
    * Instantiates an instance of UpscalerJS.
    * 
@@ -87,6 +92,8 @@ export class Upscaler<T extends TF, Input>{
     this._opts = {
       ...opts,
     };
+    const tf = this.getInternal('tf');
+    const loadModel = this.getInternal('loadModel');
     this._model = loadModel(tf, getModel(tf, this._opts.model || DEFAULT_MODEL));
     this.ready = new Promise((resolve, reject) => {
       this._model.then(() => cancellableWarmup(
@@ -155,16 +162,22 @@ export class Upscaler<T extends TF, Input>{
     image: Input,
     options?: Omit<UpscaleArgs, 'output' | 'progress' | 'progressOutput'> & { output?: unknown; progress?: MultiArgStringProgress | MultiArgTensorProgress; progressOutput?: unknown },
   ) {
+    const tf = this.getInternal('tf');
+    const getUpscaleOptions = this.getInternal('getUpscaleOptions');
+    const checkValidEnvironment = this.getInternal('checkValidEnvironment');
+    const getImageAsTensor = this.getInternal('getImageAsTensor');
+    const tensorAsBase64 = this.getInternal('tensorAsBase64');
+    const internals: InternalConfig<T, Input> = {
+      checkValidEnvironment: checkValidEnvironment as unknown as CheckValidEnvironment<Input>,
+      getImageAsTensor,
+      tensorAsBase64,
+    };
     await this.ready;
     const modelPackage = await this._model;
     return cancellableUpscale(tf, image, getUpscaleOptions(options), {
       ...modelPackage,
       signal: this._abortController.signal,
-    }, {
-      checkValidEnvironment,
-      getImageAsTensor,
-      tensorAsBase64,
-    });
+    }, internals);
   }
 
   /**
@@ -190,6 +203,7 @@ export class Upscaler<T extends TF, Input>{
    */
   warmup = async (warmupSizes: WarmupSizes = [], options?: WarmupArgs): Promise<void> => {
     await this.ready;
+    const tf = this.getInternal('tf');
     return cancellableWarmup(
       tf,
       this._model,
@@ -227,7 +241,8 @@ export class Upscaler<T extends TF, Input>{
     await this.ready;
     const { model, modelDefinition, } = await this._model;
     if (modelDefinition.teardown) {
-      await modelDefinition.teardown(this.tf);
+      const tf = this.getInternal('tf');
+      await modelDefinition.teardown(tf);
     }
     model.dispose();
   };

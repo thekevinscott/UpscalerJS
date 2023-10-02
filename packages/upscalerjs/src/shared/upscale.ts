@@ -6,9 +6,7 @@ import type {
   TENSOR,
   YieldedIntermediaryValue,
   SliceData,
-  CheckValidEnvironment,
-  GetImageAsTensor,
-  TensorAsBase64,
+  InternalConfig,
  } from './types';
 import {
   wrapGenerator,
@@ -296,12 +294,6 @@ export async function* upscale<T extends TF, I>(
   upscaledPixels.dispose();
   return base64Src;
 };
-
-interface InternalConfig<T extends TF, I> {
-  checkValidEnvironment: CheckValidEnvironment<I>;
-  getImageAsTensor: GetImageAsTensor<T, I>,
-  tensorAsBase64: TensorAsBase64,
-}
 
 export function cancellableUpscale<T extends TF, I>(
   tf: T,

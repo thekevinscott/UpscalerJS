@@ -90,7 +90,12 @@ export type CheckValidEnvironment<I> = (input: I, opts: {
   progressOutput?: ResultFormat;
 }) => void;
 export type GetImageAsTensor<T extends TF, I> = (tf: T, input: I) => Promise<Tensor4D>;
-export type TensorAsBase64 = (tf: TF, tensor: Tensor3D) => string;
+export type TensorAsBase64<T extends TF> = (tf: T, tensor: Tensor3D) => string;
+export type LoadModel<T extends TF> = (tf: T, _modelDefinition: Promise<ModelDefinition>) => Promise<ModelPackage>;
+export type GetUpscaleOptions = (args?: Omit<UpscaleArgs, 'output' | 'progressOutput'> & {
+  output?: unknown;
+  progressOutput?: unknown
+}) => PrivateUpscaleArgs;
 
 export type Coordinate = [number, number];
 
@@ -108,8 +113,14 @@ export type { ProcessFn, } from '@upscalerjs/core';
 export interface Internals<T extends TF, Input> {
   tf: T;
   getUpscaleOptions: GetUpscaleOptions;
-  loadModel: LoadModel;
+  loadModel: LoadModel<T>;
   getImageAsTensor: GetImageAsTensor<T, Input>;
-  tensorAsBase64: TensorAsBase64;
+  tensorAsBase64: TensorAsBase64<T>;
   checkValidEnvironment: CheckValidEnvironment<T>;
+}
+
+export interface InternalConfig<T extends TF, I> {
+  checkValidEnvironment: CheckValidEnvironment<I>;
+  getImageAsTensor: GetImageAsTensor<T, I>;
+  tensorAsBase64: TensorAsBase64<T>;
 }

@@ -1,8 +1,7 @@
 import path from 'path';
-import type { ModelDefinition, } from "@upscalerjs/core";
-import { loadTfModel, parseModelDefinition, } from './model-utils';
+import { loadTfModel, parseModelDefinition, } from '../shared/model-utils';
 import { resolver, } from './resolver';
-import { ParsedModelDefinition, ModelPackage, } from './types';
+import { ParsedModelDefinition, LoadModel, } from '../shared/types';
 import {
   isValidModelDefinition,
   TF,
@@ -10,10 +9,10 @@ import {
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
-} from './errors-and-warnings';
+} from '../shared/errors-and-warnings';
 import {
   errIsModelDefinitionValidationError,
-} from './utils';
+} from '../shared/utils';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
@@ -42,10 +41,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   return `file://${path.resolve(moduleFolder, _internals.path)}`;
 };
 
-export const loadModel = async (
-  tf: TF,
-  _modelDefinition: Promise<ModelDefinition>,
-): Promise<ModelPackage> => {
+export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);
