@@ -1,6 +1,6 @@
 import type { LayersModel, } from '@tensorflow/tfjs-layers';
-import type { ModelDefinition, ModelType, ModelConfigurationInternals, GraphModel, } from '@upscalerjs/core';
-import type { ParsedModelDefinition, ModelPackage, LoadModel, } from './types';
+import type { ModelType, ModelConfigurationInternals, GraphModel, } from '@upscalerjs/core';
+import type { ParsedModelDefinition, LoadModel, } from './types';
 import {
   loadTfModel,
   parseModelDefinition,
