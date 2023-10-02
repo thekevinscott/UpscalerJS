@@ -95,4 +95,4 @@ export function concatTensors<T extends Tensor3D | Tensor4D> (tf: TF, tensors: A
   const concatenatedTensor = tf.concat(definedTensors, axis);
   tensors.forEach(tensor => tensor?.dispose());
   return concatenatedTensor as T;
-}
+};
