@@ -118,6 +118,6 @@ describe('Image', () => {
 describe('tensorAsBase64', () => {
   it('returns a tensor as base64', () => {
     const t: tf.Tensor3D = tf.ones([2,2,3]);
-    expect(tensorAsBase64(t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
+    expect(tensorAsBase64(tf, t)).toEqual('AQEB/wEBAf8BAQH/AQEB/w==');
   });
 });
