@@ -244,7 +244,7 @@ export async function* upscale<T extends TF, I>(
 
   // retrieve the patch size and padding. If the model definition has defined its own input shape,
   // then that input shape will override the user's variables.
-  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(modelPackage, args, imageSize);
+  const { patchSize, padding, modelInputShape, } = parsePatchAndInputShapes(tf, modelPackage, args, imageSize);
 
   const preprocessedPixels = processAndDisposeOfTensor(
     tf,
