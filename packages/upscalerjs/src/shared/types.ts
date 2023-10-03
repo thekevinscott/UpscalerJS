@@ -110,17 +110,14 @@ export type Patch = {
 };
 
 export type { ProcessFn, } from '@upscalerjs/core';
-export interface Internals<T extends TF, Input> {
+export interface Internals<T extends TF, Input> extends InternalConfig<T, Input> {
   tf: T;
   getUpscaleOptions: GetUpscaleOptions;
   loadModel: LoadModel<T>;
-  getImageAsTensor: GetImageAsTensor<T, Input>;
-  tensorAsBase64: TensorAsBase64<T>;
-  checkValidEnvironment: CheckValidEnvironment<T>;
 }
 
 export interface InternalConfig<T extends TF, I> {
-  checkValidEnvironment: CheckValidEnvironment<I>;
+  checkValidEnvironment: CheckValidEnvironment<T>;
   getImageAsTensor: GetImageAsTensor<T, I>;
   tensorAsBase64: TensorAsBase64<T>;
 }

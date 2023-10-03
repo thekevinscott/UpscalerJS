@@ -1,4 +1,4 @@
-import _Upscaler from '../shared';
+import { getUpscaler } from '../shared';
 import * as tf from '@tensorflow/tfjs';
 export * from '../shared';
 import { getUpscaleOptions, } from './args.browser';
@@ -10,13 +10,13 @@ import {
   Input,
 } from './image.browser';
 
-export class Upscaler extends _Upscaler<typeof tf, Input> {
-  internals = {
+const Upscaler = getUpscaler<typeof tf, Input>({
     tf,
     getUpscaleOptions,
     loadModel,
     getImageAsTensor,
     tensorAsBase64,
     checkValidEnvironment,
-  };
-}
+});
+
+export default Upscaler;

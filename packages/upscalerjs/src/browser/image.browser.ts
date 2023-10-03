@@ -114,7 +114,7 @@ const checkIfValidEnvironment = (errFn: () => Error) => {
   }
 };
 
-export const checkValidEnvironment: CheckValidEnvironment<Input> = (input, {
+export const checkValidEnvironment: CheckValidEnvironment<typeof tf> = (input, {
   output = 'base64',
   progressOutput,
 }) => {

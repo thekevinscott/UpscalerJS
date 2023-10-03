@@ -1,5 +1,4 @@
-const _Upscaler = require('../../shared/index').default; // eslint-disable-line
-
+import { getUpscaler, } from '../shared';
 import * as tf from '@tensorflow/tfjs-node-gpu';
 export * from '../shared';
 import { getUpscaleOptions, } from '../node/args.node';
@@ -11,15 +10,13 @@ import {
   Input,
 } from '../node/image.node';
 
-export class Upscaler extends _Upscaler<typeof tf, Input> {
-  internals = {
-    tf,
-    getUpscaleOptions,
-    loadModel,
-    getImageAsTensor,
-    tensorAsBase64,
-    checkValidEnvironment,
-  };
-}
+const Upscaler = getUpscaler<typeof tf, Input>({
+  tf,
+  getUpscaleOptions,
+  loadModel,
+  getImageAsTensor,
+  tensorAsBase64,
+  checkValidEnvironment,
+});
 
-module.exports = Upscaler;
+export default Upscaler;
