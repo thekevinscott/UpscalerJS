@@ -362,7 +362,7 @@ describe('Upscale Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    upscaler: Upscaler;
+    // upscaler: Upscaler;
     fixtures: Record<string, string>;
     tf: typeof tf;
     called: boolean;
