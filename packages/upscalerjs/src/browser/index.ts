@@ -10,7 +10,7 @@ import {
   Input,
 } from './image.browser';
 
-const Upscaler = getUpscaler<typeof tf, Input>({
+export default getUpscaler<typeof tf, Input>({
     tf,
     getUpscaleOptions,
     loadModel,
@@ -18,5 +18,3 @@ const Upscaler = getUpscaler<typeof tf, Input>({
     tensorAsBase64,
     checkValidEnvironment,
 });
-
-export default Upscaler;

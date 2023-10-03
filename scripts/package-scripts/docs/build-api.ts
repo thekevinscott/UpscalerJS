@@ -819,6 +819,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
 };
 
 const getSortedMethodsForWriting = async (definitions: Definitions) => {
+  console.log(JSON.stringify(definitions.variables, null, 2))
   const exports = Object.values(definitions.classes);
   const methods: DeclarationReflection[] = [];
   for (let i = 0; i < exports.length; i++) {
@@ -877,6 +878,9 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
 
   const definitions = await getDefinitions();
   const methods = await getSortedMethodsForWriting(definitions);
+  if (methods.length === 0) {
+    throw new Error('No methods were found')
+  }
 
   await Promise.all([
     writeAPIDocumentationFiles(methods, definitions),
@@ -890,7 +894,8 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
 
 if (require.main === module) {
   (async () => {
-    const sharedArgs = await getSharedArgs();
-    await main({ ...sharedArgs });
+    return;
+    // const sharedArgs = await getSharedArgs();
+    // await main({ ...sharedArgs });
   })();
 }
