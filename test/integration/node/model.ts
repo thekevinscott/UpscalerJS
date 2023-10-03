@@ -80,7 +80,7 @@ describe('Node Model Loading Integration Tests', () => {
         fs,
         usePatchSize = false,
       } = deps;
-      console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
+      // console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
 
       const upscaler = new Upscaler({
         model,
@@ -180,9 +180,9 @@ describe('Node Model Loading Integration Tests', () => {
       fs.writeFileSync(MODEL_JSON_PATH, JSON.stringify(modelJSON));
       fs.copyFileSync(weightsPath, WEIGHT_PATH);
       model['path'] = 'file://' + MODEL_JSON_PATH;
-      if (VERBOSE) {
-        console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
-      }
+      // if (VERBOSE) {
+      //   console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
+      // }
 
       const upscaler = new Upscaler({
         model,
@@ -230,7 +230,7 @@ describe('Node Model Loading Integration Tests', () => {
       result.dispose();
       const expectedImage = [Array.from(expectedTensor.dataSync()), expectedTensor.shape];
       expectedTensor.dispose();
-      console.log('warnings', warnings);
+      // console.log('warnings', warnings);
       return JSON.stringify({
         upscaledImage,
         expectedImage,
