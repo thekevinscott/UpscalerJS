@@ -4,12 +4,12 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/cjs/node/cjs/index.d.ts",
-      "require": "./dist/node/cjs/node/cjs/index.js"
+      "types": "./dist/node/node/cjs/index.d.ts",
+      "require": "./dist/node/node/cjs/index.js"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/cjs/node-gpu/cjs/index.d.ts",
-      "require": "./dist/node-gpu/cjs/node-gpu/cjs/index.js"
+      "types": "./dist/node-gpu/node-gpu/cjs/index.d.ts",
+      "require": "./dist/node-gpu/node-gpu/cjs/index.js"
     },
     ".": {
       "types": "./dist/browser/esm/browser/esm/index.d.ts",
@@ -192,7 +192,7 @@
       "command": "vitest --config vite.node.ts"
     },
     "validate:build": {
-      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/node/cjs/cjs.js' -c './dist/node/cjs/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/browser/esm/index.js' -c './dist/browser/esm/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/node/cjs/cjs.js' -c './dist/node/node/cjs/cjs.d.ts' -c './dist/node-gpu/node-gpu/cjs/cjs.js' -c './dist/node-gpu/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/browser/esm/index.js' -c './dist/browser/esm/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {
