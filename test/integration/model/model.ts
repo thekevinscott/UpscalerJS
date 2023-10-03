@@ -28,6 +28,8 @@ jest.retryTimes(0);
 const SPECIFIC_PACKAGE: string | undefined = undefined;
 const SPECIFIC_MODEL: string | undefined = undefined;
 
+console.log('***** PLATFORMS', PLATFORMS)
+
 if (PLATFORMS === undefined || PLATFORMS.length === 0) {
   throw new Error('You must provide at least one valid platform of "node" or "browser".')
 } else {
