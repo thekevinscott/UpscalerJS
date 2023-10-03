@@ -69,9 +69,6 @@
     },
     "build:browser:esm": {
       "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -88,9 +85,6 @@
     },
     "build:browser:umd": {
       "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/tmp",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -133,9 +127,6 @@
     },
     "build:node": {
       "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist",
-      "dependencies": [
-        "scaffold:dependencies:node"
-      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.browser.ts",
@@ -152,9 +143,6 @@
     },
     "build:node-gpu": {
       "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist",
-      "dependencies": [
-        "scaffold:dependencies:node-gpu"
-      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.browser.ts",
@@ -168,15 +156,6 @@
       "output": [
         "dist/node-gpu/**"
       ]
-    },
-    "scaffold:dependencies:browser": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts browser"
-    },
-    "scaffold:dependencies:node": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node"
-    },
-    "scaffold:dependencies:node-gpu": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src packages/upscalerjs --config packages/upscalerjs/scaffolder.ts node-gpu"
     },
     "docs:serve": {
       "command": "docsify serve docs --port 3030"
@@ -197,46 +176,25 @@
       "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
     },
     "lint:browser": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ]
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
     },
     "lint:browser:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ]
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
     },
     "lint:node": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'",
-      "dependencies": [
-        "scaffold:dependencies:node"
-      ]
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
     },
     "lint:node:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix",
-      "dependencies": [
-        "scaffold:dependencies:node"
-      ]
+      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
     },
     "test:unit:browser:playwright": {
-      "command": "playwright-test --config playwright.config.json",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ]
+      "command": "playwright-test --config playwright.config.json"
     },
     "test:unit:browser:vite": {
-      "command": "vitest --config vite.browser.ts",
-      "dependencies": [
-        "scaffold:dependencies:browser"
-      ]
+      "command": "vitest --config vite.browser.ts"
     },
     "test:unit:node": {
-      "command": "vitest --config vite.node.ts",
-      "dependencies": [
-        "scaffold:dependencies:node"
-      ]
+      "command": "vitest --config vite.node.ts"
     },
     "validate:build": {
       "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/upscaler.js' -c './dist/browser/upscaler.min.js'"
@@ -252,8 +210,6 @@
     "build:browser": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
-    "scaffold:dependencies:browser": "wireit",
-    "scaffold:dependencies:node": "wireit",
     "docs:serve": "wireit",
     "preversion": "wireit",
     "prepublishOnly": "wireit",
