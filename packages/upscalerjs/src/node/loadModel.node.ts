@@ -1,7 +1,7 @@
 import path from 'path';
-import { loadTfModel, parseModelDefinition, } from './model-utils';
+import { loadTfModel, parseModelDefinition, } from '../shared/model-utils';
 import { resolver, } from './resolver';
-import { ParsedModelDefinition, LoadModel, } from './types';
+import { ParsedModelDefinition, LoadModel, } from '../shared/types';
 import {
   isValidModelDefinition,
   TF,
@@ -9,10 +9,10 @@ import {
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
-} from './errors-and-warnings';
+} from '../shared/errors-and-warnings';
 import {
   errIsModelDefinitionValidationError,
-} from './utils';
+} from '../shared/utils';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`

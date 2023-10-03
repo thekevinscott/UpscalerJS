@@ -17,7 +17,7 @@ const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.
 const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 // TODO: How to import this, instead of copying it?
-// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/image.node';
+// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/shared/image.node';
 const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));

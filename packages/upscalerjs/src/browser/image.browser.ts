@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
-import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from './types';
-import { tensorAsClampedArray, } from './tensor-utils';
+import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from '../shared/types';
+import { tensorAsClampedArray, } from '../shared/tensor-utils';
 import { isString, isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, } from '@upscalerjs/core';
 
 const ERROR_ENVIRONMENT_DISALLOWS_BASE64_URL =

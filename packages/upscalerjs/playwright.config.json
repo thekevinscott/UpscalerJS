@@ -2,6 +2,6 @@
   "cov": true,
   "browser": "chromium",
   "input": [
-    "src/image.playwright.browser.test.ts"
+    "src/browser/image.playwright.browser.test.ts"
   ]
 }

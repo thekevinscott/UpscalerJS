@@ -5,6 +5,6 @@
     "moduleResolution": "Node16",
     "target": "ES5",
   },
-  "include": ["src/index.ts", "src/cjs.ts"],
+  "include": ["src/shared/index.ts", "src/node-gpu/cjs/index.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }

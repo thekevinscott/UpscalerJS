@@ -85,7 +85,7 @@ export type YieldedIntermediaryValue = undefined | Tensor4D | Tensor3D | Array<T
 
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface WarmupArgs extends SharedArgs {}
-export type CheckValidEnvironment<T> = (input: T, opts: {
+export type CheckValidEnvironment<I> = (input: I, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;
 }) => void;
@@ -110,3 +110,14 @@ export type Patch = {
 };
 
 export type { ProcessFn, } from '@upscalerjs/core';
+export interface Internals<T extends TF, Input> extends InternalConfig<T, Input> {
+  tf: T;
+  getUpscaleOptions: GetUpscaleOptions;
+  loadModel: LoadModel<T>;
+}
+
+export interface InternalConfig<T extends TF, I> {
+  checkValidEnvironment: CheckValidEnvironment<I>;
+  getImageAsTensor: GetImageAsTensor<T, I>;
+  tensorAsBase64: TensorAsBase64<T>;
+}

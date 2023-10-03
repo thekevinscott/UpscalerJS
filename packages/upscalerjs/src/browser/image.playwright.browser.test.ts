@@ -131,7 +131,7 @@ describe('checkValidEnvironment', () => {
 
     describe('Valid environment', () => {
       it('does not throw for a tensor input', () => {
-        expect(() => checkValidEnvironment(tensor, {
+        expect(() => checkValidEnvironment(tensor as tf.Tensor3D, {
           output: 'tensor',
         })).not.to.throw();
       });
@@ -153,7 +153,7 @@ describe('checkValidEnvironment', () => {
       });
 
       it('does not throw for a tensor input', () => {
-        expect(() => checkValidEnvironment(tensor, {
+        expect(() => checkValidEnvironment(tensor as tf.Tensor3D, {
           output: 'tensor',
         })).not.to.throw();
       });

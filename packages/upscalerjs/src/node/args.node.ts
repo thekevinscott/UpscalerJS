@@ -1,4 +1,4 @@
-import { BASE64, TENSOR, GetUpscaleOptions, } from "./types";
+import { BASE64, GetUpscaleOptions, TENSOR, } from "../shared/types";
 
 const getOutputOption = (output?: unknown): TENSOR | BASE64 => {
   if (output === 'base64') {

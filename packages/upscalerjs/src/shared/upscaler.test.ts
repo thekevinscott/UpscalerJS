@@ -1,30 +1,39 @@
-import { Upscaler } from './upscaler';
+import { getUpscaler } from './upscaler';
 import { vi } from 'vitest';
 import type { LayersModel } from '@tensorflow/tfjs';
-import { loadModel } from './loadModel.generated';
 import { getModel } from './model-utils';
 import { cancellableWarmup } from './warmup';
-import { getImageAsTensor } from './image.generated';
 import { cancellableUpscale } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
-import { tf, } from './dependencies.generated';
+import * as _tf from '@tensorflow/tfjs-node';
 import * as tfn from '@tensorflow/tfjs-node';
 
-import type * as imageGenerated from './image.generated';
+import { getUpscaleOptions as _getUpscaleOptions, } from '../node/args.node';
+import {
+  getImageAsTensor as _getImageAsTensor,
+  tensorAsBase64 as _tensorAsBase64,
+  checkValidEnvironment as _checkValidEnvironment,
+  Input,
+} from '../node/image.node';
+import { loadModel as _loadModel, } from '../node/loadModel.node';
+// import { tf, } from './dependencies.generated';
+// import { loadModel } from './loadModel.generated';
+// import { getImageAsTensor } from './image.generated';
+// import type * as imageGenerated from './image.generated';
+// import type * as loadModelGenerated from './loadModel.generated';
 import type * as upscale from './upscale';
-import type * as loadModelGenerated from './loadModel.generated';
 import type * as modelUtils from './model-utils';
 import type * as warmup from './warmup';
 import type * as dependenciesGenerated from './dependencies.generated';
 
-vi.mock('./image.generated', async () => {
-  const { getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
-  return {
-    ...rest,
-    getImageAsTensor: vi.fn(getImageAsTensor),
-  };
-});
+// vi.mock('./image.generated', async () => {
+//   const { getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
+//   return {
+//     ...rest,
+//     getImageAsTensor: vi.fn(getImageAsTensor),
+//   };
+// });
 vi.mock('./upscale', async () => {
   const { cancellableUpscale, ...rest } = await vi.importActual('./upscale') as typeof upscale;
   return {
@@ -32,13 +41,13 @@ vi.mock('./upscale', async () => {
     cancellableUpscale: vi.fn(cancellableUpscale),
   };
 });
-vi.mock('./loadModel.generated', async () => {
-  const { loadModel, ...rest } = await vi.importActual('./loadModel.generated') as typeof loadModelGenerated;
-  return {
-    ...rest,
-    loadModel: vi.fn(loadModel),
-  };
-});
+// vi.mock('./loadModel.generated', async () => {
+//   const { loadModel, ...rest } = await vi.importActual('./loadModel.generated') as typeof loadModelGenerated;
+//   return {
+//     ...rest,
+//     loadModel: vi.fn(loadModel),
+//   };
+// });
 vi.mock('./model-utils', async () => {
   const { getModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
@@ -53,16 +62,29 @@ vi.mock('./warmup', async () => {
     cancellableWarmup: vi.fn(cancellableWarmup),
   };
 });
-vi.mock('./dependencies.generated', async () => {
-  const dependencies = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
-  return {
-    ...dependencies,
-  };
-});
+// vi.mock('./dependencies.generated', async () => {
+//   const dependencies = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
+//   return {
+//     ...dependencies,
+//   };
+// });
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('Upscaler', () => {
+  const loadModel = vi.fn(_loadModel);
+  const getImageAsTensor = vi.fn(_getImageAsTensor);
+  const getUpscaleOptions = vi.fn(_getUpscaleOptions);
+  const tensorAsBase64 = vi.fn(_tensorAsBase64);
+  const checkValidEnvironment = vi.fn(_checkValidEnvironment);
+  const Upscaler = getUpscaler<typeof tfn, Input> ({
+    tf: _tf,
+    getUpscaleOptions,
+    loadModel,
+    getImageAsTensor,
+    tensorAsBase64,
+    checkValidEnvironment,
+  });
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -229,7 +251,7 @@ describe('Upscaler', () => {
       });
       await new Promise(r => setTimeout(r));
       expect(cancellableWarmup).toBeCalled();
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric array of warmup sizes', async () => {
@@ -251,7 +273,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize array of warmup sizes', async () => {
@@ -273,7 +295,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric warmup size', async () => {
@@ -295,7 +317,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize warmup sizes', async () => {
@@ -321,7 +343,7 @@ describe('Upscaler', () => {
       expect(cancellableWarmup).toHaveBeenCalledTimes(1);
       await upscaler.warmup(warmupSizes);
       expect(cancellableWarmup).toHaveBeenCalledTimes(2);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
   });
 });

@@ -10,7 +10,6 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { runPNPMScript } from '@internals/common';
 import { Platform } from '../prompt/types';
 import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
@@ -298,8 +297,8 @@ const writePlatformSpecificDefinitions = (definitions: Definitions): string => {
 /****
  * Constants
  */
-const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
-const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
+const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.browser.esm.json');
+const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src/browser/esm');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
@@ -388,9 +387,8 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   const platforms: Platform[] = ['browser', 'node'];
   const platformSpecificTypes: DeclarationReflection[] = [];
   for (const platform of platforms) {
-    await runPNPMScript(`scaffold:dependencies:${platform}`, 'upscaler');
     const imageBrowser = getPackageAsTree(
-      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
+      path.resolve(UPSCALER_DIR, 'src', platform, `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
       UPSCALER_DIR,
     );
@@ -455,12 +453,12 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  await runPNPMScript('scaffold:dependencies:node', 'upscaler');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,
     UPSCALER_DIR,
   );
+  console.log('***** 2')
   const coreTree = getPackageAsTree(
     CORE_SRC_PATH, 
     CORE_TSCONFIG_PATH,
@@ -553,7 +551,7 @@ const getSource = ([source]: SourceReference[]) => {
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
-  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
+  const prettyFileName = fileName.split('packages/upscalerjs/src/shared/').pop();
   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
 };
 

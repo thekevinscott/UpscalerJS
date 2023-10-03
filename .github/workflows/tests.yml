@@ -142,16 +142,16 @@ jobs:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:browserstack --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -178,21 +178,21 @@ jobs:
       #     detached: true
 
       - name: 'Build Upscaler'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-node-local-16:
-    name: 'Integration / Node / Local / v16'
+  integration-node-local:
+    name: 'Integration / Node / Local'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -209,18 +209,18 @@ jobs:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
-  models-browser:
+  integration-models-browser:
     name: 'Models / Browser'
     runs-on: ubuntu-latest
     # strategy:
@@ -240,19 +240,24 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
+
       - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:model --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
-  models-node:
+  integration-models-node:
     name: 'Models / Node'
     runs-on: ubuntu-latest
     steps:
@@ -270,16 +275,16 @@ jobs:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:model --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'
@@ -299,16 +304,16 @@ jobs:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Upscaler'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   build-docs:
     name: 'Build Documentation'

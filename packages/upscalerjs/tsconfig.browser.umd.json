@@ -4,6 +4,6 @@
     "target": "ESNext",
     "module": "ESNext",
   },
-  "include": ["src/umd.ts"],
+  "include": ["src/browser/umd/index.ts"],
   "exclude": ["node_modules"]
 }
