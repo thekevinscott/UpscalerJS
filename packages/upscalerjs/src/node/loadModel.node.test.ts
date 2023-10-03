@@ -65,7 +65,7 @@ describe('loadModel.node', () => {
   });
 
   describe('getModuleFolder', () => {
-    it.only('returns undefined if a module cannot be found', () => {
+    it('returns undefined if a module cannot be found', () => {
       vi.mocked(resolver).mockImplementation(getResolver(() => 'foo'));
       expect(() => getModuleFolder('foo')).toThrowError(getMissingMatchesError('foo'));
     });
