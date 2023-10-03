@@ -117,7 +117,7 @@ export interface Internals<T extends TF, Input> extends InternalConfig<T, Input>
 }
 
 export interface InternalConfig<T extends TF, I> {
-  checkValidEnvironment: CheckValidEnvironment<T>;
+  checkValidEnvironment: CheckValidEnvironment<I>;
   getImageAsTensor: GetImageAsTensor<T, I>;
   tensorAsBase64: TensorAsBase64<T>;
 }

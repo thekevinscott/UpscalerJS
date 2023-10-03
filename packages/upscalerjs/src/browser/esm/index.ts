@@ -1,1 +1,1 @@
-export { Upscaler as default, } from '../';
+export { default as default, } from '../';

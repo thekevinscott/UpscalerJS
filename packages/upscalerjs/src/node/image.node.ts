@@ -91,4 +91,4 @@ export const tensorAsBase64: TensorAsBase64<TFN> = (tf, tensor) => {
 };
 
 /* eslint-disable @typescript-eslint/no-empty-function */
-export const checkValidEnvironment: CheckValidEnvironment<TFN> = () => {};
+export const checkValidEnvironment: CheckValidEnvironment<Input> = () => {};

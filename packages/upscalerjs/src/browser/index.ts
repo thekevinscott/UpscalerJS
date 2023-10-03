@@ -1,4 +1,4 @@
-import { getUpscaler } from '../shared';
+import { getUpscaler, } from '../shared';
 import * as tf from '@tensorflow/tfjs';
 export * from '../shared';
 import { getUpscaleOptions, } from './args.browser';

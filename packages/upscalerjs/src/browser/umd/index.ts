@@ -1,4 +1,4 @@
-import { Upscaler, } from '../';
+import Upscaler from '../';
 import { AbortError, } from '../../shared/errors-and-warnings';
 import { getPatchesFromImage, } from '../../shared/image-utils';
 
