@@ -251,7 +251,7 @@ describe('Upscaler', () => {
       });
       await new Promise(r => setTimeout(r));
       expect(cancellableWarmup).toBeCalled();
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric array of warmup sizes', async () => {
@@ -273,7 +273,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize array of warmup sizes', async () => {
@@ -295,7 +295,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric warmup size', async () => {
@@ -317,7 +317,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize warmup sizes', async () => {
@@ -343,7 +343,7 @@ describe('Upscaler', () => {
       expect(cancellableWarmup).toHaveBeenCalledTimes(1);
       await upscaler.warmup(warmupSizes);
       expect(cancellableWarmup).toHaveBeenCalledTimes(2);
-      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(_tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
   });
 });

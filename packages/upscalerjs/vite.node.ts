@@ -3,8 +3,11 @@ import { defineConfig, } from 'vitest/config';
 export default defineConfig({
   test: {
     threads: false,
-    include: ['**/*.test.ts',],
-    exclude: ['**/*.browser.test.ts',],
+    include: [
+      'src/shared/**/*.test.ts',
+      'src/node/**/*.test.ts',
+      'src/node-gpu/**/*.test.ts',
+    ],
     globals: true,
   },
 });

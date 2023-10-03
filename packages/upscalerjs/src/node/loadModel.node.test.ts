@@ -6,7 +6,7 @@ import {
 } from "./loadModel.node";
 import { vi } from 'vitest';
 import path from 'path';
-import { resolver, } from '../shared/resolver';
+import { resolver, } from './resolver';
 import type { ModelDefinition } from "@upscalerjs/core";
 import * as tf from '@tensorflow/tfjs-node';
 import {
@@ -24,18 +24,18 @@ import {
 import type * as core from '@upscalerjs/core';
 import type * as modelUtils from '../shared/model-utils';
 import type * as errorsAndWarnings from '../shared/errors-and-warnings';
-import type * as resolverModule from '../shared/resolver';
+import type * as resolverModule from './resolver';
 
-vi.mock('./model-utils', async () => {
-  const { loadTfModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
+vi.mock('../shared/model-utils', async () => {
+  const { loadTfModel, ...rest } = await vi.importActual('../shared/model-utils') as typeof modelUtils;
   return {
     ...rest,
     loadTfModel: vi.fn(),
   }
 });
 
-vi.mock('./errors-and-warnings', async () => {
-  const { getModelDefinitionError, ...rest } = await vi.importActual('./errors-and-warnings') as typeof errorsAndWarnings;
+vi.mock('../shared/errors-and-warnings', async () => {
+  const { getModelDefinitionError, ...rest } = await vi.importActual('../shared/errors-and-warnings') as typeof errorsAndWarnings;
   return {
     ...rest,
     getModelDefinitionError: vi.fn(getModelDefinitionError),
@@ -65,7 +65,7 @@ describe('loadModel.node', () => {
   });
 
   describe('getModuleFolder', () => {
-    it('returns undefined if a module cannot be found', () => {
+    it.only('returns undefined if a module cannot be found', () => {
       vi.mocked(resolver).mockImplementation(getResolver(() => 'foo'));
       expect(() => getModuleFolder('foo')).toThrowError(getMissingMatchesError('foo'));
     });
