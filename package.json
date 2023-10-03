@@ -178,7 +178,7 @@
       "command": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install"
     },
     "postinstall": {
-      "command": "pnpm --filter upscaler run scaffold:dependencies:browser && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+      "command": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
     },
     "update:dependency": {
       "command": "pnpm --filter @upscalerjs/scripts update:dependency"

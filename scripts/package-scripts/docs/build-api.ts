@@ -57,7 +57,7 @@ interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflecti
  * Constants
  */
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
-const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
+const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.browser.esm.json');
 const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
@@ -146,7 +146,6 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   const platformSpecificTypes: DeclarationReflection[] = [];
   for (let i = 0; i < platforms.length; i++) {
     const platform = platforms[i];
-    await runPNPMScript(`scaffold:dependencies:${platform}`, 'upscaler');
     const imageBrowser = getPackageAsTree(
       path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
@@ -213,7 +212,6 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  await runPNPMScript('scaffold:dependencies:node', 'upscaler');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,

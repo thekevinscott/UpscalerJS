@@ -132,7 +132,7 @@
       "command": "docusaurus build"
     },
     "build": {
-      "command": "concurrently \"pnpm build-guides --shouldClearMarkdown\" \"pnpm build-api --shouldClearMarkdown\" \"pnpm link-model-readmes --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only"
+      "command": "concurrently \"pnpm build-guides -- --shouldClearMarkdown\" \"pnpm build-api -- --shouldClearMarkdown\" \"pnpm link-model-readmes -- --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only"
     },
     "swizzle": {
       "command": "docusaurus swizzle"
