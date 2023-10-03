@@ -192,7 +192,7 @@
       "command": "vitest --config vite.node.ts"
     },
     "validate:build": {
-      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/cjs.js' -c './dist/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/index.js' -c './dist/browser/esm/index.d.ts' -c './dist/browser/upscaler.js' -c './dist/browser/upscaler.min.js'"
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/cjs/node/cjs/cjs.js' -c './dist/node/cjs/node/cjs/cjs.d.ts' -c './dist/node-gpu/cjs/node-gpu/cjs/cjs.js' -c './dist/node-gpu/cjs/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/browser/esm/index.js' -c './dist/browser/esm/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {
