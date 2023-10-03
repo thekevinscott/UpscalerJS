@@ -4,23 +4,23 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/cjs/index.d.ts",
-      "require": "./dist/node/cjs/index.js"
+      "types": "./dist/node/cjs/node/cjs/index.d.ts",
+      "require": "./dist/node/cjs/node/cjs/index.js"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/cjs/index.d.ts",
-      "require": "./dist/node-gpu/cjs/index.js"
+      "types": "./dist/node-gpu/cjs/node-gpu/cjs/index.d.ts",
+      "require": "./dist/node-gpu/cjs/node-gpu/cjs/index.js"
     },
     ".": {
-      "types": "./dist/browser/esm/index.d.ts",
-      "import": "./dist/browser/esm/index.js"
+      "types": "./dist/browser/esm/browser/esm/index.d.ts",
+      "import": "./dist/browser/esm/browser/esm/index.js"
     }
   },
   "engines": {
     "node": ">=16.0"
   },
-  "module": "dist/browser/esm/index.js",
-  "types": "dist/browser/esm/index.d.ts",
+  "module": "dist/browser/esm/browser/esm/index.js",
+  "types": "dist/browser/esm/browser/esm/index.d.ts",
   "umd:main": "dist/browser/umd/upscaler.min.js",
   "keywords": [
     "image enhancement",
@@ -67,7 +67,7 @@
       ]
     },
     "build:browser:esm": {
-      "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist",
+      "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist/browser/esm",
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
@@ -122,7 +122,7 @@
       ]
     },
     "build:node": {
-      "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist",
+      "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node",
       "files": [
         "src/shared/**/*.ts",
         "src/node/**/*.ts",
@@ -137,11 +137,11 @@
       ]
     },
     "build:node-gpu": {
-      "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist",
+      "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist/node-gpu",
       "files": [
         "src/shared/**/*.ts",
         "src/node/**/*.ts",
-        "src/node-gp/**/*.ts",
+        "src/node-gpu/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
