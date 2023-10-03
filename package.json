@@ -190,7 +190,7 @@
       "command": "pnpm --filter @upscalerjs/scripts update:version && pnpm liteinstall"
     },
     "commit-latest-version-changes": {
-      "command": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
+      "command": "git add packages/upscalerjs/src/shared/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
     },
     "example:start": {
       "command": "pnpm --filter @upscalerjs/scripts example:start"

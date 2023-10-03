@@ -553,7 +553,7 @@ const getSource = ([source]: SourceReference[]) => {
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
-  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
+  const prettyFileName = fileName.split('packages/upscalerjs/src/shared/').pop();
   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
 };
 

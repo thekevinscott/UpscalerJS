@@ -1,14 +1,12 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import {
   MultiArgTensorProgress,
-} from '../../../packages/upscalerjs/src/types';
+} from '../../../packages/upscalerjs/src/shared/types';
 import {
   ModelDefinition,
 } from '../../../packages/core/src';
@@ -17,7 +15,7 @@ import {
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
-} from '../../../packages/upscalerjs/src/errors-and-warnings';
+} from '../../../packages/upscalerjs/src/shared/errors-and-warnings';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
