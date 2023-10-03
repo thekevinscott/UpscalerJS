@@ -69,9 +69,9 @@
     "build:browser:esm": {
       "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist",
       "files": [
-        "src/**/*.ts",
+        "src/shared/**/*.ts",
+        "src/browser/**/*.ts",
         "!src/**/*.test.ts",
-        "!src/**/*.node.ts",
         "package.json",
         "vite.config.ts",
         "tsconfig.browser.esm.json",
@@ -84,9 +84,9 @@
     "build:browser:umd": {
       "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/tmp",
       "files": [
-        "src/**/*.ts",
+        "src/shared/**/*.ts",
+        "src/browser/**/*.ts",
         "!src/**/*.test.ts",
-        "!src/**/*.node.ts",
         "package.json",
         "vite.config.ts",
         "tsconfig.browser.umd.json",
@@ -108,8 +108,8 @@
     "build:browser": {
       "command": "pnpm run build:browser:esm && pnpm run build:browser:umd",
       "files": [
-        "src/**/*.ts",
-        "!src/**/*.node.ts",
+        "src/shared/**/*.ts",
+        "src/browser/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
@@ -124,8 +124,8 @@
     "build:node": {
       "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist",
       "files": [
-        "src/**/*.ts",
-        "!src/**/*.browser.ts",
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
         "vite.config.ts",
@@ -139,8 +139,9 @@
     "build:node-gpu": {
       "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist",
       "files": [
-        "src/**/*.ts",
-        "!src/**/*.browser.ts",
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
+        "src/node-gp/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
         "vite.config.ts",

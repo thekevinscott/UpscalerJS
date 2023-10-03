@@ -191,8 +191,8 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-node-local-16:
-    name: 'Integration / Node / Local / v16'
+  integration-node-local:
+    name: 'Integration / Node / Local'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
