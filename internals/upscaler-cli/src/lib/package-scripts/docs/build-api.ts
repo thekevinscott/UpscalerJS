@@ -453,7 +453,6 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  console.log('***** 1')
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,

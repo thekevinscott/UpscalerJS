@@ -45,6 +45,7 @@ interface Definitions {
   classes: Record<string, DecRef>;
   functions: Record<string, DecRef>;
   enums: Record<string, DecRef>;
+  variables: Record<string, DecRef>;
 }
 
 interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflection, 'kind' | 'id' | 'flags'> {
@@ -58,7 +59,7 @@ interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflecti
  */
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.browser.esm.json');
-const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
+const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src/browser/esm');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
@@ -147,7 +148,7 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   for (let i = 0; i < platforms.length; i++) {
     const platform = platforms[i];
     const imageBrowser = getPackageAsTree(
-      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
+      path.resolve(UPSCALER_DIR, 'src', platform, `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
       UPSCALER_DIR,
     );
@@ -206,6 +207,8 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
       return 'functions';
     case ReflectionKind.Enum:
       return 'enums';
+    case ReflectionKind.Variable:
+      return 'variables';
     default:
       throw new Error(`Unexpected kind string: ${kindString}`);
   }
@@ -234,14 +237,22 @@ const getDefinitions = async (): Promise<Definitions> => {
 
   const parsedChildren = children.reduce((obj, child) => {
     const { kind } = child;
-    const key = getKindStringKey(kind);
-    if (!key) {
-      throw new Error(`Unexpected kind string: ${kind}`);
+    try {
+      const key = getKindStringKey(kind);
+      if (!key) {
+        throw new Error(`Unexpected kind string: ${kind}`);
+      }
+      return {
+        ...obj,
+        [key]: obj[key].concat(child),
+      };
+    } catch (err) {
+      for (var enumMember in ReflectionKind) {
+        console.log("enum member: ", enumMember, ReflectionKind[enumMember]);
+      }
+      throw new Error(`Could not get key for ${JSON.stringify(child)}: ${(err as Error).message}`)
+
     }
-    return {
-      ...obj,
-      [key]: obj[key].concat(child),
-    };
   }, {
     constructors: [] as DecRef[],
     methods: [] as DecRef[],
@@ -250,6 +261,7 @@ const getDefinitions = async (): Promise<Definitions> => {
     types: [] as DecRef[],
     classes: [] as DecRef[],
     enums: [] as DecRef[],
+    variables: [] as DecRef[],
   });
 
   return {
@@ -260,6 +272,7 @@ const getDefinitions = async (): Promise<Definitions> => {
     interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
     classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
     enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
+    variables: getAsObj<DecRef>(parsedChildren.variables, i => i.name),
   };
 }
 
