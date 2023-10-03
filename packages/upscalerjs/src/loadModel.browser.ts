@@ -1,6 +1,6 @@
 import type { LayersModel, } from '@tensorflow/tfjs-layers';
 import type { ModelDefinition, ModelType, ModelConfigurationInternals, GraphModel, } from '@upscalerjs/core';
-import type { ParsedModelDefinition, ModelPackage, } from './types';
+import type { ParsedModelDefinition, ModelPackage, LoadModel, } from './types';
 import {
   loadTfModel,
   parseModelDefinition,
@@ -64,10 +64,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? Gr
   throw getLoadModelErrorMessage(errs, modelPath || _internals.path, _internals);
 }
 
-export const loadModel = async (
-  tf: TF,
-  _modelDefinition: Promise<ModelDefinition>,
-): Promise<ModelPackage> => {
+export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
   
   try {

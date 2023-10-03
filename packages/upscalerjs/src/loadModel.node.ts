@@ -2,7 +2,7 @@ import path from 'path';
 import type { ModelDefinition, } from "@upscalerjs/core";
 import { loadTfModel, parseModelDefinition, } from './model-utils';
 import { resolver, } from './resolver';
-import { ParsedModelDefinition, ModelPackage, } from './types';
+import { ParsedModelDefinition, ModelPackage, LoadModel, } from './types';
 import {
   isValidModelDefinition,
   TF,
@@ -42,10 +42,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   return `file://${path.resolve(moduleFolder, _internals.path)}`;
 };
 
-export const loadModel = async (
-  tf: TF,
-  _modelDefinition: Promise<ModelDefinition>,
-): Promise<ModelPackage> => {
+export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
   try {
     isValidModelDefinition(modelDefinition);

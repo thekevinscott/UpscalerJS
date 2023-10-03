@@ -90,7 +90,12 @@ export type CheckValidEnvironment<T> = (input: T, opts: {
   progressOutput?: ResultFormat;
 }) => void;
 export type GetImageAsTensor<T extends TF, I> = (tf: T, input: I) => Promise<Tensor4D>;
-export type TensorAsBase64 = (tf: TF, tensor: Tensor3D) => string;
+export type TensorAsBase64<T extends TF> = (tf: T, tensor: Tensor3D) => string;
+export type LoadModel<T extends TF> = (tf: T, _modelDefinition: Promise<ModelDefinition>) => Promise<ModelPackage>;
+export type GetUpscaleOptions = (args?: Omit<UpscaleArgs, 'output' | 'progressOutput'> & {
+  output?: unknown;
+  progressOutput?: unknown
+}) => PrivateUpscaleArgs;
 
 export type Coordinate = [number, number];
 
