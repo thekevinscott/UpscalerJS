@@ -1,4 +1,4 @@
-import { tf, } from './dependencies.generated';
+import type { LayersModel, } from '@tensorflow/tfjs-layers';
 import { isLayersModel, } from './isLayersModel';
 import {
   ERROR_WITH_MODEL_INPUT_SHAPE,
@@ -20,6 +20,8 @@ import {
   ModelType,
   isFixedShape4D,
   FixedShape4D, 
+  TF,
+  GraphModel,
 } from '@upscalerjs/core';
 import type {
   ModelPackage,
@@ -38,7 +40,7 @@ export type ParseModelDefinition = (m: ModelDefinition) => ParsedModelDefinition
 
 export function isModelDefinitionFn(modelDefinition: ModelDefinitionObjectOrFn): modelDefinition is ModelDefinitionFn { return typeof modelDefinition === 'function'; }
 
-export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
+export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(tf: TF, modelDefinition: ModelDefinitionObjectOrFn): ModelDefinition {
   if (isModelDefinitionFn(modelDefinition)) {
     warn(WARNING_DEPRECATED_MODEL_DEFINITION_FN);
     return modelDefinition(tf);
@@ -46,32 +48,32 @@ export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefi
   return modelDefinition;
 }
 
-export async function getModel(modelDefinition: ModelDefinitionObjectOrFn): Promise<ModelDefinition> {
+export async function getModel(tf: TF, modelDefinition: ModelDefinitionObjectOrFn): Promise<ModelDefinition> {
   /* eslint-disable @typescript-eslint/no-unsafe-call */
   /* eslint-disable @typescript-eslint/no-unsafe-return */
-  const modelDef = getModelDefinitionOrModelDefinitionFnAsModelDefinition(modelDefinition);
+  const modelDef = getModelDefinitionOrModelDefinitionFnAsModelDefinition(tf, modelDefinition);
   if (modelDef.setup) {
     await modelDef.setup(tf);
   }
   return modelDef;
 }
 
-export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ? tf.GraphModel : tf.LayersModel>>(modelPath: string, modelType?: M): R {
+export function loadTfModel<M extends ModelType, R = Promise<M extends 'graph' ? GraphModel : LayersModel>>(tf: TF, modelPath: string, modelType?: M): R {
   if (modelType === 'graph') {
     return tf.loadGraphModel(modelPath) as R;
   }
   return tf.loadLayersModel(modelPath) as R;
 }
 
-const getBatchInputShape = (model: tf.LayersModel | tf.GraphModel): unknown => {
-  if (isLayersModel(model)) {
+const getBatchInputShape = (tf: TF, model: LayersModel | GraphModel): unknown => {
+  if (isLayersModel(tf, model)) {
     return model.layers[0].batchInputShape;
   }
   return model.inputs[0].shape;
 };
 
-export const getModelInputShape = ({ model, }: ModelPackage): Shape4D => {
-  const batchInputShape = getBatchInputShape(model);
+export const getModelInputShape = (tf: TF, { model, }: ModelPackage): Shape4D => {
+  const batchInputShape = getBatchInputShape(tf, model);
   if (!isShape4D(batchInputShape)) {
     throw new Error(ERROR_WITH_MODEL_INPUT_SHAPE(batchInputShape));
   }
@@ -95,14 +97,15 @@ export const getPatchSizeAsMultiple = (divisibilityFactor: number, patchSize: nu
  * - if a model has not defined its own input size, return the given user variables (which may be undefined)
  */
 type ParsePatchAndInputShapes = (
+  tf: TF,
   modelPackage: ModelPackage,
   args: UpscaleArgs,
   imageSize: FixedShape4D,
 ) => {
   modelInputShape?: Shape4D;
 } & Pick<UpscaleArgs, 'patchSize' | 'padding'>;
-export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (modelPackage, { patchSize, padding, }, imageSize) => {
-  const modelInputShape = getModelInputShape(modelPackage);
+export const parsePatchAndInputShapes: ParsePatchAndInputShapes = (tf, modelPackage, { patchSize, padding, }, imageSize) => {
+  const modelInputShape = getModelInputShape(tf, modelPackage);
   if (patchSize !== undefined) {
     if (patchSize <= 0) {
       throw GET_INVALID_PATCH_SIZE(patchSize);

@@ -127,6 +127,7 @@ describe('predict', () => {
     const spy = vi.spyOn(model, 'predict');
     tensor = getTensor(2, 2);
     const result = await wrapGenerator(processPixels(
+      tf,
       tensor.expandDims(0),
       {
         output: 'base64',
@@ -150,6 +151,7 @@ describe('predict', () => {
   it('should make a prediction with a patchSize', async () => {
     tensor = getTensor(2, 2);
     const result = await wrapGenerator(processPixels(
+      tf,
       tensor.expandDims(0),
       {
         output: 'base64',
@@ -170,6 +172,7 @@ describe('predict', () => {
   it('should make a prediction with a patchSize and a tall image', async () => {
     const tensor = getTensor(4, 2);
     const result = await wrapGenerator(processPixels(
+      tf,
       tensor.expandDims(0),
       {
         output: 'base64',
@@ -192,7 +195,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = vi.fn();
     await wrapGenerator(
-      processPixels(tensor, {
+      processPixels(tf, tensor, {
         progress,
         output: 'base64',
         progressOutput: 'base64',
@@ -219,6 +222,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = vi.fn((_1: any, _2: any) => { });
     await wrapGenerator(processPixels(
+      tf,
       tensor, {
       progress,
       output: 'base64',
@@ -246,6 +250,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = vi.fn((_1: any, _2: any) => { });
     await wrapGenerator(processPixels(
+      tf,
       tensor,
       {
         progress,
@@ -278,6 +283,7 @@ describe('predict', () => {
     const patchSize = 2;
     const progress = vi.fn<ReturnType<MultiArgStringProgress>, Parameters<MultiArgStringProgress>>((_1: any, _2: any, _3: any) => { });
     await wrapGenerator(processPixels(
+      tf,
       tensor, {
       progress,
       output: 'base64',
@@ -314,6 +320,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(processPixels(
+      tf,
       tensor,
       {
         progress,
@@ -364,6 +371,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(processPixels(
+      tf,
       tensor,
       {
         progress,
@@ -414,6 +422,7 @@ describe('predict', () => {
       }
     });
     await wrapGenerator(processPixels(
+      tf,
       tensor,
       {
         progress,
@@ -453,6 +462,7 @@ describe('predict', () => {
   it('should warn if provided a progress callback without patchSize', async () => {
     tensor = getTensor(4, 4).expandDims(0) as tf.Tensor4D;
     await wrapGenerator(processPixels(
+      tf,
       tensor,
       {
         output: 'base64',
@@ -474,7 +484,7 @@ describe('predict', () => {
       const IMG_SIZE = 2;
       tensor = getTensor(IMG_SIZE, IMG_SIZE).expandDims(0) as tf.Tensor4D;
       const startingTensors = tf.memory().numTensors;
-      const gen = processPixels(tensor, {
+      const gen = processPixels(tf, tensor, {
         output: 'base64',
         progressOutput: 'base64',
       }, modelPackage, {
@@ -514,6 +524,7 @@ describe('predict', () => {
       const startingTensors = tf.memory().numTensors;
       const patchSize = 2;
       const gen = processPixels(
+        tf,
         tensor,
         {
           output: 'base64',
@@ -618,7 +629,7 @@ describe('upscale', () => {
       }]
     } as unknown as tf.LayersModel;
     const tensorAsBase64 = vi.fn().mockImplementation(() => 'foobarbaz4');
-    const result = await wrapGenerator(upscale(img, {
+    const result = await wrapGenerator(upscale(tf, img, {
       output: 'base64',
       progressOutput: 'base64',
     }, {
@@ -649,7 +660,7 @@ describe('upscale', () => {
         shape: [null, null, null, 3],
       }]
     } as unknown as tf.LayersModel;
-    const result = await wrapGenerator(upscale(img, {
+    const result = await wrapGenerator(upscale(tf, img, {
       output: 'base64',
       progressOutput: 'base64',
     }, {
@@ -684,7 +695,7 @@ describe('upscale', () => {
       }]
     } as unknown as tf.LayersModel;
     // (mockedTensorAsBase as any).default = async() => 'foobarbaz5';
-    const result = await wrapGenerator(upscale(img, { output: 'tensor', progressOutput: 'tensor', }, {
+    const result = await wrapGenerator(upscale(tf, img, { output: 'tensor', progressOutput: 'tensor', }, {
       model,
       modelDefinition: { scale: 2, } as ModelDefinition,
     }, {
@@ -722,7 +733,7 @@ describe('cancellableUpscale', () => {
         throw new Error(`Rate is too high: ${rate}`);
       }
     });
-    await expect(() => cancellableUpscale(img, {
+    await expect(() => cancellableUpscale(tf, img, {
       output: 'base64',
       progressOutput: 'base64',
       patchSize,
@@ -769,7 +780,7 @@ describe('cancellableUpscale', () => {
         throw new Error(`Rate is too high: ${rate}`);
       }
     });
-    await expect(() => cancellableUpscale(img, {
+    await expect(() => cancellableUpscale(tf, img, {
       patchSize,
       padding: 0,
       progress,
@@ -807,7 +818,7 @@ describe('cancellableUpscale', () => {
         shape: [null, null, null, 3],
       }]
     } as unknown as tf.LayersModel;
-    const result = await cancellableUpscale(img, {
+    const result = await cancellableUpscale(tf, img, {
       patchSize,
       padding: 0,
       output: 'base64',

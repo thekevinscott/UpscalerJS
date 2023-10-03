@@ -1,3 +1,4 @@
-import { tf, } from './dependencies.generated';
+import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
+import type { FromPixelsInputs, } from '@tensorflow/tfjs';
 
-export type Input = tf.Tensor3D | tf.Tensor4D | string | tf.FromPixelsInputs['pixels'];
+export type Input = Tensor3D | Tensor4D | string | FromPixelsInputs['pixels'];

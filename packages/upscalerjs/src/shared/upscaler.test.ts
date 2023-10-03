@@ -8,7 +8,8 @@ import { getImageAsTensor } from './image.generated';
 import { cancellableUpscale } from './upscale';
 import { WarmupSizes } from './types';
 import { ModelDefinition } from '@upscalerjs/core';
-import * as tf from '@tensorflow/tfjs-node';
+import { tf, } from './dependencies.generated';
+import * as tfn from '@tensorflow/tfjs-node';
 
 import type * as imageGenerated from './image.generated';
 import type * as upscale from './upscale';
@@ -77,18 +78,18 @@ describe('Upscaler', () => {
       return {
         modelDefinition,
         model: {
-          predict: vi.fn(() => tf.ones([1,2,2,3])),
+          predict: vi.fn(() => tfn.ones([1,2,2,3])),
           inputs: [{
             shape: [null, null, null, 3],
           }]
         } as unknown as LayersModel,
       };
     });
-    vi.mocked(getImageAsTensor).mockImplementation(() => Promise.resolve(tf.ones([1,2,2,3])));
+    vi.mocked(getImageAsTensor).mockImplementation(() => Promise.resolve(tfn.ones([1,2,2,3])));
 
     const tick = () => new Promise(resolve => setTimeout(resolve));
     let count = 0;
-    vi.mocked(cancellableUpscale).mockImplementation(async function (_1, _2, { signal }: {
+    vi.mocked(cancellableUpscale).mockImplementation(async function (_0, _1, _2, { signal }: {
       signal: AbortSignal;
     }) {
       try {
@@ -228,7 +229,7 @@ describe('Upscaler', () => {
       });
       await new Promise(r => setTimeout(r));
       expect(cancellableWarmup).toBeCalled();
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric array of warmup sizes', async () => {
@@ -250,7 +251,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2,];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize array of warmup sizes', async () => {
@@ -272,7 +273,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [{ patchSize: 32, padding: 2 }];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a numeric warmup size', async () => {
@@ -294,7 +295,7 @@ describe('Upscaler', () => {
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = [2, 2];
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
 
     it('is able to warmup with a patchSize warmup sizes', async () => {
@@ -312,11 +313,15 @@ describe('Upscaler', () => {
       }));
       vi.mocked(loadModel).mockImplementation(() => modelDefinitionPromise);
       vi.mocked(getModel).mockImplementation(async () => modelDefinition);
-      vi.mocked(cancellableWarmup).mockImplementation(async () => { });
+      vi.mocked(cancellableWarmup).mockImplementation(async (..._args: any[]) => { });
       const upscaler = new Upscaler();
       const warmupSizes: WarmupSizes = { patchSize: 32, padding: 2 };
+      expect(cancellableWarmup).toHaveBeenCalledTimes(0);
+      await upscaler.ready;
+      expect(cancellableWarmup).toHaveBeenCalledTimes(1);
       await upscaler.warmup(warmupSizes);
-      expect(cancellableWarmup).toBeCalledWith(modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
+      expect(cancellableWarmup).toHaveBeenCalledTimes(2);
+      expect(cancellableWarmup).toBeCalledWith(tf, modelDefinitionPromise, warmupSizes, undefined, expect.any(Object));
     });
   });
 });

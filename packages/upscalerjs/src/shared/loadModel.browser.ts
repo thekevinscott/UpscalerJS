@@ -1,5 +1,5 @@
-import { tf, } from './dependencies.generated';
-import { ModelDefinition, ModelType, ModelConfigurationInternals, } from '@upscalerjs/core';
+import type { LayersModel, } from '@tensorflow/tfjs-layers';
+import type { ModelDefinition, ModelType, ModelConfigurationInternals, GraphModel, } from '@upscalerjs/core';
 import type { ParsedModelDefinition, ModelPackage, } from './types';
 import {
   loadTfModel,
@@ -10,6 +10,7 @@ import {
   getModelDefinitionError,
 } from './errors-and-warnings';
 import {
+  TF,
   isValidModelDefinition,
 } from '@upscalerjs/core';
 import {
@@ -38,12 +39,12 @@ export const getLoadModelErrorMessage = (errs: Errors, modelPath: string, intern
   ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
-export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf.GraphModel : tf.LayersModel>(modelConfiguration: {
+export async function fetchModel<M extends ModelType, R = M extends 'graph' ? GraphModel : LayersModel>(tf: TF, modelConfiguration: {
   modelType?: M;
 } & Omit<ParsedModelDefinition, 'modelType'>): Promise<R> {
   const { modelType, _internals, path: modelPath, } = modelConfiguration;
   if (modelPath) {
-    return await loadTfModel(modelPath, modelType);
+    return await loadTfModel(tf, modelPath, modelType);
   }
   if (!_internals) {
     // This should never happen. This should have been caught by isValidModelDefinition.
@@ -54,7 +55,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
     const getCDNFn = CDN_PATH_DEFINITIONS[cdn];
     try {
       const url = getCDNFn(_internals.name, _internals.version, _internals.path);
-      return await loadTfModel(url, modelType);
+      return await loadTfModel(tf, url, modelType);
     } catch (err: unknown) {
       // there was an issue with the CDN, try another
       errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
@@ -64,9 +65,11 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? tf
 }
 
 export const loadModel = async (
+  tf: TF,
   _modelDefinition: Promise<ModelDefinition>,
 ): Promise<ModelPackage> => {
   const modelDefinition = await _modelDefinition;
+  
   try {
     isValidModelDefinition(modelDefinition);
   } catch (err: unknown) {
@@ -78,7 +81,7 @@ export const loadModel = async (
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
-  const model = await fetchModel(parsedModelDefinition);
+  const model = await fetchModel(tf, parsedModelDefinition);
 
   return {
     model,
