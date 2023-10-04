@@ -28,12 +28,7 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' "
     },
     "build": {
-      "command": "echo 1",
-      "dependencies": [
-        "build:esm",
-        "build:cjs",
-        "validate"
-      ],
+      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
