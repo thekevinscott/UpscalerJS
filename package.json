@@ -197,7 +197,7 @@
       "command": "pnpm --filter @upscalerjs/scripts example:start"
     },
     "lint": {
-      "command": "pnpm --filter=!./models/**/dist/** lint"
+      "command": "pnpm --parallel --filter=!./models/**/dist/** lint"
     },
     "model:build": {
       "command": "pnpm --filter @upscalerjs/scripts model:build"
