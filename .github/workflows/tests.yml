@@ -12,15 +12,15 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node 16'
-        uses: ./.github/actions/setup-pnpm
-        with:
-          node-version: 16
-
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
         with:
           detached: true
+
+      - name: 'Setup PNPM with Node 16'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: 16
 
       - name: 'Lint'
         run: 'pnpm lint'
