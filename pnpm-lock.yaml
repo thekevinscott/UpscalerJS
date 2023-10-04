@@ -560,9 +560,6 @@ importers:
       get-port:
         specifier: ^7.0.0
         version: 7.0.0
-      tslib:
-        specifier: ^2.6.2
-        version: 2.6.2
       wireit:
         specifier: ^0.14.0
         version: 0.14.0
@@ -844,12 +841,6 @@ importers:
 
   packages/upscalerjs:
     dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../core
