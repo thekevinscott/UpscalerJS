@@ -12,8 +12,6 @@ export type Platform = 'browser' | 'node' | 'node-gpu';
 export type TFJSDependency = '@tensorflow/tfjs' | '@tensorflow/tfjs-node' | '@tensorflow/tfjs-node-gpu';
 
 type ContentFn = (arg: {
-  tfjs?: TFJSDependency;
-  platform?: Platform;
   packageJSON: JSONSchemaForNPMPackageJsonFiles;
 }) => string;
 type Content = string | ContentFn;
@@ -23,7 +21,6 @@ interface File {
 }
 
 export interface ScaffoldDependenciesConfig {
-  scaffoldPlatformFiles?: boolean;
   files: File[];
 }
 
@@ -35,13 +32,6 @@ const ROOT = path.resolve(__dirname, `../..`);
 /****
  * Dependency-specific utility functions
  */
-export const writeTFJSDependency: ContentFn = ({ tfjs, }) => {
-  if (tfjs === undefined) {
-    throw new Error('TFJS Platform was undefined');
-  }
-  return `export * as tf from '${tfjs}';`;
-};
-
 export const getPlatformSpecificTensorflow = (platform?: Platform): TFJSDependency | undefined => {
   if (platform === undefined) {
     return undefined;
@@ -110,32 +100,20 @@ export function loadScaffoldDependenciesConfig(filePath: string): Promise<{
 type ScaffoldDependencies = (
   packageRoot: string, 
   config: ScaffoldDependenciesConfig, 
-  platform?: Platform,
-  opts?: { verbose?: boolean },
 ) => Promise<void>;
 const scaffoldDependencies: ScaffoldDependencies = async (
   packageRoot,
   {
     files,
-    scaffoldPlatformFiles,
   },
-  platform, { verbose = false } = {}) => {
+  ) => {
   const PACKAGE_ROOT = path.resolve(ROOT, packageRoot);
   const PACKAGE_SRC = path.resolve(PACKAGE_ROOT, 'src');
-  if (scaffoldPlatformFiles) {
-    if (!platform) {
-      throw new Error('You must provide a platform to scaffold platform specific files');
-    }
-    scaffoldPlatformSpecificFiles(path.resolve(PACKAGE_SRC, 'shared'), platform, { verbose });
-  }
-  const tfjs = getPlatformSpecificTensorflow(platform);
   const packageJSON = getPackageJSON(PACKAGE_ROOT);
   files.forEach(({ name, contents }) => {
     const filePath = path.resolve(PACKAGE_SRC, `${name}.generated.ts`);
     const lines = contents.map(line => typeof line === 'string' ? line : line({
-      tfjs,
       packageJSON,
-      platform,
     }));
     writeLines(filePath, lines);
   });
@@ -193,6 +171,6 @@ if (require.main === module) {
   (async () => {
     const argv = await getArgs();
     const { default: config } = await loadScaffoldDependenciesConfig(path.resolve(ROOT, argv.config));
-    await scaffoldDependencies(argv.targetPackage, config, argv.platform);
+    await scaffoldDependencies(argv.targetPackage, config);
   })();
 }

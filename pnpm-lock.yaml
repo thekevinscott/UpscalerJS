@@ -526,7 +526,7 @@ importers:
         version: 20.5.1
       '@upscalerjs/default-model':
         specifier: workspace:*
-        version: link:../../../models/default-model
+        version: link:../../../models/default-model/dist/umd-tmp/models/default-model
       '@upscalerjs/workers.shared':
         specifier: workspace:*
         version: link:../shared
@@ -620,6 +620,9 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
     devDependencies:
+      '@rollup/plugin-json':
+        specifier: ^6.0.0
+        version: 6.0.0(rollup@3.28.0)
       '@tensorflow/tfjs':
         specifier: 4.8.0
         version: 4.8.0(seedrandom@3.0.5)
@@ -638,6 +641,62 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      tsc-alias:
+        specifier: ^1.8.7
+        version: 1.8.7
+
+  models/default-model/dist/cjs/models/default-model:
+    dependencies:
+      '@upscalerjs/core':
+        specifier: workspace:*
+        version: link:../../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-core':
+        specifier: ~4.8.0
+        version: 4.8.0
+      '@tensorflow/tfjs-layers':
+        specifier: ~4.8.0
+        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-node':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node-gpu':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+
+  models/default-model/dist/umd-tmp/models/default-model:
+    dependencies:
+      '@upscalerjs/core':
+        specifier: workspace:*
+        version: link:../../../../../../packages/core
+    devDependencies:
+      '@tensorflow/tfjs':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-core':
+        specifier: ~4.8.0
+        version: 4.8.0
+      '@tensorflow/tfjs-layers':
+        specifier: ~4.8.0
+        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
+      '@tensorflow/tfjs-node':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node-gpu':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+      tsc-alias:
+        specifier: ^1.8.7
+        version: 1.8.7
 
   models/esrgan-experiments:
     dependencies:
@@ -813,18 +872,12 @@ importers:
 
   packages/upscalerjs:
     dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../core
       '@upscalerjs/default-model':
         specifier: workspace:*
-        version: link:../../models/default-model
+        version: link:../../models/default-model/dist/umd-tmp/models/default-model
       wireit:
         specifier: ^0.14.0
         version: 0.14.0
@@ -872,7 +925,7 @@ importers:
         version: link:../packages/core
       '@upscalerjs/default-model':
         specifier: workspace:*
-        version: link:../models/default-model
+        version: link:../models/default-model/dist/umd-tmp/models/default-model
       '@upscalerjs/esrgan-legacy':
         specifier: workspace:*
         version: link:../models/esrgan-legacy
@@ -4479,10 +4532,10 @@ packages:
     resolution: {integrity: sha512-aDF3S3rK9Q2gey/WAttUlISduDItz5BU3306M9Eyv6/oS40aMprnopshtlKTykxRNIBEZuRMaZAnbrQ4QtKGyw==}
     hasBin: true
     dependencies:
-      detect-libc: 2.0.1
+      detect-libc: 2.0.2
       https-proxy-agent: 5.0.1
       make-dir: 3.1.0
-      node-fetch: 2.6.12
+      node-fetch: 2.6.13
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -4616,6 +4669,19 @@ packages:
       glob: 8.1.0
       is-reference: 1.2.1
       magic-string: 0.27.0
+      rollup: 3.28.0
+    dev: true
+
+  /@rollup/plugin-json@6.0.0(rollup@3.28.0):
+    resolution: {integrity: sha512-i/4C5Jrdr1XUarRhVu27EEwjt4GObltD7c+MkCIpO2QIbojw8MUs+CCTqOphQi3Qtg1FLmYt+l+6YeoIf51J7w==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.0.3(rollup@3.28.0)
       rollup: 3.28.0
     dev: true
 
@@ -7329,7 +7395,6 @@ packages:
   /commander@9.5.0:
     resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
     engines: {node: ^12.20.0 || >=14}
-    dev: false
 
   /comment-parser@1.4.0:
     resolution: {integrity: sha512-QLyTNiZ2KDOibvFPlZ6ZngVsZ/0gYnE6uTXi5aoDg8ed3AkJAz4sEje3Y8a29hQ1s6A99MZXe47fLAXQ1rTqaw==}
@@ -8104,14 +8169,9 @@ packages:
     dependencies:
       repeat-string: 1.6.1
 
-  /detect-libc@2.0.1:
-    resolution: {integrity: sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w==}
-    engines: {node: '>=8'}
-
   /detect-libc@2.0.2:
     resolution: {integrity: sha512-UX6sGumvvqSaXgdKGUsgZWqcUyIXZ/vZTrlRT/iobiKhGL0zL4d3osHj3uqllWJK+i+sixDS/3COVEOFbupFyw==}
     engines: {node: '>=8'}
-    dev: true
 
   /detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
@@ -12451,7 +12511,6 @@ packages:
   /mylas@2.1.13:
     resolution: {integrity: sha512-+MrqnJRtxdF+xngFfUUkIMQrUUL0KsxbADUkn23Z/4ibGg192Q+z+CQyiYwvWTsYjJygmMR8+w3ZDa98Zh6ESg==}
     engines: {node: '>=12.0.0'}
-    dev: false
 
   /nan@2.16.0:
     resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
@@ -12545,6 +12604,7 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
+    dev: true
 
   /node-fetch@2.6.13:
     resolution: {integrity: sha512-StxNAxh15zr77QvvkmveSQ8uCQ4+v5FkvNTj0OESmiHu+VRi/gXArXtkWMElOsOUNLtUEvI4yS+rdtOHZTwlQA==}
@@ -13255,7 +13315,6 @@ packages:
     resolution: {integrity: sha512-Eb/MqCb1Iv/ok4m1FqIXqvUKPISufcjZ605hl3KM/n8GaX8zfhtgdLwZU3vKjuHGh2O9Rjog/bHTq8ofIShdng==}
     dependencies:
       queue-lit: 1.5.0
-    dev: false
 
   /pngjs@6.0.0:
     resolution: {integrity: sha512-TRzzuFRRmEoSW/p1KVAmiOgPco2Irlah+bGFCeNfJXxxYGwSw7YwAOAcd7X28K/m5bjBWKsC29KyoMfHbypayg==}
@@ -13947,7 +14006,6 @@ packages:
 
   /queue-lit@1.5.0:
     resolution: {integrity: sha512-IslToJ4eiCEE9xwMzq3viOO5nH8sUWUCwoElrhNMozzr9IIt2qqvB4I+uHu/zJTQVqc9R5DFwok4ijNK1pU3fA==}
-    dev: false
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
@@ -16084,7 +16142,6 @@ packages:
       mylas: 2.1.13
       normalize-path: 3.0.0
       plimit-lit: 1.5.0
-    dev: false
 
   /tslib@2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}

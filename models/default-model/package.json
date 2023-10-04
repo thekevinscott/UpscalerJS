@@ -24,16 +24,17 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts",
     "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
+    "lint": "eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
     "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
+    "build:cjs": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+    "build:esm": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+    "build:umd": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
+    "build:umd:tsc": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp",
+    "build:umd:rollup": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/default-model/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd",
+    "build:umd:uglify": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
   },
   "files": [
     "assets/**/*",
@@ -48,12 +49,14 @@
     "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
+    "@rollup/plugin-json": "^6.0.0",
+    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-core": "~4.8.0",
     "@tensorflow/tfjs-layers": "~4.8.0",
-    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "tsc-alias": "^1.8.7"
   },
   "@upscalerjs": {
     "title": "Default Model",

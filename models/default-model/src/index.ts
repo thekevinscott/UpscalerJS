@@ -1,13 +1,13 @@
 import { ModelDefinition, } from '@upscalerjs/core';
 import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
-import { NAME, VERSION, } from './constants.generated';
+import { name, version, } from '../package.json';
 
 const SCALE = 2;
 
 const modelDefinition: ModelDefinition = getESRGANModelDefinition({
   scale: SCALE,
-  name: NAME,
-  version: VERSION,
+  name,
+  version,
   path: 'models/model.json',
   meta: {
     C: 1,
