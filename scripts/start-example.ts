@@ -88,7 +88,7 @@ const getArgs = async (): Promise<Answers> => {
     skipUpscalerBuild: { type: 'boolean' },
   }).help().argv;
 
-  const exampleDirectory = await getString('Which hdf5 model do you want to build?', argv._[0]);
+  const exampleDirectory = await getString('Which example do you want to start?', argv._[0]);
 
   return { exampleDirectory, skipUpscalerBuild: argv.skipUpscalerBuild };
 }

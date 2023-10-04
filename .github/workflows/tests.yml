@@ -8,17 +8,14 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -26,17 +23,14 @@ jobs:
   unit-browser-vite:
     name: 'Unit / Browser / Vite'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests / Vite'
         working-directory: ./packages/upscalerjs
@@ -52,17 +46,14 @@ jobs:
   unit-browser-playwright:
     name: 'Unit / Browser / Playwright'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -79,17 +70,14 @@ jobs:
   unit-node:
     name: 'Unit / Node'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -104,17 +92,14 @@ jobs:
   core-unit:
     name: 'Core / Unit'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Unit Tests'
         working-directory: ./packages/core
@@ -136,9 +121,6 @@ jobs:
   integration-browser-browserstack:
     name: 'Integration / Browser / Browserstack'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -149,18 +131,15 @@ jobs:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipModelBuild --skipBundle
 
       - name: 'Build Models'
         run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
@@ -176,23 +155,14 @@ jobs:
   integration-browser-local:
     name: 'Integration / Browser / Local'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
-      - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
-        uses: browserstack/github-actions/setup-env@master
-        with:
-          username: ${{ secrets.BROWSERSTACK_USERNAME }}
-          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
@@ -204,162 +174,140 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:browser --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-node-local-16:
-    name: 'Integration / Node / Local / v16'
+  integration-node-local:
+    name: 'Integration / Node / Local'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:integration:node --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
-  models-browser:
+  integration-models-browser:
     name: 'Models / Browser'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
+    # strategy:
+    #   matrix:
+    #     node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:model --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
-  models-node:
+  integration-models-node:
     name: 'Models / Node'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:model --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:model --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Integration Tests'
-        run: pnpm test:model --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   memory-leaks:
     name: 'Memory Leaks'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       - name: 'Setup DVC & Pull Models'
         uses: ./.github/actions/setup-dvc
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Upscaler'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipModelBuild --skipBundle
-
       - name: 'Build Models'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
       - name: 'Bundle'
-        run: pnpm test:memory-leaks --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
 
   build-docs:
     name: 'Build Documentation'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16]
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
 
-      - name: 'Setup PNPM with Node ${{ matrix.node-version }}'
+      - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3

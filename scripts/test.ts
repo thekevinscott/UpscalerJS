@@ -123,7 +123,6 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipUpscalerBuild,
   skipModelBuild,
   forceModelRebuild,
   skipBundle,
@@ -132,7 +131,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   watch,
 }: {
   browserstackAccessKey?: string;
-  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
@@ -153,22 +151,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
       ].join('\n'));
     }
-  }
-
-  if (skipUpscalerBuild !== true) {
-    const platformsToBuild = getPlatformsToBuild(platform);
-
-    const durations: number[] = [];
-    for (let i = 0; i < platformsToBuild.length; i++) {
-      const start = performance.now();
-      await runPNPMScript(`build:${platformsToBuild[i]}`, 'upscaler')
-      const duration = performance.now() - start;
-      durations.push(duration);
-    }
-    console.log([
-      `** built upscaler: ${platform}`,
-      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-    ].join('\n'));
   }
 
   if (skipBundle !== true) {
@@ -269,7 +251,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  skipUpscalerBuild?: boolean;
   skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   runner: Runner;
@@ -333,7 +314,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipUpscalerBuild: { type: 'boolean' },
     skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },

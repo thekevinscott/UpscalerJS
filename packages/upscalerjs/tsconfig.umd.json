@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-  },
-  "include": ["src/umd.ts"],
-  "exclude": ["node_modules"]
-}

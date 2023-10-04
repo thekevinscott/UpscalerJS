@@ -45,6 +45,7 @@ interface Definitions {
   classes: Record<string, DecRef>;
   functions: Record<string, DecRef>;
   enums: Record<string, DecRef>;
+  variables: Record<string, DecRef>;
 }
 
 interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflection, 'kind' | 'id' | 'flags'> {
@@ -57,8 +58,8 @@ interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflecti
  * Constants
  */
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
-const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.esm.json');
-const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src');
+const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.browser.esm.json');
+const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src/browser/esm');
 const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
 const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
@@ -146,9 +147,8 @@ const getTypeFromPlatformSpecificFiles = async (fileName: string, typeName: stri
   const platformSpecificTypes: DeclarationReflection[] = [];
   for (let i = 0; i < platforms.length; i++) {
     const platform = platforms[i];
-    await runPNPMScript(`scaffold:dependencies:${platform}`, 'upscaler');
     const imageBrowser = getPackageAsTree(
-      path.resolve(UPSCALER_DIR, 'src', `${fileName}.${platform}.ts`),
+      path.resolve(UPSCALER_DIR, 'src', platform, `${fileName}.${platform}.ts`),
       path.resolve(UPSCALER_DIR, `tsconfig.docs.${platform}.json`),
       UPSCALER_DIR,
     );
@@ -207,13 +207,14 @@ const getKindStringKey = (kindString: 'Platform Specific Type' | ReflectionKind)
       return 'functions';
     case ReflectionKind.Enum:
       return 'enums';
+    case ReflectionKind.Variable:
+      return 'variables';
     default:
       throw new Error(`Unexpected kind string: ${kindString}`);
   }
 }
 
 const getDefinitions = async (): Promise<Definitions> => {
-  await runPNPMScript('scaffold:dependencies:node', 'upscaler');
   const upscalerTree = getPackageAsTree(
     UPSCALER_SRC_PATH, 
     UPSCALER_TSCONFIG_PATH,
@@ -236,14 +237,22 @@ const getDefinitions = async (): Promise<Definitions> => {
 
   const parsedChildren = children.reduce((obj, child) => {
     const { kind } = child;
-    const key = getKindStringKey(kind);
-    if (!key) {
-      throw new Error(`Unexpected kind string: ${kind}`);
+    try {
+      const key = getKindStringKey(kind);
+      if (!key) {
+        throw new Error(`Unexpected kind string: ${kind}`);
+      }
+      return {
+        ...obj,
+        [key]: obj[key].concat(child),
+      };
+    } catch (err) {
+      for (var enumMember in ReflectionKind) {
+        console.log("enum member: ", enumMember, ReflectionKind[enumMember]);
+      }
+      throw new Error(`Could not get key for ${JSON.stringify(child)}: ${(err as Error).message}`)
+
     }
-    return {
-      ...obj,
-      [key]: obj[key].concat(child),
-    };
   }, {
     constructors: [] as DecRef[],
     methods: [] as DecRef[],
@@ -252,6 +261,7 @@ const getDefinitions = async (): Promise<Definitions> => {
     types: [] as DecRef[],
     classes: [] as DecRef[],
     enums: [] as DecRef[],
+    variables: [] as DecRef[],
   });
 
   return {
@@ -262,6 +272,7 @@ const getDefinitions = async (): Promise<Definitions> => {
     interfaces: getAsObj<DecRef>(parsedChildren.interfaces, i => i.name),
     classes: getAsObj<DecRef>(parsedChildren.classes, i => i.name),
     enums: getAsObj<DecRef>(parsedChildren.enums, i => i.name),
+    variables: getAsObj<DecRef>(parsedChildren.variables, i => i.name),
   };
 }
 
@@ -313,7 +324,7 @@ const getSource = ([source]: SourceReference[]) => {
   // if (!url) {
   //   throw new Error(`No URL defined for source ${fileName} at line ${line}`);
   // }
-  const prettyFileName = fileName.split('packages/upscalerjs/src/').pop();
+  const prettyFileName = fileName.split('packages/upscalerjs/src/shared/').pop();
   return `<small className="gray">Defined in <a target="_blank" href="${rewriteURL(url)}">${prettyFileName}:${line}</a></small>`;
 };
 
@@ -808,6 +819,7 @@ const getContentForMethod = (method: DeclarationReflection, definitions: Definit
 };
 
 const getSortedMethodsForWriting = async (definitions: Definitions) => {
+  console.log(JSON.stringify(definitions.variables, null, 2))
   const exports = Object.values(definitions.classes);
   const methods: DeclarationReflection[] = [];
   for (let i = 0; i < exports.length; i++) {
@@ -866,6 +878,9 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
 
   const definitions = await getDefinitions();
   const methods = await getSortedMethodsForWriting(definitions);
+  if (methods.length === 0) {
+    throw new Error('No methods were found')
+  }
 
   await Promise.all([
     writeAPIDocumentationFiles(methods, definitions),
@@ -879,7 +894,8 @@ async function main({ shouldClearMarkdown }: SharedArgs = {}) {
 
 if (require.main === module) {
   (async () => {
-    const sharedArgs = await getSharedArgs();
-    await main({ ...sharedArgs });
+    return;
+    // const sharedArgs = await getSharedArgs();
+    // await main({ ...sharedArgs });
   })();
 }

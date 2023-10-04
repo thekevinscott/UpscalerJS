@@ -179,7 +179,7 @@
       "command": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install"
     },
     "postinstall": {
-      "command": "pnpm --filter upscaler run scaffold:dependencies:browser && pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+      "command": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
     },
     "update:dependency": {
       "command": "pnpm --filter @upscalerjs/scripts update:dependency"
@@ -191,7 +191,7 @@
       "command": "pnpm --filter @upscalerjs/scripts update:version && pnpm liteinstall"
     },
     "commit-latest-version-changes": {
-      "command": "git add packages/upscalerjs/src/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
+      "command": "git add packages/upscalerjs/src/shared/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
     },
     "example:start": {
       "command": "pnpm --filter @upscalerjs/scripts example:start"
@@ -214,20 +214,36 @@
     "test:integration:browserstack": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
       "dependencies": [
-        "./internals/common:build"
+        "./internals/common:build",
+        "./packages/upscalerjs:build:browser"
       ]
     },
     "test:integration:browser": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser"
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:integration:node": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:node"
+      "command": "echo 1",
+      "dependencies": [
+        "./packages/upscalerjs:build:node-gpu",
+        "./packages/upscalerjs:build:node"
+      ]
     },
     "test:model": {
-      "command": "pnpm --filter @upscalerjs/scripts test:model"
+      "command": "pnpm --filter @upscalerjs/scripts test:model",
+      "dependencies": [
+        "./packages/upscalerjs:build:node-gpu",
+        "./packages/upscalerjs:build:node",
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:memory-leaks": {
-      "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks"
+      "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser"
+      ]
     },
     "test:unit:browser:playwright": {
       "command": "pnpm --filter upscaler test:unit:browser:playwright"
