@@ -46,10 +46,13 @@
   ],
   "wireit": {
     "build": {
-      "command": "pnpm run build:node-gpu && pnpm run build:node && pnpm run build:browser",
+      "command": "echo '1'",
       "dependencies": [
         "../core:build",
-        "../../models/default-model:build"
+        "../../models/default-model:build",
+        "build:node-gpu",
+        "build:node",
+        "build:browser"
       ],
       "files": [
         "src/**/*.ts",
@@ -82,7 +85,12 @@
       ]
     },
     "build:browser:umd": {
-      "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/tmp",
+      "command": "rimraf ./dist/browser/tmp",
+      "dependencies": [
+        "build:browser:umd:tsc",
+        "build:browser:umd:rollup",
+        "build:browser:umd:uglify"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
@@ -106,7 +114,11 @@
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
     },
     "build:browser": {
-      "command": "pnpm run build:browser:esm && pnpm run build:browser:umd",
+      "command": "echo '1'",
+      "dependencies": [
+        "build:browser:esm",
+        "build:browser:umd"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",

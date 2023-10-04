@@ -178,8 +178,9 @@
       "command": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install"
     },
     "postinstall": {
-      "command": "cd models/default-model && pnpm build",
-      "oldcommand": "pnpm --filter @upscalerjs/default-model build"
+      "dependencies": [
+        "./models/default-model:build"
+      ]
     },
     "update:dependency": {
       "command": "pnpm --filter @upscalerjs/scripts update:dependency"

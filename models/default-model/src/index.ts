@@ -1,26 +1,15 @@
 import { ModelDefinition, } from '@upscalerjs/core';
 import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
-import packageJSON from '../package.json';
+import { NAME, VERSION, } from './constants.generated';
 
 const SCALE = 2;
 
-const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
-
-const getValue = (packageJSON: unknown, key: string): string => {
-  if (!isObject(packageJSON)) {
-    throw new Error('Invalid package json provided');
-  }
-  const value = packageJSON[key];
-  if (typeof value !== 'string') {
-    throw new Error('value is not a string');
-  }
-  return value;
-};
-
 const modelDefinition: ModelDefinition = getESRGANModelDefinition({
   scale: SCALE,
-  name: getValue(packageJSON, 'name'),
-  version: getValue(packageJSON, 'version'),
+  // name: getValue(packageJSON, 'name'),
+  // version: getValue(packageJSON, 'version'),
+  name: NAME,
+  version: VERSION,
   path: 'models/model.json',
   meta: {
     C: 1,

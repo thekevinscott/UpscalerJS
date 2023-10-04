@@ -54,8 +54,8 @@
     "@tensorflow/tfjs-layers": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5",
-    "tsc-alias": "^1.8.7"
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "seedrandom": "3.0.5"
   },
   "@upscalerjs": {
     "title": "Default Model",
@@ -71,14 +71,22 @@
     "validate:build": {
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
     },
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'"
+    },
     "build": {
-      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "command": "echo 1",
       "dependencies": [
-        "../../packages/core:build"
+        "../../packages/core:build",
+        "scaffold",
+        "build:cjs",
+        "build:esm",
+        "build:umd"
       ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
@@ -95,10 +103,11 @@
       ]
     },
     "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "command": "NAME=@upscalerjs/default-model VERSION=1.0.0-beta.15 tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
@@ -115,6 +124,7 @@
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.esm.json",
@@ -131,6 +141,7 @@
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.umd.json",
