@@ -24,17 +24,17 @@
     }
   },
   "scripts": {
-    "lint:fix": "pnpm lint --fix",
-    "lint": "eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
-    "build:cjs": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
-    "build:esm": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
-    "build:umd": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
-    "build:umd:tsc": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp",
-    "build:umd:rollup": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/default-model/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd",
-    "build:umd:uglify": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:rollup": "wireit",
+    "build:umd:uglify": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -61,5 +61,40 @@
   "@upscalerjs": {
     "title": "Default Model",
     "modelFamily": "esrgan"
+  },
+  "wireit": {
+    "lint:fix": {
+      "command": "pnpm lint --fix"
+    },
+    "lint": {
+      "command": "eslint -c ../.eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
+    },
+    "build": {
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd"
+    },
+    "build:cjs": {
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src"
+    },
+    "build:esm": {
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src"
+    },
+    "build:umd": {
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp"
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:rollup": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/default-model/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd"
+    },
+    "build:umd:uglify": {
+      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
+    }
   }
 }
