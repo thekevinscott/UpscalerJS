@@ -63,9 +63,6 @@
     "modelFamily": "esrgan"
   },
   "wireit": {
-    "lint:fix": {
-      "command": "pnpm lint --fix"
-    },
     "lint": {
       "command": "eslint -c ../.eslintrc.js src --ext .ts"
     },

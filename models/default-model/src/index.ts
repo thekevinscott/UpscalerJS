@@ -12,7 +12,7 @@ const getValue = (packageJSON: unknown, key: string): string => {
   }
   const value = packageJSON[key];
   if (typeof value !== 'string') {
-    throw new Error(`value is not a string`);
+    throw new Error('value is not a string');
   }
   return value;
 };

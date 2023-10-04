@@ -167,20 +167,11 @@
     "lint": {
       "command": "pnpm lint:browser && pnpm lint:node"
     },
-    "lint:fix": {
-      "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
-    },
     "lint:browser": {
       "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
     },
-    "lint:browser:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
-    },
     "lint:node": {
       "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
-    },
-    "lint:node:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
     },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json"
@@ -210,11 +201,8 @@
     "prepublishOnly": "wireit",
     "format": "wireit",
     "lint": "wireit",
-    "lint:fix": "wireit",
     "lint:browser": "wireit",
-    "lint:browser:fix": "wireit",
     "lint:node": "wireit",
-    "lint:node:fix": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
