@@ -76,16 +76,72 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
     },
     "build": {
-      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd"
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.esm.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
     },
     "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src"
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
     },
     "build:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src"
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.esm.json",
+        "tsconfig.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
     },
     "build:umd": {
-      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp"
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/umd/**"
+      ]
     },
     "build:umd:tsc": {
       "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
