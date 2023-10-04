@@ -24,7 +24,6 @@
     }
   },
   "scripts": {
-    "lint:fix": "wireit",
     "lint": "wireit",
     "prepublishOnly": "wireit",
     "validate:build": "wireit",
