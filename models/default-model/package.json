@@ -72,7 +72,13 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
     },
     "scaffold": {
-      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'"
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
     },
     "build": {
       "command": "echo 1",
