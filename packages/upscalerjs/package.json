@@ -114,11 +114,7 @@
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
     },
     "build:browser": {
-      "command": "echo '1'",
-      "dependencies": [
-        "build:browser:esm",
-        "build:browser:umd"
-      ],
+      "command": "pnpm build:browser:esm && pnpm build:browser:umd",
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
