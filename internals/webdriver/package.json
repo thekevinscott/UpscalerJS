@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Wrapper for Selenium Webdriver",
+  "main": "./dist/index.js",
   "exports": {
     "./options": "./browserStackOptions.json",
     ".": "./dist/index.js"

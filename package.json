@@ -215,6 +215,7 @@
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
       "dependencies": [
         "./internals/common:build",
+        "./internals/webdriver:build",
         "./packages/upscalerjs:build:browser"
       ]
     },
