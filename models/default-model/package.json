@@ -23,6 +23,9 @@
       "import": "./dist/esm/models/default-model/src/esm.js"
     }
   },
+  "module": "dist/esm/models/default-model/src/esm.js",
+  "types": "dist/esm/models/default-model/src/esm.d.ts",
+  "umd:main": "dist/umd/models/default-model/src/umd.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
