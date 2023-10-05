@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
-import type { 
+import { 
   ModelDefinition,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from './types';
@@ -54,7 +54,7 @@ describe('isFourDimensionalTensor', () => {
     expect(isFourDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(false);
   });
 
-    expect(isFourDimensionalTensor({} as any)).toEqual(false);
+    expect(isFourDimensionalTensor({} as tf.Tensor)).toEqual(false);
 });
 
 describe('isThreeDimensionalTensor', () => {
@@ -67,7 +67,7 @@ describe('isThreeDimensionalTensor', () => {
   });
 
   it('defensively handles invalid input', () => {
-    expect(isThreeDimensionalTensor({} as any)).toEqual(false);
+    expect(isThreeDimensionalTensor({} as tf.Tensor)).toEqual(false);
   });
 });
 
@@ -76,7 +76,7 @@ describe('isTensor', () => {
     expect(isTensor(tf.tensor([[1,],]))).toEqual(true);
   });
   it('returns false if not a tensor', () => {
-    expect(isTensor([] as any)).toEqual(false);
+    expect(isTensor([] as unknown as tf.Tensor)).toEqual(false);
   });
 });
 
@@ -86,7 +86,7 @@ describe('isString', () => {
   });
 
   it('returns false for a non-string', () => {
-    expect(isString({} as any)).toEqual(false);
+    expect(isString({} as tf.Tensor)).toEqual(false);
   });
 });
 

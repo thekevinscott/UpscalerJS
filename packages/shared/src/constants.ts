@@ -1,7 +1,4 @@
 import * as tf from '@tensorflow/tfjs-core';
-import type * as tfBrowser from '@tensorflow/tfjs';
-import type * as tfNode from '@tensorflow/tfjs-node';
-import type * as tfNodeGpu from '@tensorflow/tfjs-node-gpu';
 import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import { DynamicShape4D, FixedShape4D, IsTensor, MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, ModelDefinition, ModelType, Shape4D } from './types';
 
@@ -18,7 +15,9 @@ export function makeIsNDimensionalTensor<T extends Tensor>(rank: number): IsTens
   function fn(pixels: Tensor): pixels is T {
     try {
       return pixels.shape.length === rank;
-    } catch (err) { }
+    } catch (err) {
+      // empty
+    }
     return false;
   }
 
