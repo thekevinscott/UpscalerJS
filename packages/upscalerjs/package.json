@@ -98,7 +98,7 @@
       ]
     },
     "build:browser:umd": {
-      "command": "pnpm build:browser:umd:tsc pnpm build:browser:umd:rollup pnpm build:browser:umd:uglify rimraf ./dist/browser/tmp",
+      "command": "pnpm build:browser:umd:tsc && pnpm build:browser:umd:rollup && pnpm build:browser:umd:uglify && rimraf ./dist/browser/tmp",
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
