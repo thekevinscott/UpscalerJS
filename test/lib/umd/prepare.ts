@@ -78,7 +78,7 @@ const getMinifiedScripts = () => {
 export const prepareScriptBundleForUMD = async () => {
   rimraf(DIST);
   mkdirpSync(DIST);
-  copyFileSync(path.join(UPSCALER_PATH, 'dist/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
+  copyFileSync(path.join(UPSCALER_PATH, 'dist/browser/umd/upscaler.min.js'), path.join(DIST, 'upscaler.min.js'))
 
   copyAllModels();
 
