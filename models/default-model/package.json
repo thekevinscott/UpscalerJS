@@ -19,8 +19,8 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/cjs/models/default-model/src/index.js",
-      "import": "./dist/esm/models/default-model/src/index.js"
+      "require": "./dist/cjs/models/default-model/src/cjs.js",
+      "import": "./dist/esm/models/default-model/src/esm.js"
     }
   },
   "scripts": {
@@ -30,10 +30,7 @@
     "build": "wireit",
     "build:cjs": "wireit",
     "build:esm": "wireit",
-    "build:umd": "wireit",
-    "build:umd:tsc": "wireit",
-    "build:umd:rollup": "wireit",
-    "build:umd:uglify": "wireit"
+    "build:umd": "wireit"
   },
   "files": [
     "assets/**/*",

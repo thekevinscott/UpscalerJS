@@ -25,7 +25,7 @@ const JEST_TIMEOUT = 60 * 1000 * 15 * 2;
 jest.setTimeout(JEST_TIMEOUT);
 jest.retryTimes(0);
 
-const SPECIFIC_PACKAGE: string | undefined = 'default-model';
+const SPECIFIC_PACKAGE: string | undefined = undefined;
 const SPECIFIC_MODEL: string | undefined = undefined;
 
 console.log('***** PLATFORMS', PLATFORMS)
