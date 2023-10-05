@@ -69,7 +69,13 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   if (kind === 'model') {
     return ['model'];
   }
-  const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
+  if (runner === 'browserstack') {
+    const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+  }
+  const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
+  const files: string[] = sync(globPath);
   return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
 };
 
@@ -77,15 +83,20 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
   const sharedDependenciesSet = new Set<Bundle>();
 
   const platforms = ([] as Platform[]).concat(_platforms);
+  const filesForPlatforms: {platform: Platform; files: (string | number)[]}[] = [];
 
   await Promise.all(platforms.map(async (platform: Platform) => {
     const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
     const { default: sharedDependencies } = await import(filePath);
 
     const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
+    filesForPlatforms.push({
+      platform,
+      files,
+    })
 
     for (const file of files) {
-      const fileName = `${file}`.split('.ts')[0];
+      const fileName = `${file}`.split('.').slice(0, -1).join('.');
       if (!sharedDependencies[fileName]) {
         throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
       }
@@ -94,7 +105,11 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
       });
     }
   }));
-  return Array.from(sharedDependenciesSet);
+  const sharedDependencies = Array.from(sharedDependenciesSet);
+  if (sharedDependencies.length === 0) {
+    throw new Error(`One day there may be no defined dependencies, but today is not that day. ${JSON.stringify(filesForPlatforms)}`)
+  }
+  return sharedDependencies;
 };
 
 const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
@@ -155,9 +170,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
-    if (dependencies.length === 0) {
-      throw new Error('One day there may be no defined dependencies, but today is not that day.')
-    }
     const durations: number[] = [];
     for (const dependency of dependencies) {
       const start = performance.now();
