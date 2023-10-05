@@ -85,12 +85,7 @@
       ]
     },
     "build:browser:umd": {
-      "command": "rimraf ./dist/browser/tmp",
-      "dependencies": [
-        "build:browser:umd:tsc",
-        "build:browser:umd:rollup",
-        "build:browser:umd:uglify"
-      ],
+      "command": "pnpm build:browser:umd:tsc pnpm build:browser:umd:rollup pnpm build:browser:umd:uglify rimraf ./dist/browser/tmp",
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
