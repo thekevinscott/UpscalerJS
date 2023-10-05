@@ -109,7 +109,7 @@ describe('Speed Integration Tests', () => {
                     if (output !== undefined) {
                       output.dispose();
                     }
-                    return <const>[rawDuration, upscalerJSDuration];
+                    return [rawDuration, upscalerJSDuration] as [number, number];
                   });
                 });
               });
@@ -168,7 +168,7 @@ describe('Speed Integration Tests', () => {
                     if (output !== undefined) {
                       output.dispose();
                     }
-                    return <const>[rawDuration, upscalerJSDuration];
+                    return [rawDuration, upscalerJSDuration] as [number, number];
                   });
                 });
               });
