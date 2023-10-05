@@ -30,7 +30,10 @@
     "build": "wireit",
     "build:cjs": "wireit",
     "build:esm": "wireit",
-    "build:umd": "wireit"
+    "build:umd": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:rollup": "wireit",
+    "build:umd:uglify": "wireit"
   },
   "files": [
     "assets/**/*",
