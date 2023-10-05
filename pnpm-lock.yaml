@@ -615,10 +615,6 @@ importers:
         version: 0.34.2(jsdom@22.1.0)
 
   models/default-model:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -813,12 +809,6 @@ importers:
 
   packages/upscalerjs:
     dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@upscalerjs/core':
         specifier: workspace:*
         version: link:../core
