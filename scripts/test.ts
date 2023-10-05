@@ -64,10 +64,10 @@ const getFolder = (platform: Platform, runner: Runner, kind: Kind) => {
 
 const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
   if (kind === 'memory') {
-    return ['test.browser'];
+    return ['test.browser.ts'];
   }
   if (kind === 'model') {
-    return ['model'];
+    return ['model.ts'];
   }
   if (runner === 'browserstack') {
     const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
@@ -97,6 +97,9 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
 
     for (const file of files) {
       const fileName = `${file}`.split('.').slice(0, -1).join('.');
+      if (fileName === '') {
+        throw new Error(`Filename is empty. Original is: ${file}`);
+      }
       if (!sharedDependencies[fileName]) {
         throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
       }
