@@ -3,11 +3,20 @@
   "version": "1.0.0-beta.10",
   "description": "Pixel Upsampler Model for UpscalerJS",
   "scripts": {
-    "scaffold:dependencies": "wireit",
+    "scaffold": "wireit",
     "lint": "wireit",
     "prepublishOnly": "wireit",
     "validate:build": "wireit",
-    "build": "wireit"
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:2x": "wireit",
+    "build:umd:rollup:index": "wireit",
+    "build:umd:rollup:2x": "wireit",
+    "build:umd:uglify:index": "wireit",
+    "build:umd:uglify:2x": "wireit"
   },
   "exports": {
     "./2x": {
@@ -132,7 +141,7 @@
       ]
     },
     "build:umd": {
-      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:2x && rimraf ./dist/umd-tmp",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -151,11 +160,23 @@
     "build:umd:tsc": {
       "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
     },
-    "build:umd:rollup": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd"
+    "build:umd:index": {
+      "command": "pnpm build:umd:rollup:index && build:umd:uglify:index"
     },
-    "build:umd:uglify": {
-      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
+    "build:umd:2x": {
+      "command": "pnpm build:umd:rollup:index && build:umd:uglify:index"
+    },
+    "build:umd:rollup:index": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/umd.js --file ./dist/umd/umd.js --name PixelUpsampler --format umd"
+    },
+    "build:umd:rollup:2x": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/2x/umd.js --file ./dist/umd/2x/umd.js --name PixelUpsampler2x --format umd"
+    },
+    "build:umd:uglify:index": {
+      "command": "uglifyjs ./dist/umd/2x/umd.js --output ./dist/umd/2x/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:uglify:2x": {
+      "command": "uglifyjs ./dist/umd/2x/umd.js --output ./dist/umd/2x/umd.min.js --compress --mangle --source-map"
     }
   }
 }
