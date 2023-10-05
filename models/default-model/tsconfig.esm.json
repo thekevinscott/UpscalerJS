@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.esm.json",
   "include": [
-    "./src/index.ts",
+    "./src/esm.ts",
   ]
 }
