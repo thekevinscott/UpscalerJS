@@ -46,13 +46,10 @@
   ],
   "wireit": {
     "build": {
-      "command": "echo '1'",
+      "command": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
       "dependencies": [
         "../core:build",
-        "../../models/default-model:build",
-        "build:node-gpu",
-        "build:node",
-        "build:browser"
+        "../../models/default-model:build"
       ],
       "files": [
         "src/**/*.ts",
@@ -67,6 +64,22 @@
       ],
       "output": [
         "dist/**"
+      ]
+    },
+    "build:browser": {
+      "command": "pnpm build:browser:esm && pnpm build:browser:umd",
+      "files": [
+        "src/shared/**/*.ts",
+        "src/browser/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.browser.esm.json",
+        "tsconfig.browser.umd.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/browser/**"
       ]
     },
     "build:browser:esm": {
@@ -107,22 +120,6 @@
     },
     "build:browser:umd:uglify": {
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
-    },
-    "build:browser": {
-      "command": "pnpm build:browser:esm && pnpm build:browser:umd",
-      "files": [
-        "src/shared/**/*.ts",
-        "src/browser/**/*.ts",
-        "!src/**/*.test.ts",
-        "package.json",
-        "vite.config.ts",
-        "tsconfig.browser.esm.json",
-        "tsconfig.browser.umd.json",
-        "tsconfig.json"
-      ],
-      "output": [
-        "dist/browser/**"
-      ]
     },
     "build:node": {
       "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node",
