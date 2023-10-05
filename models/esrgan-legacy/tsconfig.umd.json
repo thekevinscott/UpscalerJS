@@ -1,15 +1,11 @@
 {
   "extends": "../tsconfig.umd.json",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist/tmp",
-  },
   "include": [
-    "./src/index.ts",
-    "./src/psnr-small.ts",
-    "./src/gans.ts",
-    "./src/div2k/2x.ts",
-    "./src/div2k/3x.ts",
-    "./src/div2k/4x.ts",
+    "./src/umd.ts",
+    "./src/div2k/2x/umd.ts",
+    "./src/div2k/3x/umd.ts",
+    "./src/div2k/4x/umd.ts",
+    "./src/psnr-small/umd.ts",
+    "./src/gans/umd.ts"
   ]
 }

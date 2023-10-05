@@ -18,33 +18,32 @@
     "url": "git+https://github.com/thekevinscott/upscaler.git"
   },
   "exports": {
+    ".": {
+      "require": "./dist/cjs/models/esrgan-legacy/src/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/esm.js"
+    },
     "./div2k/2x": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/2x.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/div2k/2x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/2x/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/2x/esm.js"
     },
     "./div2k/3x": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/3x.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/div2k/3x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/3x/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/3x/esm.js"
     },
     "./div2k/4x": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/4x.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/div2k/4x.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/div2k/4x/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/div2k/4x/esm.js"
     },
     "./psnr-small": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/psnr-small.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/psnr-small.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/psnr-small/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/psnr-small/esm.js"
     },
     "./gans": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/gans.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/gans.js"
-    },
-    ".": {
-      "require": "./dist/cjs/models/esrgan-legacy/src/index.js",
-      "import": "./dist/esm/models/esrgan-legacy/src/index.js"
+      "require": "./dist/cjs/models/esrgan-legacy/src/gans/cjs.js",
+      "import": "./dist/esm/models/esrgan-legacy/src/gans/esm.js"
     }
   },
   "scripts": {
-    "scaffold:dependencies": "wireit",
     "lint": "wireit",
     "prepublishOnly": "wireit",
     "validate:build": "wireit",
@@ -52,7 +51,27 @@
     "build:cjs": "wireit",
     "build:esm": "wireit",
     "build:umd": "wireit",
-    "clean": "wireit"
+    "clean": "wireit",
+    "scaffold": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:index": "wireit",
+    "build:umd:rollup:index": "wireit",
+    "build:umd:uglify:index": "wireit",
+    "build:umd:div2k/2x": "wireit",
+    "build:umd:rollup:div2k/2x": "wireit",
+    "build:umd:uglify:div2k/2x": "wireit",
+    "build:umd:div2k/3x": "wireit",
+    "build:umd:rollup:div2k/3x": "wireit",
+    "build:umd:uglify:div2k/3x": "wireit",
+    "build:umd:div2k/4x": "wireit",
+    "build:umd:rollup:div2k/4x": "wireit",
+    "build:umd:uglify:div2k/4x": "wireit",
+    "build:umd:psnr-small": "wireit",
+    "build:umd:rollup:psnr-small": "wireit",
+    "build:umd:uglify:psnr-small": "wireit",
+    "build:umd:gans": "wireit",
+    "build:umd:rollup:gans": "wireit",
+    "build:umd:uglify:gans": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -72,14 +91,15 @@
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
   },
   "wireit": {
-    "scaffold:dependencies": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-legacy --config models/scaffolder.ts"
-    },
     "lint": {
-      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"
+      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold"
+      ]
     },
     "prepublishOnly": {
       "command": "pnpm lint && pnpm build && pnpm validate:build"
@@ -88,19 +108,149 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-legacy"
     },
     "build": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs -o esm -o umd"
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "dependencies": [
+        "../../packages/core:build",
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.esm.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
     },
     "build:cjs": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o cjs"
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/cjs/**"
+      ]
     },
     "build:esm": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o esm"
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.esm.json",
+        "tsconfig.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
     },
     "build:umd": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-legacy -o umd"
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:2x && pnpm run build:umd:3x && pnpm run build:umd:4x && rimraf ./dist/umd-tmp",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/umd/**"
+      ]
     },
     "clean": {
       "command": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-legacy"
+    },
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:index": {
+      "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
+    },
+    "build:umd:rollup:index": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/umd.js --file ./dist/umd/umd.js --name ESRGANLegacy --format umd"
+    },
+    "build:umd:uglify:index": {
+      "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:div2k/2x": {
+      "command": "pnpm build:umd:rollup:div2k/2x && pnpm build:umd:uglify:div2k/2x"
+    },
+    "build:umd:rollup:div2k/2x": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/div2k/2x/umd.js --file ./dist/umd/div2k/2x/umd.js --name ESRGANLegacydiv2k/2x --format umd"
+    },
+    "build:umd:uglify:div2k/2x": {
+      "command": "uglifyjs ./dist/umd/div2k/2x/umd.js --output ./dist/umd/div2k/2x/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:div2k/3x": {
+      "command": "pnpm build:umd:rollup:div2k/3x && pnpm build:umd:uglify:div2k/3x"
+    },
+    "build:umd:rollup:div2k/3x": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/div2k/3x/umd.js --file ./dist/umd/div2k/3x/umd.js --name ESRGANLegacydiv2k/3x --format umd"
+    },
+    "build:umd:uglify:div2k/3x": {
+      "command": "uglifyjs ./dist/umd/div2k/3x/umd.js --output ./dist/umd/div2k/3x/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:div2k/4x": {
+      "command": "pnpm build:umd:rollup:div2k/4x && pnpm build:umd:uglify:div2k/4x"
+    },
+    "build:umd:rollup:div2k/4x": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/div2k/4x/umd.js --file ./dist/umd/div2k/4x/umd.js --name ESRGANLegacydiv2k/4x --format umd"
+    },
+    "build:umd:uglify:div2k/4x": {
+      "command": "uglifyjs ./dist/umd/div2k/4x/umd.js --output ./dist/umd/div2k/4x/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:psnr-small": {
+      "command": "pnpm build:umd:rollup:psnr-small && pnpm build:umd:uglify:psnr-small"
+    },
+    "build:umd:rollup:psnr-small": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/psnr-small/umd.js --file ./dist/umd/psnr-small/umd.js --name ESRGANLegacypsnr-small --format umd"
+    },
+    "build:umd:uglify:psnr-small": {
+      "command": "uglifyjs ./dist/umd/psnr-small/umd.js --output ./dist/umd/psnr-small/umd.min.js --compress --mangle --source-map"
+    },
+    "build:umd:gans": {
+      "command": "pnpm build:umd:rollup:gans && pnpm build:umd:uglify:gans"
+    },
+    "build:umd:rollup:gans": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/gans/umd.js --file ./dist/umd/gans/umd.js --name ESRGANLegacygans --format umd"
+    },
+    "build:umd:uglify:gans": {
+      "command": "uglifyjs ./dist/umd/gans/umd.js --output ./dist/umd/gans/umd.min.js --compress --mangle --source-map"
     }
   }
 }
