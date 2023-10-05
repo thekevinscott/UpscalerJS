@@ -5,6 +5,8 @@ const SCALE = 2;
 
 const modelDefinition = getESRGANModelDefinition({
   scale: SCALE,
+  // name: getValue(packageJSON, 'name'),
+  // version: getValue(packageJSON, 'version'),
   name: NAME,
   version: VERSION,
   path: 'models/model.json',

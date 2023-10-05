@@ -46,7 +46,7 @@
   ],
   "wireit": {
     "build": {
-      "command": "pnpm run build:node-gpu && pnpm run build:node && pnpm run build:browser",
+      "command": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
       "dependencies": [
         "../core:build",
         "../../models/default-model:build"
@@ -66,6 +66,22 @@
         "dist/**"
       ]
     },
+    "build:browser": {
+      "command": "pnpm build:browser:esm && pnpm build:browser:umd",
+      "files": [
+        "src/shared/**/*.ts",
+        "src/browser/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.browser.esm.json",
+        "tsconfig.browser.umd.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/browser/**"
+      ]
+    },
     "build:browser:esm": {
       "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist/browser/esm",
       "files": [
@@ -82,7 +98,7 @@
       ]
     },
     "build:browser:umd": {
-      "command": "pnpm run build:browser:umd:tsc && pnpm run build:browser:umd:rollup && pnpm run build:browser:umd:uglify && rimraf ./dist/browser/tmp",
+      "command": "pnpm build:browser:umd:tsc && pnpm build:browser:umd:rollup && pnpm build:browser:umd:uglify && rimraf ./dist/browser/tmp",
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
@@ -104,22 +120,6 @@
     },
     "build:browser:umd:uglify": {
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
-    },
-    "build:browser": {
-      "command": "pnpm run build:browser:esm && pnpm run build:browser:umd",
-      "files": [
-        "src/shared/**/*.ts",
-        "src/browser/**/*.ts",
-        "!src/**/*.test.ts",
-        "package.json",
-        "vite.config.ts",
-        "tsconfig.browser.esm.json",
-        "tsconfig.browser.umd.json",
-        "tsconfig.json"
-      ],
-      "output": [
-        "dist/browser/**"
-      ]
     },
     "build:node": {
       "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node",
@@ -167,20 +167,11 @@
     "lint": {
       "command": "pnpm lint:browser && pnpm lint:node"
     },
-    "lint:fix": {
-      "command": "pnpm lint:browser:fix && pnpm lint:node:fix"
-    },
     "lint:browser": {
       "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
     },
-    "lint:browser:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts' --fix"
-    },
     "lint:node": {
       "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
-    },
-    "lint:node:fix": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts' --fix"
     },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json"
@@ -210,11 +201,8 @@
     "prepublishOnly": "wireit",
     "format": "wireit",
     "lint": "wireit",
-    "lint:fix": "wireit",
     "lint:browser": "wireit",
-    "lint:browser:fix": "wireit",
     "lint:node": "wireit",
-    "lint:node:fix": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",

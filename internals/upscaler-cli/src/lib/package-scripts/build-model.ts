@@ -221,7 +221,9 @@ const buildModel = async (
   if (opts.verbose) {
     console.log(`Scaffolding dependencies for model ${model}`);
   }
-  scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
+  if (model !== 'default-model') {
+    scaffoldDependencies(MODEL_ROOT, scaffoldDependenciesConfig);
+  }
 
   // rimraf(DIST);
   // await mkDistFolder(DIST);
