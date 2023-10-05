@@ -40,16 +40,16 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-medium --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-medium",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs -o esm -o umd",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-medium"
+    "scaffold:dependencies": "wireit",
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "clean": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -80,6 +80,38 @@
           "node"
         ]
       }
+    }
+  },
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-medium --config models/scaffolder.ts"
+    },
+    "lint:fix": {
+      "command": "pnpm lint --fix"
+    },
+    "lint": {
+      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-medium"
+    },
+    "build": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs -o esm -o umd"
+    },
+    "build:cjs": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o cjs"
+    },
+    "build:esm": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o esm"
+    },
+    "build:umd": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts esrgan-medium -o umd"
+    },
+    "clean": {
+      "command": "ts-node ../../scripts/package-scripts/clean-model.ts esrgan-medium"
     }
   }
 }

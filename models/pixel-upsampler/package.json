@@ -3,12 +3,12 @@
   "version": "1.0.0-beta.10",
   "description": "Pixel Upsampler Model for UpscalerJS",
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/pixel-upsampler",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+    "scaffold:dependencies": "wireit",
+    "lint:fix": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit"
   },
   "exports": {
     "./2x": {
@@ -49,5 +49,25 @@
     "seedrandom": "3.0.5"
   },
   "author": "Kevin Scott",
-  "license": "MIT"
+  "license": "MIT",
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts"
+    },
+    "lint:fix": {
+      "command": "pnpm lint --fix"
+    },
+    "lint": {
+      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/pixel-upsampler"
+    },
+    "build": {
+      "command": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+    }
+  }
 }
