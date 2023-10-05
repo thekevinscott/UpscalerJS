@@ -615,10 +615,6 @@ importers:
         version: 0.34.2(jsdom@22.1.0)
 
   models/default-model:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@rollup/plugin-json':
         specifier: ^6.0.0

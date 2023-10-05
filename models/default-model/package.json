@@ -44,9 +44,6 @@
   "peerDependencies": {
     "@tensorflow/tfjs": "~4.8.0"
   },
-  "dependencies": {
-    "@upscalerjs/core": "workspace:*"
-  },
   "devDependencies": {
     "@rollup/plugin-json": "^6.0.0",
     "@tensorflow/tfjs": "~4.8.0",
