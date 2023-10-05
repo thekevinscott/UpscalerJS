@@ -11,20 +11,20 @@
   },
   "exports": {
     "./2x": {
-      "require": "./dist/cjs/2x.js",
-      "import": "./dist/esm/2x.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/2x/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/2x/esm.js"
     },
     "./3x": {
-      "require": "./dist/cjs/3x.js",
-      "import": "./dist/esm/3x.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/3x/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/3x/esm.js"
     },
     "./4x": {
-      "require": "./dist/cjs/4x.js",
-      "import": "./dist/esm/4x.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/4x/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/4x/esm.js"
     },
     ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/esm.js"
     }
   },
   "files": [
@@ -45,16 +45,26 @@
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-    "seedrandom": "3.0.5"
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
   },
   "author": "Kevin Scott",
   "license": "MIT",
   "wireit": {
-    "scaffold:dependencies": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts"
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
     },
     "lint": {
-      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"
+      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold"
+      ]
     },
     "prepublishOnly": {
       "command": "pnpm lint && pnpm build && pnpm validate:build"
@@ -63,7 +73,89 @@
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/pixel-upsampler"
     },
     "build": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts pixel-upsampler -o cjs -o esm -o umd"
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "dependencies": [
+        "../../packages/core:build",
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.esm.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "build:cjs": {
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
+    },
+    "build:esm": {
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.esm.json",
+        "tsconfig.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
+    },
+    "build:umd": {
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/umd/**"
+      ]
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:rollup": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd"
+    },
+    "build:umd:uglify": {
+      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
     }
   }
 }

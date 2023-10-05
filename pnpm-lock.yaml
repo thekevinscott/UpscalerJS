@@ -790,6 +790,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   packages/core:
     dependencies:
