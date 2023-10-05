@@ -4,7 +4,6 @@
   "description": "Pixel Upsampler Model for UpscalerJS",
   "scripts": {
     "scaffold:dependencies": "wireit",
-    "lint:fix": "wireit",
     "lint": "wireit",
     "prepublishOnly": "wireit",
     "validate:build": "wireit",
@@ -53,9 +52,6 @@
   "wireit": {
     "scaffold:dependencies": {
       "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/pixel-upsampler --config models/scaffolder.ts"
-    },
-    "lint:fix": {
-      "command": "pnpm lint --fix"
     },
     "lint": {
       "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"

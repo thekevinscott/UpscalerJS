@@ -130,7 +130,6 @@ const createPackageJSON = (name: string, description: string, keywords = DEFAULT
   },
   "scripts": {
     "scaffold:dependencies": `ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/${name} --config models/scaffolder.ts`,
-    "lint:fix": "pnpm lint --fix",
     "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
     "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
     "validate:build": `ts-node ../../scripts/package-scripts/validate-build.ts models/${name}`,
