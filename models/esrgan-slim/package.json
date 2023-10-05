@@ -40,16 +40,15 @@
     }
   },
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim",
-    "build": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd",
-    "build:cjs": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs",
-    "build:esm": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o esm",
-    "build:umd": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o umd",
-    "clean": "pnpm --filter @upscalerjs/scripts model:clean esrgan-slim"
+    "scaffold:dependencies": "wireit",
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "clean": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -80,6 +79,35 @@
           "node"
         ]
       }
+    }
+  },
+  "wireit": {
+    "scaffold:dependencies": {
+      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/esrgan-slim --config models/scaffolder.ts"
+    },
+    "lint": {
+      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim"
+    },
+    "build": {
+      "command": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs -o esm -o umd"
+    },
+    "build:cjs": {
+      "command": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o cjs"
+    },
+    "build:esm": {
+      "command": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o esm"
+    },
+    "build:umd": {
+      "command": "pnpm --filter @upscalerjs/scripts model:build esrgan-slim -o umd"
+    },
+    "clean": {
+      "command": "pnpm --filter @upscalerjs/scripts model:clean esrgan-slim"
     }
   }
 }
