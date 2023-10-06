@@ -211,7 +211,7 @@
       "command": "pnpm build:umd:rollup:div2k/x2 && pnpm build:umd:uglify:div2k/x2"
     },
     "build:umd:rollup:div2k/x2": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x2/umd.js --file ./dist/umd/div2k/x2/umd.js --name ESRGANLegacydiv2k/x2 --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x2/umd.js --file ./dist/umd/div2k/x2/umd.js --name ESRGANLegacyDiv2kX2 --format umd"
     },
     "build:umd:uglify:div2k/x2": {
       "command": "uglifyjs ./dist/umd/div2k/x2/umd.js --output ./dist/umd/div2k/x2/umd.min.js --compress --mangle --source-map"
@@ -220,7 +220,7 @@
       "command": "pnpm build:umd:rollup:div2k/x3 && pnpm build:umd:uglify:div2k/x3"
     },
     "build:umd:rollup:div2k/x3": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x3/umd.js --file ./dist/umd/div2k/x3/umd.js --name ESRGANLegacydiv2k/x3 --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x3/umd.js --file ./dist/umd/div2k/x3/umd.js --name ESRGANLegacyDiv2kX3 --format umd"
     },
     "build:umd:uglify:div2k/x3": {
       "command": "uglifyjs ./dist/umd/div2k/x3/umd.js --output ./dist/umd/div2k/x3/umd.min.js --compress --mangle --source-map"
@@ -229,7 +229,7 @@
       "command": "pnpm build:umd:rollup:div2k/x4 && pnpm build:umd:uglify:div2k/x4"
     },
     "build:umd:rollup:div2k/x4": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x4/umd.js --file ./dist/umd/div2k/x4/umd.js --name ESRGANLegacydiv2k/x4 --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/div2k/x4/umd.js --file ./dist/umd/div2k/x4/umd.js --name ESRGANLegacyDiv2kX4 --format umd"
     },
     "build:umd:uglify:div2k/x4": {
       "command": "uglifyjs ./dist/umd/div2k/x4/umd.js --output ./dist/umd/div2k/x4/umd.min.js --compress --mangle --source-map"
@@ -238,7 +238,7 @@
       "command": "pnpm build:umd:rollup:psnr-small && pnpm build:umd:uglify:psnr-small"
     },
     "build:umd:rollup:psnr-small": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/psnr-small/umd.js --file ./dist/umd/psnr-small/umd.js --name ESRGANLegacypsnr-small --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/psnr-small/umd.js --file ./dist/umd/psnr-small/umd.js --name ESRGANLegacyPSNRSmall --format umd"
     },
     "build:umd:uglify:psnr-small": {
       "command": "uglifyjs ./dist/umd/psnr-small/umd.js --output ./dist/umd/psnr-small/umd.min.js --compress --mangle --source-map"
@@ -247,7 +247,7 @@
       "command": "pnpm build:umd:rollup:gans && pnpm build:umd:uglify:gans"
     },
     "build:umd:rollup:gans": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/gans/umd.js --file ./dist/umd/gans/umd.js --name ESRGANLegacygans --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/gans/umd.js --file ./dist/umd/gans/umd.js --name ESRGANLegacyGANS --format umd"
     },
     "build:umd:uglify:gans": {
       "command": "uglifyjs ./dist/umd/gans/umd.js --output ./dist/umd/gans/umd.min.js --compress --mangle --source-map"
