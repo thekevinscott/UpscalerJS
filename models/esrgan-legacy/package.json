@@ -202,7 +202,7 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/umd.js --file ./dist/umd/umd.js --name ESRGANLegacy --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/umd.js --file ./dist/umd/umd.js --name ESRGANLegacy --format umd"
     },
     "build:umd:uglify:index": {
       "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
