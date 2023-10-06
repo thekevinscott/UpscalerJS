@@ -6,20 +6,20 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "require": "./dist/cjs/src/cjs.js",
-      "import": "./dist/esm/src/esm.js"
+      "require": "./dist/cjs/cjs.js",
+      "import": "./dist/esm/esm.js"
     },
     "./2x": {
-      "require": "./dist/cjs/src/x2/cjs.js",
-      "import": "./dist/esm/src/x2/esm.js"
+      "require": "./dist/cjs/x2/cjs.js",
+      "import": "./dist/esm/x2/esm.js"
     },
     "./3x": {
-      "require": "./dist/cjs/src/x3/cjs.js",
-      "import": "./dist/esm/src/x3/esm.js"
+      "require": "./dist/cjs/x3/cjs.js",
+      "import": "./dist/esm/x3/esm.js"
     },
     "./4x": {
-      "require": "./dist/cjs/src/x4/cjs.js",
-      "import": "./dist/esm/src/x4/esm.js"
+      "require": "./dist/cjs/x4/cjs.js",
+      "import": "./dist/esm/x4/esm.js"
     }
   },
   "scripts": {
