@@ -1,2 +1,2 @@
-import { default as ESRGANLegacygans, } from './index';
-module.exports = ESRGANLegacygans; // eslint-disable-line
+import { default as ESRGANLegacyGans, } from './index';
+module.exports = ESRGANLegacyGans; // eslint-disable-line

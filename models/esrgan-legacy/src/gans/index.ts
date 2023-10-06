@@ -1,6 +1,6 @@
 import { ModelDefinition, } from '@upscalerjs/core';
-import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
-import { NAME, VERSION, } from './constants.generated';
+import { getESRGANModelDefinition, } from '../../../../packages/shared/src/esrgan/esrgan';
+import { NAME, VERSION, } from '../constants.generated';
 
 const SCALE = 4;
 

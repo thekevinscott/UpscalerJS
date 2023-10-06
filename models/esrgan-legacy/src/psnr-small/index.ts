@@ -1,5 +1,5 @@
 import { ModelDefinition, } from '@upscalerjs/core';
-import getModelDefinition from './getModelDefinition';
+import getModelDefinition from '../getModelDefinition';
 
 const SCALE = 2;
 

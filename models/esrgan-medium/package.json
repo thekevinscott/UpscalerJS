@@ -23,20 +23,20 @@
       "import": "./dist/esm/models/esrgan-medium/src/esm.js"
     },
     "./2x": {
-      "require": "./dist/cjs/models/esrgan-medium/src/2x/cjs.js",
-      "import": "./dist/esm/models/esrgan-medium/src/2x/esm.js"
+      "require": "./dist/cjs/models/esrgan-medium/src/x2/cjs.js",
+      "import": "./dist/esm/models/esrgan-medium/src/x2/esm.js"
     },
     "./3x": {
-      "require": "./dist/cjs/models/esrgan-medium/src/3x/cjs.js",
-      "import": "./dist/esm/models/esrgan-medium/src/3x/esm.js"
+      "require": "./dist/cjs/models/esrgan-medium/src/x3/cjs.js",
+      "import": "./dist/esm/models/esrgan-medium/src/x3/esm.js"
     },
     "./4x": {
-      "require": "./dist/cjs/models/esrgan-medium/src/4x/cjs.js",
-      "import": "./dist/esm/models/esrgan-medium/src/4x/esm.js"
+      "require": "./dist/cjs/models/esrgan-medium/src/x4/cjs.js",
+      "import": "./dist/esm/models/esrgan-medium/src/x4/esm.js"
     },
     "./8x": {
-      "require": "./dist/cjs/models/esrgan-medium/src/8x/cjs.js",
-      "import": "./dist/esm/models/esrgan-medium/src/8x/esm.js"
+      "require": "./dist/cjs/models/esrgan-medium/src/x8/cjs.js",
+      "import": "./dist/esm/models/esrgan-medium/src/x8/esm.js"
     }
   },
   "scripts": {
@@ -53,18 +53,18 @@
     "build:umd:index": "wireit",
     "build:umd:rollup:index": "wireit",
     "build:umd:uglify:index": "wireit",
-    "build:umd:2x": "wireit",
-    "build:umd:rollup:2x": "wireit",
-    "build:umd:uglify:2x": "wireit",
-    "build:umd:3x": "wireit",
-    "build:umd:rollup:3x": "wireit",
-    "build:umd:uglify:3x": "wireit",
-    "build:umd:4x": "wireit",
-    "build:umd:rollup:4x": "wireit",
-    "build:umd:uglify:4x": "wireit",
-    "build:umd:8x": "wireit",
-    "build:umd:rollup:8x": "wireit",
-    "build:umd:uglify:8x": "wireit"
+    "build:umd:x2": "wireit",
+    "build:umd:rollup:x2": "wireit",
+    "build:umd:uglify:x2": "wireit",
+    "build:umd:x3": "wireit",
+    "build:umd:rollup:x3": "wireit",
+    "build:umd:uglify:x3": "wireit",
+    "build:umd:x4": "wireit",
+    "build:umd:rollup:x4": "wireit",
+    "build:umd:uglify:x4": "wireit",
+    "build:umd:x8": "wireit",
+    "build:umd:rollup:x8": "wireit",
+    "build:umd:uglify:x8": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -171,7 +171,7 @@
       ]
     },
     "build:umd": {
-      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:2x && pnpm run build:umd:3x && pnpm run build:umd:4x && rimraf ./dist/umd-tmp",
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:x2 && pnpm run build:umd:x3 && pnpm run build:umd:x4 && rimraf ./dist/umd-tmp",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -206,46 +206,46 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/umd.js --file ./dist/umd/umd.js --name ESRGANMedium --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/umd.js --file ./dist/umd/umd.js --name ESRGANMedium --format umd"
     },
     "build:umd:uglify:index": {
       "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
     },
-    "build:umd:2x": {
-      "command": "pnpm build:umd:rollup:2x && pnpm build:umd:uglify:2x"
+    "build:umd:x2": {
+      "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
     },
-    "build:umd:rollup:2x": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/2x/umd.js --file ./dist/umd/2x/umd.js --name ESRGANMedium2x --format umd"
+    "build:umd:rollup:x2": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x2/umd.js --file ./dist/umd/x2/umd.js --name ESRGANMedium2x --format umd"
     },
-    "build:umd:uglify:2x": {
-      "command": "uglifyjs ./dist/umd/2x/umd.js --output ./dist/umd/2x/umd.min.js --compress --mangle --source-map"
+    "build:umd:uglify:x2": {
+      "command": "uglifyjs ./dist/umd/x2/umd.js --output ./dist/umd/x2/umd.min.js --compress --mangle --source-map"
     },
-    "build:umd:3x": {
-      "command": "pnpm build:umd:rollup:3x && pnpm build:umd:uglify:3x"
+    "build:umd:x3": {
+      "command": "pnpm build:umd:rollup:x3 && pnpm build:umd:uglify:x3"
     },
-    "build:umd:rollup:3x": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/3x/umd.js --file ./dist/umd/3x/umd.js --name ESRGANMedium3x --format umd"
+    "build:umd:rollup:x3": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x3/umd.js --file ./dist/umd/x3/umd.js --name ESRGANMedium3x --format umd"
     },
-    "build:umd:uglify:3x": {
-      "command": "uglifyjs ./dist/umd/3x/umd.js --output ./dist/umd/3x/umd.min.js --compress --mangle --source-map"
+    "build:umd:uglify:x3": {
+      "command": "uglifyjs ./dist/umd/x3/umd.js --output ./dist/umd/x3/umd.min.js --compress --mangle --source-map"
     },
-    "build:umd:4x": {
-      "command": "pnpm build:umd:rollup:4x && pnpm build:umd:uglify:4x"
+    "build:umd:x4": {
+      "command": "pnpm build:umd:rollup:x4 && pnpm build:umd:uglify:x4"
     },
-    "build:umd:rollup:4x": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/4x/umd.js --file ./dist/umd/4x/umd.js --name ESRGANMedium4x --format umd"
+    "build:umd:rollup:x4": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x4/umd.js --file ./dist/umd/x4/umd.js --name ESRGANMedium4x --format umd"
     },
-    "build:umd:uglify:4x": {
-      "command": "uglifyjs ./dist/umd/4x/umd.js --output ./dist/umd/4x/umd.min.js --compress --mangle --source-map"
+    "build:umd:uglify:x4": {
+      "command": "uglifyjs ./dist/umd/x4/umd.js --output ./dist/umd/x4/umd.min.js --compress --mangle --source-map"
     },
-    "build:umd:8x": {
-      "command": "pnpm build:umd:rollup:8x && pnpm build:umd:uglify:8x"
+    "build:umd:x8": {
+      "command": "pnpm build:umd:rollup:x8 && pnpm build:umd:uglify:x8"
     },
-    "build:umd:rollup:8x": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/8x/umd.js --file ./dist/umd/8x/umd.js --name ESRGANMedium8x --format umd"
+    "build:umd:rollup:x8": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x8/umd.js --file ./dist/umd/x8/umd.js --name ESRGANMedium8x --format umd"
     },
-    "build:umd:uglify:8x": {
-      "command": "uglifyjs ./dist/umd/8x/umd.js --output ./dist/umd/8x/umd.min.js --compress --mangle --source-map"
+    "build:umd:uglify:x8": {
+      "command": "uglifyjs ./dist/umd/x8/umd.js --output ./dist/umd/x8/umd.min.js --compress --mangle --source-map"
     }
   }
 }

@@ -1,2 +1,2 @@
-import { default as ESRGANLegacydiv2k/3x, } from './index';
-module.exports = ESRGANLegacydiv2k/3x; // eslint-disable-line
+import { default as ESRGANLegacyDiv2kx3, } from './index';
+module.exports = ESRGANLegacyDiv2kx3; // eslint-disable-line

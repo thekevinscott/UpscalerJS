@@ -8,6 +8,7 @@
   "homepage": "https://github.com/thekevinscott/UpscalerJS",
   "scripts": {
     "build": "wireit",
+    "build:models": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
     "docs:build": "wireit",
@@ -158,6 +159,9 @@
   "wireit": {
     "build": {
       "command": "pnpm --filter=\"upscaler\" build"
+    },
+    "build:models": {
+      "command": "pnpm --filter=\"./models/**\" build"
     },
     "dev:browser": {
       "command": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev"
