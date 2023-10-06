@@ -641,31 +641,6 @@ importers:
         specifier: 3.0.5
         version: 3.0.5
 
-  models/esrgan-experiments:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-    devDependencies:
-      '@tensorflow/tfjs':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@tensorflow/tfjs-node':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
   models/esrgan-legacy:
     dependencies:
       '@upscalerjs/core':
