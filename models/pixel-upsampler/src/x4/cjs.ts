@@ -1,2 +1,2 @@
-import { default as PixelUpsamplerx4, } from './index';
-module.exports = PixelUpsamplerx4; // eslint-disable-line
+import { default as PixelUpsamplerX4, } from './index';
+module.exports = PixelUpsamplerX4; // eslint-disable-line
