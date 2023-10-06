@@ -6,7 +6,6 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
@@ -123,7 +122,6 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipModelBuild,
   forceModelRebuild,
   skipBundle,
   skipTest,
@@ -131,7 +129,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   watch,
 }: {
   browserstackAccessKey?: string;
-  skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   verbose?: boolean;
   skipBundle?: boolean;
@@ -139,20 +136,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipModelBuild !== true) {
-    const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, getOutputFormats(platform), {
-      verbose,
-      forceRebuild: forceModelRebuild,
-    });
-    if (verbose) {
-      console.log([
-        `** built models: ${getOutputFormats(platform)}`,
-        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-      ].join('\n'));
-    }
-  }
-
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     if (dependencies.length === 0) {
@@ -251,7 +234,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  skipModelBuild?: boolean;
   forceModelRebuild?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
@@ -314,7 +296,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
     forceModelRebuild: { type: 'boolean' },

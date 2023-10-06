@@ -146,14 +146,11 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Models'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browserstack -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browserstack -- --ci --verbose  --skip-bundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -174,14 +171,11 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Models'
-        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:integration:browser -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:browser -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:browser -- --ci --verbose  --skip-bundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -202,14 +196,11 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Models'
-        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:integration:node -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:integration:node -- --ci --verbose  --skip-bundle
 
   integration-models-browser:
     name: 'Models / Browser'
@@ -236,14 +227,11 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Build Models'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform browser --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform browser --ci --verbose  --skip-bundle
 
   integration-models-node:
     name: 'Models / Node'
@@ -262,14 +250,11 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Models'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:model -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform node --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:model -- --platform node --ci --verbose  --skip-bundle
 
   memory-leaks:
     name: 'Memory Leaks'
@@ -288,14 +273,11 @@ jobs:
         with:
           gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
-      - name: 'Build Models'
-        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
-
       - name: 'Bundle'
-        run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipModelBuild
+        run: pnpm test:memory-leaks -- --ci --verbose --skip-test 
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks -- --ci --verbose --skipUpscalerBuild --skipModelBuild --skipBundle
+        run: pnpm test:memory-leaks -- --ci --verbose  --skip-bundle
 
   build-docs:
     name: 'Build Documentation'

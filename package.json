@@ -220,20 +220,23 @@
     "test:integration:browserstack": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
       "dependencies": [
-        "./packages/upscalerjs:build:browser"
+        "./packages/upscalerjs:build:browser",
+        "model:build"
       ]
     },
     "test:integration:browser": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
       "dependencies": [
-        "./packages/upscalerjs:build:browser"
+        "./packages/upscalerjs:build:browser",
+        "model:build"
       ]
     },
     "test:integration:node": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
       "dependencies": [
         "./packages/upscalerjs:build:node-gpu",
-        "./packages/upscalerjs:build:node"
+        "./packages/upscalerjs:build:node",
+        "model:build"
       ]
     },
     "test:model": {
@@ -241,13 +244,15 @@
       "dependencies": [
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "./packages/upscalerjs:build:browser"
+        "./packages/upscalerjs:build:browser",
+        "model:build"
       ]
     },
     "test:memory-leaks": {
       "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
       "dependencies": [
-        "./packages/upscalerjs:build:browser"
+        "./packages/upscalerjs:build:browser",
+        "model:build"
       ]
     },
     "test:unit:browser:playwright": {
