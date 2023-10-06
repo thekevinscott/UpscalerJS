@@ -11,7 +11,6 @@ import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
 import asyncPool from "tiny-async-pool";
 import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { promisify } from 'util';
-import buildModels from '../../../scripts/package-scripts/build-model';
 const fastFolderSize = promisify(require('fast-folder-size'));
 
 
