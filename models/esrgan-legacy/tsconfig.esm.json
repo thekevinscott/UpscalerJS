@@ -2,9 +2,9 @@
   "extends": "../tsconfig.esm.json",
   "include": [
     "./src/esm.ts",
-    "./src/div2k/2x/esm.ts",
-    "./src/div2k/3x/esm.ts",
-    "./src/div2k/4x/esm.ts",
+    "./src/div2k/x2/esm.ts",
+    "./src/div2k/x3/esm.ts",
+    "./src/div2k/x4/esm.ts",
     "./src/psnr-small/esm.ts",
     "./src/gans/esm.ts"
   ]
