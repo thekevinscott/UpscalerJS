@@ -167,7 +167,7 @@
       ]
     },
     "build:umd": {
-      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:x2 && pnpm run build:umd:x3 && pnpm run build:umd:x4 && rimraf ./dist/umd-tmp",
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:div2k/x2 && pnpm run build:umd:div2k/x3 && pnpm run build:umd:div2k/x4 && pnpm run build:umd:psnr-small && pnpm run build:umd:gans && rimraf ./dist/umd-tmp",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
