@@ -1,11 +1,11 @@
 {
-  "extends": "../tsconfig.esm.json",
+  "extends": "../tsconfig.index.json",
   "include": [
-    "./src/esm.ts",
-    "./src/div2k/x2/esm.ts",
-    "./src/div2k/x3/esm.ts",
-    "./src/div2k/x4/esm.ts",
-    "./src/psnr-small/esm.ts",
-    "./src/gans/esm.ts"
+    "./src/index.ts",
+    "./src/div2k/x2/index.ts",
+    "./src/div2k/x3/index.ts",
+    "./src/div2k/x4/index.ts",
+    "./src/psnr-small/index.ts",
+    "./src/gans/index.ts"
   ]
 }

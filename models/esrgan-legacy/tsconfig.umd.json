@@ -1,11 +1,11 @@
 {
-  "extends": "../tsconfig.umd.json",
+  "extends": "../tsconfig.index.json",
   "include": [
-    "./src/umd.ts",
-    "./src/div2k/x2/umd.ts",
-    "./src/div2k/x3/umd.ts",
-    "./src/div2k/x4/umd.ts",
-    "./src/psnr-small/umd.ts",
-    "./src/gans/umd.ts"
+    "./src/index.ts",
+    "./src/div2k/x2/index.ts",
+    "./src/div2k/x3/index.ts",
+    "./src/div2k/x4/index.ts",
+    "./src/psnr-small/index.ts",
+    "./src/gans/index.ts"
   ]
 }

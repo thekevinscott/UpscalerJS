@@ -1,5 +1,4 @@
-import * as tf from '@tensorflow/tfjs';
-import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/shared/index';
+import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/browser/esm/index.js';
 
 const model: ModelDefinition = {
   path: './1/model.json',

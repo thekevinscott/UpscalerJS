@@ -7,19 +7,19 @@
   "exports": {
     ".": {
       "require": "./dist/cjs/cjs.js",
-      "import": "./dist/esm/esm.js"
+      "import": "./dist/esm/index.js"
     },
     "./2x": {
       "require": "./dist/cjs/x2/cjs.js",
-      "import": "./dist/esm/x2/esm.js"
+      "import": "./dist/esm/x2/index.js"
     },
     "./3x": {
       "require": "./dist/cjs/x3/cjs.js",
-      "import": "./dist/esm/x3/esm.js"
+      "import": "./dist/esm/x3/index.js"
     },
     "./4x": {
       "require": "./dist/cjs/x4/cjs.js",
-      "import": "./dist/esm/x4/esm.js"
+      "import": "./dist/esm/xsrc/src//4/index.js"
     }
   },
   "scripts": {
@@ -92,11 +92,11 @@
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
-        "tsconfig.esm.json",
+        "tsconfig.index.json",
         "tsconfig.umd.json",
         "tsconfig.json",
         "../tsconfig.cjs.json",
-        "../tsconfig.esm.json",
+        "../tsconfig.index.json",
         "../tsconfig.umd.json",
         "../tsconfig.json"
       ],
@@ -131,16 +131,16 @@
       ]
     },
     "build:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.index.json --outDir ./dist/esm --baseUrl ./src",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
-        "tsconfig.esm.json",
+        "tsconfig.index.json",
         "tsconfig.json",
-        "../tsconfig.esm.json",
+        "../tsconfig.index.json",
         "../tsconfig.json"
       ],
       "output": [
@@ -171,37 +171,37 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/umd.js --file ./dist/umd/umd.js --name PixelUpsampler --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/index.ts --file ./dist/umd/index.ts --name PixelUpsampler --format umd"
     },
     "build:umd:uglify:index": {
-      "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/index.ts --output ./dist/umd/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x2": {
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
     },
     "build:umd:rollup:x2": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x2/umd.js --file ./dist/umd/x2/umd.js --name PixelUpsampler2x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x2/index.ts --file ./dist/umd/x2/index.ts --name PixelUpsampler2x --format umd"
     },
     "build:umd:uglify:x2": {
-      "command": "uglifyjs ./dist/umd/x2/umd.js --output ./dist/umd/x2/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/x2/index.ts --output ./dist/umd/x2/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x3": {
       "command": "pnpm build:umd:rollup:x3 && pnpm build:umd:uglify:x3"
     },
     "build:umd:rollup:x3": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x3/umd.js --file ./dist/umd/x3/umd.js --name PixelUpsampler3x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x3/index.ts --file ./dist/umd/x3/index.ts --name PixelUpsampler3x --format umd"
     },
     "build:umd:uglify:x3": {
-      "command": "uglifyjs ./dist/umd/x3/umd.js --output ./dist/umd/x3/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/x3/index.ts --output ./dist/umd/x3/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x4": {
       "command": "pnpm build:umd:rollup:x4 && pnpm build:umd:uglify:x4"
     },
     "build:umd:rollup:x4": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x4/umd.js --file ./dist/umd/x4/umd.js --name PixelUpsampler4x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x4/index.ts --file ./dist/umd/x4/index.ts --name PixelUpsampler4x --format umd"
     },
     "build:umd:uglify:x4": {
-      "command": "uglifyjs ./dist/umd/x4/umd.js --output ./dist/umd/x4/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/x4/index.ts --output ./dist/umd/x4/umd.min.js --compress --mangle --source-map"
     }
   }
 }

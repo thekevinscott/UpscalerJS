@@ -1,9 +1,9 @@
 {
-  "extends": "../tsconfig.esm.json",
+  "extends": "../tsconfig.index.json",
   "include": [
-    "./src/esm.ts",
-    "./src/x2/esm.ts",
-    "./src/x3/esm.ts",
-    "./src/x4/esm.ts"
+    "./src/index.ts",
+    "./src/x2/index.ts",
+    "./src/x3/index.ts",
+    "./src/x4/index.ts"
   ]
 }

@@ -18,6 +18,7 @@ const loadPackageModel = async (packageName: string, modelName: string) => {
 export const importModel = async (packageName: string, modelName = '.') => {
   const modelSourceFiles = await loadPackageModel(packageName, modelName);
   const importPath = `${getRoot(packageName)}/${modelSourceFiles.import}?ts=${new Date().getTime()}`;
+  console.log(importPath);
   return import(importPath);
 };
 

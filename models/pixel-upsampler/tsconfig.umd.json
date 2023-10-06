@@ -1,9 +1,9 @@
 {
-  "extends": "../tsconfig.umd.json",
+  "extends": "../tsconfig.index.json",
   "include": [
-    "./src/umd.ts",
-    "./src/x2/umd.ts",
-    "./src/x3/umd.ts",
-    "./src/x4/umd.ts"
+    "./src/index.ts",
+    "./src/x2/index.ts",
+    "./src/x3/index.ts",
+    "./src/x4/index.ts"
   ]
 }

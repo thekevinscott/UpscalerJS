@@ -1,6 +1,6 @@
-import Upscaler from '../../../packages/upscalerjs/src/shared/index';
+import Upscaler from '../../../packages/upscalerjs/src/browser/esm/index.js';
 import * as tf from '@tensorflow/tfjs';
-import PixelUpsampler from '../../../models/pixel-upsampler/src/4x';
+import PixelUpsampler from '../../../models/pixel-upsampler/src/x4';
 import GANs from '../../../models/esrgan-legacy/src/gans';
 import './stats';
 import { FPS } from './fps';

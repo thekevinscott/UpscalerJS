@@ -1,9 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
-// import { ModelDefinitionFn, } from '../../../packages/core/src/index';
 import { makeImg } from './image';
 import { AVAILABLE_PACKAGES, loadAvailableModels } from './filters';
-// import Upscaler, { ModelDefinition } from 'upscaler';
-import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/shared/index';
+import Upscaler, { ModelDefinition } from '../../../packages/upscalerjs/src/browser/esm/index.js';
 import { getFixture, getModelPath, getRoot, importModel, loadPackageJSON } from './utils';
 
 const packages = document.getElementById('packages') as HTMLSelectElement;
@@ -47,8 +45,10 @@ models.addEventListener('change', async (e) => {
 const loadModel = async (packageName: string, modelName: string) => {
   console.log(packageName, modelName);
   const importedModel = await importModel(packageName, modelName);
+  console.log(importedModel)
   const modelDefinition = (importedModel).default;
-  const { packageInformation, ...modelJSON }= typeof modelDefinition === 'function' ? modelDefinition(tf) : modelDefinition;
+  console.log(modelDefinition)
+  const { packageInformation, ...modelJSON }= modelDefinition;
 
   const fixture = await getFixture(packageName, modelName);
 
