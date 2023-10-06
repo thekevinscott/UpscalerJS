@@ -53,6 +53,8 @@
     "@internals/common": "workspace:*",
     "@internals/upscaler-cli": "workspace:*",
     "@internals/webdriver": "workspace:*",
+    "@internals/http-server": "workspace:*",
+    "@internals/test-runner": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
@@ -219,6 +221,8 @@
       "dependencies": [
         "./internals/common:build",
         "./internals/webdriver:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser"
       ]
     },
