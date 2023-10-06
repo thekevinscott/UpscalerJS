@@ -179,7 +179,10 @@
       "command": "pnpm --filter=!\"@upscalerjs/docs\" --filter=!\"@upscalerjs/examples.*\" install"
     },
     "postinstall": {
-      "command": "pnpm --filter @upscalerjs/core --filter @upscalerjs/default-model build"
+      "dependencies": [
+        "./packages/core:build",
+        "./models/default-model:build"
+      ]
     },
     "update:dependency": {
       "command": "pnpm --filter @upscalerjs/scripts update:dependency"
@@ -197,7 +200,7 @@
       "command": "pnpm --filter @upscalerjs/scripts example:start"
     },
     "lint": {
-      "command": "pnpm --filter upscaler --filter @upscalerjs/* lint"
+      "command": "pnpm --parallel --filter=!./models/**/dist/** lint"
     },
     "model:build": {
       "command": "pnpm --filter @upscalerjs/scripts model:build"
@@ -226,7 +229,7 @@
       ]
     },
     "test:integration:node": {
-      "command": "echo 1",
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
       "dependencies": [
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node"

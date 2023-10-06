@@ -17,23 +17,10 @@ import {
   Input,
 } from '../node/image.node';
 import { loadModel as _loadModel, } from '../node/loadModel.node';
-// import { tf, } from './dependencies.generated';
-// import { loadModel } from './loadModel.generated';
-// import { getImageAsTensor } from './image.generated';
-// import type * as imageGenerated from './image.generated';
-// import type * as loadModelGenerated from './loadModel.generated';
 import type * as upscale from './upscale';
 import type * as modelUtils from './model-utils';
 import type * as warmup from './warmup';
-import type * as dependenciesGenerated from './dependencies.generated';
 
-// vi.mock('./image.generated', async () => {
-//   const { getImageAsTensor, ...rest } = await vi.importActual('./image.generated') as typeof imageGenerated;
-//   return {
-//     ...rest,
-//     getImageAsTensor: vi.fn(getImageAsTensor),
-//   };
-// });
 vi.mock('./upscale', async () => {
   const { cancellableUpscale, ...rest } = await vi.importActual('./upscale') as typeof upscale;
   return {
@@ -41,13 +28,6 @@ vi.mock('./upscale', async () => {
     cancellableUpscale: vi.fn(cancellableUpscale),
   };
 });
-// vi.mock('./loadModel.generated', async () => {
-//   const { loadModel, ...rest } = await vi.importActual('./loadModel.generated') as typeof loadModelGenerated;
-//   return {
-//     ...rest,
-//     loadModel: vi.fn(loadModel),
-//   };
-// });
 vi.mock('./model-utils', async () => {
   const { getModel, ...rest } = await vi.importActual('./model-utils') as typeof modelUtils;
   return {
@@ -62,12 +42,6 @@ vi.mock('./warmup', async () => {
     cancellableWarmup: vi.fn(cancellableWarmup),
   };
 });
-// vi.mock('./dependencies.generated', async () => {
-//   const dependencies = await vi.importActual('./dependencies.generated') as typeof dependenciesGenerated;
-//   return {
-//     ...dependencies,
-//   };
-// });
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 

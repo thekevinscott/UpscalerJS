@@ -19,21 +19,24 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/cjs/models/default-model/src/index.js",
-      "import": "./dist/esm/models/default-model/src/index.js"
+      "require": "./dist/cjs/models/default-model/src/cjs.js",
+      "import": "./dist/esm/models/default-model/src/esm.js"
     }
   },
+  "module": "dist/esm/models/default-model/src/esm.js",
+  "types": "dist/esm/models/default-model/src/esm.d.ts",
+  "umd:main": "dist/umd/models/default-model/src/umd.js",
   "scripts": {
-    "scaffold:dependencies": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts",
-    "lint:fix": "pnpm lint --fix",
-    "lint": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm validate:build",
-    "validate:build": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model",
-    "build": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist",
-    "build:cjs": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs",
-    "build:esm": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o esm",
-    "build:umd": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o umd",
-    "clean": "ts-node ../../scripts/package-scripts/clean-model.ts default-model"
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "build": "wireit",
+    "build:cjs": "wireit",
+    "build:esm": "wireit",
+    "build:umd": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:rollup": "wireit",
+    "build:umd:uglify": "wireit"
   },
   "files": [
     "assets/**/*",
@@ -44,19 +47,123 @@
   "peerDependencies": {
     "@tensorflow/tfjs": "~4.8.0"
   },
-  "dependencies": {
-    "@upscalerjs/core": "workspace:*"
-  },
   "devDependencies": {
+    "@rollup/plugin-json": "^6.0.0",
+    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-core": "~4.8.0",
     "@tensorflow/tfjs-layers": "~4.8.0",
-    "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "seedrandom": "3.0.5"
   },
   "@upscalerjs": {
     "title": "Default Model",
     "modelFamily": "esrgan"
+  },
+  "wireit": {
+    "lint": {
+      "command": "eslint -c ../.eslintrc.js src --ext .ts"
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "validate:build": {
+      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
+    },
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
+    },
+    "build": {
+      "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
+      "dependencies": [
+        "../../packages/core:build",
+        "scaffold"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.esm.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "build:cjs": {
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json",
+        "../tsconfig.cjs.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
+    },
+    "build:esm": {
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.esm.json",
+        "tsconfig.json",
+        "../tsconfig.esm.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/esm/**"
+      ]
+    },
+    "build:umd": {
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:rollup && pnpm run build:umd:uglify && rimraf ./dist/umd-tmp",
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "!src/**/*.generated.ts",
+        "../../../packages/shared/src/esrgan/**/*.ts",
+        "package.json",
+        "tsconfig.umd.json",
+        "tsconfig.json",
+        "../tsconfig.umd.json",
+        "../tsconfig.json"
+      ],
+      "output": [
+        "dist/umd/**"
+      ]
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:rollup": {
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/default-model/src/index.js --file ./dist/umd/index.js --name DefaultUpscalerJSModel --format umd"
+    },
+    "build:umd:uglify": {
+      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
+    }
   }
 }

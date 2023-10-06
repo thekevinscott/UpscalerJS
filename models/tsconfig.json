@@ -5,6 +5,7 @@
     "strict": true,
     "removeComments": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
     "noUnusedLocals": true,
@@ -14,4 +15,5 @@
     "noFallthroughCasesInSwitch": true,
     "rootDirs": ["./src", "../../../packages/shared/src"],
   },
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
