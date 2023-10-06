@@ -20,12 +20,12 @@
   "exports": {
     ".": {
       "require": "./dist/cjs/models/default-model/src/cjs.js",
-      "import": "./dist/esm/models/default-model/src/esm.js"
+      "import": "./dist/esm/models/default-model/src/index.js"
     }
   },
-  "module": "dist/esm/models/default-model/src/esm.js",
-  "types": "dist/esm/models/default-model/src/esm.d.ts",
-  "umd:main": "dist/umd/models/default-model/src/umd.js",
+  "module": "dist/esm/models/default-model/src/index.js",
+  "types": "dist/esm/models/default-model/src/index.d.ts",
+  "umd:main": "dist/umd/models/default-model/src/index.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",

@@ -261,7 +261,7 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(typeof rate).toEqual('number');
-      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/slice-patchsize-12-padding-2.png"), 'diff.png');
+      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/slice-patchsize-12-padding-2.png"), 'diff.png');
     });
 
     test.each([

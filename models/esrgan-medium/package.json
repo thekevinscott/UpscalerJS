@@ -39,6 +39,9 @@
       "import": "./dist/esm/models/esrgan-medium/src/x8/index.js"
     }
   },
+  "module": "dist/esm/models/esrgan-medium/src/index.js",
+  "types": "dist/esm/models/esrgan-medium/src/index.d.ts",
+  "umd:main": "dist/umd/models/esrgan-medium/src/index.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
@@ -124,11 +127,11 @@
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
-        "tsconfig.index.json",
+        "tsconfig.esm.json",
         "tsconfig.umd.json",
         "tsconfig.json",
         "../tsconfig.cjs.json",
-        "../tsconfig.index.json",
+        "../tsconfig.esm.json",
         "../tsconfig.umd.json",
         "../tsconfig.json"
       ],
@@ -154,16 +157,16 @@
       ]
     },
     "build:esm": {
-      "command": "tsc -p ./tsconfig.index.json --outDir ./dist/esm --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
         "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
-        "tsconfig.index.json",
+        "tsconfig.esm.json",
         "tsconfig.json",
-        "../tsconfig.index.json",
+        "../tsconfig.esm.json",
         "../tsconfig.json"
       ],
       "output": [
@@ -171,7 +174,7 @@
       ]
     },
     "build:umd": {
-      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:x2 && pnpm run build:umd:x3 && pnpm run build:umd:x4 && rimraf ./dist/umd-tmp",
+      "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:x2 && pnpm run build:umd:x3 && pnpm run build:umd:x4 && pnpm run build:umd:x8 && rimraf ./dist/umd-tmp",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -206,46 +209,46 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/index.ts --file ./dist/umd/index.ts --name ESRGANMedium --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/index.js --file ./dist/umd/index.js --name ESRGANMedium --format umd"
     },
     "build:umd:uglify:index": {
-      "command": "uglifyjs ./dist/umd/index.ts --output ./dist/umd/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x2": {
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
     },
     "build:umd:rollup:x2": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x2/index.ts --file ./dist/umd/x2/index.ts --name ESRGANMedium2x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x2/index.js --file ./dist/umd/2x.js --name ESRGANMedium2x --format umd"
     },
     "build:umd:uglify:x2": {
-      "command": "uglifyjs ./dist/umd/x2/index.ts --output ./dist/umd/x2/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/2x.js --output ./dist/umd/2x.min.js --compress --mangle --source-map"
     },
     "build:umd:x3": {
       "command": "pnpm build:umd:rollup:x3 && pnpm build:umd:uglify:x3"
     },
     "build:umd:rollup:x3": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x3/index.ts --file ./dist/umd/x3/index.ts --name ESRGANMedium3x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x3/index.js --file ./dist/umd/3x.js --name ESRGANMedium3x --format umd"
     },
     "build:umd:uglify:x3": {
-      "command": "uglifyjs ./dist/umd/x3/index.ts --output ./dist/umd/x3/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/3x.js --output ./dist/umd/3x.min.js --compress --mangle --source-map"
     },
     "build:umd:x4": {
       "command": "pnpm build:umd:rollup:x4 && pnpm build:umd:uglify:x4"
     },
     "build:umd:rollup:x4": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x4/index.ts --file ./dist/umd/x4/index.ts --name ESRGANMedium4x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x4/index.js --file ./dist/umd/4x.js --name ESRGANMedium4x --format umd"
     },
     "build:umd:uglify:x4": {
-      "command": "uglifyjs ./dist/umd/x4/index.ts --output ./dist/umd/x4/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/4x.js --output ./dist/umd/4x.min.js --compress --mangle --source-map"
     },
     "build:umd:x8": {
       "command": "pnpm build:umd:rollup:x8 && pnpm build:umd:uglify:x8"
     },
     "build:umd:rollup:x8": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x8/index.ts --file ./dist/umd/x8/index.ts --name ESRGANMedium8x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-medium/src/x8/index.js --file ./dist/umd/8x.js --name ESRGANMedium8x --format umd"
     },
     "build:umd:uglify:x8": {
-      "command": "uglifyjs ./dist/umd/x8/index.ts --output ./dist/umd/x8/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/8x.js --output ./dist/umd/8x.min.js --compress --mangle --source-map"
     }
   }
 }

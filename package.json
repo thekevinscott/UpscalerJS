@@ -9,6 +9,9 @@
   "scripts": {
     "build": "wireit",
     "build:models": "wireit",
+    "build:models:esm": "wireit",
+    "build:models:umd": "wireit",
+    "build:models:cjs": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
     "docs:build": "wireit",
@@ -22,7 +25,6 @@
     "commit-latest-version-changes": "wireit",
     "example:start": "wireit",
     "lint": "wireit",
-    "model:build": "wireit",
     "model:write-docs": "wireit",
     "update:npm:dependencies": "wireit",
     "test:start-test-server": "wireit",
@@ -91,6 +93,7 @@
     "eslint-plugin-prefer-arrow": "1.2.3",
     "fast-folder-size": "2.2.0",
     "fs-extra": "11.1.1",
+    "glob": "^10.3.3",
     "heapdump": "0.3.15",
     "html-webpack-plugin": "5.5.3",
     "inquirer": "9.2.10",
@@ -163,6 +166,15 @@
     "build:models": {
       "command": "pnpm --filter=\"./models/**\" build"
     },
+    "build:models:esm": {
+      "command": "pnpm --filter=\"./models/**\" build:esm"
+    },
+    "build:models:umd": {
+      "command": "pnpm --filter=\"./models/**\" build:umd"
+    },
+    "build:models:cjs": {
+      "command": "pnpm --filter=\"./models/**\" build:cjs"
+    },
     "dev:browser": {
       "command": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev"
     },
@@ -205,9 +217,6 @@
     "lint": {
       "command": "pnpm --parallel --filter=!./models/**/dist/** lint"
     },
-    "model:build": {
-      "command": "pnpm --filter @upscalerjs/scripts model:build"
-    },
     "model:write-docs": {
       "command": "pnpm --filter @upscalerjs/scripts model:write-docs"
     },
@@ -221,14 +230,15 @@
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
       "dependencies": [
         "./packages/upscalerjs:build:browser",
-        "model:build"
+        "build:models:esm"
       ]
     },
     "test:integration:browser": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
       "dependencies": [
         "./packages/upscalerjs:build:browser",
-        "model:build"
+        "build:models:esm",
+        "build:models:umd"
       ]
     },
     "test:integration:node": {
@@ -236,7 +246,7 @@
       "dependencies": [
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "model:build"
+        "build:models:cjs"
       ]
     },
     "test:model": {
@@ -245,14 +255,14 @@
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "./packages/upscalerjs:build:browser",
-        "model:build"
+        "build:models"
       ]
     },
     "test:memory-leaks": {
       "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
       "dependencies": [
         "./packages/upscalerjs:build:browser",
-        "model:build"
+        "build:models:esm"
       ]
     },
     "test:unit:browser:playwright": {

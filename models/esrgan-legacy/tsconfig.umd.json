@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig.index.json",
+  "extends": "../tsconfig.esm.json",
   "include": [
     "./src/index.ts",
     "./src/div2k/x2/index.ts",
