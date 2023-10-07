@@ -33,7 +33,7 @@ const draw = async (t: tf.Tensor3D, scale: number) => {
   canvas.height = t.size[0] * scale;
   const imageContainer = document.createElement('div');
   const h3 = document.createElement('h3');
-  h3.innerHTML = `${scale}x`;
+  h3.innerHTML = `x${scale}`;
   imageContainer.className = 'image';
   imageContainer.appendChild(h3);
   imageContainer.appendChild(canvas);
@@ -53,7 +53,7 @@ const generatePixelUpsampler = async () => {
       const prediction = predict(model, input);
       draw(prediction.div(255), scale);
     });
-    model.save(`downloads://${scale}x`);
+    model.save(`downloads://x${scale}`);
   }
 };
 

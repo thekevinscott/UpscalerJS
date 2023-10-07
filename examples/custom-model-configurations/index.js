@@ -43,7 +43,7 @@ const setup = (tf) => {
         return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
       }
 
-      static className = `PixelShuffle${scale}x`;
+      static className = `PixelShufflex${scale}`;
     }
 
     return PixelShuffle;

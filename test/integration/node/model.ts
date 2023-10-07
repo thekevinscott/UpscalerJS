@@ -27,7 +27,7 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
   if (scale < 2 || scale > 4) {
     throw new Error('Scale must be between 2 and 4');
   }
-  const weightsPath = path.resolve(MODELS_DIR, `pixel-upsampler/models/${scale}x/${scale}x.bin`);
+  const weightsPath = path.resolve(MODELS_DIR, `pixel-upsampler/models/x${scale}/x${scale}.bin`);
   const weightsName = 'weights.bin';
   const modelJSON = {
     "modelTopology": {

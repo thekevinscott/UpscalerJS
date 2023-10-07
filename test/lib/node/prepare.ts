@@ -51,7 +51,7 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
         callback: async ({ moduleFolder }) => {
           const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
           await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
-          console.log(`successfully built upscaler in ${moduleFolder} for node`);
+          console.log(`successful local install of upscaler in ${moduleFolder} for node`);
         },
       },
       ...getAllAvailableModelPackages().map((packageName): DependencyDefinition => {
@@ -66,7 +66,7 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
           callback: async ({ moduleFolder }) => {
             const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
             await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
-            console.log(`successfully built ${packageName} in ${moduleFolder} for node`);
+            console.log(`successful local install of ${packageName} in ${moduleFolder} for node`);
           },
         };
       }),

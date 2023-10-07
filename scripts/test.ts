@@ -122,14 +122,12 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  forceModelRebuild,
   skipBundle,
   skipTest,
   useGPU,
   watch,
 }: {
   browserstackAccessKey?: string;
-  forceModelRebuild?: boolean;
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
@@ -234,7 +232,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  forceModelRebuild?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
@@ -298,7 +295,6 @@ const getArgs = async (): Promise<Args> => {
     platform: { type: 'string' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
-    forceModelRebuild: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },
@@ -322,7 +318,6 @@ const getArgs = async (): Promise<Args> => {
     kind,
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
-    forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
   }
 };
 
