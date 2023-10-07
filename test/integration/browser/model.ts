@@ -63,7 +63,7 @@ describe('Model Loading Integration Tests', () => {
   it("can import a specific model", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['4x'],
+        model: window['pixel-upsampler']['x4'],
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
@@ -102,7 +102,7 @@ describe('Model Loading Integration Tests', () => {
     const startingPixels = [-100,-100,-100,0,0,0,255,255,255,1000,1000,1000];
     const predictedPixels: number[] = await page().evaluate((startingPixels) => {
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['2x'],
+        model: window['pixel-upsampler']['x2'],
       });
       const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {

@@ -55,7 +55,7 @@ describe('CDN Integration Tests', () => {
     try {
       await page.evaluate(() => {
         const upscaler = new window['Upscaler']({
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
         });
         return upscaler.getModel();
       });

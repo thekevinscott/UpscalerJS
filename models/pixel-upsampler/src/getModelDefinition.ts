@@ -7,7 +7,7 @@ const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
   _internals: {
     name: NAME,
     version: VERSION,
-    path: `models/x${scale}/${scale}x.json`,
+    path: `models/x${scale}/x${scale}.json`,
   },
   meta: {
     dataset: null,
