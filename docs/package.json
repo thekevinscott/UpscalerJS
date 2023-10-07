@@ -96,7 +96,10 @@
   },
   "wireit": {
     "build:dependencies": {
-      "command": "pnpm --filter @upscalerjs/scripts model:build -a -o cjs -o esm -o umd && pnpm --filter upscaler build"
+      "command": "pnpm --filter upscaler build",
+      "dependencies": [
+        "../models/esrgan-medium:build"
+      ]
     },
     "build-api": {
       "command": "pnpm --filter @upscalerjs/scripts docs:build-api"
