@@ -9,6 +9,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: 'Prereqs'
+      shell: bash
+      run: pip install -U pyopenssl cryptography
+
     - name: 'Setup DVC'
       shell: bash
       run: pip install dvc[s3] dvc[gdrive]
