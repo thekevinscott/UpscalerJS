@@ -56,7 +56,7 @@ describe('Upscale Integration Tests', () => {
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   describe('Cancel', () => {
@@ -212,7 +212,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate(() => {
         return window['upscaler'].execute(window['fixtures']['pixel-upsampler']);
       });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 

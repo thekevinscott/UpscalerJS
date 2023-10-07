@@ -80,7 +80,7 @@ describe('Browser Integration Tests', () => {
       });
       await printLogs(driver, capabilities);
 
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 });

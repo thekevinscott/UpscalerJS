@@ -144,7 +144,7 @@ describe('Node Model Loading Integration Tests', () => {
       });
       expect(result).not.toEqual('');
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
