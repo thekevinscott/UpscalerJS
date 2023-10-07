@@ -47,7 +47,7 @@ describe('Node Platforms Integration Tests', () => {
     },
     globals: {
       model: JSON.stringify({
-        path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/4x/4x.json'),
+        path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/x4/4x.json'),
         scale: 4,
       }),
     },

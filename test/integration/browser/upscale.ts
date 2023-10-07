@@ -49,7 +49,7 @@ describe('Upscale Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/models/pixel-upsampler/models/4x/4x.json',
+          path: '/models/pixel-upsampler/models/x4/4x.json',
           scale: 4,
           modelType: 'layers',
         },
@@ -66,7 +66,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/4x.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -121,7 +121,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/4x.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -181,7 +181,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         window['upscaler'] = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/4x.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -221,7 +221,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/4x.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -245,7 +245,7 @@ describe('Upscale Integration Tests', () => {
       const [rate, slice] = await page().evaluate((): Promise<[number, string]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/4x.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -307,7 +307,7 @@ describe('Upscale Integration Tests', () => {
         const updates = await page().evaluate(({ patchSize, padding }): Promise<[number, number[]][]> => new Promise(resolve => {
           const upscaler = new window['Upscaler']({
             model: {
-              path: '/models/pixel-upsampler/models/2x/2x.json',
+              path: '/models/pixel-upsampler/models/x2/2x.json',
               scale: 2,
               modelType: 'layers',
             },
@@ -332,7 +332,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/2x/2x.json',
+            path: '/models/pixel-upsampler/models/x2/2x.json',
             scale: 2,
             modelType: 'layers',
           },

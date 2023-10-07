@@ -120,7 +120,7 @@ describe('CDN Integration Tests', () => {
     if (!isError(err)) {
       throw new Error('No error returned');
     }
-    expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/4x/4x.json'))
+    expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/x4/4x.json'))
     expect(requests).not.toEqual(expect.arrayContaining([expect.stringContaining(CDNS[0].name)]));
     expect(requests).not.toEqual(expect.arrayContaining([expect.stringContaining(CDNS[1].name)]));
   });
