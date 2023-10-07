@@ -56,6 +56,7 @@ describe('Browser Integration Tests', () => {
     port: PORT,
     // verbose: VERBOSE,
     log: LOG,
+    useTunnel: true,
   });
 
   beforeAll(async function browserBeforeAll() {
