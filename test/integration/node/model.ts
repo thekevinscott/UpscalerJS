@@ -136,7 +136,7 @@ describe('Node Model Loading Integration Tests', () => {
         },
         globals: {
           model: JSON.stringify({
-            path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/x4/4x.json'),
+            path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/x4/x4.json'),
             scale: 4,
           }),
           imagePath: JSON.stringify(fixturePath),

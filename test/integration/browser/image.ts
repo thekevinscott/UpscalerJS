@@ -53,7 +53,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -67,7 +67,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -85,7 +85,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -105,7 +105,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -125,7 +125,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate((pixels) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -141,7 +141,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -163,7 +163,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -179,7 +179,7 @@ describe('Image Format Integration Tests', () => {
       const errMessage = await page().evaluate(() => new Promise((resolve, reject) => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -201,7 +201,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/x4/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },

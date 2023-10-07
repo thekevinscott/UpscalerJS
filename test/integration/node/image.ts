@@ -6,7 +6,7 @@ import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
-const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/4x.json');
+const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/x4.json');
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');

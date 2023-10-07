@@ -74,7 +74,7 @@ describe('Model Loading Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/models/pixel-upsampler/models/x4/4x.json',
+          path: '/models/pixel-upsampler/models/x4/x4.json',
           scale: 4,
           modelType: 'layers',
         },
@@ -88,7 +88,7 @@ describe('Model Loading Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: `${window.location.origin}/models/pixel-upsampler/models/x4/4x.json`,
+          path: `${window.location.origin}/models/pixel-upsampler/models/x4/x4.json`,
           scale: 4,
           modelType: 'layers',
         },
