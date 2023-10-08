@@ -4,23 +4,23 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/node/cjs/index.d.ts",
-      "require": "./dist/node/node/cjs/index.js"
+      "types": "./dist/node/upscalerjs/src/node/cjs/index.d.ts",
+      "require": "./dist/node/upscalerjs/src/node/cjs/index.js"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/node-gpu/cjs/index.d.ts",
-      "require": "./dist/node-gpu/node-gpu/cjs/index.js"
+      "types": "./dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.d.ts",
+      "require": "./dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.js"
     },
     ".": {
-      "types": "./dist/browser/esm/browser/esm/index.d.ts",
-      "import": "./dist/browser/esm/browser/esm/index.js"
+      "types": "./dist/browser/esm/upscalerjs/src/browser/esm/index.d.ts",
+      "import": "./dist/browser/esm/upscalerjs/src/browser/esm/index.js"
     }
   },
   "engines": {
     "node": ">=16.0"
   },
-  "module": "dist/browser/esm/browser/esm/index.js",
-  "types": "dist/browser/esm/browser/esm/index.d.ts",
+  "module": "dist/browser/esm/upscalerjs/src/browser/esm/index.js",
+  "types": "dist/browser/esm/upscalerjs/src/browser/esm/index.d.ts",
   "umd:main": "dist/browser/umd/upscaler.min.js",
   "keywords": [
     "image enhancement",
@@ -116,7 +116,7 @@
       "command": "tsc -p ./tsconfig.browser.umd.json --outDir ./dist/browser/tmp"
     },
     "build:browser:umd:rollup": {
-      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/tmp/browser/umd/index.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
+      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/tmp/upscalerjs/src/browser/umd/index.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
     },
     "build:browser:umd:uglify": {
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
@@ -183,7 +183,7 @@
       "command": "vitest --config vite.node.ts"
     },
     "validate:build": {
-      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/node/cjs/cjs.js' -c './dist/node/node/cjs/cjs.d.ts' -c './dist/node-gpu/node-gpu/cjs/cjs.js' -c './dist/node-gpu/node-gpu/cjs/cjs.d.ts' -c './dist/browser/esm/browser/esm/index.js' -c './dist/browser/esm/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
+      "command": "pnpm --filter @upscalerjs/scripts validate:build packages/upscalerjs -c './dist/node/upscalerjs/src/node/cjs/index.js' -c './dist/node/upscalerjs/src/node/cjs/index.d.ts' -c './dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.js' -c './dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.d.ts' -c './dist/browser/esm/upscalerjs/src/browser/esm/index.js' -c './dist/browser/esm/upscalerjs/src/browser/esm/index.d.ts' -c './dist/browser/umd/upscaler.js' -c './dist/browser/umd/upscaler.min.js'"
     }
   },
   "scripts": {

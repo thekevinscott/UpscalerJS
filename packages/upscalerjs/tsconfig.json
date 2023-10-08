@@ -6,7 +6,6 @@
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "rootDir": "./src",
     "baseUrl": "./src",
     "skipLibCheck": true,
     "strict": true,
@@ -18,7 +17,8 @@
     "removeComments": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "rootDirs": ["./src", "../shared/src"],
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
