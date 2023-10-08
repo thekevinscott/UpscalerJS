@@ -221,7 +221,7 @@ describe('Memory Leaks', () => {
     checkMemory(names, startingMemory, endingMemory);
   });
 
-  it.only('should create an Upscaler instance and warm up', async () => {
+  it('should create an Upscaler instance and warm up', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);
 
     await testRunner.page.evaluate(async (times) => {
