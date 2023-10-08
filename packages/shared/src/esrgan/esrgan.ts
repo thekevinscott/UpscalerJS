@@ -88,7 +88,7 @@ export const getESRGANModelDefinition = ({
           return tf.depthToSpace(getInput(inputs), this.scale, 'NHWC');
         }
 
-        static className = `PixelShufflex${scale}`;
+        static className = `PixelShuffle${scale}x`;
       }
 
       return PixelShuffle;
