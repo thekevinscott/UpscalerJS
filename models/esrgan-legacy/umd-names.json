@@ -1,7 +1,7 @@
 {
-  "./div2k/2x": "ESRGANLegacyDiv2KX2",
-  "./div2k/3x": "ESRGANLegacyDiv2KX3",
-  "./div2k/4x": "ESRGANLegacyDiv2KX4",
+  "./div2k/2x": "ESRGANLegacyDiv2kX2",
+  "./div2k/3x": "ESRGANLegacyDiv2kX3",
+  "./div2k/4x": "ESRGANLegacyDiv2kX4",
   "./psnr-small": "ESRGANLegacyPSNRSmall",
   "./gans": "ESRGANLegacyGANS"
 }

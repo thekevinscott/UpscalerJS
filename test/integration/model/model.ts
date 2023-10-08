@@ -25,7 +25,7 @@ const JEST_TIMEOUT = 60 * 1000 * 15 * 2;
 jest.setTimeout(JEST_TIMEOUT);
 jest.retryTimes(0);
 
-const SPECIFIC_PACKAGE: string | undefined = undefined;
+const SPECIFIC_PACKAGE: string | undefined = 'esrgan-legacy';
 const SPECIFIC_MODEL: string | undefined = undefined;
 
 if (PLATFORMS === undefined || PLATFORMS.length === 0) {
@@ -103,7 +103,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
           });
         });
 
-        describe('UMD', () => {
+        describe.only('UMD', () => {
           const UMD_PORT = 8096;
           const umdTestRunner = new BrowserTestRunner({
             name: 'umd',
@@ -133,8 +133,12 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
+              console.log(modelName, packageName, umdTestRunner.serverURL)
               const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
                 const model = window[modelName] as unknown as ModelDefinition;
+                if (!model) {
+                  throw new Error(`No model for ${modelName}`);
+                }
                 const upscaler = new window['Upscaler']({
                   model,
                 });
