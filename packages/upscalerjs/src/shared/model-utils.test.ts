@@ -12,7 +12,7 @@ import {
   warn,
 } from './utils';
 import * as isLayersModel from './isLayersModel';
-import type { 
+import { 
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
   ModelDefinition,
   ModelDefinitionFn,
