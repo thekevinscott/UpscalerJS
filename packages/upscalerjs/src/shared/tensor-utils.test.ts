@@ -14,13 +14,13 @@ import {
 import {
   isValidRange,
   isFixedShape4D,
- } from '@upscalerjs/core';
+ } from '../../../shared/src/constants';
 import {
   GET_INVALID_SHAPED_TENSOR,
   GET_UNDEFINED_TENSORS_ERROR,
 } from './errors-and-warnings.js';
 
-import type * as core from '@upscalerjs/core';
+import type * as sharedConstants from '../../../shared/src/constants';
 
 vi.mock('@tensorflow/tfjs-node', async () => {
   const tf = await vi.importActual('@tensorflow/tfjs-node') as typeof tfn;
@@ -32,8 +32,8 @@ vi.mock('@tensorflow/tfjs-node', async () => {
   };
 });
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isTensor, isValidRange, isFixedShape4D, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isTensor, isValidRange, isFixedShape4D, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isTensor: vi.fn().mockImplementation(isTensor),
