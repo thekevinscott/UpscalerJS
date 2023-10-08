@@ -12,17 +12,20 @@ import {
 } from './errors-and-warnings';
 
 import {
+  isShape4D, 
+  isFixedShape4D,
+} from '../../../shared/src/constants';
+import type {
   ModelDefinition,
   ModelDefinitionFn,
   ModelDefinitionObjectOrFn,
-  isShape4D, 
   Shape4D, 
   ModelType,
-  isFixedShape4D,
   FixedShape4D, 
   TF,
   GraphModel,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
+
 import type {
   ModelPackage,
   ParsedModelDefinition,
