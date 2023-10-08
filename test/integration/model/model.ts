@@ -16,7 +16,7 @@ import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 
 const TRACK_TIME = false;
 const LOG = true;
-const VERBOSE = true;
+const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
@@ -113,11 +113,13 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             verbose: VERBOSE,
           });
 
+
           beforeAll(async function modelBeforeAll() {
             await umdTestRunner.beforeAll();
           }, 20000);
 
           afterAll(async function modelAfterAll() {
+            await new Promise((resolve) => setTimeout(resolve, 10000 * 6));
             await umdTestRunner.afterAll();
           }, 30000);
 
@@ -131,6 +133,8 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
+              console.log(umdTestRunner.serverURL)
+              console.log(modelName, packageName)
               const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
                 const model = window[modelName] as unknown as ModelDefinition;
                 const upscaler = new window['Upscaler']({
