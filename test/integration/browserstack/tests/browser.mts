@@ -92,7 +92,10 @@ describe('Browser Integration Tests', () => {
         throw new Error('No model found for pixel upsampler');
       }
       const upscaler = new Upscaler({
-        model,
+        model: {
+          ...model,
+          path: '/models/pixel-upsampler/models/x4/x4.json',
+        }
       });
       const data = upscaler.execute(fixturePath);
       document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
