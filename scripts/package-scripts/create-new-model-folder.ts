@@ -78,7 +78,6 @@ const createNpmIgnore = (): string => [
   'test',
   'demo',
   'DOC.mdx',
-  'models.dvc',
 ].join('\n');
 
 const createGitIgnore = () => [
