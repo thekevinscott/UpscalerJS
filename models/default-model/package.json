@@ -25,7 +25,7 @@
   },
   "module": "dist/esm/models/default-model/src/index.js",
   "types": "dist/esm/models/default-model/src/index.d.ts",
-  "umd:main": "dist/umd/models/default-model/src/index.min.js",
+  "umd:main": "dist/umd/index.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
@@ -90,7 +90,7 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
+        "../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
         "tsconfig.esm.json",
@@ -111,7 +111,7 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
+        "../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
         "tsconfig.json",
@@ -119,7 +119,7 @@
         "../tsconfig.json"
       ],
       "output": [
-        "dist/esm/**"
+        "dist/cjs/**"
       ]
     },
     "build:esm": {
@@ -128,7 +128,7 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
+        "../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.esm.json",
         "tsconfig.json",
@@ -145,7 +145,7 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
+        "../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.umd.json",
         "tsconfig.json",

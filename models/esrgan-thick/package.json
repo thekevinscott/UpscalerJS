@@ -41,7 +41,7 @@
   },
   "module": "dist/esm/models/esrgan-thick/src/index.js",
   "types": "dist/esm/models/esrgan-thick/src/index.d.ts",
-  "umd:main": "dist/umd/models/esrgan-thick/src/index.min.js",
+  "umd:main": "dist/umd/index.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
@@ -213,7 +213,7 @@
       "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-thick/src/index.js --file ./dist/umd/index.js --name ESRGANThick --format umd"
     },
     "build:umd:uglify:index": {
-      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
     },
     "build:umd:x2": {
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
