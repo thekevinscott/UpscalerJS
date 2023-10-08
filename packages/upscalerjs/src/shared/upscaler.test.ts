@@ -5,7 +5,7 @@ import { getModel } from './model-utils';
 import { cancellableWarmup } from './warmup';
 import { cancellableUpscale } from './upscale';
 import { WarmupSizes } from './types';
-import { ModelDefinition } from '@upscalerjs/core';
+import type { ModelDefinition } from '../../../shared/src/types';
 import * as _tf from '@tensorflow/tfjs-node';
 import * as tfn from '@tensorflow/tfjs-node';
 
