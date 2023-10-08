@@ -6,7 +6,7 @@ import { ModelPackage, NumericWarmupSizes, WarmupSizesByPatchSize } from './type
 import { 
   AbortError,
 } from './errors-and-warnings';
-import { PostProcess, PreProcess } from '@upscalerjs/core';
+import { PostProcess, PreProcess } from '../../../shared/src/types';
 
 const getFakeModel = () => {
   const predict = vi.fn(() => {

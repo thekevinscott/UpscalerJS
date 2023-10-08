@@ -1,8 +1,8 @@
 import fs from 'fs';
 import type { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
-import { TFN, } from '@upscalerjs/core';
+import type { TFN, } from '../../../shared/src/types';
 import { tensorAsClampedArray, } from '../shared/tensor-utils';
-import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '@upscalerjs/core';
+import { isFourDimensionalTensor, isThreeDimensionalTensor, isTensor, isString, hasValidChannels, } from '../../../shared/src/constants';
 import { CheckValidEnvironment, GetImageAsTensor, TensorAsBase64, } from '../shared/types';
 
 export const getInvalidTensorError = (input: Tensor): Error => new Error(

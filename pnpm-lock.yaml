@@ -802,15 +802,9 @@ importers:
       '@tensorflow/tfjs-core':
         specifier: ~4.8.0
         version: 4.8.0
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../core
 
   packages/upscalerjs:
     dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../core
       '@upscalerjs/default-model':
         specifier: workspace:*
         version: link:../../models/default-model

@@ -1,6 +1,6 @@
 import { makeTick, } from './makeTick';
 import type { Tensor4D, } from '@tensorflow/tfjs-core';
-import type { TF, } from '@upscalerjs/core';
+import type { TF, } from '../../../shared/src/types';
 import type { ModelPackage, NumericWarmupSizes, WarmupArgs, WarmupSizes, WarmupSizesByPatchSize, YieldedIntermediaryValue, } from './types';
 import { processAndDisposeOfTensor, wrapGenerator, } from './utils';
 

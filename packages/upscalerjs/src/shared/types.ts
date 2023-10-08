@@ -1,7 +1,7 @@
 import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { LayersModel, layers, } from '@tensorflow/tfjs-layers';
-import type { TF, GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
-export type { ProcessFn, } from '@upscalerjs/core';
+import type { TF, GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '../../../shared/src/types';
+export type { ProcessFn, } from '../../../shared/src/types';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
