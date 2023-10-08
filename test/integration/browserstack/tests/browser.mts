@@ -99,7 +99,7 @@ describe('Browser Integration Tests', () => {
       return data;
     }, { fixturePath, });
     await printLogs(driver, capabilities);
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     // driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
     // const ROOT_URL = testRunner.serverURL;
     // console.log('test1', ROOT_URL)
