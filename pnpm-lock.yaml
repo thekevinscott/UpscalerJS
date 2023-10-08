@@ -645,10 +645,6 @@ importers:
         version: 3.0.5
 
   models/esrgan-legacy:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -673,10 +669,6 @@ importers:
         version: 0.14.0
 
   models/esrgan-medium:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -701,10 +693,6 @@ importers:
         version: 0.14.0
 
   models/esrgan-slim:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -729,10 +717,6 @@ importers:
         version: 0.14.0
 
   models/esrgan-thick:
-    dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -757,16 +741,6 @@ importers:
         version: 0.14.0
 
   models/pixel-upsampler:
-    dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-      '@tensorflow/tfjs-layers':
-        specifier: ~4.8.0
-        version: 4.8.0(@tensorflow/tfjs-core@4.8.0)
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../../packages/core
     devDependencies:
       '@tensorflow/tfjs':
         specifier: 4.8.0
@@ -850,9 +824,6 @@ importers:
       '@types/glob':
         specifier: ^8.1.0
         version: 8.1.0
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../packages/core
       '@upscalerjs/default-model':
         specifier: workspace:*
         version: link:../models/default-model

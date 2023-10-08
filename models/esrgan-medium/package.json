@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/esrgan-medium",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.12",
   "description": "ESRGAN Medium Model for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
   "keywords": [
     "image enhancement",
@@ -77,9 +77,6 @@
   ],
   "peerDependencies": {
     "@tensorflow/tfjs": "~4.8.0"
-  },
-  "dependencies": {
-    "@upscalerjs/core": "workspace:*"
   },
   "devDependencies": {
     "@tensorflow/tfjs-core": "~4.8.0",
