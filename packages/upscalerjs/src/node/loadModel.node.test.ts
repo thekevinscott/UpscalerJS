@@ -7,7 +7,10 @@ import {
 import { vi } from 'vitest';
 import path from 'path';
 import { resolver, } from './resolver';
-import type { ModelDefinition } from "@upscalerjs/core";
+import {
+  ModelDefinition,
+  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+} from "../../../shared/src/types";
 import * as tf from '@tensorflow/tfjs-node';
 import {
   ERROR_MODEL_DEFINITION_BUG,
@@ -18,10 +21,9 @@ import {
 import {
   isValidModelDefinition,
   ModelDefinitionValidationError,
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-} from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 
-import type * as core from '@upscalerjs/core';
+import type * as sharedConstants from '../../../shared/src/constants';
 import type * as modelUtils from '../shared/model-utils';
 import type * as errorsAndWarnings from '../shared/errors-and-warnings';
 import type * as resolverModule from './resolver';
@@ -42,8 +44,8 @@ vi.mock('../shared/errors-and-warnings', async () => {
   }
 });
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isValidModelDefinition, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isValidModelDefinition, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isValidModelDefinition: vi.fn(isValidModelDefinition),
