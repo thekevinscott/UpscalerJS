@@ -4,7 +4,7 @@ import { NAME, VERSION, } from './constants.generated';
 
 const getModelDefinition = (scale: Scale, modelFileName: string): ModelDefinition => getESRGANModelDefinition({
   scale,
-  path: `models/${scale}x/model.json`,
+  path: `models/x${scale}/model.json`,
   name: NAME,
   version: VERSION,
   meta: {

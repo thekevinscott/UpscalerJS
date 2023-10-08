@@ -70,7 +70,7 @@ describe('Browser Integration Tests', () => {
 
       const result = await executeAsyncScript(driver, () => {
         const upscaler = new window['Upscaler']({
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
         });
         const data = upscaler.execute(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
@@ -80,7 +80,7 @@ describe('Browser Integration Tests', () => {
       });
       await printLogs(driver, capabilities);
 
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 });

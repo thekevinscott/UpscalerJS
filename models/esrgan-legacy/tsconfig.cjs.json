@@ -1,15 +1,11 @@
 {
   "extends": "../tsconfig.cjs.json",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist/cjs",
-  },
   "include": [
-    "./src/index.ts",
-    "./src/psnr-small.ts",
-    "./src/gans.ts",
-    "./src/div2k/2x.ts",
-    "./src/div2k/3x.ts",
-    "./src/div2k/4x.ts",
+    "./src/cjs.ts",
+    "./src/div2k/x2/cjs.ts",
+    "./src/div2k/x3/cjs.ts",
+    "./src/div2k/x4/cjs.ts",
+    "./src/psnr-small/cjs.ts",
+    "./src/gans/cjs.ts"
   ]
 }

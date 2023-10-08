@@ -30,7 +30,7 @@ export class Image extends Model {
   }
   static getLrPath(filePath: string, scale: number, cropSize?: number) {
     const cropKey = Image.getCropKey(cropSize);
-    return Image.makePath(filePath, 'cropped', cropKey, `${scale}x`);
+    return Image.makePath(filePath, 'cropped', cropKey, `x${scale}`);
   }
   static async crop(cacheDir: string, { width, height, cachedPath, filePath }: { width: number; height: number; cachedPath: string; filePath: string; }, cropWidth: number, cropHeight: number, scale: number, cropSize?: number) {
     const cropKey = Image.getCropKey(cropSize);
