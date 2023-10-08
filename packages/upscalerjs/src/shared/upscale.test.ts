@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs-node';
-import { vi } from 'vitest';
+import { vi, it } from 'vitest';
 import {
   getPercentageComplete,
   processPixels,
@@ -17,15 +17,16 @@ import {
   wrapGenerator,
   warn,
 } from './utils';
-import {
+import type {
   ModelDefinition,
+} from '../../../shared/src/types';
+import {
   isFourDimensionalTensor,
   isTensor,
-} from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 import { ModelPackage, MultiArgStringProgress, } from './types';
 
-import type * as imageGenerated from './image.generated';
-import type * as core from '@upscalerjs/core';
+import type * as sharedConstants from '../../../shared/src/constants';
 import type * as utils from './utils';
 
 vi.mock('./utils', async () => {
@@ -36,8 +37,8 @@ vi.mock('./utils', async () => {
   };
 });
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isFourDimensionalTensor, isTensor, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isFourDimensionalTensor, isTensor, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isTensor: vi.fn(isTensor),

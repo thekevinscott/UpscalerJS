@@ -9,18 +9,16 @@ import {
   getInvalidImageSrcInput,
 } from './image.node';
 import * as tf from '@tensorflow/tfjs-node';
-import {
-  hasValidChannels,
-} from '@upscalerjs/core'
+import { hasValidChannels, } from '../../../shared/src/constants';
 
-import type * as core from '@upscalerjs/core';
+import type * as sharedConstants from '../../../shared/src/constants';
 import type * as fs from 'fs';
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-vi.mock('@upscalerjs/core', async () => {
-  const { hasValidChannels, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { hasValidChannels, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return { 
     ...rest,
     hasValidChannels: vi.fn(hasValidChannels),

@@ -12,7 +12,7 @@ import {
 import {
   ModelDefinition,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
 import {
   ERROR_INVALID_MODEL_TYPE,
   ERROR_MODEL_DEFINITION_BUG, 

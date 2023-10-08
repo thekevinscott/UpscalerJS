@@ -808,9 +808,6 @@ importers:
 
   packages/upscalerjs:
     dependencies:
-      '@upscalerjs/core':
-        specifier: workspace:*
-        version: link:../core
       '@upscalerjs/default-model':
         specifier: workspace:*
         version: link:../../models/default-model

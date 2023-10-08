@@ -27,12 +27,14 @@ import {
   concatTensors,
   getCopyOfInput,
 } from './tensor-utils';
+import type {
+  FixedShape4D,
+  TF,
+} from '../../../shared/src/types';
 import {
   isTensor,
   isFourDimensionalTensor,
-  FixedShape4D,
-  TF,
- } from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 import { makeTick, } from './makeTick';
 import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
 import {

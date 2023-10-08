@@ -1,7 +1,7 @@
 import {
   ModelDefinition,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-} from "@upscalerjs/core";
+} from "../../../shared/src/types";
 
 const WARNING_DEPRECATED_MODEL_DEFINITION_URL =
   'https://upscalerjs.com/documentation/troubleshooting#deprecated-model-definition-function';

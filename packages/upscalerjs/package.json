@@ -47,10 +47,6 @@
   "wireit": {
     "build": {
       "command": "pnpm build:node-gpu && pnpm build:node && pnpm build:browser",
-      "dependencies": [
-        "../core:build",
-        "../../models/default-model:build"
-      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -84,6 +80,9 @@
     },
     "build:browser:esm": {
       "command": "tsc -p ./tsconfig.browser.esm.json --outDir ./dist/browser/esm",
+      "dependencies": [
+        "../../models/default-model:build"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
@@ -99,6 +98,9 @@
     },
     "build:browser:umd": {
       "command": "pnpm build:browser:umd:tsc && pnpm build:browser:umd:rollup && pnpm build:browser:umd:uglify && rimraf ./dist/browser/tmp",
+      "dependencies": [
+        "../../models/default-model:build"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/browser/**/*.ts",
@@ -123,6 +125,9 @@
     },
     "build:node": {
       "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node",
+      "dependencies": [
+        "../../models/default-model:build"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/node/**/*.ts",
@@ -138,6 +143,9 @@
     },
     "build:node-gpu": {
       "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist/node-gpu",
+      "dependencies": [
+        "../../models/default-model:build"
+      ],
       "files": [
         "src/shared/**/*.ts",
         "src/node/**/*.ts",
@@ -222,7 +230,6 @@
     "@tensorflow/tfjs": "~4.8.0"
   },
   "dependencies": {
-    "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "wireit": "^0.14.0"
   },

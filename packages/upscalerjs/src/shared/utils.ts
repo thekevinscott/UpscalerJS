@@ -3,10 +3,10 @@ import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress,
 import type {
   ProcessFn,
   TF,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
 import {
   ModelDefinitionValidationError,
-} from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 
 export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
