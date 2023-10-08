@@ -14,10 +14,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
@@ -153,11 +153,6 @@ jobs:
         with:
           node-version: 16
 
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
       - name: 'Build Models'
         run: pnpm test:integration:browserstack -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -208,11 +203,6 @@ jobs:
         with:
           node-version: 16
 
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
       - name: 'Build Models'
         run: pnpm test:integration:node -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -238,11 +228,6 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: 16
-
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -272,11 +257,6 @@ jobs:
         with:
           node-version: 16
 
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
-
       - name: 'Build Models'
         run: pnpm test:model -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
 
@@ -299,11 +279,6 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: 16
-
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Build Models'
         run: pnpm test:memory-leaks -- --ci --verbose --skipTest --skipUpscalerBuild --skipBundle
@@ -332,11 +307,6 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
-
-      # - name: 'Setup DVC & Pull Models'
-      #   uses: ./.github/actions/setup-dvc
-      #   with:
-      #     gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Install dependencies'
         run: pnpm install
