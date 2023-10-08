@@ -55,14 +55,14 @@ describe('Build Integration Tests', () => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/models/pixel-upsampler/models/4x/4x.json',
+          path: '/models/pixel-upsampler/models/x4/x4.json',
           scale: 4,
           modelType: 'layers',
         },
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("upscales using a UMD build with a specified model", async () => {
@@ -75,7 +75,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("upscales using an ESM build using Webpack", async () => {
@@ -84,14 +84,14 @@ describe('Build Integration Tests', () => {
       const Upscaler = window['Upscaler'];
       const upscaler = new Upscaler({
         model: {
-          path: '/models/pixel-upsampler/models/4x/4x.json',
+          path: '/models/pixel-upsampler/models/x4/x4.json',
           scale: 4,
           modelType: 'layers',
         },
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 });
 

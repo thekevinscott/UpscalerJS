@@ -2,16 +2,16 @@ import { vi, expect, } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
 import { 
   isTensor,
-} from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 import { 
   AbortError,
 } from './errors-and-warnings.js';
 import { makeTick } from './makeTick.js';
 
-import type * as core from '@upscalerjs/core';
+import type * as sharedConstants from '../../../shared/src/constants';
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isTensor, ...rest} = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isTensor, ...rest} = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isTensor: vi.fn(isTensor),

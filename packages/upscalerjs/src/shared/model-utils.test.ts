@@ -12,13 +12,15 @@ import {
   warn,
 } from './utils';
 import * as isLayersModel from './isLayersModel';
-import type * as core from '@upscalerjs/core';
 import { 
-  isShape4D,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
   ModelDefinition,
   ModelDefinitionFn,
- } from '@upscalerjs/core';
+ } from '../../../shared/src/types';
+import type * as sharedConstants from '../../../shared/src/constants';
+import { 
+  isShape4D,
+ } from '../../../shared/src/constants';
 import { ModelPackage } from './types';
 import {
   ERROR_INVALID_MODEL_TYPE,
@@ -62,8 +64,8 @@ vi.mock('./utils', async () => {
   };
 });
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isValidRange, isFixedShape4D, isShape4D, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isValidRange, isFixedShape4D, isShape4D, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isShape4D: vi.fn().mockImplementation(isShape4D),

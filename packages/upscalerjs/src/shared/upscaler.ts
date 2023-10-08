@@ -30,7 +30,7 @@ import type {
 } from './types';
 import { cancellableWarmup, } from './warmup';
 import { cancellableUpscale, } from './upscale';
-import type { TF, ModelDefinitionObjectOrFn, } from '@upscalerjs/core';
+import type { TF, ModelDefinitionObjectOrFn, } from '../../../shared/src/types';
 import { getModel, } from './model-utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?

@@ -53,21 +53,21 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
         });
         return upscaler.execute(window['fixtures']['pixel-upsampler']);
       });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image", async () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -78,14 +78,14 @@ describe('Image Format Integration Tests', () => {
           upscaler.execute(img).then(resolve);
         }
       }), []);
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image from the page", async () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -98,14 +98,14 @@ describe('Image Format Integration Tests', () => {
           upscaler.execute(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
       }));
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from an HTML image", async () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -118,14 +118,14 @@ describe('Image Format Integration Tests', () => {
           upscaler.execute(tensor).then(resolve);
         }
       }));
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
       const result = await page().evaluate((pixels) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -134,14 +134,14 @@ describe('Image Format Integration Tests', () => {
         const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.execute(tensor).then(resolve);
       }), flowerPixels);
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a rank 4 tensor", async () => {
       const result = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -154,7 +154,7 @@ describe('Image Format Integration Tests', () => {
           upscaler.execute(<tf.Tensor4D>tensor).then(resolve);
         }
       }));
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a base64 png path", async () => {
@@ -163,14 +163,14 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
         });
         return upscaler.execute(src);
       }, originalImage);
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
@@ -179,7 +179,7 @@ describe('Image Format Integration Tests', () => {
       const errMessage = await page().evaluate(() => new Promise((resolve, reject) => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -201,7 +201,7 @@ describe('Image Format Integration Tests', () => {
       const result = await page().evaluate(() => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -211,7 +211,7 @@ describe('Image Format Integration Tests', () => {
           padding: 2,
         });
       });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 });

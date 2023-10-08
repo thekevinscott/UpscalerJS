@@ -6,7 +6,6 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
@@ -141,36 +140,18 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipModelBuild,
-  forceModelRebuild,
   skipBundle,
   skipTest,
   useGPU,
   watch,
 }: {
   browserstackAccessKey?: string;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipModelBuild !== true) {
-    const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, getOutputFormats(platform), {
-      verbose,
-      forceRebuild: forceModelRebuild,
-    });
-    if (verbose) {
-      console.log([
-        `** built models: ${getOutputFormats(platform)}`,
-        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-      ].join('\n'));
-    }
-  }
-
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     const durations: number[] = [];
@@ -266,8 +247,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
@@ -329,10 +308,8 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
-    forceModelRebuild: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },
@@ -356,7 +333,6 @@ const getArgs = async (): Promise<Args> => {
     kind,
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
-    forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
   }
 };
 

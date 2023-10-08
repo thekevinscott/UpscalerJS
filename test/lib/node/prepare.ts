@@ -51,14 +51,14 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
         callback: async ({ moduleFolder }) => {
           const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
           await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
-          console.log(`successfully built upscaler in ${moduleFolder} for node`);
+          console.log(`successful local install of upscaler in ${moduleFolder} for node`);
         },
       },
       ...getAllAvailableModelPackages().map((packageName): DependencyDefinition => {
         const modelsFolder = path.resolve(MODELS_DIR, packageName, 'models');
         const modelFiles = fs.readdirSync(modelsFolder);
         if (modelFiles.length === 0) {
-          throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${packageName}?`);
+          throw new Error(`No model files found in folder ${modelsFolder}. Did you enable Git LFS for ${packageName}?`);
         }
         return {
           src: path.resolve(MODELS_DIR, packageName),
@@ -66,7 +66,7 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
           callback: async ({ moduleFolder }) => {
             const expectedFiles = extractAllFilesFromPackageJSON(moduleFolder).filter(file => file.includes('node'));
             await validateBuild(moduleFolder, expectedFiles, { includeFilesFromPackageJSON: false });
-            console.log(`successfully built ${packageName} in ${moduleFolder} for node`);
+            console.log(`successful local install of ${packageName} in ${moduleFolder} for node`);
           },
         };
       }),

@@ -164,6 +164,9 @@ importers:
       fs-extra:
         specifier: 11.1.1
         version: 11.1.1
+      glob:
+        specifier: ^10.3.3
+        version: 10.3.3
       heapdump:
         specifier: 0.3.15
         version: 0.3.15
@@ -758,6 +761,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-medium:
     dependencies:
@@ -783,6 +789,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-slim:
     dependencies:
@@ -808,6 +817,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/esrgan-thick:
     dependencies:
@@ -833,6 +845,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   models/pixel-upsampler:
     dependencies:
@@ -858,6 +873,9 @@ importers:
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   packages/core:
     dependencies:

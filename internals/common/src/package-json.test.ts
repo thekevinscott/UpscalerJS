@@ -57,8 +57,8 @@ describe('package-json', () => {
       const mockReadFile = () => Promise.resolve(JSON.stringify({
         "exports": {
           "./2x": {
-            "require": "./dist/cjs/models/esrgan-thick/src/2x.js",
-            "import": "./dist/esm/models/esrgan-thick/src/2x.js"
+            "require": "./dist/cjs/models/esrgan-thick/src/x2.js",
+            "import": "./dist/esm/models/esrgan-thick/src/x2.js"
           },
           ".": {
             "require": "./dist/cjs/models/esrgan-thick/src/index.js",
@@ -71,8 +71,8 @@ describe('package-json', () => {
 
       expect(await getPackageJSONExports('foo')).toEqual([
         ['./2x', {
-          "require": "./dist/cjs/models/esrgan-thick/src/2x.js",
-          "import": "./dist/esm/models/esrgan-thick/src/2x.js"
+          "require": "./dist/cjs/models/esrgan-thick/src/x2.js",
+          "import": "./dist/esm/models/esrgan-thick/src/x2.js"
         }],
       ]);
     });

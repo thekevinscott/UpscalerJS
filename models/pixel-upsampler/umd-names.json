@@ -1,5 +1,5 @@
 {
-  "./2x": "PixelUpsampler2x",
-  "./3x": "PixelUpsampler3x",
-  "./4x": "PixelUpsampler4x"
+  "./x2": "PixelUpsampler2x",
+  "./x3": "PixelUpsampler3x",
+  "./x4": "PixelUpsampler4x"
 }

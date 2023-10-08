@@ -1,15 +1,17 @@
 import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
-import { 
-  Range, 
-  Shape4D, 
+import {
   isValidRange, 
   isThreeDimensionalTensor,
   isFourDimensionalTensor,
   isFixedShape4D,
-  FixedShape4D,
   isTensor,
+} from '../../../shared/src/constants';
+import type {
+  Range, 
+  Shape4D, 
+  FixedShape4D,
   TF,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
 import {
   GET_INVALID_SHAPED_TENSOR,
   GET_UNDEFINED_TENSORS_ERROR,

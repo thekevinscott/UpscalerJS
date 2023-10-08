@@ -16,15 +16,17 @@ import {
   getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
 } from '../shared/errors-and-warnings';
-
 import {
   ModelDefinition,
-  isValidModelDefinition,
-  ModelDefinitionValidationError,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
 
-import type * as core from '@upscalerjs/core';
+import {
+  ModelDefinitionValidationError,
+  isValidModelDefinition,
+} from '../../../shared/src/constants';
+
+import type * as sharedConstants from '../../../shared/src/constants';
 import type * as modelUtils from '../shared/model-utils';
 import type * as errorsAndWarnings from '../shared/errors-and-warnings';
 import type * as loadModelBrowser from './loadModel.browser';
@@ -52,8 +54,8 @@ vi.mock('../shared/errors-and-warnings', async () => {
   }
 });
 
-vi.mock('@upscalerjs/core', async () => {
-  const { isValidModelDefinition, ...rest } = await vi.importActual('@upscalerjs/core') as typeof core;
+vi.mock('../../../shared/src/constants', async () => {
+  const { isValidModelDefinition, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
   return {
     ...rest,
     isValidModelDefinition: vi.fn(isValidModelDefinition),

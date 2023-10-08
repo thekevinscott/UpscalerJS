@@ -33,7 +33,7 @@ export const getESRGANModelDefinition = ({
   meta: Meta;
   path?: string;
 }): ModelDefinition => {
-  const path = modelPath || `models/${scale}x/model.json`;
+  const path = modelPath || `models/x${scale}/model.json`;
   if (architecture === 'rdn') {
     return {
       scale,
@@ -89,6 +89,7 @@ export const getESRGANModelDefinition = ({
         }
 
         static className = `PixelShuffle${scale}x`;
+
       }
 
       return PixelShuffle;

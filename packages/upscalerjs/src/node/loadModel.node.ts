@@ -4,8 +4,10 @@ import { resolver, } from './resolver';
 import { ParsedModelDefinition, LoadModel, } from '../shared/types';
 import {
   isValidModelDefinition,
+} from '../../../shared/src/constants';
+import type {
   TF,
-} from '@upscalerjs/core';
+} from '../../../shared/src/types';
 import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,

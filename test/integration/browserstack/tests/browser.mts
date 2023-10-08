@@ -3,7 +3,7 @@
  */
 import path from 'path';
 import Upscaler from 'upscaler';
-import { test, } from 'vitest';
+import { test, describe, } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../../lib/esm-esbuild/prepare.js';
 import { executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
@@ -87,8 +87,12 @@ describe('Browser Integration Tests', () => {
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const result = await executeAsyncScript(driver, ({ fixturePath }) => {
       const Upscaler = window['Upscaler'] as any;
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found for pixel upsampler');
+      }
       const upscaler = new Upscaler({
-        model: window['@upscalerjs/pixel-upsampler/4x']
+        model,
       });
       const data = upscaler.execute(fixturePath);
       document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;

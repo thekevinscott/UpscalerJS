@@ -9,10 +9,12 @@ import {
   ERROR_MODEL_DEFINITION_BUG,
   getModelDefinitionError,
 } from '../shared/errors-and-warnings';
-import {
+import type {
   TF,
+} from '../../../shared/src/types';
+import {
   isValidModelDefinition,
-} from '@upscalerjs/core';
+} from '../../../shared/src/constants';
 import {
   errIsModelDefinitionValidationError,
 } from '../shared/utils';
