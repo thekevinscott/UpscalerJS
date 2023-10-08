@@ -58,7 +58,7 @@ export const prepareScriptBundleForNodeCJS: Bundle<BundleOpts> = async ({
         const modelsFolder = path.resolve(MODELS_DIR, packageName, 'models');
         const modelFiles = fs.readdirSync(modelsFolder);
         if (modelFiles.length === 0) {
-          throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${packageName}?`);
+          throw new Error(`No model files found in folder ${modelsFolder}. Did you enable Git LFS for ${packageName}?`);
         }
         return {
           src: path.resolve(MODELS_DIR, packageName),

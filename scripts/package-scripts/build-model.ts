@@ -216,7 +216,7 @@ const buildModel = async (
     const modelsFolder = path.resolve(MODELS_DIR, model, 'models');
     const modelFiles = fs.readdirSync(modelsFolder);
     if (modelFiles.length === 0) {
-      throw new Error(`No model files found in folder ${modelsFolder}. Did you call dvc pull for ${model}?`);
+      throw new Error(`No model files found in folder ${modelsFolder}. Did you enable Git LFS for ${model}?`);
     }
   }
   if (opts.verbose) {
