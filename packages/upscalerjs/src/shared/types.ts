@@ -1,6 +1,7 @@
 import type { Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
 import type { LayersModel, layers, } from '@tensorflow/tfjs-layers';
 import type { TF, GraphModel, ModelDefinitionObjectOrFn, ModelDefinition, } from '@upscalerjs/core';
+export type { ProcessFn, } from '@upscalerjs/core';
 
 export type WarmupSizesByPatchSize = {
   patchSize: number;
@@ -109,7 +110,6 @@ export type Patch = {
   post: PatchCoordinates;
 };
 
-export type { ProcessFn, } from '@upscalerjs/core';
 export interface Internals<T extends TF, Input> extends InternalConfig<T, Input> {
   tf: T;
   getUpscaleOptions: GetUpscaleOptions;
