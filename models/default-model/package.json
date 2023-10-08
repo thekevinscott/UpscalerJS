@@ -1,6 +1,6 @@
 {
   "name": "@upscalerjs/default-model",
-  "version": "1.0.0-beta.15",
+  "version": "1.0.0-beta.16",
   "description": "ESRGAN Default Model for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
   "keywords": [
     "image enhancement",
