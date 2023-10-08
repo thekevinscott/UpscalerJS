@@ -89,6 +89,7 @@ export const getESRGANModelDefinition = ({
         }
 
         static className = `PixelShuffle${scale}x`;
+
       }
 
       return PixelShuffle;

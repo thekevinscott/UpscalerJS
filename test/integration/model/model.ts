@@ -179,7 +179,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               output: 'tensor',
               patchSize: usePatchSize ? 64 : undefined,
               padding: 6,
-              progress: console.log,
+              // progress: console.log,
             });
             tensor.dispose();
             // because we are requesting a tensor, it is possible that the tensor will
