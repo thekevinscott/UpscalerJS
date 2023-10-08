@@ -2,7 +2,7 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
