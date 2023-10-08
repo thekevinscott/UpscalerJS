@@ -70,7 +70,7 @@ describe('Browser Integration Tests', () => {
 
       const result = await executeAsyncScript(driver, () => {
         const upscaler = new window['Upscaler']({
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
         });
         const data = upscaler.execute(window['fixtures']['pixel-upsampler']);
         document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;

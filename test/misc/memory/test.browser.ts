@@ -228,7 +228,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           warmupSizes: [10],
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
         });
         await upscaler.dispose();
       }
@@ -248,7 +248,7 @@ describe('Memory Leaks', () => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
         });
         await upscaler.dispose();
       }
@@ -269,7 +269,7 @@ describe('Memory Leaks', () => {
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-          model: window['pixel-upsampler']['4x'],
+          model: window['pixel-upsampler']['x4'],
           });
           image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
@@ -295,7 +295,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...window['pixel-upsampler']['x4'],
               preprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -323,7 +323,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...window['pixel-upsampler']['x4'],
               postprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -351,7 +351,7 @@ describe('Memory Leaks', () => {
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...window['pixel-upsampler']['x4'],
               preprocess: (image) => tf.mul(image, 1),
               postprocess: (image) => tf.mul(image, 1),
             }
@@ -380,7 +380,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -421,7 +421,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -451,7 +451,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -505,7 +505,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
           },
         });
         await upscaler.execute(window['fixtures']['pixel-upsampler'], {
@@ -537,7 +537,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
           },
         });
         await upscaler.execute(window['fixtures']['pixel-upsampler'], {
@@ -577,7 +577,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
           },
         });
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
@@ -604,7 +604,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
           },
         });
         try {
@@ -639,7 +639,7 @@ describe('Memory Leaks', () => {
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...window['pixel-upsampler']['x4'],
           },
         });
         try {
