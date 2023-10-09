@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { getLogLevel, verbose } from './logger.js';
+import { info } from 'console';
 
 const parseCommand = (_command: string | string[]) => {
   const command = Array.isArray(_command) ? _command : _command.split(' ');
@@ -9,10 +10,10 @@ const parseCommand = (_command: string | string[]) => {
   return command;
 };
 
-export const runNPMCommand = (
+export const runPackageCommand = (
   command: string | string[],
   cwd: string,
-  runner: 'npm' | 'pnpm' = 'npm',
+  runner: 'npm' | 'pnpm',
 ) => new Promise<void>((resolve, reject) => {
   const child = spawn(runner, parseCommand(command), {
     shell: true,
@@ -52,8 +53,7 @@ export const npmInstall = async (cwd: string, {
     registryURL ? `--registry ${registryURL}` : '',
   ].filter(Boolean);
   verbose(`${command.join(' ')} in ${cwd}`);
-  await runNPMCommand(command, cwd);
-
+  await runPackageCommand(command, cwd, 'npm');
 };
 
 export const pnpmInstall = async (cwd: string, _opts = {}) => {
@@ -71,11 +71,11 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     // registryURL ? `--registry ${registryURL}` : '',
   ].filter(Boolean);
   verbose(`${command.join(' ')} in ${cwd}`);
-  await runNPMCommand(command, cwd);
+  await runPackageCommand(command, cwd, 'pnpm');
 
 };
 
 export const runPNPMCommand = (
-  command: Parameters<typeof runNPMCommand>[0],
-  cwd: Parameters<typeof runNPMCommand>[1]
-) => runNPMCommand(command, cwd, 'pnpm');
+  command: Parameters<typeof runPackageCommand>[0],
+  cwd: Parameters<typeof runPackageCommand>[1]
+) => runPackageCommand(command, cwd, 'pnpm');

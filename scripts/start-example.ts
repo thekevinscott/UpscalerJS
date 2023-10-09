@@ -7,7 +7,6 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
-import { Platform } from './package-scripts/prompt/types';
 import { EXAMPLES_DIR } from './package-scripts/utils/constants';
 
 /****
