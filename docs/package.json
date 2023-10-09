@@ -58,6 +58,7 @@
     "upscaler": "workspace:*"
   },
   "devDependencies": {
+    "@internals/common": "workspace:*",
     "@algolia/client-search": "^4.19.1",
     "@docusaurus/module-type-aliases": "^2.4.1",
     "@docusaurus/types": "^2.4.1",
@@ -102,7 +103,10 @@
       ]
     },
     "build-api": {
-      "command": "pnpm --filter @upscalerjs/scripts docs:build-api"
+      "command": "pnpm --filter @upscalerjs/scripts docs:build-api",
+      "dependencies": [
+        "../internals/common:build"
+      ]
     },
     "build-api:watch": {
       "command": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\""

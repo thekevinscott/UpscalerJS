@@ -2,7 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import path from 'path';
 import sequelize from './sequelize';
 import { readFileSync } from "fs-extra";
-import { Meta, ModelDefinition } from "@upscalerjs/core";
+import type { Meta, ModelDefinition } from "upscaler";
 import { Package } from "./Package";
 import _Upscaler from 'upscaler';
 import { TF } from "./types";
@@ -13,7 +13,7 @@ export class UpscalerModel extends Model {
   // a name is the key defined in the exports object in package.json. It is _not_ the name of the package
   declare name: string;
   declare scale: number;
-  declare meta: any;
+  declare meta: Meta;
   declare packageId?: number;
 
   _upscaler?: _Upscaler;

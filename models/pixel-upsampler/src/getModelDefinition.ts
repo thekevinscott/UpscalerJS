@@ -1,4 +1,4 @@
-import { ModelDefinition, } from '@upscalerjs/core';
+import type { ModelDefinition, } from '../../../packages/shared/src/types';
 import { NAME, VERSION, } from './constants.generated';
 
 const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({

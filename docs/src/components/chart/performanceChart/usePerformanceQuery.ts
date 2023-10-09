@@ -1,4 +1,4 @@
-import type { Meta } from '@upscalerjs/core';
+import type { Meta } from '@upscaler';
 import { arrayQuery, useDatabase } from '@site/src/utils/sqljs';
 import { useCallback, useEffect, useState } from 'react';
 import { OnChangeOpts } from '../modelFilter/modelFilter';

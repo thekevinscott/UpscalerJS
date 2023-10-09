@@ -1,4 +1,4 @@
-import { ModelDefinition, } from '@upscalerjs/core';
+import type { ModelDefinition, } from '../../../../../packages/shared/src/types';
 import getModelDefinition from '../../getModelDefinition';
 
 const SCALE = 2;

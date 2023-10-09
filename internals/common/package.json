@@ -1,7 +1,6 @@
 {
   "name": "@internals/common",
   "private": true,
-  "type": "module",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
@@ -26,7 +25,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0",
+    "chalk": "^4.1.2",
     "ejs": "^3.1.9",
     "fs-extra": "latest",
     "get-port": "^7.0.0",

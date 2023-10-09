@@ -1,25 +1,25 @@
 {
   "name": "@upscalerjs/pixel-upsampler",
-  "version": "1.0.0-beta.11",
+  "version": "1.0.0-beta.12",
   "description": "Pixel Upsampler Model for UpscalerJS",
   "author": "Kevin Scott",
   "license": "MIT",
   "exports": {
     ".": {
-      "require": "./dist/cjs/cjs.js",
-      "import": "./dist/esm/index.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/index.js"
     },
     "./x2": {
-      "require": "./dist/cjs/x2/cjs.js",
-      "import": "./dist/esm/x2/index.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/x2/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/x2/index.js"
     },
     "./x3": {
-      "require": "./dist/cjs/x3/cjs.js",
-      "import": "./dist/esm/x3/index.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/x3/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/x3/index.js"
     },
     "./x4": {
-      "require": "./dist/cjs/x4/cjs.js",
-      "import": "./dist/esm/x4/index.js"
+      "require": "./dist/cjs/models/pixel-upsampler/src/x4/cjs.js",
+      "import": "./dist/esm/models/pixel-upsampler/src/x4/index.js"
     }
   },
   "scripts": {
@@ -54,11 +54,6 @@
   "peerDependencies": {
     "@tensorflow/tfjs": "~4.8.0"
   },
-  "dependencies": {
-    "@tensorflow/tfjs-core": "~4.8.0",
-    "@tensorflow/tfjs-layers": "~4.8.0",
-    "@upscalerjs/core": "workspace:*"
-  },
   "devDependencies": {
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
@@ -85,7 +80,6 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
         "tsconfig.esm.json",
@@ -119,7 +113,6 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.cjs.json",
         "tsconfig.json",
@@ -140,7 +133,6 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.esm.json",
         "tsconfig.json",
@@ -161,7 +153,6 @@
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
-        "../../../packages/shared/src/esrgan/**/*.ts",
         "package.json",
         "tsconfig.umd.json",
         "tsconfig.json",
@@ -179,7 +170,7 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/index.js --file ./dist/umd.js --name PixelUpsampler --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/index.js --file ./dist/umd.js --name PixelUpsampler --format umd"
     },
     "build:umd:uglify:index": {
       "command": "uglifyjs ./dist/umd.js --output ./dist/umd.min.js --compress --mangle --source-map"
@@ -188,7 +179,7 @@
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
     },
     "build:umd:rollup:x2": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x2/index.js --file ./dist/umd/x2.js --name PixelUpsampler2x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/x2/index.js --file ./dist/umd/x2.js --name PixelUpsampler2x --format umd"
     },
     "build:umd:uglify:x2": {
       "command": "uglifyjs ./dist/umd/x2.js --output ./dist/umd/x2.min.js --compress --mangle --source-map"
@@ -197,7 +188,7 @@
       "command": "pnpm build:umd:rollup:x3 && pnpm build:umd:uglify:x3"
     },
     "build:umd:rollup:x3": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x3/index.js --file ./dist/umd/x3.js --name PixelUpsampler3x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/x3/index.js --file ./dist/umd/x3.js --name PixelUpsampler3x --format umd"
     },
     "build:umd:uglify:x3": {
       "command": "uglifyjs ./dist/umd/x3.js --output ./dist/umd/x3.min.js --compress --mangle --source-map"
@@ -206,7 +197,7 @@
       "command": "pnpm build:umd:rollup:x4 && pnpm build:umd:uglify:x4"
     },
     "build:umd:rollup:x4": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/x4/index.js --file ./dist/umd/x4.js --name PixelUpsampler4x --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/x4/index.js --file ./dist/umd/x4.js --name PixelUpsampler4x --format umd"
     },
     "build:umd:uglify:x4": {
       "command": "uglifyjs ./dist/umd/x4.js --output ./dist/umd/x4.min.js --compress --mangle --source-map"
