@@ -7,9 +7,9 @@ import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/cons
 import {
   MultiArgTensorProgress,
 } from '../../../packages/upscalerjs/src/shared/types';
-import {
+import type {
   ModelDefinition,
-} from '../../../packages/core/src';
+} from '../../../packages/shared/src/types';
 import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,

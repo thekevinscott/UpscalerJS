@@ -1,7 +1,6 @@
-import path from 'path';
 import inquirer from 'inquirer';
 import isValidVersion from './utils/isValidVersion';
-import { AVAILABLE_PACKAGES, CORE, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
+import { AVAILABLE_PACKAGES, DIRECTORIES, EXAMPLES, getPackageJSON, getPackageJSONPath, getPreparedFolderName, Package, PackageUpdaterLogger, ROOT, TransformPackageJsonFn, updateMultiplePackages, updateSinglePackage, UPSCALER_JS, WRAPPER } from './utils/packages';
 import { ROOT_DIR } from './utils/constants';
 
 /****
@@ -28,11 +27,9 @@ const getVersion = (dir: string) => {
 const getCurrentVersions = () => {
   const upscalerJSVersion = getVersion(DIRECTORIES[UPSCALER_JS].directory);
   const rootVersion = getVersion(DIRECTORIES[ROOT].directory);
-  const coreVersion = getVersion(DIRECTORIES[CORE].directory);
   return [
     `root: ${rootVersion}`,
     `upscaler: ${upscalerJSVersion}`,
-    `core: ${coreVersion}`,
   ].join(' | ');
 };
 

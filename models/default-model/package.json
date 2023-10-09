@@ -83,7 +83,6 @@
     "build": {
       "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
       "dependencies": [
-        "../../packages/core:build",
         "scaffold"
       ],
       "files": [
