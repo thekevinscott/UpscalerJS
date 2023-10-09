@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { vi } from 'vitest';
 import { rimraf } from 'rimraf';
-import { isLogLevel, log, parseMessage, setLogLevel, logTypes } from './logger.js';
+import { isLogLevel, log, parseMessage, setLogLevel, logTypes } from './logger.mjs';
 import * as mockProcess from 'vitest-mock-process';
 
 vi.mock('rimraf', async () => {

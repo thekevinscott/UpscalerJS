@@ -55,6 +55,9 @@
     "@babel/preset-typescript": "7.22.5",
     "@internals/common": "workspace:*",
     "@internals/upscaler-cli": "workspace:*",
+    "@internals/webdriver": "workspace:*",
+    "@internals/http-server": "workspace:*",
+    "@internals/test-runner": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
@@ -122,7 +125,7 @@
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
     "vite": "4.4.9",
-    "vitest": "^0.34.2",
+    "vitest": "^0.34.5",
     "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
@@ -229,6 +232,10 @@
     "test:integration:browserstack": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
       "dependencies": [
+        "./internals/common:build",
+        "./internals/webdriver:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm"
       ]
