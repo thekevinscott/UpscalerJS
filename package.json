@@ -198,7 +198,6 @@
     },
     "postinstall": {
       "dependencies": [
-        "./packages/core:build",
         "./models/default-model:build"
       ]
     },
