@@ -31,6 +31,11 @@
     "get-port": "^7.0.0",
     "wireit": "^0.14.0"
   },
+  "devDependencies": {
+    "@types/ejs": "^3.1.2",
+    "vitest": "^0.34.5",
+    "vitest-mock-process": "^1.0.4"
+  },
   "wireit": {
     "build": {
       "command": "tsc -p ./tsconfig.json",
@@ -55,10 +60,5 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "devDependencies": {
-    "@types/ejs": "^3.1.2",
-    "vitest": "^0.34.5",
-    "vitest-mock-process": "^1.0.4"
   }
 }

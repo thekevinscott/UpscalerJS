@@ -1,4 +1,4 @@
-import { readFile } from '@internals/common/fs';
+import { readFile } from './fs';
 import { compile } from 'ejs';
 
 const parseValue = (value: unknown) => {
