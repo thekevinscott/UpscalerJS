@@ -1,13 +1,9 @@
 {
-  "extends": "../tsconfig.umd.json",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "outDir": "./dist/tmp",
-  },
+  "extends": "../tsconfig.esm.json",
   "include": [
     "./src/index.ts",
-    "./src/2x.ts",
-    "./src/3x.ts",
-    "./src/4x.ts",
+    "./src/x2/index.ts",
+    "./src/x3/index.ts",
+    "./src/x4/index.ts"
   ]
 }

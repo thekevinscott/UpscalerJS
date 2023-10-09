@@ -7,7 +7,7 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
-import buildUpscaler from './package-scripts/build-upscaler';
+import { runPNPMScript } from '@internals/common';
 import { Platform } from './package-scripts/prompt/types';
 import { EXAMPLES_DIR } from './package-scripts/utils/constants';
 
@@ -66,7 +66,7 @@ const startExample = async (example: string, skipUpscalerBuild?: boolean) => {
   const { platform } = getExampleInfo(examplePath);
 
   if (skipUpscalerBuild !== true) {
-    await buildUpscaler(platform);
+    await runPNPMScript(`build:${platform}`, 'upscaler')
     console.log(`** built upscaler: ${platform}`)
   }
 
@@ -88,7 +88,7 @@ const getArgs = async (): Promise<Answers> => {
     skipUpscalerBuild: { type: 'boolean' },
   }).help().argv;
 
-  const exampleDirectory = await getString('Which hdf5 model do you want to build?', argv._[0]);
+  const exampleDirectory = await getString('Which example do you want to start?', argv._[0]);
 
   return { exampleDirectory, skipUpscalerBuild: argv.skipUpscalerBuild };
 }

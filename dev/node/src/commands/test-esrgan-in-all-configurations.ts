@@ -2,7 +2,7 @@ import { Command } from "commander";
 import type { Tensor } from '@tensorflow/tfjs-node';
 import { getModel, getUpscaler, isValidEnv, ValidEnv } from '../utils/upscaler';
 
-const DEFAULT_MODEL = 'pixel-upsampler/src/2x';
+const DEFAULT_MODEL = 'pixel-upsampler/src/x2';
 const DEFAULT_SIZE = '32';
 const DEFAULT_MIN_SIZE = '4';
 const DEFAULT_MIN_PADDING = '2';

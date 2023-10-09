@@ -92,9 +92,6 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ esm }) => esm || 'index'))(`upscales with ${packageName}/%s as esm`, async (modelName) => {
-              if (VERBOSE) {
-                console.log('ESM Test', packageName, modelName)
-              }
               const fixture = packageName;
               const result = await esmTestRunner.page.evaluate(({ fixture, packageName, modelName }) => {
                 const model = window[packageName][modelName] as unknown as ModelDefinition;
@@ -122,6 +119,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             // verbose: VERBOSE,
           });
 
+
           beforeAll(async function modelBeforeAll() {
             await umdTestRunner.beforeAll();
           }, 20000);
@@ -140,11 +138,11 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
-              if (VERBOSE) {
-                console.log('UMD Test', packageName, modelName)
-              }
               const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
                 const model = window[modelName] as unknown as ModelDefinition;
+                if (!model) {
+                  throw new Error(`No model for ${modelName}`);
+                }
                 const upscaler = new window['Upscaler']({
                   model,
                 });
@@ -180,7 +178,6 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               fs,
               usePatchSize = false,
             } = deps;
-            console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
 
             const upscaler = new Upscaler({
               model,
@@ -192,7 +189,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               output: 'tensor',
               patchSize: usePatchSize ? 64 : undefined,
               padding: 6,
-              progress: console.log,
+              // progress: console.log,
             });
             tensor.dispose();
             // because we are requesting a tensor, it is possible that the tensor will
@@ -207,6 +204,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             trackTime: false,
           });
 
+<<<<<<< HEAD
           describe.each(filteredPackagesAndModels)('%s', (packageDirectoryName, preparedModels) => {
             test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageDirectoryName}/%s as cjs`, async (modelName) => {
               const { name } = await getPackageJSON(path.resolve(MODELS_DIR, packageDirectoryName));
@@ -215,6 +213,12 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               }
               const importPath = path.join(name, modelName === 'index' ? '' : `/${modelName}`);
               const modelPackageDir = path.resolve(MODELS_DIR, packageDirectoryName, 'test/__fixtures__');
+=======
+          describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
+            test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageName}/%s as cjs`, async (modelName) => {
+              const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, modelName === 'index' ? '' : `/${modelName}`);
+              const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
+>>>>>>> main
               const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
               const script = await getTemplate(path.resolve(__dirname, '../_templates/cjs.js.t'), {
                 tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,

@@ -10,7 +10,6 @@ exclude_patterns = [
   "examples/**", 
   "scripts/**", 
   "test/**", 
-  "packages/test-scaffolding/**", 
   "dev/**",
 ]
 

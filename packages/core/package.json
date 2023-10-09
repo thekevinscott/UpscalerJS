@@ -34,31 +34,63 @@
       "command": "rimraf dist/cjs"
     },
     "build": {
-      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate"
-    },
-    "build:esm": {
-      "command": "tsc -p tsconfig.esm.json --outDir ./dist/esm",
-      "dependencies": ["clean:esm"],
+      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "build:esm": {
+<<<<<<< HEAD
+      "command": "tsc -p tsconfig.esm.json --outDir ./dist/esm",
+      "dependencies": ["clean:esm"],
+=======
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
+>>>>>>> main
+      "files": [
+        "src/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+<<<<<<< HEAD
         "vitest.config.ts",
         "tsconfig.esm.json"
+=======
+        "vite.config.ts",
+        "tsconfig.esm.json",
+        "tsconfig.json"
+>>>>>>> main
       ],
       "output": [
         "dist/esm/**"
       ]
     },
     "build:cjs": {
+<<<<<<< HEAD
       "command": "tsc -p tsconfig.cjs.json --outDir ./dist/cjs",
       "dependencies": ["clean:cjs"],
+=======
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
+>>>>>>> main
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
+<<<<<<< HEAD
         "vitest.config.ts",
         "tsconfig.cjs.json"
+=======
+        "vite.config.ts",
+        "tsconfig.cjs.json",
+        "tsconfig.json"
+>>>>>>> main
       ],
       "output": [
         "dist/cjs/**"

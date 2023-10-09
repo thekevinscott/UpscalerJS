@@ -11,8 +11,13 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
+<<<<<<< HEAD
     "@internals/http-server": "workspace:*",
     "@internals/common": "workspace:*",
+=======
+    "@internals/common": "workspace:*",
+    "@internals/http-server": "workspace:*",
+>>>>>>> main
     "puppeteer": "^21.1.0",
     "fs-extra": "latest"
   },

@@ -1,5 +1,5 @@
 import { JSHandle, Page } from 'puppeteer';
-import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST, } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
@@ -88,7 +88,7 @@ const getStartingMemory = async (page: Page) => {
 describe('Memory Leaks', () => {
   const testRunner = new ClientsideTestRunner({
     mock: true,
-    dist: ESBUILD_DIST_FOLDER,
+    dist: ESBUILD_DIST,
     log: true,
   });
 
@@ -177,7 +177,7 @@ describe('Memory Leaks', () => {
   // //   //   await page.evaluate(async (times) => {
   // //   //     const foo = [];
   // //   //     for (let i = 0; i < times; i++) {
-  // //   //       const t = await window['tf'].loadLayersModel('/models/pixel-upsampler/models/4x/4x.json');
+  // //   //       const t = await window['tf'].loadLayersModel('/models/pixel-upsampler/models/x4/x4.json');
   // //   //       foo.push(t)
   // //   //     }
   // //   //     setInterval(() => {
@@ -227,10 +227,14 @@ describe('Memory Leaks', () => {
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           warmupSizes: [10],
-          model: window['pixel-upsampler']['4x'],
+          model,
         });
         await upscaler.dispose();
       }
@@ -248,9 +252,13 @@ describe('Memory Leaks', () => {
 
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: window['pixel-upsampler']['4x'],
+          model,
         });
         await upscaler.dispose();
       }
@@ -268,10 +276,14 @@ describe('Memory Leaks', () => {
 
       const image = await testRunner.page.evaluate(async (times) => {
         const Upscaler = window['Upscaler'];
+        const model = window['pixel-upsampler']['x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
-          model: window['pixel-upsampler']['4x'],
+            model,
           });
           image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
 
@@ -293,11 +305,15 @@ describe('Memory Leaks', () => {
       const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
+        const model = window['pixel-upsampler']['x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...model,
               preprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -322,10 +338,14 @@ describe('Memory Leaks', () => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         let image;
+        const model = window['pixel-upsampler']['x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...model,
               postprocess: (image) => tf.mul(image, 1),
             }
           });
@@ -349,11 +369,15 @@ describe('Memory Leaks', () => {
       const image = await testRunner.page.evaluate(async (times) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
+        const model = window['pixel-upsampler']['x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         let image;
         for (let i = 0; i < times; i++) {
           const upscaler = new Upscaler({
             model: {
-              ...window['pixel-upsampler']['4x'],
+              ...model,
               preprocess: (image) => tf.mul(image, 1),
               postprocess: (image) => tf.mul(image, 1),
             }
@@ -379,10 +403,14 @@ describe('Memory Leaks', () => {
     await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -419,11 +447,15 @@ describe('Memory Leaks', () => {
     const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       let output: string;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -449,11 +481,15 @@ describe('Memory Leaks', () => {
     const image = await testRunner.page.evaluate(async (times) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
           model: {
-            ...window['pixel-upsampler']['4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -503,12 +539,14 @@ describe('Memory Leaks', () => {
     const startingMemory = await getStartingMemory(testRunner.page);
     const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       let output;
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            ...window['pixel-upsampler']['4x'],
-          },
+          model,
         });
         await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
@@ -536,11 +574,13 @@ describe('Memory Leaks', () => {
     const image = await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       let output: tf.Tensor;
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            ...window['pixel-upsampler']['4x'],
-          },
+          model,
         });
         await upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
@@ -576,11 +616,13 @@ describe('Memory Leaks', () => {
     await testRunner.page.evaluate((times) => new Promise(resolve => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            ...window['pixel-upsampler']['4x'],
-          },
+          model,
         });
         upscaler.execute(window['fixtures']['pixel-upsampler'], {
           output: 'base64',
@@ -603,11 +645,13 @@ describe('Memory Leaks', () => {
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            ...window['pixel-upsampler']['4x'],
-          },
+          model,
         });
         try {
           await upscaler.execute(window['fixtures']['pixel-upsampler'], {
@@ -637,12 +681,14 @@ describe('Memory Leaks', () => {
     const startingMemory = await getStartingMemory(testRunner.page);
     await testRunner.page.evaluate(async (times) => {
       const Upscaler = window['Upscaler'];
+      const model = window['pixel-upsampler']['x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       const abortController = new AbortController();
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler({
-          model: {
-            ...window['pixel-upsampler']['4x'],
-          },
+          model,
         });
         try {
           await upscaler.execute(window['fixtures']['pixel-upsampler'], {

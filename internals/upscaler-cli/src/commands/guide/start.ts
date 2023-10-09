@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 import path from 'path';
-import buildUpscaler from '../../lib/package-scripts/build-upscaler.js';
+import { runPNPMScript } from '@internals/common';
 import { EXAMPLES_DIR, isValidGuide } from '../../lib/guides/isValidGuide.js';
 import { runNPMCommand } from '../../lib/utils/run-npm-command.js';
 import { pluralize } from '../../lib/utils/pluralize.js';
@@ -33,7 +33,7 @@ export const start: Action<[string, Options]> = async (guide, { skipUpscalerBuil
   const platform = await getTFJSLibraryTarget(guidePath);
 
   if (skipUpscalerBuild !== true) {
-    await buildUpscaler(platform);
+    await runPNPMScript(`build:${platform}`, 'upscaler')
     verbose(`** built upscaler: ${platform}`)
   }
 

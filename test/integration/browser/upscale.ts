@@ -7,8 +7,8 @@ import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import path from 'path';
 import { MODELS_DIR } from '@internals/common/constants';
-import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src/shared';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
@@ -46,14 +46,14 @@ describe('Upscale Integration Tests', () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/models/pixel-upsampler/models/4x/4x.json',
+          path: '/models/pixel-upsampler/models/x4/x4.json',
           scale: 4,
           modelType: 'layers',
         },
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   describe('Cancel', () => {
@@ -63,7 +63,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -118,7 +118,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -178,7 +178,7 @@ describe('Upscale Integration Tests', () => {
         const patchSize = 7;
         window['upscaler'] = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -209,7 +209,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate(() => {
         return window['upscaler'].execute(window['fixtures']['pixel-upsampler']);
       });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
@@ -218,7 +218,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate(() => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -242,7 +242,7 @@ describe('Upscale Integration Tests', () => {
       const [rate, slice] = await page().evaluate((): Promise<[number, string]> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/4x/4x.json',
+            path: '/models/pixel-upsampler/models/x4/x4.json',
             scale: 4,
             modelType: 'layers',
           },
@@ -258,7 +258,7 @@ describe('Upscale Integration Tests', () => {
         });
       }));
       expect(typeof rate).toEqual('number');
-      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/slice-patchsize-12-padding-2.png"), 'diff.png');
+      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/slice-patchsize-12-padding-2.png"), 'diff.png');
     });
 
     test.each([
@@ -304,7 +304,7 @@ describe('Upscale Integration Tests', () => {
         const updates = await page().evaluate(({ patchSize, padding }): Promise<[number, number[]][]> => new Promise(resolve => {
           const upscaler = new window['Upscaler']({
             model: {
-              path: '/models/pixel-upsampler/models/2x/2x.json',
+              path: '/models/pixel-upsampler/models/x2/x2.json',
               scale: 2,
               modelType: 'layers',
             },
@@ -329,7 +329,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: '/models/pixel-upsampler/models/2x/2x.json',
+            path: '/models/pixel-upsampler/models/x2/x2.json',
             scale: 2,
             modelType: 'layers',
           },
@@ -359,7 +359,7 @@ describe('Upscale Integration Tests', () => {
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    upscaler: Upscaler;
+    // upscaler: Upscaler;
     fixtures: Record<string, string>;
     tf: typeof tf;
     called: boolean;

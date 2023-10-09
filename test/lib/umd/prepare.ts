@@ -43,12 +43,9 @@ const getMinifiedFileName = (fileName: string) => {
 
 const copyAllModels = () => {
   getAllAvailableModelPackages().forEach(packageName => {
-    const models = getAllAvailableModels(packageName);
-    models.forEach(({ export: fileName }) => {
-      const modelPath = path.resolve(MODELS_PATH, packageName, 'models', fileName);
-      const destPath = path.resolve(DIST, 'models', packageName, 'models', fileName);
-      copySync(modelPath, destPath);
-    });
+    const modelPath = path.resolve(MODELS_PATH, packageName, 'models');
+    const destPath = path.resolve(DIST, 'models', packageName, 'models');
+    copySync(modelPath, destPath)
   });
 };
 
@@ -68,7 +65,9 @@ const getMinifiedScripts = () => {
         throw new Error(`Bad minified file name: ${JSON.stringify(model)}`);
       }
       const destPath = path.resolve(DIST, 'models', packageName, 'dist', minifiedFileName);
-      copyFile(path.join(UMD_PATH, minifiedFileName), destPath);
+      const srcPath = path.join(UMD_PATH, minifiedFileName);
+      console.log(srcPath)
+      copyFile(srcPath, destPath);
       return `/models/${packageName}/dist/${minifiedFileName}`;
     }))
   }, [] as string[]);
@@ -82,6 +81,7 @@ export const prepareScriptBundleForUMD = async () => {
   copyAllModels();
 
   const scriptsToInclude = getMinifiedScripts();
+  console.log(scriptsToInclude)
   const fixturesToInclude = getFixtures();
 
   copyFixtures(DIST);

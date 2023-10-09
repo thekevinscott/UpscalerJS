@@ -1,14 +1,12 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
 import {
   MultiArgTensorProgress,
-} from '../../../packages/upscalerjs/src/types';
+} from '../../../packages/upscalerjs/src/shared/types';
 import {
   ModelDefinition,
 } from '../../../packages/core/src';
@@ -17,7 +15,7 @@ import {
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
-} from '../../../packages/upscalerjs/src/errors-and-warnings';
+} from '../../../packages/upscalerjs/src/shared/errors-and-warnings';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
@@ -29,7 +27,7 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
   if (scale < 2 || scale > 4) {
     throw new Error('Scale must be between 2 and 4');
   }
-  const weightsPath = path.resolve(MODELS_DIR, `pixel-upsampler/models/${scale}x/${scale}x.bin`);
+  const weightsPath = path.resolve(MODELS_DIR, `pixel-upsampler/models/x${scale}/x${scale}.bin`);
   const weightsName = 'weights.bin';
   const modelJSON = {
     "modelTopology": {
@@ -82,7 +80,7 @@ describe('Node Model Loading Integration Tests', () => {
         fs,
         usePatchSize = false,
       } = deps;
-      console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
+      // console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
 
       const upscaler = new Upscaler({
         model,
@@ -138,7 +136,7 @@ describe('Node Model Loading Integration Tests', () => {
         },
         globals: {
           model: JSON.stringify({
-            path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/4x/4x.json'),
+            path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/x4/x4.json'),
             scale: 4,
           }),
           imagePath: JSON.stringify(fixturePath),
@@ -146,7 +144,7 @@ describe('Node Model Loading Integration Tests', () => {
       });
       expect(result).not.toEqual('');
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
@@ -182,9 +180,9 @@ describe('Node Model Loading Integration Tests', () => {
       fs.writeFileSync(MODEL_JSON_PATH, JSON.stringify(modelJSON));
       fs.copyFileSync(weightsPath, WEIGHT_PATH);
       model['path'] = 'file://' + MODEL_JSON_PATH;
-      if (VERBOSE) {
-        console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
-      }
+      // if (VERBOSE) {
+      //   console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
+      // }
 
       const upscaler = new Upscaler({
         model,
@@ -232,7 +230,7 @@ describe('Node Model Loading Integration Tests', () => {
       result.dispose();
       const expectedImage = [Array.from(expectedTensor.dataSync()), expectedTensor.shape];
       expectedTensor.dispose();
-      console.log('warnings', warnings);
+      // console.log('warnings', warnings);
       return JSON.stringify({
         upscaledImage,
         expectedImage,

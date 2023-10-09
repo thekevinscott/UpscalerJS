@@ -2,7 +2,7 @@
  * Tests that different approaches to loading a model all load correctly
  */
 import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
@@ -59,46 +59,46 @@ describe('Model Loading Integration Tests', () => {
   it("can import a specific model", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['4x'],
+        model: window['pixel-upsampler']['x4'],
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/models/pixel-upsampler/models/4x/4x.json',
+          path: '/models/pixel-upsampler/models/x4/x4.json',
           scale: 4,
           modelType: 'layers',
         },
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
     const result = await page().evaluate(() => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: `${window.location.origin}/models/pixel-upsampler/models/4x/4x.json`,
+          path: `${window.location.origin}/models/pixel-upsampler/models/x4/x4.json`,
           scale: 4,
           modelType: 'layers',
         },
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "4x/result.png"), 'diff.png');
+    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it('clips a model that returns out of bound numbers when returning a base64 string src', async () => {
     const startingPixels = [-100,-100,-100,0,0,0,255,255,255,1000,1000,1000];
     const predictedPixels: number[] = await page().evaluate((startingPixels) => {
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['2x'],
+        model: window['pixel-upsampler']['x2'],
       });
       const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {

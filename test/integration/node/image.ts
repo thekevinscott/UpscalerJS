@@ -6,18 +6,18 @@ import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
 import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
-const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/4x/4x.json');
+const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/x4.json');
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');
 const FOUR_CHANNEL_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png');
 
-const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result-15.png');
-const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, '4x/result.png');
+const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result-15.png');
+const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result.png');
 const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 // TODO: How to import this, instead of copying it?
-// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/image.node';
+// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/shared/image.node';
 const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));

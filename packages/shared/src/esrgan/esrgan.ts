@@ -1,4 +1,4 @@
-import type { Meta, ModelDefinition, Setup } from '@upscalerjs/core';
+import type { Meta, ModelDefinition, Setup } from '../types';
 import type { Tensor4D, } from '@tensorflow/tfjs-core';
 
 export type Inputs = Tensor4D | Tensor4D[];
@@ -33,7 +33,7 @@ export const getESRGANModelDefinition = ({
   meta: Meta;
   path?: string;
 }): ModelDefinition => {
-  const path = modelPath || `models/${scale}x/model.json`;
+  const path = modelPath || `models/x${scale}/model.json`;
   if (architecture === 'rdn') {
     return {
       scale,
@@ -89,6 +89,7 @@ export const getESRGANModelDefinition = ({
         }
 
         static className = `PixelShuffle${scale}x`;
+
       }
 
       return PixelShuffle;

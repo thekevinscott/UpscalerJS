@@ -1,16 +1,29 @@
 {
   "name": "@internals/common",
   "private": true,
+<<<<<<< HEAD
   "type": "module",
   "exports": {
+=======
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+>>>>>>> main
     "./models": "./dist/models.js",
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
     "./constants": "./dist/constants.js",
+<<<<<<< HEAD
     "./logger": "./dist/logger.js",
     "./git": "./dist/git.js",
     "./packages": "./dist/packages.js",
     "./npm": "./dist/npm.js",
+=======
+    "./logger": "./dist/logger.mjs",
+    "./git": "./dist/git.js",
+    "./packages": "./dist/packages.js",
+    "./npm": "./dist/npm.mjs",
+>>>>>>> main
     "./get-hashed-name": "./dist/get-hashed-name.js",
     "./tfjs-library": "./dist/tfjs-library.js",
     "./types": "./dist/types.js",
@@ -27,16 +40,34 @@
     "chalk": "^5.3.0",
     "ejs": "^3.1.9",
     "fs-extra": "latest",
+<<<<<<< HEAD
     "get-port": "^7.0.0"
   },
   "wireit": {
     "build": {
       "command": "tsc",
+=======
+    "get-port": "^7.0.0",
+    "wireit": "^0.14.0"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.2",
+    "vitest-mock-process": "^1.0.4",
+    "vitest": "^0.34.5"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -p ./tsconfig.json",
+>>>>>>> main
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
         "package.json",
+<<<<<<< HEAD
         "vitest.config.ts",
+=======
+        "vite.config.ts",
+>>>>>>> main
         "tsconfig.json"
       ],
       "output": [
@@ -44,7 +75,11 @@
       ]
     },
     "test": {
+<<<<<<< HEAD
       "command": "vitest"
+=======
+      "command": "vitest --config vite.config.js"
+>>>>>>> main
     }
   },
   "scripts": {
@@ -53,10 +88,13 @@
   },
   "engines": {
     "node": ">=16.0.0"
+<<<<<<< HEAD
   },
   "devDependencies": {
     "@types/ejs": "^3.1.2",
     "vitest": "latest",
     "vitest-mock-process": "^1.0.4"
+=======
+>>>>>>> main
   }
 }
