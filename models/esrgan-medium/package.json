@@ -100,7 +100,7 @@
   },
   "wireit": {
     "lint": {
-      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "command": "eslint -c ../.eslintrc.cjs src --ext .ts",
       "dependencies": [
         "scaffold"
       ]
