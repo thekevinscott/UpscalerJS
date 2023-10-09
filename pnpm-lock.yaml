@@ -872,6 +872,13 @@ importers:
       '@tensorflow/tfjs-core':
         specifier: ~4.8.0
         version: 4.8.0
+    devDependencies:
+      vitest:
+        specifier: ^0.34.6
+        version: 0.34.6(jsdom@22.1.0)
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   packages/upscalerjs:
     dependencies:
@@ -11921,7 +11928,7 @@ packages:
   /loupe@2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
     dependencies:
-      get-func-name: 2.0.0
+      get-func-name: 2.0.2
     dev: true
 
   /lower-case@2.0.2:
