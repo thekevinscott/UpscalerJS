@@ -1,7 +1,7 @@
 import * as fs from '@internals/common/fs';
 import { vi } from 'vitest';
 import { rimraf } from 'rimraf';
-import { makeTmpDir, withTmpDir } from "./tmp-dir.js";
+import { makeTmpDir, withTmpDir } from "./tmp-dir.mjs";
 
 const { exists, mkdirp } = fs;
 

@@ -1,6 +1,6 @@
 import path from 'path';
 import { rimraf } from 'rimraf';
-import { TMP_DIR } from './constants.js';
+import { TMP_DIR } from './constants.mjs';
 import { getHashedName } from './get-hashed-name.js';
 import { exists, mkdirp } from './fs.js';
 

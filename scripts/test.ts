@@ -6,10 +6,8 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
-import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { ROOT_DIR, TEST_DIR } from '@internals/common/constants';
 import type { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
@@ -61,8 +59,6 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   const files: string[] = sync(globPath);
   return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
 };
-
-type Bundle = (opts: Record<string, string| boolean | undefined>) => Promise<void>;
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
   const sharedDependenciesSet = new Set<Bundle>();
