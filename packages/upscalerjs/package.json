@@ -176,7 +176,7 @@
       "command": "eslint -c .eslintrc.js src --ext .ts"
     },
     "test": {
-      "command": "pnpm test:unit:browser:playwright && pnpm test:unit:browser:vite && pnpm test:unit:node"
+      "command": "pnpm test:unit:browser:playwright && pnpm test:unit:browser:vite -- --run && pnpm test:unit:node -- --run"
     },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json"
