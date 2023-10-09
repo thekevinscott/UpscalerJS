@@ -214,7 +214,11 @@
       "command": "git add packages/upscalerjs/src/shared/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
     },
     "example:start": {
-      "command": "pnpm --filter @upscalerjs/scripts example:start"
+      "command": "pnpm --filter @upscalerjs/scripts example:start",
+      "dependencies": [
+        "./internals/common:build",
+        "./packages/upscalerjs:build"
+      ]
     },
     "lint": {
       "command": "pnpm --parallel --filter=!./models/**/dist/** lint"
