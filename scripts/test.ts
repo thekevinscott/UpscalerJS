@@ -8,8 +8,10 @@ import yargs from 'yargs';
 import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
-import { ROOT_DIR, TEST_DIR } from '@internals/common/constants';
 import type { Bundle } from '../test/integration/utils/NodeTestRunner';
+
+const ROOT_DIR = path.resolve(__dirname, '..');
+const TEST_DIR = path.resolve(ROOT_DIR, 'test');
 /****
  * Types
  */
