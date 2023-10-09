@@ -27,11 +27,6 @@
   "types": "dist/esm/models/default-model/src/index.d.ts",
   "umd:main": "dist/umd/index.min.js",
   "scripts": {
-<<<<<<< HEAD
-    "scaffold:dependencies": "wireit",
-    "lint:fix": "wireit",
-=======
->>>>>>> main
     "lint": "wireit",
     "prepublishOnly": "wireit",
     "validate:build": "wireit",
@@ -39,13 +34,9 @@
     "build:cjs": "wireit",
     "build:esm": "wireit",
     "build:umd": "wireit",
-<<<<<<< HEAD
-    "clean": "wireit"
-=======
     "build:umd:tsc": "wireit",
     "build:umd:rollup": "wireit",
     "build:umd:uglify": "wireit"
->>>>>>> main
   },
   "files": [
     "assets/**/*",
@@ -57,44 +48,22 @@
     "@tensorflow/tfjs": "~4.8.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
-=======
     "@rollup/plugin-json": "^6.0.0",
->>>>>>> main
     "@tensorflow/tfjs": "~4.8.0",
     "@tensorflow/tfjs-core": "~4.8.0",
     "@tensorflow/tfjs-layers": "~4.8.0",
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
-<<<<<<< HEAD
     "seedrandom": "3.0.5",
     "wireit": "^0.14.0"
-=======
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "seedrandom": "3.0.5"
->>>>>>> main
   },
   "@upscalerjs": {
     "title": "Default Model",
     "modelFamily": "esrgan"
   },
   "wireit": {
-<<<<<<< HEAD
-    "scaffold:dependencies": {
-      "command": "ts-node ../../scripts/package-scripts/scaffold-dependencies.ts --src models/default-model --config models/scaffolder.ts"
-    },
-    "lint:fix": {
-      "command": "pnpm lint --fix"
-    },
-    "lint": {
-      "command": "pnpm scaffold:dependencies && eslint -c ../.eslintrc.js src --ext .ts",
-      "dependencies": [
-        "scaffold:dependencies"
-      ]
-=======
     "lint": {
       "command": "eslint -c ../.eslintrc.js src --ext .ts"
->>>>>>> main
     },
     "prepublishOnly": {
       "command": "pnpm lint && pnpm build && pnpm validate:build"
@@ -102,10 +71,6 @@
     "validate:build": {
       "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
     },
-<<<<<<< HEAD
-    "build": {
-      "command": "ts-node ../../scripts/package-scripts/build-model.ts default-model -o cjs -o esm -o umd --skipCheckModelsExist"
-=======
     "scaffold": {
       "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
       "files": [
@@ -199,7 +164,6 @@
     },
     "build:umd:uglify": {
       "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
->>>>>>> main
     }
   }
 }

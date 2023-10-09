@@ -204,7 +204,6 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             trackTime: false,
           });
 
-<<<<<<< HEAD
           describe.each(filteredPackagesAndModels)('%s', (packageDirectoryName, preparedModels) => {
             test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageDirectoryName}/%s as cjs`, async (modelName) => {
               const { name } = await getPackageJSON(path.resolve(MODELS_DIR, packageDirectoryName));
@@ -213,12 +212,6 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               }
               const importPath = path.join(name, modelName === 'index' ? '' : `/${modelName}`);
               const modelPackageDir = path.resolve(MODELS_DIR, packageDirectoryName, 'test/__fixtures__');
-=======
-          describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
-            test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageName}/%s as cjs`, async (modelName) => {
-              const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, modelName === 'index' ? '' : `/${modelName}`);
-              const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
->>>>>>> main
               const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
               const script = await getTemplate(path.resolve(__dirname, '../_templates/cjs.js.t'), {
                 tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
