@@ -8,7 +8,8 @@
   "wireit": {
     "test": {
       "dependencies": [
-        "./common:test:run"
+        "./common:test:run",
+        "./http-server:test:run"
       ]
     }
   },

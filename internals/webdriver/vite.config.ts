@@ -1,5 +1,10 @@
-import { defineConfig, mergeConfig } from 'vitest/config';
-import configShared from '../vite.config';
+import { defineConfig } from 'vitest/config';
 
-export default mergeConfig(configShared, defineConfig({
-}));
+export default defineConfig({
+  test: {
+    include: [
+      '**/*.test.*',
+    ],
+    globals: true,
+  },
+});
