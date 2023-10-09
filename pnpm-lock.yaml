@@ -558,8 +558,8 @@ importers:
   internals/common:
     dependencies:
       chalk:
-        specifier: ^5.3.0
-        version: 5.3.0
+        specifier: ^4.1.2
+        version: 4.1.2
       ejs:
         specifier: ^3.1.9
         version: 3.1.9
