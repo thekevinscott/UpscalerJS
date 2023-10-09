@@ -418,6 +418,9 @@ importers:
       '@docusaurus/types':
         specifier: ^2.4.1
         version: 2.4.1(esbuild@0.19.2)(react-dom@18.2.0)(react@18.2.0)(uglify-js@3.17.4)
+      '@internals/common':
+        specifier: workspace:*
+        version: link:../internals/common
       '@tsconfig/docusaurus':
         specifier: ^2.0.0
         version: 2.0.0
@@ -477,7 +480,7 @@ importers:
         version: 4.8.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
         specifier: latest
-        version: link:../../../../../models/esrgan-thick
+        version: 1.0.0-beta.14(@tensorflow/tfjs@4.8.0)
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
@@ -586,7 +589,7 @@ importers:
   internals/http-server:
     dependencies:
       '@internals/common':
-        specifier: latest
+        specifier: workspace:*
         version: link:../common
       cloudflared:
         specifier: ^0.5.0
@@ -5762,6 +5765,25 @@ packages:
       '@typescript-eslint/types': 6.4.0
       eslint-visitor-keys: 3.4.3
     dev: true
+
+  /@upscalerjs/core@1.0.0-beta.15:
+    resolution: {integrity: sha512-TggVaNCH5Hhtry+OjvRqe83Ujyhiez1jYWSwBcmfmd49T76BXQpJpQrldQ10bP3oGHXDjqORHvM0qUd2fXkDZw==}
+    dependencies:
+      '@tensorflow/tfjs-core': 4.8.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@upscalerjs/esrgan-thick@1.0.0-beta.14(@tensorflow/tfjs@4.8.0):
+    resolution: {integrity: sha512-AbeRutNmiRpyq+mVDGQkz9vgA2E6HYWQFEiVUV7+e8+2HrFiAOh7NO8+jQekZbUAjASOz53kUO9EfaWpYoanIg==}
+    peerDependencies:
+      '@tensorflow/tfjs': 4.8.0
+    dependencies:
+      '@tensorflow/tfjs': 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/core': 1.0.0-beta.15
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@vitest/expect@0.34.2:
     resolution: {integrity: sha512-EZm2dMNlLyIfDMha17QHSQcg2KjeAZaXd65fpPzXY5bvnfx10Lcaz3N55uEe8PhF+w4pw+hmrlHLLlRn9vkBJg==}
