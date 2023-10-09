@@ -1,0 +1,21 @@
+{
+  "name": "@upscalerjs/internals",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "wireit"
+  },
+  "wireit": {
+    "test": {
+      "dependencies": [
+        "./common:test:run",
+        "./http-server:test:run",
+        "./test-runner:test:run",
+        "./webdriver:test:run"
+      ]
+    }
+  },
+  "devDependencies": {
+    "wireit": "latest"
+  }
+}

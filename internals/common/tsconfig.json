@@ -13,7 +13,7 @@
       "types": ["vitest/globals"]
   },
   "include": ["./src/**/*"],
-  "exclude": ["./src/**/*.test.ts"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.mts"],
   "ts-node": {
     "esm": true
   }

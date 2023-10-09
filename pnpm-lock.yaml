@@ -555,6 +555,12 @@ importers:
         specifier: ^3.5.1
         version: 3.5.1
 
+  internals:
+    devDependencies:
+      wireit:
+        specifier: latest
+        version: 0.14.0
+
   internals/common:
     dependencies:
       chalk:
