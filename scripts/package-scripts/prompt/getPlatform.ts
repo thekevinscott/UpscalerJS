@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { Platform } from "./types";
+import { Platform } from "./types.mjs";
 
 export const AVAILABLE_PLATFORMS = ['node', 'node-gpu', 'browser'];
 

@@ -1,5 +1,5 @@
 import buildModels from '../../build-model';
-import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
+import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels.mjs';
 import { runPNPMScript } from '@internals/common';
 
 const getOutputFormats = (): ('cjs' | 'esm' | 'umd')[] => {

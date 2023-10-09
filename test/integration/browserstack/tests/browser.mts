@@ -5,11 +5,11 @@ import path from 'path';
 import Upscaler from 'upscaler';
 import { test, describe, } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
-import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../../lib/esm-esbuild/prepare.js';
+import { ESBUILD_DIST as ESBUILD_DIST_FOLDER } from '../../../lib/esm-esbuild/prepare.mjs';
 import { executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
 import { getCurrentBranch } from '@internals/common/git';
-import { checkImage } from '../../../lib/utils/checkImage.js';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
+import { checkImage } from '../../../lib/utils/checkImage.mjs';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.mjs';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 

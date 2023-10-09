@@ -2,10 +2,11 @@
  * Script for checking tense in docs markdown files
  */
 import { sync } from 'glob';
-import { readFile } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { readFile } = fsExtra;
 import path from 'path';
 import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
-import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels";
+import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels.mjs";
 
 /****
  * Constants

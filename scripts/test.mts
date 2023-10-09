@@ -6,14 +6,12 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
-import { OutputFormat } from './package-scripts/prompt/types';
-import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import { runPNPMScript } from '@internals/common';
-import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
-import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
-import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
-import { Bundle } from '../test/integration/utils/NodeTestRunner';
+import { OutputFormat } from './package-scripts/prompt/types.mjs';
+import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined.mjs';
+import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack.mjs';
+import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats.mjs';
+import { ROOT_DIR, TEST_DIR } from '@internals/common/constants';
+import { Bundle } from '../test/integration/utils/NodeTestRunner.mjs';
 /****
  * Types
  */
@@ -85,7 +83,7 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
   const filesForPlatforms: {platform: Platform; files: (string | number)[]}[] = [];
 
   await Promise.all(platforms.map(async (platform: Platform) => {
-    const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
+    const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.mts`);
     const { default: sharedDependencies } = await import(filePath);
 
     const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
@@ -349,6 +347,4 @@ const main = async () => {
   });
 }
 
-if (require.main === module) {
-  main();
-}
+main();

@@ -1,7 +1,7 @@
 import { writeFile, copy, mkdirp, } from 'fs-extra';
 import path from 'path';
 import yargs from 'yargs';
-import { ifDefined as _ifDefined } from './prompt/ifDefined';
+import { ifDefined as _ifDefined } from './prompt/ifDefined.mjs';
 import { MODELS_DIR } from './utils/constants';
 
 /***

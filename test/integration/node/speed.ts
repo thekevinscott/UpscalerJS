@@ -1,6 +1,6 @@
 import path from 'path';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants.mjs';
+import { Main, NodeTestRunner } from '../utils/NodeTestRunner.mjs';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const JEST_TIMEOUT = 60 * 1000;

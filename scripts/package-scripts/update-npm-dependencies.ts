@@ -1,7 +1,7 @@
 import { exec as _exec, ExecOptions } from 'child_process';
 import yargs from 'yargs';
 import path from 'path';
-import { ifDefined as _ifDefined } from './prompt/ifDefined';
+import { ifDefined as _ifDefined } from './prompt/ifDefined.mjs';
 import { glob } from 'glob';
 import { ROOT_DIR } from './utils/constants';
 import asyncPool from "tiny-async-pool";

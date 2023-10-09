@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const ROOT = path.resolve(__dirname, '../..');
+import { ROOT_DIR, } from '@internals/common/constants';
+
 const EXCLUDED = ['node_modules', 'scratch'];
 const MAX_DEPTH = 100;
 
@@ -15,7 +16,7 @@ const findAllPackages = (dir: string, excluded: string[] = [], depth = 0): Array
     const file = files[i];
     const fullFile = path.resolve(dir, file);
     if (file === 'package.json') {
-      const strippedFile = fullFile.split(`${ROOT}/`).pop();
+      const strippedFile = fullFile.split(`${ROOT_DIR}/`).pop();
       if (!strippedFile) {
         throw new Error(`Error with file ${fullFile}`);
       }
@@ -32,8 +33,3 @@ const findAllPackages = (dir: string, excluded: string[] = [], depth = 0): Array
 };
 
 export default findAllPackages;
-
-if (require.main === module) {
-  const packages = findAllPackages(ROOT);
-  console.log(packages);
-}

@@ -1,9 +1,10 @@
-import { readdirSync, lstatSync, readFileSync, existsSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { readdirSync, lstatSync, readFileSync, existsSync } = fsExtra;
 import path from 'path';
-import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports';
+import { getPackageJSONExports, PackageJSONExport } from './getPackageJSONExports.mjs';
+import { ROOT_DIR, } from '@internals/common/constants';
 
-const ROOT = path.resolve(__dirname, '../../../');
-const MODELS_DIR = path.resolve(ROOT, 'models');
+const MODELS_DIR = path.resolve(ROOT_DIR, 'models');
 const EXCLUDED = ['dist', 'types', 'node_modules', 'docs'];
 
 const jsonParse = (fileName: string) => JSON.parse(readFileSync(fileName, 'utf-8'))

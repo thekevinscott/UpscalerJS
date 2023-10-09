@@ -12,7 +12,7 @@ import {
   updateMultiplePackages, 
   updatePackageJSONForKey, 
   updateSinglePackage,
- } from './utils/packages';
+ } from './utils/packages.mjs';
 import { Dependency } from '@schemastore/package';
 
 /****

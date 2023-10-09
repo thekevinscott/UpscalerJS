@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { OutputFormat } from './types';
+import { OutputFormat } from './types.mjs';
 
 export const DEFAULT_OUTPUT_FORMATS: Array<OutputFormat> = ['cjs', 'esm', 'umd'];
 

@@ -1,5 +1,5 @@
 import inquirer from 'inquirer';
-import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels';
+import { getAllAvailableModelPackages } from '../utils/getAllAvailableModels.mjs';
 
 export const AVAILABLE_MODELS = getAllAvailableModelPackages();
 

@@ -1,10 +1,10 @@
 import http from 'http';
 import { Page, Browser, BrowserContext, launch, } from 'puppeteer';
-import { startServer } from '../../lib/shared/server';
-import { Opts } from '../../lib/shared/prepare';
-import { isIgnoredMessage } from './messages';
-import { timeit } from './timeit';
-import { catchFailures } from './catchFailures';
+import { startServer } from '../../lib/shared/server.mjs';
+import { Opts } from '../../lib/shared/prepare.mjs';
+import { isIgnoredMessage } from './messages.mjs';
+import { timeit } from './timeit.mjs';
+import { catchFailures } from './catchFailures.mjs';
 
 type Bundle = (opts?: Opts) => Promise<void>;
 

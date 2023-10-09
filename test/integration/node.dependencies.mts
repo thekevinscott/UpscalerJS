@@ -1,4 +1,4 @@
-import { prepareScriptBundleForNodeCJS } from "../lib/node/prepare";
+import { prepareScriptBundleForNodeCJS } from "../lib/node/prepare.mjs";
 
 const dependencies = {
   model: [

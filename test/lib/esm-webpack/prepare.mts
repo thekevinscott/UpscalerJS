@@ -1,18 +1,20 @@
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import { copyFixtures } from '../utils/copyFixtures';
+import { copyFixtures } from '../utils/copyFixtures.mjs';
 import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { Bundle } from '../../integration/utils/NodeTestRunner';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare.mjs';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants.mjs';
+import { MockCDN } from '../../integration/utils/BrowserTestRunner.mjs';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
+import { MODELS_DIR } from '@internals/common/constants';
+import { Bundle } from '../../integration/utils/NodeTestRunner.mjs';
+import { ROOT_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import * as url from 'url';
 
-const ROOT = path.join(__dirname);
-export const DIST = path.join(ROOT, '/dist');
-const UPSCALER_PATH = path.join(ROOT, '../../../packages/upscalerjs')
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+export const DIST = path.join(ROOT_DIR, '/dist');
 
 const PACKAGES = [
   ...getAllAvailableModelPackages().filter((packageName) => {
@@ -32,10 +34,10 @@ const PACKAGES = [
 ];
 
 export const prepareScriptBundleForESM: Bundle = async ({ verbose = false } = {}) => {
-  await installNodeModules(ROOT, { verbose });
-  await installLocalPackages(ROOT, [
+  await installNodeModules(ROOT_DIR, { verbose });
+  await installLocalPackages(ROOT_DIR, [
     {
-      src: UPSCALER_PATH,
+      src: UPSCALER_DIR,
       name: LOCAL_UPSCALER_NAME,
     },
       ...PACKAGES.map(({ packageName }) => ({
@@ -60,7 +62,7 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
     verbose,
   });
 
-  const entryFile = path.join(ROOT, 'src/index.js');
+  const entryFile = path.join(ROOT_DIR, 'src/index.js');
   await writeIndex(entryFile, LOCAL_UPSCALER_NAME, indexImports);
   if (verbose) {
     console.log('Wrote index file for webpack');
@@ -74,7 +76,7 @@ export const bundleWebpack = ({ verbose = false }: { verbose?: boolean } = {}): 
 
   const config: Configuration = {
     mode: 'production',
-    context: ROOT,
+    context: ROOT_DIR,
     entry: entryFile,
     stats: 'errors-only',
     plugins: [htmlWebpackPlugin],

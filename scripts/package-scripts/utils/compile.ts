@@ -1,7 +1,7 @@
 import path from 'path';
 // import ts, { ProjectReference } from 'typescript';
-import callExec from '../../../test/lib/utils/callExec';
-import { OutputFormat } from '../prompt/types';
+import callExec from '../../../test/lib/utils/callExec.mjs';
+import { OutputFormat } from '../prompt/types.mjs';
 
 // export function _old_compile(rootNames: string[], options: ts.CompilerOptions, projectReferences?: Array<ProjectReference>) {
 //   let program = ts.createProgram({

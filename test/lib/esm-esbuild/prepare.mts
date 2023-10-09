@@ -1,14 +1,17 @@
 import fs from 'fs';
 import path from 'path';
 import { build } from 'esbuild';
-import { copyFixtures } from '../utils/copyFixtures';
-import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { MODELS_DIR, UPSCALER_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { Bundle } from '../../integration/utils/NodeTestRunner';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
+import { copyFixtures } from '../utils/copyFixtures.mjs';
+import { Import, installLocalPackages, installNodeModules, writeIndex } from '../shared/prepare.mjs';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from './constants.mjs';
+import { MockCDN } from '../../integration/utils/BrowserTestRunner.mjs';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
+import { MODELS_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import { Bundle } from '../../integration/utils/NodeTestRunner.mjs';
+import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages.mjs';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 /***
  * Types

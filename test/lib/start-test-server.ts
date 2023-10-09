@@ -1,9 +1,9 @@
 import yargs from 'yargs';
 import inquirer from 'inquirer';
-import { bundleEsbuild as esbuildBundle, ESBUILD_DIST as ESBUILD_DIST } from './esm-esbuild/prepare';
-import { startServer } from './shared/server';
-import { bundleWebpack as webpackBundle, DIST as WEBPACK_DIST } from './esm-webpack/prepare';
-import { DIST as UMD_DIST, prepareScriptBundleForUMD } from './umd/prepare';
+import { bundleEsbuild as esbuildBundle, ESBUILD_DIST as ESBUILD_DIST } from './esm-esbuild/prepare.mjs';
+import { startServer } from './shared/server.mjs';
+import { bundleWebpack as webpackBundle, DIST as WEBPACK_DIST } from './esm-webpack/prepare.mjs';
+import { DIST as UMD_DIST, prepareScriptBundleForUMD } from './umd/prepare.mjs';
 
 interface Args {
   type: TestServerType;

@@ -1,4 +1,4 @@
-import callExec from "../../../test/lib/utils/callExec";
+import callExec from "../../../test/lib/utils/callExec.mjs";
 
 interface Volume {
   external: string;

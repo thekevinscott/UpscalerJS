@@ -4,7 +4,7 @@ import { mkdirpSync, readdirSync, readFileSync, writeFileSync } from "fs-extra";
 import imageSize from 'image-size';
 import util from 'util';
 import webdriver from 'selenium-webdriver';
-import callExec from '../../../../../test/lib/utils/callExec';
+import callExec from '../../../../../test/lib/utils/callExec.mjs';
 import asyncPool from "tiny-async-pool";
 import { ProgressBar } from "../../../utils/ProgressBar";
 

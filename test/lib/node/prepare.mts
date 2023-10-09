@@ -1,14 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare";
-import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants";
-import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels";
-import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
-import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName";
-import { Bundle } from "../../integration/utils/NodeTestRunner";
+import { DependencyDefinition, installLocalPackages, installNodeModules } from "../shared/prepare.mjs";
+import { LOCAL_UPSCALER_NAMESPACE, LOCAL_UPSCALER_NAME } from "./constants.js";
+import { getAllAvailableModelPackages } from "../../../scripts/package-scripts/utils/getAllAvailableModels.mjs";
+import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir.js";
+import { getHashedName } from "../../../scripts/package-scripts/utils/getHashedName.js";
+import { Bundle } from "../../integration/utils/NodeTestRunner.mjs";
 import { MODELS_DIR, UPSCALER_DIR } from "../../../scripts/package-scripts/utils/constants";
-import validateBuild, { extractAllFilesFromPackageJSON } from "../../../scripts/package-scripts/validate-build";
-import callExec, { StdErr, StdOut } from '../utils/callExec';
+import validateBuild, { extractAllFilesFromPackageJSON } from "../../../scripts/package-scripts/validate-build.js";
+import callExec, { StdErr, StdOut } from '../utils/callExec.mjs';
 
 /***
  * Types

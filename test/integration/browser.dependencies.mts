@@ -1,6 +1,6 @@
-import { bundleEsbuild } from "../lib/esm-esbuild/prepare";
-import { bundleWebpack, prepareScriptBundleForESM } from "../lib/esm-webpack/prepare";
-import { prepareScriptBundleForUMD } from "../lib/umd/prepare";
+import { bundleEsbuild } from "../lib/esm-esbuild/prepare.mjs";
+import { bundleWebpack, prepareScriptBundleForESM } from "../lib/esm-webpack/prepare.mjs";
+import { prepareScriptBundleForUMD } from "../lib/umd/prepare.mjs";
 
 const dependencies = {
   builds: [

@@ -5,7 +5,7 @@ import {
   AVAILABLE_PACKAGES,
   getPackageJSON,
   Package,
-} from './utils/packages';
+} from './utils/packages.mjs';
 import updateDependency, { getMatchingDependency } from './update-dependency';
 import { ROOT_DIR } from './utils/constants';
 

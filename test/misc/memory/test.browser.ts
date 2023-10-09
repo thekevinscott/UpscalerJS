@@ -1,8 +1,8 @@
 import { JSHandle, Page } from 'puppeteer';
-import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare.mjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
+import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner.mjs';
 
 const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);

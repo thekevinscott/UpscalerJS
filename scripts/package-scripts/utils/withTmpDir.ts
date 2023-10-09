@@ -1,6 +1,7 @@
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import { existsSync, mkdirpSync } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { existsSync, mkdirpSync } = fsExtra;
 import { getHashedName } from './getHashedName';
 import { TMP_DIR } from './constants';
 

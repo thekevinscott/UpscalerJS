@@ -1,8 +1,9 @@
 import { Command } from "commander";
-import { readFileSync, mkdirpSync, writeFileSync, existsSync, } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { readFileSync, mkdirpSync, writeFileSync, existsSync, } = fsExtra;
 import * as path from 'path';
 import type { Tensor } from '@tensorflow/tfjs-node';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
 import { getModel, getUpscaler, isValidEnv, ValidEnv } from '../utils/upscaler';
 import { MODELS_DIR, TMP_DIR } from "../utils/constants";
 

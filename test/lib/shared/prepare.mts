@@ -1,17 +1,19 @@
 import { Dependency } from '@schemastore/package';
-import { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } from 'fs-extra';
+import fsExtra from 'fs-extra';
+const { symlink, remove, existsSync, mkdirpSync, writeFileSync, mkdirp } = fsExtra;
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import findAllPackages from '../../../scripts/package-scripts/find-all-packages';
-import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages';
-import callExec from "../utils/callExec";
+import findAllPackages from '../../../scripts/package-scripts/find-all-packages.mjs';
+import { getPackageJSON, writePackageJSON } from '../../../scripts/package-scripts/utils/packages.mjs';
+import callExec from "../utils/callExec.mjs";
 import tar from 'tar';
 import crypto from 'crypto';
-import { withTmpDir } from '../../../scripts/package-scripts/utils/withTmpDir';
+import { withTmpDir } from '@internals/common/tmp-dir';
 import asyncPool from "tiny-async-pool";
-import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { DOCS_DIR, EXAMPLES_DIR, ROOT_DIR } from '@internals/common/constants';
 import { promisify } from 'util';
-const fastFolderSize = promisify(require('fast-folder-size'));
+import _fastFolderSize from 'fast-folder-size';
+const fastFolderSize = promisify(_fastFolderSize);
 
 
 /***
@@ -345,6 +347,9 @@ export const installLocalPackage = async (src: string, dest: string, opts: Opts 
     try {
 
       const size = await fastFolderSize(src);
+      if (!size) {
+        throw new Error('No size found')
+      }
       if (SHOULD_SYMLINK_LOCAL_PACKAGES || size > Math.round(1024 * 1024 * 1024 * ALLOWABLE_MAXIMUM_GIGABYTES_FOR_NODE_PACKAGE_TO_BE_PACKABLE)) { // anything over x gigs
         await mkdirp(dest.split('/').slice(0, -1).join('/'));
         await symlink(src, dest);

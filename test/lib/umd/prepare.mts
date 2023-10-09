@@ -1,10 +1,14 @@
 import path from 'path';
 import { sync as rimraf } from 'rimraf';
-import { getTFJSVersion } from '../utils/getTFJSVersion';
-import { copyFixtures } from '../utils/copyFixtures';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { copyFileSync, copySync, existsSync, mkdirp, mkdirpSync, readFileSync, readdirSync, statSync, writeFileSync } from 'fs-extra';
-import { MockCDN } from '../../integration/utils/BrowserTestRunner';
+import { getTFJSVersion } from '../utils/getTFJSVersion.mjs';
+import { copyFixtures } from '../utils/copyFixtures.mjs';
+import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels.mjs';
+import fsExtra from 'fs-extra';
+const { copyFileSync, copySync, mkdirpSync, readFileSync, writeFileSync } = fsExtra;
+import { MockCDN } from '../../integration/utils/BrowserTestRunner.mjs';
+import * as url from 'url';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const UMD_ROOT = path.join(__dirname);
 // const ROOT = path.resolve(UMD_ROOT, '../../../');

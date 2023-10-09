@@ -1,11 +1,11 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare.mjs';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner.mjs';
 import path from 'path';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src/shared';

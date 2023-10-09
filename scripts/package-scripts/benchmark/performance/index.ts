@@ -1,11 +1,11 @@
 import yargs from 'yargs';
 import path from 'path';
 import inquirer from 'inquirer';
-import callExec from '../../../../test/lib/utils/callExec';
-import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
+import callExec from '../../../../test/lib/utils/callExec.mjs';
+import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels.mjs';
 import { BenchmarkedResult, PerformanceBenchmarker } from './utils/PerformanceBenchmarker';
 import { DatasetDefinition } from './utils/types';
-import { ifDefined as _ifDefined } from '../../prompt/ifDefined';
+import { ifDefined as _ifDefined } from '../../prompt/ifDefined.mjs';
 import Table from 'cli-table';
 import { writeFileSync } from 'fs-extra';
 import { QueryTypes, Sequelize } from 'sequelize';

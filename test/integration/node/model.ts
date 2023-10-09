@@ -1,8 +1,8 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants.mjs';
+import { Main, NodeTestRunner } from '../utils/NodeTestRunner.mjs';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 import {
   MultiArgTensorProgress,

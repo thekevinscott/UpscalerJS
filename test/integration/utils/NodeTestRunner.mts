@@ -1,8 +1,8 @@
-import { timeit } from "./timeit";
+import { timeit } from "./timeit.mjs";
 import path from 'path';
-import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare";
-import { Opts } from '../../lib/shared/prepare';
-import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir";
+import { GetScriptContents, NODE_ROOT, runNodeScript } from "../../lib/node/prepare.mjs";
+import { Opts } from '../../lib/shared/prepare.mjs';
+import { withTmpDir } from "../../../scripts/package-scripts/utils/withTmpDir.js";
 
 export type Bundle<T = {}> = (opts?: T & {
   verbose?: boolean;

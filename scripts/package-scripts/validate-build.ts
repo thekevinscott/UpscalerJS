@@ -1,7 +1,7 @@
 import path from 'path';
 import yargs from 'yargs';
 import fs from 'fs';
-import { getPackageJSON, JSONSchema } from './utils/packages';
+import { getPackageJSON, JSONSchema } from './utils/packages.mjs';
 import { sync } from 'glob';
 
 const ROOT = path.resolve(__dirname, '../..');

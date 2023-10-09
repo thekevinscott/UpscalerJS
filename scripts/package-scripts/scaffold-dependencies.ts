@@ -1,7 +1,7 @@
 import yargs from 'yargs';
 import fs from 'fs';
 import path from 'path';
-import { getPackageJSON } from './utils/packages';
+import { getPackageJSON } from './utils/packages.mjs';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
 
 /****

@@ -1,14 +1,14 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../lib/utils/checkImage.mjs';
+import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare.mjs';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
 import path from 'path';
 import type { Page } from 'puppeteer';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '../utils/BrowserTestRunner.mjs';
 import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
