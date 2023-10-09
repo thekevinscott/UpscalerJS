@@ -7,67 +7,53 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { getString } from './package-scripts/prompt/getString';
-import { runPNPMScript } from '@internals/common';
 import { Platform } from './package-scripts/prompt/types';
 import { EXAMPLES_DIR } from './package-scripts/utils/constants';
 
 /****
  * Utility functions
  */
-const getPlatform = (packageJSON: Record<string, any>): Platform => {
-  const deps = Object.keys(packageJSON.dependencies);
-  if (deps.includes('@tensorflow/tfjs')) {
-    return 'browser';
-  } else if (deps.includes('@tensorflow/tfjs-node')) {
-    return 'node';
-  } else if (deps.includes('@tensorflow/tfjs-node-gpu')) {
-    return 'node-gpu';
+const parseCommand = (_command: string | string[]) => {
+  const command = Array.isArray(_command) ? _command : _command.split(' ');
+  if (command[0] === 'npm' || command[0] === 'pnpm') {
+    return command.slice(1);
   }
-
-  throw new Error('Could not determine valid TFJS dependency in example package.json')
+  return command;
 };
 
-const getExampleInfo = (examplePath: string) => {
-  const packageJSON = JSON.parse(fs.readFileSync(path.resolve(examplePath, 'package.json'), 'utf8'));
-  const exampleName = packageJSON.name;
-  const platform = getPlatform(packageJSON);
+export const runPNPMScript = (
+  command: string | string[],
+  cwd: string,
+  runner: 'npm' | 'pnpm' = 'npm',
+) => new Promise<void>((resolve, reject) => {
+  const child = spawn(runner, parseCommand(command), {
+    shell: true,
+    cwd,
+    stdio: "inherit"
+  });
 
-  return {
-    exampleName,
-    platform,
-  };
-}
+  child.on('error', reject);
+
+  child.on('close', (code) => {
+    if (code === 0) {
+      resolve();
+    } else {
+      reject(code);
+    }
+  });
+});
 
 /****
  * Main function
  */
 
-const getProcessCommand = (platform: Platform, exampleName: string, skipUpscalerBuild?: boolean) => {
-  const startCommand = ['pnpm', '--filter', exampleName, 'start']
-  if (skipUpscalerBuild) {
-    return startCommand;
-  }
-  return [
-    'pnpm', '--filter', 'upscaler', `build:${platform}`, '&&',
-    ...startCommand
-  ];
-};
-
-const startExample = async (example: string, skipUpscalerBuild?: boolean) => {
+const startExample = async (example: string) => {
   const examplePath = path.resolve(EXAMPLES_DIR, example);
   try {
     fs.accessSync(examplePath);
   } catch(err) {
     console.log(`Directory ${example} does not exist. Make sure you are specifying a valid folder in the ./examples folder`)
     process.exit(1)
-  }
-
-  // get package name from directory
-  const { platform } = getExampleInfo(examplePath);
-
-  if (skipUpscalerBuild !== true) {
-    await runPNPMScript(`build:${platform}`, 'upscaler')
-    console.log(`** built upscaler: ${platform}`)
   }
 
   spawn("npm", ['install', '--no-package-lock', '&&', 'npm', 'run', 'dev'], {
@@ -81,22 +67,21 @@ const startExample = async (example: string, skipUpscalerBuild?: boolean) => {
 /****
  * Functions to expose the main function as a CLI tool
  */
-type Answers = { exampleDirectory: string, skipUpscalerBuild?: boolean }
+type Answers = { exampleDirectory: string }
 
 const getArgs = async (): Promise<Answers> => {
   const argv = await yargs(process.argv.slice(2)).options({
-    skipUpscalerBuild: { type: 'boolean' },
   }).help().argv;
 
   const exampleDirectory = await getString('Which example do you want to start?', argv._[0]);
 
-  return { exampleDirectory, skipUpscalerBuild: argv.skipUpscalerBuild };
+  return { exampleDirectory, };
 }
 
 if (require.main === module) {
   (async () => {
-    const { exampleDirectory, skipUpscalerBuild } = await getArgs();
+    const { exampleDirectory } = await getArgs();
 
-    await startExample(exampleDirectory, skipUpscalerBuild);
+    await startExample(exampleDirectory);
   })();
 }

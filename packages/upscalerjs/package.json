@@ -1,6 +1,6 @@
 {
   "name": "upscaler",
-  "version": "1.0.0-beta.17",
+  "version": "1.0.0-beta.18",
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
@@ -175,6 +175,9 @@
     "lint": {
       "command": "eslint -c .eslintrc.js src --ext .ts"
     },
+    "test": {
+      "command": "pnpm test:unit:browser:playwright && pnpm test:unit:browser:vite -- --run && pnpm test:unit:node -- --run"
+    },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json"
     },
@@ -203,8 +206,7 @@
     "prepublishOnly": "wireit",
     "format": "wireit",
     "lint": "wireit",
-    "lint:browser": "wireit",
-    "lint:node": "wireit",
+    "test": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:vite": "wireit",
     "test:unit:node": "wireit",
