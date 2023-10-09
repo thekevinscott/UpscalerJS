@@ -173,13 +173,7 @@
       "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
     },
     "lint": {
-      "command": "pnpm lint:browser && pnpm lint:node"
-    },
-    "lint:browser": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.node.ts'"
-    },
-    "lint:node": {
-      "command": "eslint -c .eslintrc.js src --ext .ts --ignore-pattern '**/*.browser.ts'"
+      "command": "eslint -c .eslintrc.js src --ext .ts"
     },
     "test:unit:browser:playwright": {
       "command": "playwright-test --config playwright.config.json"

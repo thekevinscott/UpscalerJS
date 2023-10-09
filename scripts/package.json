@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@types/glob": "^8.1.0",
-    "@upscalerjs/core": "workspace:*",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
