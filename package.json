@@ -162,7 +162,6 @@
   "dependencies": {
     "wireit": "^0.14.0"
   },
-  "type": "module",
   "wireit": {
     "build": {
       "command": "pnpm --filter=\"upscaler\" build"
