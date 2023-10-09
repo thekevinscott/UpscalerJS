@@ -1,4 +1,4 @@
-export { default as x2, } from './2x';
-export { default as x3, } from './3x';
-export { default as x4, } from './4x';
-export { default as x8, } from './8x';
+export { default as x2, } from './x2';
+export { default as x3, } from './x3';
+export { default as x4, } from './x4';
+export { default as x8, } from './x8';

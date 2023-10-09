@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node16",
+    "target": "ES5",
+  },
+  "include": ["src/shared/index.ts", "src/node/cjs/index.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

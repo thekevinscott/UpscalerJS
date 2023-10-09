@@ -1,4 +1,4 @@
-import { ModelDefinition, } from '@upscalerjs/core';
+import type { ModelDefinition, } from '../../../packages/shared/src/types';
 import { NAME, VERSION, } from './constants.generated';
 
 const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
@@ -7,7 +7,7 @@ const getModelDefinition = (scale: 2 | 3 | 4): ModelDefinition => ({
   _internals: {
     name: NAME,
     version: VERSION,
-    path: `models/${scale}x/${scale}x.json`,
+    path: `models/x${scale}/x${scale}.json`,
   },
   meta: {
     dataset: null,

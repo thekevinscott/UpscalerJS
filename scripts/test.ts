@@ -6,14 +6,13 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import buildModels from '../scripts/package-scripts/build-model';
 import { getAllAvailableModelPackages } from './package-scripts/utils/getAllAvailableModels';
 import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import buildUpscaler from './package-scripts/build-upscaler';
+import { runPNPMScript } from '@internals/common';
 import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
 import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
-import { TEST_DIR } from './package-scripts/utils/constants';
+import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
  * Types
@@ -64,28 +63,42 @@ const getFolder = (platform: Platform, runner: Runner, kind: Kind) => {
 
 const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
   if (kind === 'memory') {
-    return ['test.browser'];
+    return ['test.browser.ts'];
   }
   if (kind === 'model') {
-    return ['model'];
+    return ['model.ts'];
   }
-  const files: string[] = sync(path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`));
-  return files.map(file => file.split('/').pop() || '');
+  if (runner === 'browserstack') {
+    const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+  }
+  const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
+  const files: string[] = sync(globPath);
+  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
   const sharedDependenciesSet = new Set<Bundle>();
 
   const platforms = ([] as Platform[]).concat(_platforms);
+  const filesForPlatforms: {platform: Platform; files: (string | number)[]}[] = [];
 
   await Promise.all(platforms.map(async (platform: Platform) => {
     const filePath = path.resolve(TEST_DIR, 'integration', `${getFolder(platform, runner, kind)}.dependencies.ts`);
     const { default: sharedDependencies } = await import(filePath);
 
     const files = specificFiles.length > 0 ? specificFiles : getAllTestFiles(platform, runner, kind);
+    filesForPlatforms.push({
+      platform,
+      files,
+    })
 
     for (const file of files) {
-      const fileName = `${file}`.split('.ts')[0];
+      const fileName = `${file}`.split('.').slice(0, -1).join('.');
+      if (fileName === '') {
+        throw new Error(`Filename is empty. Original is: ${file}`);
+      }
       if (!sharedDependencies[fileName]) {
         throw new Error(`File ${fileName} does not have any shared dependencies defined. The shared dependencies file is ${JSON.stringify(sharedDependencies, null, 2)} for filepath ${filePath}`);
       }
@@ -94,7 +107,11 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
       });
     }
   }));
-  return Array.from(sharedDependenciesSet);
+  const sharedDependencies = Array.from(sharedDependenciesSet);
+  if (sharedDependencies.length === 0) {
+    throw new Error(`One day there may be no defined dependencies, but today is not that day. ${JSON.stringify(filesForPlatforms)}`)
+  }
+  return sharedDependencies;
 };
 
 const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
@@ -123,57 +140,20 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   browserstackAccessKey,
   verbose,
-  skipUpscalerBuild,
-  skipModelBuild,
-  forceModelRebuild,
   skipBundle,
   skipTest,
   useGPU,
   watch,
 }: {
   browserstackAccessKey?: string;
-  skipUpscalerBuild?: boolean;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipModelBuild !== true) {
-    const modelPackages = getAllAvailableModelPackages();
-    const durations = await buildModels(modelPackages, getOutputFormats(platform), {
-      verbose,
-      forceRebuild: forceModelRebuild,
-    });
-    if (verbose) {
-      console.log([
-        `** built models: ${getOutputFormats(platform)}`,
-        ...modelPackages.map((modelPackage, i) => `  - ${modelPackage} in ${durations?.[i]} ms`),
-      ].join('\n'));
-    }
-  }
-
-  if (skipUpscalerBuild !== true) {
-    const platformsToBuild = getPlatformsToBuild(platform);
-
-    const durations: number[] = [];
-    for (let i = 0; i < platformsToBuild.length; i++) {
-      const duration = await buildUpscaler(platformsToBuild[i]);
-      durations.push(duration);
-    }
-    console.log([
-      `** built upscaler: ${platform}`,
-      ...platformsToBuild.map((platformToBuild, i) => `  - ${platformToBuild} in ${durations?.[i]} ms`),
-    ].join('\n'));
-  }
-
   if (skipBundle !== true) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
-    if (dependencies.length === 0) {
-      throw new Error('One day there may be no defined dependencies, but today is not that day.')
-    }
     const durations: number[] = [];
     for (const dependency of dependencies) {
       const start = performance.now();
@@ -220,7 +200,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     }
 
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = [
+    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
       'pnpm',
       'jest',
       '--config',
@@ -231,7 +211,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     ].filter(Boolean).map(arg => `${arg}`);
 
     if (verbose) {
-      console.log(args);
+      console.log(args.join(' '));
       if (bsLocal) {
         console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
       }
@@ -267,9 +247,6 @@ interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
   skipBundle?: boolean;
-  skipUpscalerBuild?: boolean;
-  skipModelBuild?: boolean;
-  forceModelRebuild?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   browserstackAccessKey?: string;
@@ -331,11 +308,8 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipUpscalerBuild: { type: 'boolean' },
-    skipModelBuild: { type: 'boolean' },
     skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
-    forceModelRebuild: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },
@@ -359,7 +333,6 @@ const getArgs = async (): Promise<Args> => {
     kind,
     positionalArgs,
     verbose: ifDefined('verbose', 'boolean'),
-    forceModelRebuild: ifDefined('forceModelRebuild', 'boolean'),
   }
 };
 

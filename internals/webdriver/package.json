@@ -4,7 +4,9 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Wrapper for Selenium Webdriver",
+  "main": "./dist/index.js",
   "exports": {
+    "./options": "./browserStackOptions.json",
     ".": "./dist/index.js"
   },
   "author": "Kevin Scott",
@@ -17,7 +19,9 @@
   "wireit": {
     "build": {
       "command": "shx rm -rf dist && tsc -b",
-      "dependencies": [ ],
+      "dependencies": [ 
+        "../common:build"
+      ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",

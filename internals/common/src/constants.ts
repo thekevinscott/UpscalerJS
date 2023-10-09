@@ -16,7 +16,6 @@ export const DEV_DIR = path.resolve(ROOT_DIR, 'dev');
 export const PACKAGES_DIR = path.resolve(ROOT_DIR, 'packages');
 
 export const UPSCALER_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs');
-export const CORE_DIR = path.resolve(PACKAGES_DIR, 'core');
 export const SHARED_DIR = path.resolve(PACKAGES_DIR, 'shared');
 export const WRAPPER_DIR = path.resolve(PACKAGES_DIR, 'upscalerjs-wrapper');
 

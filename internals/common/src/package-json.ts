@@ -1,5 +1,5 @@
 import path from 'path';
-import { readFile } from '@internals/common/fs';
+import { readFile } from './fs.js';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
 import { ROOT_DIR } from './constants.js';
 import { writeFile } from './fs.js';

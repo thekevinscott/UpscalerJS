@@ -1,8 +1,19 @@
 {
   "name": "@upscalerjs/shared",
   "private": true,
+  "scripts": {
+    "test": "wireit"
+  },
+  "wireit": {
+    "test": {
+      "command": "vitest -c vite.config.ts"
+    }
+  },
   "dependencies": {
-    "@upscalerjs/core": "workspace:*",
     "@tensorflow/tfjs-core": "~4.8.0"
+  },
+  "devDependencies": {
+    "vitest": "^0.34.6",
+    "wireit": "^0.14.0"
   }
 }

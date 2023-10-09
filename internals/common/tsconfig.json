@@ -2,7 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "importHelpers": true,
+    "importHelpers": false,
     "module": "es2022",
     "outDir": "./dist",
     "rootDir": "src",

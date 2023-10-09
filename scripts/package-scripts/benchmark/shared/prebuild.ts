@@ -1,6 +1,6 @@
 import buildModels from '../../build-model';
 import { getAllAvailableModelPackages } from '../../utils/getAllAvailableModels';
-import buildUpscaler from '../../build-upscaler';
+import { runPNPMScript } from '@internals/common';
 
 const getOutputFormats = (): ('cjs' | 'esm' | 'umd')[] => {
   return ['cjs', 'esm', 'umd'];
@@ -52,7 +52,9 @@ export const prebuild = async ({
 
     const durations: number[] = [];
     for (let i = 0; i < platformsToBuild.length; i++) {
-      const duration = await buildUpscaler(platformsToBuild[i]);
+      const start = performance.now();
+      await runPNPMScript(`build:${platformsToBuild[i]}`, 'upscaler')
+      const duration = performance.now() - start;
       durations.push(duration);
     }
     if (verbose) {

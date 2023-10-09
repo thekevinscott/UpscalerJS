@@ -1,8 +1,9 @@
 import path from 'path';
-import { exists, readFile, writeFile } from '@internals/common/fs';
+
 import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
 import { ROOT_DIR } from '@internals/common/constants';
+import { exists, readFile, writeFile } from '@internals/common/fs';
 
 /****
  * Types

@@ -11,6 +11,8 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
+    "@internals/common": "workspace:*",
+    "@internals/http-server": "workspace:*",
     "puppeteer": "^21.1.0",
     "fs-extra": "latest"
   },
@@ -18,6 +20,8 @@
     "build": {
       "command": "shx rm -rf dist && tsc -b",
       "dependencies": [
+        "../common:build",
+        "../http-server:build"
       ],
       "files": [
         "src/**/*.ts",

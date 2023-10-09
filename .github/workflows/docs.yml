@@ -34,6 +34,8 @@ jobs:
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v2
+        with:
+          lfs: 'true'
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -44,11 +46,6 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
-
-      - name: 'Setup DVC & Pull Models'
-        uses: ./.github/actions/setup-dvc
-        with:
-          gdrive_credentials_data: ${{ secrets.GDRIVE_CREDENTIALS_DATA }}          
 
       - name: 'Setup PNPM'
         uses: ./.github/actions/setup-pnpm
