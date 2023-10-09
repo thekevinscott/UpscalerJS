@@ -851,18 +851,7 @@ importers:
         specifier: ^0.14.0
         version: 0.14.0
 
-  packages/core:
-    dependencies:
-      '@tensorflow/tfjs-core':
-        specifier: ~4.8.0
-        version: 4.8.0
-    devDependencies:
-      vitest:
-        specifier: ^0.34.2
-        version: 0.34.2(jsdom@22.1.0)
-      wireit:
-        specifier: ^0.14.0
-        version: 0.14.0
+  packages/core: {}
 
   packages/shared:
     dependencies:
