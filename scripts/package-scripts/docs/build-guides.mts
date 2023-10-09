@@ -1,11 +1,11 @@
 import path from 'path';
 import fsExtra from 'fs-extra';
 const { copyFile, existsSync, mkdirp, readdir, readdirSync, readFile, readFileSync, statSync, writeFile } = fsExtra;
-import { DOCS_DIR, EXAMPLES_DIR } from '../utils/constants';
+import { DOCS_DIR, EXAMPLES_DIR } from '@internals/common/constants';
 import { getPackageJSON } from '../utils/packages.mjs';
 import fm from 'front-matter';
-import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
-import { getSharedArgs, SharedArgs } from './types';
+import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files.mjs';
+import { getSharedArgs, SharedArgs } from './types.mjs';
 
 /****
  * Types

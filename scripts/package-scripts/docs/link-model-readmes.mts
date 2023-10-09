@@ -3,11 +3,11 @@
  */
 import path from 'path';
 import fsExtra from 'fs-extra';
-const { copy, existsSync, mkdirp, readFile, unlinkSync, writeFile, writeFileSync } = fsExtra;
-import { DOCS_DIR, MODELS_DIR } from '../utils/constants';
+const { copy, existsSync, mkdirp, readFile, writeFile } = fsExtra;
+import { DOCS_DIR, MODELS_DIR } from '@internals/common/constants';
 import { getAllAvailableModelPackages } from "../utils/getAllAvailableModels.mjs";
-import { getSharedArgs, SharedArgs } from './types';
-import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
+import { getSharedArgs, SharedArgs } from './types.mjs';
+import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files.mjs';
 
 /****
  * Types

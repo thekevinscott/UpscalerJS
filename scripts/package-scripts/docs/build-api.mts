@@ -11,9 +11,9 @@ import {
   ReflectionKind,
 } from 'typedoc';
 import { Platform } from '../prompt/types.mjs';
-import { DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
-import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
-import { SharedArgs } from './types';
+import { DOCS_DIR, UPSCALER_DIR } from '@internals/common/constants';
+import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files.mjs';
+import { SharedArgs } from './types.mjs';
 import {
   CommentDisplayPart,
   CommentTag,
