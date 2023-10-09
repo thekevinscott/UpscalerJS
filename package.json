@@ -244,6 +244,9 @@
     "test:integration:browser": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
       "dependencies": [
+        "./internals/common:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
         "build:models:umd"
@@ -252,6 +255,8 @@
     "test:integration:node": {
       "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
       "dependencies": [
+        "./internals/common:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "build:models:cjs"
@@ -260,6 +265,9 @@
     "test:model": {
       "command": "pnpm --filter @upscalerjs/scripts test:model",
       "dependencies": [
+        "./internals/common:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "./packages/upscalerjs:build:browser",
@@ -269,6 +277,9 @@
     "test:memory-leaks": {
       "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
       "dependencies": [
+        "./internals/common:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm"
       ]
