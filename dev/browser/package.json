@@ -16,7 +16,7 @@
     "vite": "^4.4.9"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "~4.8.0",
+    "@tensorflow/tfjs": "~4.11.0",
     "stats.js": "^0.17.0"
   },
   "version": "1.0.0-beta.10"

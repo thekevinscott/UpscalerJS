@@ -20,7 +20,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.8.0",
+    "@tensorflow/tfjs": "~4.11.0",
     "esbuild": "^0.18.20",
     "seedrandom": "^3.0.5",
     "upscaler": "1.0.0-beta.17"

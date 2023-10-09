@@ -116,7 +116,7 @@ const getPackageJSONFile = (model: string) => `
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "^4.2.0",
+    "@tensorflow/tfjs": "~4.11.0",
     "seedrandom": "^3.0.5",
     "@upscalerjs/${model}": "^0.1.0",
     "upscaler": "^1.0.0-beta.8"
