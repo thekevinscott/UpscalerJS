@@ -1,5 +1,4 @@
 import path from 'path';
-import browserstack from 'browserstack-local';
 import webdriver, { WebDriver, ThenableWebDriver, Builder, logging } from 'selenium-webdriver';
 import * as dotenv from 'dotenv';
 import { ROOT_DIR } from './constants';
@@ -8,8 +7,6 @@ import { existsSync, readFileSync, writeFileSync } from 'fs-extra';
 /****
  * Types
  */
-export type Browserstack = browserstack.Local;
-
 export interface BrowserOption {
   os?: string;
   os_version: string;
@@ -83,49 +80,6 @@ function shouldPrintLogs (entry: logging.Entry, capabilities: BrowserOption) {
  * Public Functions
  */
 export const getBrowserstackAccessKey = () => getEnv().BROWSERSTACK_ACCESS_KEY;
-
-export const startBrowserstack = ({
-  key,
-  bs,
-  verbose = true,
-}: {
-  key?: string;
-  bs?: browserstack.Local;
-  verbose?: boolean;
-}): Promise<Browserstack> => new Promise((resolve, reject) => {
-  if (!key) {
-    throw new Error('A key must be passed to start up the local browserstack service');
-  }
-  if (!bs) {
-    if (verbose) {
-      console.log('Start browserstack with a brand new object')
-    }
-    bs = new browserstack.Local();
-  } else {
-    if (verbose) {
-      console.log('Start browserstack with an existing object')
-    }
-  }
-  bs.start({
-    key,
-    force: true,
-    onlyAutomate: true,
-    forceLocal: true,
-  }, (error) => {
-    if (error) {
-      return reject(error);
-    }
-    if (bs?.isRunning() !== true) {
-      throw new Error('Browserstack failed to start');
-    }
-    if (verbose) {
-      console.log('Browserstack started');
-    }
-    return resolve(bs);
-  });
-});
-
-export const stopBrowserstack = (bs: Browserstack): Promise<void> => new Promise(resolve => bs.stop(() => resolve()));
 
 export const getBrowserOptions = (filter?: FilterBrowserOption): Array<BrowserOption> => browserOptions.filter(filter || Boolean);
 
