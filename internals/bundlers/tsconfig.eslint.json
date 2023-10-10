@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.eslint.json",
+  "include": [
+    "./src/**/*.ts",
+    "./src/**/*.mts",
+  ]
+}

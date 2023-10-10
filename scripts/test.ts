@@ -6,9 +6,7 @@ import path from 'path';
 import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
-import { OutputFormat } from './package-scripts/prompt/types';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import { DEFAULT_OUTPUT_FORMATS } from './package-scripts/prompt/getOutputFormats';
 import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
 /****
@@ -22,20 +20,6 @@ type Kind = 'integraticn' | 'memory' | 'model';
 /****
  * Utility Functions & Classes
  */
-
-const getOutputFormats = (target: Platform | Platform[]): Array<OutputFormat> => {
-  if (Array.isArray(target)) {
-    if (target.includes('browser')) {
-      return DEFAULT_OUTPUT_FORMATS;
-    }
-    return ['cjs'];
-  }
-  if (target === 'browser') {
-    // TODO: Must include CJS here, otherwise upscaler fails to build because it can't find default
-    return DEFAULT_OUTPUT_FORMATS;
-  }
-  return ['cjs'];
-}
 
 const runTTYProcess = (command: string, args: Array<string> = [], env = {}): Promise<null | number> => new Promise(resolve => {
   const spawnedProcess = spawn(command, args, {stdio: "inherit", env: { ...process.env, ...env }});
@@ -123,13 +107,6 @@ const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind
   }
   return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
 };
-
-const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] => {
-  if (Array.isArray(platform)) {
-    return ['browser', 'node', 'node-gpu'];
-  }
-  return platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
-}
 
 /****
  * Main function

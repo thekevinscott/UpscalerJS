@@ -58,6 +58,7 @@
     "@internals/webdriver": "workspace:*",
     "@internals/http-server": "workspace:*",
     "@internals/test-runner": "workspace:*",
+    "@internals/bundlers": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
