@@ -13,6 +13,8 @@
     "build:models:umd": "wireit",
     "build:models:cjs": "wireit",
     "bundle:esbuild": "wireit",
+    "bundle:webpack": "wireit",
+    "bundle:umd": "wireit",
     "bundle:node": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
@@ -252,6 +254,20 @@
     "update:npm:dependencies": {
       "command": "pnpm --filter @upscalerjs/scripts update:npm:dependencies"
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
     "bundle:esbuild": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- esbuild",
       "dependencies": [
@@ -281,6 +297,19 @@
         "!tmp/bundlers/node/node_modules"
       ]
     },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
+      ]
+    },
     "test:start-test-server": {
       "command": "ts-node test/lib/start-test-server.ts"
     },
@@ -304,7 +333,10 @@
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
-        "build:models:umd"
+        "build:models:umd",
+        "bundle:esbuild",
+        "bundle:webpack",
+        "bundle:umd"
       ]
     },
     "test:integration:serverside": {
@@ -327,7 +359,10 @@
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "./packages/upscalerjs:build:browser",
-        "build:models"
+        "build:models",
+        "bundle:esbuild",
+        "bundle:umd",
+        "bundle:node"
       ]
     },
     "test:integration:memory-leaks": {
@@ -336,6 +371,7 @@
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
+        "./internals/bundlers:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
         "bundle:esbuild"

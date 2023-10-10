@@ -11,7 +11,7 @@ import {
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
-} from '../../../packages/upscalerjs/src/shared/errors-and-warnings';
+} from '../../../../packages/upscalerjs/src/shared/errors-and-warnings.js';
 import { getTemplate } from '@internals/common/get-template';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { withTmpDir } from '@internals/common/tmp-dir';
@@ -72,6 +72,7 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
     weightsName,
   };
 };
+
 
 describe('Node Model Loading Integration Tests', () => {
   const testRunner = new ServersideTestRunner({

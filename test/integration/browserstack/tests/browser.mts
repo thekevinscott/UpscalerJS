@@ -99,7 +99,7 @@ describe('Browser Integration Tests', () => {
     }, { fixturePath, modelPath, });
     await printLogs(driver, capabilities);
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
-  }, 30000);
+  });
 });
 
 declare global {

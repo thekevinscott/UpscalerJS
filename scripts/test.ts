@@ -9,6 +9,7 @@ import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
+// import { ROOT_BUNDLER_OUTPUT_DIR } from '@internals/bundlers';
 const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(ROOT_DIR, 'tmp/bundlers');
 /****
  * Types
@@ -122,40 +123,35 @@ const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind
  */
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
   verbose,
-  skipBundle,
-  skipTest,
   useGPU,
   watch,
 }: {
   verbose?: boolean;
-  skipBundle?: boolean;
-  skipTest?: boolean;
   useGPU?: boolean,
   watch?: boolean;
-}) => {
-  if (skipBundle !== true && !(
-    runner === 'browserstack' 
-    || kind === 'memory'
-    || (platform === 'node' && kind === 'integration')
-  )) {
-    const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
-    const durations: number[] = [];
-    for (const dependency of dependencies) {
-      const start = performance.now();
-      await dependency({
-        verbose,
-        // skipInstallNodeModules: true,
-        // skipInstallLocalPackages: true,
-        // skipCopyFixtures: true,
-      });
-      durations.push(performance.now() - start);
-    }
-    console.log([
-      `** bundled: ${platform}`,
-      ...dependencies.map((fn, i) => `  - ${fn.name} in ${durations?.[i]} ms`),
-    ].join('\n'));
+<<<<<<< HEAD
+  }) => {
+  const jestConfigPath = getJestConfigPath(platform, runner, kind);
+
+  const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
+    'pnpm',
+    'jest',
+    '--config',
+    jestConfigPath,
+    '--detectOpenHandles',
+    watch ? '--watch' : undefined,
+    ...positionalArgs,
+  ].filter(Boolean).map(arg => `${arg}`);
+
+  if (verbose) {
+    console.log(args.join(' '));
   }
 
+<<<<<<< HEAD
+  const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
+  if (code !== null) {
+    process.exit(code);
+=======
   if (skipTest !== true) {
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const getArgs = () => {
@@ -163,7 +159,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'browser') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.mts')];
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.ts')];
       }
       if (kind === 'memory') {
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/memory/vite.config.mts')];
@@ -191,6 +187,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     if (code !== null) {
       process.exit(code);
     }
+>>>>>>> 0c901050 (Rename browser integration test to clientside and use vite (#1212))
   }
 }
 
@@ -200,15 +197,11 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
-  skipBundle?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   verbose?: boolean;
   kind: Kind;
   useGPU?: boolean;
-
-  // this is an option only for CI; lets us separate out our build step from our test step
-  skipTest?: boolean;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -259,8 +252,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipBundle: { type: 'boolean' },
-    skipTest: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },

@@ -196,11 +196,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:clientside -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:integration:clientside -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:clientside
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -218,13 +215,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
-
       - name: 'Integration Tests'
-        run: pnpm test:integration:serverside -- --ci --verbose
+        run: pnpm test:integration:serverside
 
   integration-models-browser:
     name: 'Models / Browser'
@@ -248,11 +240,8 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform browser --ci --verbose  --skip-bundle
+        run: pnpm test:model -- --platform browser --ci --verbose
 
   integration-models-node:
     name: 'Models / Node'
@@ -268,11 +257,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform node --ci --verbose  --skip-bundle
+        run: pnpm test:model -- --platform node --ci --verbose
 
   integration-memory-leaks:
     name: 'Integration / Memory Leaks'
@@ -289,7 +275,7 @@ jobs:
           node-version: 16
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:integration:memory-leaks -- --ci --verbose 
+        run: pnpm test:integration:memory-leaks
 
   build-docs:
     name: 'Build Documentation'
