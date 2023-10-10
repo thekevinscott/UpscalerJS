@@ -236,6 +236,7 @@
     "@tensorflow/tfjs-node": "~4.8.0",
     "@tensorflow/tfjs-node-gpu": "~4.8.0",
     "@types/jest": "^29.5.3",
+    "eslint": "8.47.0",
     "seedrandom": "3.0.5",
     "vitest": "^0.34.5"
   }

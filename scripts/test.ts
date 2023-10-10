@@ -9,7 +9,6 @@ import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { ROOT_DIR, TEST_DIR } from '@internals/common/constants';
 import type { Bundle } from '../test/integration/utils/NodeTestRunner';
-
 /****
  * Types
  */
@@ -108,13 +107,6 @@ const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind
   }
   return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
 };
-
-const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] => {
-  if (Array.isArray(platform)) {
-    return ['browser', 'node', 'node-gpu'];
-  }
-  return platform === 'browser' ? ['browser'] : ['node', 'node-gpu'];
-}
 
 /****
  * Main function

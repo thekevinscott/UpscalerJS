@@ -1,0 +1,13 @@
+import * as tf from '@tensorflow/tfjs';
+import Upscaler from 'upscaler';
+
+/*** Auto-generated dependencies ***/
+<% dependencies.forEach(function(dependency){ %>
+import <%- dependency.hashedName %> from '<%- dependency.name %>';
+window['<%- dependency.name %>'] = <%- dependency.hashedName %>;
+<%  }); %>
+
+window.tf = tf;
+window.Upscaler = Upscaler;
+document.title = [document.title, 'Loaded'].join(' | ');
+document.body.querySelector('#output').innerHTML = document.title;
