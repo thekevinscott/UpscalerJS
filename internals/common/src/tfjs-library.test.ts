@@ -1,13 +1,13 @@
 import { vi } from 'vitest';
-import fsExtra from "fs-extra";
+import { readFile, } from "./fs.js";
+import * as _fs from './fs.js';
 import { TFJS_LIBRARY_TARGET_ERROR, getTFJSLibraryTargetFromPackageJSON } from './tfjs-library.js';
-const { readFile } = fsExtra;
 
-vi.mock('fs-extra', () => {
+vi.mock('./fs.js', async () => {
+  const actual = await vi.importActual("./fs.js") as typeof _fs;
   return {
-    default: {
-      readFile: vi.fn(),
-    },
+    ...actual,
+    readFile: vi.fn(),
   }
 });
 
@@ -17,9 +17,9 @@ describe('getTFJSLibraryTarget', () => {
   });
 
   const makeMock = (dependencies: Record<string, string>) => {
-    vi.mocked(readFile).mockImplementation(() => Promise.resolve(Buffer.from(JSON.stringify({
+    vi.mocked(readFile).mockImplementation(() => Promise.resolve(JSON.stringify({
       dependencies,
-    }))));
+    })));
   }
 
   it('loads the correct package json from the right directory', async () => {
@@ -28,7 +28,7 @@ describe('getTFJSLibraryTarget', () => {
     });
     expect(readFile).toHaveBeenCalledTimes(0);
     expect(await getTFJSLibraryTargetFromPackageJSON('foo')).toBe('browser');
-    expect(readFile).toHaveBeenCalledWith(expect.stringContaining('foo/package.json'), expect.anything());
+    expect(readFile).toHaveBeenCalledWith(expect.stringContaining('foo/package.json'));
   });
 
   it('returns browser for @tensorflow/tfjs', async () => {

@@ -7,11 +7,9 @@ import { spawn } from 'child_process';
 import yargs from 'yargs';
 import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
-import { Browserstack, getBrowserstackAccessKey, startBrowserstack, stopBrowserstack } from './package-scripts/utils/browserStack';
+import { ROOT_DIR, TEST_DIR } from '@internals/common/constants';
 import type { Bundle } from '../test/integration/utils/NodeTestRunner';
 
-const ROOT_DIR = path.resolve(__dirname, '..');
-const TEST_DIR = path.resolve(ROOT_DIR, 'test');
 /****
  * Types
  */
@@ -122,14 +120,12 @@ const getPlatformsToBuild = (platform: Platform | Platform[]): TargetPlatform[] 
  * Main function
  */
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
-  browserstackAccessKey,
   verbose,
   skipBundle,
   skipTest,
   useGPU,
   watch,
 }: {
-  browserstackAccessKey?: string;
   verbose?: boolean;
   skipBundle?: boolean;
   skipTest?: boolean;
@@ -156,35 +152,8 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   }
 
   if (skipTest !== true) {
-    let bsLocal: undefined | Browserstack = undefined;
-    if (runner === 'browserstack') {
-      bsLocal = await startBrowserstack({
-        key: browserstackAccessKey,
-        verbose,
-      });
-      console.log('verbose', verbose);
-      if (verbose) {
-        console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
-      }
-      process.on('exit', async () => {
-        if (bsLocal !== undefined && bsLocal.isRunning()) {
-          if (verbose) {
-            console.log('Stopping browserstack');
-          }
-          await stopBrowserstack(bsLocal);
-          if (verbose) {
-            console.log('Stopped browserstack');
-          }
-        }
-      });
-    } else {
-      if (verbose) {
-        console.log('no browserstack');
-      }
-    }
-
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = bsLocal ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
+    const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
       'pnpm',
       'jest',
       '--config',
@@ -196,28 +165,9 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
     if (verbose) {
       console.log(args.join(' '));
-      if (bsLocal) {
-        console.log('bsLocal.isRunning(): ', bsLocal?.isRunning());
-      }
     }
 
     const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
-    if (runner === 'browserstack') {
-      if (!bsLocal) {
-        throw new Error('bsLocal was never initialized even though runner is browserstack')
-      }
-      if (bsLocal.isRunning() === false) {
-        console.log('bsLocal is already stopped.')
-      } else {
-        if (verbose) {
-          console.log('Stopping browserstack', bsLocal.isRunning());
-        }
-        await stopBrowserstack(bsLocal);
-        if (verbose) {
-          console.log('Stopped browserstack')
-        }
-      }
-    }
     if (code !== null) {
       process.exit(code);
     }
@@ -233,7 +183,6 @@ interface Args {
   skipBundle?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
-  browserstackAccessKey?: string;
   verbose?: boolean;
   kind: Kind;
   useGPU?: boolean;
@@ -287,8 +236,6 @@ const getRunner = (runner?: string): Runner => {
 }
 
 const getArgs = async (): Promise<Args> => {
-  const BROWSERSTACK_ACCESS_KEY = getBrowserstackAccessKey();
-
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
@@ -311,7 +258,6 @@ const getArgs = async (): Promise<Args> => {
 
   return {
     ...argv,
-    browserstackAccessKey: BROWSERSTACK_ACCESS_KEY,
     platform,
     runner,
     kind,

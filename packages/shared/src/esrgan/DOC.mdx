@@ -65,10 +65,10 @@ const upscaler = new Upscaler({
 
 #### Using a script tag
 
-If importing Tensorflow.js using script tags, import the model and UpscalerJS with:
+If importing Tensorflow.js using script tags, import the specific model and UpscalerJS with:
 
 ```
-<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/2x.min.js"></script> <!-- loads the 2x model -->
 <script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
 
 <script type="text/javascript">
@@ -78,7 +78,15 @@ If importing Tensorflow.js using script tags, import the model and UpscalerJS wi
 </script>
 ```
 
-All models will be made available on the global window object. See [Available Models](#available-models) for information on their names.
+The model will be made available on the global window object. See [Available Models](#available-models) for information on referencing by name.
+
+You can also import all models in this package via the `index.min.js` import:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/index.min.js"></script>
+```
+
+If so, all model configurations will be available on the global object `<% snippets/umdName %>`.
 
 ### Node
 
@@ -121,6 +129,15 @@ const upscaler = new Upscaler({
 If referencing the models via script tags, refer to the models by their global names:
 
 <% snippets/umdNames %>
+
+Specific model files can be loaded by specifying the scale:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/2x.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/3x.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/4x.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/<% key %>@latest/dist/umd/8x.min.js"></script>
+```
 
 ## Performance + Speed Measurements
 

@@ -1,19 +1,13 @@
 import { getPackageJSONExports } from './package-json.mjs';
 import { vi } from 'vitest';
-import * as fs from '@internals/common/fs';
+import * as _fs from './fs.js';
+import { readFile } from './fs.js';
 
-const { readFile } = fs;
-
-vi.mock('@internals/common/fs', async () => {
-  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
+vi.mock('./fs.js', async () => {
+  const actual = await vi.importActual("./fs.js") as typeof _fs;
   return {
-    default: {
-      ...actual,
-      // exists: vi.fn(),
-      // readdir: vi.fn().mockImplementation(() => Promise.resolve([])),
-      readFile: vi.fn(),
-      // stat: vi.fn(),
-    },
+    ...actual,
+    readFile: vi.fn(),
   }
 });
 
@@ -73,6 +67,10 @@ describe('package-json', () => {
         ['./2x', {
           "require": "./dist/cjs/models/esrgan-thick/src/x2.js",
           "import": "./dist/esm/models/esrgan-thick/src/x2.js"
+        }],
+        ['.', {
+          "require": "./dist/cjs/models/esrgan-thick/src/index.js",
+          "import": "./dist/esm/models/esrgan-thick/src/index.js"
         }],
       ]);
     });

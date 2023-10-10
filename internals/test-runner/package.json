@@ -34,12 +34,16 @@
         "dist/**"
       ]
     },
+    "test:run": {
+      "command": "vitest run --config ./vite.config.ts"
+    },
     "test": {
-      "command": "vitest"
+      "command": "vitest --config ./vite.config.ts"
     }
   },
   "scripts": {
     "build": "wireit",
+    "test:run": "wireit",
     "test": "wireit"
   },
   "engines": {
