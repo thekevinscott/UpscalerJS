@@ -8,10 +8,7 @@
   "wireit": {
     "test": {
       "dependencies": [
-        "./common:test:run",
-        "./http-server:test:run",
-        "./test-runner:test:run",
-        "./webdriver:test:run"
+        "./common:test:run"
       ]
     }
   },
