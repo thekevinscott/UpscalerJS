@@ -23,13 +23,16 @@
   },
   "scripts": {
     "build": "wireit",
-    "lint": "wireit",
+    "_lint": "wireit",
     "copy-files": "wireit",
     "test": "wireit"
   },
   "wireit": {
-    "lint": {
-      "command": "eslint -c eslintrc.cjs src --ext .ts --ext .mts"
+    "_lint": {
+      "command": "eslint -c eslintrc.cjs src --ext .ts --ext .mts",
+      "dependencies": [
+        "../common:build"
+      ]
     },
     "copy-files": {
       "command": "rsync -avmq --include='*.ejs' -f 'hide,! */' ./src/ ./dist"
