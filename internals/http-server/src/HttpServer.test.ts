@@ -1,6 +1,6 @@
 import { vi, } from 'vitest';
 import { Server as HTTPServer } from 'http';
-import { ERROR_STRING_ADDRESS, ERROR_NO_ADDRESS, HttpServer, getServerPort } from "./HttpServer.js";
+import { ERROR_STRING_ADDRESS, ERROR_NO_ADDRESS, getServerPort } from "./HttpServer.js";
 
 describe('getServerPort', () => {
   it('throws if no address is returned', () => {

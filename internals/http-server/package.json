@@ -40,7 +40,10 @@
       "command": "vitest run --config ./vite.config.ts"
     },
     "test": {
-      "command": "vitest --config ./vite.config.ts"
+      "command": "vitest --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
     }
   },
   "scripts": {
