@@ -1,6 +1,7 @@
 {
   "name": "@internals/common",
   "private": true,
+  "type": "module",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
@@ -8,10 +9,10 @@
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
     "./constants": "./dist/constants.js",
-    "./logger": "./dist/logger.mjs",
+    "./logger": "./dist/logger.js",
     "./git": "./dist/git.js",
     "./packages": "./dist/packages.js",
-    "./npm": "./dist/npm.mjs",
+    "./npm": "./dist/npm.js",
     "./get-hashed-name": "./dist/get-hashed-name.js",
     "./tfjs-library": "./dist/tfjs-library.js",
     "./types": "./dist/types.js",
@@ -32,16 +33,19 @@
     "wireit": "^0.14.0"
   },
   "devDependencies": {
+    "shx": "^0.3.4",
     "@types/ejs": "^3.1.2",
     "vitest-mock-process": "^1.0.4",
     "vitest": "^0.34.5"
   },
   "wireit": {
     "build": {
-      "command": "tsc -p ./tsconfig.json",
+      "command": "shx rm -rf dist && tsc -p ./tsconfig.json",
       "files": [
         "src/**/*.ts",
+        "src/**/*.mts",
         "!src/**/*.test.ts",
+        "!src/**/*.test.mts",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
@@ -50,12 +54,16 @@
         "dist/**"
       ]
     },
+    "test:run": {
+      "command": "vitest run --config ./vite.config.ts"
+    },
     "test": {
-      "command": "vitest --config vite.config.js"
+      "command": "vitest --config ./vite.config.ts"
     }
   },
   "scripts": {
     "build": "wireit",
+    "test:run": "wireit",
     "test": "wireit"
   },
   "engines": {

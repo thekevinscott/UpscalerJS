@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { getLogLevel, verbose } from './logger.mjs';
+import { getLogLevel, verbose } from './logger.js';
 
 const parseCommand = (_command: string | string[]) => {
   const command = Array.isArray(_command) ? _command : _command.split(' ');

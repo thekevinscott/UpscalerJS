@@ -555,6 +555,12 @@ importers:
         specifier: ^3.5.1
         version: 3.5.1
 
+  internals:
+    devDependencies:
+      wireit:
+        specifier: latest
+        version: 0.14.0
+
   internals/common:
     dependencies:
       chalk:
@@ -576,6 +582,9 @@ importers:
       '@types/ejs':
         specifier: ^3.1.2
         version: 3.1.3
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
       vitest:
         specifier: ^0.34.5
         version: 0.34.5(jsdom@22.1.0)

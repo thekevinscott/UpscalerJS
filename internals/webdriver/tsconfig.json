@@ -1,19 +1,9 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "target": "ESNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "module": "ESNext",
-    "moduleResolution": "NodeNext",
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
+    "rootDir": "./src",
     "outDir": "./dist",
-    "forceConsistentCasingInFileNames": true,
-    "types": ["vitest/globals"]
   },
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["./src/**/*.ts", "./src/**/*.mts"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.mts"],
 }

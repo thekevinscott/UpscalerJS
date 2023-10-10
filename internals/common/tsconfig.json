@@ -1,20 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
     "importHelpers": false,
-    "module": "es2022",
+    "rootDir": "./src",
     "outDir": "./dist",
-    "rootDir": "src",
-    "strict": true,
-    "target": "es2022",
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node16",
-      "types": ["vitest/globals"]
   },
-  "include": ["./src/**/*"],
-  "exclude": ["./src/**/*.test.ts"],
-  "ts-node": {
-    "esm": true
-  }
+  "include": ["./src/**/*.ts", "./src/**/*.mts"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.mts"],
 }
