@@ -1,4 +1,4 @@
-import { readFile } from './fs';
+import { readFile } from './fs.js';
 import { compile } from 'ejs';
 
 const parseValue = (value: unknown) => {

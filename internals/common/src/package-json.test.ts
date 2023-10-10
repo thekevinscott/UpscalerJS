@@ -1,4 +1,4 @@
-import { getPackageJSONExports } from './package-json.mjs';
+import { getPackageJSONExports } from './package-json.js';
 import { vi } from 'vitest';
 import * as _fs from './fs.js';
 import { readFile } from './fs.js';

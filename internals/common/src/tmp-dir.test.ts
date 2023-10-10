@@ -2,7 +2,7 @@ import * as _fs from './fs.js';
 import { exists, mkdirp } from './fs.js';
 import { vi } from 'vitest';
 import { rimraf } from 'rimraf';
-import { makeTmpDir, withTmpDir } from "./tmp-dir.mjs";
+import { makeTmpDir, withTmpDir } from "./tmp-dir.js";
 
 vi.mock("./fs.js", async () => {
   const actual = await vi.importActual("./fs.js") as typeof _fs;

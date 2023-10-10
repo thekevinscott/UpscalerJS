@@ -1,7 +1,7 @@
 import path from 'path';
 import { readFile } from './fs.js';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
-import { ROOT_DIR } from './constants.mjs';
+import { ROOT_DIR } from './constants.js';
 import { writeFile } from './fs.js';
 
 export type PackageJSONExport = string | {
