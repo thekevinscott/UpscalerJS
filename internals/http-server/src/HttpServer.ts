@@ -3,34 +3,18 @@ import handler from 'serve-handler';
 import { exists } from '@internals/common/fs';
 import { verbose } from '@internals/common/logger';
 import { Tunnel } from './Tunnel.js';
+import { serverHeaders } from './serverHeaders.js';
 
-const serverHeaders = [
-  {
-    "source": "**/*",
-    "headers": [
-      {
-        "key": "Bypass-Tunnel-Reminder",
-        "value": "true",
-      },
-      {
-        "key": "Access-Control-Allow-Origin",
-        "value": "*",
-      },
-      {
-        "key": "Access-Control-Allow-Headers",
-        "value": "Origin, X-Requested-With, Content-Type, Accept, Range",
-      }
-    ]
-  }
-];
+export const ERROR_NO_ADDRESS = 'No address found for server';
+export const ERROR_STRING_ADDRESS = 'Address is of type string for server';
 
 export const getServerPort = (server: HTTPServer): number => {
   const address = server.address();
   if (!address) {
-    throw new Error('No address found for server');
+    throw new Error(ERROR_NO_ADDRESS);
   }
   if (typeof address === 'string') {
-    throw new Error('Address is of type string for server');
+    throw new Error(ERROR_STRING_ADDRESS);
   }
   return address.port;
 };
@@ -121,9 +105,3 @@ export class HttpServer {
     ]);
   }
 }
-
-// type StartServer = (port: number, dist?: string) => Promise<{server: Server; url: string; }>;
-// export const startServer: StartServer = (port, dist) => {
-//   const server = new Server(port, dist);
-//   return server.url;
-// }

@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { vi } from 'vitest';
 import { rimraf } from 'rimraf';
 import { isLogLevel, log, parseMessage, setLogLevel, logTypes } from './logger.js';
+import * as mockProcess from 'vitest-mock-process';
 
 vi.mock('rimraf', async () => {
   const actual = await vi.importActual("rimraf") as typeof rimraf;
@@ -56,31 +57,43 @@ describe('logger', () => {
     });
   });
 
-  // describe('log', () => {
-  //   let mockStdout: ReturnType<typeof mockProcess.mockProcessStdout>;
-  //   let mockStderr: ReturnType<typeof mockProcess.mockProcessStderr>;
+  describe('log', () => {
+    const origLog = console.log;
+    const origError = console.error;
+    // let mockStdout: ReturnType<typeof mockProcess.mockProcessStdout>;
+    // let mockStderr: ReturnType<typeof mockProcess.mockProcessStderr>;
 
-  //   beforeEach(() => {
-  //     mockStdout = mockProcess.mockProcessStdout();
-  //     mockStderr = mockProcess.mockProcessStderr();
-  //   });
+    afterEach(() => {
+      vi.clearAllMocks();
+      console.log = origLog;
+      console.error = origError;
+      // mockStdout = mockProcess.mockProcessStdout();
+      // mockStderr = mockProcess.mockProcessStderr();
+    });
 
-  //   it('logs if level is greater than valid', () => {
-  //     setLogLevel('info');
-  //     log('warn', ['foo']);
-  //     expect(mockStderr).toHaveBeenCalledWith(logTypes.warn('foo\n'));
-  //   });
+    it('logs if level is greater than valid', () => {
+      const mockStderr = vi.fn();
+      console.error = mockStderr;
+      setLogLevel('info');
+      log('warn', ['foo']);
+      expect(mockStderr).toHaveBeenCalledTimes(1);
+      expect(mockStderr).toHaveBeenCalledWith(logTypes.warn('foo'));
+    });
 
-  //   it('logs if level is equal to valid', () => {
-  //     setLogLevel('info');
-  //     log('info', ['foo']);
-  //     expect(mockStdout).toHaveBeenCalledWith(logTypes.info('foo\n'));
-  //   });
+    it('logs if level is equal to valid', () => {
+      const mockStdout = vi.fn();
+      console.log = mockStdout;
+      setLogLevel('info');
+      log('info', ['foo']);
+      expect(mockStdout).toHaveBeenCalledWith(logTypes.info('foo'));
+    });
 
-  //   it('ignores log if below current log level', () => {
-  //     setLogLevel('info');
-  //     log('verbose', ['foo']);
-  //     expect(mockStdout).toHaveBeenCalledTimes(0);
-  //   });
-  // });
+    it('ignores log if below current log level', () => {
+      const mockStdout = vi.fn();
+      console.log = mockStdout;
+      setLogLevel('info');
+      log('verbose', ['foo']);
+      expect(mockStdout).toHaveBeenCalledTimes(0);
+    });
+  });
 });
