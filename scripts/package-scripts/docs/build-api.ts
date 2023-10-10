@@ -10,7 +10,6 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { Platform } from '../prompt/types';
 import { DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
 import { SharedArgs } from './types';
@@ -31,6 +30,7 @@ import {
   DeclarationReflection,
   TypeParameterReflection,
 } from 'typedoc/dist/lib/serialization/schema';
+import { Platform } from '../scaffold-dependencies';
 
 /****
  * Types
