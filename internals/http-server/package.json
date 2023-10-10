@@ -37,7 +37,10 @@
       ]
     },
     "test:run": {
-      "command": "vitest run --config ./vite.config.ts"
+      "command": "vitest run --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
     },
     "test": {
       "command": "vitest --config ./vite.config.ts",
