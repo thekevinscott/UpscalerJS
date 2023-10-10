@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-import { verbose, } from '@internals/common/logger';
 import { BundleOptions, Bundler, BundlerName, isValidBundlerName, } from '@internals/bundlers';
 import { EsbuildBundler, } from '@internals/bundlers/esbuild';
 import { UMDBundler, } from '@internals/bundlers/umd';

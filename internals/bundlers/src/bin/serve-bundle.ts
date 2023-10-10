@@ -19,10 +19,6 @@ interface ServeBundleOptions {
   useTunnel?: boolean;
 }
 
-//   }
-// }
-
-
 export const serveBundle = async (bundlerName: BundlerName, {
   port,
   useTunnel = true,

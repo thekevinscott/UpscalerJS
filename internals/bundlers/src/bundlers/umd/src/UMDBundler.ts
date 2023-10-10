@@ -6,11 +6,10 @@ import { exists, writeFile, copyFile, } from '@internals/common/fs';
 import { info, } from '@internals/common/logger';
 import { UPSCALER_DIR, } from '@internals/common/constants';
 import { getTemplate, } from '@internals/common/get-template';
-9;
+
 /***
  * Constants
  */
-
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const UMD_ROOT_FOLDER = path.join(__dirname, '..');
 
