@@ -56,7 +56,7 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   if (platform === 'node') {
     const globPath = path.resolve(TEST_DIR, 'integration/serverside/tests/**/*.mts');
     const files: string[] = sync(globPath);
-    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.mts');
   }
   const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
   const files: string[] = sync(globPath);
@@ -154,7 +154,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'node') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.ts')];
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];
       }
       return [
         'pnpm',
