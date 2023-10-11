@@ -1,7 +1,7 @@
 import { readdir, exists, readFile, stat } from './fs.js';
 import path from 'path';
 import { getPackageJSON, getPackageJSONExports, PackageJSONExport } from './package-json.js';
-import { MODELS_DIR } from './constants.js';
+import { MODELS_DIR } from './directories.js';
 import { Environment } from './types.js';
 
 export const EXCLUDED = ['dist', 'types', 'node_modules', 'docs'];
