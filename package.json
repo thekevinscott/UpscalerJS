@@ -29,7 +29,7 @@
     "update:npm:dependencies": "wireit",
     "test:start-test-server": "wireit",
     "test:integration:browserstack": "wireit",
-    "test:integration:browser": "wireit",
+    "test:integration:clientside": "wireit",
     "test:integration:node": "wireit",
     "test:model": "wireit",
     "test:memory-leaks": "wireit",
