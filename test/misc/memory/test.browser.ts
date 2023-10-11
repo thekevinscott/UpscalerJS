@@ -1,8 +1,8 @@
 import { JSHandle, Page } from 'puppeteer';
-import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../../integration/utils/BrowserTestRunner';
+import path from 'path';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const JEST_TIMEOUT_IN_SECONDS = 60;
 jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
@@ -10,6 +10,12 @@ jest.retryTimes(4);
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 // https://puppeteer.github.io/puppeteer/docs/10.0.0/puppeteer.page.queryobjects/#example
 const countObjects = async (page: Page, prototype: JSHandle): Promise<number> => {
@@ -86,9 +92,10 @@ const getStartingMemory = async (page: Page) => {
 };
 
 describe('Memory Leaks', () => {
-  const testRunner = new BrowserTestRunner({
-    dist: ESBUILD_DIST,
-    mockCDN: esbuildMockCDN,
+  const testRunner = new ClientsideTestRunner({
+    mock: true,
+    dist: ESBUILD_DIST_FOLDER,
+    useTunnel: true,
   });
 
   beforeAll(async function beforeAll() {
