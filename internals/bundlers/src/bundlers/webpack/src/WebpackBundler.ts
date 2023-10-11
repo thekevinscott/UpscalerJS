@@ -6,7 +6,6 @@ import { getTFJSVersion, } from '../../../utils/get-tfjs-version.js';
 import { getPackagesForRegistry, } from '../../../utils/get-packages-for-registry.js';
 import { removeIfExists, } from '../../../utils/remove-if-exists.js';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { removePackages, } from '../../../shared/remove-packages.js';
 import { getPackagesAndModelsForEnvironment, } from '@internals/common/models';
 import { info, verbose, } from '@internals/common/logger';
 import { getTemplate as _getTemplate, } from '@internals/common/get-template';

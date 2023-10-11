@@ -5,7 +5,6 @@ import { BundleOptions, Bundler, } from '../../../utils/Bundler.js';
 import { getTFJSVersion, } from '../../../utils/get-tfjs-version.js';
 import { removeIfExists, } from '../../../utils/remove-if-exists.js';
 import { getPackagesForRegistry, } from '../../../utils/get-packages-for-registry.js';
-import { removePackages, } from '../../../shared/remove-packages.js';
 import { getTemplate as _getTemplate, } from '@internals/common/get-template';
 import { getPackagesAndModelsForEnvironment, } from '@internals/common/models';
 import { info, } from '@internals/common/logger';
