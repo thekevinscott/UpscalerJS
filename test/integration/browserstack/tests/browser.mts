@@ -81,7 +81,8 @@ describe('Browser Integration Tests', () => {
     }, 3000);
 
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const result = await executeAsyncScript(driver, ({ fixturePath }) => {
+    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/dist/esm/models/pixel-upsampler/src/x4/index.js`;
+    const result = await executeAsyncScript(driver, ({ fixturePath, modelPath }) => {
       const Upscaler = window['Upscaler'] as any;
       const model = window['pixel-upsampler']['x4'];
       if (!model) {
@@ -90,16 +91,16 @@ describe('Browser Integration Tests', () => {
       const upscaler = new Upscaler({
         model: {
           ...model,
-          path: '/models/pixel-upsampler/models/x4/x4.json',
+          path: modelPath,
         }
       });
       const data = upscaler.execute(fixturePath);
       document.body.querySelector('#output')!.innerHTML = `${document.title} | Complete`;
       return data;
-    }, { fixturePath, });
+    }, { fixturePath, modelPath, });
     await printLogs(driver, capabilities);
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
-  }, 20000);
+  }, 30000);
 });
 
 declare global {
