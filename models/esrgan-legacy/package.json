@@ -131,7 +131,6 @@
     "build:cjs": {
       "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
       "dependencies": [
-        "../../packages/core:build",
         "scaffold"
       ],
       "files": [
@@ -152,7 +151,6 @@
     "build:esm": {
       "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
       "dependencies": [
-        "../../packages/core:build",
         "scaffold"
       ],
       "files": [
@@ -173,7 +171,6 @@
     "build:umd": {
       "command": "pnpm run build:umd:tsc && pnpm run build:umd:index && pnpm run build:umd:div2k/x2 && pnpm run build:umd:div2k/x3 && pnpm run build:umd:div2k/x4 && pnpm run build:umd:psnr-small && pnpm run build:umd:gans && rimraf ./dist/umd-tmp",
       "dependencies": [
-        "../../packages/core:build",
         "scaffold"
       ],
       "files": [

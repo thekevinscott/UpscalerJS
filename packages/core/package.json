@@ -1,90 +1,9 @@
 {
   "name": "@upscalerjs/core",
-  "description": "Core library for UpscalerJS, dependency for upscaler and model packages. Not intended to be used directly.",
-  "version": "1.0.0-beta.15",
-  "main": "./dist/cjs/index.js",
-  "types": "./dist/cjs/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
-    }
-  },
+  "description": "DEPRECATED: Core library for UpscalerJS, dependency for upscaler and model packages. Not intended to be used directly.",
+  "version": "1.0.0-beta.16",
   "files": [
     "LICENSE",
-    "dist/**/*"
-  ],
-  "wireit": {
-    "test": {
-      "command": "pnpm vitest -c vite.conf.ts"
-    },
-    "lint": {
-      "command": "eslint -c .eslintrc.js src --ext .ts"
-    },
-    "prepublishOnly": {
-      "command": "pnpm lint && pnpm test && pnpm build && pnpm validate"
-    },
-    "validate": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts packages/core -c './dist/esm/index.d.ts' -c './dist/cjs/index.d.ts' "
-    },
-    "build": {
-      "command": "pnpm build:esm && pnpm build:cjs && pnpm validate",
-      "files": [
-        "src/**/*.ts",
-        "!src/**/*.test.ts",
-        "package.json",
-        "vite.config.ts",
-        "tsconfig.esm.json",
-        "tsconfig.cjs.json",
-        "tsconfig.json"
-      ],
-      "output": [
-        "dist/**"
-      ]
-    },
-    "build:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
-      "files": [
-        "src/**/*.ts",
-        "!src/**/*.test.ts",
-        "package.json",
-        "vite.config.ts",
-        "tsconfig.esm.json",
-        "tsconfig.json"
-      ],
-      "output": [
-        "dist/esm/**"
-      ]
-    },
-    "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
-      "files": [
-        "src/**/*.ts",
-        "!src/**/*.test.ts",
-        "package.json",
-        "vite.config.ts",
-        "tsconfig.cjs.json",
-        "tsconfig.json"
-      ],
-      "output": [
-        "dist/cjs/**"
-      ]
-    }
-  },
-  "scripts": {
-    "test": "wireit",
-    "lint": "wireit",
-    "prepublishOnly": "wireit",
-    "validate": "wireit",
-    "build": "wireit",
-    "build:esm": "wireit",
-    "build:cjs": "wireit"
-  },
-  "dependencies": {
-    "@tensorflow/tfjs-core": "~4.11.0"
-  },
-  "devDependencies": {
-    "vitest": "^0.34.2",
-    "wireit": "^0.14.0"
-  }
+    "README"
+  ]
 }

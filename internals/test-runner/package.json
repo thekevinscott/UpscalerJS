@@ -18,7 +18,7 @@
   },
   "wireit": {
     "build": {
-      "command": "shx rm -rf dist && tsc -b",
+      "command": "tsc -p ./tsconfig.json",
       "dependencies": [
         "../common:build",
         "../http-server:build"
@@ -34,19 +34,22 @@
         "dist/**"
       ]
     },
+    "test:run": {
+      "command": "vitest run --config ./vite.config.ts"
+    },
     "test": {
-      "command": "vitest"
+      "command": "vitest --config ./vite.config.ts"
     }
   },
   "scripts": {
     "build": "wireit",
+    "test:run": "wireit",
     "test": "wireit"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "devDependencies": {
-    "shx": "^0.3.4",
     "wireit": "latest",
     "vitest": "latest"
   }

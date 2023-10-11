@@ -1,8 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
+    "rootDir": "./src",
     "outDir": "./dist",
-    "types": ["vitest/globals"]
   },
+  "include": ["./src/**/*.ts", "./src/**/*.mts"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.test.mts"],
 }

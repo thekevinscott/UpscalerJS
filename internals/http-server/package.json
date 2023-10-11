@@ -10,7 +10,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@internals/common": "latest",
+    "@internals/common": "workspace:*",
     "cloudflared": "^0.5.0",
     "fs-extra": "^11.1.1",
     "localtunnel": "^2.0.2",
@@ -19,34 +19,45 @@
   },
   "wireit": {
     "build": {
-      "command": "shx rm -rf dist && tsc -b",
+      "command": "tsc -p ./tsconfig.json",
       "dependencies": [
         "../common:build"
       ],
       "files": [
         "src/**/*.ts",
+        "src/**/*.mts",
         "!src/**/*.test.ts",
+        "!src/**/*.test.mts",
         "package.json",
-        "vitest.config.ts",
+        "vite.config.ts",
         "tsconfig.json"
       ],
       "output": [
         "dist/**"
       ]
     },
+    "test:run": {
+      "command": "vitest run --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
+    },
     "test": {
-      "command": "vitest"
+      "command": "vitest --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
     }
   },
   "scripts": {
     "build": "wireit",
+    "test:run": "wireit",
     "test": "wireit"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "devDependencies": {
-    "shx": "^0.3.4",
     "wireit": "latest",
     "@types/localtunnel": "^2.0.2",
     "vitest": "^0.34.2"

@@ -1,5 +1,5 @@
 import path from 'path';
-import { readFile } from "@internals/common/fs";
+import { readFile } from "./fs.js";
 import { Environment } from './types.js';
 
 export type TFJSLibrary = 'browser' | 'node' | 'node-gpu';

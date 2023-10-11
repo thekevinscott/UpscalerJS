@@ -1,18 +1,15 @@
-import * as fs from '@internals/common/fs';
+import * as _fs from './fs.js';
+import { exists, mkdirp } from './fs.js';
 import { vi } from 'vitest';
 import { rimraf } from 'rimraf';
 import { makeTmpDir, withTmpDir } from "./tmp-dir.js";
 
-const { exists, mkdirp } = fs;
-
-vi.mock("@internals/common/fs", async () => {
-  const actual = await vi.importActual("@internals/common/fs") as typeof fs;
+vi.mock("./fs.js", async () => {
+  const actual = await vi.importActual("./fs.js") as typeof _fs;
   return {
-    default: {
-      ...actual,
-      exists: vi.fn(),
-      mkdirp: vi.fn(),
-    }
+    ...actual,
+    exists: vi.fn(),
+    mkdirp: vi.fn(),
   };
 });
 

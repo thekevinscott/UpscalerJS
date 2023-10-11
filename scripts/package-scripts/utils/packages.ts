@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import findAllPackages from '../find-all-packages';
 import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
-import { CORE_DIR, DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, PACKAGES_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants';
+import { DEV_DIR, DOCS_DIR, EXAMPLES_DIR, MODELS_DIR, PACKAGES_DIR, ROOT_DIR, TEST_DIR, UPSCALER_DIR, WRAPPER_DIR } from './constants';
 
 interface FakeExports {
   [index: string]: string | FakeExports;
@@ -14,12 +14,11 @@ export type JSONSchema = JSONSchemaForNPMPackageJsonFiles & {
 
 const DIRNAME = __dirname;
 
-export type Package = 'UpscalerJS' | 'Core' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper' | 'Dev' | 'Packages';
+export type Package = 'UpscalerJS' | 'Models' | 'Test' | 'Examples' | 'Root' | 'Wrapper' | 'Dev' | 'Packages';
 export type TransformPackageJsonFn = (packageJSON: JSONSchema, dir: string) => JSONSchema;
 export type PackageUpdaterLogger = (file: string) => (string | undefined);
 
 export const UPSCALER_JS = 'UpscalerJS';
-export const CORE = 'Core';
 export const ROOT = 'Root';
 export const WRAPPER = 'Wrapper';
 export const EXAMPLES = 'Examples';
@@ -29,12 +28,11 @@ export const DEV = 'Development';
 export const DOCS = 'Docs';
 export const PACKAGES = 'Packages';
 
-export const AVAILABLE_PACKAGES = [ ROOT, UPSCALER_JS, CORE, MODELS, EXAMPLES, TEST, WRAPPER, DEV, DOCS, PACKAGES ];
+export const AVAILABLE_PACKAGES = [ ROOT, UPSCALER_JS, MODELS, EXAMPLES, TEST, WRAPPER, DEV, DOCS, PACKAGES ];
 
 export const DIRECTORIES: Record<string, { directory: string, multiple?: boolean }> = {
   [ROOT]: { directory: ROOT_DIR },
   [UPSCALER_JS]: { directory: UPSCALER_DIR },
-  [CORE]: { directory: CORE_DIR },
   [MODELS]: { directory: MODELS_DIR, multiple: true },
   [EXAMPLES]: { directory: EXAMPLES_DIR, multiple: true },
   [TEST]: { directory: TEST_DIR, multiple: true },

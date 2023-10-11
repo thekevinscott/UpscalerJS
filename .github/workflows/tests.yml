@@ -120,6 +120,24 @@ jobs:
         working-directory: ./packages/shared
         run: pnpm test
 
+  internal-unit:
+    name: 'Internals / Unit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@v2
+        with:
+          lfs: 'true'
+
+      - name: 'Setup PNPM with Node 16'
+        uses: ./.github/actions/setup-pnpm
+        with:
+          node-version: 16
+
+      - name: 'Unit Tests'
+        working-directory: ./internals
+        run: pnpm test
+
   upload-to-codecov:
     name: 'Upload to CodeCov'
     runs-on: ubuntu-latest

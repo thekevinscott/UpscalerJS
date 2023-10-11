@@ -10,11 +10,9 @@ import {
   TypeDocReader,
   ReflectionKind,
 } from 'typedoc';
-import { runPNPMScript } from '@internals/common';
-import { Platform } from '../prompt/types';
-import { CORE_DIR, DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
+import { DOCS_DIR, UPSCALER_DIR } from '../utils/constants';
 import { clearOutMarkdownFiles } from './utils/clear-out-markdown-files';
-import { getSharedArgs, SharedArgs } from './types';
+import { SharedArgs } from './types';
 import {
   CommentDisplayPart,
   CommentTag,
@@ -32,6 +30,7 @@ import {
   DeclarationReflection,
   TypeParameterReflection,
 } from 'typedoc/dist/lib/serialization/schema';
+import { Platform } from '../scaffold-dependencies';
 
 /****
  * Types
@@ -60,8 +59,6 @@ interface PlatformSpecificDeclarationReflection extends Omit<DeclarationReflecti
 const REPO_ROOT = 'https://github.com/thekevinscott/UpscalerJS';
 const UPSCALER_TSCONFIG_PATH = path.resolve(UPSCALER_DIR, 'tsconfig.browser.esm.json');
 const UPSCALER_SRC_PATH = path.resolve(UPSCALER_DIR, 'src/browser/esm');
-const CORE_TSCONFIG_PATH = path.resolve(CORE_DIR, 'tsconfig.json');
-const CORE_SRC_PATH = path.resolve(CORE_DIR, 'src');
 const EXAMPLES_DOCS_DEST = path.resolve(DOCS_DIR, 'docs/documentation/api');
 const VALID_EXPORTS_FOR_WRITING_DOCS = ['default'];
 const VALID_METHODS_FOR_WRITING_DOCS = [
@@ -220,18 +217,12 @@ const getDefinitions = async (): Promise<Definitions> => {
     UPSCALER_TSCONFIG_PATH,
     UPSCALER_DIR,
   );
-  const coreTree = getPackageAsTree(
-    CORE_SRC_PATH, 
-    CORE_TSCONFIG_PATH,
-    CORE_DIR,
-  );
   const platformSpecificTypes = await getTypesFromPlatformSpecificFiles();
   if (!upscalerTree.children) {
     throw new Error('No children were found on upscaler tree object. Indicates an error in the returned structure from getPackageAsTree');
   }
   const children = [
     ...upscalerTree.children,
-    ...(coreTree.children || []),
     ...(platformSpecificTypes.children || []),
   ];
 
