@@ -8,7 +8,7 @@
     "./models": "./dist/models.js",
     "./package-json": "./dist/package-json.js",
     "./tmp-dir": "./dist/tmp-dir.js",
-    "./constants": "./dist/constants.js",
+    "./constants": "./dist/directories.js",
     "./logger": "./dist/logger.js",
     "./git": "./dist/git.js",
     "./packages": "./dist/packages.js",
