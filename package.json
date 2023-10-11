@@ -171,13 +171,34 @@
       "command": "pnpm --filter=\"./models/**\" build"
     },
     "build:models:esm": {
-      "command": "pnpm --filter=\"./models/**\" build:esm"
+      "dependencies": [
+        "./models/default-model:build:esm",
+        "./models/pixel-upsampler:build:esm",
+        "./models/esrgan-slim:build:esm",
+        "./models/esrgan-medium:build:esm",
+        "./models/esrgan-thick:build:esm",
+        "./models/esrgan-legacy:build:esm"
+      ]
     },
     "build:models:umd": {
-      "command": "pnpm --filter=\"./models/**\" build:umd"
+      "dependencies": [
+        "./models/default-model:build:umd",
+        "./models/pixel-upsampler:build:umd",
+        "./models/esrgan-slim:build:umd",
+        "./models/esrgan-medium:build:umd",
+        "./models/esrgan-thick:build:umd",
+        "./models/esrgan-legacy:build:umd"
+      ]
     },
     "build:models:cjs": {
-      "command": "pnpm --filter=\"./models/**\" build:cjs"
+      "dependencies": [
+        "./models/default-model:build:cjs",
+        "./models/pixel-upsampler:build:cjs",
+        "./models/esrgan-slim:build:cjs",
+        "./models/esrgan-medium:build:cjs",
+        "./models/esrgan-thick:build:cjs",
+        "./models/esrgan-legacy:build:cjs"
+      ]
     },
     "dev:browser": {
       "command": "pnpm --filter=\"@upscalerjs/dev-browser\" run dev"
