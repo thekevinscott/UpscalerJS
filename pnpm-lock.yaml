@@ -569,6 +569,9 @@ importers:
       '@internals/common':
         specifier: workspace:*
         version: link:../common
+      '@internals/http-server':
+        specifier: workspace:*
+        version: link:../http-server
       fs-extra:
         specifier: latest
         version: 11.1.1
@@ -684,9 +687,6 @@ importers:
       '@internals/common':
         specifier: workspace:*
         version: link:../common
-      '@types/commander':
-        specifier: ^2.12.2
-        version: 2.12.2
       '@types/fast-levenshtein':
         specifier: ^0.0.2
         version: 0.0.2
@@ -996,9 +996,6 @@ importers:
       '@types/sequelize':
         specifier: ^4.28.15
         version: 4.28.15
-      '@types/sharp':
-        specifier: ^0.32.0
-        version: 0.32.0
       '@types/sqlite3':
         specifier: ^3.1.8
         version: 3.1.8
@@ -1020,6 +1017,43 @@ importers:
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
+
+  tmp/bundlers/node:
+    dependencies:
+      '@tensorflow/tfjs-node':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node-gpu':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/default-model':
+        specifier: workspace:*
+        version: link:../../../models/default-model
+      '@upscalerjs/esrgan-legacy':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-medium':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-medium
+      '@upscalerjs/esrgan-slim':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-slim
+      '@upscalerjs/esrgan-thick':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-thick
+      '@upscalerjs/pixel-upsampler':
+        specifier: workspace:*
+        version: link:../../../models/pixel-upsampler
+      upscaler:
+        specifier: workspace:*
+        version: link:../../../packages/upscalerjs
+    devDependencies:
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+      tslib:
+        specifier: ^2.6.1
+        version: 2.6.2
 
 packages:
 
@@ -5501,7 +5535,6 @@ packages:
       - encoding
       - seedrandom
       - supports-color
-    dev: true
 
   /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
@@ -5999,13 +6032,6 @@ packages:
     dependencies:
       '@types/mime': 1.3.2
       '@types/node': 20.5.1
-
-  /@types/sharp@0.32.0:
-    resolution: {integrity: sha512-OOi3kL+FZDnPhVzsfD37J88FNeZh6gQsGcLc95NbeURRGvmSjeXiDcyWzF2o3yh/gQAUn2uhh/e+CPCa5nwAxw==}
-    deprecated: This is a stub types definition. sharp provides its own type definitions, so you do not need this installed.
-    dependencies:
-      sharp: 0.32.5
-    dev: true
 
   /@types/sockjs@0.3.33:
     resolution: {integrity: sha512-f0KEEe05NvUnat+boPTZ0dgaLZ4SfSouXUgv5noUiefG2ajgKjmETo9ZJyuqsl7dfl2aHlLJUiki6B4ZYldiiw==}

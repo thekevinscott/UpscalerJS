@@ -3,15 +3,11 @@ import path from 'path';
 import { Bundler, } from '../../../utils/Bundler.js';
 import { getTFJSVersion, } from '../../../utils/get-tfjs-version.js';
 import { getPackagesForRegistry, } from '../../../utils/get-packages-for-registry.js';
-import { rimraf, } from 'rimraf';
-import { RegistryPackage, } from '../../../utils/types.js';
-
-import { info, verbose, } from '@internals/common/logger';
+import { info, } from '@internals/common/logger';
 import { getTemplate, } from '@internals/common/get-template';
-import { exists, writeFile, } from '@internals/common/fs';
+import { writeFile, } from '@internals/common/fs';
 import { pnpmInstall, } from '@internals/common/npm';
 import { TMP_DIR, } from '@internals/common/constants';
-import { pluralize, } from '@internals/common/pluralize';
 
 /***
  * Constants
@@ -47,22 +43,6 @@ const writePackageJSON = async (outputDir: string) => {
   return packageJSONPath;
 };
 
-const clearExistingNodeModules = async (outDir: string, packages: RegistryPackage[]) => {
-  const nodeModulesPath = path.resolve(outDir, 'node_modules');
-  const packageNames = pluralize(packages.map(p => p.name), 'and');
-  if (await exists(nodeModulesPath)) {
-    verbose(`Clearing existing node_modules of packages: ${packageNames}...`);;
-    await Promise.all(packages.map(async ({ name, }) => {
-      const nodeModulePath = path.resolve(nodeModulesPath, name);
-      if (await exists(nodeModulePath)) {
-        return rimraf(nodeModulePath);
-      }
-      return undefined;
-    }));
-    verbose(`Cleared existing node_modules of packages: ${packageNames}...`);;
-  }
-};
-
 export class NodeBundler extends Bundler {
   port = 0;
   packages = PACKAGES;
@@ -75,8 +55,6 @@ export class NodeBundler extends Bundler {
     info('Bundling Node...');
     await writePackageJSON(this.outDir);
 
-    info('Clear out existing node modules...');
-    await clearExistingNodeModules(this.outDir, await this.packages);
     info(`PNPM Install to ${this.outDir}...`);
     await pnpmInstall(this.outDir, {
       // isSilent,

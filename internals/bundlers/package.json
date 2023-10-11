@@ -4,10 +4,6 @@
   "type": "module",
   "version": "0.1.0",
   "description": "Test servers for testing UpscalerJS against",
-  "bin": {
-    "run-bundle": "./dist/bin/run-bundle.js",
-    "serve-bundle": "./dist/bin/serve-bundle.js"
-  },
   "exports": {
     ".": "./dist/index.js",
     "./webpack": "./dist/bundlers/webpack/src/index.js",
@@ -19,15 +15,23 @@
   "license": "MIT",
   "dependencies": {
     "@internals/common": "workspace:*",
+    "@internals/http-server": "workspace:*",
     "fs-extra": "latest"
   },
   "scripts": {
+    "run-bundle": "wireit",
     "build": "wireit",
     "_lint": "wireit",
     "copy-files": "wireit",
     "test": "wireit"
   },
   "wireit": {
+    "run-bundle": {
+      "command": "node ./dist/bin/run-bundle.js",
+      "dependencies": [
+        "build"
+      ]
+    },
     "_lint": {
       "command": "eslint -c eslintrc.cjs src --ext .ts --ext .mts",
       "dependencies": [
@@ -38,15 +42,17 @@
       "command": "rsync -avmq --include='*.ejs' -f 'hide,! */' ./src/ ./dist"
     },
     "build": {
-      "command": "pnpm copy-files && tsc -b",
+      "command": "pnpm copy-files && tsc -p ./tsconfig.json",
       "dependencies": [
-        "../common:build"
+        "../common:build",
+        "../http-server:build"
       ],
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "_templates/**/*.ejs",
         "package.json",
-        "vitest.config.ts",
+        "vite.config.ts",
         "tsconfig.json"
       ],
       "output": [
