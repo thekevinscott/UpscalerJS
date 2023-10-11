@@ -47,22 +47,6 @@ const writePackageJSON = async (outputDir: string) => {
   return packageJSONPath;
 };
 
-const clearExistingNodeModules = async (outDir: string, packages: RegistryPackage[]) => {
-  const nodeModulesPath = path.resolve(outDir, 'node_modules');
-  const packageNames = pluralize(packages.map(p => p.name), 'and');
-  if (await exists(nodeModulesPath)) {
-    verbose(`Clearing existing node_modules of packages: ${packageNames}...`);;
-    await Promise.all(packages.map(async ({ name, }) => {
-      const nodeModulePath = path.resolve(nodeModulesPath, name);
-      if (await exists(nodeModulePath)) {
-        return rimraf(nodeModulePath);
-      }
-      return undefined;
-    }));
-    verbose(`Cleared existing node_modules of packages: ${packageNames}...`);;
-  }
-};
-
 export class NodeBundler extends Bundler {
   port = 0;
   packages = PACKAGES;
@@ -75,8 +59,6 @@ export class NodeBundler extends Bundler {
     info('Bundling Node...');
     await writePackageJSON(this.outDir);
 
-    info('Clear out existing node modules...');
-    await clearExistingNodeModules(this.outDir, await this.packages);
     info(`PNPM Install to ${this.outDir}...`);
     await pnpmInstall(this.outDir, {
       // isSilent,

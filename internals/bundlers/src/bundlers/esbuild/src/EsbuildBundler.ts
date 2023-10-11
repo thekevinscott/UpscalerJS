@@ -98,11 +98,8 @@ export class EsbuildBundler extends Bundler {
       ]);
 
       if (skipNpmInstall !== true) {
-        info('Removing packages and installing...');
-        await removePackages(path.resolve(this.outDir, 'node_modules'), this.packages);
-        await pnpmInstall(this.outDir, {
-          // isSilent: getLogLevel() !== 'verbose',
-        });
+        info(`PNPM Install to ${this.outDir}...`);
+        await pnpmInstall(this.outDir);
       }
 
       info(`Bundle the code for entry file ${indexJSEntryFile}`);
