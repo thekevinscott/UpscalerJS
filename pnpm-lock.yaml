@@ -588,9 +588,6 @@ importers:
       eslint:
         specifier: 8.47.0
         version: 8.47.0
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -622,9 +619,6 @@ importers:
       '@types/ejs':
         specifier: ^3.1.2
         version: 3.1.3
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
       vitest:
         specifier: ^0.34.5
         version: 0.34.5(jsdom@22.1.0)
@@ -656,9 +650,6 @@ importers:
       '@types/localtunnel':
         specifier: ^2.0.2
         version: 2.0.2
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
       vitest:
         specifier: ^0.34.2
         version: 0.34.5(jsdom@22.1.0)
@@ -681,9 +672,6 @@ importers:
         specifier: ^21.1.0
         version: 21.1.0
     devDependencies:
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
       vitest:
         specifier: latest
         version: 0.34.6(jsdom@22.1.0)
@@ -749,9 +737,6 @@ importers:
       '@types/selenium-webdriver':
         specifier: 4.1.15
         version: 4.1.15
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
       vitest:
         specifier: ^0.34.2
         version: 0.34.2(jsdom@22.1.0)
@@ -1035,126 +1020,6 @@ importers:
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
-
-  tmp/bundlers/esbuild:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/default-model':
-        specifier: workspace:*
-        version: link:../../../models/default-model
-      '@upscalerjs/esrgan-legacy':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-legacy
-      '@upscalerjs/esrgan-medium':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-medium
-      '@upscalerjs/esrgan-slim':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-slim
-      '@upscalerjs/esrgan-thick':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-thick
-      '@upscalerjs/pixel-upsampler':
-        specifier: workspace:*
-        version: link:../../../models/pixel-upsampler
-      upscaler:
-        specifier: workspace:*
-        version: link:../../../packages/upscalerjs
-    devDependencies:
-      '@babel/plugin-transform-modules-commonjs':
-        specifier: ^7.22.5
-        version: 7.23.0(@babel/core@7.22.10)
-      '@babel/preset-typescript':
-        specifier: ^7.22.5
-        version: 7.23.0(@babel/core@7.22.10)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
-  tmp/bundlers/node:
-    dependencies:
-      '@tensorflow/tfjs-node':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/default-model':
-        specifier: workspace:*
-        version: link:../../../models/default-model
-      '@upscalerjs/esrgan-legacy':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-legacy
-      '@upscalerjs/esrgan-medium':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-medium
-      '@upscalerjs/esrgan-slim':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-slim
-      '@upscalerjs/esrgan-thick':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-thick
-      '@upscalerjs/pixel-upsampler':
-        specifier: workspace:*
-        version: link:../../../models/pixel-upsampler
-      upscaler:
-        specifier: workspace:*
-        version: link:../../../packages/upscalerjs
-    devDependencies:
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-      tslib:
-        specifier: ^2.6.1
-        version: 2.6.2
-
-  tmp/bundlers/webpack:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/default-model':
-        specifier: workspace:*
-        version: link:../../../models/default-model
-      '@upscalerjs/esrgan-legacy':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-legacy
-      '@upscalerjs/esrgan-medium':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-medium
-      '@upscalerjs/esrgan-slim':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-slim
-      '@upscalerjs/esrgan-thick':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-thick
-      '@upscalerjs/pixel-upsampler':
-        specifier: workspace:*
-        version: link:../../../models/pixel-upsampler
-      upscaler:
-        specifier: workspace:*
-        version: link:../../../packages/upscalerjs
-    devDependencies:
-      '@babel/plugin-transform-modules-commonjs':
-        specifier: latest
-        version: 7.23.0(@babel/core@7.22.10)
-      '@babel/preset-env':
-        specifier: latest
-        version: 7.22.20(@babel/core@7.22.10)
-      '@babel/preset-typescript':
-        specifier: latest
-        version: 7.23.0(@babel/core@7.22.10)
-      html-webpack-plugin:
-        specifier: ^5.5.3
-        version: 5.5.3(webpack@5.88.2)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-      webpack:
-        specifier: ^5.88.2
-        version: 5.88.2(esbuild@0.19.2)(uglify-js@3.17.4)
 
 packages:
 
@@ -5636,6 +5501,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
@@ -16072,15 +15938,6 @@ packages:
       jsonc-parser: 3.2.0
       vscode-oniguruma: 1.7.0
       vscode-textmate: 8.0.0
-
-  /shx@0.3.4:
-    resolution: {integrity: sha512-N6A9MLVqjxZYcVn8hLmtneQWIJtp8IKzMP4eMnx+nqkvXoqinUPCbUFLp2UcWTEIUONhlk0ewxr/jaVGlc+J+g==}
-    engines: {node: '>=6'}
-    hasBin: true
-    dependencies:
-      minimist: 1.2.8
-      shelljs: 0.8.5
-    dev: true
 
   /side-channel@1.0.4:
     resolution: {integrity: sha512-q5XPytqFEIKHkGdiMIrY10mvLRvnQh42/+GoBlFW3b2LXLE2xxJpZFdm94we0BaoV3RwJyGqg5wS7epxTv0Zvw==}
