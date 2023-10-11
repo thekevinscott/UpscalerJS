@@ -51,17 +51,17 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   if (runner === 'browserstack') {
     const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
     const files: string[] = sync(globPath);
-    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
   }
   if (platform === 'browser') {
     const globPath = path.resolve(TEST_DIR, 'integration/clientside/tests/**/*.mts');
     const files: string[] = sync(globPath);
-    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
 
   }
   const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
   const files: string[] = sync(globPath);
-  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -79,7 +79,6 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
       platform,
       files,
     });
-    console.log('files', files)
 
     for (const file of files) {
       const fileName = `${file}`.split('.').slice(0, -1).join('.');
@@ -156,7 +155,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'browser') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.mts')];
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.ts')];
       }
       return [
         'pnpm',
