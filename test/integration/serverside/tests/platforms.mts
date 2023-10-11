@@ -1,13 +1,10 @@
 import path from 'path';
-import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
+import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
+import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
 const main: Main = async (deps) => {
   const {

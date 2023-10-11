@@ -1,27 +1,24 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
+import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
+import { MODELS_DIR, TMP_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 import {
   MultiArgTensorProgress,
-} from '../../../packages/upscalerjs/src/shared/types';
+} from '../../../../packages/upscalerjs/src/shared/types.js';
 import type {
   ModelDefinition,
-} from '../../../packages/shared/src/types';
+} from '../../../../packages/shared/src/types.js';
 import {
   WARNING_PROGRESS_WITHOUT_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
-} from '../../../packages/upscalerjs/src/shared/errors-and-warnings';
+} from '../../../../packages/upscalerjs/src/shared/errors-and-warnings.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
-
-const JEST_TIMEOUT = 60 * 1000 * 5;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout
 
 const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) => {
   if (scale < 2 || scale > 4) {
