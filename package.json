@@ -320,7 +320,8 @@
         "./internals/http-server:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
-        "build:models:esm"
+        "build:models:esm",
+        "bundle:esbuild"
       ]
     },
     "test:unit:browser:playwright": {

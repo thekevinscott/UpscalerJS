@@ -124,7 +124,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipBundle !== true && runner !== 'browserstack') {
+  if (skipBundle !== true && runner !== 'browserstack' && kind !== 'memory') {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     const durations: number[] = [];
     for (const dependency of dependencies) {
