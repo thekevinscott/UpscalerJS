@@ -73,6 +73,7 @@ describe('Browser Integration Tests', () => {
   test.each(browserOptions)("%j", async (capabilities: BrowserOption) => {
     driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
     const ROOT_URL = await testRunner.getServerURL();;
+    console.log('ROOT_URL', ROOT_URL)
     await driver.get(ROOT_URL);
     await driver.wait(async () => {
       const title = await driver.getTitle();
@@ -98,7 +99,7 @@ describe('Browser Integration Tests', () => {
     }, { fixturePath, });
     await printLogs(driver, capabilities);
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
-  });
+  }, 20000);
 });
 
 declare global {
