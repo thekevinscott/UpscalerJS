@@ -86,12 +86,12 @@ describe('Browser Integration Tests', () => {
     console.log('got loaded page')
 
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/dist/esm/models/pixel-upsampler/src/x4/index.js`;
+    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
     console.log('got fixture and model paths')
     const result = await executeAsyncScript(driver, ({ fixturePath, modelPath }) => {
       const Upscaler = window['Upscaler'] as any;
       console.log('got upscaler')
-      const model =window["@upscalerjs/pixel-upsampler/x4"];
+      const model = window["@upscalerjs/pixel-upsampler/x4"];
       console.log("got model")
       if (!model) {
         throw new Error('No model found for pixel upsampler');
