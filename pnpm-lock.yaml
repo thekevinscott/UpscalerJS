@@ -987,6 +987,21 @@ importers:
         specifier: workspace:*
         version: link:../packages/upscalerjs
     devDependencies:
+      '@internals/bundlers':
+        specifier: workspace:*
+        version: link:../internals/bundlers
+      '@internals/common':
+        specifier: workspace:*
+        version: link:../internals/common
+      '@internals/http-server':
+        specifier: workspace:*
+        version: link:../internals/http-server
+      '@internals/test-runner':
+        specifier: workspace:*
+        version: link:../internals/test-runner
+      '@internals/webdriver':
+        specifier: workspace:*
+        version: link:../internals/webdriver
       '@types/cli-table':
         specifier: ^0.3.1
         version: 0.3.1
