@@ -569,6 +569,9 @@ importers:
       '@internals/common':
         specifier: workspace:*
         version: link:../common
+      '@internals/http-server':
+        specifier: workspace:*
+        version: link:../http-server
       fs-extra:
         specifier: latest
         version: 11.1.1
@@ -1014,6 +1017,43 @@ importers:
       yargs:
         specifier: ^17.7.2
         version: 17.7.2
+
+  tmp/bundlers/node:
+    dependencies:
+      '@tensorflow/tfjs-node':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node-gpu':
+        specifier: 4.8.0
+        version: 4.8.0(seedrandom@3.0.5)
+      '@upscalerjs/default-model':
+        specifier: workspace:*
+        version: link:../../../models/default-model
+      '@upscalerjs/esrgan-legacy':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-medium':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-medium
+      '@upscalerjs/esrgan-slim':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-slim
+      '@upscalerjs/esrgan-thick':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-thick
+      '@upscalerjs/pixel-upsampler':
+        specifier: workspace:*
+        version: link:../../../models/pixel-upsampler
+      upscaler:
+        specifier: workspace:*
+        version: link:../../../packages/upscalerjs
+    devDependencies:
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+      tslib:
+        specifier: ^2.6.1
+        version: 2.6.2
 
 packages:
 
@@ -5495,7 +5535,6 @@ packages:
       - encoding
       - seedrandom
       - supports-color
-    dev: true
 
   /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
