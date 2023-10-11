@@ -6,7 +6,7 @@ import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuil
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import type { Page } from 'puppeteer';
 import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';

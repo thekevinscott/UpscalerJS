@@ -13,11 +13,8 @@ import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../pack
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const TRACK_TIME = false;
-const JEST_TIMEOUT = 60 * 1000;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(0);
 
 describe('Upscale Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

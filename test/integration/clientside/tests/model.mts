@@ -8,7 +8,7 @@ import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
 import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
-import path from 'path';
+import * as path from 'path';
 import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
