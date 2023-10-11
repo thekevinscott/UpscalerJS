@@ -10,7 +10,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@types/commander": "^2.12.2",
     "@types/fast-levenshtein": "^0.0.2",
     "@internals/common": "workspace:*",
     "chalk": "^5.3.0",
