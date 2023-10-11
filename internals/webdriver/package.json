@@ -18,7 +18,7 @@
   },
   "wireit": {
     "build": {
-      "command": "shx rm -rf dist && tsc -b",
+      "command": "tsc -p ./tsconfig.json",
       "dependencies": [ 
         "../common:build"
       ],
@@ -49,7 +49,6 @@
     "node": ">=16.0.0"
   },
   "devDependencies": {
-    "shx": "^0.3.4",
     "wireit": "latest",
     "@types/selenium-webdriver": "4.1.15",
     "vitest": "^0.34.2"
