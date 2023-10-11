@@ -197,7 +197,7 @@ jobs:
         run: pnpm test:integration:clientside -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:clientside -- --ci --verbose  --skip-bundle
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
