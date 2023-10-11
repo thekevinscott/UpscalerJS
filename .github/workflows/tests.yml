@@ -179,8 +179,8 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-browser-local:
-    name: 'Integration / Browser / Local'
+  integration-clientside:
+    name: 'Integration / Clientside'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -194,7 +194,7 @@ jobs:
           node-version: 16
 
       - name: 'Bundle'
-        run: pnpm test:integration:browser -- --ci --verbose --skip-test 
+        run: pnpm test:integration:clientside -- --ci --verbose --skip-test 
 
       - name: 'Integration Tests'
         run: pnpm test:integration:browser -- --ci --verbose  --skip-bundle

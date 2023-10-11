@@ -264,8 +264,8 @@
         "build:models:esm"
       ]
     },
-    "test:integration:browser": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
+    "test:integration:clientside": {
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:clientside",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",

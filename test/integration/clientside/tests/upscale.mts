@@ -1,14 +1,14 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src/shared';
+import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../packages/upscalerjs/src/shared/index.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 

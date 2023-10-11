@@ -1,14 +1,14 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
-import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../lib/esm-webpack/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../../lib/umd/prepare.js';
+import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../../lib/esm-webpack/prepare.js';
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
-import { BrowserTestRunner, MockCDN } from '../utils/BrowserTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { BrowserTestRunner, MockCDN } from '../../utils/BrowserTestRunner.js';
+import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const JEST_TIMEOUT_IN_SECONDS = 120;

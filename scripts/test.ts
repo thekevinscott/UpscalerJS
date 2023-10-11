@@ -13,9 +13,8 @@ import { Bundle } from '../test/integration/utils/NodeTestRunner';
  * Types
  */
 type Platform = 'browser' | 'node';
-type TargetPlatform = 'browser' | 'node' | 'node-gpu';
 type Runner = 'local' | 'browserstack';
-type Kind = 'integraticn' | 'memory' | 'model';
+type Kind = 'integration' | 'memory' | 'model';
 
 /****
  * Utility Functions & Classes
@@ -145,15 +144,24 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
   if (skipTest !== true) {
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
-      'pnpm',
-      'jest',
-      '--config',
-      jestConfigPath,
-      '--detectOpenHandles',
-      watch ? '--watch' : undefined,
-      ...positionalArgs,
-    ].filter(Boolean).map(arg => `${arg}`);
+    const getArgs = () => {
+      if (runner === 'browserstack') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
+      }
+      if (kind === 'integration' && platform === 'browser') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.mts')];
+      }
+      return [
+        'pnpm',
+        'jest',
+        '--config',
+        jestConfigPath,
+        '--detectOpenHandles',
+        watch ? '--watch' : undefined,
+        ...positionalArgs,
+      ];
+    };
+    const args = getArgs().filter(Boolean).map(arg => `${arg}`);
 
     if (verbose) {
       console.log(args.join(' '));

@@ -1,10 +1,10 @@
 /****
  * Tests that loading models via CDN works
  */
-import { ESBUILD_DIST as ESBUILD_DIST } from '../../lib/esm-esbuild/prepare';
+import { ESBUILD_DIST as ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import type { Page } from 'puppeteer';
 
 // TODO: Figure out how to import this from upscaler
