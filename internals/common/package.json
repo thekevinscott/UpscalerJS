@@ -33,14 +33,13 @@
     "wireit": "^0.14.0"
   },
   "devDependencies": {
-    "shx": "^0.3.4",
     "@types/ejs": "^3.1.2",
     "vitest-mock-process": "^1.0.4",
     "vitest": "^0.34.5"
   },
   "wireit": {
     "build": {
-      "command": "shx rm -rf dist && tsc -p ./tsconfig.json",
+      "command": "tsc -p ./tsconfig.json",
       "files": [
         "src/**/*.ts",
         "src/**/*.mts",
