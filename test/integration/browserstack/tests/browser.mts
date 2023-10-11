@@ -59,6 +59,8 @@ describe('Browser Integration Tests', () => {
 
   beforeAll(async function browserBeforeAll() {
     await testRunner.beforeAll();
+    console.log('server url', await testRunner.getServerURL());
+    console.log('fixture url', await testRunner.getFixturesServerURL());
   }, 20000);
 
   afterAll(async function browserAfterAll() {
@@ -73,7 +75,6 @@ describe('Browser Integration Tests', () => {
   test.each(browserOptions)("%j", async (capabilities: BrowserOption) => {
     driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
     const ROOT_URL = await testRunner.getServerURL();;
-    console.log('ROOT_URL', ROOT_URL)
     await driver.get(ROOT_URL);
     await driver.wait(async () => {
       const title = await driver.getTitle();
