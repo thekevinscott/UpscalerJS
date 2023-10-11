@@ -171,11 +171,14 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skip-test 
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
+
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:browserstack -- --ci --verbose
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
