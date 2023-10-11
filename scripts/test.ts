@@ -9,6 +9,7 @@ import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
+const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(ROOT_DIR, 'tmp/bundlers');
 /****
  * Types
  */
@@ -129,7 +130,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipBundle !== true) {
+  if (skipBundle !== true && runner !== 'browserstack') {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     const durations: number[] = [];
     for (const dependency of dependencies) {
@@ -173,7 +174,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       console.log(args.join(' '));
     }
 
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
+    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
     if (code !== null) {
       process.exit(code);
     }
