@@ -5,7 +5,6 @@ import { BundleOptions, Bundler, } from '../../../utils/Bundler.js';
 import { getTFJSVersion, } from '../../../utils/get-tfjs-version.js';
 import { removeIfExists, } from '../../../utils/remove-if-exists.js';
 import { getPackagesForRegistry, } from '../../../utils/get-packages-for-registry.js';
-import { removePackages, } from '../../../shared/remove-packages.js';
 import { getTemplate as _getTemplate, } from '@internals/common/get-template';
 import { getPackagesAndModelsForEnvironment, } from '@internals/common/models';
 import { info, } from '@internals/common/logger';
@@ -98,11 +97,8 @@ export class EsbuildBundler extends Bundler {
       ]);
 
       if (skipNpmInstall !== true) {
-        info('Removing packages and installing...');
-        await removePackages(path.resolve(this.outDir, 'node_modules'), this.packages);
-        await pnpmInstall(this.outDir, {
-          // isSilent: getLogLevel() !== 'verbose',
-        });
+        info(`PNPM Install to ${this.outDir}...`);
+        await pnpmInstall(this.outDir);
       }
 
       info(`Bundle the code for entry file ${indexJSEntryFile}`);

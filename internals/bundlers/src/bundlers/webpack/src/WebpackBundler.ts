@@ -6,7 +6,6 @@ import { getTFJSVersion, } from '../../../utils/get-tfjs-version.js';
 import { getPackagesForRegistry, } from '../../../utils/get-packages-for-registry.js';
 import { removeIfExists, } from '../../../utils/remove-if-exists.js';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { removePackages, } from '../../../shared/remove-packages.js';
 import { getPackagesAndModelsForEnvironment, } from '@internals/common/models';
 import { info, verbose, } from '@internals/common/logger';
 import { getTemplate as _getTemplate, } from '@internals/common/get-template';
@@ -102,10 +101,8 @@ export class WebpackBundler extends Bundler {
       ]);
 
       if (skipNpmInstall !== true) {
-        await removePackages(path.resolve(this.outDir, 'node_modules'), this.packages);
-        await pnpmInstall(this.outDir, {
-          // isSilent: getLogLevel() !== 'verbose',
-        });
+        info(`PNPM Install to ${this.outDir}...`);
+        await pnpmInstall(this.outDir);
       }
 
       info(`Bundle the code for entry file ${indexJSFile}`);
