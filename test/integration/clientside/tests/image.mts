@@ -18,9 +18,6 @@ const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR
 const TRACK_TIME = false;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(0);
 
 describe('Image Format Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

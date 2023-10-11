@@ -19,8 +19,6 @@ const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL $
 const TRACK_TIME = false;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-jest.setTimeout(30000);
-jest.retryTimes(0);
 
 describe('CDN Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

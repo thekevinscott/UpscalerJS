@@ -15,9 +15,6 @@ const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
 
-const JEST_TIMEOUT = 60 * 1000 * 5;
-jest.setTimeout(JEST_TIMEOUT);
-
 describe('Speed Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     name: 'esm',

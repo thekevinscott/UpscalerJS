@@ -11,11 +11,8 @@ import { BrowserTestRunner, MockCDN } from '../../utils/BrowserTestRunner.js';
 import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const JEST_TIMEOUT_IN_SECONDS = 120;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
-jest.retryTimes(0);
 
 describe('Build Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

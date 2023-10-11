@@ -18,9 +18,6 @@ const TRACK_TIME = false;
 const LOG = true;
 const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000 * 15;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
-jest.retryTimes(0);
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
