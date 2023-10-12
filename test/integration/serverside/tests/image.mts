@@ -62,7 +62,7 @@ describe('Node Image Loading Integration Tests', () => {
       'tf': `@tensorflow/tfjs-node`,
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
-      'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
+      'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
       'flower_tensor': path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'),
     },
     globals: {

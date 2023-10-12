@@ -107,7 +107,7 @@ describe('Node Model Loading Integration Tests', () => {
         'tf': '@tensorflow/tfjs-node',
         'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
         'fs': 'fs',
-        'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
+        'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
       },
     });
 
@@ -133,7 +133,7 @@ describe('Node Model Loading Integration Tests', () => {
         },
         globals: {
           model: JSON.stringify({
-            path: 'file://' + path.join(__dirname, '../../../models/pixel-upsampler/models/x4/x4.json'),
+            path: 'file://' + path.join(__dirname, '../../../../models/pixel-upsampler/models/x4/x4.json'),
             scale: 4,
           }),
           imagePath: JSON.stringify(fixturePath),
