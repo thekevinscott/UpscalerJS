@@ -1,10 +1,10 @@
 import path from 'path';
 import fs from 'fs';
 import * as tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../lib/utils/checkImage';
-import { LOCAL_UPSCALER_NAME } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
+import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
+import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/x4.json');
 
@@ -25,9 +25,6 @@ export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error
   `Invalid channels, only 3 channels are supported at this time. You provided: "${input.shape.slice(-1)[0]}".`,
   `Full tensor shape: ${JSON.stringify(input.shape)}`,
 ].join(' '));
-
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 
 const main: Main = async (deps) => {
   const {
@@ -65,7 +62,7 @@ describe('Node Image Loading Integration Tests', () => {
       'tf': `@tensorflow/tfjs-node`,
       'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
       'fs': 'fs',
-      'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
+      'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
       'flower_tensor': path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'),
     },
     globals: {

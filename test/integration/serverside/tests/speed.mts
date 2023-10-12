@@ -1,10 +1,8 @@
 import path from 'path';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../../lib/node/constants.js';
+import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
+import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT * 1); // 60 seconds timeout
 const LOWER_THRESHOLD = 20; // in milliseconds
 const UPPER_THRESHOLD = 10; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');

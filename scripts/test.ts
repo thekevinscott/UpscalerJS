@@ -15,7 +15,7 @@ const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(ROOT_DIR, 'tmp/bundlers');
  */
 type Platform = 'browser' | 'node';
 type Runner = 'local' | 'browserstack';
-type Kind = 'integraticn' | 'memory' | 'model';
+type Kind = 'integration' | 'memory' | 'model';
 
 /****
  * Utility Functions & Classes
@@ -52,11 +52,16 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   if (runner === 'browserstack') {
     const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
     const files: string[] = sync(globPath);
-    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
+  }
+  if (platform === 'node') {
+    const globPath = path.resolve(TEST_DIR, 'integration/serverside/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.mts');
   }
   const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
   const files: string[] = sync(globPath);
-  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -73,7 +78,7 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
     filesForPlatforms.push({
       platform,
       files,
-    })
+    });
 
     for (const file of files) {
       const fileName = `${file}`.split('.').slice(0, -1).join('.');
@@ -145,15 +150,24 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 
   if (skipTest !== true) {
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
-      'pnpm',
-      'jest',
-      '--config',
-      jestConfigPath,
-      '--detectOpenHandles',
-      watch ? '--watch' : undefined,
-      ...positionalArgs,
-    ].filter(Boolean).map(arg => `${arg}`);
+    const getArgs = () => {
+      if (runner === 'browserstack') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
+      }
+      if (kind === 'integration' && platform === 'node') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];
+      }
+      return [
+        'pnpm',
+        'jest',
+        '--config',
+        jestConfigPath,
+        '--detectOpenHandles',
+        watch ? '--watch' : undefined,
+        ...positionalArgs,
+      ];
+    };
+    const args = getArgs().filter(Boolean).map(arg => `${arg}`);
 
     if (verbose) {
       console.log(args.join(' '));
