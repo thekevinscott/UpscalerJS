@@ -30,8 +30,13 @@
     "update:npm:dependencies": "wireit",
     "test:start-test-server": "wireit",
     "test:integration:browserstack": "wireit",
+<<<<<<< HEAD
     "test:integration:clientside": "wireit",
     "test:integration:node": "wireit",
+=======
+    "test:integration:browser": "wireit",
+    "test:integration:serverside": "wireit",
+>>>>>>> main
     "test:model": "wireit",
     "test:memory-leaks": "wireit",
     "test:unit:browser:playwright": "wireit",
@@ -291,8 +296,8 @@
         "build:models:umd"
       ]
     },
-    "test:integration:node": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:node",
+    "test:integration:serverside": {
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:serverside",
       "dependencies": [
         "./internals/common:build",
         "./internals/test-runner:build",

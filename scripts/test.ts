@@ -58,11 +58,14 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
     const globPath = path.resolve(TEST_DIR, 'integration/clientside/tests/**/*.mts');
     const files: string[] = sync(globPath);
     return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
-
   }
-  const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
-  const files: string[] = sync(globPath);
-  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
+
+  if (platform === 'node') {
+    const globPath = path.resolve(TEST_DIR, 'integration/serverside/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.mts');
+  }
+  throw new Error('Unsupported platform');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -157,6 +160,9 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       }
       if (kind === 'integration' && platform === 'browser') {
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.ts')];
+      }
+      if (kind === 'integration' && platform === 'node') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];
       }
       return [
         'pnpm',
