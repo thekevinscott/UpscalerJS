@@ -3,6 +3,7 @@
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
 import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
+import { describe, it, expect } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';

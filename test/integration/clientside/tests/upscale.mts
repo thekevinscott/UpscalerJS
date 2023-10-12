@@ -12,17 +12,13 @@ import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../pack
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const TRACK_TIME = false;
 const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 
 describe('Upscale Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     mockCDN: esbuildMockCDN,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
     verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = () => testRunner.page;
 

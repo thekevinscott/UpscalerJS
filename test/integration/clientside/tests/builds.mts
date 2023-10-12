@@ -11,14 +11,10 @@ import { BrowserTestRunner, MockCDN } from '../../utils/BrowserTestRunner.js';
 import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 
 describe('Build Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     showWarnings: true,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
 
   beforeAll(async () => {

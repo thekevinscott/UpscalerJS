@@ -14,20 +14,14 @@ import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
-const TRACK_TIME = false;
-const LOG = true;
 const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 
 describe('Model Loading Integration Tests', () => {
   const testRunner = new BrowserTestRunner({
     name: 'esm',
     mockCDN: esbuildMockCDN,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    log: LOG,
     verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = () => testRunner.page;
 

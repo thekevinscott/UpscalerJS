@@ -7,10 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import type { Page } from 'puppeteer';
 
-const TRACK_TIME = false;
 const LOG = true;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
@@ -20,10 +17,7 @@ describe('Speed Integration Tests', () => {
     name: 'esm',
     mockCDN: esbuildMockCDN,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
     log: LOG,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
 
   let pages: Page[] = [];
