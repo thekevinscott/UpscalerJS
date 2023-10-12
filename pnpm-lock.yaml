@@ -1383,7 +1383,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/compat-data': 7.22.9
-      '@babel/helper-validator-option': 7.22.5
+      '@babel/helper-validator-option': 7.22.15
       browserslist: 4.21.9
       lru-cache: 5.1.1
       semver: 6.3.1
@@ -1576,7 +1576,7 @@ packages:
     dependencies:
       '@babel/core': 7.22.10
       '@babel/helper-environment-visitor': 7.22.20
-      '@babel/helper-member-expression-to-functions': 7.22.5
+      '@babel/helper-member-expression-to-functions': 7.23.0
       '@babel/helper-optimise-call-expression': 7.22.5
 
   /@babel/helper-simple-access@7.22.5:
@@ -1616,6 +1616,7 @@ packages:
   /@babel/helper-validator-option@7.22.5:
     resolution: {integrity: sha512-R3oB6xlIVKUnxNUxbmgq7pKjxpru24zlimpE8WK47fACIlM0II/Hm1RS8IaOI7NgCr6LNS+jl5l75m20npAziw==}
     engines: {node: '>=6.9.0'}
+    dev: true
 
   /@babel/helper-wrap-function@7.22.9:
     resolution: {integrity: sha512-sZ+QzfauuUEfxSEjKFmi3qDSHgLsTPK/pEpoD/qonZKOtTPTLbf59oabPQ4rKekt9lFcj/hTZaOhWwFYrgjk+Q==}

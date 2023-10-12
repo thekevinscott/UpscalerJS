@@ -1,12 +1,9 @@
 import { JSHandle, Page } from 'puppeteer';
+import { describe, it, expect, } from 'vitest';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import path from 'path';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
-
-const JEST_TIMEOUT_IN_SECONDS = 60;
-jest.setTimeout(JEST_TIMEOUT_IN_SECONDS * 1000);
-jest.retryTimes(4);
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
