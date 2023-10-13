@@ -583,9 +583,6 @@ describe('Memory Leaks', () => {
   it('should callback to progress with a tensor', async () => {
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    // console.log(`${await testRunner.getServerURL()}/fixtures/pixel-upsampler/test/__fixtures__/fixture.png`);
-    // console.log(`${await testRunner.getFixturesServerURL()}/fixtures/pixel-upsampler/test/__fixtures__/fixture.png`);
-    console.log(fixturePath);
     await new Promise(r => setTimeout(r, 1000 * 10));
     const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const Upscaler = window['Upscaler'];
