@@ -33,7 +33,8 @@ const closeHttpServer = (server: HTTPServer) => new Promise<void>((resolve, reje
       resolve();
     }
   });
-})
+});
+
 
 export class HttpServer {
   name?: string;
@@ -55,10 +56,17 @@ export class HttpServer {
     if (!await exists(this.dist)) {
       throw new Error(`dist Directory "${this.dist}" supplied to server does not exist`);
     }
-    const httpServer = createServer((request, response) => handler(request, response, {
-      public: this.dist,
-      headers: serverHeaders,
-    }));
+
+    const httpServer = createServer((request, response) => {
+      response.setHeader('Access-Control-Allow-Origin', '*');
+      response.setHeader('Access-Control-Request-Method', '*');
+      response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+      response.setHeader('Access-Control-Allow-Headers', '*');
+      return handler(request, response, {
+        public: this.dist,
+        headers: serverHeaders,
+      });
+    });
     this.httpServer = httpServer;
 
     await startHttpServer(httpServer, this.port);
@@ -68,7 +76,11 @@ export class HttpServer {
       verbose('Starting server with tunnel');
       await this.tunnel.start();
     }
-    return this.url;
+    const url = this.url;
+    if (!url) {
+      throw new Error('No URL was created');
+    }
+    return url;
   }
 
   get url() {
