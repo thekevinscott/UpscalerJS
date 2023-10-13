@@ -1,4 +1,5 @@
 import path from 'path';
+import { expect, describe, it } from 'vitest';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { getTemplate } from '@internals/common/get-template';

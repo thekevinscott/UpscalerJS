@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import { expect, describe, it, test } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../lib/utils/checkImage';
 import { MODELS_DIR } from '@internals/common/constants';
@@ -145,7 +146,7 @@ describe('Node Image Loading Integration Tests', () => {
   });
 
   describe('Strings', () => {
-    it.only("upscales a string", async () => {
+    it("upscales a string", async () => {
       await runTest({
         image: JSON.stringify(IMAGE_FIXTURE_PATH),
         fixture: EXPECTED_UPSCALED_IMAGE_15,

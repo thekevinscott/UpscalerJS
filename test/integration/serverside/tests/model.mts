@@ -1,12 +1,8 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
-import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
-import { MODELS_DIR, TMP_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
-import {
-  MultiArgTensorProgress,
-} from '../../../../packages/upscalerjs/src/shared/types.js';
+import { expect, describe, it } from 'vitest';
+import { MODELS_DIR } from '@internals/common/constants';
 import type {
   ModelDefinition,
 } from '../../../../packages/shared/src/types.js';

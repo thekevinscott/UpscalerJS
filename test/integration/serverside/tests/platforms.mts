@@ -1,4 +1,5 @@
 import path from 'path';
+import { describe, it } from 'vitest';
 import { checkImage } from '../../lib/utils/checkImage';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
