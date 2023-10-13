@@ -151,8 +151,8 @@ jobs:
         with:
           verbose: true
 
-  integration-browser-browserstack:
-    name: 'Integration / Browser / Browserstack'
+  integration-browserstack:
+    name: 'Integration / Browserstack'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action

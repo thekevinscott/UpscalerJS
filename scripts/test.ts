@@ -159,7 +159,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'browser') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.ts')];
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.mts')];
       }
       if (kind === 'memory') {
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/memory/vite.config.mts')];
