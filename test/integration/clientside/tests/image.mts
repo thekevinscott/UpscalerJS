@@ -129,7 +129,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const bytes = new Uint8Array(pixels);
-        const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
+        const tensor = window['tf'].tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.execute(tensor).then(resolve);
       }), flowerPixels);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
