@@ -209,13 +209,13 @@ describe('Memory Leaks', () => {
   it('should create upscalers', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);
 
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times }) => {
       const Upscaler = window['Upscaler'];
       for (let i = 0; i < times; i++) {
         const upscaler = new Upscaler();
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK });
 
     await tick(testRunner.page);
 
@@ -227,7 +227,7 @@ describe('Memory Leaks', () => {
   it('should create an Upscaler instance and warm up', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);
 
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times }) => {
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
@@ -240,7 +240,7 @@ describe('Memory Leaks', () => {
         });
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK });
 
     await tick(testRunner.page);
 
@@ -252,7 +252,7 @@ describe('Memory Leaks', () => {
   it('should create an Upscaler instance with a custom model', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);
 
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times }) => {
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
@@ -264,7 +264,7 @@ describe('Memory Leaks', () => {
         });
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -275,8 +275,9 @@ describe('Memory Leaks', () => {
   describe('Upscale with base64 output', () => {
     it('should upscale with no pre / post processing functions', async () => {
       const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-      const image = await testRunner.page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
         const Upscaler = window['Upscaler'];
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
@@ -287,12 +288,12 @@ describe('Memory Leaks', () => {
           const upscaler = new Upscaler({
             model,
           });
-          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(fixturePath);
 
           await upscaler.dispose();
         }
         return image;
-      }, TIMES_TO_CHECK);
+      }, { times: TIMES_TO_CHECK, fixturePath });
 
       await tick(testRunner.page);
       const endingMemory = await getMemory(testRunner.page);
@@ -303,8 +304,9 @@ describe('Memory Leaks', () => {
 
     it('should upscale with a pre and no post processing functions', async () => {
       const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-      const image = await testRunner.page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -319,12 +321,12 @@ describe('Memory Leaks', () => {
               preprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window[fixturePath]);
 
           await upscaler.dispose();
         }
         return image;
-      }, TIMES_TO_CHECK);
+      }, { times: TIMES_TO_CHECK, fixturePath });
 
       await tick(testRunner.page);
       const endingMemory = await getMemory(testRunner.page);
@@ -335,8 +337,9 @@ describe('Memory Leaks', () => {
     
     it('should upscale with no pre and a post processing functions', async () => {
       const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-      const image = await testRunner.page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         let image;
@@ -351,12 +354,12 @@ describe('Memory Leaks', () => {
               postprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window[fixturePath]);
 
           await upscaler.dispose();
         }
         return image;
-      }, TIMES_TO_CHECK);
+      }, { times: TIMES_TO_CHECK, fixturePath });
 
       await tick(testRunner.page);
       const endingMemory = await getMemory(testRunner.page);
@@ -367,8 +370,9 @@ describe('Memory Leaks', () => {
 
     it('should upscale with a pre and a post processing functions', async () => {
       const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-      const image = await testRunner.page.evaluate(async (times) => {
+      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
         const tf = window['tf'];
         const Upscaler = window['Upscaler'];
         const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -384,12 +388,12 @@ describe('Memory Leaks', () => {
               postprocess: (image) => tf.mul(image, 1),
             }
           });
-          image = await upscaler.execute(window['fixtures']['pixel-upsampler']);
+          image = await upscaler.execute(window[fixturePath]);
 
           await upscaler.dispose();
         }
         return image;
-      }, TIMES_TO_CHECK);
+      }, { times: TIMES_TO_CHECK, fixturePath });
 
       await tick(testRunner.page);
       const endingMemory = await getMemory(testRunner.page);
@@ -401,8 +405,9 @@ describe('Memory Leaks', () => {
 
   it('should upscale with a pre and a post processing functions into a tensor', async () => {
     const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -425,7 +430,7 @@ describe('Memory Leaks', () => {
 
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -445,8 +450,9 @@ describe('Memory Leaks', () => {
       window['src'] = await window['tf'].browser.fromPixels(img);
     });
     const startingMemory = await getStartingMemory(testRunner.page);
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
-    const image = await testRunner.page.evaluate(async (times) => {
+    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -467,7 +473,7 @@ describe('Memory Leaks', () => {
         await upscaler.dispose();
       }
       return output!;
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -479,8 +485,9 @@ describe('Memory Leaks', () => {
   });
 
   it('should upscale with a pre and a post processing functions with patch sizes', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async (times) => {
+    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const tf = window['tf'];
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -504,7 +511,7 @@ describe('Memory Leaks', () => {
         await upscaler.dispose();
       }
       return output;
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -515,7 +522,7 @@ describe('Memory Leaks', () => {
 
   // it('should upscale with an ESRGAN-thick model', async () => {
   //   const startingMemory = await getStartingMemory(testRunner.page);
-  //   const image = await testRunner.page.evaluate(async (times) => {
+  //   const image = await testRunner.page.evaluate(async ({ times }) => {
   //     const Upscaler = window['Upscaler'];
   //     const ESRGANThick = window['esrgan-thick']['4x'];
   //     let output;
@@ -528,7 +535,7 @@ describe('Memory Leaks', () => {
   //       await upscaler.dispose();
   //     }
   //     return output;
-  //   }, TIMES_TO_CHECK);
+  //   }, { times: TIMES_TO_CHECK });
 
   //   await tick(testRunner.page);
   //   const endingMemory = await getMemory(testRunner.page);
@@ -538,8 +545,9 @@ describe('Memory Leaks', () => {
   // });
 
   it('should callback to progress with a src', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async (times) => {
+    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
@@ -562,7 +570,7 @@ describe('Memory Leaks', () => {
         await upscaler.dispose();
       }
       return output;
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -572,8 +580,9 @@ describe('Memory Leaks', () => {
   });
 
   it('should callback to progress with a tensor', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async (times) => {
+    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const Upscaler = window['Upscaler'];
       let output: tf.Tensor;
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -601,7 +610,7 @@ describe('Memory Leaks', () => {
       }
       window['output'] = output!;
       return output!;
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     expect(image.shape).toEqual([16, 16, 3]);
@@ -614,8 +623,9 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate((times) => new Promise(resolve => {
+    await testRunner.page.evaluate(({ times, fixturePath }) => new Promise(resolve => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -634,7 +644,7 @@ describe('Memory Leaks', () => {
         });
         abortController.abort();
       }
-    }), TIMES_TO_CHECK);
+    }), { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -643,8 +653,9 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory with patch sizes', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const Upscaler = window['Upscaler'];
       const abortController = new AbortController();
       const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -671,7 +682,7 @@ describe('Memory Leaks', () => {
 
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
@@ -680,8 +691,9 @@ describe('Memory Leaks', () => {
   });
 
   it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate(async (times) => {
+    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const Upscaler = window['Upscaler'];
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
@@ -709,7 +721,7 @@ describe('Memory Leaks', () => {
 
         await upscaler.dispose();
       }
-    }, TIMES_TO_CHECK);
+    }, { times: TIMES_TO_CHECK, fixturePath });
 
     await tick(testRunner.page);
     const endingMemory = await getMemory(testRunner.page);
