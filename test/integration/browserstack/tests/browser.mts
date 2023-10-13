@@ -59,8 +59,6 @@ describe('Browser Integration Tests', () => {
 
   beforeAll(async function browserBeforeAll() {
     await testRunner.beforeAll();
-    console.log('server url', await testRunner.getServerURL());
-    console.log('fixture url', await testRunner.getFixturesServerURL());
   }, 20000);
 
   afterAll(async function browserAfterAll() {
@@ -73,26 +71,19 @@ describe('Browser Integration Tests', () => {
   });
 
   test.each(browserOptions)("%j", async (capabilities: BrowserOption) => {
-    console.log(capabilities)
     driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
-    console.log('got driver')
     const ROOT_URL = await testRunner.getServerURL();;
     await driver.get(ROOT_URL);
-    console.log('got root url')
     await driver.wait(async () => {
       const title = await driver.getTitle();
       return title.endsWith('| Loaded');
     }, 3000);
-    console.log('got loaded page')
 
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
     const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
-    console.log('got fixture and model paths')
     const result = await executeAsyncScript(driver, ({ fixturePath, modelPath }) => {
       const Upscaler = window['Upscaler'] as any;
-      console.log('got upscaler')
       const model = window["@upscalerjs/pixel-upsampler/x4"];
-      console.log("got model")
       if (!model) {
         throw new Error('No model found for pixel upsampler');
       }

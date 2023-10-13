@@ -44,7 +44,7 @@ const getFolder = (platform: Platform, runner: Runner, kind: Kind) => {
 
 const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
   if (kind === 'memory') {
-    return ['test.browser.ts'];
+    return ['test.browser.mts'];
   }
   if (kind === 'model') {
     return ['model.ts'];
@@ -129,7 +129,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   useGPU?: boolean,
   watch?: boolean;
 }) => {
-  if (skipBundle !== true && runner !== 'browserstack') {
+  if (skipBundle !== true && runner !== 'browserstack' && kind !== 'memory') {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     const durations: number[] = [];
     for (const dependency of dependencies) {
@@ -153,6 +153,9 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     const getArgs = () => {
       if (runner === 'browserstack') {
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
+      }
+      if (kind === 'memory') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/memory/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'node') {
         return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];

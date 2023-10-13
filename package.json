@@ -33,7 +33,7 @@
     "test:integration:browser": "wireit",
     "test:integration:serverside": "wireit",
     "test:model": "wireit",
-    "test:memory-leaks": "wireit",
+    "test:integration:memory-leaks": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:jest": "wireit",
     "test:unit:node": "wireit"
@@ -54,12 +54,12 @@
     "@babel/plugin-transform-modules-commonjs": "7.22.5",
     "@babel/preset-env": "7.22.10",
     "@babel/preset-typescript": "7.22.5",
+    "@internals/bundlers": "workspace:*",
     "@internals/common": "workspace:*",
-    "@internals/upscaler-cli": "workspace:*",
-    "@internals/webdriver": "workspace:*",
     "@internals/http-server": "workspace:*",
     "@internals/test-runner": "workspace:*",
-    "@internals/bundlers": "workspace:*",
+    "@internals/upscaler-cli": "workspace:*",
+    "@internals/webdriver": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
@@ -313,14 +313,15 @@
         "build:models"
       ]
     },
-    "test:memory-leaks": {
-      "command": "pnpm --filter @upscalerjs/scripts test:memory-leaks",
+    "test:integration:memory-leaks": {
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:memory-leaks",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
-        "build:models:esm"
+        "build:models:esm",
+        "bundle:esbuild"
       ]
     },
     "test:unit:browser:playwright": {
