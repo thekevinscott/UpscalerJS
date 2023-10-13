@@ -314,7 +314,8 @@
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "build:models:cjs"
+        "build:models:cjs",
+        "bundle:node"
       ]
     },
     "test:model": {

@@ -50,12 +50,14 @@ describe('Node Image Loading Integration Tests', () => {
     modelPath = '@upscalerjs/pixel-upsampler/x4',
     patchSize,
     padding,
+    logErrors = true,
   }: {
     image: string;
     fixture?: string;
     modelPath?: string;
     patchSize?: number;
     padding?: number;
+    logErrors?: boolean;
   }) => {
     const script = await getTemplate(path.resolve(__dirname, '../_templates/image.js.ejs'), {
       tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
@@ -65,13 +67,13 @@ describe('Node Image Loading Integration Tests', () => {
       patchSize,
       padding,
     });
-    const buffer = await testRunner.run(script);
+    const buffer = await testRunner.run(script, logErrors);
     const result = buffer.toString('utf-8');
     if (!fixture) {
       throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
     }
     // expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
-    checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
+    checkImage(`data:image/png;base64,${result}`, fixture, DIFF_IMAGE_OUTPUT);
   }
 
   describe('Uint8Array', () => {
@@ -90,6 +92,7 @@ describe('Node Image Loading Integration Tests', () => {
       await expect(() => runTest({
         image: `new Uint8Array(${JSON.stringify(Array.from(image))})`,
         fixture: EXPECTED_UPSCALED_IMAGE_15,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
   });
@@ -108,6 +111,7 @@ describe('Node Image Loading Integration Tests', () => {
       await expect(() => runTest({
         image: `fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}')`,
         fixture: EXPECTED_UPSCALED_IMAGE_15,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
   });
@@ -126,6 +130,7 @@ describe('Node Image Loading Integration Tests', () => {
       const t = tf.ones([16,16,4]);
       await expect(() => runTest({
         image: `tf.ones([16,16,4])`,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
     });
 
@@ -141,6 +146,7 @@ describe('Node Image Loading Integration Tests', () => {
       const t = tf.ones([1,16,16,4]);
       await expect(() => runTest({
         image: `tf.ones([1,16,16,4])`,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
     });
   });
@@ -157,12 +163,14 @@ describe('Node Image Loading Integration Tests', () => {
       const input = 'foobarbaz';
       await expect(() => runTest({
         image: JSON.stringify(input),
+        logErrors: false,
       })).rejects.toThrowError(getInvalidImageSrcInput(input));
     });
 
     it("throws if string provided is an invalid image", async () => {
       await expect(() => runTest({
         image: JSON.stringify(path.resolve(IMAGE_FIXTURE_PATH, 'bad-image.png')),
+        logErrors: false,
       })).rejects.toThrow();
     });
   });
