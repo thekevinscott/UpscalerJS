@@ -28,11 +28,10 @@
       ]
     },
     "build": {
-      "command": "tsc -p ./tsconfig.json",
+      "command": "pnpm copy-files && tsc -p ./tsconfig.json",
       "dependencies": [
         "../common:build",
-        "../http-server:build",
-        "copy-files"
+        "../http-server:build"
       ],
       "files": [
         "src/**/*.ts",
