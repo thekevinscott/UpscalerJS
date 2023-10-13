@@ -32,7 +32,6 @@
     "test:integration:browserstack": "wireit",
     "test:integration:clientside": "wireit",
     "test:integration:serverside": "wireit",
->>>>>>> main
     "test:model": "wireit",
     "test:integration:memory-leaks": "wireit",
     "test:unit:browser:playwright": "wireit",
