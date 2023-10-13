@@ -440,7 +440,8 @@ describe('Memory Leaks', () => {
   });
 
   it('should upscale with a pre and a post processing functions from a tensor', async () => {
-    await testRunner.page.evaluate(async () => {
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    await testRunner.page.evaluate(async ({ fixturePath }) => {
       const getImage = (): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = fixturePath;
@@ -449,9 +450,8 @@ describe('Memory Leaks', () => {
       })
       const img = await getImage();
       window['src'] = await window['tf'].browser.fromPixels(img);
-    });
+    }, { fixturePath });
     const startingMemory = await getStartingMemory(testRunner.page);
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
 
     const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
       const tf = window['tf'];
