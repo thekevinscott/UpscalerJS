@@ -10,7 +10,7 @@ import { getTemplate } from "@internals/common/get-template";
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const TEMPLATES_DIR = path.resolve(__dirname, '../_templates');
+const TEMPLATES_DIR = path.resolve(__dirname, './_templates');
 
 type Bundle = () => Promise<void>;
 
@@ -101,7 +101,7 @@ export class ServersideTestRunner {
 
   run(script: string): Promise<Buffer> {
     const contentFn = (outputFile: string) => {
-      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.t'), {
+      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.ejs'), {
         outputFile,
         script,
       });
