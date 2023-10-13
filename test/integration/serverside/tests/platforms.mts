@@ -1,68 +1,46 @@
 import path from 'path';
-import { checkImage } from '../../../lib/utils/checkImage.js';
-import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
-import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { describe, it } from 'vitest';
+import { checkImage } from '../../lib/utils/checkImage';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ServersideTestRunner } from '@internals/test-runner/serverside';
+import { getTemplate } from '@internals/common/get-template';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const NODE_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'node');
 
-const main: Main = async (deps) => {
-  const {
-    Upscaler,
-    tf,
-    base64ArrayBuffer,
-    flower,
-    model,
-  } = deps;
-  const upscaler = new Upscaler({
-    model,
-  });
-  const bytes = new Uint8Array(flower);
-  const tensor = tf.tensor(bytes).reshape([16, 16, 3]);
-  const result = await upscaler.execute(tensor, {
-    output: 'tensor',
-    patchSize: 64,
-    padding: 6,
-  });
-  tensor.dispose();
-  // because we are requesting a tensor, it is possible that the tensor will
-  // contain out-of-bounds pixels; part of the value of this test is ensuring
-  // that those values are clipped in a post-process step.
-  const upscaledImage = await tf.node.encodePng(result);
-  result.dispose();
-  return base64ArrayBuffer(upscaledImage);
-};
+const testRunner = new ServersideTestRunner({
+  trackTime: false,
+  cwd: NODE_DIST_FOLDER,
+});
 
+const runTest = async ({
+  tfjsLibrary,
+}: {
+  tfjsLibrary: string,
+}) => {
+  const script = await getTemplate(path.resolve(__dirname, '../_templates/platforms.js.ejs'), {
+    tf: tfjsLibrary === 'node-gpu' ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+    upscaler: tfjsLibrary === 'node-gpu' ? `upscaler/node-gpu` : `upscaler/node`,
+    flower: path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
+  });
+  const buffer = await testRunner.run(script);
+  const result = buffer.toString('utf-8');
+  // expect(`data:image/png;base64,${result}`).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
+  checkImage(`data:image/png;base64,${result}`, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+}
 describe('Node Platforms Integration Tests', () => {
-  const testRunner = new NodeTestRunner({
-    main,
-    trackTime: false,
-    dependencies: {
-      'fs': 'fs',
-      'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
-      'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
-    },
-    globals: {
-      model: JSON.stringify({
-        path: 'file://' + path.join(__dirname, '../../../../models/pixel-upsampler/models/x4/x4.json'),
-        scale: 4,
-      }),
-    },
-  });
-
   [
     { platform: 'node', },
     { platform: 'node-gpu', },
   ].forEach(({ platform, }) => {
     it(`loads a model with ${platform}`, async () => {
-      const result = await testRunner.run({
-        dependencies: {
-          'tf': `@tensorflow/tfjs-${platform}`,
-          'Upscaler': `${LOCAL_UPSCALER_NAME}/${platform}`,
-        },
+      return await runTest({
+        tfjsLibrary: platform,
       });
-      const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 });

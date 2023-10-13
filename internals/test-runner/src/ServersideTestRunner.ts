@@ -10,7 +10,7 @@ import { getTemplate } from "@internals/common/get-template";
 import * as url from 'url';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const TEMPLATES_DIR = path.resolve(__dirname, '../_templates');
+const TEMPLATES_DIR = path.resolve(__dirname, './_templates');
 
 type Bundle = () => Promise<void>;
 
@@ -18,7 +18,7 @@ const { readFile } = fsExtra;
 
 type StdOut = (chunk: string) => void;
 
-export const callExec = (cmd: string, options: ExecOptions, stdout: StdOut): Promise<void> => new Promise((resolve, reject) => {
+export const callExec = (cmd: string, options: ExecOptions, stdout: StdOut, stderr?: typeof process.stderr): Promise<void> => new Promise((resolve, reject) => {
   const spawnedProcess = exec(cmd, options, (error) => {
     if (error) {
       reject(error);
@@ -27,7 +27,9 @@ export const callExec = (cmd: string, options: ExecOptions, stdout: StdOut): Pro
     }
   });
 
-  spawnedProcess.stderr?.pipe(process.stderr);
+  if (stderr) {
+    spawnedProcess.stderr?.pipe(stderr);
+  }
   spawnedProcess.stdout?.on('data', stdout);
 });
 
@@ -60,7 +62,7 @@ export class RunNodeScriptError extends Error {
 }
 
 type ContentFn = (outputDir: string) => Promise<string>;
-const runNodeScript = (contentFn: ContentFn, cwd: string): Promise<Buffer> => withTmpDir(async (tmpDir) => {
+const runNodeScript = (contentFn: ContentFn, cwd: string, stderr?: typeof process.stderr): Promise<Buffer> => withTmpDir(async (tmpDir) => {
   const dataFile = path.join(tmpDir, getHashedName());
   const contents = await contentFn(dataFile);
   
@@ -72,7 +74,7 @@ const runNodeScript = (contentFn: ContentFn, cwd: string): Promise<Buffer> => wi
     },
   }, chunk => {
     info('[PAGE]', chunk);
-  });
+  }, stderr);
   if (!await exists(dataFile)) {
     throw new Error(`Data file ${dataFile} was not created. Double check that your Node script writes its output to the given data file.`);
   }
@@ -99,14 +101,14 @@ export class ServersideTestRunner {
    * Utility methods
    */
 
-  run(script: string): Promise<Buffer> {
+  run(script: string, logErrors = true): Promise<Buffer> {
     const contentFn = (outputFile: string) => {
-      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.t'), {
+      return getTemplate(path.resolve(TEMPLATES_DIR, 'node-script.js.ejs'), {
         outputFile,
         script,
       });
     };
-    return runNodeScript(contentFn, this.cwd).catch((err: unknown) => {
+    return runNodeScript(contentFn, this.cwd, logErrors ? process.stderr : undefined).catch((err: unknown) => {
       throw new RunNodeScriptError(err, script);
     });
   }

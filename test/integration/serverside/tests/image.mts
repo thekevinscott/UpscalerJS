@@ -1,12 +1,11 @@
 import path from 'path';
 import fs from 'fs';
+import { expect, describe, it, test } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../../lib/utils/checkImage.js';
-import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
-import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
-
-const MODEL_PATH = 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/x4.json');
+import { checkImage } from '../../lib/utils/checkImage';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ServersideTestRunner } from '@internals/test-runner/serverside';
+import { getTemplate as _getTemplate } from '@internals/common/get-template';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');
@@ -15,6 +14,8 @@ const FOUR_CHANNEL_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-smal
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result.png');
 const DIFF_IMAGE_OUTPUT = 'diff.png';
+
+const USE_GPU = process.env.useGPU === '1';
 
 // TODO: How to import this, instead of copying it?
 // import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/shared/image.node';
@@ -26,169 +27,162 @@ export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error
   `Full tensor shape: ${JSON.stringify(input.shape)}`,
 ].join(' '));
 
-const main: Main = async (deps) => {
-  const {
-    Upscaler,
-    tf,
-    base64ArrayBuffer,
-    model,
-    image,
-    patchSize,
-    padding,
-  } = deps;
-  const upscaler = new Upscaler({
-    model,
-  });
-  const result = await upscaler.execute(image, {
-    patchSize,
-    padding,
-  });
-  try {
-    image.dispose(); // if it is a tensor, dispose of it
-  } catch(err) {}
-  // because we are requesting a tensor, it is possible that the tensor will
-  // contain out-of-bounds pixels; part of the value of this test is ensuring
-  // that those values are clipped in a post-process step.
-  const upscaledImage = await tf.node.encodePng(result);
-  result.dispose();
-  return base64ArrayBuffer(upscaledImage);
-};
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const NODE_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'node')
+
+const getTemplate = (
+  templateName: string,
+  args: Parameters<typeof _getTemplate>[1] = {}
+) => _getTemplate(path.resolve(NODE_DIST_FOLDER, templateName), args);
 
 describe('Node Image Loading Integration Tests', () => {
-  const testRunner = new NodeTestRunner({
-    main,
+  const testRunner = new ServersideTestRunner({
+    cwd: NODE_DIST_FOLDER,
     trackTime: false,
-    dependencies: {
-      'tf': `@tensorflow/tfjs-node`,
-      'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
-      'fs': 'fs',
-      'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
-      'flower_tensor': path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'),
-    },
-    globals: {
-      model: JSON.stringify({
-        path: MODEL_PATH,
-        scale: 4,
-      }),
-    },
   });
+
+  const runTest = async ({
+    image,
+    fixture,
+    modelPath = '@upscalerjs/pixel-upsampler/x4',
+    patchSize,
+    padding,
+    logErrors = true,
+  }: {
+    image: string;
+    fixture?: string;
+    modelPath?: string;
+    patchSize?: number;
+    padding?: number;
+    logErrors?: boolean;
+  }) => {
+    const script = await getTemplate(path.resolve(__dirname, '../_templates/image.js.ejs'), {
+      tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+      upscaler: USE_GPU ? `upscaler/node-gpu` : `upscaler/node`,
+      image,
+      customModel: modelPath,
+      patchSize,
+      padding,
+    });
+    const buffer = await testRunner.run(script, logErrors);
+    const result = buffer.toString('utf-8');
+    if (!fixture) {
+      throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
+    }
+    // expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
+    checkImage(`data:image/png;base64,${result}`, fixture, DIFF_IMAGE_OUTPUT);
+  }
 
   describe('Uint8Array', () => {
     it("upscales a Uint8Array", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: `new Uint8Array(fs.readFileSync('${IMAGE_FIXTURE_PATH}'))`,
-        },
+      const image = new Uint8Array(fs.readFileSync(IMAGE_FIXTURE_PATH));
+      await runTest({
+        image: `new Uint8Array(${JSON.stringify(Array.from(image))})`,
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
     });
 
     it('throws if given 4-channel Uint8Array', async () => {
       const mockedTensor = tf.node.decodeImage(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
-      await expect(() => testRunner.run({
-        globals: {
-          image: `new Uint8Array(fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}'))`,
-        },
+
+      const image = new Uint8Array(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
+      await expect(() => runTest({
+        image: `new Uint8Array(${JSON.stringify(Array.from(image))})`,
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
   });
 
   describe('Buffers', () => {
     it("upscales a Buffer", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: `fs.readFileSync('${IMAGE_FIXTURE_PATH}')`,
-        },
+      await runTest({
+        image: `fs.readFileSync('${IMAGE_FIXTURE_PATH}')`,
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if a Buffer has invalid channels", async () => {
       const mockedTensor = tf.node.decodeImage(fs.readFileSync(FOUR_CHANNEL_FIXTURE_PATH));
-      await expect(() => testRunner.run({
-        globals: {
-          image: `fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}')`,
-        },
+
+      await expect(() => runTest({
+        image: `fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}')`,
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
     });
   });
 
   describe('Tensors', () => {
     it("upscales a 3D Tensor", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([16, 16, 3])`,
-        },
+      const flowerSmallTensor = JSON.parse(fs.readFileSync(path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'), 'utf-8'));
+      
+      await runTest({
+        image: `tf.tensor(${JSON.stringify(flowerSmallTensor)}).reshape([16,16,3])`,
+        fixture: EXPECTED_UPSCALED_IMAGE_16,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_16, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if 3D Tensor has invalid channels", async () => {
       const t = tf.ones([16,16,4]);
-      await expect(() => testRunner.run({
-        globals: {
-          image: `tf.ones([16,16,4])`,
-        },
+      await expect(() => runTest({
+        image: `tf.ones([16,16,4])`,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
     });
 
     it("upscales a 4D Tensor", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: `tf.tensor(new Uint8Array(flower_tensor)).reshape([1, 16, 16, 3])`,
-        },
+      const flowerSmallTensor = JSON.parse(fs.readFileSync(path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'), 'utf-8'));
+      await runTest({
+        image: `tf.tensor(${JSON.stringify(flowerSmallTensor)}).reshape([1,16,16,3])`,
+        fixture: EXPECTED_UPSCALED_IMAGE_16,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_16, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if 4D Tensor has invalid channels", async () => {
       const t = tf.ones([1,16,16,4]);
-      await expect(() => testRunner.run({
-        globals: {
-          image: `tf.ones([1,16,16,4])`,
-        },
+      await expect(() => runTest({
+        image: `tf.ones([1,16,16,4])`,
+        logErrors: false,
       })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
     });
   });
 
   describe('Strings', () => {
     it("upscales a string", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: JSON.stringify(IMAGE_FIXTURE_PATH),
-        },
+      await runTest({
+        image: JSON.stringify(IMAGE_FIXTURE_PATH),
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
     });
 
     it("throws if string provided is an invalid path", async () => {
       const input = 'foobarbaz';
-      await expect(() => testRunner.run({
-        globals: {
-          image: JSON.stringify(input),
-        },
+      await expect(() => runTest({
+        image: JSON.stringify(input),
+        logErrors: false,
       })).rejects.toThrowError(getInvalidImageSrcInput(input));
     });
 
     it("throws if string provided is an invalid image", async () => {
-      await expect(() => testRunner.run({
-        globals: {
-          image: JSON.stringify(path.resolve(IMAGE_FIXTURE_PATH, 'bad-image.png')),
-        },
+      await expect(() => runTest({
+        image: JSON.stringify(path.resolve(IMAGE_FIXTURE_PATH, 'bad-image.png')),
+        logErrors: false,
       })).rejects.toThrow();
     });
   });
 
   describe('Patch sizes', () => {
     it("upscales an imported local image path with patch sizes", async () => {
-      const result = await testRunner.run({
-        globals: {
-          image: JSON.stringify(IMAGE_FIXTURE_PATH),
-          patchSize: 6,
-          padding: 2,
-        },
+      await runTest({
+        image: JSON.stringify(IMAGE_FIXTURE_PATH),
+        patchSize: 6,
+        padding: 2,
+        fixture: EXPECTED_UPSCALED_IMAGE_15,
       });
-      checkImage(`data:image/png;base64,${result}`, EXPECTED_UPSCALED_IMAGE_15, DIFF_IMAGE_OUTPUT);
     });
   });
 });

@@ -13,6 +13,7 @@
     "build:models:umd": "wireit",
     "build:models:cjs": "wireit",
     "bundle:esbuild": "wireit",
+    "bundle:node": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
     "docs:build": "wireit",
@@ -265,6 +266,21 @@
         "!tmp/bundlers/esbuild/node_modules"
       ]
     },
+    "bundle:node": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- node",
+      "dependencies": [
+        "./packages/upscalerjs:build:node",
+        "./packages/upscalerjs:build:node-gpu",
+        "build:models:cjs"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/node/**/*",
+        "!tmp/bundlers/node/node_modules"
+      ]
+    },
     "test:start-test-server": {
       "command": "ts-node test/lib/start-test-server.ts"
     },
@@ -298,7 +314,8 @@
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "build:models:cjs"
+        "build:models:cjs",
+        "bundle:node"
       ]
     },
     "test:model": {
