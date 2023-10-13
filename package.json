@@ -30,7 +30,7 @@
     "update:npm:dependencies": "wireit",
     "test:start-test-server": "wireit",
     "test:integration:browserstack": "wireit",
-    "test:integration:browser": "wireit",
+    "test:integration:clientside": "wireit",
     "test:integration:serverside": "wireit",
     "test:model": "wireit",
     "test:integration:memory-leaks": "wireit",
@@ -280,8 +280,8 @@
         "bundle:esbuild"
       ]
     },
-    "test:integration:browser": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browser",
+    "test:integration:clientside": {
+      "command": "pnpm --filter @upscalerjs/scripts test:integration:clientside",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",

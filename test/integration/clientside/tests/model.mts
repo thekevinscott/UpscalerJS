@@ -1,36 +1,24 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST , mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import * as path from 'path';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
-const TRACK_TIME = false;
-const LOG = true;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000 * 15;
-jest.setTimeout(JEST_TIMEOUT); // 5 minute timeout per test
-jest.retryTimes(0);
-
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
+  const testRunner = new ClientsideTestRunner({
     name: 'esm',
-    mockCDN: esbuildMockCDN,
+    mock: true,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    log: LOG,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = () => testRunner.page;
 
@@ -100,23 +88,21 @@ describe('Model Loading Integration Tests', () => {
 
   it('clips a model that returns out of bound numbers when returning a base64 string src', async () => {
     const startingPixels = [-100,-100,-100,0,0,0,255,255,255,1000,1000,1000];
-    const predictedPixels: number[] = await page().evaluate((startingPixels) => {
+    const predictedPixels: number[] = await page().evaluate(async (startingPixels) => {
+      const tensor = window['tf'].tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const upscaler = new window['Upscaler']({
         model: window['pixel-upsampler']['x2'],
       });
-      const tensor = tf.tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();
         img.src = src;
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
       });
-      return upscaler.execute(tensor).then((output) => {
-        return loadImage(output);
-      }).then((img: HTMLImageElement) => {
-        const predictedPixels = tf.browser.fromPixels(img);
-        return Array.from(predictedPixels.dataSync());
-      });
+      const output = await upscaler.execute(tensor);
+      const img = await loadImage(output);
+      const predictedPixels = window['tf'].browser.fromPixels(img);
+      return Array.from(predictedPixels.dataSync());
     }, startingPixels);
     expect(predictedPixels.length).toEqual(4*4*3);
     const predictedTensor = tfn.tensor(predictedPixels).reshape([4,4,3]);

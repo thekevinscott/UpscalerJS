@@ -1,31 +1,21 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
 import path from 'path';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../packages/upscalerjs/src/shared';
+import { MODELS_DIR } from '@internals/common/constants';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../packages/upscalerjs/src/shared/index.js';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const TRACK_TIME = false;
-const JEST_TIMEOUT = 60 * 1000;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(0);
-
 describe('Upscale Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
+  const testRunner = new ClientsideTestRunner({
+    mock: true,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = () => testRunner.page;
 

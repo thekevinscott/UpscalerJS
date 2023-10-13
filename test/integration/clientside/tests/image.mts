@@ -1,34 +1,25 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
+import { describe, it, expect } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import type { Page } from 'puppeteer';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
-import { MODELS_DIR } from '../../../scripts/package-scripts/utils/constants';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'), 'utf-8'));
 
-const TRACK_TIME = false;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-const JEST_TIMEOUT = 60 * 1000;
-jest.setTimeout(JEST_TIMEOUT); // 60 seconds timeout
-jest.retryTimes(0);
-
 describe('Image Format Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
+  const testRunner = new ClientsideTestRunner({
+    mock: true,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = (): Page => testRunner.page;
 
@@ -131,7 +122,7 @@ describe('Image Format Integration Tests', () => {
           },
         });
         const bytes = new Uint8Array(pixels);
-        const tensor = tf.tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
+        const tensor = window['tf'].tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.execute(tensor).then(resolve);
       }), flowerPixels);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
