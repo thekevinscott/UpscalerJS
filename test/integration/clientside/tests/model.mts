@@ -7,21 +7,18 @@ import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
 import * as tfn from '@tensorflow/tfjs-node';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import * as path from 'path';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
-const VERBOSE = false;
-
 describe('Model Loading Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
+  const testRunner = new ClientsideTestRunner({
     name: 'esm',
-    mockCDN: esbuildMockCDN,
+    mock: true,
     dist: ESBUILD_DIST,
-    verbose: VERBOSE,
   });
   const page = () => testRunner.page;
 

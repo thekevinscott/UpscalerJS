@@ -2,31 +2,24 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
+import { ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
 import { describe, it, expect } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import fs from 'fs';
 import * as path from 'path';
 import type { Page } from 'puppeteer';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'), 'utf-8'));
 
-const TRACK_TIME = false;
-const VERBOSE = false;
-const USE_PNPM = `${process.env.USE_PNPM}` === '1';
-
 describe('Image Format Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
+  const testRunner = new ClientsideTestRunner({
+    mock: true,
     dist: ESBUILD_DIST,
-    trackTime: TRACK_TIME,
-    verbose: VERBOSE,
-    usePNPM: USE_PNPM,
   });
   const page = (): Page => testRunner.page;
 

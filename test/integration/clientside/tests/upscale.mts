@@ -5,20 +5,17 @@ import { checkImage } from '../../../lib/utils/checkImage.js';
 import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import path from 'path';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { MODELS_DIR } from '@internals/common/constants';
 import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../packages/upscalerjs/src/shared/index.js';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
-const VERBOSE = false;
-
 describe('Upscale Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
-    mockCDN: esbuildMockCDN,
+  const testRunner = new ClientsideTestRunner({
+    mock: true,
     dist: ESBUILD_DIST,
-    verbose: VERBOSE,
   });
   const page = () => testRunner.page;
 

@@ -4,8 +4,8 @@
 import { ESBUILD_DIST as ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import type { Page } from 'puppeteer';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 // TODO: Figure out how to import this from upscaler
 const CDNS = [
@@ -17,9 +17,8 @@ const CDNS = [
 const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
 
 describe('CDN Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
+  const testRunner = new ClientsideTestRunner({
     dist: ESBUILD_DIST,
-    log: false,
   });
   const page = (): Page => {
     testRunner.page.setRequestInterception(true);

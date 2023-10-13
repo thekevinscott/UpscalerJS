@@ -4,20 +4,18 @@
 import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import type { Page } from 'puppeteer';
+import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
-const LOG = true;
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
 
 describe('Speed Integration Tests', () => {
-  const testRunner = new BrowserTestRunner({
+  const testRunner = new ClientsideTestRunner({
     name: 'esm',
-    mockCDN: esbuildMockCDN,
+    mock: true,
     dist: ESBUILD_DIST,
-    log: LOG,
   });
 
   let pages: Page[] = [];
