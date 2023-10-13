@@ -272,8 +272,8 @@ jobs:
       - name: 'Integration Tests'
         run: pnpm test:model -- --platform node --ci --verbose  --skip-bundle
 
-  memory-leaks:
-    name: 'Memory Leaks'
+  integration-memory-leaks:
+    name: 'Integration / Memory Leaks'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -286,11 +286,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:memory-leaks -- --ci --verbose --skip-test 
-
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:memory-leaks -- --ci --verbose 
 
   build-docs:
     name: 'Build Documentation'

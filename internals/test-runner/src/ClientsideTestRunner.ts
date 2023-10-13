@@ -192,8 +192,8 @@ export class ClientsideTestRunner {
     });
 
     // Note: these must be done sequentially; there's a race condition bug in tunnelmole
-    await this.server.start();
     await this.fixturesServer.start();
+    await this.server.start();
   }
 
   async stopServers(): Promise<void> {
