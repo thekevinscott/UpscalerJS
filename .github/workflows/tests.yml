@@ -204,7 +204,7 @@ jobs:
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-serverside-local:
+  integration-serverside:
     name: 'Integration / Serverside'
     runs-on: ubuntu-latest
     steps:
@@ -218,11 +218,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:serverside -- --ci --verbose --skip-test 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          detached: true
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:serverside -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:serverside -- --ci --verbose
 
   integration-models-browser:
     name: 'Models / Browser'
