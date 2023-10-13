@@ -160,16 +160,16 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const getArgs = () => {
       if (runner === 'browserstack') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
+        throw new Error('not supported')
       }
       if (kind === 'integration' && platform === 'browser') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.mts')];
+        throw new Error('not supported')
       }
       if (kind === 'memory') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/memory/vite.config.mts')];
+        throw new Error('not supported')
       }
       if (kind === 'integration' && platform === 'node') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];
+        throw new Error('not supported')
       }
       return [
         'pnpm',
