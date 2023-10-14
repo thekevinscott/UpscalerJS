@@ -60,7 +60,7 @@ describe('Image Format Integration Tests', () => {
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
-    it.only("upscales an HTML Image", async () => {
+    it("upscales an HTML Image", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(async ({ fixturePath, }) => new Promise(resolve => {
         const model = window['@upscalerjs/pixel-upsampler/x4'];
