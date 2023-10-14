@@ -123,6 +123,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   if (skipBundle !== true && !(
     runner === 'browserstack' 
     || kind === 'memory'
+    || kind === 'model'
     || (platform === 'node' && kind === 'integration')
   )) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
@@ -181,7 +182,6 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
-  skipBundle?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   verbose?: boolean;
@@ -240,7 +240,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipBundle: { type: 'boolean' },
     skipTest: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },

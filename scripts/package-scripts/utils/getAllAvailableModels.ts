@@ -35,11 +35,15 @@ export interface AvailableModel {
   cjs: string;
   umd: string;
   pathName: string | PackageJSONExport;
+  'umd:main': string;
+  mainUMDName: string;
 }
 
 export const getAllAvailableModels = (packageName: string): AvailableModel[] => {
   const modelPackageDir = path.resolve(MODELS_DIR, packageName);
   const umdNames = jsonParse(path.resolve(modelPackageDir, 'umd-names.json'));
+  const packageJSONPath = path.resolve(modelPackageDir, 'package.json');
+  const packageJSON = JSON.parse(readFileSync(packageJSONPath, 'utf8'));
   return getPackageJSONExports(modelPackageDir).map(([key, pathName]) => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
@@ -51,6 +55,8 @@ export const getAllAvailableModels = (packageName: string): AvailableModel[] => 
       cjs: key.substring(2),
       umd: umdName,
       pathName,
+      'umd:main': packageJSON['umd:main'],
+      mainUMDName: umdNames['.'],
     };
     return availableModel;
   });
