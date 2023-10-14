@@ -248,7 +248,7 @@ jobs:
       #   with:
       #     detached: true
       - name: 'Integration Tests'
-        run: pnpm test:integration:model -- --platform browser
+        run: pnpm test:integration:model:clientside
 
   integration-models-node:
     name: 'Models / Node'
@@ -265,7 +265,7 @@ jobs:
           node-version: 16
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:model -- --platform node
+        run: pnpm test:integration:model:serverside
 
   integration-memory-leaks:
     name: 'Integration / Memory Leaks'
