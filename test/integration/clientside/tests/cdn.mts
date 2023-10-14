@@ -1,8 +1,8 @@
 /****
  * Tests that loading models via CDN works
  */
-import { ESBUILD_DIST as ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
 import { vi, } from 'vitest';
+import path from 'path';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
 import type { HTTPRequest, Page } from 'puppeteer';
@@ -16,6 +16,12 @@ const CDNS = [
 
 // TODO: Figure out how to import this from upscaler
 const LOAD_MODEL_ERROR_MESSAGE = (modelPath: string) => `Could not resolve URL ${modelPath}`;
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 describe('CDN Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
@@ -45,8 +51,12 @@ describe('CDN Integration Tests', () => {
 
   const evaluateUpscaler = async (page: Page) => {
     await page.evaluate(() => {
+      const model = window['@upscalerjs/pixel-upsampler/x4'];
+      if (!model) {
+        throw new Error('Model not found');
+      }
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['x4'],
+        model,
       });
       return upscaler.getModel();
     });

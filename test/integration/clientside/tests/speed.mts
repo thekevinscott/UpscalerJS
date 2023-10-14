@@ -1,8 +1,8 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
+import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import type { Page } from 'puppeteer';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
@@ -10,6 +10,12 @@ import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 const LOWER_THRESHOLD = 40; // in milliseconds
 const UPPER_THRESHOLD = 20; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 describe('Speed Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
