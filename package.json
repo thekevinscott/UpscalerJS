@@ -314,7 +314,7 @@
       "command": "ts-node test/lib/start-test-server.ts"
     },
     "test:integration:browserstack": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+      "command": "ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/browserstack/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/webdriver:build",
@@ -337,7 +337,7 @@
       ]
     },
     "test:integration:serverside": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:serverside",
+      "command": "NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/serverside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/test-runner:build",

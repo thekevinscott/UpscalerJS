@@ -11,7 +11,7 @@ import {
   WARNING_UNDEFINED_PADDING,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
-} from '../../../packages/upscalerjs/src/shared/errors-and-warnings';
+} from '../../../../packages/upscalerjs/src/shared/errors-and-warnings.js';
 import { getTemplate } from '@internals/common/get-template';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { withTmpDir } from '@internals/common/tmp-dir';
@@ -22,11 +22,10 @@ const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fix
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
 const USE_GPU = process.env.useGPU === '1';
-const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
-if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
-  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
+if (typeof NODE_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_DIST_FOLDER not defined in env');
 }
-const NODE_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'node');
 
 const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) => {
   if (scale < 2 || scale > 4) {
