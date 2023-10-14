@@ -3,7 +3,7 @@ import { describe, it, expect, } from 'vitest';
 import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
-import { getAllObjects, getMemory } from '../../../lib/memory.js';
+import { getAllObjects, getMemory, } from '../../../setup/matchers/toHaveLeakedMemory/index.js';
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
