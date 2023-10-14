@@ -289,7 +289,7 @@ jobs:
           node-version: 16
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:integration:memory-leaks -- --ci --verbose 
+        run: pnpm test:integration:memory-leaks
 
   build-docs:
     name: 'Build Documentation'
