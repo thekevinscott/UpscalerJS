@@ -129,7 +129,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
             test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
               const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageName}/test/__fixtures__/fixture.png`;
               const result = await umdTestRunner.page.evaluate(({modelName, packageName}) => {
-                const model = window[modelName] as unknown as ModelDefinition;
+                const model = window[`${packageName}/${modelName}`] as unknown as ModelDefinition;
                 if (!model) {
                   throw new Error(`No model for ${modelName}`);
                 }
