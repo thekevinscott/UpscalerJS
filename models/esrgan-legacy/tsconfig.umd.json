@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.esm.json",
   "include": [
-    "./src/index.ts",
+    "./src/umd.ts",
     "./src/div2k/x2/index.ts",
     "./src/div2k/x3/index.ts",
     "./src/div2k/x4/index.ts",
