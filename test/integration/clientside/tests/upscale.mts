@@ -2,7 +2,6 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import path from 'path';
@@ -11,6 +10,12 @@ import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../pack
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 describe('Upscale Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({

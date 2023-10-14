@@ -2,8 +2,6 @@
  * Tests that different build outputs all function correctly
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../../lib/umd/prepare.js';
-import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../../lib/esm-webpack/prepare.js';
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
@@ -11,6 +9,13 @@ import { BrowserTestRunner, MockCDN } from '../../utils/BrowserTestRunner.js';
 import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const UMD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'umd/dist')
+const WEBPACK_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'webpack/dist')
 
 describe('Build Integration Tests', () => {
   const testRunner = new BrowserTestRunner({

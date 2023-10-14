@@ -13,6 +13,8 @@
     "build:models:umd": "wireit",
     "build:models:cjs": "wireit",
     "bundle:esbuild": "wireit",
+    "bundle:webpack": "wireit",
+    "bundle:umd": "wireit",
     "bundle:node": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
@@ -100,7 +102,6 @@
     "fs-extra": "11.1.1",
     "glob": "^10.3.3",
     "heapdump": "0.3.15",
-    "html-webpack-plugin": "5.5.3",
     "inquirer": "9.2.10",
     "jest": "29.6.3",
     "jest-canvas-mock": "2.5.2",
@@ -128,7 +129,6 @@
     "upscaler": "workspace:*",
     "vite": "4.4.9",
     "vitest": "^0.34.5",
-    "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
   "engines": {
@@ -266,6 +266,34 @@
         "!tmp/bundlers/esbuild/node_modules"
       ]
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
+      ]
+    },
+
     "bundle:node": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- node",
       "dependencies": [
@@ -304,7 +332,10 @@
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
-        "build:models:umd"
+        "build:models:umd",
+        "bundle:esbuild",
+        "bundle:webpack",
+        "bundle:umd"
       ]
     },
     "test:integration:serverside": {

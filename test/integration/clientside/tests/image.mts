@@ -2,7 +2,6 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { ESBUILD_DIST } from '../../../lib/esm-esbuild/prepare.js';
 import { describe, it, expect } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
@@ -15,6 +14,12 @@ import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 
 const flowerPixels = JSON.parse(fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'), 'utf-8'));
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 describe('Image Format Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({

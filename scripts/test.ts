@@ -124,6 +124,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
     runner === 'browserstack' 
     || kind === 'memory'
     || (platform === 'node' && kind === 'integration')
+    || (platform === 'browser' && kind === 'integration')
   )) {
     const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
     const durations: number[] = [];
