@@ -104,19 +104,6 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
   return sharedDependencies;
 };
 
-const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
-  if (kind === 'memory') {
-    return path.resolve(TEST_DIR, 'misc/memory/jestconfig.js');
-  }
-  if (kind === 'model') {
-    return path.resolve(TEST_DIR, 'jestconfig.model.js');
-  }
-  if (Array.isArray(platform)) {
-    throw new Error(`An array of platforms was provided, but test kind does not support multiple platforms. Please provide an explicit platform`);
-  }
-  return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
-};
-
 /****
  * Main function
  */
@@ -157,10 +144,12 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   }
 
   if (skipTest !== true) {
-    const jestConfigPath = getJestConfigPath(platform, runner, kind);
     const getArgs = () => {
       if (runner === 'browserstack') {
         throw new Error('not supported')
+      }
+      if (kind === 'model') {
+        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/model/vite.config.mts')];
       }
       if (kind === 'integration' && platform === 'browser') {
         throw new Error('not supported')
@@ -171,15 +160,7 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
       if (kind === 'integration' && platform === 'node') {
         throw new Error('not supported')
       }
-      return [
-        'pnpm',
-        'jest',
-        '--config',
-        jestConfigPath,
-        '--detectOpenHandles',
-        watch ? '--watch' : undefined,
-        ...positionalArgs,
-      ];
+      throw new Error('Invalid')
     };
     const args = getArgs().filter(Boolean).map(arg => `${arg}`);
 

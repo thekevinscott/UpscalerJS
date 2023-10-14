@@ -1,18 +1,18 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../../lib/umd/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import path from 'path';
-import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
-import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../lib/node/constants';
-import { Main, NodeTestRunner } from '../utils/NodeTestRunner';
+import { MODELS_DIR, TMP_DIR } from '@internals/common/constants';
+import { getPackageJSON } from '../../../../scripts/package-scripts/utils/packages.js';
+import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../../lib/node/constants.js';
+import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
 
 const TRACK_TIME = false;
 const LOG = true;
@@ -20,10 +20,6 @@ const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
-
-const JEST_TIMEOUT = 60 * 1000 * 15 * 2;
-jest.setTimeout(JEST_TIMEOUT);
-jest.retryTimes(0);
 
 const SPECIFIC_PACKAGE: string | undefined = undefined;
 const SPECIFIC_MODEL: string | undefined = undefined;
@@ -200,7 +196,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               'tf': `@tensorflow/tfjs-node${USE_GPU ? '-gpu' : ''}`,
               'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
               'fs': 'fs',
-              'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
+              'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
             },
             verbose: VERBOSE,
           });

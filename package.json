@@ -331,7 +331,7 @@
       ]
     },
     "test:integration:memory-leaks": {
-      "command": "ROOT_BUNDLER_OUTPUT_DIR=./tmp/bundlers vitest -c ./test/integration/memory/vite.config.mts",
+      "command": "ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/memory/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
