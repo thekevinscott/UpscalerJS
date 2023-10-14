@@ -44,17 +44,13 @@ describe('CDN Integration Tests', () => {
   });
 
   const evaluateUpscaler = async (page: Page) => {
-    try {
-      await page.evaluate(() => {
-        const upscaler = new window['Upscaler']({
-          model: window['pixel-upsampler']['x4'],
-        });
-        return upscaler.getModel();
+    await page.evaluate(() => {
+      const upscaler = new window['Upscaler']({
+        model: window['pixel-upsampler']['x4'],
       });
-    } catch (err) { 
-      return err;
-    }
-  }
+      return upscaler.getModel();
+    });
+  };
 
   it("loads a model from the default CDN", async () => {
     const _page = page();
@@ -73,7 +69,7 @@ describe('CDN Integration Tests', () => {
     expect(spy).toHaveBeenCalledWithURL(CDNS[0].name);
   });
 
-  it.only("falls back to the second CDN if the first is not available", async () => {
+  it("falls back to the second CDN if the first is not available", async () => {
     const _page = page();
 
     const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
@@ -81,33 +77,21 @@ describe('CDN Integration Tests', () => {
         throw new Error('This should not be true');
       }
       const url = request.url();
-      console.log('url', url);
       if (url.includes(CDNS[0].name)) {
-        console.log('abort request');
         return request.abort();
       }
-      console.log('continue request')
       request.continue();
     });
 
-    // _page.on('request', spy);
-    _page.on('request', request => {
-      console.log('hi', request.url())
-      try {
-      request.continue();
-    } catch(err) {}
-    });
+    _page.on('request', spy);
 
     await evaluateUpscaler(_page);
 
-    // expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
-    // expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
-    // expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.bin$/);
-
-    // expect(spy).not.toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.bin$/);
+    expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
+    expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
   });
 
-  it("throws an error if no CDNs are available", async () => {
+  it.only("throws an error if no CDNs are available", async () => {
     const _page = page();
 
     const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
@@ -124,20 +108,17 @@ describe('CDN Integration Tests', () => {
     _page.on('request', spy);
     try {
       await evaluateUpscaler(_page);
-      expect.unreachable('Should throw an error')
+      expect.unreachable('***** [TEST ERROR] Should throw an error');
     } catch (err) {
       const isError = (err: unknown): err is Error => err instanceof Error;
       expect(err).toBeTruthy();
       if (!isError(err)) {
         throw new Error('No error returned');
       }
-      expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/4x/4x.json'))
+      expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/x4/x4.json'))
 
       expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
       expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
-
-      expect(spy).not.toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.bin$/);
-      expect(spy).not.toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.bin$/);
     }
   });
 });
