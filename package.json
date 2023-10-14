@@ -103,7 +103,6 @@
     "fs-extra": "11.1.1",
     "glob": "^10.3.3",
     "heapdump": "0.3.15",
-    "html-webpack-plugin": "5.5.3",
     "inquirer": "9.2.10",
     "jest": "29.6.3",
     "jest-canvas-mock": "2.5.2",
@@ -131,7 +130,6 @@
     "upscaler": "workspace:*",
     "vite": "4.4.9",
     "vitest": "^0.34.5",
-    "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
   "engines": {
@@ -334,7 +332,10 @@
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
-        "build:models:umd"
+        "build:models:umd",
+        "bundle:esbuild",
+        "bundle:webpack",
+        "bundle:umd"
       ]
     },
     "test:integration:serverside": {
