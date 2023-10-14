@@ -11,11 +11,10 @@ const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:0
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const USE_GPU = process.env.useGPU === '1';
-const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
-if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
-  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
+if (typeof NODE_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_DIST_FOLDER not defined in env');
 }
-const NODE_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'node');
 
 describe('Node Speed Integration Tests', () => {
   const testRunner = new ServersideTestRunner({

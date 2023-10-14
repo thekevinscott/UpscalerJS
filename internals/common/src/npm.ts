@@ -61,6 +61,7 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     'pnpm',
     'install',
     '--ignore-scripts',
+    '--fix-lockfile'
     // isSilent ? '--silent' : '',
     // '--no-fund',
     // '--no-audit',

@@ -1,13 +1,13 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../lib/utils/checkImage';
-import { mockCDN as esbuildMockCDN } from '../../lib/esm-esbuild/prepare';
-import { mockCDN as umdMockCDN } from '../../lib/umd/prepare';
+import { checkImage } from '../../../lib/utils/checkImage.js';
+import { ESBUILD_DIST as ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
+import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../../lib/umd/prepare.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import { AvailableModel, getFilteredModels } from '../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { BrowserTestRunner } from '../utils/BrowserTestRunner';
+import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
+import { BrowserTestRunner } from '../../utils/BrowserTestRunner.js';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '../../../scripts/package-scripts/utils/constants';
 import { getPackageJSON } from '../../../scripts/package-scripts/utils/packages';
@@ -22,10 +22,6 @@ const VERBOSE = false;
 const USE_PNPM = `${process.env.USE_PNPM}` === '1';
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
-
-const JEST_TIMEOUT = 60 * 1000 * 15 * 2;
-jest.setTimeout(JEST_TIMEOUT);
-jest.retryTimes(0);
 
 const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
 if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {

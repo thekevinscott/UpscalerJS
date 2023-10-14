@@ -178,7 +178,7 @@ jobs:
 
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack -- --ci --verbose
+        run: pnpm test:integration:browserstack
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -214,6 +214,11 @@ jobs:
         uses: ./.github/actions/setup-pnpm
         with:
           node-version: 16
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Integration Tests'
         run: pnpm test:integration:serverside
