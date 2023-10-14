@@ -17,7 +17,7 @@ const VERBOSE = false;
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
 
-const SPECIFIC_PACKAGE: string | undefined = 'esrgan-thick';
+const SPECIFIC_PACKAGE: string | undefined = undefined;
 const SPECIFIC_MODEL: string | undefined = undefined;
 
 const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
@@ -132,7 +132,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
           });
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
-            test.only.each(preparedModels.map(({
+            test.each(preparedModels.map(({
               umd,
               esm,
               mainUMDName,
@@ -154,7 +154,6 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                 const umdName = mainUMDName;
                 const result = await testRunner.page.evaluate(async ({ fixturePath, modelScriptPath, umdName, modelName }) => {
                   await window['loadScript'](modelScriptPath);
-                  console.log(JSON.stringify(window[umdName]));
                   const model = window[umdName][modelName];
                   if (!model) {
                     throw new Error(`No model for ${umdName} ${modelName}`);

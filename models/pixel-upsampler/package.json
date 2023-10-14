@@ -6,7 +6,7 @@
   "license": "MIT",
   "exports": {
     ".": {
-      "umd": "./dist/umd/index.min.js",
+      "umd": "./dist/umd/umd.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/index.js"
     },
@@ -26,7 +26,7 @@
       "import": "./dist/esm/models/pixel-upsampler/src/x4/index.js"
     }
   },
-  "umd:main": "dist/umd/index.min.js",
+  "umd:main": "dist/umd/umd.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
@@ -174,10 +174,10 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/index.js --file ./dist/umd/index.js --name PixelUpsampler --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/umd.js --file ./dist/umd/umd.js --name PixelUpsampler --format umd"
     },
     "build:umd:uglify:index": {
-      "command": "uglifyjs ./dist/umd/index.js --output ./dist/umd/index.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x2": {
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"
