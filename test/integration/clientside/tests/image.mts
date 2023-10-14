@@ -48,8 +48,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales an imported local image path", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(({ fixturePath }) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         return upscaler.execute(fixturePath);
       }, { fixturePath, });
@@ -59,8 +63,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales an HTML Image", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(async ({ fixturePath, }) => new Promise(resolve => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         const img = new Image();
         img.src = fixturePath;
@@ -74,8 +82,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales an HTML Image from the page", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         const img = document.createElement('img');
         img.id = 'img';
@@ -91,8 +103,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales a tensor from an HTML image", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         const img = new Image();
         img.src = fixturePath;
@@ -107,8 +123,12 @@ describe('Image Format Integration Tests', () => {
 
     it("upscales a tensor from a Uint8Array", async () => {
       const result = await page().evaluate(({ pixels }) => new Promise(resolve => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         const bytes = new Uint8Array(pixels);
         const tensor = window['tf'].tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
@@ -120,8 +140,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales a rank 4 tensor", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         const img = new Image();
         img.src = fixturePath;
@@ -138,8 +162,12 @@ describe('Image Format Integration Tests', () => {
       const data = fs.readFileSync(path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small.png')).toString('base64');
       const originalImage = `data:image/png;base64,${data}`;
       const result = await page().evaluate(src => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         return upscaler.execute(src);
       }, originalImage);
@@ -151,8 +179,12 @@ describe('Image Format Integration Tests', () => {
     it("throws if given an invalid patch size and padding", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const errMessage = await page().evaluate(({ fixturePath }) => new Promise((resolve, reject) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         return upscaler.execute(fixturePath, {
           patchSize: 4,
@@ -170,8 +202,12 @@ describe('Image Format Integration Tests', () => {
     it("upscales an imported local image path with patch sizes", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(({ fixturePath }) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['PixelUpsampler4x'],
+          model,
         });
         return upscaler.execute(fixturePath, {
           patchSize: 6,
