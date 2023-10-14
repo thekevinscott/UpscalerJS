@@ -196,7 +196,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               'tf': `@tensorflow/tfjs-node${USE_GPU ? '-gpu' : ''}`,
               'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
               'fs': 'fs',
-              'base64ArrayBuffer': path.resolve(__dirname, '../../lib/utils/base64ArrayBuffer'),
+              'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
             },
             verbose: VERBOSE,
           });
