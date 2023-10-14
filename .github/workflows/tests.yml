@@ -224,7 +224,7 @@ jobs:
       #     detached: true
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:serverside -- --ci --verbose
+        run: pnpm test:integration:serverside
 
   integration-models-browser:
     name: 'Models / Browser'
