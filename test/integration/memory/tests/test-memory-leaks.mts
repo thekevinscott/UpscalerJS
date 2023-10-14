@@ -1,9 +1,9 @@
 import { JSHandle, Page } from 'puppeteer';
 import { describe, it, expect, } from 'vitest';
-import Upscaler, { ModelDefinition } from 'upscaler';
+import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
-import { getAllObjects, getMemory, tick } from '../../../lib/memory.js';
+import { getAllObjects, getMemory } from '../../../lib/memory.js';
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;

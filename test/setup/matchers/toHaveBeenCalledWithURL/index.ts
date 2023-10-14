@@ -4,6 +4,9 @@ expect.extend({
   toHaveBeenCalledWithURL(spy: Mock, expectedString: string | RegExp) {
     const { isNot } = this;
     let urls: string[] = [];
+    if (typeof expectedString !== 'string' && !(expectedString instanceof RegExp)) {
+      throw new Error('Expected string or RegExp');
+    }
     if (isNot) {
       let urls: string[] = [];
       for (const [request] of spy.mock.calls) {
@@ -12,7 +15,7 @@ expect.extend({
         const includes = typeof expectedString === 'string' ? url.includes(expectedString) : expectedString.test(url);
         if (includes) {
           return {
-            message: () => `expected none of the urls in ${urls.join(',')} calls to contain ${expectedString} but one did`,
+            message: () => `expected none of the urls in\n${urls.map(u => `- ${u}`).join('\n')}\n calls to ${isNot ? 'not' : ''} contain ${expectedString} but one did`,
             pass: false,
           }
         }
@@ -31,7 +34,7 @@ expect.extend({
       }
     }
     return {
-      message: () => `expected one of the urls in ${urls.join(',')} calls to ${isNot ? 'not' : ''} contain ${expectedString}`,
+      message: () => `expected one of the urls in\n${urls.map(u => `- ${u}`).join('\n')}\n calls to ${isNot ? 'not' : ''} contain ${expectedString}`,
       pass: false,
     }
   },
