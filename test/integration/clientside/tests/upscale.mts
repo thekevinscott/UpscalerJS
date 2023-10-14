@@ -43,7 +43,7 @@ describe('Upscale Integration Tests', () => {
   it("upscales an imported local image path", async () => {
     const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
     const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const result = await page().evaluate(() => {
+    const result = await page().evaluate(({ modelPath, fixturePath, }) => {
       const upscaler = new window['Upscaler']({
         model: {
           path: modelPath,
@@ -343,7 +343,7 @@ describe('Upscale Integration Tests', () => {
       const progressRates = await page().evaluate(({ fixturePath, modelPath  }): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
           model: {
-            path: modelScriptPath,
+            path: modelPath,
             scale: 2,
             modelType: 'layers',
           },
