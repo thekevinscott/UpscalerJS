@@ -116,59 +116,10 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
   verbose?: boolean;
   useGPU?: boolean,
   watch?: boolean;
-<<<<<<< HEAD
-  }) => {
-  const jestConfigPath = getJestConfigPath(platform, runner, kind);
-
-  const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
-    'pnpm',
-    'jest',
-    '--config',
-    jestConfigPath,
-    '--detectOpenHandles',
-    watch ? '--watch' : undefined,
-    ...positionalArgs,
-  ].filter(Boolean).map(arg => `${arg}`);
-
-  if (verbose) {
-    console.log(args.join(' '));
-  }
-
-<<<<<<< HEAD
+}) => {
   const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
   if (code !== null) {
     process.exit(code);
-=======
-  if (skipTest !== true) {
-    const getArgs = () => {
-      if (runner === 'browserstack') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')];
-      }
-      if (kind === 'model') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/model/vite.config.mts')];
-      }
-      if (kind === 'integration' && platform === 'browser') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/clientside/vite.config.ts')];
-      }
-      if (kind === 'memory') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/memory/vite.config.mts')];
-      }
-      if (kind === 'integration' && platform === 'node') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/serverside/vite.config.mts')];
-      }
-      throw new Error('Invalid')
-    };
-    const args = getArgs().filter(Boolean).map(arg => `${arg}`);
-
-    if (verbose) {
-      console.log(args.join(' '));
-    }
-
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
-    if (code !== null) {
-      process.exit(code);
-    }
->>>>>>> 0c901050 (Rename browser integration test to clientside and use vite (#1212))
   }
 }
 

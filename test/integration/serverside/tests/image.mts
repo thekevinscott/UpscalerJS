@@ -2,10 +2,10 @@ import path from 'path';
 import fs from 'fs';
 import { expect, describe, it, test } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
-import { getTemplate as _getTemplate } from '@internals/common/get-template';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { checkImage } from '../../../lib/utils/checkImage.js';
 import { MODELS_DIR } from '@internals/common/constants';
+import { getTemplate as _getTemplate } from '@internals/common/get-template';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const IMAGE_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-15.jpg');

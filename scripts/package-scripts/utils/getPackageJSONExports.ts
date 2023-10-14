@@ -16,6 +16,7 @@ const shouldIncludeExportName = (exportName: string) => {
 }
 
 export type PackageJSONExport = string | {
+  umd: string;
   require: string;
   import: string;
 };

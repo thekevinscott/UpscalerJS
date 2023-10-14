@@ -1,9 +1,9 @@
 import path from 'path';
 import { describe, it } from 'vitest';
+import { checkImage } from '../../../lib/utils/checkImage.js';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { getTemplate } from '@internals/common/get-template';
-import { checkImage } from '../../../lib/utils/checkImage.js';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;

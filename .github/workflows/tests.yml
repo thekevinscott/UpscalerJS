@@ -244,9 +244,8 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
-
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform browser --ci --verbose
+        run: pnpm test:integration:model -- --platform browser
 
   integration-models-node:
     name: 'Models / Node'
@@ -263,7 +262,7 @@ jobs:
           node-version: 16
 
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform node --ci --verbose
+        run: pnpm test:integration:model -- --platform node
 
   integration-memory-leaks:
     name: 'Integration / Memory Leaks'

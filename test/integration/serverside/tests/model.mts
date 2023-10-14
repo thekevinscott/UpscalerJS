@@ -72,7 +72,6 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
   };
 };
 
-
 describe('Node Model Loading Integration Tests', () => {
   const testRunner = new ServersideTestRunner({
     cwd: NODE_DIST_FOLDER,
