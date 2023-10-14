@@ -17,7 +17,7 @@ const VERBOSE = false;
 const USE_GPU = process.env.useGPU === 'true';
 const PLATFORMS = process.env.platform?.split(',').filter(platform => typeof platform === 'string' && ['node', 'browser'].includes(platform));
 
-const SPECIFIC_PACKAGE: string | undefined = undefined;
+const SPECIFIC_PACKAGE: string | undefined = 'esrgan-thick';
 const SPECIFIC_MODEL: string | undefined = undefined;
 
 const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
@@ -35,6 +35,9 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
     specificPackage: SPECIFIC_PACKAGE,
     specificModel: SPECIFIC_MODEL,
     filter: (packageName, model) => {
+      if (packageName === 'default-model') {
+        return false;
+      }
       const packagePath = path.resolve(MODELS_DIR, packageName);
       const packageJSON = getPackageJSON(packagePath);
       const supportedPlatforms = packageJSON['@upscalerjs']?.models?.[model.export]?.supportedPlatforms;
@@ -58,80 +61,35 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
     describe.each(PLATFORMS)('%s', (platform) => {
       if (platform === 'browser') {
         describe('ESM', () => {
-          const esmTestRunner = new ClientsideTestRunner({
+          const testRunner = new ClientsideTestRunner({
             name: 'esm',
             mock: true,
             dist: ESBUILD_DIST_FOLDER,
           });
 
           beforeAll(async function beforeAll() {
-            await esmTestRunner.beforeAll();
+            await testRunner.beforeAll();
           }, 60000);
 
           afterAll(async function modelAfterAll() {
-            await esmTestRunner.afterAll();
+            await testRunner.afterAll();
           }, 10000);
 
           beforeEach(async function beforeEach() {
-            await esmTestRunner.beforeEach('| Loaded');
+            await testRunner.beforeEach('| Loaded');
           });
 
           afterEach(async function afterEach() {
-            await esmTestRunner.afterEach();
+            await testRunner.afterEach();
           });
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ esm }) => esm || 'index'))(`upscales with ${packageName}/%s as esm`, async (modelName) => {
-              const fixture = packageName;
-              const result = await esmTestRunner.page.evaluate(({ fixture, packageName, modelName }) => {
-                const model = window[packageName][modelName] as unknown as ModelDefinition;
-                const upscaler = new window['Upscaler']({
-                  model,
-                });
-                return upscaler.execute(window['fixtures'][fixture], {
-                  patchSize: 64,
-                  padding: 2,
-                });
-              }, { fixture, packageName, modelName });
-              const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
-              checkImage(result, FIXTURE_PATH, 'diff.png');
-            });
-          });
-        });
-
-        describe('UMD', () => {
-          const UMD_PORT = 8096;
-          const umdTestRunner = new ClientsideTestRunner({
-            name: 'umd',
-            mock: true,
-            dist: UMD_DIST_FOLDER,
-            port: UMD_PORT,
-          });
-
-
-          beforeAll(async function modelBeforeAll() {
-            await umdTestRunner.beforeAll();
-          }, 20000);
-
-          afterAll(async function modelAfterAll() {
-            await umdTestRunner.afterAll();
-          }, 30000);
-
-          beforeEach(async function beforeEach() {
-            await umdTestRunner.beforeEach(null);
-          });
-
-          afterEach(async function afterEach() {
-            await umdTestRunner.afterEach();
-          });
-
-          describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
-            test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
               const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageName}/test/__fixtures__/fixture.png`;
-              const result = await umdTestRunner.page.evaluate(({modelName, packageName}) => {
-                const model = window[`${packageName}/${modelName}`] as unknown as ModelDefinition;
+              const result = await testRunner.page.evaluate(({ fixturePath, packageName, modelName }) => {
+                const model = window[`@upscalerjs/${packageName}/${modelName}`] as unknown as ModelDefinition;
                 if (!model) {
-                  throw new Error(`No model for ${modelName}`);
+                  throw new Error('No model found')
                 }
                 const upscaler = new window['Upscaler']({
                   model,
@@ -140,10 +98,118 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                   patchSize: 64,
                   padding: 2,
                 });
-              }, {modelName, packageName, fixturePath});
-              const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
+              }, { fixturePath, packageName, modelName });
+              const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
               checkImage(result, FIXTURE_PATH, 'diff.png');
             });
+          });
+        });
+
+        describe('UMD', () => {
+          const UMD_PORT = 8096;
+          const testRunner = new ClientsideTestRunner({
+            name: 'umd',
+            mock: true,
+            dist: UMD_DIST_FOLDER,
+            port: UMD_PORT,
+          });
+
+
+          beforeAll(async function modelBeforeAll() {
+            await testRunner.beforeAll();
+          }, 20000);
+
+          afterAll(async function modelAfterAll() {
+            await testRunner.afterAll();
+          }, 30000);
+
+          beforeEach(async function beforeEach() {
+            await testRunner.beforeEach(null);
+          });
+
+          afterEach(async function afterEach() {
+            await testRunner.afterEach();
+          });
+
+          describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
+            test.only.each(preparedModels.map(({
+              umd,
+              esm,
+              mainUMDName,
+              pathName,
+              ...rest
+            }) => [
+                umd || 'index',
+                esm || 'index',
+                mainUMDName,
+                rest['umd:main'],
+              ]))(`upscales with ${packageName}/%s as umd from index`, async (
+                modelName,
+                esmName,
+                mainUMDName,
+                umdMain,
+              ) => {
+                const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageName}/test/__fixtures__/fixture.png`;
+                const modelScriptPath = `${await testRunner.getFixturesServerURL()}/${packageName}/${umdMain}`;
+                const umdName = mainUMDName;
+                const result = await testRunner.page.evaluate(async ({ fixturePath, modelScriptPath, umdName, modelName }) => {
+                  await window['loadScript'](modelScriptPath);
+                  console.log(JSON.stringify(window[umdName]));
+                  const model = window[umdName][modelName];
+                  if (!model) {
+                    throw new Error(`No model for ${umdName} ${modelName}`);
+                  }
+                  const upscaler = new window['Upscaler']({
+                    model,
+                  });
+                  return upscaler.execute(fixturePath, {
+                    patchSize: 64,
+                    padding: 2,
+                  });
+                }, { modelScriptPath, umdName, modelName, fixturePath });
+                const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
+                checkImage(result, FIXTURE_PATH, 'diff.png');
+              });
+
+            test.each(preparedModels.map(({
+              umd,
+              esm,
+              mainUMDName,
+              pathName,
+            }) => [
+                umd || 'index',
+                esm || 'index',
+                mainUMDName,
+                pathName,
+              ]))(`upscales with ${packageName}/%s as umd directly`, async (
+                modelName,
+                esmName,
+                mainUMDName,
+                pathName,
+              ) => {
+                const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageName}/test/__fixtures__/fixture.png`;
+                const modelScriptPath = `${await testRunner.getFixturesServerURL()}/${packageName}/${pathName.umd}`;
+                const umdName = mainUMDName;
+                await testRunner.page.evaluate(async ({ modelScriptPath, fixturePath, umdName, modelName }) => {
+                  await window['loadScript'](modelScriptPath);
+                  const model = window[modelName];
+                  if (!model) {
+                    throw new Error(`No model for ${modelName}`);
+                  }
+                  window['model'] = model;
+                }, { modelScriptPath, fixturePath, umdName, modelName });
+                const result = await testRunner.page.evaluate(async ({ modelScriptPath, fixturePath, umdName, modelName }) => {
+                  const upscaler = new window['Upscaler']({
+                    model: window['model'],
+                  });
+                  return upscaler.execute(fixturePath, {
+                    patchSize: 64,
+                    padding: 2,
+                  });
+                }, { modelScriptPath, fixturePath, umdName, modelName });
+                const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
+                checkImage(result, FIXTURE_PATH, 'diff.png');
+              });
           });
         });
       }
