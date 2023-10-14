@@ -5,5 +5,8 @@ export default mergeConfig(viteConfig, defineConfig({
   test: {
     root: __dirname,
     retry: 0,
+    include: [
+      'tests/**/*.clientside.mts',
+    ],
   },
 }));
