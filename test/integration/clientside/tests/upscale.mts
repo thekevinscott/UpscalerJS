@@ -2,7 +2,6 @@
  * Tests that different supported image formats all upscale correctly.
  */
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { ESBUILD_DIST, mockCDN as esbuildMockCDN } from '../../../lib/esm-esbuild/prepare.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import path from 'path';
@@ -11,6 +10,12 @@ import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../pack
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
+
+const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
+if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
+  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+}
+const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 describe('Upscale Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
@@ -36,30 +41,32 @@ describe('Upscale Integration Tests', () => {
   });
 
   it("upscales an imported local image path", async () => {
-    const result = await page().evaluate(() => {
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const result = await page().evaluate(({ fixturePath, }) => {
+      const model = window["@upscalerjs/pixel-upsampler/x4"];
+      if (!model) {
+        throw new Error('No model found');
+      }
       const upscaler = new window['Upscaler']({
-        model: {
-          path: '/models/pixel-upsampler/models/x4/x4.json',
-          scale: 4,
-          modelType: 'layers',
-        },
+        model,
       });
-      return upscaler.execute(window['fixtures']['pixel-upsampler']);
-    });
+      return upscaler.execute(fixturePath);
+    }, { fixturePath });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   describe('Cancel', () => {
     it("cancels an inflight upscale request", async () => {
-      const errMessage = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const errMessage = await page().evaluate(({ fixturePath, }) => new Promise(resolve => {
         const abortController = new AbortController();
         const patchSize = 7;
+        const model = window["@upscalerjs/pixel-upsampler/x4"];
+        if (!model) {
+          throw new Error('No model found');
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model,
           warmupSizes: [{
             patchSize,
           }]
@@ -69,7 +76,7 @@ describe('Upscale Integration Tests', () => {
 
         let startTime = new Date().getTime();
         window['durations'] = [];
-        upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(fixturePath, {
           patchSize,
           padding: 2,
           output: 'base64',
@@ -89,7 +96,7 @@ describe('Upscale Integration Tests', () => {
         }).catch((err: Error) => {
           return resolve(err.message);
         });
-      }));
+      }), { fixturePath });
       expect(errMessage).toEqual('The upscale request received an abort signal');
       const [progressRates, called] = await page().evaluate((): Promise<[number[], boolean]> => new Promise(resolve => {
         const durations = window['durations'].slice(1); // skip the first entry, it's usually slower than the others
@@ -107,14 +114,15 @@ describe('Upscale Integration Tests', () => {
     });
 
     it("cancels all inflight upscale requests", async () => {
-      const errMessage = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const errMessage = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
         const patchSize = 7;
+        const model = window["@upscalerjs/pixel-upsampler/x4"];
+        if (!model) {
+          throw new Error('No model found');
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model,
           warmupSizes: [{
             patchSize,
           }]
@@ -140,14 +148,14 @@ describe('Upscale Integration Tests', () => {
           },
         };
         Array(3).fill('').forEach(() => {
-          upscaler.execute(window['fixtures']['pixel-upsampler'], options).then(() => {
+          upscaler.execute(fixturePath, options).then(() => {
             window['called'] = true;
             resolve('this should not be called');
           }).catch((err: Error) => {
             return resolve(err.message);
           });
         })
-      }));
+      }), { fixturePath, });
       expect(errMessage).toEqual('The upscale request received an abort signal');
       const [progressRates, called] = await page().evaluate((): Promise<[number[], boolean]> => new Promise(resolve => {
         const durations = window['durations'].slice(1); // skip the first entry, it's usually slower than the others
@@ -167,14 +175,15 @@ describe('Upscale Integration Tests', () => {
     });
 
     it("can cancel all inflight upscale requests and then make a new request successfully", async () => {
-      const errMessage = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const errMessage = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
         const patchSize = 7;
+        const model = window["@upscalerjs/pixel-upsampler/x4"];
+        if (!model) {
+          throw new Error('No model found');
+        }
         window['upscaler'] = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model,
           warmupSizes: [{
             patchSize,
           }]
@@ -190,34 +199,35 @@ describe('Upscale Integration Tests', () => {
             }
           },
         };
-        window['upscaler'].execute(window['fixtures']['pixel-upsampler'], options).then(() => {
+        upscaler.execute(fixturePath, options).then(() => {
           window['called'] = true;
           resolve('this should not be called');
         }).catch((err: Error) => {
           return resolve(err.message);
         });
-      }));
+      }), { fixturePath });
       expect(errMessage).toEqual('The upscale request received an abort signal');
 
-      const result = await page().evaluate(() => {
-        return window['upscaler'].execute(window['fixtures']['pixel-upsampler']);
-      });
+      const result = await page().evaluate((fixturePath) => {
+        return window['upscaler'].execute(fixturePath);
+      }, fixturePath);
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
   describe('Progress Method', () => {
     it("calls back to progress the correct number of times", async () => {
-      const progressRates = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const progressRates = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
+        const model = window["@upscalerjs/pixel-upsampler/x4"];
+        if (!model) {
+          throw new Error('No model found');
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model,
         });
         const progressRates: Array<number> = [];
-        upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(fixturePath, {
           patchSize: 10,
           padding: 2,
           output: 'base64',
@@ -227,29 +237,30 @@ describe('Upscale Integration Tests', () => {
         }).then(() => {
           resolve(progressRates);
         });
-      }));
+      }), { fixturePath });
       expect(progressRates).toEqual([.25, .5, .75, 1]);
     });
 
     it("calls back to progress with a base64", async () => {
-      const [rate, slice] = await page().evaluate((): Promise<[number, string]> => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const [rate, slice] = await page().evaluate(({ fixturePath }): Promise<[number, string]> => new Promise(resolve => {
+        const model = window["@upscalerjs/pixel-upsampler/x4"];
+        if (!model) {
+          throw new Error('No model found');
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model,
         });
         const progress: MultiArgStringProgress = (rate, slice) => {
           resolve([rate, slice]);
         };
-        upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(fixturePath, {
           patchSize: 14,
           padding: 2,
           output: 'base64',
           progress,
         });
-      }));
+      }), { fixturePath, });
       expect(typeof rate).toEqual('number');
       checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/slice-patchsize-12-padding-2.png"), 'diff.png');
     });
@@ -294,19 +305,16 @@ describe('Upscale Integration Tests', () => {
     ])(
       "calls back to progress with a tensor | patch size: %i | padding: %i",
       async (patchSize, padding, expectation,) => {
-        const updates = await page().evaluate(({ patchSize, padding }): Promise<[number, number[]][]> => new Promise(resolve => {
+        const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+        const updates = await page().evaluate(({ fixturePath, patchSize, padding }): Promise<[number, number[]][]> => new Promise(resolve => {
           const upscaler = new window['Upscaler']({
-            model: {
-              path: '/models/pixel-upsampler/models/x2/x2.json',
-              scale: 2,
-              modelType: 'layers',
-            },
+            model: window['PixelUpsampler2x'],
           });
           const updates: [number, number[]][] = [];
           const progress: MultiArgTensorProgress = (rate, slice) => {
             updates.push([rate, slice.shape])
           };
-          upscaler.execute(window['fixtures']['pixel-upsampler'], {
+          upscaler.execute(fixturePath, {
             patchSize,
             padding,
             output: 'tensor',
@@ -314,31 +322,29 @@ describe('Upscale Integration Tests', () => {
           }).then(() => {
             resolve(updates);
           });
-        }), { patchSize, padding });
+        }), { fixturePath, patchSize, padding });
         expect(updates).toEqual(expectation);
       });
 
     it("calls back to progress with a row and col", async () => {
-      const progressRates = await page().evaluate((): Promise<Array<[number, number]>> => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const progressRates = await page().evaluate(({ fixturePath }): Promise<Array<[number, number]>> => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x2/x2.json',
-            scale: 2,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler2x'],
         });
         const progressRates: Array<[number, number]> = [];
         const progress: MultiArgStringProgress = (rate, slice, { row, col }) => {
           progressRates.push([row, col]);
         };
-        upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        upscaler.execute(fixturePath, {
           patchSize: 8,
           padding: 0,
           progress,
         }).then(() => {
           resolve(progressRates)
         });
-      }));
+      }), { fixturePath });
+
       expect(progressRates).toEqual([
         [0, 0],
         [0, 1],
