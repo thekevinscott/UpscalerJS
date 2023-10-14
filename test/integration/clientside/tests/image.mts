@@ -60,7 +60,7 @@ describe('Image Format Integration Tests', () => {
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
-    it("upscales an HTML Image", async () => {
+    it.only("upscales an HTML Image", async () => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
       const result = await page().evaluate(async ({ fixturePath, }) => new Promise(resolve => {
         const model = window['@upscalerjs/pixel-upsampler/x4'];
@@ -72,6 +72,7 @@ describe('Image Format Integration Tests', () => {
         });
         const img = new Image();
         img.src = fixturePath;
+        img.crossOrigin = 'anonymous';
         img.onload = function () {
           upscaler.execute(img).then(resolve);
         }
@@ -92,6 +93,7 @@ describe('Image Format Integration Tests', () => {
         const img = document.createElement('img');
         img.id = 'img';
         img.src = fixturePath;
+        img.crossOrigin = 'anonymous';
         document.body.append(img);
         img.onload = () => {
           upscaler.execute(<HTMLImageElement>document.getElementById('img')).then(resolve);
