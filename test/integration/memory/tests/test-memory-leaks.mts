@@ -215,9 +215,13 @@ describe('Memory Leaks', () => {
 
   it('should create an Upscaler instance and warm up', async () => {
     await checkMemory(() => testRunner.page.evaluate(async () => {
+      const model = window['@upscalerjs/pixel-upsampler/x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       const upscaler = new window['Upscaler']({
         warmupSizes: [10],
-        model: window['@upscalerjs/pixel-upsampler/4x']
+        model,
       });
       await upscaler.dispose();
     }));
@@ -225,8 +229,12 @@ describe('Memory Leaks', () => {
 
   it('should create an Upscaler instance with a custom model', async () => {
     await checkMemory(() => testRunner.page.evaluate(async () => {
+      const model = window['@upscalerjs/pixel-upsampler/x4'];
+      if (!model) {
+        throw new Error('No model found')
+      }
       const upscaler = new window['Upscaler']({
-        model: window['@upscalerjs/pixel-upsampler/4x']
+        model,
       });
       await upscaler.dispose();
     }));
@@ -243,8 +251,12 @@ describe('Memory Leaks', () => {
 
     it('should upscale with no pre / post processing functions', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: window['@upscalerjs/pixel-upsampler/4x']
+          model,
         });
         const image = await upscaler.execute(fixturePath);
         if (image!.substring(0, 22) !== 'data:image/png;base64,') {
@@ -259,9 +271,13 @@ describe('Memory Leaks', () => {
     it('should upscale with a pre and no post processing functions', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
           }
         });
@@ -278,9 +294,13 @@ describe('Memory Leaks', () => {
     it('should upscale with no pre and a post processing functions', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             postprocess: (image) => tf.mul(image, 1),
           }
         });
@@ -296,9 +316,13 @@ describe('Memory Leaks', () => {
     it('should upscale with a pre and a post processing functions', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -315,9 +339,13 @@ describe('Memory Leaks', () => {
     it('should upscale with a pre and a post processing functions into a tensor', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -346,9 +374,13 @@ describe('Memory Leaks', () => {
 
       await checkMemory(() => testRunner.page.evaluate(async () => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -368,9 +400,13 @@ describe('Memory Leaks', () => {
     it('should upscale with a pre and a post processing functions with patch sizes', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
           model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
+            ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
@@ -405,10 +441,12 @@ describe('Memory Leaks', () => {
 
     it('should callback to progress with a src', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
-          },
+          model,
         });
         let output;
         await upscaler.execute(fixturePath, {
@@ -430,10 +468,12 @@ describe('Memory Leaks', () => {
     it('should callback to progress with a tensor', async () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         let output: tf.Tensor3D = undefined;
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
-          },
+          model,
         });
         await upscaler.execute(fixturePath, {
           output: 'base64',
@@ -463,10 +503,12 @@ describe('Memory Leaks', () => {
     it('should cancel without leaking memory', async () => {
       await checkMemory(() => testRunner.page.evaluate((fixturePath) => new Promise<void>((resolve) => {
         const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new window['Upscaler']({
-          model: {
-            ...window['@upscalerjs/pixel-upsampler/4x'],
-          },
+          model,
         });
         upscaler.execute(fixturePath, {
           output: 'base64',
@@ -482,8 +524,12 @@ describe('Memory Leaks', () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const Upscaler = window['Upscaler'];
         const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new Upscaler({
-          model: window['@upscalerjs/pixel-upsampler/4x'],
+          model,
         });
         try {
           await upscaler.execute(fixturePath, {
@@ -507,8 +553,12 @@ describe('Memory Leaks', () => {
       await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const Upscaler = window['Upscaler'];
         const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new Upscaler({
-          model: window['@upscalerjs/pixel-upsampler/4x'],
+          model,
         });
         try {
           await upscaler.execute(fixturePath, {
