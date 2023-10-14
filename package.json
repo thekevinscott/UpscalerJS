@@ -13,6 +13,8 @@
     "build:models:umd": "wireit",
     "build:models:cjs": "wireit",
     "bundle:esbuild": "wireit",
+    "bundle:webpack": "wireit",
+    "bundle:umd": "wireit",
     "bundle:node": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
@@ -266,6 +268,33 @@
         "!tmp/bundlers/esbuild/node_modules"
       ]
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
+      ]
+    },
     "bundle:node": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- node",
       "dependencies": [
@@ -318,7 +347,7 @@
         "bundle:node"
       ]
     },
-    "test:model": {
+    "test:integration:model": {
       "command": "pnpm --filter @upscalerjs/scripts test:model",
       "dependencies": [
         "./internals/common:build",
@@ -327,7 +356,10 @@
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "./packages/upscalerjs:build:browser",
-        "build:models"
+        "build:models",
+        "bundle:esbuild",
+        "bundle:umd",
+        "bundle:node"
       ]
     },
     "test:integration:memory-leaks": {
