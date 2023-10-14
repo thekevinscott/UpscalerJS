@@ -2,17 +2,15 @@ import { JSHandle, Page } from 'puppeteer';
 import { describe, it, expect, } from 'vitest';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
-import path from 'path';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
 
-const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
-if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
-  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+const ESBUILD_DIST_FOLDER = process.env.ESBUILD_DIST_FOLDER;
+if (typeof ESBUILD_DIST_FOLDER !== 'string') {
+  throw new Error('ESBUILD_DIST_FOLDER not defined in env');
 }
-const ESBUILD_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
 // https://puppeteer.github.io/puppeteer/docs/10.0.0/puppeteer.page.queryobjects/#example
 const countObjects = async (page: Page, prototype: JSHandle): Promise<number> => {
