@@ -1,6 +1,5 @@
 import path from 'path';
 import { describe, it } from 'vitest';
-import { checkImage } from '../../lib/utils/checkImage';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { getTemplate } from '@internals/common/get-template';
@@ -28,8 +27,8 @@ const runTest = async ({
   });
   const buffer = await testRunner.run(script);
   const result = buffer.toString('utf-8');
-  // expect(`data:image/png;base64,${result}`).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
-  checkImage(`data:image/png;base64,${result}`, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+  const fixture = path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png");
+  expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
 }
 describe('Node Platforms Integration Tests', () => {
   [

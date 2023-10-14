@@ -1,7 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
@@ -100,7 +99,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                 });
               }, { fixturePath, packageName, modelName });
               const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
-              checkImage(result, FIXTURE_PATH, 'diff.png');
+              expect(result).toMatchImage(FIXTURE_PATH);
             });
           });
         });
@@ -167,7 +166,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                   });
                 }, { modelScriptPath, umdName, modelName, fixturePath });
                 const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
-                checkImage(result, FIXTURE_PATH, 'diff.png');
+                expect(result).toMatchImage(FIXTURE_PATH);
               });
 
             test.each(preparedModels.map(({
@@ -207,7 +206,7 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                   });
                 }, { modelScriptPath, fixturePath, umdName, modelName });
                 const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
-                checkImage(result, FIXTURE_PATH, 'diff.png');
+                expect(result).toMatchImage(FIXTURE_PATH);
               });
           });
         });
@@ -240,15 +239,13 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
               });
               const buffer = await cjsTestRunner.run(script);
               const result = `data:image/png;base64,${buffer.toString('utf-8')}`
-              // expect(result).toMatchImage(getFixturePath(packageDirectoryName, modelName));
-              // checkImage(formattedResult, resultPath, diffPath, upscaledPath);
               expect(result).not.toEqual('');
               const formattedResult = `data:image/png;base64,${result}`;
               const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
               const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, modelName);
               const diffPath = path.resolve(outputsPath, `diff.png`);
               const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
-              checkImage(formattedResult, resultPath, diffPath, upscaledPath);
+              expect(formattedResult).toMatchImage(resultPath);
 
             });
           });

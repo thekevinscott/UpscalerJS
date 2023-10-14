@@ -2,7 +2,6 @@ import path from 'path';
 import fs from 'fs';
 import { expect, describe, it, test } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../lib/utils/checkImage';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { getTemplate as _getTemplate } from '@internals/common/get-template';
@@ -71,8 +70,7 @@ describe('Node Image Loading Integration Tests', () => {
     if (!fixture) {
       throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
     }
-    // expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
-    checkImage(`data:image/png;base64,${result}`, fixture, DIFF_IMAGE_OUTPUT);
+    expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
   }
 
   describe('Uint8Array', () => {

@@ -1,7 +1,6 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { DIST as UMD_DIST, mockCDN as umdMockCDN } from '../../../lib/umd/prepare.js';
 import { DIST as WEBPACK_DIST, mockCDN as webpackMockCDN } from '../../../lib/esm-webpack/prepare.js';
 import path from 'path';
@@ -55,7 +54,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   it("upscales using a UMD build with a specified model", async () => {
@@ -68,7 +67,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   it("upscales using an ESM build using Webpack", async () => {
@@ -84,7 +83,7 @@ describe('Build Integration Tests', () => {
       });
       return upscaler.execute(window['fixtures']['pixel-upsampler']);
     });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 });
 
