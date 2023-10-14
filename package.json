@@ -308,7 +308,7 @@
       ]
     },
     "test:integration:serverside": {
-      "command": "NODE_DIST_FOLDER=./tmp/bundlers/node/dist vitest -c ./test/integration/serverside/vite.config.mts",
+      "command": "NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/serverside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/test-runner:build",
