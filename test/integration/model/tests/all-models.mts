@@ -127,7 +127,8 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
 
           describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
             test.each(preparedModels.map(({ umd, esm }) => [umd || 'index', esm || 'index']))(`upscales with ${packageName}/%s as umd`, async (modelName, esmName) => {
-              const result = await umdTestRunner.page.evaluate(([modelName, packageName]) => {
+              const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageName}/test/__fixtures__/fixture.png`;
+              const result = await umdTestRunner.page.evaluate(({modelName, packageName}) => {
                 const model = window[modelName] as unknown as ModelDefinition;
                 if (!model) {
                   throw new Error(`No model for ${modelName}`);
@@ -135,11 +136,11 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                 const upscaler = new window['Upscaler']({
                   model,
                 });
-                return upscaler.execute(window['fixtures'][packageName], {
+                return upscaler.execute(fixturePath, {
                   patchSize: 64,
                   padding: 2,
                 });
-              }, [modelName, packageName]);
+              }, {modelName, packageName, fixturePath});
               const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
               checkImage(result, FIXTURE_PATH, 'diff.png');
             });
