@@ -5545,7 +5545,6 @@ packages:
 
   /@tensorflow/tfjs@4.8.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-aKyYPFk5/aABtz+ETzvow8QBQxq0QgBCf3yQ7I33JkNbrIjlmEJmcfwbbbpLs5bg0BiOcNn2gYGbZHZ4AZuMQQ==}
-    hasBin: true
     dependencies:
       '@tensorflow/tfjs-backend-cpu': 4.8.0(@tensorflow/tfjs-core@4.8.0)
       '@tensorflow/tfjs-backend-webgl': 4.8.0(@tensorflow/tfjs-core@4.8.0)

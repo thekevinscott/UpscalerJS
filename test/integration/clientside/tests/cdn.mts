@@ -91,7 +91,7 @@ describe('CDN Integration Tests', () => {
     expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
   });
 
-  it.only("throws an error if no CDNs are available", async () => {
+  it("throws an error if no CDNs are available", async () => {
     const _page = page();
 
     const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
