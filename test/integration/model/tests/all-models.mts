@@ -154,6 +154,8 @@ if (PLATFORMS === undefined || PLATFORMS.length === 0) {
                 const umdName = mainUMDName;
                 const result = await testRunner.page.evaluate(async ({ fixturePath, modelScriptPath, umdName, modelName }) => {
                   await window['loadScript'](modelScriptPath);
+                  console.log(JSON.stringify(window[umdName]));
+                  console.log(modelName)
                   const model = window[umdName][modelName];
                   if (!model) {
                     throw new Error(`No model for ${umdName} ${modelName}`);
