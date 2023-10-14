@@ -56,15 +56,18 @@ describe('Build Integration Tests', () => {
     });
 
     it("upscales using a UMD build with a specified model", async () => {
-      const { page } = await start(UMD_DIST, umdMockCDN);
-      const result = await page.evaluate(() => {
+      const page = testRunner.page;
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const modelScriptPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/dist/umd/x4.min.js`;
+      const result = await page.evaluate(async ({ fixturePath, modelScriptPath }) => {
         const Upscaler = window['Upscaler'];
+        await window['loadScript'](modelScriptPath);
         const pixelUpsampler = window['PixelUpsampler4x'];
         const upscaler = new Upscaler({
           model: pixelUpsampler,
         });
-        return upscaler.execute(window['fixtures']['pixel-upsampler']);
-      });
+        return upscaler.execute(fixturePath);
+      }, { fixturePath, modelScriptPath });
       expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
     });
   });
