@@ -46,110 +46,91 @@ describe('Image Format Integration Tests', () => {
 
   describe('Image formats', () => {
     it("upscales an imported local image path", async () => {
-      const result = await page().evaluate(() => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(({ fixturePath }) => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
-        return upscaler.execute(window['fixtures']['pixel-upsampler']);
-      });
+        return upscaler.execute(fixturePath);
+      }, { fixturePath, });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image", async () => {
-      const result = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(async ({ fixturePath, }) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         const img = new Image();
-        img.src = window['fixtures']['pixel-upsampler'];
+        img.src = fixturePath;
         img.onload = function () {
           upscaler.execute(img).then(resolve);
         }
-      }), []);
+      }), { fixturePath, });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales an HTML Image from the page", async () => {
-      const result = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         const img = document.createElement('img');
         img.id = 'img';
-        img.src = window['fixtures']['pixel-upsampler'];
+        img.src = fixturePath;
         document.body.append(img);
         img.onload = () => {
           upscaler.execute(<HTMLImageElement>document.getElementById('img')).then(resolve);
         }
-      }));
+      }), { fixturePath });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from an HTML image", async () => {
-      const result = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         const img = new Image();
-        img.src = window['fixtures']['pixel-upsampler'];
+        img.src = fixturePath;
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img);
           upscaler.execute(tensor).then(resolve);
         }
-      }));
+      }), { fixturePath, });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a tensor from a Uint8Array", async () => {
-      const result = await page().evaluate((pixels) => new Promise(resolve => {
+      const result = await page().evaluate(({ pixels }) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         const bytes = new Uint8Array(pixels);
         const tensor = window['tf'].tensor(bytes).reshape([16, 16, 3]) as tf.Tensor3D;
         upscaler.execute(tensor).then(resolve);
-      }), flowerPixels);
+      }), { pixels: flowerPixels });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
     it("upscales a rank 4 tensor", async () => {
-      const result = await page().evaluate(() => new Promise(resolve => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(({ fixturePath }) => new Promise(resolve => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         const img = new Image();
-        img.src = window['fixtures']['pixel-upsampler'];
+        img.src = fixturePath;
         img.crossOrigin = 'anonymous';
         img.onload = function () {
           const tensor = window['tf'].browser.fromPixels(img).expandDims(0);
           upscaler.execute(<tf.Tensor4D>tensor).then(resolve);
         }
-      }));
+      }), { fixturePath });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
 
@@ -158,11 +139,7 @@ describe('Image Format Integration Tests', () => {
       const originalImage = `data:image/png;base64,${data}`;
       const result = await page().evaluate(src => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
         return upscaler.execute(src);
       }, originalImage);
@@ -172,15 +149,12 @@ describe('Image Format Integration Tests', () => {
 
   describe('Patch sizes', () => {
     it("throws if given an invalid patch size and padding", async () => {
-      const errMessage = await page().evaluate(() => new Promise((resolve, reject) => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const errMessage = await page().evaluate(({ fixturePath }) => new Promise((resolve, reject) => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
-        return upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        return upscaler.execute(fixturePath, {
           patchSize: 4,
           padding: 2,
         }).then(() => {
@@ -188,25 +162,22 @@ describe('Image Format Integration Tests', () => {
         }).catch((err: Error) => {
           return resolve(err.message);
         });
-      }));
+      }), { fixturePath });
 
       expect(errMessage).toEqual('Invalid patch size and padding: 4 and 2. Patch size must be greater than padding * 2.');
     });
 
     it("upscales an imported local image path with patch sizes", async () => {
-      const result = await page().evaluate(() => {
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const result = await page().evaluate(({ fixturePath }) => {
         const upscaler = new window['Upscaler']({
-          model: {
-            path: '/models/pixel-upsampler/models/x4/x4.json',
-            scale: 4,
-            modelType: 'layers',
-          },
+          model: window['PixelUpsampler4x'],
         });
-        return upscaler.execute(window['fixtures']['pixel-upsampler'], {
+        return upscaler.execute(fixturePath, {
           patchSize: 6,
           padding: 2,
         });
-      });
+      }, { fixturePath });
       checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
