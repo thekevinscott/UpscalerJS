@@ -219,6 +219,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
+
       - name: 'Integration Tests'
         run: pnpm test:integration:serverside
 
@@ -278,7 +279,7 @@ jobs:
           node-version: 16
 
       - name: 'Memory Leak Tests'
-        run: pnpm test:integration:memory-leaks 
+        run: pnpm test:integration:memory-leaks
 
   build-docs:
     name: 'Build Documentation'
