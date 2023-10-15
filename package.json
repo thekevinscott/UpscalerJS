@@ -253,6 +253,20 @@
     "update:npm:dependencies": {
       "command": "pnpm --filter @upscalerjs/scripts update:npm:dependencies"
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
     "bundle:esbuild": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- esbuild",
       "dependencies": [
@@ -307,6 +321,19 @@
       "output": [
         "tmp/bundlers/node/**/*",
         "!tmp/bundlers/node/node_modules"
+      ]
+    },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
       ]
     },
     "test:start-test-server": {
@@ -380,6 +407,7 @@
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
+        "./internals/bundlers:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
         "bundle:esbuild"

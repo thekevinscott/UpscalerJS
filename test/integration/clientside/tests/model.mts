@@ -18,7 +18,6 @@ if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
   throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
 }
 const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
-
 describe('Model Loading Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
     name: 'esm',
