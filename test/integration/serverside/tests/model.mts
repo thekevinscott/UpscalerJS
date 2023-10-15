@@ -1,12 +1,8 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
 import { checkImage } from '../../../lib/utils/checkImage.js';
-import { LOCAL_UPSCALER_NAME } from '../../../lib/node/constants.js';
-import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
-import { MODELS_DIR, TMP_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
-import {
-  MultiArgTensorProgress,
-} from '../../../../packages/upscalerjs/src/shared/types.js';
+import { expect, describe, it } from 'vitest';
+import { MODELS_DIR } from '@internals/common/constants';
 import type {
   ModelDefinition,
 } from '../../../../packages/shared/src/types.js';
@@ -16,9 +12,20 @@ import {
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
 } from '../../../../packages/upscalerjs/src/shared/errors-and-warnings.js';
+import { getTemplate } from '@internals/common/get-template';
+import { ServersideTestRunner } from '@internals/test-runner/serverside';
+import { withTmpDir } from '@internals/common/tmp-dir';
+import { writeFile } from 'fs-extra';
+import { copyFile } from '@internals/common/fs';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
+
+const USE_GPU = process.env.useGPU === '1';
+const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
+if (typeof NODE_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_DIST_FOLDER not defined in env');
+}
 
 const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) => {
   if (scale < 2 || scale > 4) {
@@ -59,195 +66,67 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
     ]
   };
   return {
-    modelJSON: JSON.stringify(modelJSON),
-    weightsPath: JSON.stringify(weightsPath),
-    weightsName: JSON.stringify(weightsName),
+    modelJSON,
+    weightsPath,
+    weightsName,
   };
 };
 
 describe('Node Model Loading Integration Tests', () => {
+  const testRunner = new ServersideTestRunner({
+    cwd: NODE_DIST_FOLDER,
+  });
+
   describe('Existing Models', () => {
-    const main: Main = async (deps) => {
-      const {
-        Upscaler,
-        tf,
-        base64ArrayBuffer,
-        imagePath,
-        model,
-        fs,
-        usePatchSize = false,
-      } = deps;
-      // console.log('Running main script with model', JSON.stringify(typeof model === 'function' ? model(tf) : model, null, 2));
-
-      const upscaler = new Upscaler({
+    const runTestForExistingModels = async ({
+      image,
+      fixture,
+      model,
+    }: {
+      image: string;
+      fixture?: string;
+      model?: string;
+    }) => {
+      const script = await getTemplate(path.resolve(__dirname, '../_templates/model/existing-model.js.ejs'), {
+        tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+        upscaler: USE_GPU ? `upscaler/node-gpu` : `upscaler/node`,
+        image,
         model,
       });
-
-      const imageData = fs.readFileSync(imagePath);
-      const tensor = tf.node.decodeImage(imageData).slice([0, 0, 0], [-1, -1, 3]); // discard alpha channel, if exists
-      const result = await upscaler.execute(tensor, {
-        output: 'tensor',
-        patchSize: usePatchSize ? 64 : undefined,
-        padding: 6,
-        progress: console.log,
-      });
-      tensor.dispose();
-      // because we are requesting a tensor, it is possible that the tensor will
-      // contain out-of-bounds pixels; part of the value of this test is ensuring
-      // that those values are clipped in a post-process step.
-      const upscaledImage = await tf.node.encodePng(result);
-      result.dispose();
-      return base64ArrayBuffer(upscaledImage);
+      const buffer = await testRunner.run(script);
+      const result = buffer.toString('utf-8');
+      if (!fixture) {
+        throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
+      }
+      const formattedResult = `data:image/png;base64,${result}`;
+      checkImage(formattedResult, fixture, 'diff.png');
     };
 
-    const testRunner = new NodeTestRunner({
-      main,
-      trackTime: false,
-      dependencies: {
-        'tf': '@tensorflow/tfjs-node',
-        'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
-        'fs': 'fs',
-        'base64ArrayBuffer': path.resolve(__dirname, '../../../lib/utils/base64ArrayBuffer'),
-      },
-    });
-
     it("loads the default model", async () => {
-      const fixturePath = path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png');
-      const result = await testRunner.run({
-        dependencies: {
-        },
-        globals: {
-          model: 'undefined',
-          imagePath: JSON.stringify(fixturePath),
-        },
+      const image = path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png');
+
+      await runTestForExistingModels({
+        image: JSON.stringify(image),
+        fixture: path.resolve(DEFAULT_MODEL_DIR, "result.png"),
       });
-      expect(result).not.toEqual('');
-      const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
     });
 
     it("loads a locally exposed model via file:// path", async () => {
-      const fixturePath = path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png');
-      const result = await testRunner.run({
-        dependencies: {
-        },
-        globals: {
-          model: JSON.stringify({
-            path: 'file://' + path.join(__dirname, '../../../../models/pixel-upsampler/models/x4/x4.json'),
-            scale: 4,
-          }),
-          imagePath: JSON.stringify(fixturePath),
-        },
+      const image = path.resolve(PIXEL_UPSAMPLER_DIR, 'fixture.png');
+      await runTestForExistingModels({
+        image: JSON.stringify(image),
+        fixture: path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"),
+        model: JSON.stringify({
+          path: 'file://' + path.join(MODELS_DIR, 'pixel-upsampler/models/x4/x4.json'),
+          scale: 4,
+        }),
       });
-      expect(result).not.toEqual('');
-      const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
     });
   });
 
   // test the various configurations a model.json can have
   describe('Kinds of Model JSON Configurations', () => {
-    interface ProgressResult {
-      amount: number;
-      shape: number[];
-      row: number;
-      col: number;
-    }
-    const main: Main = async (deps) => {
-      const {
-        Upscaler,
-        tf,
-        fs,
-        path,
-        scale,
-        imageInputSize,
-        patchSize,
-        padding,
-        modelJSON,
-        weightsPath,
-        weightsName,
-        model,
-      } = deps;
-      const warnings: string[][] = [];
-      console.warn = (...msg) => warnings.push(msg);
-      const VERBOSE = false;
-      const MODEL_DIR = path.resolve(__dirname);
-      const MODEL_JSON_PATH = path.join(MODEL_DIR, 'model.json');
-      const WEIGHT_PATH = path.join(MODEL_DIR, weightsName);
-      fs.writeFileSync(MODEL_JSON_PATH, JSON.stringify(modelJSON));
-      fs.copyFileSync(weightsPath, WEIGHT_PATH);
-      model['path'] = 'file://' + MODEL_JSON_PATH;
-      // if (VERBOSE) {
-      //   console.log('Running main script with model', model, 'and weight', WEIGHT_PATH);
-      // }
-
-      const upscaler = new Upscaler({
-        model,
-      });
-
-      const tensor = tf.randomUniform([...imageInputSize, 3], 0, 1)
-      if (VERBOSE) {
-        console.log('>> input')
-        tensor.print();
-      }
-      const expectedTensor = tf.image.resizeNearestNeighbor(
-        tensor,
-        [imageInputSize[0] * scale, imageInputSize[1] * scale],
-      );
-      if (VERBOSE) {
-        console.log('>> expected')
-        expectedTensor.print();
-      }
-      const progressResults: ProgressResult[] = [];
-      const progress: MultiArgTensorProgress = (amount, slice, { row, col }) => {
-        progressResults.push({
-          amount,
-          row,
-          col,
-          shape: slice.shape,
-        });
-        slice.dispose();
-      };
-      const result = await upscaler.execute(tensor, {
-        output: 'tensor',
-        progressOutput: 'tensor',
-        patchSize,
-        padding,
-        progress,
-      });
-      if (VERBOSE) {
-        console.log('>> upscaled')
-        result.print();
-      }
-      tensor.dispose();
-      // because we are requesting a tensor, it is possible that the tensor will
-      // contain out-of-bounds pixels; part of the value of this test is ensuring
-      // that those values are clipped in a post-process step.
-      const upscaledImage = [Array.from(result.dataSync()), result.shape];
-      result.dispose();
-      const expectedImage = [Array.from(expectedTensor.dataSync()), expectedTensor.shape];
-      expectedTensor.dispose();
-      // console.log('warnings', warnings);
-      return JSON.stringify({
-        upscaledImage,
-        expectedImage,
-        progressResults,
-        warnings,
-      });
-    };
-
-    const testRunner = new NodeTestRunner({
-      verbose: false,
-      main,
-      trackTime: false,
-      dependencies: {
-        'tf': '@tensorflow/tfjs-node',
-        'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
-        'fs': 'fs',
-      },
-    });
-
-    const run = async ({
+    const runTestForKindsOfModelConfigurations = async ({
       imageInputSize,
       patchSize,
       padding,
@@ -255,10 +134,10 @@ describe('Node Model Loading Integration Tests', () => {
       batchInputShape = [ null, null, null, 3 ],
       model = {},
     }: {
+      scale: number;
       imageInputSize: [number, number];
       patchSize?: number;
       padding?: number;
-      scale?: number;
       batchInputShape?: (null | number)[];
       model?: Partial<ModelDefinition>;
     }): Promise<{
@@ -267,22 +146,47 @@ describe('Node Model Loading Integration Tests', () => {
       progressResults: ProgressResult[];
       warnings: string[][];
     }> => {
-      const result = await testRunner.run({
-        globals: {
-          MODELS_DIR: JSON.stringify(path.resolve(__dirname, '../../../models')),
+      const buffer = await withTmpDir(async (tmpDir) => {
+        const { modelJSON, weightsName, weightsPath } = await makeModelAndWeights(scale, batchInputShape);
+        const modelJSONPath = path.resolve(tmpDir, 'model.json');
+        const modelWeightPath = path.resolve(tmpDir, weightsName);
+
+        await Promise.all([
+          copyFile(weightsPath, modelWeightPath),
+          writeFile(modelJSONPath, JSON.stringify(modelJSON)),
+        ]);
+
+        const script = await getTemplate(path.resolve(__dirname, '../_templates/model/kinds-of-model-configurations.js.ejs'), {
+          tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+          upscaler: USE_GPU ? `upscaler/node-gpu` : `upscaler/node`,
           scale,
           imageInputSize: JSON.stringify(imageInputSize),
+          modelJSONPath,
+          modelWeightPath,
           patchSize,
           padding,
-          ...makeModelAndWeights(scale, batchInputShape),
+          tmpDir: JSON.stringify(tmpDir),
           model: JSON.stringify({
-            ...model,
             scale,
+            path: `file://${modelJSONPath}`,
+            ...model,
           }),
-        },
+        });
+        return testRunner.run(script);
       });
-      return JSON.parse(result?.toString() || '');
+      return JSON.parse(buffer.toString('utf-8'));
+    };
+    interface ProgressResult {
+      amount: number;
+      shape: number[];
+      row: number;
+      col: number;
     }
+
+    const testRunner = new ServersideTestRunner({
+      trackTime: false,
+      cwd: NODE_DIST_FOLDER,
+    });
 
     describe('Models with dynamic input shapes', () => {
       it("loads a small image", async () => {
@@ -297,10 +201,12 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
-          imageInputSize: [2, 2],
+        } = await runTestForKindsOfModelConfigurations({
           scale: 2,
+          imageInputSize: [2, 2],
         });
+
+
         expect(upscaledShape).toEqual(expectedShape);
         expect(upscaledData).toEqual(expectedData);
         expect(progressResults.length).toEqual(0);
@@ -320,7 +226,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [2, 2],
           scale: 2,
           patchSize: 4,
@@ -347,7 +253,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [8, 8],
           scale: 2,
           patchSize: 4,
@@ -383,7 +289,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [3, 7],
           scale: 2,
           patchSize: 4,
@@ -413,7 +319,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [7, 3],
           scale: 2,
           patchSize: 4,
@@ -443,7 +349,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [7, 3],
           scale: 2,
           patchSize: 6,
@@ -475,7 +381,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [2, 2],
           scale: 2,
           batchInputShape: [null, 4, 4, 3],
@@ -498,7 +404,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [2, 2],
           scale: 2,
           batchInputShape: [null, 2, 2, 3],
@@ -521,7 +427,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [4, 4],
           scale: 2,
           batchInputShape: [null, 2, 2, 3],
@@ -556,7 +462,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [4, 4],
           scale: 2,
           batchInputShape: [null, 2, 2, 3],
@@ -594,7 +500,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [7, 3],
             scale: 2,
             batchInputShape: [null, 4, 4, 3],
@@ -623,7 +529,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [3, 7],
             scale: 2,
             batchInputShape: [null, 4, 4, 3],
@@ -655,7 +561,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [8, 8],
           scale: 2,
           batchInputShape: [null, null, null, 3],
@@ -683,7 +589,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [3, 3],
           scale: 2,
           batchInputShape: [null, null, null, 3],
@@ -711,7 +617,7 @@ describe('Node Model Loading Integration Tests', () => {
           ],
           progressResults,
           warnings,
-        } = await run({
+        } = await runTestForKindsOfModelConfigurations({
           imageInputSize: [5, 5],
           scale: 2,
           batchInputShape: [null, null, null, 3],
@@ -739,7 +645,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [5, 5],
             scale: 2,
             batchInputShape: [null, null, null, 3],
@@ -779,7 +685,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [9, 9],
             scale: 2,
             batchInputShape: [null, null, null, 3],
@@ -821,7 +727,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [5, 5],
             scale: 2,
             batchInputShape: [null, null, null, 3],
@@ -867,7 +773,7 @@ describe('Node Model Loading Integration Tests', () => {
             ],
             progressResults,
             warnings,
-          } = await run({
+          } = await runTestForKindsOfModelConfigurations({
             imageInputSize: [5, 5],
             scale: 2,
             batchInputShape: [null, null, null, 3],

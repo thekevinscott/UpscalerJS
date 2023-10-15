@@ -11,6 +11,9 @@
     "build:models:umd": "wireit",
     "build:models:cjs": "wireit",
     "bundle:esbuild": "wireit",
+    "bundle:webpack": "wireit",
+    "bundle:umd": "wireit",
+    "bundle:node": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
     "docs:build": "wireit",
@@ -30,7 +33,8 @@
     "test:integration:browserstack": "wireit",
     "test:integration:clientside": "wireit",
     "test:integration:serverside": "wireit",
-    "test:model": "wireit",
+    "test:integration:model:clientside": "wireit",
+    "test:integration:model:serverside": "wireit",
     "test:integration:memory-leaks": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:jest": "wireit",
@@ -100,7 +104,6 @@
     "fs-extra": "11.1.1",
     "glob": "^10.3.3",
     "heapdump": "0.3.15",
-    "html-webpack-plugin": "5.5.3",
     "inquirer": "9.2.10",
     "jsdom": "22.1.0",
     "mocha": "10.2.0",
@@ -124,7 +127,6 @@
     "upscaler": "workspace:*",
     "vite": "4.4.9",
     "vitest": "^0.34.5",
-    "webpack": "5.88.2",
     "yargs": "17.7.2"
   },
   "engines": {
@@ -249,6 +251,20 @@
     "update:npm:dependencies": {
       "command": "pnpm --filter @upscalerjs/scripts update:npm:dependencies"
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
     "bundle:esbuild": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- esbuild",
       "dependencies": [
@@ -263,11 +279,66 @@
         "!tmp/bundlers/esbuild/node_modules"
       ]
     },
+    "bundle:webpack": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- webpack",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:esm",
+        "build:models:esm"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/webpack/**/*",
+        "!tmp/bundlers/webpack/node_modules"
+      ]
+    },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
+      ]
+    },
+    "bundle:node": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- node",
+      "dependencies": [
+        "./packages/upscalerjs:build:node",
+        "./packages/upscalerjs:build:node-gpu",
+        "build:models:cjs"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/node/**/*",
+        "!tmp/bundlers/node/node_modules"
+      ]
+    },
+    "bundle:umd": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- umd",
+      "dependencies": [
+        "./packages/upscalerjs:build:browser:umd",
+        "build:models:umd"
+      ],
+      "files": [
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/umd/**/*"
+      ]
+    },
     "test:start-test-server": {
       "command": "ts-node test/lib/start-test-server.ts"
     },
     "test:integration:browserstack": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:browserstack",
+      "command": "ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/browserstack/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/webdriver:build",
@@ -279,44 +350,62 @@
       ]
     },
     "test:integration:clientside": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:clientside",
+      "command": "ROOT_BUNDLER_OUTPUT_DIR=./tmp/bundlers vitest -c ./test/integration/clientside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
-        "build:models:umd"
+        "build:models:umd",
+        "bundle:esbuild",
+        "bundle:webpack",
+        "bundle:umd"
       ]
     },
     "test:integration:serverside": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:serverside",
+      "command": "NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/serverside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "build:models:cjs"
+        "build:models:cjs",
+        "bundle:node"
       ]
     },
-    "test:model": {
-      "command": "pnpm --filter @upscalerjs/scripts test:model",
+    "test:integration:model:clientside": {
+      "command": "UMD_DIST_FOLDER=./tmp/bundlers/umd/dist ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/model/vite.config.clientside.mts",
+      "dependencies": [
+        "./internals/common:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
+        "./packages/upscalerjs:build:browser",
+        "build:models:esm",
+        "build:models:cjs",
+        "bundle:esbuild",
+        "bundle:umd"
+      ]
+    },
+    "test:integration:model:serverside": {
+      "command": "USE_GPU=0 NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/model/vite.config.serverside.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "./packages/upscalerjs:build:browser",
-        "build:models"
+        "build:models:cjs",
+        "bundle:node"
       ]
     },
     "test:integration:memory-leaks": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:memory-leaks",
+      "command": "ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/memory/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
+        "./internals/bundlers:build",
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
         "bundle:esbuild"

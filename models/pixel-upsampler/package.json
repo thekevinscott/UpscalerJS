@@ -6,22 +6,27 @@
   "license": "MIT",
   "exports": {
     ".": {
+      "umd": "./dist/umd/umd.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/index.js"
     },
     "./x2": {
+      "umd": "./dist/umd/x2.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/x2/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/x2/index.js"
     },
     "./x3": {
+      "umd": "./dist/umd/x3.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/x3/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/x3/index.js"
     },
     "./x4": {
+      "umd": "./dist/umd/x4.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/x4/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/x4/index.js"
     }
   },
+  "umd:main": "dist/umd/umd.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",
@@ -81,6 +86,7 @@
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
         "package.json",
+        "umd-names.json",
         "tsconfig.cjs.json",
         "tsconfig.esm.json",
         "tsconfig.umd.json",
@@ -151,6 +157,7 @@
         "!src/**/*.test.ts",
         "!src/**/*.generated.ts",
         "package.json",
+        "umd-names.json",
         "tsconfig.umd.json",
         "tsconfig.json",
         "../tsconfig.umd.json",
@@ -167,10 +174,10 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "build:umd:rollup:index": {
-      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/index.js --file ./dist/umd.js --name PixelUpsampler --format umd"
+      "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/pixel-upsampler/src/umd.js --file ./dist/umd/umd.js --name PixelUpsampler --format umd"
     },
     "build:umd:uglify:index": {
-      "command": "uglifyjs ./dist/umd.js --output ./dist/umd.min.js --compress --mangle --source-map"
+      "command": "uglifyjs ./dist/umd/umd.js --output ./dist/umd/umd.min.js --compress --mangle --source-map"
     },
     "build:umd:x2": {
       "command": "pnpm build:umd:rollup:x2 && pnpm build:umd:uglify:x2"

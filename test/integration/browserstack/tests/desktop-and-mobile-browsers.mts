@@ -39,13 +39,12 @@ const browserOptions = getBrowserOptions(() => {
 
 const build = [getCurrentBranch(), 'Browserstack tests'].join(' / ');
 
-const ROOT_BUNDLER_OUTPUT_DIR = process.env.ROOT_BUNDLER_OUTPUT_DIR;
-if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
-  throw new Error('ROOT_BUNDLER_OUTPUT_DIR not defined in env');
+const ESBUILD_DIST_FOLDER = process.env.ESBUILD_DIST_FOLDER;
+if (typeof ESBUILD_DIST_FOLDER !== 'string') {
+  throw new Error('ESBUILD_DIST_FOLDER not defined in env');
 }
-const ESBUILD_DIST_FOLDER = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
-describe('Browser Integration Tests', () => {
+describe('Desktop & Mobile Browser Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
     // TODO: Not sure how to proxy with Selenium
     // mock: true
@@ -99,7 +98,7 @@ describe('Browser Integration Tests', () => {
     }, { fixturePath, modelPath, });
     await printLogs(driver, capabilities);
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
-  }, 30000);
+  });
 });
 
 declare global {

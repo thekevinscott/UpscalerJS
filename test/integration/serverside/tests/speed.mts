@@ -1,143 +1,77 @@
 import path from 'path';
-import { LOCAL_UPSCALER_NAME, LOCAL_UPSCALER_NAMESPACE } from '../../../lib/node/constants.js';
-import { Main, NodeTestRunner } from '../../utils/NodeTestRunner.js';
-import { MODELS_DIR } from '../../../../scripts/package-scripts/utils/constants.js';
+import { expect, describe, it } from 'vitest';
+import { MODELS_DIR } from '@internals/common/constants';
+import { ServersideTestRunner } from '@internals/test-runner/serverside';
+import { getTemplate } from '@internals/common/get-template';
+import { verbose } from '@internals/common/logger';
 
 const LOWER_THRESHOLD = 20; // in milliseconds
 const UPPER_THRESHOLD = 10; // in milliseconds
 const DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT = new Date('December 1, 2023 00:00:00');
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
-
-const main: Main = async (deps) => {
-  const FLOWER_SIZE = 16;
-  const {
-    Upscaler,
-    tf,
-    flower,
-    model: modelPath,
-    patchSize = FLOWER_SIZE,
-  } = deps;
-  const upscaler = new Upscaler({
-    model: modelPath,
-  });
-  const bytes = new Uint8Array(flower);
-  let timesToRun = Math.ceil(FLOWER_SIZE / patchSize);
-  timesToRun *= timesToRun;
-  const input = tf.tensor(bytes).reshape([FLOWER_SIZE, FLOWER_SIZE, 3]);
-
-  const time = async (fn: () => Promise<any>) => {
-    const start = performance.now();
-    const result = await fn();
-    const duration = performance.now() - start;
-    if (result) {
-      result.dispose();
-    }
-    return duration;
-  };
-
-  const [{ model }] = await Promise.all([
-    upscaler.getModel(),
-    upscaler.warmup([{
-      patchSize,
-      padding: 0,
-    }]),
-  ]);
-  let rawDurations = 0;
-  let upscalerJSDurations = 0;
-  const TIMES = 7;
-  for (let i = 0; i < TIMES; i++) {
-    rawDurations = (await time(async () => {
-      tf.tidy(() => {
-        for (let i = 0; i < timesToRun; i++) {
-          model.predict(input.expandDims(0));
-        }
-      });
-    })) / TIMES;
-    upscalerJSDurations = (await time(async () => await upscaler.execute(input, { output: 'tensor', patchSize, padding: 0 }))) / TIMES;
-  }
-
-  input.dispose();
-
-  return JSON.stringify([rawDurations, upscalerJSDurations]);
-};
+const USE_GPU = process.env.useGPU === '1';
+const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
+if (typeof NODE_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_DIST_FOLDER not defined in env');
+}
 
 describe('Node Speed Integration Tests', () => {
-  const testRunner = new NodeTestRunner({
-    main,
-    trackTime: false,
-    dependencies: {
-      'tf': '@tensorflow/tfjs-node',
-      'Upscaler': `${LOCAL_UPSCALER_NAME}/node`,
-      'fs': 'fs',
-      'flower': path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
-    },
+  const testRunner = new ServersideTestRunner({
+    cwd: NODE_DIST_FOLDER,
   });
 
+  const runTest = async ({
+    model,
+    patchSize = 16,
+  }: {
+    model?: string;
+    patchSize?: number;
+  }) => {
+    const script = await getTemplate(path.resolve(__dirname, '../_templates/speed.js.ejs'), {
+      tf: USE_GPU ? `@tensorflow/tfjs-node-gpu` : `@tensorflow/tfjs-node`,
+      upscaler: USE_GPU ? `upscaler/node-gpu` : `upscaler/node`,
+      model,
+      flowerPath: path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-small-tensor.json'),
+      patchSize,
+    });
+    const buffer = await testRunner.run(script);
+    const result = buffer.toString('utf-8');
+    if (!result) {
+      throw new Error('Got no result back from test run.');
+    }
+    const [rawDuration, upscalerJSDuration] = JSON.parse(result);
+
+    expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
+  };
+
   if (new Date().getTime() > DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT.getTime()) {
-    console.log('The date is after', DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT, 'running speed tests!');
-    [
-      {
-        label: 'Simple Model',
-        packageName: 'pixel-upsampler',
-        modelName: '4x',
-      },
-      {
-        label: 'GANS',
-        packageName: 'esrgan-legacy',
-        modelName: 'gans',
-      },
-    ].forEach(({ label, packageName, modelName }) => {
-      it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly`, async () => {
-        const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
-        const result = await testRunner.run({
-          dependencies: {
-            customModel: importPath,
-          },
-          globals: {
-            model: 'customModel',
-          }
-        });
+    verbose('The date is after', DATE_AT_WHICH_SPEED_TESTS_TAKE_EFFECT, 'running speed tests!');
+    describe.each([
+      [
+        'Pixel Upsampler',
+        'pixel-upsampler',
+        'x4',
+      ],
+      [
+        'GANS',
+        'esrgan-legacy',
+        'gans',
+      ],
+    ])("%s", async (_label, packageName, modelName) => {
+      it(`ensures that UpscalerJS does not add significant additional latency as compared to running the model directly`, async () => runTest({
+        model: `@upscalerjs/${packageName}/${modelName}`,
+      }));
 
-        if (!result) {
-          throw new Error('Got no result back from test run.');
-        }
-        const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
-
-        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
-      });
-
-      it(`ensures that UpscalerJS running a ${label} does not add significant additional latency as compared to running the model directly with patch sizes`, async () => {
-        const importPath = `${LOCAL_UPSCALER_NAMESPACE}/${packageName}/${modelName}`;
-        const result = await testRunner.run({
-          dependencies: {
-            customModel: importPath,
-          },
-          globals: {
-            model: 'customModel',
-            patchSize: 8,
-          }
-        });
-
-        if (!result) {
-          throw new Error('Got no result back from test run.');
-        }
-        const [rawDuration, upscalerJSDuration] = JSON.parse(result.toString());
-
-        expect(upscalerJSDuration).toBeWithin([rawDuration, LOWER_THRESHOLD, UPPER_THRESHOLD]);
-      });
+      it(`ensures that UpscalerJS does not add significant additional latency as compared to running the model directly with patch sizes`, async () => runTest({
+        model: `@upscalerjs/${packageName}/${modelName}`,
+        patchSize: 8,
+      }));
     });
   } else {
+    // dummy test, to avoid complaints
     it('passes', () => {
       expect(1).toEqual(1);
     })
   }
 });
-
-declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeWithin: (expected: [number, number, number]) => CustomMatcherResult;
-    }
-  }
-}
