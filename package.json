@@ -325,7 +325,7 @@
       ]
     },
     "test:integration:clientside": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:clientside",
+      "command": "ROOT_BUNDLER_OUTPUT_DIR=./tmp/bundlers vitest -c ./test/integration/clientside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
