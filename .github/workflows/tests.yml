@@ -196,11 +196,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:clientside -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:integration:clientside -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:clientside
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
@@ -248,7 +245,7 @@ jobs:
       #   with:
       #     detached: true
       - name: 'Integration Tests'
-        run: pnpm test:integration:model -- --platform browser
+        run: pnpm test:integration:model:clientside
 
   integration-models-node:
     name: 'Models / Node'
@@ -265,7 +262,7 @@ jobs:
           node-version: 16
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:model -- --platform node
+        run: pnpm test:integration:model:serverside
 
   integration-memory-leaks:
     name: 'Integration / Memory Leaks'

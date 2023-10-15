@@ -23,7 +23,7 @@ if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
 }
 const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
-describe.only('CDN Integration Tests', () => {
+describe('CDN Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
     dist: ESBUILD_DIST,
     log: false,
