@@ -111,11 +111,9 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
 const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, args: (string | number)[], {
   verbose,
   useGPU,
-  watch,
 }: {
   verbose?: boolean;
   useGPU?: boolean,
-  watch?: boolean;
 }) => {
   const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
   if (code !== null) {

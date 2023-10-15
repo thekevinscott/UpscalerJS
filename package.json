@@ -35,7 +35,8 @@
     "test:integration:browserstack": "wireit",
     "test:integration:clientside": "wireit",
     "test:integration:serverside": "wireit",
-    "test:integration:model": "wireit",
+    "test:integration:model:clientside": "wireit",
+    "test:integration:model:serverside": "wireit",
     "test:integration:memory-leaks": "wireit",
     "test:unit:browser:playwright": "wireit",
     "test:unit:browser:jest": "wireit",
@@ -351,7 +352,7 @@
       ]
     },
     "test:integration:clientside": {
-      "command": "pnpm --filter @upscalerjs/scripts test:integration:clientside",
+      "command": "ROOT_BUNDLER_OUTPUT_DIR=./tmp/bundlers vitest -c ./test/integration/clientside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
@@ -375,18 +376,28 @@
         "bundle:node"
       ]
     },
-    "test:integration:model": {
-      "command": "pnpm --filter @upscalerjs/scripts test:model",
+    "test:integration:model:clientside": {
+      "command": "UMD_DIST_FOLDER=./tmp/bundlers/umd/dist ESBUILD_DIST_FOLDER=./tmp/bundlers/esbuild/dist vitest -c ./test/integration/model/vite.config.clientside.mts",
+      "dependencies": [
+        "./internals/common:build",
+        "./internals/http-server:build",
+        "./internals/test-runner:build",
+        "./packages/upscalerjs:build:browser",
+        "build:models:esm",
+        "build:models:cjs",
+        "bundle:esbuild",
+        "bundle:umd"
+      ]
+    },
+    "test:integration:model:serverside": {
+      "command": "USE_GPU=0 NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/model/vite.config.serverside.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
-        "./packages/upscalerjs:build:browser",
-        "build:models",
-        "bundle:esbuild",
-        "bundle:umd",
+        "build:models:cjs",
         "bundle:node"
       ]
     },
