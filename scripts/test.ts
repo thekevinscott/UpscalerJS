@@ -9,13 +9,14 @@ import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
+// import { ROOT_BUNDLER_OUTPUT_DIR } from '@internals/bundlers';
+const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(ROOT_DIR, 'tmp/bundlers');
 /****
  * Types
  */
 type Platform = 'browser' | 'node';
-type TargetPlatform = 'browser' | 'node' | 'node-gpu';
 type Runner = 'local' | 'browserstack';
-type Kind = 'integraticn' | 'memory' | 'model';
+type Kind = 'integration' | 'memory' | 'model';
 
 /****
  * Utility Functions & Classes
@@ -44,7 +45,7 @@ const getFolder = (platform: Platform, runner: Runner, kind: Kind) => {
 
 const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string[] => {
   if (kind === 'memory') {
-    return ['test.browser.ts'];
+    return ['test.browser.mts'];
   }
   if (kind === 'model') {
     return ['model.ts'];
@@ -52,11 +53,20 @@ const getAllTestFiles = (platform: Platform, runner: Runner, kind: Kind): string
   if (runner === 'browserstack') {
     const globPath = path.resolve(TEST_DIR, 'integration/browserstack/tests/**/*.mts');
     const files: string[] = sync(globPath);
-    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
   }
-  const globPath = path.resolve(TEST_DIR, 'integration', getFolder(platform, runner, kind), `**/*.ts`);
-  const files: string[] = sync(globPath);
-  return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vitest.config.ts');
+  if (platform === 'browser') {
+    const globPath = path.resolve(TEST_DIR, 'integration/clientside/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.ts');
+  }
+
+  if (platform === 'node') {
+    const globPath = path.resolve(TEST_DIR, 'integration/serverside/tests/**/*.mts');
+    const files: string[] = sync(globPath);
+    return files.map(file => file.split('/').pop() || '').filter(file => file !== 'vite.config.mts');
+  }
+  throw new Error('Unsupported platform');
 };
 
 const getDependencies = async (_platforms: Platform | Platform[], runner: Runner, kind: Kind, ...specificFiles: (number | string)[]): Promise<Bundle[]> => {
@@ -73,7 +83,7 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
     filesForPlatforms.push({
       platform,
       files,
-    })
+    });
 
     for (const file of files) {
       const fileName = `${file}`.split('.').slice(0, -1).join('.');
@@ -95,74 +105,19 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
   return sharedDependencies;
 };
 
-const getJestConfigPath = (platform: Platform | Platform[], runner: Runner, kind: Kind) => {
-  if (kind === 'memory') {
-    return path.resolve(TEST_DIR, 'misc/memory/jestconfig.js');
-  }
-  if (kind === 'model') {
-    return path.resolve(TEST_DIR, 'jestconfig.model.js');
-  }
-  if (Array.isArray(platform)) {
-    throw new Error(`An array of platforms was provided, but test kind does not support multiple platforms. Please provide an explicit platform`);
-  }
-  return path.resolve(TEST_DIR, `jestconfig.${platform}.${runner}.js`);
-};
-
 /****
  * Main function
  */
-const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
+const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, args: (string | number)[], {
   verbose,
-  skipBundle,
-  skipTest,
   useGPU,
-  watch,
 }: {
   verbose?: boolean;
-  skipBundle?: boolean;
-  skipTest?: boolean;
   useGPU?: boolean,
-  watch?: boolean;
 }) => {
-  if (skipBundle !== true) {
-    const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
-    const durations: number[] = [];
-    for (const dependency of dependencies) {
-      const start = performance.now();
-      await dependency({
-        verbose,
-        // skipInstallNodeModules: true,
-        // skipInstallLocalPackages: true,
-        // skipCopyFixtures: true,
-      });
-      durations.push(performance.now() - start);
-    }
-    console.log([
-      `** bundled: ${platform}`,
-      ...dependencies.map((fn, i) => `  - ${fn.name} in ${durations?.[i]} ms`),
-    ].join('\n'));
-  }
-
-  if (skipTest !== true) {
-    const jestConfigPath = getJestConfigPath(platform, runner, kind);
-    const args = runner === 'browserstack' ? ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/browserstack/vite.config.mts')] : [
-      'pnpm',
-      'jest',
-      '--config',
-      jestConfigPath,
-      '--detectOpenHandles',
-      watch ? '--watch' : undefined,
-      ...positionalArgs,
-    ].filter(Boolean).map(arg => `${arg}`);
-
-    if (verbose) {
-      console.log(args.join(' '));
-    }
-
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU });
-    if (code !== null) {
-      process.exit(code);
-    }
+  const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
+  if (code !== null) {
+    process.exit(code);
   }
 }
 
@@ -172,15 +127,11 @@ const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind,
 interface Args {
   watch?: boolean;
   platform: Platform | Platform[];
-  skipBundle?: boolean;
   runner: Runner;
   positionalArgs: (string | number)[];
   verbose?: boolean;
   kind: Kind;
   useGPU?: boolean;
-
-  // this is an option only for CI; lets us separate out our build step from our test step
-  skipTest?: boolean;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -231,8 +182,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipBundle: { type: 'boolean' },
-    skipTest: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },

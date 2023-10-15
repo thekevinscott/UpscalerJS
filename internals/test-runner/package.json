@@ -17,8 +17,18 @@
     "fs-extra": "latest"
   },
   "wireit": {
+    "copy-files": {
+      "command": "rsync -avmq --include='*.ejs' -f 'hide,! */' ./src/ ./dist",
+      "files": [
+        "package.json",
+        "./src/_templates/**/*.ejs"
+      ],
+      "output": [
+        "dist/_templates/**"
+      ]
+    },
     "build": {
-      "command": "tsc -p ./tsconfig.json",
+      "command": "pnpm copy-files && tsc -p ./tsconfig.json",
       "dependencies": [
         "../common:build",
         "../http-server:build"
@@ -26,6 +36,7 @@
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
+        "_templates/**/*.ejs",
         "package.json",
         "vitest.config.ts",
         "tsconfig.json"
@@ -43,6 +54,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "copy-files": "wireit",
     "test:run": "wireit",
     "test": "wireit"
   },

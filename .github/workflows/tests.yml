@@ -151,8 +151,8 @@ jobs:
         with:
           verbose: true
 
-  integration-browser-browserstack:
-    name: 'Integration / Browser / Browserstack'
+  integration-browserstack:
+    name: 'Integration / Browserstack'
     runs-on: ubuntu-latest
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
@@ -171,16 +171,19 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:browserstack -- --ci --verbose --skip-test 
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
+
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:browserstack -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:browserstack
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-browser-local:
-    name: 'Integration / Browser / Local'
+  integration-clientside:
+    name: 'Integration / Clientside'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -193,16 +196,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:browser -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:integration:browser -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:clientside
         env:
           NODE_OPTIONS: --max_old_space_size=8192
 
-  integration-node-local:
-    name: 'Integration / Node / Local'
+  integration-serverside:
+    name: 'Integration / Serverside'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -215,11 +215,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:integration:node -- --ci --verbose --skip-test 
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Integration Tests'
-        run: pnpm test:integration:node -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:serverside
 
   integration-models-browser:
     name: 'Models / Browser'
@@ -242,12 +244,8 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
       #   with:
       #     detached: true
-
-      - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform browser --ci --verbose  --skip-bundle
+        run: pnpm test:integration:model:clientside
 
   integration-models-node:
     name: 'Models / Node'
@@ -263,14 +261,11 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:model -- --ci --verbose --skip-test 
-
       - name: 'Integration Tests'
-        run: pnpm test:model -- --platform node --ci --verbose  --skip-bundle
+        run: pnpm test:integration:model:serverside
 
-  memory-leaks:
-    name: 'Memory Leaks'
+  integration-memory-leaks:
+    name: 'Integration / Memory Leaks'
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout repository'
@@ -283,11 +278,8 @@ jobs:
         with:
           node-version: 16
 
-      - name: 'Bundle'
-        run: pnpm test:memory-leaks -- --ci --verbose --skip-test 
-
       - name: 'Memory Leak Tests'
-        run: pnpm test:memory-leaks -- --ci --verbose  --skip-bundle
+        run: pnpm test:integration:memory-leaks
 
   build-docs:
     name: 'Build Documentation'

@@ -16,7 +16,9 @@
   "dependencies": {
     "@internals/common": "workspace:*",
     "@internals/http-server": "workspace:*",
-    "fs-extra": "latest"
+    "fs-extra": "latest",
+    "html-webpack-plugin": "^5.5.3",
+    "webpack": "^5.88.2"
   },
   "scripts": {
     "run-bundle": "wireit",
