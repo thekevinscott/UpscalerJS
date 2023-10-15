@@ -43,50 +43,54 @@ describe('Model Loading Integration Tests', () => {
   });
 
   it("loads the default model", async () => {
-    const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-    await wait(15000);
-    const result = await page().evaluate(() => {
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const result = await page().evaluate(({ fixturePath }) => {
       const upscaler = new window['Upscaler']();
-      return upscaler.execute(window['fixtures']['default-model']);
-    });
+      return upscaler.execute(fixturePath);
+    }, { fixturePath });
     checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
   });
 
   it("can import a specific model", async () => {
-    const result = await page().evaluate(() => {
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const result = await page().evaluate(({ fixturePath }) => {
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['x4'],
+        model: window['@upscalerjs/pixel-upsampler/x4'],
       });
-      return upscaler.execute(window['fixtures']['pixel-upsampler']);
-    });
+      return upscaler.execute(fixturePath);
+    }, { fixturePath });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {
-    const result = await page().evaluate(() => {
+    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const result = await page().evaluate(({ modelPath, fixturePath }) => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: '/models/pixel-upsampler/models/x4/x4.json',
+          path: modelPath,
           scale: 4,
           modelType: 'layers',
         },
       });
-      return upscaler.execute(window['fixtures']['pixel-upsampler']);
-    });
+      return upscaler.execute(fixturePath);
+    }, { modelPath, fixturePath });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
-    const result = await page().evaluate(() => {
+    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
+    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const result = await page().evaluate(({ modelPath, fixturePath }) => {
       const upscaler = new window['Upscaler']({
         model: {
-          path: `${window.location.origin}/models/pixel-upsampler/models/x4/x4.json`,
+          path: modelPath,
           scale: 4,
           modelType: 'layers',
         },
       });
-      return upscaler.execute(window['fixtures']['pixel-upsampler']);
-    });
+      return upscaler.execute(fixturePath);
+    }, { modelPath, fixturePath });
     checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
   });
 
@@ -95,7 +99,7 @@ describe('Model Loading Integration Tests', () => {
     const predictedPixels: number[] = await page().evaluate(async (startingPixels) => {
       const tensor = window['tf'].tensor(startingPixels).reshape([2,2,3]) as Tensor3D;
       const upscaler = new window['Upscaler']({
-        model: window['pixel-upsampler']['x2'],
+        model: window['@upscalerjs/pixel-upsampler/x2'],
       });
       const loadImage = (src: string): Promise<HTMLImageElement> => new Promise(resolve => {
         const img = new Image();

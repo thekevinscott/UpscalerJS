@@ -108,7 +108,7 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
 /****
  * Main function
  */
-const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
+const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, args: (string | number)[], {
   verbose,
   useGPU,
   watch,
