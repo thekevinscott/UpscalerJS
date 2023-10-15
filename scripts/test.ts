@@ -9,6 +9,7 @@ import { sync } from 'glob';
 import { ifDefined as _ifDefined } from './package-scripts/prompt/ifDefined';
 import { ROOT_DIR, TEST_DIR } from './package-scripts/utils/constants';
 import { Bundle } from '../test/integration/utils/NodeTestRunner';
+// import { ROOT_BUNDLER_OUTPUT_DIR } from '@internals/bundlers';
 const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(ROOT_DIR, 'tmp/bundlers');
 /****
  * Types
@@ -107,73 +108,16 @@ const getDependencies = async (_platforms: Platform | Platform[], runner: Runner
 /****
  * Main function
  */
-const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, positionalArgs: (string | number)[], {
+const test = async (platform: Platform | Platform[], runner: Runner, kind: Kind, args: (string | number)[], {
   verbose,
-  skipBundle,
-  skipTest,
   useGPU,
-  watch,
 }: {
   verbose?: boolean;
-  skipBundle?: boolean;
-  skipTest?: boolean;
   useGPU?: boolean,
-  watch?: boolean;
 }) => {
-  if (skipBundle !== true && !(
-    runner === 'browserstack' 
-    || kind === 'memory'
-    || kind === 'model'
-    || (platform === 'node' && kind === 'integration')
-    || (platform === 'browser' && kind === 'integration')
-  )) {
-    const dependencies = await getDependencies(platform, runner, kind, ...positionalArgs);
-    const durations: number[] = [];
-    for (const dependency of dependencies) {
-      const start = performance.now();
-      await dependency({
-        verbose,
-        // skipInstallNodeModules: true,
-        // skipInstallLocalPackages: true,
-        // skipCopyFixtures: true,
-      });
-      durations.push(performance.now() - start);
-    }
-    console.log([
-      `** bundled: ${platform}`,
-      ...dependencies.map((fn, i) => `  - ${fn.name} in ${durations?.[i]} ms`),
-    ].join('\n'));
-  }
-
-  if (skipTest !== true) {
-    const getArgs = () => {
-      if (runner === 'browserstack') {
-        throw new Error('not supported')
-      }
-      if (kind === 'model') {
-        return ['pnpm', 'vitest', '-c', path.resolve(ROOT_DIR, './test/integration/model/vite.config.mts')];
-      }
-      if (kind === 'integration' && platform === 'browser') {
-        throw new Error('not supported')
-      }
-      if (kind === 'memory') {
-        throw new Error('not supported')
-      }
-      if (kind === 'integration' && platform === 'node') {
-        throw new Error('not supported')
-      }
-      throw new Error('Invalid')
-    };
-    const args = getArgs().filter(Boolean).map(arg => `${arg}`);
-
-    if (verbose) {
-      console.log(args.join(' '));
-    }
-
-    const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
-    if (code !== null) {
-      process.exit(code);
-    }
+  const code = await runTTYProcess(args[0], args.slice(1), { verbose, platform, useGPU, ROOT_BUNDLER_OUTPUT_DIR });
+  if (code !== null) {
+    process.exit(code);
   }
 }
 
@@ -188,9 +132,6 @@ interface Args {
   verbose?: boolean;
   kind: Kind;
   useGPU?: boolean;
-
-  // this is an option only for CI; lets us separate out our build step from our test step
-  skipTest?: boolean;
 }
 
 const isValidPlatform = (platform?: string): platform is Platform => {
@@ -241,7 +182,6 @@ const getArgs = async (): Promise<Args> => {
   const argv = await yargs(process.argv.slice(2)).options({
     watch: { type: 'boolean' },
     platform: { type: 'string' },
-    skipTest: { type: 'boolean' },
     runner: { type: 'string' },
     verbose: { type: 'boolean' },
     kind: { type: 'string' },

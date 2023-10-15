@@ -1,7 +1,7 @@
 import { Server as HTTPServer, createServer } from 'http';
 import handler from 'serve-handler';
 import { exists } from '@internals/common/fs';
-import { verbose } from '@internals/common/logger';
+import { info } from '@internals/common/logger';
 import { Tunnel } from './Tunnel.js';
 import { serverHeaders } from './serverHeaders.js';
 
@@ -73,8 +73,9 @@ export class HttpServer {
     this.port = getServerPort(httpServer);
     if (this.useTunnel) {
       this.tunnel = new Tunnel(this.port);
-      verbose('Starting server with tunnel');
+      info('Starting server with tunnel');
       await this.tunnel.start();
+      info('Tunnel started', this.url);
     }
     const url = this.url;
     if (!url) {

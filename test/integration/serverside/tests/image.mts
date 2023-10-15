@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs';
-import { expect, describe, it, test } from 'vitest';
+import { expect, describe, it, } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
-import { MODELS_DIR } from '@internals/common/constants';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
+import { MODELS_DIR } from '@internals/common/constants';
 import { getTemplate as _getTemplate } from '@internals/common/get-template';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');
@@ -12,7 +12,6 @@ const FOUR_CHANNEL_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-smal
 
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result.png');
-const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 const USE_GPU = process.env.useGPU === '1';
 

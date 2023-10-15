@@ -51,7 +51,6 @@ const filteredPackagesAndModels = getFilteredModels({
   ]]);
 }, []);
 
-const NODE_DIST_FOLDER = getEnv('NODE_DIST_FOLDER');
 if (VERBOSE) {
   if (USE_GPU) {
     console.log('**** USING GPU in Node')
