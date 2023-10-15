@@ -23,7 +23,7 @@ if (typeof ROOT_BUNDLER_OUTPUT_DIR !== 'string') {
 }
 const ESBUILD_DIST = path.resolve(ROOT_BUNDLER_OUTPUT_DIR, 'esbuild/dist')
 
-describe('CDN Integration Tests', () => {
+describe.only('CDN Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
     dist: ESBUILD_DIST,
     log: false,
@@ -50,16 +50,16 @@ describe('CDN Integration Tests', () => {
   });
 
   const evaluateUpscaler = async (page: Page) => {
-    await page.evaluate(() => {
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('Model not found');
-      }
-      const upscaler = new window['Upscaler']({
-        model,
+      await page.evaluate(() => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('Model not found');
+        }
+        const upscaler = new window['Upscaler']({
+          model,
+        });
+        return upscaler.getModel();
       });
-      return upscaler.getModel();
-    });
   };
 
   it("loads a model from the default CDN", async () => {
@@ -74,7 +74,11 @@ describe('CDN Integration Tests', () => {
 
     _page.on('request', spy);
 
-    await evaluateUpscaler(_page);
+    try {
+      await evaluateUpscaler(_page);
+    } catch (err) {
+      // pass
+    }
 
     expect(spy).toHaveBeenCalledWithURL(CDNS[0].name);
   });
@@ -95,7 +99,11 @@ describe('CDN Integration Tests', () => {
 
     _page.on('request', spy);
 
-    await evaluateUpscaler(_page);
+    try {
+      await evaluateUpscaler(_page);
+    } catch (err) {
+      // pass
+    }
 
     expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
     expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);

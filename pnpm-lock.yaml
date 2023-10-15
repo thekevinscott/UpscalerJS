@@ -1033,43 +1033,6 @@ importers:
         specifier: ^17.7.2
         version: 17.7.2
 
-  tmp/bundlers/esbuild:
-    dependencies:
-      '@tensorflow/tfjs':
-        specifier: 4.8.0
-        version: 4.8.0(seedrandom@3.0.5)
-      '@upscalerjs/default-model':
-        specifier: workspace:*
-        version: link:../../../models/default-model
-      '@upscalerjs/esrgan-legacy':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-legacy
-      '@upscalerjs/esrgan-medium':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-medium
-      '@upscalerjs/esrgan-slim':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-slim
-      '@upscalerjs/esrgan-thick':
-        specifier: workspace:*
-        version: link:../../../models/esrgan-thick
-      '@upscalerjs/pixel-upsampler':
-        specifier: workspace:*
-        version: link:../../../models/pixel-upsampler
-      upscaler:
-        specifier: workspace:*
-        version: link:../../../packages/upscalerjs
-    devDependencies:
-      '@babel/plugin-transform-modules-commonjs':
-        specifier: 7.22.5
-        version: 7.22.5(@babel/core@7.22.10)
-      '@babel/preset-typescript':
-        specifier: 7.22.5
-        version: 7.22.5(@babel/core@7.22.10)
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
-
   tmp/bundlers/node:
     dependencies:
       '@tensorflow/tfjs-node':
@@ -7678,6 +7641,7 @@ packages:
   /browserslist@4.22.1:
     resolution: {integrity: sha512-FEVc202+2iuClEhZhrWy6ZiAcRLvNMyYcxZ8raemul1DYVOVdFsbqckWLdsixQZCpJlwe77Z3UTalE7jsjnKfQ==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001549
       electron-to-chromium: 1.4.554
@@ -16778,7 +16742,6 @@ packages:
   /terser@5.19.0:
     resolution: {integrity: sha512-JpcpGOQLOXm2jsomozdMDpd5f8ZHh1rR48OFgWUH3QsyZcfPgv2qDCYbcDEAYNd4OZRj2bWYKpwdll/udZCk/Q==}
     engines: {node: '>=10'}
-    hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.5
       acorn: 8.10.0
@@ -17433,7 +17396,6 @@ packages:
 
   /update-browserslist-db@1.0.13(browserslist@4.21.9):
     resolution: {integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg==}
-    hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
     dependencies:
@@ -17443,7 +17405,6 @@ packages:
 
   /update-browserslist-db@1.0.13(browserslist@4.22.1):
     resolution: {integrity: sha512-xebP81SNcPuNpPP3uzeW1NYXxI3rxyJzF3pD6sH4jE7o/IX+WtSpwnVU+qIsDPyk0d3hmFQ7mjqc6AtV604hbg==}
-    hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
     dependencies:
