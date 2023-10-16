@@ -1,7 +1,6 @@
 /****
  * Tests that different build outputs all function correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import path from 'path';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler, { ModelDefinition } from 'upscaler';
@@ -53,7 +52,23 @@ describe('Build Integration Tests', () => {
         });
         return upscaler.execute(fixturePath);
       }, { modelScriptPath, fixturePath });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+      expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
+    });
+
+    it("upscales using a UMD build with a specified model", async () => {
+      const page = testRunner.page;
+      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+      const modelScriptPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/dist/umd/x4.min.js`;
+      const result = await page.evaluate(async ({ fixturePath, modelScriptPath }) => {
+        const Upscaler = window['Upscaler'];
+        await window['loadScript'](modelScriptPath);
+        const pixelUpsampler = window['PixelUpsampler4x'];
+        const upscaler = new Upscaler({
+          model: pixelUpsampler,
+        });
+        return upscaler.execute(fixturePath);
+      }, { fixturePath, modelScriptPath });
+      expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
     });
   });
 
@@ -94,7 +109,7 @@ describe('Build Integration Tests', () => {
         });
         return upscaler.execute(fixturePath);
       }, { modelPath, fixturePath });
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+      expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
     });
   });
 });

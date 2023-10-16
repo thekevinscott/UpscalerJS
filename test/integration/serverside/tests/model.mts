@@ -1,6 +1,5 @@
 import path from 'path';
 import * as _tf from '@tensorflow/tfjs-node';
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { expect, describe, it } from 'vitest';
 import { MODELS_DIR } from '@internals/common/constants';
 import type {
@@ -99,7 +98,7 @@ describe('Node Model Loading Integration Tests', () => {
         throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
       }
       const formattedResult = `data:image/png;base64,${result}`;
-      checkImage(formattedResult, fixture, 'diff.png');
+      expect(formattedResult).toMatchImage(fixture);
     };
 
     it("loads the default model", async () => {
