@@ -23,6 +23,7 @@ const getEnv = (key: string): string => {
   }
   return value;
 };
+const NODE_DIST_FOLDER = getEnv('NODE_DIST_FOLDER');
 
 const filteredPackagesAndModels = getFilteredModels({
   specificPackage: SPECIFIC_PACKAGE,
@@ -50,7 +51,6 @@ const filteredPackagesAndModels = getFilteredModels({
   ]]);
 }, []);
 
-const NODE_DIST_FOLDER = getEnv('NODE_DIST_FOLDER');
 if (VERBOSE) {
   if (USE_GPU) {
     console.log('**** USING GPU in Node')
@@ -78,15 +78,13 @@ describe('Serverside model integration tests', () => {
         });
         const buffer = await cjsTestRunner.run(script);
         const result = `data:image/png;base64,${buffer.toString('utf-8')}`
-        // expect(result).toMatchImage(getFixturePath(packageDirectoryName, modelName));
-        // checkImage(formattedResult, resultPath, diffPath, upscaledPath);
         expect(result).not.toEqual('');
         const formattedResult = `data:image/png;base64,${result}`;
         const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
         const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, modelName);
         const diffPath = path.resolve(outputsPath, `diff.png`);
         const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
-        checkImage(formattedResult, resultPath, diffPath, upscaledPath);
+        expect(formattedResult).toMatchImage(resultPath);
 
       });
     });

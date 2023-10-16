@@ -1,7 +1,6 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import path from 'path';
@@ -52,7 +51,7 @@ describe('Upscale Integration Tests', () => {
       });
       return upscaler.execute(fixturePath);
     }, { fixturePath });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   describe('Cancel', () => {
@@ -211,7 +210,7 @@ describe('Upscale Integration Tests', () => {
       const result = await page().evaluate((fixturePath) => {
         return window['upscaler'].execute(fixturePath);
       }, fixturePath);
-      checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+      expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
     });
   });
 
@@ -262,7 +261,7 @@ describe('Upscale Integration Tests', () => {
         });
       }), { fixturePath, });
       expect(typeof rate).toEqual('number');
-      checkImage(slice, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/slice-patchsize-12-padding-2.png"), 'diff.png');
+      expect(slice).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/slice-patchsize-12-padding-2.png"));
     });
 
     test.each([

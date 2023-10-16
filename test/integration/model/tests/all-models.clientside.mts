@@ -20,6 +20,8 @@ const getEnv = (key: string): string => {
   }
   return value;
 };
+const ESBUILD_DIST_FOLDER = getEnv('ESBUILD_DIST_FOLDER');
+const UMD_DIST_FOLDER = getEnv('UMD_DIST_FOLDER');
 
 const filteredPackagesAndModels = getFilteredModels({
   specificPackage: SPECIFIC_PACKAGE,
@@ -34,7 +36,7 @@ const filteredPackagesAndModels = getFilteredModels({
 
     return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
   },
-}).reduce<[ string, AvailableModel[] ][]>((arr, [packageName, models]) => {
+}).reduce<[string, AvailableModel[]][]>((arr, [packageName, models]) => {
   const preparedModels: AvailableModel[] = models.map(({ esm, ...model }) => {
     return {
       ...model,
@@ -49,7 +51,6 @@ const filteredPackagesAndModels = getFilteredModels({
 
 describe('Clientside model integration tests', () => {
   describe('ESM', () => {
-    const ESBUILD_DIST_FOLDER = getEnv('ESBUILD_DIST_FOLDER');
     const testRunner = new ClientsideTestRunner({
       name: 'esm',
       mock: true,
@@ -89,13 +90,12 @@ describe('Clientside model integration tests', () => {
           });
         }, { fixturePath, packageName, modelName });
         const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
-        checkImage(result, FIXTURE_PATH, 'diff.png');
+        expect(result).toMatchImage(FIXTURE_PATH);
       });
     });
   });
 
   describe('UMD', () => {
-    const UMD_DIST_FOLDER = getEnv('UMD_DIST_FOLDER');
     const UMD_PORT = 8096;
     const testRunner = new ClientsideTestRunner({
       name: 'umd',
@@ -157,7 +157,7 @@ describe('Clientside model integration tests', () => {
             });
           }, { modelScriptPath, umdName, modelName, fixturePath });
           const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
-          checkImage(result, FIXTURE_PATH, 'diff.png');
+          expect(result).toMatchImage(FIXTURE_PATH);
         });
 
       test.each(preparedModels.map(({
@@ -197,7 +197,7 @@ describe('Clientside model integration tests', () => {
             });
           }, { modelScriptPath, fixturePath, umdName, modelName });
           const FIXTURE_PATH = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${esmName === 'index' ? '' : `/${esmName}`}`, 'result.png');
-          checkImage(result, FIXTURE_PATH, 'diff.png');
+          expect(result).toMatchImage(FIXTURE_PATH);
         });
     });
   });
