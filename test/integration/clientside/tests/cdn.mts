@@ -1,10 +1,11 @@
 /****
  * Tests that loading models via CDN works
  */
+import { vi, } from 'vitest';
 import path from 'path';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import type tf from '@tensorflow/tfjs';
-import type { Page } from 'puppeteer';
+import type { HTTPRequest, Page } from 'puppeteer';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 // TODO: Figure out how to import this from upscaler
@@ -49,7 +50,6 @@ describe('CDN Integration Tests', () => {
   });
 
   const evaluateUpscaler = async (page: Page) => {
-    try {
       await page.evaluate(() => {
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
@@ -60,70 +60,84 @@ describe('CDN Integration Tests', () => {
         });
         return upscaler.getModel();
       });
-    } catch (err) { 
-      return err;
-    }
-  }
+  };
 
   it("loads a model from the default CDN", async () => {
     const _page = page();
 
-    const requests: string[] = [];
-
-    _page.on('request', (request) => {
-      requests.push(request.url())
+    const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
+      if (request.isInterceptResolutionHandled()) {
+        throw new Error('This should not be true');
+      }
       request.continue();
     });
 
-    await evaluateUpscaler(_page);
+    _page.on('request', spy);
 
-    expect(requests).toEqual(expect.arrayContaining([expect.stringContaining(CDNS[0].name)]));
+    try {
+      await evaluateUpscaler(_page);
+    } catch (err) {
+      // pass
+    }
+
+    expect(spy).toHaveBeenCalledWithURL(CDNS[0].name);
   });
 
   it("falls back to the second CDN if the first is not available", async () => {
     const _page = page();
 
-    const requests: string[] = [];
-
-    _page.on('request', (request) => {
+    const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
+      if (request.isInterceptResolutionHandled()) {
+        throw new Error('This should not be true');
+      }
       const url = request.url();
       if (url.includes(CDNS[0].name)) {
-        request.abort();
-      } else {
-        requests.push(url)
-        request.continue();
+        return request.abort();
       }
+      request.continue();
     });
 
-    await evaluateUpscaler(_page);
+    _page.on('request', spy);
 
-    expect(requests).not.toEqual(expect.arrayContaining([expect.stringContaining(CDNS[0].name)]));
-    expect(requests).toEqual(expect.arrayContaining([expect.stringContaining(CDNS[1].name)]));
+    try {
+      await evaluateUpscaler(_page);
+    } catch (err) {
+      // pass
+    }
+
+    expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
+    expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
   });
 
   it("throws an error if no CDNs are available", async () => {
     const _page = page();
 
-    const requests: string[] = [];
-
-    _page.on('request', (request) => {
+    const spy = vi.fn().mockImplementation((request: HTTPRequest) => {
+      if (request.isInterceptResolutionHandled()) {
+        throw new Error('This should not be true');
+      }
       const url = request.url();
       if (url.includes(CDNS[0].name) || url.includes(CDNS[1].name)) {
-        request.abort();
-      } else {
-        requests.push(url)
-        request.continue();
+        return request.abort();
       }
+      request.continue();
     });
-    const err = await evaluateUpscaler(_page);
-    const isError = (err: unknown): err is Error => err instanceof Error;
-    expect(err).toBeTruthy();
-    if (!isError(err)) {
-      throw new Error('No error returned');
+
+    _page.on('request', spy);
+    try {
+      await evaluateUpscaler(_page);
+      expect.unreachable('***** [TEST ERROR] Should throw an error');
+    } catch (err) {
+      const isError = (err: unknown): err is Error => err instanceof Error;
+      expect(err).toBeTruthy();
+      if (!isError(err)) {
+        throw new Error('No error returned');
+      }
+      expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/x4/x4.json'))
+
+      expect(spy).toHaveBeenCalledWithURL(/https:\/\/cdn.jsdelivr(.*)\.json$/);
+      expect(spy).toHaveBeenCalledWithURL(/https:\/\/unpkg(.*)\.json$/);
     }
-    expect(err.message).toMatch(LOAD_MODEL_ERROR_MESSAGE('models/x4/x4.json'))
-    expect(requests).not.toEqual(expect.arrayContaining([expect.stringContaining(CDNS[0].name)]));
-    expect(requests).not.toEqual(expect.arrayContaining([expect.stringContaining(CDNS[1].name)]));
   });
 });
 

@@ -6,6 +6,7 @@ import { UMDBundler, } from '@internals/bundlers/umd';
 import { NodeBundler, } from '@internals/bundlers/node';
 import { WebpackBundler, } from '@internals/bundlers/webpack';
 import { getBundlerOutputDir, } from '../utils/get-bundler-output-dir.js';
+import { parseArgs } from "node:util";
 
 const bundlers: Record<BundlerName, typeof Bundler> = {
   esbuild: EsbuildBundler,
@@ -21,7 +22,7 @@ interface ServeBundleOptions {
 
 export const serveBundle = async (bundlerName: BundlerName, {
   port,
-  useTunnel = true,
+  useTunnel = false,
 }: ServeBundleOptions = {}): Promise<void> => {
   const Bundler = bundlers[bundlerName];
   const bundler = new Bundler(getBundlerOutputDir(Bundler));
@@ -39,14 +40,38 @@ export const serveBundle = async (bundlerName: BundlerName, {
   ].join('\n'));
 };
 
-const bundlerName = process.argv.pop();
-if (bundlerName === undefined) {
-  throw new Error('You must provide a bundler name')
-}
-if (!isValidBundlerName(bundlerName)) {
-  throw new Error(`Invalid bundler provided: ${bundlerName}`)
-}
-if (bundlerName === 'node') {
-  throw new Error('Serving node bundles is not supported');
-}
-await serveBundle(bundlerName);
+const main = async () => {
+  const {
+    values,
+    positionals: [
+      bundlerName,
+    ]
+  } = parseArgs({
+    options: {
+      port: {
+        type: "string",
+        short: "p",
+      },
+      'use-tunnel': {
+        type: "boolean",
+        short: "t",
+      },
+    },
+    allowPositionals: true,
+  });
+
+  if (!isValidBundlerName(bundlerName)) {
+    throw new Error(`Invalid bundler provided: ${bundlerName}`)
+  }
+  if (bundlerName === 'node') {
+    throw new Error('Serving node bundles is not supported');
+  }
+  const port = values.port ? parseInt(values.port) : undefined;
+  await serveBundle(bundlerName, {
+    port,
+    useTunnel: values['use-tunnel'],
+  });
+
+};
+
+main();

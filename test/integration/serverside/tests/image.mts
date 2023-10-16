@@ -1,9 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-import { expect, describe, it, test } from 'vitest';
+import { expect, describe, it, } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { MODELS_DIR } from '@internals/common/constants';
 import { getTemplate as _getTemplate } from '@internals/common/get-template';
 
@@ -13,7 +12,6 @@ const FOUR_CHANNEL_FIXTURE_PATH = path.resolve(PIXEL_UPSAMPLER_DIR, 'flower-smal
 
 const EXPECTED_UPSCALED_IMAGE_15 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result-15.png');
 const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result.png');
-const DIFF_IMAGE_OUTPUT = 'diff.png';
 
 const USE_GPU = process.env.useGPU === '1';
 
@@ -71,8 +69,7 @@ describe('Node Image Loading Integration Tests', () => {
     if (!fixture) {
       throw new Error('No fixture provided, which may be expected if we expect an error to be thrown')
     }
-    // expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
-    checkImage(`data:image/png;base64,${result}`, fixture, DIFF_IMAGE_OUTPUT);
+    expect(`data:image/png;base64,${result}`).toMatchImage(fixture);
   }
 
   describe('Uint8Array', () => {

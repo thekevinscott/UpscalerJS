@@ -1,7 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import type { Tensor3D, } from '@tensorflow/tfjs';
@@ -48,7 +47,7 @@ describe('Model Loading Integration Tests', () => {
       const upscaler = new window['Upscaler']();
       return upscaler.execute(fixturePath);
     }, { fixturePath });
-    checkImage(result, path.resolve(DEFAULT_MODEL_DIR, "result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(DEFAULT_MODEL_DIR, "result.png"));
   });
 
   it("can import a specific model", async () => {
@@ -59,7 +58,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.execute(fixturePath);
     }, { fixturePath });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   it("loads a locally exposed model via implied HTTP", async () => {
@@ -75,7 +74,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.execute(fixturePath);
     }, { modelPath, fixturePath });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   it("loads a locally exposed model via absolute HTTP", async () => {
@@ -91,7 +90,7 @@ describe('Model Loading Integration Tests', () => {
       });
       return upscaler.execute(fixturePath);
     }, { modelPath, fixturePath });
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 
   it('clips a model that returns out of bound numbers when returning a base64 string src', async () => {

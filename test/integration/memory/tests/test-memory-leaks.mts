@@ -1,8 +1,9 @@
 import { JSHandle, Page } from 'puppeteer';
 import { describe, it, expect, } from 'vitest';
-import Upscaler, { ModelDefinition } from 'upscaler';
+import Upscaler from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
+import { getAllObjects, getMemory, } from '../../../setup/matchers/toHaveLeakedMemory/index.js';
 
 const EXPECTED_LAYER_MODELS = 2; // I don't know why, but we start with layer model references in memory.
 const EXPECTED_UPSCALERS = 0;
@@ -116,21 +117,21 @@ describe('Memory Leaks', () => {
     }, tickTime);
   }
 
-  const checkMemory = (names: Array<'LayersModel' | 'Upscaler'>, starting: MemoryRecord, ending: MemoryRecord) => {
-    expect(starting.memory.numTensors).toEqual(ending.memory.numTensors);
-    expect(starting.memory.numDataBuffers).toEqual(ending.memory.numDataBuffers);
-    for (let i = 0; i < names.length; i++) {
-      const name = names[i];
-      const startingObjects = starting[name];
-      const endingObjects = ending[name];
-      try {
-        expect(endingObjects).toEqual(startingObjects);
-      } catch (err) {
-        const diff = endingObjects - startingObjects;
-        expect(new Error(`Memory Leak, there are ${diff} objects of type ${name} and there should be 0. Ending objects: ${endingObjects}, starting objects: ${startingObjects}`)).toBeUndefined();
-      }
+  const checkMemory = async (fn: () => Promise<void>, times = TIMES_TO_CHECK) => {
+    const starting = await getMemory(testRunner.page);
+    expect(starting.LayersModel).toEqual(EXPECTED_LAYER_MODELS);
+    expect(starting.Upscaler).toEqual(EXPECTED_UPSCALERS);
+    for (let i = 0; i < times; i++) {
+      await fn();
+      // trigger a gc
+      await getAllObjects(testRunner.page);
+      // wait for things to flush
+      await tick(testRunner.page);
+      const memory = await getMemory(testRunner.page);
+      expect(starting).not.toHaveLeakedMemory(memory, i);
+
     }
-  };
+  }
 
   // describe('examples of tests that explicitly throw memory leaks', () => {
   // //   // it('should throw because of maps', async () => {
@@ -206,215 +207,143 @@ describe('Memory Leaks', () => {
   // })
 
   it('should create upscalers', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page);
-
-    await testRunner.page.evaluate(async ({ times }) => {
-      const Upscaler = window['Upscaler'];
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler();
-        await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK });
-
-    await tick(testRunner.page);
-
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
+    await checkMemory(() => testRunner.page.evaluate(async () => {
+      const upscaler = new window['Upscaler']();
+      await upscaler.dispose();
+    }));
   });
 
   it('should create an Upscaler instance and warm up', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page);
-
-    await testRunner.page.evaluate(async ({ times }) => {
-      const Upscaler = window['Upscaler'];
+    await checkMemory(() => testRunner.page.evaluate(async () => {
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
         throw new Error('No model found')
       }
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
-          warmupSizes: [10],
-          model,
-        });
-        await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK });
-
-    await tick(testRunner.page);
-
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
+      const upscaler = new window['Upscaler']({
+        warmupSizes: [10],
+        model,
+      });
+      await upscaler.dispose();
+    }));
   });
 
   it('should create an Upscaler instance with a custom model', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page);
-
-    await testRunner.page.evaluate(async ({ times }) => {
-      const Upscaler = window['Upscaler'];
+    await checkMemory(() => testRunner.page.evaluate(async () => {
       const model = window['@upscalerjs/pixel-upsampler/x4'];
       if (!model) {
         throw new Error('No model found')
       }
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
-          model,
-        });
-        await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK });
-
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
+      const upscaler = new window['Upscaler']({
+        model,
+      });
+      await upscaler.dispose();
+    }));
   });
 
-  describe('Upscale with base64 output', () => {
-    it('should upscale with no pre / post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page);
-      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
+  describe('Upscale with base64 output', async () => {
+    let fixtureServerURL: string = '';
+    let fixturePath: string = '';
 
-      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-        const Upscaler = window['Upscaler'];
+    beforeAll(async () => {
+      fixtureServerURL = await testRunner.getFixturesServerURL();
+      fixturePath = `${fixtureServerURL}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    });
+
+    it('should upscale with no pre / post processing functions', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
           throw new Error('No model found')
         }
-        let image;
-        for (let i = 0; i < times; i++) {
-          const upscaler = new Upscaler({
-            model,
-          });
-          image = await upscaler.execute(fixturePath);
-
-          await upscaler.dispose();
+        const upscaler = new window['Upscaler']({
+          model,
+        });
+        const image = await upscaler.execute(fixturePath);
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
         }
-        return image;
-      }, { times: TIMES_TO_CHECK, fixturePath });
 
-      await tick(testRunner.page);
-      const endingMemory = await getMemory(testRunner.page);
-      const names = prototypes.map(p => p.name);
-      checkMemory(names, startingMemory, endingMemory);
-      expect(image!.substring(0, 22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+        return image;
+      }, fixturePath));
     });
 
     it('should upscale with a pre and no post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page);
-      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-
-      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
-        const Upscaler = window['Upscaler'];
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
           throw new Error('No model found')
         }
-        let image;
-        for (let i = 0; i < times; i++) {
-          const upscaler = new Upscaler({
-            model: {
-              ...model,
-              preprocess: (image) => tf.mul(image, 1),
-            }
-          });
-          image = await upscaler.execute(fixturePath);
-
-          await upscaler.dispose();
+        const upscaler = new window['Upscaler']({
+          model: {
+            ...model,
+            preprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        const image = await upscaler.execute(fixturePath);
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
         }
-        return image;
-      }, { times: TIMES_TO_CHECK, fixturePath });
 
-      await tick(testRunner.page);
-      const endingMemory = await getMemory(testRunner.page);
-      const names = prototypes.map(p => p.name);
-      checkMemory(names, startingMemory, endingMemory);
-      expect(image!.substring(0, 22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+        return image;
+      }, fixturePath));
     });
 
     it('should upscale with no pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page);
-      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-
-      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
-        const Upscaler = window['Upscaler'];
-        let image;
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
           throw new Error('No model found')
         }
-        for (let i = 0; i < times; i++) {
-          const upscaler = new Upscaler({
-            model: {
-              ...model,
-              postprocess: (image) => tf.mul(image, 1),
-            }
-          });
-          image = await upscaler.execute(fixturePath);
-
-          await upscaler.dispose();
+        const upscaler = new window['Upscaler']({
+          model: {
+            ...model,
+            postprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        const image = await upscaler.execute(fixturePath);
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
         }
-        return image;
-      }, { times: TIMES_TO_CHECK, fixturePath });
 
-      await tick(testRunner.page);
-      const endingMemory = await getMemory(testRunner.page);
-      const names = prototypes.map(p => p.name);
-      checkMemory(names, startingMemory, endingMemory);
-      expect(image!.substring(0, 22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+      }, fixturePath));
     });
 
     it('should upscale with a pre and a post processing functions', async () => {
-      const startingMemory = await getStartingMemory(testRunner.page);
-      const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-
-      const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
         const tf = window['tf'];
-        const Upscaler = window['Upscaler'];
         const model = window['@upscalerjs/pixel-upsampler/x4'];
         if (!model) {
           throw new Error('No model found')
         }
-        let image;
-        for (let i = 0; i < times; i++) {
-          const upscaler = new Upscaler({
-            model: {
-              ...model,
-              preprocess: (image) => tf.mul(image, 1),
-              postprocess: (image) => tf.mul(image, 1),
-            }
-          });
-          image = await upscaler.execute(fixturePath);
-
-          await upscaler.dispose();
+        const upscaler = new window['Upscaler']({
+          model: {
+            ...model,
+            preprocess: (image) => tf.mul(image, 1),
+            postprocess: (image) => tf.mul(image, 1),
+          }
+        });
+        const image = await upscaler.execute(fixturePath);
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
         }
-        return image;
-      }, { times: TIMES_TO_CHECK, fixturePath });
 
-      await tick(testRunner.page);
-      const endingMemory = await getMemory(testRunner.page);
-      const names = prototypes.map(p => p.name);
-      checkMemory(names, startingMemory, endingMemory);
-      expect(image!.substring(0, 22)).toEqual('data:image/png;base64,');
+        await upscaler.dispose();
+      }, fixturePath));
     });
-  });
 
-  it('should upscale with a pre and a post processing functions into a tensor', async () => {
-    const startingMemory = await getStartingMemory(testRunner.page);
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-
-    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const tf = window['tf'];
-      const Upscaler = window['Upscaler'];
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+    it('should upscale with a pre and a post processing functions into a tensor', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model: {
             ...model,
             preprocess: (image) => tf.mul(image, 1),
@@ -428,135 +357,98 @@ describe('Memory Leaks', () => {
         tensor.dispose();
 
         await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK, fixturePath });
+      }, fixturePath));
+    });
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
+    it('should upscale with a pre and a post processing functions from a tensor', async () => {
+      await testRunner.page.evaluate(async (fixturePath) => {
+        const getImage = () => new Promise<HTMLImageElement>(resolve => {
+          const img = new Image();
+          img.src = fixturePath;
+          img.crossOrigin = 'anonymous';
+          img.onload = () => resolve(img);
+        })
+        const img = await getImage();
+        window['src'] = await window['tf'].browser.fromPixels(img);
+      }, fixturePath);
 
-  it('should upscale with a pre and a post processing functions from a tensor', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    await testRunner.page.evaluate(async ({ fixturePath }) => {
-      const getImage = (): Promise<HTMLImageElement> => new Promise(resolve => {
-        const img = new Image();
-        img.src = fixturePath;
-        img.crossOrigin = 'anonymous';
-        img.onload = () => resolve(img);
-      })
-      const img = await getImage();
-      window['src'] = await window['tf'].browser.fromPixels(img);
-    }, { fixturePath });
-    const startingMemory = await getStartingMemory(testRunner.page);
-
-    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const tf = window['tf'];
-      const Upscaler = window['Upscaler'];
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      let output: string;
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+      await checkMemory(() => testRunner.page.evaluate(async () => {
+        const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model: {
             ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        output = await upscaler.execute(window['src']!);
+        const image = await upscaler.execute(window['src']!);
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
+        }
 
         await upscaler.dispose();
-      }
-      return output!;
-    }, { times: TIMES_TO_CHECK, fixturePath });
+      }));
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-    expect(image.substring(0, 22)).toEqual('data:image/png;base64,');
-    const isDisposed = await testRunner.page.evaluate(async () => window['src']!.isDisposed);
-    expect(isDisposed).toEqual(false);
-  });
+      const isDisposed = await testRunner.page.evaluate(async () => window['src']!.isDisposed);
+      expect(isDisposed).toEqual(false);
+    });
 
-  it('should upscale with a pre and a post processing functions with patch sizes', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const tf = window['tf'];
-      const Upscaler = window['Upscaler'];
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      let output;
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+    it('should upscale with a pre and a post processing functions with patch sizes', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const tf = window['tf'];
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model: {
             ...model,
             preprocess: (image) => tf.mul(image, 1),
             postprocess: (image) => tf.mul(image, 1),
           }
         });
-        output = await upscaler.execute(fixturePath, {
+        const image = await upscaler.execute(fixturePath, {
           patchSize: 5,
           padding: 0,
         });
+        if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
+        }
 
         await upscaler.dispose();
-      }
-      return output;
-    }, { times: TIMES_TO_CHECK, fixturePath });
+      }, fixturePath));
+    });
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-    expect(image!.substring(0, 22)).toEqual('data:image/png;base64,');
-  });
+    // it('should upscale with an ESRGAN-thick model', async () => {
+    //   await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+    //     const Upscaler = window['Upscaler'];
+    //     const ESRGANThick = window['@upscalerjs/esrgan-thick/4x'];
+    //     const upscaler = new window['Upscaler']({
+    //       model: ESRGANThick,
+    //     });
+    //     const image = await upscaler.execute(fixturePath);
+    //     if (image!.substring(0, 22) !== 'data:image/png;base64,') {
+    //       throw new Error('Bad image produced');
+    //     }
 
-  // it('should upscale with an ESRGAN-thick model', async () => {
-  //   const startingMemory = await getStartingMemory(testRunner.page);
-  //   const image = await testRunner.page.evaluate(async ({ times }) => {
-  //     const Upscaler = window['Upscaler'];
-  //     const ESRGANThick = window['esrgan-thick']['4x'];
-  //     let output;
-  //     for (let i = 0; i < times; i++) {
-  //       const upscaler = new Upscaler({
-  //         model: ESRGANThick,
-  //       });
-  //       output = await upscaler.execute(window['fixtures']['esrgan-thick']);
+    //     await upscaler.dispose();
+    //   }, `${fixtureServerURL}/esrgan-thick/assets/fixture.png`));
+    // });
 
-  //       await upscaler.dispose();
-  //     }
-  //     return output;
-  //   }, { times: TIMES_TO_CHECK });
-
-  //   await tick(testRunner.page);
-  //   const endingMemory = await getMemory(testRunner.page);
-  //   const names = prototypes.map(p => p.name);
-  //   checkMemory(names, startingMemory, endingMemory);
-  //   expect(image!.substring(0,22)).toEqual('data:image/png;base64,');
-  // });
-
-  it('should callback to progress with a src', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const Upscaler = window['Upscaler'];
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      let output;
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+    it('should callback to progress with a src', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model,
         });
+        let output;
         await upscaler.execute(fixturePath, {
           output: 'base64',
           patchSize: 14,
@@ -565,32 +457,22 @@ describe('Memory Leaks', () => {
             output = slice;
           }
         });
+        if (output!.substring(0, 22) !== 'data:image/png;base64,') {
+          throw new Error('Bad image produced');
+        }
 
         await upscaler.dispose();
-      }
-      return output;
-    }, { times: TIMES_TO_CHECK, fixturePath });
+      }, fixturePath));
+    });
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-    expect((image! as string).substring(0, 22)).toEqual('data:image/png;base64,');
-  });
-
-  it('should callback to progress with a tensor', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    await new Promise(r => setTimeout(r, 1000 * 10));
-    const image = await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const Upscaler = window['Upscaler'];
-      let output: tf.Tensor;
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+    it('should callback to progress with a tensor', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        let output: tf.Tensor3D = undefined;
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model,
         });
         await upscaler.execute(fixturePath, {
@@ -598,8 +480,8 @@ describe('Memory Leaks', () => {
           progressOutput: 'tensor',
           patchSize: 14,
           padding: 2,
-          progress: (rate, slice) => {
-            if (output) {
+          progress: (_rate, slice) => {
+            if (output && 'shape' in output) {
               output.dispose();
             }
             output = slice;
@@ -607,33 +489,25 @@ describe('Memory Leaks', () => {
         });
 
         await upscaler.dispose();
-      }
-      window['output'] = output!;
-      return output!;
-    }, { times: TIMES_TO_CHECK, fixturePath });
+        if (!output || !('shape' in output)) {
+          throw new Error('Output was never set to a valid tensor');
+        }
+        const { shape } = output;
+        if (shape.length !== 3 || shape[0] !== 16 || shape[1] !== 16 || shape[2] !== 3) {
+          throw new Error(`Bad output shape produced: ${shape}`);
+        }
+        output.dispose();
+      }, fixturePath));
+    });
 
-    await tick(testRunner.page);
-    expect(image.shape).toEqual([16, 16, 3]);
-    await testRunner.page.evaluate(() => {
-      window['output']!.dispose();
-    })
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
-
-  it('should cancel without leaking memory', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate(({ times, fixturePath }) => new Promise(resolve => {
-      const Upscaler = window['Upscaler'];
-      const abortController = new AbortController();
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      for (let i = 0; i < times; i++) {
-        const upscaler = new Upscaler({
+    it('should cancel without leaking memory', async () => {
+      await checkMemory(() => testRunner.page.evaluate((fixturePath) => new Promise<void>((resolve) => {
+        const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
+        const upscaler = new window['Upscaler']({
           model,
         });
         upscaler.execute(fixturePath, {
@@ -643,26 +517,17 @@ describe('Memory Leaks', () => {
           upscaler.dispose().then(resolve);
         });
         abortController.abort();
-      }
-    }), { times: TIMES_TO_CHECK, fixturePath });
+      }), fixturePath));
+    });
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
-
-  it('should cancel without leaking memory with patch sizes', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const Upscaler = window['Upscaler'];
-      const abortController = new AbortController();
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      for (let i = 0; i < times; i++) {
+    it('should cancel without leaking memory with patch sizes', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const Upscaler = window['Upscaler'];
+        const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new Upscaler({
           model,
         });
@@ -681,26 +546,17 @@ describe('Memory Leaks', () => {
         } catch (err) { }
 
         await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK, fixturePath });
+      }, fixturePath), 3);
+    });
 
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
-  });
-
-  it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const startingMemory = await getStartingMemory(testRunner.page);
-    await testRunner.page.evaluate(async ({ times, fixturePath }) => {
-      const Upscaler = window['Upscaler'];
-      const model = window['@upscalerjs/pixel-upsampler/x4'];
-      if (!model) {
-        throw new Error('No model found')
-      }
-      const abortController = new AbortController();
-      for (let i = 0; i < times; i++) {
+    it('should cancel without leaking memory with patch sizes and a tensor response', async () => {
+      await checkMemory(() => testRunner.page.evaluate(async (fixturePath) => {
+        const Upscaler = window['Upscaler'];
+        const abortController = new AbortController();
+        const model = window['@upscalerjs/pixel-upsampler/x4'];
+        if (!model) {
+          throw new Error('No model found')
+        }
         const upscaler = new Upscaler({
           model,
         });
@@ -720,29 +576,16 @@ describe('Memory Leaks', () => {
         } catch (err) { }
 
         await upscaler.dispose();
-      }
-    }, { times: TIMES_TO_CHECK, fixturePath });
-
-    await tick(testRunner.page);
-    const endingMemory = await getMemory(testRunner.page);
-    const names = prototypes.map(p => p.name);
-    checkMemory(names, startingMemory, endingMemory);
+      }, fixturePath));
+    });
   });
 });
 
 declare global {
   interface Window {
     Upscaler: typeof Upscaler;
-    fixtures: Record<string, string>;
     tf: typeof tf;
-    pixelUpsampler: ModelDefinition;
     src?: tf.Tensor4D | tf.Tensor3D;
     output?: tf.Tensor;
-    'pixel-upsampler': Record<string, ModelDefinition>;
-    'esrgan-legacy': Record<string, ModelDefinition>;
-    'esrgan-slim': Record<string, ModelDefinition>;
-    'esrgan-medium': Record<string, ModelDefinition>;
-    'esrgan-thick': Record<string, ModelDefinition>;
-    'default-model': Record<string, ModelDefinition>;
   }
 }
