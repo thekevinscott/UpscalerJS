@@ -25,7 +25,6 @@ export const runBundle = async (bundlerName: BundlerName, {
 
 const main = async () => {
   const {
-    values,
     positionals: [
       bundlerName,
     ]

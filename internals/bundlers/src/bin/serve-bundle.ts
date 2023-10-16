@@ -52,7 +52,7 @@ const main = async () => {
         type: "string",
         short: "p",
       },
-      ['use-tunnel']: {
+      'use-tunnel': {
         type: "boolean",
         short: "t",
       },
