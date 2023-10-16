@@ -22,6 +22,7 @@
   },
   "scripts": {
     "run-bundle": "wireit",
+    "serve-bundle": "wireit",
     "build": "wireit",
     "_lint": "wireit",
     "copy-files": "wireit",
@@ -30,6 +31,12 @@
   "wireit": {
     "run-bundle": {
       "command": "node ./dist/bin/run-bundle.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "serve-bundle": {
+      "command": "node ./dist/bin/serve-bundle.js",
       "dependencies": [
         "build"
       ]
@@ -50,7 +57,7 @@
         "../http-server:build"
       ],
       "files": [
-        "src/**/*.ts",
+        "src/**/*",
         "!src/**/*.test.ts",
         "_templates/**/*.ejs",
         "package.json",
