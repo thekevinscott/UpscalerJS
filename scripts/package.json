@@ -10,8 +10,7 @@
     "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
     "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
     "docs:tense-checks": "pnpm __run_command ./package-scripts/docs/tense-checks.ts",
-    "model:write-docs": "pnpm __run_command ./package-scripts/write-model-docs.ts",
-    "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
+    "model:write-docs": "pnpm __run_command ./package-scripts/write-model-docs.ts"
   },
   "dependencies": {
     "@types/glob": "^8.1.0",
