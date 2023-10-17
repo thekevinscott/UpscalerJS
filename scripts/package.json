@@ -5,13 +5,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "__run_command": "ts-node --esm --project ./tsconfig.json",
-    "test:integration:browserstack": "pnpm __run_command ./test.ts --kind integration --platform browser --runner browserstack",
-    "test:integration:clientside": "pnpm __run_command ./test.ts --kind integration --platform browser",
-    "test:integration:serverside": "pnpm __run_command ./test.ts --kind integration --platform node",
-    "test:integration:memory-leaks": "pnpm __run_command ./test.ts --kind memory --platform browser",
-    "test:model": "pnpm __run_command ./test.ts --kind model",
-    "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
+    "__run_command": "ts-node --esm --project ./tsconfig.json"
   },
   "dependencies": {
     "@types/glob": "^8.1.0",

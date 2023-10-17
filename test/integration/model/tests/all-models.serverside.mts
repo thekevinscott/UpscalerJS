@@ -1,12 +1,10 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
 import path from 'path';
-import { MODELS_DIR, TMP_DIR } from '@internals/common/constants';
-import { getPackageJSON } from '../../../../scripts/package-scripts/utils/packages.js';
-import { LOCAL_UPSCALER_NAMESPACE } from '../../../lib/node/constants.js';
+import { MODELS_DIR } from '@internals/common/constants';
+import { getPackageJSON } from '@internals/common/package-json';
 import { ServersideTestRunner } from '@internals/test-runner/serverside';
 import { getTemplate } from '@internals/common/get-template';
 
@@ -68,7 +66,7 @@ describe('Serverside model integration tests', () => {
 
     describe.each(filteredPackagesAndModels)('%s', (packageName, preparedModels) => {
       test.each(preparedModels.map(({ cjs }) => cjs || 'index'))(`upscales with ${packageName}/%s as cjs`, async (modelName) => {
-        const importPath = path.join(LOCAL_UPSCALER_NAMESPACE, packageName, modelName === 'index' ? '' : `/${modelName}`);
+        const importPath = path.join('@upscalerjs', packageName, modelName === 'index' ? '' : `/${modelName}`);
         const modelPackageDir = path.resolve(MODELS_DIR, packageName, 'test/__fixtures__');
         const fixturePath = path.resolve(modelPackageDir, 'fixture.png');
         const script = await getTemplate(path.resolve(__dirname, '../_templates/cjs.js.ejs'), {
@@ -81,9 +79,6 @@ describe('Serverside model integration tests', () => {
         expect(result).not.toEqual('');
         const formattedResult = `data:image/png;base64,${result}`;
         const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
-        const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, modelName);
-        const diffPath = path.resolve(outputsPath, `diff.png`);
-        const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
         expect(formattedResult).toMatchImage(resultPath);
 
       });

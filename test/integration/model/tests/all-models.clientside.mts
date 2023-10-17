@@ -1,7 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import Upscaler, { ModelDefinition } from 'upscaler';
 import * as tf from '@tensorflow/tfjs';
 import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
