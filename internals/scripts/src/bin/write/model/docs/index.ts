@@ -1,9 +1,9 @@
 import path from 'path';
-import { parseArgs } from "node:util";
-import { exists, readFile, readdir, stat, writeFile } from '@internals/common/fs';
+import { exists, readFile, readdir, writeFile } from '@internals/common/fs';
 import { MODELS_DIR, SHARED_DIR } from '@internals/common/constants';
-import { error, info, warn } from '@internals/common/logger';
+import { error, info } from '@internals/common/logger';
 import { JSONSchema, getPackageJSON } from '@internals/common/package-json';
+import { getModels } from '../shared/getModels.js';
 
 const getModelFamily = (packageJSON: JSONSchema) => packageJSON['@upscalerjs']?.['modelFamily'];
 
@@ -100,63 +100,17 @@ const writeModelDocs = async (
   }));
 }
 
-const isDirectory = async (path: string) => (await stat(path)).isDirectory();
-
-const isValidModel = async (modelDirectoryName: string) => {
-  const modelDirectoryPath = path.resolve(MODELS_DIR, modelDirectoryName);
-  return await exists(modelDirectoryPath) && await isDirectory(modelDirectoryPath);
-};
-
-const getModelDirectories = async () => {
-  const modelDirectories: string[] = [];
-  for (const modelDirectoryName of await readdir(MODELS_DIR)) {
-    if (await isDirectory(path.resolve(MODELS_DIR, modelDirectoryName))) {
-      modelDirectories.push(modelDirectoryName);
-    }
-  };
-  return modelDirectories;
-}
-
-const expandModel = async (model: string): Promise<string[]> => {
-  if (model.includes('*')) {
-    const modelNameMatch = model.split('*')[0];
-    const models: string[] = [];
-    for (const modelDirectoryName of await getModelDirectories()) {
-      if (modelDirectoryName.startsWith(modelNameMatch)) {
-        models.push(modelDirectoryName);
-      }
-    }
-    return models;
-  }
-  return [model];
-};
-
 const main = async () => {
-  const {
-    positionals: models,
-  } = parseArgs({
-    allowPositionals: true,
-  });
+  const validModels = await getModels();
 
-  const validModels = new Set<string>();
-  for (const modelName of models) {
-    for (const model of await expandModel(modelName)) {
-      if (await isValidModel(model)) {
-        validModels.add(model);
-      } else {
-        warn(`Invalid model: ${model}`);
-      }
-    }
-  };
-
-  if (models.length === 0) {
+  if (validModels.length === 0) {
     error('No models selected, nothing to do.')
     return;
   }
 
 
-  info(`Writing model docs for models:\n${Array.from(validModels).map(m => `- ${m}`).join('\n')}`);
-  await writeModelDocs(Array.from(validModels));
+  info(`Writing model docs for models:\n${validModels.map(m => `- ${m}`).join('\n')}`);
+  await writeModelDocs(validModels);
 };
 
 main();
