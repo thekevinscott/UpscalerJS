@@ -12,37 +12,37 @@ import { parseArgs } from "node:util";
  * Main function
  */
 
-const startExample = (example: string) => {
-  const examplePath = path.resolve(EXAMPLES_DIR, example);
+const startGuide = (guide: string) => {
+  const guidePath = path.resolve(EXAMPLES_DIR, guide);
 
   const command = 'npm install --force --no-package-lock && npm run dev'.split(' ');
 
   return spawn(command[0], command.slice(1), {
     shell: true,
-    cwd: examplePath,
+    cwd: guidePath,
     stdio: "inherit"
   });
 };
 
 
-const isValidExample = async (exampleDirectory: string) => {
-  const examplePath = path.resolve(EXAMPLES_DIR, exampleDirectory);
-  return await exists(examplePath) && (await stat(examplePath)).isDirectory();
+const isValidGuide = async (exampleDirectory: string) => {
+  const guidePath = path.resolve(EXAMPLES_DIR, exampleDirectory);
+  return await exists(guidePath) && (await stat(guidePath)).isDirectory();
 };
 
 const main = async () => {
   const {
     positionals: [
-      exampleDirectory,
+      guideDirectory,
     ]
   } = parseArgs({
     allowPositionals: true,
   });
 
-  if (!await isValidExample(exampleDirectory)) {
-    throw new Error(`Example directory does not exist: "${exampleDirectory}"`);
+  if (!await isValidGuide(guideDirectory)) {
+    throw new Error(`Guide directory does not exist: "${guideDirectory}"`);
   }
-  startExample(exampleDirectory);
+  startGuide(guideDirectory);
 };
 
 main();
