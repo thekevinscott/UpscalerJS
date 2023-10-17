@@ -10,10 +10,14 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@internals/common": "workspace:*"
+    "@internals/common": "workspace:*",
+    "typedoc": "^0.24.8"
   },
   "scripts": {
-    "write:model-docs": "wireit",
+    "write:docs:check-tense": "wireit",
+    "write:docs:guides": "wireit",
+    "write:docs:models": "wireit",
+    "write:docs:api": "wireit",
     "start:guide": "wireit",
     "update:npm-dependencies": "wireit",
     "build": "wireit",
@@ -21,9 +25,29 @@
     "test": "wireit"
   },
   "wireit": {
-    "write:model-docs": {
-      "command": "node ./dist/bin/write/model-docs.js",
+    "write:docs:check-tense": {
+      "command": "node ./dist/bin/write/docs/check-tense.js",
       "dependencies": [
+        "build"
+      ]
+    },
+    "write:docs:guides": {
+      "command": "node ./dist/bin/write/docs/guides/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "write:docs:models": {
+      "command": "node ./dist/bin/write/docs/models/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "write:docs:api": {
+      "command": "node ./dist/bin/write/docs/api/index.js",
+      "dependencies": [
+        "../../packages/upscalerjs:build:browser:esm",
+        "../../packages/upscalerjs:build:node",
         "build"
       ]
     },
@@ -74,7 +98,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "wireit": "latest",
-    "vitest": "^0.34.2"
+    "vitest": "^0.34.2",
+    "wireit": "latest"
   }
 }
