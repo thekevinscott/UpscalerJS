@@ -12,12 +12,12 @@ import { parseArgs } from "node:util";
  * Main function
  */
 
-const startExample = async (example: string) => {
+const startExample = (example: string) => {
   const examplePath = path.resolve(EXAMPLES_DIR, example);
 
   const command = 'npm install --force --no-package-lock && npm run dev'.split(' ');
 
-  spawn(command[0], command.slice(1), {
+  return spawn(command[0], command.slice(1), {
     shell: true,
     cwd: examplePath,
     stdio: "inherit"
@@ -42,7 +42,7 @@ const main = async () => {
   if (!await isValidExample(exampleDirectory)) {
     throw new Error(`Example directory does not exist: "${exampleDirectory}"`);
   }
-  await startExample(exampleDirectory);
+  startExample(exampleDirectory);
 };
 
 main();
