@@ -3,7 +3,6 @@
   "version": "1.0.0-beta.10",
   "private": true,
   "scripts": {
-    "build:dependencies": "wireit",
     "build-api": "wireit",
     "build-api:watch": "wireit",
     "build-guides": "wireit",
@@ -123,32 +122,32 @@
     "node": ">=16.14"
   },
   "wireit": {
-    "build:dependencies": {
-      "command": "pnpm --filter upscaler build",
-      "dependencies": [
-        "../models/esrgan-medium:build"
-      ]
-    },
     "build-api": {
-      "command": "pnpm --filter @upscalerjs/scripts docs:build-api",
+      "command": "pnpm --filter @internals/scripts write:docs:api",
       "dependencies": [
-        "../internals/common:build"
+        "../internals/scripts:build"
       ]
     },
     "build-api:watch": {
-      "command": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/core/**/*' --watch '../packages/upscalerjs/**/*' --watch '../scripts/package-scripts/docs/build-api.ts' -x \"pnpm run build-api\""
+      "command": "nodemon -e ts --ignore '../packages/upscalerjs/**/*.generated.ts' --watch '../packages/upscalerjs/**/*' --watch '../internals/scripts/src/write/docs/shared/**' --watch '../internals/scripts/src/write/docs/api/**'  -x \"pnpm run build-api\""
     },
     "build-guides": {
-      "command": "pnpm --filter @upscalerjs/scripts docs:build-guides"
+      "command": "pnpm --filter @internals/scripts write:docs:guides",
+      "dependencies": [
+        "../internals/scripts:build"
+      ]
     },
     "build-guides:watch": {
-      "command": "nodemon -e md --watch '../examples/**/*' --watch '../scripts/package-scripts/docs/build-guides.ts' -x \"pnpm run build-guides\""
+      "command": "nodemon -e md --watch '../examples/**/*' --watch '../internals/scripts/src/write/docs/shared/**' --watch '../internals/scripts/src/write/docs/guides/**' -x \"pnpm run build-guides\""
     },
     "link-model-readmes": {
-      "command": "pnpm --filter @upscalerjs/scripts docs:link-model-readmes"
+      "command": "pnpm --filter @internals/scripts write:docs:models",
+      "dependencies": [
+        "../internals/scripts:build"
+      ]
     },
     "link-model-readmes:watch": {
-      "command": "nodemon -e md -e mdx --watch '../models/**/*' --watch '../scripts/package-scripts/docs/link-model-readmes.ts' -x \"pnpm run link-model-readmes\""
+      "command": "nodemon -e md -e mdx --watch '../models/**/*' --watch '../internals/scripts/src/write/docs/shared/**' --watch '../internals/scripts/src/write/docs/models/**' -x \"pnpm run link-model-readmes\""
     },
     "docusaurus": {
       "command": "docusaurus"
@@ -166,7 +165,11 @@
       "command": "docusaurus build"
     },
     "build": {
-      "command": "concurrently \"pnpm build-guides -- --shouldClearMarkdown\" \"pnpm build-api -- --shouldClearMarkdown\" \"pnpm link-model-readmes -- --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:dependencies && pnpm build:only"
+      "command": "concurrently \"pnpm build-guides -- --shouldClearMarkdown\" \"pnpm build-api -- --shouldClearMarkdown\" \"pnpm link-model-readmes -- --shouldClearMarkdown\" && pnpm tense-checks && pnpm build:only",
+      "dependencies": [
+        "../models/esrgan-medium:build",
+        "../packages/upscalerjs:build"
+      ]
     },
     "swizzle": {
       "command": "docusaurus swizzle"
