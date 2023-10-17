@@ -5,8 +5,6 @@ import { getPackageJSON, JSONSchema } from './utils/packages';
 import { sync } from 'glob';
 
 const ROOT = path.resolve(__dirname, '../..');
-const UPSCALER_JS = path.resolve(ROOT, 'packages/upscalerjs');
-const UPSCALER_JS_DIST = path.resolve(UPSCALER_JS, 'dist');
 
 /****
  * Utility methods
