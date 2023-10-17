@@ -22,7 +22,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -39,7 +39,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Unit Tests / Vite'
         working-directory: ./packages/upscalerjs
@@ -64,7 +64,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -90,7 +90,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -114,7 +114,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Unit Tests'
         working-directory: ./packages/shared
@@ -132,7 +132,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Unit Tests'
         working-directory: ./internals
@@ -169,7 +169,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -194,7 +194,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Integration Tests'
         run: pnpm test:integration:clientside
@@ -213,7 +213,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -238,7 +238,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -259,7 +259,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Integration Tests'
         run: pnpm test:integration:model:serverside
@@ -276,7 +276,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       - name: 'Memory Leak Tests'
         run: pnpm test:integration:memory-leaks
@@ -293,7 +293,7 @@ jobs:
       - name: 'Setup PNPM with Node 16'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 16
+          node-version: 20
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
