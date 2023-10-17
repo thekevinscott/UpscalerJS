@@ -665,6 +665,9 @@ importers:
       '@internals/common':
         specifier: workspace:*
         version: link:../common
+      typedoc:
+        specifier: ^0.24.8
+        version: 0.24.8(typescript@5.1.6)
     devDependencies:
       vitest:
         specifier: ^0.34.2
@@ -12089,6 +12092,7 @@ packages:
   /marked@4.3.0:
     resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
     engines: {node: '>= 12'}
+    hasBin: true
 
   /matchit@1.1.0:
     resolution: {integrity: sha512-+nGYoOlfHmxe5BW5tE0EMJppXEwdSf8uBA1GTZC7Q77kbT35+VKLYJMzVNWCHSsga1ps1tPYFtFyvxvKzWVmMA==}
