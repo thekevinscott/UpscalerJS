@@ -61,6 +61,7 @@
     "@internals/bundlers": "workspace:*",
     "@internals/common": "workspace:*",
     "@internals/http-server": "workspace:*",
+    "@internals/scripts": "workspace:*",
     "@internals/test-runner": "workspace:*",
     "@internals/upscaler-cli": "workspace:*",
     "@internals/webdriver": "workspace:*",

@@ -1,0 +1,67 @@
+{
+  "name": "@internals/scripts",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Scripts for managing the UpscalerJS Repo",
+  "exports": {
+    "./start-example": "./dist/bin/start-example.js",
+    ".": "./dist/index.js"
+  },
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "dependencies": {
+    "@internals/common": "workspace:*"
+  },
+  "scripts": {
+    "start-example": "wireit",
+    "build": "wireit",
+    "test:run": "wireit",
+    "test": "wireit"
+  },
+  "wireit": {
+    "start-example": {
+      "command": "node ./dist/bin/start-example.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "build": {
+      "command": "tsc -p ./tsconfig.json",
+      "dependencies": [
+        "../common:build"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "src/**/*.mts",
+        "!src/**/*.test.ts",
+        "!src/**/*.test.mts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "test:run": {
+      "command": "vitest run --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
+    },
+    "test": {
+      "command": "vitest --config ./vite.config.ts",
+      "dependencies": [
+        "../common:build"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "wireit": "latest",
+    "vitest": "^0.34.2"
+  }
+}
