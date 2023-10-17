@@ -4,6 +4,7 @@ import { writeIndexFile } from './write-index-file.js';
 import { writeAPIDocumentationFiles } from './write-api-documentation-files/index.js';
 
 export async function writeAPIDocs(dest: string) {
+  return;
   const definitions = await getDefinitions();
   const methods = getSortedMethodsForWriting(definitions);
 
