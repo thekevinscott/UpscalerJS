@@ -1,7 +1,6 @@
 /****
  * Tests that different approaches to loading a model all load correctly
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { AvailableModel, getFilteredModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels.js';
 import path from 'path';
 import { MODELS_DIR, TMP_DIR } from '@internals/common/constants';
@@ -81,9 +80,6 @@ describe('Serverside model integration tests', () => {
         expect(result).not.toEqual('');
         const formattedResult = `data:image/png;base64,${result}`;
         const resultPath = path.resolve(MODELS_DIR, packageName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, "result.png");
-        const outputsPath = path.resolve(TMP_DIR, 'test-output/diff/node', packageName, modelName);
-        const diffPath = path.resolve(outputsPath, `diff.png`);
-        const upscaledPath = path.resolve(outputsPath, `upscaled.png`);
         expect(formattedResult).toMatchImage(resultPath);
 
       });

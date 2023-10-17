@@ -45,15 +45,15 @@
     "dist/**/*"
   ],
   "peerDependencies": {
-    "@tensorflow/tfjs": "~4.8.0"
+    "@tensorflow/tfjs": "~4.11.0"
   },
   "devDependencies": {
     "@rollup/plugin-json": "^6.0.0",
-    "@tensorflow/tfjs": "~4.8.0",
-    "@tensorflow/tfjs-core": "~4.8.0",
-    "@tensorflow/tfjs-layers": "~4.8.0",
-    "@tensorflow/tfjs-node": "~4.8.0",
-    "@tensorflow/tfjs-node-gpu": "~4.8.0",
+    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs-core": "~4.11.0",
+    "@tensorflow/tfjs-layers": "~4.11.0",
+    "@tensorflow/tfjs-node": "~4.11.0",
+    "@tensorflow/tfjs-node-gpu": "~4.11.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "seedrandom": "3.0.5"
   },
