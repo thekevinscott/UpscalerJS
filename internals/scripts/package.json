@@ -5,7 +5,6 @@
   "version": "0.1.0",
   "description": "Scripts for managing the UpscalerJS Repo",
   "exports": {
-    "./start-example": "./dist/bin/start-example.js",
     ".": "./dist/index.js"
   },
   "author": "Kevin Scott",
@@ -15,11 +14,18 @@
   },
   "scripts": {
     "start-example": "wireit",
+    "write:model-docs": "wireit",
     "build": "wireit",
     "test:run": "wireit",
     "test": "wireit"
   },
   "wireit": {
+    "write:model-docs": {
+      "command": "node ./dist/bin/write/model-docs.js",
+      "dependencies": [
+        "build"
+      ]
+    },
     "start-example": {
       "command": "node ./dist/bin/start-example.js",
       "dependencies": [
