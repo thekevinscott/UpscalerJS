@@ -5,12 +5,7 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "__run_command": "ts-node --esm --project ./tsconfig.json",
-    "docs:build-api": "pnpm __run_command ./package-scripts/docs/build-api.ts",
-    "docs:build-guides": "pnpm __run_command ./package-scripts/docs/build-guides.ts",
-    "docs:link-model-readmes": "pnpm __run_command ./package-scripts/docs/link-model-readmes.ts",
-    "docs:tense-checks": "pnpm __run_command ./package-scripts/docs/tense-checks.ts",
-    "model:write-docs": "pnpm __run_command ./package-scripts/write-model-docs.ts"
+    "__run_command": "ts-node --esm --project ./tsconfig.json"
   },
   "dependencies": {
     "@types/glob": "^8.1.0",
