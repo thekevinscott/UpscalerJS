@@ -13,8 +13,9 @@
     "@internals/common": "workspace:*"
   },
   "scripts": {
-    "start-example": "wireit",
     "write:model-docs": "wireit",
+    "start:guide": "wireit",
+    "update:npm-dependencies": "wireit",
     "build": "wireit",
     "test:run": "wireit",
     "test": "wireit"
@@ -26,8 +27,14 @@
         "build"
       ]
     },
-    "start-example": {
-      "command": "node ./dist/bin/start-example.js",
+    "start:guide": {
+      "command": "node ./dist/bin/start/guide.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "update:npm-dependencies": {
+      "command": "node ./dist/bin/update/npm-dependencies.js",
       "dependencies": [
         "build"
       ]

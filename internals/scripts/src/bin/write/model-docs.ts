@@ -1,7 +1,4 @@
 import path from 'path';
-import yargs from 'yargs';
-// import { SHARED_DIR, MODELS_DIR } from '@internals/common/constants';
-// import { getPackageJSON, JSONSchema } from './utils/packages';
 import { parseArgs } from "node:util";
 import { exists, readFile, readdir, stat, writeFile } from '@internals/common/fs';
 import { MODELS_DIR, SHARED_DIR } from '@internals/common/constants';
@@ -27,7 +24,7 @@ const getSnippets = async (model: string): Promise<Record<string, string>> => {
   const snippetPaths = await readdir(docSnippetsPath);
 
   for (const snippetPath of snippetPaths) {
-    const snippet = await readFile(path.resolve(docSnippetsPath, snippetPath)) || '';
+    const snippet = await readFile(path.resolve(docSnippetsPath, snippetPath)) ?? '';
     const snippetKey = snippetPath.split('.').slice(0, -1).join('.');
     if (typeof snippetKey !== 'string') {
       throw new Error(`Bad snippet key: ${snippetKey}`)
@@ -37,7 +34,7 @@ const getSnippets = async (model: string): Promise<Record<string, string>> => {
   return snippets;
 };
 
-const getPackageJSONArgs = async (model: string, packageJSON: JSONSchema): Promise<Record<string, any>> => {
+const getPackageJSONArgs = async (model: string, packageJSON: JSONSchema): Promise<Record<string, string | undefined>> => {
   const name = packageJSON.name;
   if (!name) {
     throw new Error(`No name defined for packageJSON for model ${model}`);
@@ -62,8 +59,8 @@ const getPreparedDoc = async (model: string) => {
 
   const sharedDoc = await getSharedDoc(modelFamily);
   const args = await getPackageJSONArgs(model, packageJSON);
-  const matches = sharedDoc.matchAll(/\<\%.+?\%\>/g);
-  const chunks: string[] = [];
+  const matches = sharedDoc.matchAll(/<%.+?%>/g);
+  const chunks: (string | undefined)[] = [];
   let start = 0;
   for (const match of matches) {
     const key = getKey(match[0]);
@@ -74,8 +71,8 @@ const getPreparedDoc = async (model: string) => {
     } else if (typeof args[key] !== 'string') {
       throw new Error(`Key "${key}" for model family ${modelFamily} and model ${model} is not a string, it is: ${typeof args[key]}`)
     } else {
-      const matchStart = match?.index || 0;
-      const matchEnd = matchStart + (match[0]?.length || 0);
+      const matchStart = match?.index ?? 0;
+      const matchEnd = matchStart + (match[0]?.length ?? 0);
       
       chunks.push(sharedDoc.slice(start, matchStart));
       chunks.push(args[key])
@@ -144,13 +141,10 @@ const main = async () => {
   const validModels = new Set<string>();
   for (const modelName of models) {
     for (const model of await expandModel(modelName)) {
-      if (model.startsWith('!')) {
+      if (await isValidModel(model)) {
+        validModels.add(model);
       } else {
-        if (await isValidModel(model)) {
-          validModels.add(model);
-        } else {
-          warn(`Invalid model: ${model}`);
-        }
+        warn(`Invalid model: ${model}`);
       }
     }
   };
