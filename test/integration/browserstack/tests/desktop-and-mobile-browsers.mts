@@ -7,7 +7,6 @@ import { test, describe, } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import { executeAsyncScript, getBrowserOptions, getDriver, printLogs } from '@internals/webdriver';
 import { getCurrentBranch } from '@internals/common/git';
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { MODELS_DIR } from '@internals/common/constants';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
@@ -97,7 +96,7 @@ describe('Desktop & Mobile Browser Integration Tests', () => {
       return data;
     }, { fixturePath, modelPath, });
     await printLogs(driver, capabilities);
-    checkImage(result, path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"), 'diff.png');
+    expect(result).toMatchImage(path.resolve(PIXEL_UPSAMPLER_DIR, "x4/result.png"));
   });
 });
 

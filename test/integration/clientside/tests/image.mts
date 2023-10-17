@@ -1,7 +1,6 @@
 /****
  * Tests that different supported image formats all upscale correctly.
  */
-import { checkImage } from '../../../lib/utils/checkImage.js';
 import { describe, it, expect } from 'vitest';
 import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
