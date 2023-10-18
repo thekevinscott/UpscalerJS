@@ -30,7 +30,6 @@ const { readFileSync, } = fsExtra;
   //   "update:tfjs": "pnpm __run_command ./package-scripts/update-tfjs.ts",
   //   "update:dependency": "pnpm __run_command ./package-scripts/update-dependency.ts",
   //   "update:npm:dependencies": "pnpm __run_command ./package-scripts/update-npm-dependencies.ts",
-  //   "validate:build": "pnpm __run_command ./package-scripts/validate-build.ts"
   // },
 
 

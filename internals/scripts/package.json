@@ -19,12 +19,19 @@
     "write:docs:models": "wireit",
     "write:docs:api": "wireit",
     "start:guide": "wireit",
+    "validate": "wireit",
     "update:npm-dependencies": "wireit",
     "build": "wireit",
     "test:run": "wireit",
     "test": "wireit"
   },
   "wireit": {
+    "validate": {
+      "command": "node ./dist/bin/validate/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
     "write:docs:check-tense": {
       "command": "node ./dist/bin/write/docs/check-tense.js",
       "dependencies": [

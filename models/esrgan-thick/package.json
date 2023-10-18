@@ -107,7 +107,7 @@
       "command": "pnpm lint && pnpm build && pnpm validate:build"
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-thick"
+      "command": "pnpm --filter @internals/scripts validate models/esrgan-thick"
     },
     "build": {
       "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
