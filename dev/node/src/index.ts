@@ -1,41 +1,37 @@
 import { Command } from 'commander';
-import { name, version, description } from '../package.json';
+// import { name, version, description } from '../package.json';
 import {
   registerScript as registerScriptForTestEsrganInAllConfigurations,
-} from './commands/test-esrgan-in-all-configurations';
+} from './commands/test-esrgan-in-all-configurations.js';
 
 import {
   registerScript as registerScriptForTestModel,
-} from './commands/test-model';
+} from './commands/test-model.js';
 
 import {
   registerScript as registerScriptForWriteModelTestFixtures,
-} from './commands/write-model-test-fixtures';
+} from './commands/write-model-test-fixtures.js';
 
 import {
   registerScript as registerScriptForWriteModelAssets
-} from './commands/write-model-assets';
+} from './commands/write-model-assets.js';
 
 const main = async () => {
   const program = new Command();
 
   program
-    .name(name)
-    .description(description)
-    .version(version);
+    .name("Upscaler Node Testing");
+    // .description(description)
+    // .version(version);
 
-  [
+  await Promise.all([
     registerScriptForTestModel,
     registerScriptForTestEsrganInAllConfigurations,
     registerScriptForWriteModelTestFixtures,
     registerScriptForWriteModelAssets,
-  ].forEach(fn => fn(program));
+  ].map(fn => fn(program)));
 
   await program.parseAsync(process.argv);
 };
-
-if (require.main !== module) {
-  throw new Error('Run this script directly from the command line.')
-}
 
 main();

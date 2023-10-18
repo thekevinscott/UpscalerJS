@@ -270,6 +270,9 @@ importers:
 
   dev/node:
     dependencies:
+      '@internals/common':
+        specifier: workspace:*
+        version: link:../../internals/common
       '@tensorflow/tfjs-node-gpu':
         specifier: ~4.11.0
         version: 4.11.0(seedrandom@3.0.5)
@@ -285,6 +288,10 @@ importers:
       upscaler:
         specifier: workspace:*
         version: link:../../packages/upscalerjs
+    devDependencies:
+      wireit:
+        specifier: ^0.14.0
+        version: 0.14.0
 
   docs:
     dependencies:

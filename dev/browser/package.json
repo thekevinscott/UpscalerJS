@@ -1,5 +1,5 @@
 {
-  "name": "@upscalerjs/dev-browser",
+  "name": "@dev/browser",
   "private": true,
   "scripts": {
     "dev": "vite --host --config ./vite.config.ts"

@@ -1,35 +1,55 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
-import { MODELS_DIR, UPSCALERJS_DIR } from './constants';
+import { MODELS_DIR, UPSCALER_DIR, } from '@internals/common/constants';
+import { getPackageJSON } from '@internals/common/package-json';
+import { isTFJSLibrary, TFJSLibrary, } from '@internals/common/types';
+import { exists } from '@internals/common/fs';
+import type * as TFN from '@tensorflow/tfjs-node';
+import type * as TFNG from '@tensorflow/tfjs-node-gpu';
 
-export const isValidEnv = (env: string): env is ValidEnv => ['node', 'node-gpu'].includes(env);
-export type ValidEnv = 'node' | 'node-gpu';
+type TF = typeof TFN | typeof TFNG;
 
-const checkFile = (filepath: string) => {
+export const isValidTFJSLibrary = (env: string): env is ValidTFJSLibrary => isTFJSLibrary(env) && ['node', 'node-gpu'].includes(env);
+export type ValidTFJSLibrary = Extract<TFJSLibrary, 'node' | 'node-gpu'>;
+
+const checkFile = async (filepath: string) => {
   try {
-    fs.existsSync(filepath);
+    await exists(filepath);
   } catch (err) {
     throw new Error(`File ${filepath} does not exist.`);
   }
+};
+
+interface ValidExportDefinition {
+  require: string;
+  import: string;
 }
 
-export const getUpscaler = (folder: ValidEnv) => {
-  const file = path.resolve(UPSCALERJS_DIR, `dist/${folder}/cjs/index.js`);
-  checkFile(file);
+const isValidExportDefinition = (obj: unknown): obj is ValidExportDefinition => !Array.isArray(obj) && typeof obj === 'object' && obj !== null && 'require' in obj;
 
-  return require(file).default;
+const importSpecificPackageExport = async (folder: string, key: string) => {
+  const { exports: {
+    [key]: specificExport,
+  } } = await getPackageJSON(folder);
+  if (!isValidExportDefinition(specificExport)) {
+    throw new Error(`Invalid export definition: ${JSON.stringify(specificExport)} for key ${key} in folder ${folder}`);
+  }
+  const requireFilePath = path.resolve(folder, specificExport.require);
+  await checkFile(requireFilePath);
+  return (await import(requireFilePath)).default;
 }
 
-export const getModel = (tf, modelPath: string) => {
-  const fullModelPath = path.resolve(MODELS_DIR, modelPath);
-  checkFile(fullModelPath);
-  const model = require(fullModelPath).default;
-  const { packageInformation, ...rest } = typeof model === 'function' ? model(tf) : model;
+export const getUpscaler = async (tfjsLibrary: ValidTFJSLibrary) => importSpecificPackageExport(UPSCALER_DIR, `./${tfjsLibrary}`);
+
+export const getModel = async (tf: TF, packageName: string, modelName: string) => {
+  const modelDirectory = path.resolve(MODELS_DIR, packageName);
+  const { _internals, ...rest } = await importSpecificPackageExport(modelDirectory, modelName);
+  const pathFile = path.resolve(
+    MODELS_DIR,
+    packageName,
+    _internals.path,
+  );
   return {
     ...rest,
-    path: tf.io.fileSystem(path.resolve(
-      MODELS_DIR,
-      `${packageInformation?.name.split('/').pop()}/${rest.path}`,
-    )),
+    path: tf.io.fileSystem(pathFile),
   };
 }

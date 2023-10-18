@@ -1,16 +1,46 @@
 {
-  "name": "@upscalerjs/dev-node",
+  "name": "@dev/node",
+  "type": "module",
   "description": "Dev CLI to interact with UpscalerJS in Node",
   "private": true,
   "scripts": {
-    "dev": "ts-node src/index.ts"
+    "dev": "wireit",
+    "build": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -p ./tsconfig.json",
+      "dependencies": [
+        "../../internals/common:build",
+        "../../packages/upscalerjs:build:node"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "../../tsconfig.json"
+      ],
+      "output": [
+        "dist"
+      ]
+    },
+    "dev": {
+      "command": "node dist/index.js",
+      "dependencies": [
+        "build"
+      ]
+    }
   },
   "dependencies": {
+    "@internals/common": "workspace:*",
     "@tensorflow/tfjs-node-gpu": "~4.11.0",
     "commander": "^11.0.0",
     "seedrandom": "3.0.5",
     "ts-node": "^10.9.1",
     "upscaler": "workspace:*"
   },
-  "version": "1.0.0-beta.10"
+  "version": "1.0.0-beta.10",
+  "devDependencies": {
+    "wireit": "^0.14.0"
+  }
 }
