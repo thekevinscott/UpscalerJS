@@ -1,22 +1,21 @@
 import { Command } from "commander";
-import { readFileSync, mkdirpSync, writeFileSync, } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import * as path from 'path';
 import type { Tensor } from '@tensorflow/tfjs-node';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { getModel, getUpscaler, isValidEnv, ValidEnv } from '../utils/upscaler';
-import { MODELS_DIR, TMP_DIR } from "../utils/constants";
+import { getModel, getUpscaler, isValidTFJSLibrary } from '../utils/upscaler.js';
+import { MODELS_DIR, TMP_DIR } from "@internals/common/constants";
+import { ModelInformation, ALL_MODELS as _ALL_MODELS } from '@internals/common/models';
+import { mkdirp } from "@internals/common/fs";
+const { readFileSync, writeFileSync, } = fsExtra;
 
 const USE_RANDOM_SLICE = false;
-
-const ALL_MODELS = getAllAvailableModelPackages().reduce<string[]>((arr, packageName) => {
-  if (packageName === 'default-model') {
-    return arr;
-  }
-  const models = getAllAvailableModels(packageName);
-  return arr.concat(models.map(model => {
-    return path.join(packageName, 'src', model.export);
-  }));
-}, []);
+const ALL_MODELS = _ALL_MODELS.then(results => {
+  return results.filter(result => {
+    return result.packageDirectoryName !== 'default-model';
+  // }).map(result => {
+  //   return path.join(result.packageName, 'src', result.modelName);
+  });
+});
 
 const DEFAULT_UPSCALER_ENV = 'node';
 
@@ -46,7 +45,7 @@ const upscaleImage = async (tf: any, upscaler: any, image: Tensor, patchSize?: n
   const upscaledTensor = await upscaler.upscale(image, {
     patchSize,
     padding,
-    progress: (rate) => {
+    progress: (rate: any) => {
       process.stdout.clearLine(0);
       process.stdout.cursorTo(0);
       process.stdout.write(`${rate}`);
@@ -59,43 +58,40 @@ const upscaleImage = async (tf: any, upscaler: any, image: Tensor, patchSize?: n
 }
 
 const main = async (opts: {
-  model: string[];
+  // model: ModelInformation[];
   env: string[];
   // outputDirectory: string;
   patchSize: number[];
   padding: number[];
 }) => {
   // console.warn = () => {};
-  if (!opts.model || opts.model.length === 0) {
-    throw new Error('Provide a model')
-  }
+  // if (!opts.model || opts.model.length === 0) {
+  //   throw new Error('Provide a model')
+  // }
   if (!opts.env || opts.env.length === 0) {
     throw new Error('Provide an environment')
   }
+  const models = await ALL_MODELS;
   for (const env of opts.env) {
-    if (!isValidEnv(env)) {
+    if (!isValidTFJSLibrary(env)) {
       throw new Error(`Invalid env provided: ${env}`);
     }
-    const tf = require(`@tensorflow/tfjs-${env}`);
-    const Upscaler = getUpscaler(env);
-    for (const modelPath of opts.model) {
-      const model = getModel(tf, modelPath);
+    const tf = await import(`@tensorflow/tfjs-${env}`);
+    const Upscaler = await getUpscaler(env);
+    for (const { packageDirectoryName, modelName } of models) {
+      const model = await getModel(tf, packageDirectoryName, modelName);
       const upscaler = new Upscaler({
         model,
       });
       for (const patchSize of (opts.patchSize?.length ? opts.patchSize : [undefined])) {
         for (const padding of (opts.padding?.length ? opts.padding : [undefined])) {
-          const modelName = modelPath.split('/').shift();
-          if (!modelName) {
-            throw new Error(`Bad model path: ${modelPath}`);
-          }
           const imagePath = path.resolve(MODELS_DIR, modelName, 'assets/fixture.png');
           const outputPath = path.resolve(...[
             TMP_DIR,
             'dev',
             'node',
             'test-model',
-            modelPath,
+            modelName,
             env,
             [
               patchSize,
@@ -103,21 +99,21 @@ const main = async (opts: {
             ].map(part => part || 'none').map(part => `${part}`).join('-'),
             'output.png',
           ]);
-          mkdirpSync(path.dirname(outputPath));
+          await mkdirp(path.dirname(outputPath));
 
 
           const image = getImage(tf, imagePath);
 
           const shape = image.shape;
-          console.log('Running', modelPath, 'and image of size', shape)
+          console.log('Running', modelName, 'and image of size', shape)
           const [upscaledTensor, duration, output] = await upscaleImage(tf, upscaler, image, patchSize, padding);
           console.log(`Duration for ${imagePath}: ${duration}s`);
           image.dispose();
           let expectedScale: undefined | number = undefined;
-          if (modelPath.includes('2x')) { expectedScale = 2; }
-          if (modelPath.includes('3x')) { expectedScale = 3; }
-          if (modelPath.includes('4x')) { expectedScale = 4; }
-          if (modelPath.includes('8x')) { expectedScale = 8; }
+          if (modelName.includes('2x')) { expectedScale = 2; }
+          if (modelName.includes('3x')) { expectedScale = 3; }
+          if (modelName.includes('4x')) { expectedScale = 4; }
+          if (modelName.includes('8x')) { expectedScale = 8; }
           if (expectedScale) {
             if (upscaledTensor.shape[0] !== shape[0] * expectedScale || upscaledTensor.shape[1] !== shape[1] * expectedScale) {
               throw new Error(`Mismatch in expected shape: ${upscaledTensor.shape}, ${shape}`)
@@ -135,10 +131,11 @@ const main = async (opts: {
 
 const parseInts = (value: string, previous: number[] = []): number[] => previous.concat(parseInt(value, 10));
 
-export const registerScript = (program: Command) => {
+export const registerScript = async (program: Command) => {
+  const allModels = await ALL_MODELS;
   program.command('test-model')
     .description('Test a model.')
-    .option('-m, --model <string...>', 'model to use', ALL_MODELS)
+    // .option('-m, --model-package <string...>', 'model package to use', allModels)
     .option('-e, --env <string...>', 'environment', [DEFAULT_UPSCALER_ENV])
     .option('-p, --patch-size <number...>', 'patch size', parseInts)
     .option('-a, --padding <number...>', 'padding', parseInts)

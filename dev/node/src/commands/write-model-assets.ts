@@ -1,20 +1,19 @@
 import { Command } from "commander";
-import { readFileSync, mkdirpSync, writeFileSync, existsSync, } from 'fs-extra';
+import fsExtra from 'fs-extra';
 import * as path from 'path';
 import type { Tensor } from '@tensorflow/tfjs-node';
-import { getAllAvailableModelPackages, getAllAvailableModels } from '../../../../scripts/package-scripts/utils/getAllAvailableModels';
-import { getModel, getUpscaler, isValidEnv, ValidEnv } from '../utils/upscaler';
-import { MODELS_DIR, TMP_DIR } from "../utils/constants";
+import { getModel, getUpscaler, isValidTFJSLibrary } from '../utils/upscaler.js';
+import { MODELS_DIR } from "@internals/common/constants";
+import { ALL_MODELS as _ALL_MODELS } from '@internals/common/models';
+const { readFileSync, mkdirpSync, writeFileSync, existsSync, } = fsExtra;
 
-const ALL_MODELS = getAllAvailableModelPackages().reduce<string[]>((arr, packageName) => {
-  if (packageName === 'default-model') {
-    return arr;
-  }
-  const models = getAllAvailableModels(packageName);
-  return arr.concat(models.map(model => {
-    return path.join(packageName, 'src', model.export);
-  }));
-}, []);
+const ALL_MODELS = _ALL_MODELS.then(results => {
+  return results.filter(result => {
+    return result.packageDirectoryName !== 'default-model';
+  // }).map(result => {
+  //   return path.join(result.packageName, 'src', result.modelName);
+  });
+});
 
 const DEFAULT_UPSCALER_ENV = 'node';
 
@@ -32,32 +31,27 @@ const upscaleImage = async (tf: any, upscaler: any, image: Tensor) => {
 }
 
 const main = async (opts: {
-  model: string[];
+  // model: string[];
   env: string;
   overwrite: boolean;
 }) => {
   console.log(opts.overwrite);
-  if (!opts.model || opts.model.length === 0) {
-    throw new Error('Provide a model')
-  }
+  // if (!opts.model || opts.model.length === 0) {
+  //   throw new Error('Provide a model')
+  // }
   const env = opts.env;
-  if (!isValidEnv(env)) {
+  if (!isValidTFJSLibrary(env)) {
     throw new Error(`Invalid env provided: ${env}`);
   }
   const tf = require(`@tensorflow/tfjs-${env}`);
-  const Upscaler = getUpscaler(env);
-  for (const modelPath of opts.model) {
-    const model = getModel(tf, modelPath);
+  const Upscaler = await getUpscaler(env);
+  for (const { packageDirectoryName, modelName, } of await ALL_MODELS) {
+    const model = await getModel(tf, packageDirectoryName, modelName);
     const upscaler = new Upscaler({
       model,
     });
-    const modelParts = modelPath.split('/')
-    const modelName = modelParts[0];
-    if (!modelName) {
-      throw new Error(`Bad model path: ${modelPath}`);
-    }
     const imagePath = path.resolve(MODELS_DIR, modelName, 'assets/fixture.png');
-    const outputPath = path.resolve(MODELS_DIR, modelName, 'assets', ...modelParts.slice(2).filter(p => p !== 'index'), 'result.png');
+    const outputPath = path.resolve(MODELS_DIR, modelName, 'assets', modelName, 'result.png');
     if (!existsSync(outputPath) || opts.overwrite) {
       mkdirpSync(path.dirname(outputPath));
       const image = getImage(tf, imagePath);
@@ -66,10 +60,10 @@ const main = async (opts: {
       console.log(`Duration for ${imagePath}: ${duration}s`);
       image.dispose();
       let expectedScale: undefined | number = undefined;
-      if (modelPath.includes('2x')) { expectedScale = 2; }
-      if (modelPath.includes('3x')) { expectedScale = 3; }
-      if (modelPath.includes('4x')) { expectedScale = 4; }
-      if (modelPath.includes('8x')) { expectedScale = 8; }
+      if (modelName.includes('2x')) { expectedScale = 2; }
+      if (modelName.includes('3x')) { expectedScale = 3; }
+      if (modelName.includes('4x')) { expectedScale = 4; }
+      if (modelName.includes('8x')) { expectedScale = 8; }
       if (expectedScale) {
         if (upscaledTensor.shape[0] !== shape[0] * expectedScale || upscaledTensor.shape[1] !== shape[1] * expectedScale) {
           throw new Error(`Mismatch in expected shape: ${upscaledTensor.shape}, ${shape}`)
@@ -82,10 +76,11 @@ const main = async (opts: {
   }
 };
 
-export const registerScript = (program: Command) => {
+export const registerScript = async (program: Command) => {
+  // const allModels = await ALL_MODELS;
   program.command('write-model-assets')
     .description('Write assets for models')
-    .option('-m, --model <string...>', 'model to use', ALL_MODELS)
+    // .option('-m, --model <string...>', 'model to use', allModels)
     .option('-e, --env <string>', 'environment', DEFAULT_UPSCALER_ENV)
     .option('-o, --overwrite', 'whether to overwrite the images', false)
     .action(main);

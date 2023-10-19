@@ -1,8 +1,7 @@
 import { Command } from "commander";
 import type { Tensor } from '@tensorflow/tfjs-node';
-import { getModel, getUpscaler, isValidEnv, ValidEnv } from '../utils/upscaler';
+import { getModel, getUpscaler, isValidTFJSLibrary } from '../utils/upscaler.js';
 
-const DEFAULT_MODEL = 'pixel-upsampler/src/x2';
 const DEFAULT_SIZE = '32';
 const DEFAULT_MIN_SIZE = '4';
 const DEFAULT_MIN_PADDING = '2';
@@ -20,7 +19,6 @@ const runTest = async (upscaler: any, inputTensor: Tensor, upscaledTensor: Tenso
   padding: number;
 }) => {
 
-  let upscaledPatchSizeTensor: undefined | Tensor;
   let error;
   try {
     // for (const sliceShape of [
@@ -36,7 +34,7 @@ const runTest = async (upscaler: any, inputTensor: Tensor, upscaledTensor: Tenso
     //   t.mul(255).slice([0, 0, 0], [1, 1, 3]).print();
     // }
     //     throw new Error('stop!')
-    upscaledPatchSizeTensor = await upscaler.upscale(inputTensor, {
+    const upscaledPatchSizeTensor = await upscaler.upscale(inputTensor, {
       patchSize,
       padding,
       // progress: (rate, slice, row, col) => {
@@ -60,6 +58,7 @@ const runTest = async (upscaler: any, inputTensor: Tensor, upscaledTensor: Tenso
         upscaledPatchSizeTensor.dataSync(),
       ].join('\n'))
     }
+    upscaledPatchSizeTensor.dispose();
     console.log(`- Good for size ${width}x${height} with patch size ${patchSize} and padding ${padding}`)
   } catch (err) {
     error = {
@@ -70,9 +69,6 @@ const runTest = async (upscaler: any, inputTensor: Tensor, upscaledTensor: Tenso
     }
     console.error(`Error for size ${width}x${height} with patch size ${patchSize} and padding ${padding}`)
     console.error(err);
-  }
-  if (upscaledPatchSizeTensor !== undefined) {
-    upscaledPatchSizeTensor.dispose();
   }
   return error;
 }
@@ -130,7 +126,6 @@ const main = async ({
   minSize: _minSize,
   minPadding: _minPadding,
   size: _size,
-  model: modelPath,
   env,
   width: _width,
   height: _height,
@@ -142,21 +137,22 @@ const main = async ({
   minPadding: string
   minSize: string;
   size: string;
-  model: string;
   env: string;
 }) => {
-  if (!isValidEnv(env)) {
+  if (!isValidTFJSLibrary(env)) {
     throw new Error(`Invalid env provided: ${env}`);
   }
   const width = _width !== undefined ? parseInt(_width, 10) : undefined;
   const height = _height !== undefined ? parseInt(_height, 10) : undefined;
   const patchSize = _patchSize !== undefined ? parseInt(_patchSize, 10) : undefined;
   const tf = require(`@tensorflow/tfjs-${env}`);
-  const Upscaler = getUpscaler(env);
+  const Upscaler = await getUpscaler(env);
   const size = parseInt(_size, 10);
   const minSize = parseInt(_minSize, 10);
   const minPadding = parseInt(_minPadding, 10);
-  const model = getModel(tf, modelPath);
+  const packageName = 'pixel-upsampler';
+  const modelName = 'x2';
+  const model = await getModel(tf, packageName, modelName);
   const upscaler = new Upscaler({
     model,
   });
@@ -181,7 +177,7 @@ const main = async ({
 export const registerScript = (program: Command) => {
   program.command('test-esrgan-in-all-configurations')
     .description('Test a model upscaling for all possible dimensions. Primarily for testing that patch sizes and padding are working as expected')
-    .option('-m, --model <string>', 'model to use', DEFAULT_MODEL)
+    // .option('-m, --model <string>', 'model to use', DEFAULT_MODEL)
     .option('-e, --env <string>', 'environment', DEFAULT_UPSCALER_ENV)
     .option('-s, --size <number>', 'Size of the image to iteratively test up to', DEFAULT_SIZE)
     .option('-w, --width <number>', 'An optional explicit width')
