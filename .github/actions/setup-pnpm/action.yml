@@ -24,13 +24,13 @@ runs:
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    - uses: actions/cache@v3
-      name: Setup pnpm cache
-      with:
-        path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
+        #     - uses: actions/cache@v3
+        #       name: Setup pnpm cache
+        #       with:
+        #         path: ${{ env.STORE_PATH }}
+        #         key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        #         restore-keys: |
+        #           ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
 
     - name: Install dependencies
       shell: bash
