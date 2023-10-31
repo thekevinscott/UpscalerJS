@@ -25,7 +25,6 @@ export class Tunnel {
   // private localtunnel?: ReturnType<typeof localtunnel>;
   url?: string;
   // private _stop: any;
-  
   constructor(port: number) {
     this.port = port;
   }
@@ -55,7 +54,6 @@ export class Tunnel {
       port: this.port,
     });
     return this.url;
-    
     // // cloudflared
     // const { url, stop, child, ...rest } = tunnel({ "--url": `localhost:${this.port}`, '--config': path.resolve(__dirname, './config.yaml')});
 
