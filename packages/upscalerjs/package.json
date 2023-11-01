@@ -160,9 +160,6 @@
         "dist/node-gpu/**"
       ]
     },
-    "docs:serve": {
-      "command": "docsify serve docs --port 3030"
-    },
     "preversion": {
       "command": "pnpm lint"
     },
