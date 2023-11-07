@@ -18,10 +18,13 @@
     "write:docs:guides": "wireit",
     "write:docs:models": "wireit",
     "write:docs:api": "wireit",
+    "write:model:docs": "wireit",
+    "write:model:folder": "wireit",
     "start:guide": "wireit",
     "validate": "wireit",
     "update:npm-dependencies": "wireit",
     "build": "wireit",
+    "copy-files": "wireit",
     "test:run": "wireit",
     "test": "wireit"
   },
@@ -58,6 +61,18 @@
         "build"
       ]
     },
+    "write:model:docs": {
+      "command": "node ./dist/bin/write/model/docs/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "write:model:folder": {
+      "command": "node ./dist/bin/write/model/folder/index.js",
+      "dependencies": [
+        "build"
+      ]
+    },
     "start:guide": {
       "command": "node ./dist/bin/start/guide.js",
       "dependencies": [
@@ -71,15 +86,14 @@
       ]
     },
     "build": {
-      "command": "tsc -p ./tsconfig.json",
+      "command": "pnpm copy-files && tsc -p ./tsconfig.json",
       "dependencies": [
         "../common:build"
       ],
       "files": [
         "src/**/*.ts",
-        "src/**/*.mts",
         "!src/**/*.test.ts",
-        "!src/**/*.test.mts",
+        "**/_templates/**/*.ejs",
         "package.json",
         "vite.config.ts",
         "tsconfig.json"
@@ -87,6 +101,9 @@
       "output": [
         "dist/**"
       ]
+    },
+    "copy-files": {
+      "command": "rsync -avmq --include='*.ejs' -f 'hide,! */' ./src/ ./dist"
     },
     "test:run": {
       "command": "vitest run --config ./vite.config.ts",
