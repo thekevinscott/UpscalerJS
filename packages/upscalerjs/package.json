@@ -160,9 +160,6 @@
         "dist/node-gpu/**"
       ]
     },
-    "docs:serve": {
-      "command": "docsify serve docs --port 3030"
-    },
     "preversion": {
       "command": "pnpm lint"
     },
@@ -201,7 +198,6 @@
     "build:browser": "wireit",
     "build:node": "wireit",
     "build:node-gpu": "wireit",
-    "docs:serve": "wireit",
     "preversion": "wireit",
     "prepublishOnly": "wireit",
     "format": "wireit",

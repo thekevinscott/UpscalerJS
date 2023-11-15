@@ -49,3 +49,4 @@ Add a ⭐️ [star on GitHub](https://github.com/thekevinscott/UpscalerJS) or �
 
 [MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
 
+
