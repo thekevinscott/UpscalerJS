@@ -46,10 +46,14 @@
     "type": "git",
     "url": "git+https://github.com/thekevinscott/UpscalerJS.git"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs-node": "~4.11.0",
+    "@tensorflow/tfjs-node-gpu": "~4.11.0"
+  },
   "devDependencies": {},
   "engines": {
-    "node": ">=16.0"
+    "node": ">=20.0"
   },
   "pnpm": {
     "overrides": {}
