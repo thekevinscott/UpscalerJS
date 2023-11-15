@@ -52,12 +52,6 @@
     "@tensorflow/tfjs-node-gpu": "~4.11.0"
   },
   "devDependencies": {
-    "@internals/bundlers": "workspace:*",
-    "@internals/common": "workspace:*",
-    "@internals/http-server": "workspace:*",
-    "@internals/scripts": "workspace:*",
-    "@internals/test-runner": "workspace:*",
-    "@internals/webdriver": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
