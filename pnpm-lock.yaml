@@ -579,8 +579,8 @@ importers:
         specifier: ^11.1.1
         version: 11.1.1
       tunnelmole:
-        specifier: latest
-        version: 2.2.8
+        specifier: 2.2.0
+        version: 2.2.0
     devDependencies:
       '@types/localtunnel':
         specifier: ^2.0.2
@@ -14978,8 +14978,8 @@ packages:
   /tslib@2.6.1:
     resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
 
-  /tunnelmole@2.2.8:
-    resolution: {integrity: sha512-bWx6daZP6pOXdnC7MeE3nsv+xymf6IWcbMN3xRoofCHjUrTCiBRy04VJts/5gHHN5g3PGuVteXT3OJijcdPyzQ==}
+  /tunnelmole@2.2.0:
+    resolution: {integrity: sha512-kgrpnWBIDNjqrHxHXZfO9YOc1U/sxdxvhy6YZ8kBizEJqZj2Ce0VwSfQANDdRIMUUa7sZMUWm52YHtAn+PHh3g==}
     hasBin: true
     requiresBuild: true
     dependencies:
