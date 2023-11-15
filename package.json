@@ -2,7 +2,7 @@
   "private": true,
   "name": "@upscalerjs/root",
   "description": "This is the root package.json for the UpscalerJS monorepo. You are probably looking for the package.json located at packages/upscalerjs/package.json",
-  "version": "1.0.0-beta.14",
+  "version": "1.0.0-beta.15",
   "author": "Kevin Scott",
   "license": "MIT",
   "homepage": "https://github.com/thekevinscott/UpscalerJS",

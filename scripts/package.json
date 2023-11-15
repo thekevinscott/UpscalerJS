@@ -12,7 +12,6 @@
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/pixel-upsampler": "workspace:*",
-    "fast-folder-size": "^2.2.0",
     "front-matter": "^4.0.2",
     "glob": "^10.3.3",
     "tsc-alias": "^1.8.7",

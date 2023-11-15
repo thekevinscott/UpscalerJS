@@ -1,9 +1,0 @@
-{
-  "name": "@upscalerjs/core",
-  "description": "DEPRECATED: Core library for UpscalerJS, dependency for upscaler and model packages. Not intended to be used directly.",
-  "version": "1.0.0-beta.16",
-  "files": [
-    "LICENSE",
-    "README"
-  ]
-}
