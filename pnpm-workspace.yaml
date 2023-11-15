@@ -1,11 +1,12 @@
 packages:
-  # - 'dev/**'
-  # - 'packages/**'
-  # - 'internals/**'
-  # - 'models/**'
-  # - 'scripts/**'
-  # - 'docs/**'
-  # - 'tmp/bundlers/**'
-  # # exclude packages that are inside demo directories
+  - 'dev/**'
+  - 'packages/**'
+  - 'internals/**'
+  - 'models/**'
+  - 'scripts/**'
+  - 'docs/**'
+  - 'tmp/bundlers/**'
+  # exclude packages that are inside demo directories
   - '!models/**/demo/**'
   - '!dev/browser/public/models/**'
+  - '!docs/workers/upscale/**'
