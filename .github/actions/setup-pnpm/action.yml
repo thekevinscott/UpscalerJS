@@ -22,7 +22,6 @@ runs:
       with:
         version: 8
         run_install: false
-        standalone: true
 
     - name: Node Version
       shell: bash
