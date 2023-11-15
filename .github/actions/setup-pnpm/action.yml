@@ -14,18 +14,10 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
 
-    - name: Node Version
-      shell: bash
-      run: node --version
-
     - uses: pnpm/action-setup@v2
       with:
         version: 8
         run_install: false
-
-    - name: Node Version
-      shell: bash
-      run: node --version
 
     # - name: Get pnpm store directory
     #   shell: bash
