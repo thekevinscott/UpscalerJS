@@ -1,0 +1,82 @@
+{
+  "name": "<%- name %>",
+  "version": "<%- version %>",
+  "description": "<%- description %>",
+  "keywords": <%- JSON.stringify(keywords, null, 2) %>,
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thekevinscott/upscaler.git"
+  },
+  "exports": <%- JSON.stringify(exports, null, 2) %>,
+  "module": "<%- module %>",
+  "types": "<%- types %>",
+  "umd:main": "<%- umdMain %>",
+  "scripts": <%- JSON.stringify(Object.keys(scripts).reduce((obj, scriptName) => ({
+    ...obj,
+    [scriptName]: 'wireit',
+  }), {
+    "lint": "wireit",
+    "prepublishOnly": "wireit",
+    "validate:build": "wireit",
+    "scaffold": "wireit",
+    "build:umd:tsc": "wireit",
+    "build:umd:index": "wireit",
+    "build:umd:rollup:index": "wireit",
+    "build:umd:uglify:index": "wireit",
+  }), null, 2) %>,
+  "files": [
+    "assets/**/*",
+    "license",
+    "models/**/*",
+    "dist/**/*"
+  ],
+  "peerDependencies": {
+    "@tensorflow/tfjs": "~4.11.0"
+  },
+  "devDependencies": {
+    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs-core": "~4.11.0",
+    "@tensorflow/tfjs-layers": "~4.11.0",
+    "@tensorflow/tfjs-node": "~4.11.0",
+    "@tensorflow/tfjs-node-gpu": "~4.11.0",
+    "seedrandom": "3.0.5",
+    "wireit": "^0.14.0"
+  },
+  "@upscalerjs": {
+    "title": "<%- title %>",
+    <% if (!!locals.models) { %>"models": <%- JSON.stringify(models, null, 2) %>,<% } %>
+    "modelFamily": "<%- modelFamily %>"
+  },
+  "wireit": <%- JSON.stringify(Object.entries(scripts).reduce((obj, [name, value]) => ({
+    ...obj,
+    [name]: value,
+  }), {
+    "lint": {
+      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold"
+      ]
+    },
+    "prepublishOnly": {
+      "command": "pnpm lint && pnpm build && pnpm validate:build"
+    },
+    "scaffold": {
+      "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",
+      "files": [
+        "package.json"
+      ],
+      "output": [
+        "./src/constants.generated.ts"
+      ]
+    },
+    "build:umd:tsc": {
+      "command": "tsc -p ./tsconfig.umd.json --outDir ./dist/umd-tmp"
+    },
+    "build:umd:index": {
+      "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
+    },
+  }), null, 2) %>
+}
+
