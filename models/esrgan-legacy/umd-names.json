@@ -1,8 +1,23 @@
 {
   ".": "ESRGANLegacy",
-  "./div2k/2x": "ESRGANLegacyDiv2kX2",
-  "./div2k/3x": "ESRGANLegacyDiv2kX3",
-  "./div2k/4x": "ESRGANLegacyDiv2kX4",
-  "./psnr-small": "ESRGANLegacyPSNRSmall",
-  "./gans": "ESRGANLegacyGANS"
+  "./div2k/2x": {
+    "index": "Div2kX2",
+    "direct": "ESRGANLegacyDiv2kX2"
+  },
+  "./div2k/3x": {
+    "index": "Div2kX3",
+    "direct": "ESRGANLegacyDiv2kX3"
+  },
+  "./div2k/4x": {
+    "index": "Div2kX4",
+    "direct": "ESRGANLegacyDiv2kX4"
+  },
+  "./psnr-small": {
+    "index": "PSNRSmall",
+    "direct": "ESRGANLegacyPSNRSmall"
+  },
+  "./gans": {
+    "index": "GANS",
+    "direct": "ESRGANLegacyGANS"
+  }
 }

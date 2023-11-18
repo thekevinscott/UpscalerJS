@@ -1,7 +1,7 @@
 {
   ".": "ESRGANSlim",
-  "./2x": "ESRGANSlim2x",
-  "./3x": "ESRGANSlim3x",
-  "./4x": "ESRGANSlim4x",
-  "./8x": "ESRGANSlim8x"
+  "./2x": { "index": "x2", "direct": "ESRGANSlim2x"},
+  "./3x": { "index": "x3", "direct": "ESRGANSlim3x"},
+  "./4x": { "index": "x4", "direct": "ESRGANSlim4x"},
+  "./8x": { "index": "x8", "direct": "ESRGANSlim8x"}
 }

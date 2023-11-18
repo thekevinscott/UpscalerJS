@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "Node16",
-    "module": "CommonJS",
-    "target": "ES5",
-  },
+    "module": "Node16",
+    "target": "ES5"
+  }
 }
