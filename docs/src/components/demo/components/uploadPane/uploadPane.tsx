@@ -3,6 +3,7 @@ import styles from './uploadPane.module.scss';
 import { Button } from '@site/src/components/button/button';
 import Pane from '../pane/pane';
 import Upload from '../upload/upload';
+import Link from '@docusaurus/Link';
 
 export default function UploadPane({
   size,
@@ -12,7 +13,7 @@ export default function UploadPane({
   return (
     <Upload>
       {({ isDragActive }) => (
-        <Pane 
+        <Pane
           classes={{
             [styles.active]: isDragActive,
             [styles.uploadPane]: true,
@@ -20,7 +21,8 @@ export default function UploadPane({
           size={size}
         >
           <p>Upload an image from your computer, or choose from one of the images in the search field.</p>
-          <Button size="large" variant="primary">{isDragActive ? 'Drop Image' : 'Upload Image' }</Button>
+          <p>This demo is using the <Link style={{ margin: 3 }} to="/models/available/upscaling/esrgan-medium"> ESRGAN Medium </Link> model.  </p>
+          <Button size="large" variant="primary">{isDragActive ? 'Drop Image' : 'Upload Image'}</Button>
         </Pane>
       )}
     </Upload>
