@@ -1,12 +1,13 @@
 import React from 'react';
+import '@shoelace-style/shoelace/dist/components/button/button.js';
 import { useShoelaceEventListener } from '@site/src/hooks/useShoelaceEventListener';
-import { SlButton as _SlButton} from '@shoelace-style/shoelace/dist/react';
+import { SlButton as _SlButton } from '@shoelace-style/shoelace/dist/react';
 import { SlButton } from '@shoelace-style/shoelace';
 import { CustomElement } from '@site/src/utils/customElement';
 
-interface IProps extends Omit<React.ComponentProps<typeof _SlButton>, 'className'>{
+interface IProps extends Omit<React.ComponentProps<typeof _SlButton>, 'className'> {
   class?: string;
-  onClick?: () => void; 
+  onClick?: () => void;
 }
 export const Button = ({ onClick, draggable, translate, ...props }: IProps) => {
   const ref = useShoelaceEventListener<HTMLButtonElement>(onClick, 'click', 'touch');
