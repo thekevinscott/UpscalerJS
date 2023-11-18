@@ -19,7 +19,7 @@ runs:
         version: 8
         run_install: false
 
-    - run: pnpm install -g node-gyp node-pre-gyp
+    - run: pnpm install -g node-gyp @mapbox/node-pre-gyp
       shell: bash
 
     # - name: Get pnpm store directory
