@@ -12,7 +12,7 @@
   "dependencies": {
     "@internals/common": "workspace:*",
     "fs-extra": "^11.1.1",
-    "tunnelmole": "2.2.8"
+    "tunnelmole": "2.2.0"
   },
   "wireit": {
     "build": {
@@ -47,7 +47,6 @@
     }
   },
   "scripts": {
-    "foo": "tmole 3000",
     "build": "wireit",
     "test:run": "wireit",
     "test": "wireit"
