@@ -14,10 +14,10 @@ import { TMP_DIR, } from '@internals/common/constants';
  */
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-const NODE_ROOT_FOLDER = path.join(__dirname, '..');
-const NODE_TEMPLATES_DIR = path.resolve(NODE_ROOT_FOLDER, '_templates');
-export const NODE_WORK_DIR = path.join(TMP_DIR, 'work-dirs', 'node');
-export const NODE_DIST_FOLDER = path.join(NODE_ROOT_FOLDER, 'dist');
+const ROOT_FOLDER = path.join(__dirname, '..');
+const NODE_TEMPLATES_DIR = path.resolve(ROOT_FOLDER, '_templates');
+// export const NODE_WORK_DIR = path.join(TMP_DIR, 'work-dirs', 'node');
+// export const DIST_FOLDER = path.join(ROOT_FOLDER, 'dist');
 const PACKAGES = getPackagesForRegistry();
 
 /***
@@ -43,16 +43,16 @@ const writePackageJSON = async (outputDir: string) => {
   return packageJSONPath;
 };
 
-export class NodeBundler extends Bundler {
+export class NodeCJSBundler extends Bundler {
   port = 0;
   packages = PACKAGES;
 
   get name() { // skipcq: JS-0105
-    return 'node bundler';
+    return 'node cjs bundler';
   }
 
   async bundle() {
-    info('Bundling Node...');
+    info('Bundling Node CJS...');
     await writePackageJSON(this.outDir);
 
     info(`PNPM Install to ${this.outDir}...`);
@@ -61,7 +61,7 @@ export class NodeBundler extends Bundler {
       // registryURL,
     });
 
-    info('Bundled Node successfully');
+    info('Bundled Node CJS successfully');
   }
 }
 

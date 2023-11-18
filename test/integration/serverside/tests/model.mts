@@ -21,9 +21,9 @@ const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fix
 const DEFAULT_MODEL_DIR = path.resolve(MODELS_DIR, 'default-model/test/__fixtures__');
 
 const USE_GPU = process.env.useGPU === '1';
-const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
-if (typeof NODE_DIST_FOLDER !== 'string') {
-  throw new Error('NODE_DIST_FOLDER not defined in env');
+const NODE_CJS_DIST_FOLDER = process.env.NODE_CJS_DIST_FOLDER;
+if (typeof NODE_CJS_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_CJS_DIST_FOLDER not defined in env');
 }
 
 const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) => {
@@ -73,7 +73,7 @@ const makeModelAndWeights = (scale: number, batchInputShape: (null | number)[]) 
 
 describe('Node Model Loading Integration Tests', () => {
   const testRunner = new ServersideTestRunner({
-    cwd: NODE_DIST_FOLDER,
+    cwd: NODE_CJS_DIST_FOLDER,
   });
 
   describe('Existing Models', () => {
@@ -130,7 +130,7 @@ describe('Node Model Loading Integration Tests', () => {
       patchSize,
       padding,
       scale = 2,
-      batchInputShape = [ null, null, null, 3 ],
+      batchInputShape = [null, null, null, 3],
       model = {},
     }: {
       scale: number;
@@ -184,7 +184,7 @@ describe('Node Model Loading Integration Tests', () => {
 
     const testRunner = new ServersideTestRunner({
       trackTime: false,
-      cwd: NODE_DIST_FOLDER,
+      cwd: NODE_CJS_DIST_FOLDER,
     });
 
     describe('Models with dynamic input shapes', () => {
@@ -752,7 +752,7 @@ describe('Node Model Loading Integration Tests', () => {
           expect(progressResults[3].col).toEqual(1);
           expect(warnings).toEqual([[
             WARNING_UNDEFINED_PADDING,
-          ],[
+          ], [
             GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(patchSize, divisibilityFactor, divisibilityFactor),
           ]]);
         });
@@ -789,7 +789,7 @@ describe('Node Model Loading Integration Tests', () => {
           expect(progressResults[0].col).toEqual(0);
           expect(warnings).toEqual([[
             WARNING_UNDEFINED_PADDING,
-          ],[
+          ], [
             GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR(patchSize, divisibilityFactor, expectedPatchSize),
           ]]);
         });

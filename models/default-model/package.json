@@ -1,5 +1,6 @@
 {
   "name": "@upscalerjs/default-model",
+  "type": "module",
   "version": "1.0.0-beta.17",
   "description": "ESRGAN Default Model for UpscalerJS. Upscale images and increase image resolution with AI using Javascript",
   "keywords": [
@@ -19,7 +20,7 @@
   },
   "exports": {
     ".": {
-      "require": "./dist/cjs/models/default-model/src/cjs.js",
+      "require": "./dist/cjs/index.cjs",
       "import": "./dist/esm/models/default-model/src/index.js"
     }
   },
@@ -32,6 +33,8 @@
     "validate:build": "wireit",
     "build": "wireit",
     "build:cjs": "wireit",
+    "build:cjs:tsc": "wireit",
+    "build:cjs:rollup": "wireit",
     "build:esm": "wireit",
     "build:umd": "wireit",
     "build:umd:tsc": "wireit",
@@ -55,6 +58,7 @@
     "@tensorflow/tfjs-node": "~4.11.0",
     "@tensorflow/tfjs-node-gpu": "~4.11.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "rollup-plugin-ts": "^3.4.5",
     "seedrandom": "3.0.5"
   },
   "@upscalerjs": {
@@ -106,7 +110,7 @@
       ]
     },
     "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "command": "pnpm build:cjs:tsc && pnpm build:cjs:rollup && rimraf ./dist/cjs-tmp",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -121,6 +125,12 @@
       "output": [
         "dist/cjs/**"
       ]
+    },
+    "build:cjs:tsc": {
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/cjs-tmp --baseUrl ./src"
+    },
+    "build:cjs:rollup": {
+      "command": "rollup -c ./rollup.config.cjs.mjs"
     },
     "build:esm": {
       "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",

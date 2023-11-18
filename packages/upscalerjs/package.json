@@ -4,12 +4,14 @@
   "description": "Enhance Images with Javascript and AI. Increase resolution, retouch, denoise, and more. Open Source, Browser and Node Compatible, MIT License.",
   "exports": {
     "./node": {
-      "types": "./dist/node/upscalerjs/src/node/cjs/index.d.ts",
-      "require": "./dist/node/upscalerjs/src/node/cjs/index.js"
+      "types": "./dist/node/cjs/upscalerjs/src/node/cjs/index.d.ts",
+      "require": "./dist/node/cjs/upscalerjs/src/node/cjs/index.js",
+      "import": "./dist/node/esm/upscaler.mjs"
     },
     "./node-gpu": {
-      "types": "./dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.d.ts",
-      "require": "./dist/node-gpu/upscalerjs/src/node-gpu/cjs/index.js"
+      "types": "./dist/node-gpu/cjs/upscalerjs/src/node-gpu/cjs/index.d.ts",
+      "require": "./dist/node-gpu/cjs/upscalerjs/src/node-gpu/cjs/index.js",
+      "import": "./dist/node-gpu/esm/upscaler.mjs"
     },
     ".": {
       "types": "./dist/browser/esm/upscalerjs/src/browser/esm/index.d.ts",
@@ -118,15 +120,55 @@
       "command": "tsc -p ./tsconfig.browser.umd.json --outDir ./dist/browser/tmp"
     },
     "build:browser:umd:rollup": {
-      "command": "rollup -c ./rollup.config.mjs --input ./dist/browser/tmp/upscalerjs/src/browser/umd/index.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
+      "command": "rollup -c ./rollup.config.umd.mjs --input ./dist/browser/tmp/upscalerjs/src/browser/umd/index.js --file ./dist/browser/umd/upscaler.js --name Upscaler --format umd"
     },
     "build:browser:umd:uglify": {
       "command": "uglifyjs ./dist/browser/umd/upscaler.js --output ./dist/browser/umd/upscaler.min.js --compress --mangle --source-map"
     },
     "build:node": {
-      "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node",
+      "command": "pnpm build:node:esm && pnpm build:node:cjs",
+      "files": [
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.node.cjs.json",
+        "tsconfig.node.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node/**"
+      ]
+    },
+    "build:node:esm": {
+      "command": "pnpm build:node:esm:tsc && pnpm build:node:esm:rollup && rimraf ./dist/node/tmp",
       "dependencies": [
-        "../../models/default-model:build"
+        "../../models/default-model:build:esm"
+      ],
+      "files": [
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.node.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node/esm/**"
+      ]
+    },
+    "build:node:esm:tsc": {
+      "command": "tsc -p ./tsconfig.node.esm.json --outDir ./dist/node/tmp"
+    },
+    "build:node:esm:rollup": {
+      "command": "rollup -c ./rollup.config.esm.mjs --input ./dist/node/tmp/upscalerjs/src/node/esm/index.mjs --file ./dist/node/esm/upscaler.mjs --format esm"
+    },
+    "build:node:cjs": {
+      "command": "tsc -p ./tsconfig.node.cjs.json --outDir ./dist/node/cjs",
+      "dependencies": [
+        "../../models/default-model:build:cjs"
       ],
       "files": [
         "src/shared/**/*.ts",
@@ -138,13 +180,55 @@
         "tsconfig.json"
       ],
       "output": [
-        "dist/node/**"
+        "dist/node/cjs/**"
       ]
     },
     "build:node-gpu": {
-      "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist/node-gpu",
+      "command": "pnpm build:node-gpu:esm && pnpm build:node-gpu:cjs",
+      "files": [
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
+        "src/node-gpu/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.node-gpu.cjs.json",
+        "tsconfig.node-gpu.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node-gpu/**"
+      ]
+    },
+    "build:node-gpu:esm": {
+      "command": "pnpm build:node-gpu:esm:tsc && pnpm build:node-gpu:esm:rollup && rimraf ./dist/node-gpu/tmp",
       "dependencies": [
-        "../../models/default-model:build"
+        "../../models/default-model:build:esm"
+      ],
+      "files": [
+        "src/shared/**/*.ts",
+        "src/node/**/*.ts",
+        "src/node-gpu/**/*.ts",
+        "!src/**/*.test.ts",
+        "package.json",
+        "vite.config.ts",
+        "tsconfig.node-gpu.esm.json",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/node-gpu/esm/**"
+      ]
+    },
+    "build:node-gpu:esm:tsc": {
+      "command": "tsc -p ./tsconfig.node-gpu.esm.json --outDir ./dist/node-gpu/tmp"
+    },
+    "build:node-gpu:esm:rollup": {
+      "command": "rollup -c ./rollup.config.esm.mjs --input ./dist/node-gpu/tmp/upscalerjs/src/node-gpu/esm/index.mjs --file ./dist/node-gpu/esm/upscaler.mjs --format esm"
+    },
+    "build:node-gpu:cjs": {
+      "command": "tsc -p ./tsconfig.node-gpu.cjs.json --outDir ./dist/node-gpu/cjs",
+      "dependencies": [
+        "../../models/default-model:build:cjs"
       ],
       "files": [
         "src/shared/**/*.ts",
@@ -157,7 +241,7 @@
         "tsconfig.json"
       ],
       "output": [
-        "dist/node-gpu/**"
+        "dist/node-gpu/cjs/**"
       ]
     },
     "preversion": {
@@ -196,7 +280,15 @@
     "build:browser:umd:rollup": "wireit",
     "build:browser:umd:uglify": "wireit",
     "build:browser": "wireit",
+    "build:node:cjs": "wireit",
+    "build:node:esm": "wireit",
+    "build:node:esm:tsc": "wireit",
+    "build:node:esm:rollup": "wireit",
     "build:node": "wireit",
+    "build:node-gpu:cjs": "wireit",
+    "build:node-gpu:esm": "wireit",
+    "build:node-gpu:esm:tsc": "wireit",
+    "build:node-gpu:esm:rollup": "wireit",
     "build:node-gpu": "wireit",
     "preversion": "wireit",
     "prepublishOnly": "wireit",
@@ -231,9 +323,11 @@
     "@tensorflow/tfjs-layers": "~4.11.0",
     "@tensorflow/tfjs-node": "~4.11.0",
     "@tensorflow/tfjs-node-gpu": "~4.11.0",
-    "@types/jest": "^29.5.3",
     "eslint": "8.47.0",
     "seedrandom": "3.0.5",
+    "@rollup/plugin-commonjs": "25.0.4",
+    "@rollup/plugin-node-resolve": "15.2.0",
+    "rollup": "3.28.0",
     "vitest": "^0.34.5"
   }
 }

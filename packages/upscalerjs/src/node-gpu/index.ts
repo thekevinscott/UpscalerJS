@@ -1,6 +1,6 @@
-import { getUpscaler, } from '../shared';
+import { getUpscaler, } from '../shared/index';
 import * as tf from '@tensorflow/tfjs-node-gpu';
-export * from '../shared';
+export * from '../shared/index';
 import { getUpscaleOptions, } from '../node/args.node';
 import { loadModel, } from '../node/loadModel.node';
 import {

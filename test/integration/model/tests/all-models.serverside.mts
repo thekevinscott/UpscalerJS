@@ -21,7 +21,7 @@ const getEnv = (key: string): string => {
   }
   return value;
 };
-const NODE_DIST_FOLDER = getEnv('NODE_DIST_FOLDER');
+const NODE_CJS_DIST_FOLDER = getEnv('NODE_CJS_DIST_FOLDER');
 
 const filteredPackagesAndModels = getFilteredModels({
   specificPackage: SPECIFIC_PACKAGE,
@@ -36,7 +36,7 @@ const filteredPackagesAndModels = getFilteredModels({
 
     return supportedPlatforms === undefined || supportedPlatforms.includes('browser');
   },
-}).reduce<[ string, AvailableModel[] ][]>((arr, [packageName, models]) => {
+}).reduce<[string, AvailableModel[]][]>((arr, [packageName, models]) => {
   const preparedModels: AvailableModel[] = models.map(({ esm, ...model }) => {
     return {
       ...model,
@@ -60,7 +60,7 @@ if (VERBOSE) {
 describe('Serverside model integration tests', () => {
   describe('CJS', () => {
     const cjsTestRunner = new ServersideTestRunner({
-      cwd: NODE_DIST_FOLDER,
+      cwd: NODE_CJS_DIST_FOLDER,
       trackTime: false,
     });
 

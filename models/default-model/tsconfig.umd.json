@@ -1,6 +1,4 @@
 {
   "extends": "../tsconfig.umd.json",
-  "include": [
-    "./src/index.ts",
-  ]
+  "include": ["./src/index.ts"]
 }

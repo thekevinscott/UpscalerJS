@@ -1,5 +1,5 @@
-import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan';
-import { NAME, VERSION, } from './constants.generated';
+import { getESRGANModelDefinition, } from '../../../packages/shared/src/esrgan/esrgan.js';
+import { NAME, VERSION, } from './constants.generated.js';
 
 const SCALE = 2;
 

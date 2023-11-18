@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext"
+  },
+  "include": ["src/shared/index.ts", "src/node/esm/index.mts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
+}

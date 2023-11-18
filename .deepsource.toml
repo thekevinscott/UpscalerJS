@@ -4,7 +4,6 @@ test_patterns = ["packages/upscalerjs/src/**/*.ts"]
 
 exclude_patterns = [
   "packages/upscalerjs/src/**/*.test.ts", 
-  "packages/upscalerjs/jest.setup.ts", 
   "examples/**", 
   "scripts/**", 
   "test/**", 
@@ -19,6 +18,5 @@ enabled = true
   environment = [
     "browser",
     "nodejs",
-    "jest"
   ]
   dialect = "typescript"

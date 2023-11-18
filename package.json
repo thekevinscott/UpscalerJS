@@ -15,7 +15,8 @@
     "bundle:esbuild": "wireit",
     "bundle:webpack": "wireit",
     "bundle:umd": "wireit",
-    "bundle:node": "wireit",
+    "bundle:node:cjs": "wireit",
+    "bundle:node:esm": "wireit",
     "dev:browser": "wireit",
     "dev:node": "wireit",
     "docs:build": "wireit",
@@ -58,9 +59,10 @@
     "@internals/scripts": "workspace:*",
     "@internals/test-runner": "workspace:*",
     "@internals/webdriver": "workspace:*",
+    "@schemastore/package": "0.0.10",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
-    "@schemastore/package": "0.0.10",
+    "rollup": "3.28.0",
     "@tensorflow/tfjs": "~4.11.0",
     "@tensorflow/tfjs-node": "~4.11.0",
     "@tensorflow/tfjs-node-gpu": "~4.11.0",
@@ -101,7 +103,6 @@
     "prettier": "3.0.2",
     "puppeteer": "^21.1.0",
     "rimraf": "5.0.1",
-    "rollup": "3.28.0",
     "seedrandom": "3.0.5",
     "serve": "14.2.0",
     "serve-handler": "6.1.5",
@@ -216,6 +217,7 @@
         "build:models:esm"
       ],
       "files": [
+        "./internals/bundlers/src/bundlers/esbuild/**/*",
         "./package.json"
       ],
       "output": [
@@ -230,6 +232,7 @@
         "build:models:esm"
       ],
       "files": [
+        "./internals/bundlers/src/bundlers/webpack/**/*",
         "./package.json"
       ],
       "output": [
@@ -237,19 +240,36 @@
         "!tmp/bundlers/webpack/node_modules"
       ]
     },
-    "bundle:node": {
-      "command": "pnpm --filter @internals/bundlers run-bundle -- node",
+    "bundle:node:cjs": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- node-cjs",
       "dependencies": [
         "./packages/upscalerjs:build:node",
         "./packages/upscalerjs:build:node-gpu",
         "build:models:cjs"
       ],
       "files": [
+        "./internals/bundlers/src/bundlers/node-cjs/**/*",
         "./package.json"
       ],
       "output": [
-        "tmp/bundlers/node/**/*",
-        "!tmp/bundlers/node/node_modules"
+        "tmp/bundlers/node/cjs/**/*",
+        "!tmp/bundlers/node/cjs/node_modules"
+      ]
+    },
+    "bundle:node:esm": {
+      "command": "pnpm --filter @internals/bundlers run-bundle -- node-esm",
+      "dependencies": [
+        "./packages/upscalerjs:build:node",
+        "./packages/upscalerjs:build:node-gpu",
+        "build:models:esm"
+      ],
+      "files": [
+        "./internals/bundlers/src/bundlers/node-esm/**/*",
+        "./package.json"
+      ],
+      "output": [
+        "tmp/bundlers/node/esm/**/*",
+        "!tmp/bundlers/node/esm/node_modules"
       ]
     },
     "bundle:umd": {
@@ -259,6 +279,7 @@
         "build:models:umd"
       ],
       "files": [
+        "./internals/bundlers/src/bundlers/umd/**/*",
         "./package.json"
       ],
       "output": [
@@ -295,14 +316,15 @@
       ]
     },
     "test:integration:serverside": {
-      "command": "NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/serverside/vite.config.mts",
+      "command": "NODE_ESM_DIST_FOLDER=./tmp/bundlers/node/esm NODE_CJS_DIST_FOLDER=./tmp/bundlers/node/cjs vitest -c ./test/integration/serverside/vite.config.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/test-runner:build",
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "build:models:cjs",
-        "bundle:node"
+        "bundle:node:cjs",
+        "bundle:node:esm"
       ]
     },
     "test:integration:model:clientside": {
@@ -319,7 +341,7 @@
       ]
     },
     "test:integration:model:serverside": {
-      "command": "USE_GPU=0 NODE_DIST_FOLDER=./tmp/bundlers/node vitest -c ./test/integration/model/vite.config.serverside.mts",
+      "command": "USE_GPU=0 NODE_CJS_DIST_FOLDER=./tmp/bundlers/node/cjs vitest -c ./test/integration/model/vite.config.serverside.mts",
       "dependencies": [
         "./internals/common:build",
         "./internals/http-server:build",
@@ -327,7 +349,7 @@
         "./packages/upscalerjs:build:node-gpu",
         "./packages/upscalerjs:build:node",
         "build:models:cjs",
-        "bundle:node"
+        "bundle:node:cjs"
       ]
     },
     "test:integration:memory-leaks": {

@@ -6,7 +6,7 @@ import path from "path";
 export const ROOT_BUNDLER_OUTPUT_DIR = path.resolve(TMP_DIR, 'bundlers');
 
 export const getBundlerOutputDir = (bundler: typeof Bundler) => {
-  const outputDir = bundlers.getByBundler(bundler);
+  const outputDir = bundlers.getOutput(bundler);
   if (!outputDir) {
     throw new Error(`Bundler ${bundler.name} has no output dir defined`);
   }

@@ -25,19 +25,19 @@ export const getInvalidChannelsOfTensor = (input: tf.Tensor): Error => new Error
   `Full tensor shape: ${JSON.stringify(input.shape)}`,
 ].join(' '));
 
-const NODE_DIST_FOLDER = process.env.NODE_DIST_FOLDER;
-if (typeof NODE_DIST_FOLDER !== 'string') {
-  throw new Error('NODE_DIST_FOLDER not defined in env');
+const NODE_CJS_DIST_FOLDER = process.env.NODE_CJS_DIST_FOLDER;
+if (typeof NODE_CJS_DIST_FOLDER !== 'string') {
+  throw new Error('NODE_CJS_DIST_FOLDER not defined in env');
 }
 
 const getTemplate = (
   templateName: string,
   args: Parameters<typeof _getTemplate>[1] = {}
-) => _getTemplate(path.resolve(NODE_DIST_FOLDER, templateName), args);
+) => _getTemplate(path.resolve(NODE_CJS_DIST_FOLDER, templateName), args);
 
 describe('Node Image Loading Integration Tests', () => {
   const testRunner = new ServersideTestRunner({
-    cwd: NODE_DIST_FOLDER,
+    cwd: NODE_CJS_DIST_FOLDER,
     trackTime: false,
   });
 
@@ -115,7 +115,7 @@ describe('Node Image Loading Integration Tests', () => {
   describe('Tensors', () => {
     it("upscales a 3D Tensor", async () => {
       const flowerSmallTensor = JSON.parse(fs.readFileSync(path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__', 'flower-small-tensor.json'), 'utf-8'));
-      
+
       await runTest({
         image: `tf.tensor(${JSON.stringify(flowerSmallTensor)}).reshape([16,16,3])`,
         fixture: EXPECTED_UPSCALED_IMAGE_16,
@@ -123,7 +123,7 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it("throws if 3D Tensor has invalid channels", async () => {
-      const t = tf.ones([16,16,4]);
+      const t = tf.ones([16, 16, 4]);
       await expect(() => runTest({
         image: `tf.ones([16,16,4])`,
         logErrors: false,
@@ -139,7 +139,7 @@ describe('Node Image Loading Integration Tests', () => {
     });
 
     it("throws if 4D Tensor has invalid channels", async () => {
-      const t = tf.ones([1,16,16,4]);
+      const t = tf.ones([1, 16, 16, 4]);
       await expect(() => runTest({
         image: `tf.ones([1,16,16,4])`,
         logErrors: false,

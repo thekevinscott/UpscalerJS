@@ -1,8 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve, } from '@rollup/plugin-node-resolve';
-import DefaultUpscalerModel from '../../models/default-model/umd-names.json' assert { type: 'json' };
+import DefaultUpscalerModel from '@upscalerjs/default-model/umd-names.json' assert { type: 'json' };
 
-const isValidUMDNameFile = (contents)  => typeof contents === 'object' && contents !== undefined && contents !== null && '.' in contents;
+const isValidUMDNameFile = (contents) => typeof contents === 'object' && contents !== undefined && contents !== null && '.' in contents;
 
 const getModelUmdName = () => {
   if (isValidUMDNameFile(DefaultUpscalerModel)) {
