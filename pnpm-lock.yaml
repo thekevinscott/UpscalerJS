@@ -211,6 +211,9 @@ importers:
       '@types/stats.js':
         specifier: ^0.17.0
         version: 0.17.3
+      '@upscalerjs/default-model':
+        specifier: workspace:*
+        version: link:../../models/default-model
       '@upscalerjs/esrgan-legacy':
         specifier: workspace:*
         version: link:../../models/esrgan-legacy

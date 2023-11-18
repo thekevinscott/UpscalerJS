@@ -6,6 +6,7 @@
   },
   "devDependencies": {
     "@types/stats.js": "^0.17.0",
+    "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/esrgan-medium": "workspace:*",
     "@upscalerjs/esrgan-slim": "workspace:*",
