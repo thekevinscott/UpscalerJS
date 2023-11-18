@@ -14,10 +14,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          detached: true
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     detached: true
 
       - name: 'Setup PNPM with Node 20'
         uses: ./.github/actions/setup-pnpm
