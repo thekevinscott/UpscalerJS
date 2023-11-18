@@ -192,8 +192,14 @@ export class ClientsideTestRunner {
     });
 
     // Note: these must be done sequentially; there's a race condition bug in tunnelmole
+    const timer = setTimeout(() => {
+      throw new Error('Could not start servers within 3 seconds');
+    }, 3000);
+
     await this.fixturesServer.start();
     await this.server.start();
+
+    clearTimeout(timer);
   }
 
   async stopServers(): Promise<void> {

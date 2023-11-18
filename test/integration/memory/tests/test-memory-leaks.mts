@@ -92,7 +92,7 @@ describe('Memory Leaks', () => {
     name: 'memory-leaks',
     mock: true,
     dist: ESBUILD_DIST_FOLDER,
-    useTunnel: true,
+    useTunnel: false,
   });
 
   beforeAll(async function beforeAll() {
