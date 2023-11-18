@@ -45,6 +45,7 @@ if (typeof ESBUILD_DIST_FOLDER !== 'string') {
 
 describe('Desktop & Mobile Browser Integration Tests', () => {
   const testRunner = new ClientsideTestRunner({
+    name: 'browserstack',
     // TODO: Not sure how to proxy with Selenium
     // mock: true
     dist: ESBUILD_DIST_FOLDER,

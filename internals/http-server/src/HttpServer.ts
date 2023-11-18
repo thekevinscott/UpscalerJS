@@ -73,9 +73,9 @@ export class HttpServer {
     this.port = getServerPort(httpServer);
     if (this.useTunnel) {
       this.tunnel = new Tunnel(this.port);
-      info('Starting server with tunnel');
+      info('Starting server with tunnel', this.name);
       await this.tunnel.start();
-      info('Tunnel started', this.url);
+      info('Tunnel started', this.url, this.name);
     }
     const url = this.url;
     if (!url) {
