@@ -19,7 +19,7 @@
   },
   "exports": {
     ".": {
-      "umd": "./dist/umd/models/esrgan-medium/src/index.min.js",
+      "umd": "./dist/umd/models/esrgan-medium/src/umd.min.js",
       "require": "./dist/cjs/models/esrgan-medium/src/cjs.js",
       "import": "./dist/esm/models/esrgan-medium/src/index.js"
     },
