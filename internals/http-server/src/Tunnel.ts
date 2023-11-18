@@ -2,15 +2,15 @@ import { tunnelmole } from 'tunnelmole';
 process.env.TUNNELMOLE_TELEMETRY = '0';
 process.env.TUNNELMOLE_QUIET_MODE = '1';
 
-const regexp = new RegExp(/^http(.*) is forwarding to(.*)/);
-const silenceTunnelmoleOutput = () => {
-  const origInfo = console.info;
-  console.info = (msg: string) => {
-    if (!regexp.test(msg)) {
-      origInfo.call(console, msg);
-    }
-  };
-};
+// const regexp = new RegExp(/^http(.*) is forwarding to(.*)/);
+// const silenceTunnelmoleOutput = () => {
+//   const origInfo = console.info;
+//   console.info = (msg: string) => {
+//     if (!regexp.test(msg)) {
+//       origInfo.call(console, msg);
+//     }
+//   };
+// };
 
 export class Tunnel {
   port: number;
