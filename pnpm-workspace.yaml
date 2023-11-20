@@ -3,7 +3,6 @@ packages:
   - 'packages/**'
   - 'internals/**'
   - 'models/**'
-  - 'scripts/**'
   - 'docs/**'
   - 'tmp/bundlers/**'
   # exclude packages that are inside demo directories

@@ -4,7 +4,7 @@ async function() {
   const imagePath = '<%- fixturePath %>';
   const model = require('<%- customModel %>');
   const usePatchSize = false;
-  console.log('Running main script with model', JSON.stringify(model, null, 2));
+  // console.log('Running main script with model', JSON.stringify(model, null, 2));
 
   const upscaler = new Upscaler({
     model,
@@ -16,7 +16,7 @@ async function() {
     output: 'tensor',
     patchSize: usePatchSize ? 64 : undefined,
     padding: 6,
-    progress: console.log,
+    progress: usePatchSize ? console.log : undefined,
   });
   tensor.dispose();
 

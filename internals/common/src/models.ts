@@ -42,18 +42,36 @@ const getAllModelPackages = async (includeExperimental = false) => {
   return packageDirectoryNames.sort();
 }
 
-const getAllAvailableModels = async (packageName: string): Promise<AvailableModel[]> => {
+export const getUMDNames = async (packageName: string): Promise<Record<string, string | { index: string; direct: string; }>> => {
   const modelPackageDir = path.resolve(MODELS_DIR, packageName);
   const umdNamesPath = path.resolve(modelPackageDir, 'umd-names.json');
   if (!await exists(umdNamesPath)) {
     throw new Error(`No umd-names.json file found at ${umdNamesPath}`);
   }
-  const umdNames = JSON.parse(await readFile(umdNamesPath))
+  try {
+    const umdNames = JSON.parse(await readFile(umdNamesPath))
+    return umdNames;
+  } catch (e) {
+    throw new Error(`Error parsing umd-names.json file at ${umdNamesPath}: ${e}`);
+  }
+}
+
+const getAllAvailableModels = async (packageName: string): Promise<AvailableModel[]> => {
+  const modelPackageDir = path.resolve(MODELS_DIR, packageName);
+  const umdNames = await getUMDNames(modelPackageDir);
   const packageJSONExports = await getPackageJSONExports(modelPackageDir);
   return packageJSONExports.filter(k => k[0] !== '.').map(([key, value]) => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
       throw new Error(`No UMD name defined for ${packageName}/umd-names.json for ${key}`);
+    }
+    if (typeof umdName === 'object') {
+      return {
+        key,
+        umdName: umdName.direct,
+        umdNameFromIndex: umdName.index,
+        value,
+      };
     }
     return {
       key,
@@ -87,7 +105,7 @@ const getAllModels = async (packageDirectoryNames: Promise<string[]>) => {
       modelPackagesAndModels.push({
         modelName: model.key,
         packageName,
-        modelUMDName: model.umdName, 
+        modelUMDName: model.umdName,
         packageDirectoryName,
         modelExport: model.value,
       });
@@ -110,6 +128,7 @@ export const ALL_MODELS: Promise<ModelInformation[]> = getAllModels(ALL_MODEL_PA
 interface AvailableModel {
   key: string;
   umdName: string;
+  umdNameFromIndex?: string;
   value: string | PackageJSONExport;
 }
 
@@ -134,7 +153,7 @@ const getPackagesAndModelsMatchingEnvironment = async (environment: Environment,
 };
 
 
-export const getPackagesAndModelsForEnvironment = async (environment: Environment) => {
+export const getPackagesAndModelsForEnvironment = async (environment: Environment): Promise<ModelInformation[]> => {
   const packagesAndModels = await ALL_MODELS;
   return getPackagesAndModelsMatchingEnvironment(environment, packagesAndModels);
 };

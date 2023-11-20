@@ -1,7 +1,7 @@
 {
   ".": "ESRGANMedium",
-  "./2x": "ESRGANMedium2x",
-  "./3x": "ESRGANMedium3x",
-  "./4x": "ESRGANMedium4x",
-  "./8x": "ESRGANMedium8x"
+  "./2x": { "index": "x2", "direct": "ESRGANMedium2x"},
+  "./3x": { "index": "x3", "direct": "ESRGANMedium3x"},
+  "./4x": { "index": "x4", "direct": "ESRGANMedium4x"},
+  "./8x": { "index": "x8", "direct": "ESRGANMedium8x"}
 }
