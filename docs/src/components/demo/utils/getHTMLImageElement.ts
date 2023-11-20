@@ -5,8 +5,8 @@ export const getHTMLImageElement = (src: string) => new Promise<HTMLImageElement
     reject(`Image load timed out in ${TIMEOUT}ms. src: ${src}`);
   }, TIMEOUT);
   const img = new Image();
-  img.src = src;
   img.crossOrigin = 'anonymous';
+  img.src = src;
   img.onload = () => {
     clearTimeout(timer);
     resolve(img);
