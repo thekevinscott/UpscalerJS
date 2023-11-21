@@ -148,11 +148,11 @@ export class ClientsideTestRunner {
    * Utility methods
    */
 
-  private _getLogMessage (msg: string) {
+  private _getLogMessage(msg: string) {
     return [msg, this._name].filter(Boolean).join(' | ');
   }
 
-  private _warn (msg: string) {
+  private _warn(msg: string) {
     if (this.showWarnings) {
       console.warn(this._getLogMessage(msg));// skipcq: JS-0002
     }
@@ -219,9 +219,16 @@ export class ClientsideTestRunner {
   }
 
   public async startBrowser() {
+    // launch handles launching an instance and then connecting to it
     this.browser = await launch({
       headless: 'new',
+      protocolTimeout: 180_000 * 2,
     });
+
+    // connect is for connecting to an already running instance
+    // this.browser = await connect({
+
+    // });
   }
 
   private _attachLogger() {
@@ -240,9 +247,9 @@ export class ClientsideTestRunner {
             console.log(`[PAGE][response][${status}] ${response.url()}`);
           }
         })
-        .on('requestfailed', request => { 
-            console.log(`[PAGE][requestfailed][${request.failure()?.errorText}] ${request.url()}`);
-      })
+        .on('requestfailed', request => {
+          console.log(`[PAGE][requestfailed][${request.failure()?.errorText}] ${request.url()}`);
+        })
     }
   }
 
