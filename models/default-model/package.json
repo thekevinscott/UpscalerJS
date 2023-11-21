@@ -19,6 +19,7 @@
   },
   "exports": {
     ".": {
+      "umd": "./dist/umd/index.min.js",
       "require": "./dist/cjs/models/default-model/src/cjs.js",
       "import": "./dist/esm/models/default-model/src/index.js"
     }
@@ -63,7 +64,10 @@
   },
   "wireit": {
     "lint": {
-      "command": "eslint -c ../.eslintrc.js src --ext .ts"
+      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "dependencies": [
+        "scaffold"
+      ]
     },
     "prepublishOnly": {
       "command": "pnpm lint && pnpm build && pnpm validate:build"
