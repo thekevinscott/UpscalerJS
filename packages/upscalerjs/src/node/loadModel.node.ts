@@ -2,19 +2,13 @@ import path from 'path';
 import { loadTfModel, parseModelDefinition, } from '../shared/model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, LoadModel, } from '../shared/types';
-import {
-  isValidModelDefinition,
-} from '../../../shared/src/constants';
 import type {
   TF,
 } from '../../../shared/src/types';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  getModelDefinitionError,
 } from '../shared/errors-and-warnings';
-import {
-  errIsModelDefinitionValidationError,
-} from '../shared/utils';
+import { checkModelDefinition, } from '../shared/utils.js';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
@@ -37,7 +31,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   const { _internals, } = modelConfiguration;
   if (!_internals) {
     // This should never happen. This should have been caught by isValidModelDefinition.
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
+    throw ERROR_MODEL_DEFINITION_BUG('Missing internals');
   }
   const moduleFolder = getModuleFolder(_internals.name);
   return `file://${path.resolve(moduleFolder, _internals.path)}`;
@@ -45,14 +39,8 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
 
 export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
-  try {
-    isValidModelDefinition(modelDefinition);
-  } catch(err: unknown) {
-    if (errIsModelDefinitionValidationError(err)) {
-      throw getModelDefinitionError(err.type, modelDefinition);
-    }
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
-  }
+
+  checkModelDefinition(modelDefinition);
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 

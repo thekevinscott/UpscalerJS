@@ -13,20 +13,17 @@ import {
 import * as tf from '@tensorflow/tfjs-node';
 
 import {
-  getModelDefinitionError,
   ERROR_MODEL_DEFINITION_BUG,
 } from '../shared/errors-and-warnings';
 import {
   ModelDefinition,
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '../../../shared/src/types';
 
 import {
-  ModelDefinitionValidationError,
-  isValidModelDefinition,
-} from '../../../shared/src/constants';
+  checkModelDefinition,
+} from '../shared/utils';
 
-import type * as sharedConstants from '../../../shared/src/constants';
+import type * as sharedUtils from '../shared/utils';
 import type * as modelUtils from '../shared/model-utils';
 import type * as errorsAndWarnings from '../shared/errors-and-warnings';
 import type * as loadModelBrowser from './loadModel.browser';
@@ -47,18 +44,17 @@ vi.mock('../shared/model-utils', async () => {
 });
 
 vi.mock('../shared/errors-and-warnings', async () => {
-  const { getModelDefinitionError, ...rest } = await vi.importActual('../shared/errors-and-warnings') as typeof errorsAndWarnings;
+  const { ...rest } = await vi.importActual('../shared/errors-and-warnings') as typeof errorsAndWarnings;
   return {
     ...rest,
-    getModelDefinitionError: vi.fn(getModelDefinitionError),
   }
 });
 
-vi.mock('../../../shared/src/constants', async () => {
-  const { isValidModelDefinition, ...rest } = await vi.importActual('../../../shared/src/constants') as typeof sharedConstants;
+vi.mock('../shared/utils', async () => {
+  const { checkModelDefinition, ...rest } = await vi.importActual('../shared/utils') as typeof sharedUtils;
   return {
     ...rest,
-    isValidModelDefinition: vi.fn(isValidModelDefinition),
+    checkModelDefinition: vi.fn(checkModelDefinition),
   }
 });
 
@@ -202,22 +198,18 @@ describe('loadModel browser tests', () => {
   });
 
   describe('loadModel', () => {
-    it('throws if not a valid model definition', async () => {
-      const e = new Error(ERROR_MODEL_DEFINITION_BUG);
-      vi.mocked(vi).mocked(isValidModelDefinition).mockImplementation(() => {
-        throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
+    it('throws if given a bad model definition', async () => {
+      vi.mocked(checkModelDefinition).mockImplementation(() => {
+        throw new Error();
       });
-      vi.mocked(vi).mocked(getModelDefinitionError).mockImplementation(() => e);
 
-      await expect(() => loadModel(tf, Promise.resolve({
-        path: 'foo',
-        scale: 2,
-        modelType: 'layers',
-      }))).rejects.toThrowError(e);
+      await expect(loadModel(tf, Promise.resolve({}) as Promise<ModelDefinition>))
+        .rejects
+        .toThrow();
     });
 
     it('loads a valid layers model successfully', async () => {
-      vi.mocked(vi).mocked(isValidModelDefinition).mockImplementation(() => true);
+      vi.mocked(vi).mocked(checkModelDefinition).mockImplementation(() => true);
       const model = 'foo' as unknown as LayersModel;
       vi.mocked(loadTfModel).mockImplementation(async () => model);
       expect(loadTfModel).toHaveBeenCalledTimes(0);
@@ -240,7 +232,7 @@ describe('loadModel browser tests', () => {
     });
 
     it('loads a valid graph model successfully', async () => {
-      vi.mocked(vi).mocked(isValidModelDefinition).mockImplementation(() => true);
+      vi.mocked(vi).mocked(checkModelDefinition).mockImplementation(() => true);
       const model = 'foo' as unknown as GraphModel;
 
       const modelDefinition: ModelDefinition = {

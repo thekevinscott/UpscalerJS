@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs-core';
 import { Tensor, Tensor3D, Tensor4D, } from '@tensorflow/tfjs-core';
-import { DynamicShape4D, FixedShape4D, IsTensor, MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, ModelDefinition, ModelType, Shape4D } from './types';
+import { DynamicShape4D, FixedShape4D, IsTensor, ModelType, Shape4D } from './types';
 
 export const isShape4D = (shape?: unknown): shape is Shape4D => {
   if (!Boolean(shape) || !Array.isArray(shape) || shape.length !== 4) {
@@ -29,27 +29,6 @@ export const isTensor = (input: unknown): input is tf.Tensor => input instanceof
 export const isString = (el: unknown): el is string => typeof el === 'string';
 
 export const isValidModelType = (modelType: unknown): modelType is ModelType => typeof modelType === 'string' && ['layers', 'graph',].includes(modelType);
-export class ModelDefinitionValidationError extends Error {
-  type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE;
-
-  constructor(type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE) {
-    super(type);
-    this.type = type;
-  }
-}
-
-export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
-  if (modelDefinition === undefined) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
-  }
-  if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
-  }
-  if (!modelDefinition.path && !modelDefinition._internals?.path) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
-  }
-  return true;
-};
 
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
 

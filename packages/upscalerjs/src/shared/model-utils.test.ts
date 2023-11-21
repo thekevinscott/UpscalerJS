@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import { 
+import {
   parseModelDefinition,
   getModel,
   loadTfModel,
@@ -7,29 +7,27 @@ import {
   getModelInputShape,
   getPatchSizeAsMultiple,
 } from './model-utils';
-import type * as utils  from './utils';
+import type * as utils from './utils';
 import {
   warn,
 } from './utils';
 import * as isLayersModel from './isLayersModel';
-import { 
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
+import {
   ModelDefinition,
   ModelDefinitionFn,
- } from '../../../shared/src/types';
+} from '../../../shared/src/types';
 import type * as sharedConstants from '../../../shared/src/constants';
-import { 
+import {
   isShape4D,
- } from '../../../shared/src/constants';
+} from '../../../shared/src/constants';
 import { ModelPackage } from './types';
 import {
   ERROR_INVALID_MODEL_TYPE,
-  ERROR_MODEL_DEFINITION_BUG, 
-  ERROR_WITH_MODEL_INPUT_SHAPE, 
+  ERROR_MODEL_DEFINITION_BUG,
+  ERROR_WITH_MODEL_INPUT_SHAPE,
   GET_INVALID_PATCH_SIZE,
   WARNING_INPUT_SIZE_AND_PATCH_SIZE,
   WARNING_UNDEFINED_PADDING,
-  getModelDefinitionError,
   MODEL_INPUT_SIZE_MUST_BE_SQUARE,
   GET_INVALID_PATCH_SIZE_AND_PADDING,
   GET_WARNING_PATCH_SIZE_INDIVISIBLE_BY_DIVISIBILITY_FACTOR,
@@ -80,18 +78,6 @@ describe('model-utils', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
-
-  describe('getModelDefinitionError', () => {
-    it('returns an error if invalid model type is provided', () => {
-      const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
-      expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
-    });
-
-    it('returns a generic error otherwise', () => {
-      const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
-      expect(err.message).toEqual(ERROR_MODEL_DEFINITION_BUG);
-    });
-  })
 
   describe('getModel', () => {
     describe('ModelDefinition', () => {

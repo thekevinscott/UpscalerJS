@@ -7,17 +7,11 @@ import {
 } from '../shared/model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  getModelDefinitionError,
 } from '../shared/errors-and-warnings';
 import type {
   TF,
 } from '../../../shared/src/types';
-import {
-  isValidModelDefinition,
-} from '../../../shared/src/constants';
-import {
-  errIsModelDefinitionValidationError,
-} from '../shared/utils';
+import { checkModelDefinition, } from '../shared/utils.js';
 
 type CDN = 'jsdelivr' | 'unpkg';
 
@@ -38,7 +32,7 @@ export const CDNS: CDN[] = [
 export const getLoadModelErrorMessage = (errs: Errors, modelPath: string, internals: ModelConfigurationInternals): Error => new Error([
   `Could not resolve URL ${modelPath} for package ${internals?.name}@${internals?.version}`,
   'Errors include:',
-  ...errs.map(([cdn, err, ]) => `- ${cdn}: ${err.message}`),
+  ...errs.map(([cdn, err,]) => `- ${cdn}: ${err.message}`),
 ].join('\n'));
 
 export async function fetchModel<M extends ModelType, R = M extends 'graph' ? GraphModel : LayersModel>(tf: TF, modelConfiguration: {
@@ -50,7 +44,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? Gr
   }
   if (!_internals) {
     // This should never happen. This should have been caught by isValidModelDefinition.
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
+    throw ERROR_MODEL_DEFINITION_BUG('Missing internals');
   }
   const errs: Errors = [];
   for (const cdn of CDNS) {
@@ -60,7 +54,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? Gr
       return await loadTfModel(tf, url, modelType);
     } catch (err: unknown) {
       // there was an issue with the CDN, try another
-      errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`), ]);
+      errs.push([cdn, err instanceof Error ? err : new Error(`There was an unknown error: ${JSON.stringify(err)}`),]);
     }
   }
   throw getLoadModelErrorMessage(errs, modelPath || _internals.path, _internals);
@@ -68,15 +62,8 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? Gr
 
 export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
-  
-  try {
-    isValidModelDefinition(modelDefinition);
-  } catch (err: unknown) {
-    if (errIsModelDefinitionValidationError(err)) {
-      throw getModelDefinitionError(err.type, modelDefinition);
-    }
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
-  }
+
+  checkModelDefinition(modelDefinition);
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
