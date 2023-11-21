@@ -60,7 +60,12 @@ const getAllAvailableModels = async (packageName: string): Promise<AvailableMode
   const modelPackageDir = path.resolve(MODELS_DIR, packageName);
   const umdNames = await getUMDNames(modelPackageDir);
   const packageJSONExports = await getPackageJSONExports(modelPackageDir);
-  return packageJSONExports.filter(k => k[0] !== '.').map(([key, value]) => {
+  return packageJSONExports.filter(k => {
+    if (packageJSONExports.length > 1) {
+      return k[0] !== '.';
+    }
+    return true;
+  }).map(([key, value]) => {
     const umdName = umdNames[key];
     if (umdName === undefined) {
       throw new Error(`No UMD name defined for ${packageName}/umd-names.json for ${key}`);
