@@ -2,6 +2,7 @@ import {
   ModelDefinition,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from "../../../shared/src/types";
+// import { ModelDefinitionValidationError, } from "../constants";
 
 const WARNING_DEPRECATED_MODEL_DEFINITION_URL =
   'https://upscalerjs.com/documentation/troubleshooting#deprecated-model-definition-function';
@@ -31,7 +32,7 @@ export const WARNING_PROGRESS_WITHOUT_PATCH_SIZE = [
   `For more information, see ${WARNING_PROGRESS_WITHOUT_PATCH_SIZE_URL}.`,
 ].join(' ');
 
-const ERROR_INVALID_TENSOR_PREDICTED_URL = 
+const ERROR_INVALID_TENSOR_PREDICTED_URL =
   'https://upscalerjs.com/documentation/troubleshooting#invalid-predicted-tensor';
 
 export const ERROR_INVALID_TENSOR_PREDICTED = (shape: number[]) => [
@@ -40,7 +41,7 @@ export const ERROR_INVALID_TENSOR_PREDICTED = (shape: number[]) => [
   `For more information, see ${ERROR_INVALID_TENSOR_PREDICTED_URL}.`,
 ].join(' ');
 
-const ERROR_INVALID_MODEL_PREDICTION_URL = 
+const ERROR_INVALID_MODEL_PREDICTION_URL =
   'https://upscalerjs.com/documentation/troubleshooting#invalid-model-prediction';
 
 export const ERROR_INVALID_MODEL_PREDICTION = [
@@ -63,7 +64,7 @@ export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
   `You've provided an invalid model type: ${JSON.stringify(modelType)}. Accepted types are "layers" and "graph".`,
   `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
 ].join(' '));
-export const ERROR_MODEL_DEFINITION_BUG = 'There is a bug with the upscaler code. Please report this.';
+export const ERROR_MODEL_DEFINITION_BUG = (err: string) => new Error(`There is a bug with the upscaler code. Please report this. Error: ${err}`);
 export const WARNING_INPUT_SIZE_AND_PATCH_SIZE = [
   'You have provided a patchSize, but the model definition already includes an input size.',
   'Your patchSize will be ignored.',
@@ -113,13 +114,22 @@ export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfigur
   `The model configuration provided was: ${JSON.stringify(modelConfiguration)}`,
 ].join(' ');
 
-export function getModelDefinitionError(error: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE, modelDefinition?: ModelDefinition): Error {
-  switch(error) {
+// TODO: Import this from ../constants
+export class ModelDefinitionValidationError extends Error {
+  type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE;
+
+  constructor(type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE) {
+    super(type);
+    this.type = type;
+  }
+}
+export function getModelDefinitionError({ type, message, }: ModelDefinitionValidationError, modelDefinition?: ModelDefinition): Error {
+  switch (type) {
     case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
       return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
     case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH:
       return new Error(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition));
     default:
-      return new Error(ERROR_MODEL_DEFINITION_BUG);
+      return ERROR_MODEL_DEFINITION_BUG(message);
   }
 }

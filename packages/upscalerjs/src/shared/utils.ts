@@ -34,7 +34,7 @@ export const isAborted = (abortSignal?: AbortSignal): boolean => {
 type PostNext<T = unknown> = ((value: T) => (void | Promise<void>));
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export async function wrapGenerator<T = unknown, TReturn = any, TNext = unknown>(
-  gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>, 
+  gen: Generator<T, TReturn, TNext> | AsyncGenerator<T, TReturn, TNext>,
   postNext?: PostNext<T>
 ): Promise<TReturn> {
   let result: undefined | IteratorResult<T, TReturn>;
@@ -68,4 +68,4 @@ export function processAndDisposeOfTensor<T extends Tensor>(
   return tensor;
 }
 
-export const errIsModelDefinitionValidationError = (err: unknown): err is ModelDefinitionValidationError => err instanceof ModelDefinitionValidationError;
+export const errIsModelDefinitionValidationError = (err: unknown): err is ModelDefinitionValidationError => err instanceof Error && 'type' in err;

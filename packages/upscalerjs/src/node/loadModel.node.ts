@@ -37,7 +37,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
   const { _internals, } = modelConfiguration;
   if (!_internals) {
     // This should never happen. This should have been caught by isValidModelDefinition.
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
+    throw ERROR_MODEL_DEFINITION_BUG('Missing internals');
   }
   const moduleFolder = getModuleFolder(_internals.name);
   return `file://${path.resolve(moduleFolder, _internals.path)}`;
@@ -45,13 +45,17 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
 
 export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
+
   try {
     isValidModelDefinition(modelDefinition);
-  } catch(err: unknown) {
-    if (errIsModelDefinitionValidationError(err)) {
-      throw getModelDefinitionError(err.type, modelDefinition);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      if (errIsModelDefinitionValidationError(err)) {
+        throw getModelDefinitionError(err, modelDefinition);
+      }
+      throw ERROR_MODEL_DEFINITION_BUG(err.message);
     }
-    throw new Error(ERROR_MODEL_DEFINITION_BUG);
+    throw err;
   }
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
