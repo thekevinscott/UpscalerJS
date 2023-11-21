@@ -289,8 +289,8 @@
         "./packages/upscalerjs:build:browser",
         "build:models:esm",
         "build:models:umd",
-        "bundle:esbuild",
         "bundle:webpack",
+        "bundle:esbuild",
         "bundle:umd"
       ]
     },
