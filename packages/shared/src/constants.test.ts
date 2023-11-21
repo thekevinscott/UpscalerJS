@@ -1,16 +1,11 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
 import {
-  ModelDefinition,
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
-} from './types';
-import {
   makeIsNDimensionalTensor,
   isFourDimensionalTensor,
   isThreeDimensionalTensor,
   isTensor,
   isString,
-  checkModelDefinition,
   hasValidChannels,
   isValidRange,
   isNumber,
@@ -87,28 +82,6 @@ describe('isString', () => {
 
   it('returns false for a non-string', () => {
     expect(isString({} as tf.Tensor)).toEqual(false);
-  });
-});
-
-describe('isValidModelDefinition', () => {
-  it('throws error if given an undefined', () => {
-    expect(() => checkModelDefinition(undefined)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
-  });
-
-  it('throws error if given no path', () => {
-    expect(() => checkModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
-  });
-
-  it('throws error if given invalid model type', () => {
-    expect(() => checkModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
-  });
-
-  it('returns true if given scale and path', () => {
-    expect(checkModelDefinition({
-      path: 'foo',
-      scale: 2,
-      modelType: 'layers',
-    })).toEqual(true);
   });
 });
 
