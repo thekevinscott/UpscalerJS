@@ -152,7 +152,9 @@ describe('Clientside model integration tests', () => {
     });
 
 
-    const directModels = await Promise.all((await packagesWithModels).map(async ({ packageDirectoryName, modelName, ...rest }) => {
+    const directModels = await Promise.all((await packagesWithModels).filter(m => {
+      return m;
+    }).map(async ({ packageDirectoryName, modelName, ...rest }) => {
       const [
         packageJSON,
         umdNames,

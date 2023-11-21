@@ -842,12 +842,9 @@ importers:
         specifier: workspace:*
         version: link:../upscalerjs
 
-  tmp/bundlers/node:
+  tmp/bundlers/esbuild:
     dependencies:
-      '@tensorflow/tfjs-node':
-        specifier: ~4.11.0
-        version: 4.11.0(seedrandom@3.0.5)
-      '@tensorflow/tfjs-node-gpu':
+      '@tensorflow/tfjs':
         specifier: ~4.11.0
         version: 4.11.0(seedrandom@3.0.5)
       '@upscalerjs/default-model':
@@ -872,12 +869,15 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/upscalerjs
     devDependencies:
+      '@babel/plugin-transform-modules-commonjs':
+        specifier: 7.22.5
+        version: 7.22.5(@babel/core@7.23.2)
+      '@babel/preset-typescript':
+        specifier: 7.22.5
+        version: 7.22.5(@babel/core@7.23.2)
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
-      tslib:
-        specifier: 2.6.1
-        version: 2.6.1
 
 packages:
 
@@ -1785,6 +1785,18 @@ packages:
       '@babel/helper-module-transforms': 7.23.3(@babel/core@7.23.2)
       '@babel/helper-plugin-utils': 7.22.5
 
+  /@babel/plugin-transform-modules-commonjs@7.22.5(@babel/core@7.23.2):
+    resolution: {integrity: sha512-B4pzOXj+ONRmuaQTg05b3y/4DuFz3WcCNAXPLb2Q0GT0TrGKGxNKV4jwsXts+StaM0LQczZbOpj8o1DLPDJIiA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.23.2
+      '@babel/helper-module-transforms': 7.23.3(@babel/core@7.23.2)
+      '@babel/helper-plugin-utils': 7.22.5
+      '@babel/helper-simple-access': 7.22.5
+    dev: true
+
   /@babel/plugin-transform-modules-commonjs@7.23.0(@babel/core@7.23.2):
     resolution: {integrity: sha512-32Xzss14/UVc7k9g775yMIvkVK8xwKE0DPdP5JTapr3+Z9w4tzeOuLNY6BXDQR6BdnzIlXnCGAzsk/ICHBLVWQ==}
     engines: {node: '>=6.9.0'}
@@ -2245,6 +2257,20 @@ packages:
       '@babel/plugin-transform-react-jsx': 7.22.15(@babel/core@7.23.2)
       '@babel/plugin-transform-react-jsx-development': 7.22.5(@babel/core@7.23.2)
       '@babel/plugin-transform-react-pure-annotations': 7.23.3(@babel/core@7.23.2)
+
+  /@babel/preset-typescript@7.22.5(@babel/core@7.23.2):
+    resolution: {integrity: sha512-YbPaal9LxztSGhmndR46FmAbkJ/1fAsw293tSU+I5E5h+cnJ3d4GTwyUgGYmOXJYdGA+uNePle4qbaRzj2NISQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.23.2
+      '@babel/helper-plugin-utils': 7.22.5
+      '@babel/helper-validator-option': 7.22.15
+      '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.23.2)
+      '@babel/plugin-transform-modules-commonjs': 7.23.0(@babel/core@7.23.2)
+      '@babel/plugin-transform-typescript': 7.23.3(@babel/core@7.23.2)
+    dev: true
 
   /@babel/preset-typescript@7.23.2(@babel/core@7.23.2):
     resolution: {integrity: sha512-u4UJc1XsS1GhIGteM8rnGiIvf9rJpiVgMEeCnwlLA7WJPC+jcXWJAGxYmeqs5hOZD8BbAfnV5ezBOxQbb4OUxA==}
@@ -4821,6 +4847,7 @@ packages:
       - encoding
       - seedrandom
       - supports-color
+    dev: true
 
   /@tensorflow/tfjs@4.11.0(seedrandom@3.0.5):
     resolution: {integrity: sha512-s6Vbz3IvMz2zNbH8/VptpRXzkwVjmuzT48esYLXJxMKtTcob4m5Srdxo7B+eJSDrWYkutXruiivaWmihFmu5rA==}
@@ -11246,14 +11273,12 @@ packages:
 
   /mkdirp@0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
-    hasBin: true
     dependencies:
       minimist: 1.2.8
 
   /mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
-    hasBin: true
 
   /mlly@1.4.2:
     resolution: {integrity: sha512-i/Ykufi2t1EZ6NaPLdfnZk2AX8cs0d+mTzVKuPfqPKPatxLApaBoxJQ9x1/uckXtrS/U5oisPMDkNs0yQTaBRg==}
@@ -11437,7 +11462,6 @@ packages:
 
   /nopt@1.0.10:
     resolution: {integrity: sha512-NWmpvLSqUrgrAC9HCuxEvb+PSloHpqVu+FqcO4eeF2h5qYRhA7ev6KvelyQAKtegUbC6RypJnlEOhd8vloNKYg==}
-    hasBin: true
     dependencies:
       abbrev: 1.1.1
     dev: true
@@ -11445,7 +11469,6 @@ packages:
   /nopt@5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==}
     engines: {node: '>=6'}
-    hasBin: true
     dependencies:
       abbrev: 1.1.1
 
@@ -13205,7 +13228,6 @@ packages:
 
   /rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
-    hasBin: true
     dependencies:
       glob: 7.2.3
 
