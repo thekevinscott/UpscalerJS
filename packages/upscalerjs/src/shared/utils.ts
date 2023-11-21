@@ -1,12 +1,16 @@
 import type { Tensor, } from '@tensorflow/tfjs-core';
 import type { Progress, SingleArgProgress, ResultFormat, MultiArgTensorProgress, } from './types';
-import type {
-  ProcessFn,
-  TF,
+import {
+  type ModelDefinition,
+  type ProcessFn,
+  type TF,
 } from '../../../shared/src/types';
 import {
-  ModelDefinitionValidationError,
-} from '../../../shared/src/constants';
+  ERROR_INVALID_MODEL_TYPE,
+  ERROR_UNDEFINED_MODEL,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
+} from './errors-and-warnings';
+import { isValidModelType, } from '../../../shared/src/constants';
 
 export const warn = (msg: string | string[]): void => {
   console.warn(Array.isArray(msg) ? msg.join('\n') : msg);// skipcq: JS-0002
@@ -68,4 +72,14 @@ export function processAndDisposeOfTensor<T extends Tensor>(
   return tensor;
 }
 
-export const errIsModelDefinitionValidationError = (err: unknown): err is ModelDefinitionValidationError => err instanceof Error && 'type' in err;
+export const checkModelDefinition = (modelDefinition?: ModelDefinition): void => {
+  if (modelDefinition === undefined) {
+    throw ERROR_UNDEFINED_MODEL;
+  }
+  if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
+    throw ERROR_INVALID_MODEL_TYPE(modelDefinition);
+  }
+  if (!modelDefinition.path && !modelDefinition._internals?.path) {
+    throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition);
+  }
+};

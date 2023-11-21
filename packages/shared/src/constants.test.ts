@@ -1,16 +1,16 @@
 import * as tf from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
-import { 
+import {
   ModelDefinition,
   MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from './types';
-import { 
+import {
   makeIsNDimensionalTensor,
-  isFourDimensionalTensor, 
-  isThreeDimensionalTensor, 
+  isFourDimensionalTensor,
+  isThreeDimensionalTensor,
   isTensor,
   isString,
-  isValidModelDefinition,
+  checkModelDefinition,
   hasValidChannels,
   isValidRange,
   isNumber,
@@ -54,7 +54,7 @@ describe('isFourDimensionalTensor', () => {
     expect(isFourDimensionalTensor(tf.tensor([[[1,],],]))).toEqual(false);
   });
 
-    expect(isFourDimensionalTensor({} as tf.Tensor)).toEqual(false);
+  expect(isFourDimensionalTensor({} as tf.Tensor)).toEqual(false);
 });
 
 describe('isThreeDimensionalTensor', () => {
@@ -92,33 +92,33 @@ describe('isString', () => {
 
 describe('isValidModelDefinition', () => {
   it('throws error if given an undefined', () => {
-    expect(() => isValidModelDefinition(undefined)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
+    expect(() => checkModelDefinition(undefined)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
   });
 
   it('throws error if given no path', () => {
-    expect(() => isValidModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition )).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
+    expect(() => checkModelDefinition({ path: undefined, scale: 2 } as unknown as ModelDefinition)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
   });
 
   it('throws error if given invalid model type', () => {
-    expect(() => isValidModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition )).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
+    expect(() => checkModelDefinition({ path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition)).toThrow(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
   });
 
   it('returns true if given scale and path', () => {
-    expect(isValidModelDefinition({ 
-      path: 'foo', 
+    expect(checkModelDefinition({
+      path: 'foo',
       scale: 2,
       modelType: 'layers',
-     })).toEqual(true);
+    })).toEqual(true);
   });
 });
 
 describe('hasValidChannels', () => {
   it('returns true if a tensor has valid channels', () => {
-    expect(hasValidChannels(tf.ones([4,4,3]))).toEqual(true);
+    expect(hasValidChannels(tf.ones([4, 4, 3]))).toEqual(true);
   });
 
   it('returns false if a tensor does not have valid channels', () => {
-    expect(hasValidChannels(tf.ones([4,4,4]))).toEqual(false);
+    expect(hasValidChannels(tf.ones([4, 4, 4]))).toEqual(false);
   });
 });
 
@@ -154,15 +154,15 @@ describe('isValidRange', () => {
   });
 
   it('returns false if it gets an array with three numbers', () => {
-    expect(isValidRange([1,2,3])).toEqual(false);
+    expect(isValidRange([1, 2, 3])).toEqual(false);
   });
 
   it('returns false if it gets an array with a number and a string', () => {
-    expect(isValidRange([1,'foo'])).toEqual(false);
+    expect(isValidRange([1, 'foo'])).toEqual(false);
   });
 
   it('returns true if it gets an array with two numbers', () => {
-    expect(isValidRange([1,2])).toEqual(true);
+    expect(isValidRange([1, 2])).toEqual(true);
   });
 });
 
@@ -176,19 +176,19 @@ describe('isShape4D', () => {
   });
 
   it('returns false if given an array of 3 numbers', () => {
-    expect(isShape4D([1,2,3])).toEqual(false);
+    expect(isShape4D([1, 2, 3])).toEqual(false);
   });
 
   it('returns false if given an array of 5 numbers', () => {
-    expect(isShape4D([1,2,3,4,5])).toEqual(false);
+    expect(isShape4D([1, 2, 3, 4, 5])).toEqual(false);
   });
 
   it('returns false if given an array of not all numbers', () => {
-    expect(isShape4D([1,null,3,'foo'])).toEqual(false);
+    expect(isShape4D([1, null, 3, 'foo'])).toEqual(false);
   });
 
   it('returns true if given an array of all numbers', () => {
-    expect(isShape4D([1,2,3,4])).toEqual(true);
+    expect(isShape4D([1, 2, 3, 4])).toEqual(true);
   });
 
   it('returns true if given an array containing nulls', () => {
@@ -201,9 +201,9 @@ describe('isFixedShape4D', () => {
     [[null, null, null, 3], false],
     [[null, -1, -1, 3], false],
     [[null, 2, 2, 3], true],
-  ])('%s | %s',(args, expectation) => {
-      expect(isFixedShape4D(args)).toEqual(expectation);
-    });
+  ])('%s | %s', (args, expectation) => {
+    expect(isFixedShape4D(args)).toEqual(expectation);
+  });
 });
 
 describe('isDynamicShape', () => {
@@ -212,7 +212,7 @@ describe('isDynamicShape', () => {
     [[null, -1, -1, 3], true],
     [[null, 2, 2, 3], false],
   ])('%s | %s', (args, expectation) => {
-      expect(isDynamicShape4D(args)).toEqual(expectation);
-    });
+    expect(isDynamicShape4D(args)).toEqual(expectation);
+  });
 });
 

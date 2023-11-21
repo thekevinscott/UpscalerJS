@@ -1,22 +1,23 @@
 import { Tensor3D } from '@tensorflow/tfjs-node';
 import { vi } from 'vitest';
 import * as tf from '@tensorflow/tfjs-node';
-import { 
+import {
   processAndDisposeOfTensor,
-  wrapGenerator, 
-  isSingleArgProgress, 
-  isMultiArgTensorProgress, 
-  warn, 
+  wrapGenerator,
+  isSingleArgProgress,
+  isMultiArgTensorProgress,
+  warn,
   isAborted,
+  checkModelDefinition,
 } from './utils';
 import {
   ModelDefinition,
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from '../../../shared/src/types';
 import {
   ERROR_INVALID_MODEL_TYPE,
-  ERROR_MODEL_DEFINITION_BUG, 
-  getModelDefinitionError,
+  ERROR_MODEL_DEFINITION_BUG,
+  ERROR_UNDEFINED_MODEL,
+  GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS,
 } from './errors-and-warnings';
 
 describe('isAborted', () => {
@@ -109,7 +110,7 @@ describe('wrapGenerator', () => {
       return 'baz';
     }
 
-    const callback = vi.fn(async () => {});
+    const callback = vi.fn(async () => { });
     await wrapGenerator(foo(), callback);
     expect(callback).toHaveBeenCalledTimes(2);
     expect(callback).toHaveBeenCalledWith('foo');
@@ -141,57 +142,72 @@ describe('wrapGenerator', () => {
 
 describe('isSingleArgProgress', () => {
   it('returns true for function', () => {
-    expect(isSingleArgProgress(() => {})).toEqual(true);
+    expect(isSingleArgProgress(() => { })).toEqual(true);
   });
 
   it('returns true for a single arg function', () => {
-    expect(isSingleArgProgress((_1: any) => {})).toEqual(true);
+    expect(isSingleArgProgress((_1: any) => { })).toEqual(true);
   });
 
   it('returns false for a double arg function', () => {
-    expect(isSingleArgProgress((_1: any, _2: any) => {})).toEqual(false);
+    expect(isSingleArgProgress((_1: any, _2: any) => { })).toEqual(false);
   });
 });
 
 describe('isMultiArgProgress', () => {
   it('returns false for a single arg function', () => {
-    expect(isMultiArgTensorProgress((_1: any) => {}, undefined, undefined)).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any) => { }, undefined, undefined)).toEqual(false);
   });
 
   it('returns false for a zero arg function', () => {
-    expect(isMultiArgTensorProgress(() => {}, undefined, undefined,  )).toEqual(false);
+    expect(isMultiArgTensorProgress(() => { }, undefined, undefined,)).toEqual(false);
   });
 
   it('returns false for a multi arg tensor string function', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'base64', 'base64')).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => { }, 'base64', 'base64')).toEqual(false);
   });
 
   it('returns false for a multi arg tensor string function with overloaded outputs', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'base64')).toEqual(false);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => { }, 'tensor', 'base64')).toEqual(false);
   });
 
   it('returns true for a multi arg tensor function', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', 'tensor')).toEqual(true);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => { }, 'tensor', 'tensor')).toEqual(true);
   });
 
   it('returns true for a multi arg tensor function with conflicting outputs', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'base64', 'tensor')).toEqual(true);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => { }, 'base64', 'tensor')).toEqual(true);
   });
 
   it('returns true for a multi arg tensor function with conflicting outputs with an undefined progressOutput', () => {
-    expect(isMultiArgTensorProgress((_1: any, _2: any) => {}, 'tensor', undefined)).toEqual(true);
+    expect(isMultiArgTensorProgress((_1: any, _2: any) => { }, 'tensor', undefined)).toEqual(true);
   });
 });
 
-describe('getModelDefinitionError', () => {
-  it('returns an error if invalid model type is provided', () => {
-    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
-    expect(err.message).toEqual(ERROR_INVALID_MODEL_TYPE('foo'));
+describe('checkModelDefinition', () => {
+  it('throws if an undefined model is provided', () => {
+    expect(() => checkModelDefinition(undefined)).toThrowError(ERROR_UNDEFINED_MODEL);
   });
 
-  it('returns a generic error otherwise', () => {
-    const err = getModelDefinitionError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED, { path: 'foo', scale: 2, modelType: 'foo' } as unknown as ModelDefinition);
-    expect(err.message).toEqual(ERROR_MODEL_DEFINITION_BUG);
+  it('throws if an invalid model is provided', () => {
+    const modelDef = {
+      modelType: 'foo',
+    } as unknown as ModelDefinition;
+    expect(() => checkModelDefinition(modelDef)).toThrowError(ERROR_INVALID_MODEL_TYPE(modelDef));
+  });
+
+  it('throws if a model is missing a path and _internals', () => {
+    const modelDef = {
+      modelType: 'layers',
+    } as unknown as ModelDefinition;
+    expect(() => checkModelDefinition(modelDef)).toThrowError(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDef));
+  });
+
+  it('passes with a valid model', () => {
+    checkModelDefinition({
+      modelType: 'layers',
+      path: '/foo',
+    });
   });
 })
 
@@ -202,7 +218,7 @@ describe('processAndDisposeOfTensor', () => {
     isDisposed = false;
 
     value?: number;
-    mockDispose: typeof vi.fn = vi.fn().mockImplementation(() => {});
+    mockDispose: typeof vi.fn = vi.fn().mockImplementation(() => { });
 
     constructor({
       mockDispose,

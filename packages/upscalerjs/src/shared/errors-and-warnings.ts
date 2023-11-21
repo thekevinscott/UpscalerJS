@@ -1,6 +1,5 @@
 import {
   ModelDefinition,
-  MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE,
 } from "../../../shared/src/types";
 // import { ModelDefinitionValidationError, } from "../constants";
 
@@ -60,11 +59,12 @@ const ERROR_INVALID_MODEL_TYPE_URL = 'https://upscalerjs.com/documentation/troub
 const WARNING_INPUT_SIZE_AND_PATCH_SIZE_URL = 'https://upscalerjs.com/documentation/troubleshooting#input-size-and-patch-size';
 const ERROR_WITH_MODEL_INPUT_SHAPE_URL = 'https://upscalerjs.com/documentation/troubleshooting#error-with-model-input-shape';
 
+export const ERROR_UNDEFINED_MODEL = new Error('An undefined model was provided to UpscalerJS');
 export const ERROR_INVALID_MODEL_TYPE = (modelType: unknown) => ([
   `You've provided an invalid model type: ${JSON.stringify(modelType)}. Accepted types are "layers" and "graph".`,
   `For more information, see ${ERROR_INVALID_MODEL_TYPE_URL}.`,
 ].join(' '));
-export const ERROR_MODEL_DEFINITION_BUG = (err: string) => new Error(`There is a bug with the upscaler code. Please report this. Error: ${err}`);
+export const ERROR_MODEL_DEFINITION_BUG = (err?: string) => new Error(`There is a bug with the upscaler code. Please report this. ${err ? `Error: ${err}` : ''}`.trim());
 export const WARNING_INPUT_SIZE_AND_PATCH_SIZE = [
   'You have provided a patchSize, but the model definition already includes an input size.',
   'Your patchSize will be ignored.',
@@ -113,23 +113,3 @@ export const GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS = (modelConfigur
   `For more information, see ${MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS_URL}.`,
   `The model configuration provided was: ${JSON.stringify(modelConfiguration)}`,
 ].join(' ');
-
-// TODO: Import this from ../constants
-export class ModelDefinitionValidationError extends Error {
-  type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE;
-
-  constructor(type: MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE) {
-    super(type);
-    this.type = type;
-  }
-}
-export function getModelDefinitionError({ type, message, }: ModelDefinitionValidationError, modelDefinition?: ModelDefinition): Error {
-  switch (type) {
-    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE:
-      return new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition?.modelType));
-    case MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH:
-      return new Error(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition));
-    default:
-      return ERROR_MODEL_DEFINITION_BUG(message);
-  }
-}

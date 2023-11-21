@@ -7,17 +7,11 @@ import {
 } from '../shared/model-utils';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  getModelDefinitionError,
 } from '../shared/errors-and-warnings';
 import type {
   TF,
 } from '../../../shared/src/types';
-import {
-  isValidModelDefinition,
-} from '../../../shared/src/constants';
-import {
-  errIsModelDefinitionValidationError,
-} from '../shared/utils';
+import { checkModelDefinition, } from '../shared/utils.js';
 
 type CDN = 'jsdelivr' | 'unpkg';
 
@@ -69,17 +63,7 @@ export async function fetchModel<M extends ModelType, R = M extends 'graph' ? Gr
 export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
 
-  try {
-    isValidModelDefinition(modelDefinition);
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      if (errIsModelDefinitionValidationError(err)) {
-        throw getModelDefinitionError(err, modelDefinition);
-      }
-      throw ERROR_MODEL_DEFINITION_BUG(err.message);
-    }
-    throw err;
-  }
+  checkModelDefinition(modelDefinition);
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 

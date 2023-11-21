@@ -38,19 +38,6 @@ export class ModelDefinitionValidationError extends Error {
   }
 }
 
-export const isValidModelDefinition = (modelDefinition?: ModelDefinition): modelDefinition is ModelDefinition => {
-  if (modelDefinition === undefined) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.UNDEFINED);
-  }
-  if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.INVALID_MODEL_TYPE);
-  }
-  if (!modelDefinition.path && !modelDefinition._internals?.path) {
-    throw new ModelDefinitionValidationError(MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE.MISSING_PATH);
-  }
-  return true;
-};
-
 export const hasValidChannels = (tensor: tf.Tensor): boolean => tensor.shape.slice(-1)[0] === 3;
 
 export const isNumber = (el: unknown): el is number => typeof el === 'number';

@@ -101,9 +101,3 @@ export type ModelDefinitionFn = (tf: TF) => ModelDefinition;
 export type ModelDefinitionObjectOrFn = ModelDefinitionFn | ModelDefinition;
 
 export type IsTensor<T extends tf.Tensor> = (pixels: Tensor) => pixels is T;
-
-export enum MODEL_DEFINITION_VALIDATION_CHECK_ERROR_TYPE {
-  UNDEFINED = 'undefined',
-  INVALID_MODEL_TYPE = 'invalidModelType',
-  MISSING_PATH = 'missingPath',
-}

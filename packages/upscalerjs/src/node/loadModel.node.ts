@@ -2,19 +2,13 @@ import path from 'path';
 import { loadTfModel, parseModelDefinition, } from '../shared/model-utils';
 import { resolver, } from './resolver';
 import { ParsedModelDefinition, LoadModel, } from '../shared/types';
-import {
-  isValidModelDefinition,
-} from '../../../shared/src/constants';
 import type {
   TF,
 } from '../../../shared/src/types';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-  getModelDefinitionError,
 } from '../shared/errors-and-warnings';
-import {
-  errIsModelDefinitionValidationError,
-} from '../shared/utils';
+import { checkModelDefinition, } from '../shared/utils.js';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
@@ -46,17 +40,7 @@ export const getModelPath = (modelConfiguration: ParsedModelDefinition): string 
 export const loadModel: LoadModel<TF> = async (tf, _modelDefinition) => {
   const modelDefinition = await _modelDefinition;
 
-  try {
-    isValidModelDefinition(modelDefinition);
-  } catch (err: unknown) {
-    if (err instanceof Error) {
-      if (errIsModelDefinitionValidationError(err)) {
-        throw getModelDefinitionError(err, modelDefinition);
-      }
-      throw ERROR_MODEL_DEFINITION_BUG(err.message);
-    }
-    throw err;
-  }
+  checkModelDefinition(modelDefinition);
 
   const parsedModelDefinition = parseModelDefinition(modelDefinition);
 
