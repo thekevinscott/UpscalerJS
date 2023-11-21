@@ -1,2 +1,2 @@
-import { default as DefaultModel, } from './index';
-module.exports = DefaultModel; // eslint-disable-line
+import { default as model, } from './index';
+module.exports = model; // eslint-disable-line
