@@ -73,7 +73,7 @@
       "command": "pnpm lint && pnpm build && pnpm validate:build"
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/default-model"
+      "command": "pnpm --filter @internals/scripts validate -- models/default-model"
     },
     "scaffold": {
       "command": "node -e 'const fs = require(\"fs\"); const {name, version} = require(\"./package.json\"); fs.writeFileSync(\"./src/constants.generated.ts\", `export const NAME = \"${name}\";\\nexport const VERSION=\"${version}\"`, \"utf-8\");'",

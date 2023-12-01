@@ -143,7 +143,7 @@ const writeModelFolder = async (modelDirectoryName: string) => {
       };
     }, {
       "validate:build": {
-        "command": `ts-node ../../scripts/package-scripts/validate-build.ts models/${modelDirectoryName}`
+        "command": `pnpm --filter @internals/scripts validate -- models/${modelDirectoryName}`
       },
       "build:umd:rollup:index": {
         "command": `rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/${modelDirectoryName}/src/umd.js --file ./dist/umd/models/${modelDirectoryName}/src/umd.js --name ${umdIndexName} --format umd`

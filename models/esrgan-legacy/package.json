@@ -130,7 +130,7 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-legacy"
+      "command": "pnpm --filter @internals/scripts validate -- models/esrgan-legacy"
     },
     "build:umd:rollup:index": {
       "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-legacy/src/umd.js --file ./dist/umd/models/esrgan-legacy/src/umd.js --name ESRGANLegacy --format umd"

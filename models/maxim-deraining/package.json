@@ -91,7 +91,7 @@
       ]
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-deraining"
+      "command": "pnpm --filter @internals/scripts validate -- models/maxim-deraining"
     },
     "build": {
       "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",

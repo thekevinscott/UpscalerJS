@@ -91,7 +91,7 @@
       ]
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-dehazing-outdoor"
+      "command": "pnpm --filter @internals/scripts validate -- models/maxim-dehazing-outdoor"
     },
     "build": {
       "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",
