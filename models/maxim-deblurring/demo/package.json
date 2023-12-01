@@ -15,7 +15,7 @@
     "@tensorflow/tfjs": "^4.8.0",
     "seedrandom": "^3.0.5",
     "@upscalerjs/maxim-deblurring": "latest",
-    "upscaler": "latest:"
+    "upscaler": "latest"
   },
   "engines": {
     "npm": ">8.0.0"
