@@ -48,12 +48,12 @@ const loadModel = async (packageName: string, modelName: string) => {
   console.log(importedModel)
   const modelDefinition = (importedModel).default;
   console.log(modelDefinition)
-  const { packageInformation, ...modelJSON }= modelDefinition;
+  const { packageInformation, ...modelJSON } = modelDefinition;
 
   const fixture = await getFixture(packageName, modelName);
 
   const img = await makeImg(fixture, `Original: ${packageName}/${modelName}`, 1);
-  const modelPath = getModelPath(packageName, modelJSON.path);
+  const modelPath = getModelPath(packageName, modelJSON._internals.path);
   console.log(modelJSON)
   const upscaledImg = await upscaleImage({
     ...modelJSON,
