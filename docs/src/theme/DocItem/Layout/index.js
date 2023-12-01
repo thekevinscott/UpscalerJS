@@ -65,7 +65,7 @@ export default function DocItemLayout({children}) {
                 {docTOC.mobile}
                 <DocItemContent>
                   {children}
-                  </DocItemContent>
+                </DocItemContent>
                 <DocItemFooter />
               </article>
               <DocItemPaginator />

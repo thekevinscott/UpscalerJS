@@ -34,7 +34,7 @@ describe('Serverside model integration tests', () => {
       trackTime: false,
     });
 
-    const packagesWithModels = getPackagesAndModelsForEnvironment('serverside');
+    const packagesWithModels = getPackagesAndModelsForEnvironment('serverside', process.env.CI);
 
     test.each(await packagesWithModels)('%s', async ({ packageDirectoryName, modelName }) => {
       const importPath = path.join('@upscalerjs', packageDirectoryName, modelName === 'index' ? '' : `/${modelName}`);

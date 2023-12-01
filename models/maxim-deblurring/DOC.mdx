@@ -1,0 +1,128 @@
+---
+title: MAXIM Deblurring
+description: Overview of @upscalerjs/maxim-deblurring model
+sidebar_position: 10
+sidebar_label: maxim-deblurring
+hide_title: true
+enhanced_src: maxim-deblurring/result.png
+category: deblurring
+---
+
+import ModelHeaderImage from '@site/src/components/modelHeaderImage/modelHeaderImage';
+import Badges from '@site/src/components/badges/badges';
+
+<ModelHeaderImage packageName="maxim-deblurring" unenhancedSrc="maxim-deblurring/fixture.png" enhancedSrc="maxim-deblurring/result.png" oversized />
+
+# MAXIM Deblurring
+
+<Badges packageName="maxim-deblurring" />
+
+MAXIM Deblurring is a Tensorflow.js model for deblurring images.
+
+The models were converted from weights provided by the [original MAXIM paper and repository](https://github.com/google-research/maxim). More information on the conversion process can be [found in this repository](https://github.com/upscalerjs/maxim).
+
+## Paper
+
+The MAXIM paper (MAXIM: Multi-Axis MLP for Image Processing) was published in 2022, and was nominated as one of the best papers at CVPR 2022. The MAXIM architecture is capable, via training, of supporting a variety of image enhancement tasks. It's also an efficient architecture, making it particularly appealing for JavaScript applications.
+
+Abstract:
+
+> Recent progress on Transformers and multi-layer perceptron (MLP) models provide new network architectural designs for computer vision tasks. Although these models proved to be effective in many vision tasks such as image recognition, there remain challenges in adapting them for low-level vision. The inflexibility to support high-resolution images and limitations of local attention are perhaps the main bottlenecks. In this work, we present a multi-axis MLP based architecture called MAXIM, that can serve as an efficient and flexible general-purpose vision backbone for image processing tasks. MAXIM uses a UNet-shaped hierarchical structure and supports long-range interactions enabled by spatially-gated MLPs. Specifically, MAXIM contains two MLP-based building blocks: a multi-axis gated MLP that allows for efficient and scalable spatial mixing of local and global visual cues, and a cross-gating block, an alternative to cross-attention, which accounts for cross-feature conditioning. Both these modules are exclusively based on MLPs, but also benefit from being both global and `fully-convolutional', two properties that are desirable for image processing. Our extensive experimental results show that the proposed MAXIM model achieves state-of-the-art performance on more than ten benchmarks across a range of image processing tasks, including denoising, deblurring, deraining, dehazing, and enhancement while requiring fewer or comparable numbers of parameters and FLOPs than competitive models.
+
+&mdash; [MAXIM: Multi-Axis MLP for Image Processing](https://arxiv.org/abs/2201.02973)
+
+## Sample Enhanced Image
+
+_Original_
+
+![Original unenhanced image](/assets/sample-images/maxim-deblurring/fixture.png)
+
+_Enhanced_
+
+![Enhanced image](/assets/sample-images/maxim-deblurring/result.png)
+
+## Demo
+
+import ModelExample from '@site/src/components/modelExample/modelExample';
+
+<ModelExample model="maxim-deblurring" />
+
+
+## Installation
+
+```
+npm install @upscalerjs/maxim-deblurring
+```
+
+## Usage
+
+### Browser
+
+#### Using a transpiler
+
+If using a transpiler (such as `tsc`, `webpack`, or `vite`) import the model with:
+
+```
+import Upscaler from 'upscaler';
+import model from '@upscalerjs/maxim-deblurring'
+
+const upscaler = new Upscaler({
+  model,
+})
+```
+
+#### Using a script tag
+
+If importing Tensorflow.js using script tags, import the model and UpscalerJS with:
+
+```
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/maxim-deblurring@latest/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@latest/dist/browser/umd/upscaler.min.js"></script>
+
+<script type="text/javascript">
+  const upscaler = new Upscaler({
+    model: UpscalerJSMaximDeblurring,
+  })
+</script>
+```
+
+### Node
+
+Require the model with:
+
+```
+const Upscaler = require('upscaler/node'); // if using @tensorflow/tfjs-node-gpu, change this to upscaler/node-gpu
+const model = require('@upscalerjs/maxim-deblurring');
+
+const upscaler = new Upscaler({
+  model,
+})
+```
+
+The model will work for both `node` and `node-gpu` flavors of Tensorflow.js.
+
+## Model Details
+
+This model is unquantized and has a dynamic input size. Image sizes must be a multiple of 64. UpscalerJS will automatically take care of padding and trimming images.
+
+If providing a patch size, ensure that the patch size is a multiple of 64. If not, UpscalerJS will emit a warning and the patch size will be increased to the nearest multiple of 64 for compatibility.
+
+## Additional Models
+
+There are two additional fixed input size models that are derived from a [Tensorflow implementation of MAXIM](https://github.com/sayakpaul/maxim-tf):
+
+- `@upscalerjs/maxim-deblurring/64` - quantized `uint8`, input size of 64
+- `@upscalerjs/maxim-deblurring/256` - quantized `float16`, input size of 256
+
+These models run considerably faster but exhibit inferior inference capabilities.
+
+To test these models, clone the UpscalerJS repo, pull the models with `dvc pull` and inspect the `models/maxim-experiments` folder. 
+
+## Dataset
+All weights were trained on the [GoPro](https://seungjunnah.github.io/Datasets/gopro) dataset.
+
+## License
+
+[MIT License](https://oss.ninja/mit/developit/) © [Kevin Scott](https://thekevinscott.com)
+
+The original MAXIM repository is licensed under an [Apache License 2.0](https://github.com/google-research/maxim/blob/main/LICENSE)

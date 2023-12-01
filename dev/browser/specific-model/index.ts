@@ -54,23 +54,26 @@ const loadModel = async (packageName: string, modelName: string) => {
 
   const img = await makeImg(fixture, `Original: ${packageName}/${modelName}`, 1);
   const modelPath = getModelPath(packageName, modelJSON.path);
+  console.log(modelJSON)
   const upscaledImg = await upscaleImage({
     ...modelJSON,
     path: modelPath,
-  }, img);
+  }, img, 64, 2);
   await makeImg(upscaledImg, `Upscaled: ${packageName}/${modelName}`);
 };
 
 
-const upscaleImage = async (model: ModelDefinition, img: HTMLImageElement | HTMLCanvasElement, patchSize: undefined | number = 64) => {
+const upscaleImage = async (model: ModelDefinition, img: HTMLImageElement | HTMLCanvasElement, patchSize?: number, padding?: number) => {
   status.innerHTML = 'Starting';
   const upscaler = new Upscaler({
     model,
   });
   status.innerHTML = 'Upscaling...';
   const start = performance.now();
+  console.log({ patchSize, padding })
   const upscaledImg = await upscaler.upscale(img, {
     patchSize,
+    padding,
     progress: console.log,
   });
   console.log(`Duration: ${((performance.now() - start) / 1000).toFixed(2)}s`);

@@ -96,7 +96,8 @@
     "models": {
       "./8x": {
         "supportedPlatforms": [
-          "node"
+          "node",
+          "node-gpu"
         ]
       }
     },

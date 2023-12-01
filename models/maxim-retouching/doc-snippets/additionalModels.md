@@ -1,0 +1,2 @@
+- `@upscalerjs/maxim-retouching/64` - quantized `uint8`, input size of 64
+- `@upscalerjs/maxim-retouching/256` - quantized `float16`, input size of 256

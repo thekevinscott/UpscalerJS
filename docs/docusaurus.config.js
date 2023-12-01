@@ -179,6 +179,30 @@ const config = {
                 label: 'Super Resolution',
                 to: '/models#upscaling',
               },
+              {
+                label: 'Deblurring',
+                to: '/models#deblurring',
+              },
+              {
+                label: 'Denoising',
+                to: '/models#denoising',
+              },
+              {
+                label: 'Deraining',
+                to: '/models#deraining',
+              },
+              {
+                label: 'Dehazing',
+                to: '/models#dehazing',
+              },
+              {
+                label: 'Low Light Enhancement',
+                to: '/models#low-light-enhancement',
+              },
+              {
+                label: 'Retouching',
+                to: '/models#retouching',
+              },
             ],
           },
         ],

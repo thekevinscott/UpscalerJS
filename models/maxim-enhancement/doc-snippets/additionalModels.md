@@ -1,0 +1,2 @@
+- `@upscalerjs/maxim-enhancement/64` - quantized `uint8`, input size of 64
+- `@upscalerjs/maxim-enhancement/256` - quantized `uint8`, input size of 256

@@ -19,8 +19,11 @@ const getEnv = (key: string): string => {
 };
 const ESBUILD_DIST_FOLDER = getEnv('ESBUILD_DIST_FOLDER');
 const UMD_DIST_FOLDER = getEnv('UMD_DIST_FOLDER');
+const CI = process.env.CI === 'true';
 
 describe('Clientside model integration tests', () => {
+  const packagesWithModels = getPackagesAndModelsForEnvironment('clientside', CI);
+
   describe('ESM', async () => {
     const testRunner = new ClientsideTestRunner({
       name: 'esm',
@@ -44,13 +47,12 @@ describe('Clientside model integration tests', () => {
       await testRunner.afterEach();
     });
 
-    const packagesWithModels = getPackagesAndModelsForEnvironment('clientside');
-
     const models = (await packagesWithModels).map(({ packageDirectoryName, modelName }) => ([
       path.join('@upscalerjs', packageDirectoryName, modelName),
       packageDirectoryName,
       modelName,
     ]));
+    console.log('models', models);
 
     test.each(models)('%s', async (windowModelPath, packageDirectoryName, modelName) => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageDirectoryName}/test/__fixtures__/fixture.png`;
@@ -98,7 +100,6 @@ describe('Clientside model integration tests', () => {
       await testRunner.afterEach();
     });
 
-    const packagesWithModels = getPackagesAndModelsForEnvironment('clientside');
     const modelsWithMainUMDs = await Promise.all((await packagesWithModels).filter(m => {
       return m.modelName !== '.';
     }).map(async ({ packageDirectoryName, modelName, ...rest }) => {
@@ -127,7 +128,12 @@ describe('Clientside model integration tests', () => {
       }
     }));
 
-    test.each(modelsWithMainUMDs)('%s (from index)', async ({ packageDirectoryName, modelName, mainUMDName, mainUMDScriptPath, modelUMDIndexName, }) => {
+    test.each(modelsWithMainUMDs.map(m => {
+      return [
+        `${m.packageDirectoryName}/${m.modelName}`,
+        m,
+      ];
+    }))('%s (from index)', async (_, { packageDirectoryName, modelName, mainUMDName, mainUMDScriptPath, modelUMDIndexName, }) => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageDirectoryName}/test/__fixtures__/fixture.png`;
       const modelScriptPath = `${await testRunner.getFixturesServerURL()}/${packageDirectoryName}/${mainUMDScriptPath}`;
       await testRunner.page.evaluate(async ({ modelScriptPath, mainUMDName, modelUMDIndexName }) => {
@@ -150,7 +156,6 @@ describe('Clientside model integration tests', () => {
       const FIXTURE_PATH = path.resolve(MODELS_DIR, packageDirectoryName, `test/__fixtures__${modelName === 'index' ? '' : `/${modelName}`}`, 'result.png');
       expect(result).toMatchImage(FIXTURE_PATH);
     });
-
 
     const directModels = await Promise.all((await packagesWithModels).filter(m => {
       return m;
@@ -176,7 +181,13 @@ describe('Clientside model integration tests', () => {
         ...rest
       }
     }));
-    test.each(directModels)('%s (direct)', async ({ modelUMDScriptPath, packageDirectoryName, modelName, modelUMDDirectName, ...rest }) => {
+
+    test.each(directModels.map(m => {
+      return [
+        `${m.packageDirectoryName}/${m.modelName}`,
+        m,
+      ];
+    }))('%s (direct)', async (_, { modelUMDScriptPath, packageDirectoryName, modelName, modelUMDDirectName, ...rest }) => {
       const fixturePath = `${await testRunner.getFixturesServerURL()}/${packageDirectoryName}/test/__fixtures__/fixture.png`;
       const modelScriptPath = `${await testRunner.getFixturesServerURL()}/${packageDirectoryName}/${modelUMDScriptPath}`;
       // await new Promise((resolve) => setTimeout(resolve, 1000 * 60));
