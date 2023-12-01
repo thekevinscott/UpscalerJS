@@ -91,7 +91,7 @@
       ]
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/maxim-denoising"
+      "command": "pnpm --filter @internals/scripts validate -- models/maxim-denoising"
     },
     "build": {
       "command": "pnpm build:cjs && pnpm build:esm && pnpm build:umd",

@@ -129,7 +129,7 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-slim"
+      "command": "pnpm --filter @internals/scripts validate -- models/esrgan-slim"
     },
     "build:umd:rollup:index": {
       "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-slim/src/umd.js --file ./dist/umd/models/esrgan-slim/src/umd.js --name ESRGANSlim --format umd"

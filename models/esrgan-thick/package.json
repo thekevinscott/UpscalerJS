@@ -122,7 +122,7 @@
       "command": "pnpm build:umd:rollup:index && pnpm build:umd:uglify:index"
     },
     "validate:build": {
-      "command": "ts-node ../../scripts/package-scripts/validate-build.ts models/esrgan-thick"
+      "command": "pnpm --filter @internals/scripts validate -- models/esrgan-thick"
     },
     "build:umd:rollup:index": {
       "command": "rollup -c ../rollup.config.cjs --input ./dist/umd-tmp/models/esrgan-thick/src/umd.js --file ./dist/umd/models/esrgan-thick/src/umd.js --name ESRGANThick --format umd"
