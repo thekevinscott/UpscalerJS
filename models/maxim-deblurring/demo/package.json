@@ -7,15 +7,15 @@
     "dev": "vite"
   },
   "devDependencies": {
-    "vite": "*"
+    "vite": "latest"
   },
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "^4.8.0",
     "seedrandom": "^3.0.5",
-    "@upscalerjs/maxim-deblurring": "^0.1.0",
-    "upscaler": "1.0.0-beta.8"
+    "@upscalerjs/maxim-deblurring": "latest",
+    "upscaler": "latest:"
   },
   "engines": {
     "npm": ">8.0.0"
