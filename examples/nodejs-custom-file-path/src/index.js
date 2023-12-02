@@ -4,6 +4,8 @@ const fs = require('fs');
 const Upscaler = require('upscaler/node');
 const tf = require('@tensorflow/tfjs-node');
 
+const PORT = 8080;
+
 const app = express();
 
 const upscaler = new Upscaler({
@@ -34,5 +36,5 @@ const getUpscaledImage = async () => {
   return upscaledTensor;
 }
 
-app.listen(8080);
-console.log('Running on http://localhost:8080/');
+app.listen(PORT);
+console.log(`Running on http://localhost:${PORT}/`);
