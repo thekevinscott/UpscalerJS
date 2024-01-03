@@ -10,7 +10,7 @@
     "seedrandom": "3.0.5",
     "typescript": "^5.1.6",
     "upscaler": "workspace:*",
-    "wrangler": "^3.5.1"
+    "wrangler": "^3.19.0"
   },
   "private": true,
   "scripts": {
