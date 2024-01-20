@@ -111,7 +111,7 @@
     "typescript": "5.1.6",
     "uglify-js": "3.17.4",
     "upscaler": "workspace:*",
-    "vite": "4.4.9",
+    "vite": "5.0.12",
     "vitest": "^0.34.5",
     "yargs": "17.7.2"
   },
