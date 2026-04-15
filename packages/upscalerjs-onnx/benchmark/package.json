@@ -1,0 +1,10 @@
+{
+  "name": "bench",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "onnxruntime-node": "^1.17.3",
+    "sharp": "^0.33.2"
+  }
+}

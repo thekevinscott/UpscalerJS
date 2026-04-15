@@ -51,6 +51,45 @@ real choice is **stay on TF.js** vs **move to ONNX Runtime Web**.
 
 ---
 
+## Measured speed: ESRGAN Medium x4 through both backends, Node/CPU
+
+Full setup, scripts, and methodology in [`benchmark/`](./benchmark/README.md).
+Both paths load the same weights (converted from the same Keras source via
+`tf2onnx`); numerical outputs match to ~1.7e-6 across every size tested.
+
+```
+Model: esrgan-medium x4 (~705k params, 2.8 MB)
+Hardware: CPU (tfjs-node 4.22 vs onnxruntime-node 1.17), NHWC layout
+
+Load times (one-time):
+  TF.js   backend init ~765 ms + loadLayersModel ~35 ms = ~800 ms
+  ONNX    import ~35 ms + InferenceSession ~60 ms       = ~95 ms     (~8.5× faster cold-start)
+
+Single-call inference (median of 10):
+  32  → 128:  TF.js 30 ms   ONNX 5 ms    → 6.0× ONNX
+  64  → 256:  TF.js 46 ms   ONNX 17 ms   → 2.6× ONNX
+  128 → 512:  TF.js 67 ms   ONNX 68 ms   → tie (~1.0×)
+
+Patch-loop (16 × 64×64 patches — mirrors the real upscale pipeline):
+  TF.js  676 ms   ONNX 291 ms            → 2.3× ONNX end-to-end
+```
+
+What this tells us:
+
+- **Cold-start and small tiles are ONNX's biggest wins.** Most of the gap is
+  per-call dispatch overhead in tfjs-node, not kernel quality. At compute-bound
+  sizes (128+) both backends land in the same ballpark.
+- **The realistic workload favours ONNX ~2.3×.** UpscalerJS runs the model
+  dozens of times per image via tile patching, so per-call overhead compounds.
+- **This is Node/CPU only.** Browser numbers (onnxruntime-web WebGPU vs
+  tfjs WebGL/WebGPU) and larger models will need their own measurements.
+- **Only esrgan-medium converts cleanly.** esrgan-thick uses custom Keras
+  layers (MultiplyBeta, PixelShuffle4x) that `tf2onnx` can't resolve without
+  Python-side class definitions — a concrete instance of the "Hard #8"
+  caveat below.
+
+---
+
 ## What this spike shows is *easy*
 
 1. **The public `Upscaler` API does not need to change.** The factory
@@ -119,7 +158,15 @@ real choice is **stay on TF.js** vs **move to ONNX Runtime Web**.
 8. **Custom ops.** If any existing `ModelDefinition` uses TF.js-specific
    ops in `setup(tf)` (e.g. `tf.depthToSpace`, custom layers) the model
    graph itself would need re-export. Grep for `tf.mul`, `tf.depthToSpace`,
-   etc. in `/models/*` to size this.
+   etc. in `/models/*` to size this. **Confirmed while running the
+   benchmark:** `esrgan-thick` refused to convert via `tf2onnx` — it uses
+   `MultiplyBeta` and `PixelShuffle4x` custom Keras layers (from the
+   original RRDN implementation) that can't be deserialized without their
+   Python class definitions. The smaller `esrgan-medium` is pure
+   Conv2D+Activation and converted in one pass. So this caveat is real and
+   touches real models: every `esrgan-thick*` variant and `esrgan-legacy/gans`
+   would need custom-layer work before conversion. `esrgan-medium`,
+   `esrgan-slim`, `esrgan-legacy/psnr-small` convert cleanly.
 
 ---
 
