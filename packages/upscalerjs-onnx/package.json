@@ -1,0 +1,38 @@
+{
+  "name": "@upscalerjs/onnx",
+  "version": "0.0.0-spike.0",
+  "private": true,
+  "description": "SPIKE: UpscalerJS backed by ONNX Runtime Web instead of TensorFlow.js. Not for production use — illustrative only.",
+  "exports": {
+    ".": {
+      "types": "./dist/browser/esm/index.d.ts",
+      "import": "./dist/browser/esm/index.js"
+    },
+    "./node": {
+      "types": "./dist/node/index.d.ts",
+      "require": "./dist/node/index.js"
+    },
+    "./models/real-esrgan-x4": {
+      "types": "./dist/browser/esm/models/real-esrgan-x4.d.ts",
+      "import": "./dist/browser/esm/models/real-esrgan-x4.js"
+    }
+  },
+  "module": "dist/browser/esm/index.js",
+  "types": "dist/browser/esm/index.d.ts",
+  "dependencies": {
+    "onnxruntime-web": "^1.17.0",
+    "onnxruntime-node": "^1.17.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.5"
+  },
+  "keywords": [
+    "super resolution",
+    "upscaling",
+    "onnx",
+    "onnxruntime-web",
+    "image enhancement",
+    "spike"
+  ]
+}

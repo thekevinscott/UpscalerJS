@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>@upscalerjs/onnx — spike demo</title>
+<style>
+  body { font-family: system-ui; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+  .row { display: flex; gap: 1rem; align-items: flex-start; }
+  .row img, .row canvas { max-width: 400px; border: 1px solid #ddd; }
+  progress { width: 100%; }
+</style>
+</head>
+<body>
+<h1>@upscalerjs/onnx — spike demo</h1>
+<p>This matches the tfjs package's example API — only the import changes.</p>
+<div class="row">
+  <div>
+    <h3>input</h3>
+    <img id="input" src="./input.png" />
+  </div>
+  <div>
+    <h3>upscaled</h3>
+    <img id="output" />
+    <progress id="progress" max="1" value="0"></progress>
+  </div>
+</div>
+
+<script type="module">
+  // Note: same API shape as the tfjs Upscaler — this is the point of the spike.
+  import Upscaler from '../dist/browser/esm/index.js';
+  import realEsrganX4 from '../dist/browser/esm/models/real-esrgan-x4.js';
+
+  const img = document.getElementById('input');
+  const out = document.getElementById('output');
+  const prog = document.getElementById('progress');
+
+  img.onload = async () => {
+    const upscaler = new Upscaler({
+      model: realEsrganX4,
+      warmupSizes: [{ patchSize: 64 }],
+    });
+    const src = await upscaler.upscale(img, {
+      patchSize: 64,
+      padding: 2,
+      progress: (p) => { prog.value = p; },
+    });
+    out.src = src;
+  };
+</script>
+</body>
+</html>
