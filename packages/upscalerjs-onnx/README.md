@@ -91,18 +91,12 @@ real choice is **stay on TF.js** vs **move to ONNX Runtime Web**.
 
 3. **Model package breaking changes.** The `ModelDefinition.preprocess /
    postprocess` hooks take our local `Tensor` rather than `tf.Tensor4D`.
-   This is a **breaking change for every `@upscalerjs/*` model package**
-   (esrgan-thick, esrgan-medium, maxim-*, etc.). Migration path:
-
-   - Option A: ship the ONNX backend as `@upscalerjs/onnx` alongside the
-     existing package, publish ONNX variants of model packages under new
-     names (`@upscalerjs/esrgan-thick-onnx`). Zero backcompat risk.
-     **(Recommended for launch.)**
-   - Option B: add a compat shim so model packages can expose their
-     preprocess/postprocess as backend-agnostic JS (pure arithmetic on
-     typed arrays). Requires auditing every existing model package.
-   - Option C: big-bang `v2` release that ships both backends under a
-     single `upscaler` package selected at import time.
+   This means **every `@upscalerjs/*` model package that defines custom
+   pre/postprocess** (esrgan-thick, esrgan-medium, maxim-*, etc.) needs
+   an ONNX-compatible variant. In the v2 dual-backend world those ship
+   as parallel entries inside the same model package (e.g.
+   `@upscalerjs/esrgan-thick` exports both `./tfjs/x4` and `./onnx/x4`)
+   rather than separate packages.
 
 4. **Default model.** There is no `@upscalerjs/default-model` equivalent
    in ONNX yet. The spike requires `model` to be passed explicitly —
@@ -158,21 +152,94 @@ real choice is **stay on TF.js** vs **move to ONNX Runtime Web**.
 
 **Risk factors for ONNX:**
 
-- Breaking changes in model packages would alienate current users. The
-  migration has to be staged (Option A above).
 - `onnxruntime-web` ships fat WASM binaries. Serving + preloading these
   needs documentation for users.
 - Any model that relies on TF.js-specific tricks in its `setup()` hook
-  needs re-authoring.
+  needs re-authoring on the ONNX side.
 - The library gains ownership of a small tensor-ops module. Not glamorous,
   but it's a permanent maintenance line item.
 
-**My recommendation (as captured by this spike):** the direction is correct.
-Start by publishing `@upscalerjs/onnx` as an opt-in package alongside the
-existing tfjs-backed `upscaler`, port 1–2 headline models (Real-ESRGAN,
-MaximIR deblur) and benchmark. If the WebGPU numbers land where expected,
-plan a `v2` that makes ONNX the default and moves `upscaler@tfjs` to a
-supported-but-frozen status.
+## Rollout: UpscalerJS 2.0, dual-backend, single package
+
+Guiding constraint: **one `upscaler` package**, shipping both backends,
+users opt in to ONNX per-instance. The existing TF.js path stays fully
+supported so today's users don't pay for the migration on day one.
+
+### Public API in v2
+
+```ts
+import Upscaler from 'upscaler';
+import esrganX4 from '@upscalerjs/esrgan-thick/tfjs/x4';      // existing
+import realEsrganX4 from '@upscalerjs/esrgan-thick/onnx/x4';   // new
+
+// Default backend: tfjs (unchanged from v1).
+const a = new Upscaler({ model: esrganX4 });
+
+// Opt in to ONNX.
+const b = new Upscaler({ backend: 'onnx', model: realEsrganX4 });
+```
+
+Same `Upscaler` class, same methods, same overload set. The only new
+surface is a `backend?: 'tfjs' | 'onnx'` option on the constructor,
+defaulting to `'tfjs'`.
+
+### Package layout
+
+```
+packages/upscalerjs/
+├── src/
+│   ├── shared/               # backend-agnostic: patch math, types, Upscaler factory
+│   ├── tfjs/                 # existing TF.js adapter (ex-`shared/upscale.ts` etc.)
+│   ├── onnx/                 # new ONNX adapter (this spike's code, promoted)
+│   ├── browser/              # picks tfjs or onnx at runtime via `backend`
+│   ├── node/
+│   └── node-gpu/
+```
+
+A single shared `Upscaler` class that dispatches to one of two internal
+runtimes behind the existing DI seam.
+
+### Why dual-backend works structurally
+
+The factory pattern already in the codebase is the reason this is
+feasible: `getUpscaler({ tf, loadModel, getImageAsTensor, ... })` accepts
+the runtime as injected dependencies. v2 just promotes "backend" to a
+constructor option that picks which set of injected dependencies to use.
+No changes to user call sites.
+
+### Costs of dual-backend vs. replace-backend
+
+- **Bundle**: shipping both runtimes in one package is ~2× baseline
+  (~4 MB gzipped). Mitigate by:
+  1. Dynamic `import()` — only load the runtime the user opted into.
+  2. Keeping backend-specific code in separate entry points
+     (`upscaler` stays tfjs-only by default; `upscaler/onnx` gates the
+     ORT import).
+  Most consumers will only pay for one.
+- **Maintenance**: ~1.5× current. Two inference paths to keep in sync,
+  but the shared patch/tile/image logic (`src/shared/`) stays single-sourced.
+  Tests fork per-backend; helpers fork per-backend; everything above
+  them (types, Upscaler class, user-facing docs) stays one copy.
+- **Release coordination**: v2 can ship the moment the ONNX path is
+  stable, without waiting for every `@upscalerjs/*` model to be ported.
+  Models migrate on their own schedule because the default backend is
+  still TF.js.
+
+### What v2 ships on day one
+
+- `Upscaler({ backend: 'onnx', model })` works
+- `Upscaler({ backend: 'tfjs', model })` (default) = current v1 behaviour
+- Shared `Tensor` type surfaced for ONNX model authors
+- 1–2 headline ONNX models (Real-ESRGAN, MaximIR) published as
+  `@upscalerjs/<model>/onnx/<scale>` subpaths
+- Migration guide (per-model-package)
+
+### What comes later (v2.x, opportunistic)
+
+- Promote ONNX to default backend once model coverage is there (v3)
+- Retire TF.js path if/when usage drops — clean semver-major when that
+  happens
+- NCHW throughout to remove the per-patch transpose cost
 
 ---
 
