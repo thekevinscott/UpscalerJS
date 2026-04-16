@@ -87,46 +87,52 @@ What this tells us:
   Python-side class definitions — a concrete instance of the "Hard #8"
   caveat below.
 
-### Browser/WASM tells a different story
+### Browser (measured on M3 Max)
 
-Same model, same benchmark shape, run in headless Chrome with multi-threaded
-WASM (full setup/caveats in [`benchmark/browser/README.md`](./benchmark/browser/README.md)):
+Same model, same benchmark shape, run in a real Chrome on Apple Silicon
+(full setup/caveats in [`benchmark/browser/README.md`](./benchmark/browser/README.md)):
 
 ```
-tfjs 4.22 (WASM backend) vs onnxruntime-web 1.24 WASM EP, 16-core multi-threaded
+tfjs 4.22 vs onnxruntime-web 1.24, M3 Max, crossOriginIsolated multi-threaded WASM
 
 Cold start:
-  tfjs-wasm   ~220 ms   (setBackend + loadLayersModel)
-  ort-wasm   ~1930 ms   (InferenceSession — WASM compile dominates)
+  tfjs-wasm    ~26 ms     tfjs-webgl  ~19 ms    tfjs-webgpu  ~14 ms
+  ort-wasm    ~279 ms     ort-webgl    skip*    ort-webgpu   ~38 ms
 
-Inference (median, patch-sized 64→256):
-  tfjs-wasm    ~61 ms
-  ort-wasm     ~72 ms
+Patch-loop (16 × 64² patches):
+  tfjs-wasm   392 ms    ort-wasm    594 ms    →  tfjs 1.5× faster
+  tfjs-webgl  183 ms    ort-webgl   skip*
+  tfjs-webgpu  82 ms    ort-webgpu  121 ms    →  tfjs 1.5× faster
 
-Patch-loop (8 × 64²):
-  tfjs-wasm   474 ms    (59 ms/patch)
-  ort-wasm    624 ms    (78 ms/patch)
-  → tfjs-wasm is 1.3× faster
+  * ort-webgl rejects the dynamic-shape ONNX export; fixable by re-exporting
+    at a fixed tile size. Not attempted in the spike.
 ```
 
-**The Node win flips in the browser.** Likely reasons:
-- `tfjs-node` is native C++ TensorFlow; `tfjs-wasm` is a WASM port. Different
-  implementations, different kernel stack.
-- `onnxruntime-web`'s WASM compile adds ~2 s to cold start.
-- Both runtimes' in-browser kernels seem well-tuned; the "ORT wins by avoiding
-  tfjs-node's per-call overhead" story doesn't apply because we're comparing
-  WASM-to-WASM.
+All backends produced numerically correct output (parity verified against
+a TF.js-CPU reference).  A second finding fell out of this run:
 
-**WebGPU was not measured.** The only WebGPU available in this environment is
-SwiftShader (software GPU), which would measure the emulator rather than the
-runtime. A real-GPU comparison of `tfjs-webgpu` vs `onnxruntime-web` WebGPU EP
-is the benchmark that still needs to happen — that's where the perf case for
-ONNX in the browser actually lives.
+**onnxruntime-web's WebGPU Concat shader silently produces garbage
+output** on adapters honouring the spec-default `maxStorageBuffersPerShaderStage
+= 8` (Apple Metal; tier-1 mobile).  ESRGAN-medium has one 10-input
+Concat which triggers "Invalid ComputePipeline" at shader compile; ORT
+keeps submitting the invalid command buffers — timing *looks* fast
+(~14 ms) but parity fails (max-abs 1.05 vs reference).  The bug is
+structurally certain in
+`js/web/lib/wasm/jsep/webgpu/ops/concat.ts` (one storage buffer per
+input, no splitting) and is not tracked upstream at time of writing.
+TFJS had the analogous bug ([tfjs#3648](https://github.com/tensorflow/tfjs/issues/3648))
+and fixed it in 2020.  Our spike works around it with
+[`benchmark/split-concat.py`](./benchmark/split-concat.py), which rewrites
+wide Concats as a chain of pairwise Concats before inference.  Any port
+would need to ship this workaround (or fix it upstream) until ORT-Web
+lands the analogous mitigation.
 
-**Practical implication for UpscalerJS v2:** the Node speedup holds and is
-meaningful for server-side users. The browser case for ONNX currently rests
-on WebGPU (unmeasured here) and on non-perf grounds (model zoo, single-file
-model packaging, vendor momentum, no `tf.tidy()`).
+**Practical implication for UpscalerJS v2:** ORT is ~1.5× slower than
+TFJS on every browser backend we can measure correctly on this model on
+this hardware.  That's a user-visible latency regression for the
+library's headline action.  It's not a law of nature — it's one CNN on
+one GPU, ORT is actively shipping WebGPU improvements, and TFJS hasn't
+shipped in 18 months — but it is the measured state today.
 
 ---
 
@@ -212,27 +218,36 @@ model packaging, vendor momentum, no `tf.tidy()`).
 
 ## Long-term maintenance picture
 
-**TF.js today:**
+**TF.js today (verified against primary sources 2026-04-16):**
 
-- TF.js is steadily shrinking in Google's investment posture. `tfjs-node`
-  receives infrequent updates; `tfjs-node-gpu` releases are sparse. The
-  project is *not* abandoned, but momentum has slowed. Keeping up with
-  modern Node versions and ARM/Apple-Silicon native builds has been a
-  recurring pain for the UpscalerJS maintainers historically.
-- The ecosystem of models *originally trained in* TF.js is small; in
-  practice UpscalerJS converts from PyTorch/TF via `tensorflowjs_converter`.
-  That converter itself is minimally maintained.
+- Last `@tensorflow/tfjs` release: **4.22.0 on 2024-10-21** — eighteen
+  months with no npm release ([npm registry](https://registry.npmjs.org/@tensorflow/tfjs)).
+- Prior release cadence was monthly.  Commit activity on `master` has
+  collapsed to a handful of chore commits across 2025 and one in 2026
+  (a gsutil→gcloud migration) ([tfjs commits](https://api.github.com/repos/tensorflow/tfjs/commits)).
+- No official deprecation announcement.  Google deprecated `tflite` in
+  favour of LiteRT in TF 2.20 (Aug 2025) — a directional signal for
+  on-device TF investment, though not TFJS-specific.
+- Net read: **TFJS is in de-facto low-maintenance mode**.  Stable but
+  not being invested in.  The historical friction with
+  modern Node/ARM/Apple-Silicon builds isn't going to be fixed by
+  upstream.
 
-**ONNX Runtime going forward:**
+**ONNX Runtime going forward (verified against primary sources 2026-04-16):**
 
-- ONNX Runtime is a first-class Microsoft product, backed by a vendor
-  coalition (Microsoft, Intel, NVIDIA, AMD, Apple via CoreML EP).
-  Consistent quarterly releases, stable API.
+- Active release cadence: 1.22 May 2025, 1.23 Sept 2025, 1.24 Feb 2026,
+  1.24.3 Mar 2026 ([npm registry](https://registry.npmjs.org/onnxruntime-web)).
+  Eleven stable releases shipped in the 18 months TFJS was silent.
+- WebGPU EP feature adds in 1.23/1.24: Flash Attention, graph capture,
+  Split-K MatMul, qMoE, WGSL templates.  "WebGPU Improvements" is on
+  Microsoft's published [ORT roadmap](https://onnxruntime.ai/roadmap)
+  for 2026.
+- Vendor coalition: Microsoft, Intel, NVIDIA, AMD, Apple via CoreML EP.
+  Huggingface's Transformers.js v3 runs on ORT-Web, so the runtime is
+  the browser-ML backbone of the largest ML ecosystem.
 - Every major training framework (PyTorch, TF, JAX, MLX) exports to ONNX
   cleanly. UpscalerJS would gain access to the much larger ONNX model
   zoo without re-conversion work.
-- WebGPU execution provider is production-ready. WebNN is shipping.
-  This is where browser-side ML performance investment is happening.
 - One package spans browser + Node + mobile (React Native) + embedded.
   Currently UpscalerJS ships three separate dist targets; ONNX could
   collapse those to two, or even one with dynamic import.
