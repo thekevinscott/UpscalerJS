@@ -22,29 +22,29 @@ threshold since GPU kernels legitimately differ from CPU).
 ## Setup
 
 ```sh
-# Stage the model assets where the page expects them.
-mkdir -p public/models/tfjs public/models/onnx public/vendor/tfjs public/vendor/ort
-cp ../../../../models/esrgan-medium/models/x4/* public/models/tfjs/
-cp /path/to/esrgan_medium_x4.onnx public/models/onnx/model.onnx
-
-# Runtime assets (exact filenames depend on version).
-cp node_modules/@tensorflow/tfjs/dist/tf.min.js public/vendor/tfjs/
-cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js public/vendor/tfjs/
-cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm public/vendor/tfjs/
-cp node_modules/@tensorflow/tfjs-backend-webgpu/dist/tf-backend-webgpu.min.js public/vendor/tfjs/
-# onnxruntime-web: use the "all" bundle so every EP (wasm/webgl/webgpu/webnn) is included
-cp node_modules/onnxruntime-web/dist/ort.all.min.js public/vendor/ort/
-cp node_modules/onnxruntime-web/dist/*.{mjs,wasm} public/vendor/ort/
-
-cp ../../../../assets/flower.png public/input.png
-
+cd packages/upscalerjs-onnx/benchmark/browser
 npm install
-npm run bench
+npm run setup    # stages models + vendor JS/WASM + input.png into public/
+npm run bench    # launches headless Chrome via puppeteer
 ```
+
+`npm run setup` expects:
+
+- the tfjs model at `models/esrgan-medium/models/x4/model.json` (already
+  in the repo)
+- the converted ONNX model at
+  `packages/upscalerjs-onnx/benchmark/models/onnx/model.onnx` — generated
+  by the Node bench's `convert-tfjs-to-onnx.py` step. If you haven't run
+  the Node bench yet, do that first (see `../README.md`).
 
 The driver serves `public/` with COOP/COEP headers (required for
 multi-threaded WASM via `SharedArrayBuffer`), launches headless Chrome
 with `--enable-unsafe-webgpu`, runs the page, and dumps the result JSON.
+
+To open the page in your **regular** Chrome (not puppeteer's bundled
+one — useful if you want to confirm what the actual user sees), serve
+`public/` with any static server that emits COOP/COEP headers and
+navigate to it. The page autostarts.
 
 ## Running on a real-GPU laptop
 
