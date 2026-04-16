@@ -1,15 +1,23 @@
-# Browser benchmark: tfjs vs onnxruntime-web
+# Browser benchmark: tfjs vs onnxruntime-web (full backend matrix)
 
-Same ESRGAN Medium x4 weights as the Node benchmark, run in headless
-Chrome via Puppeteer against:
+Runs the same ESRGAN Medium x4 weights as the Node benchmark against every
+backend the browser exposes:
 
-- `@tensorflow/tfjs-backend-wasm` (WASM, multi-threaded when COI is on)
-- `onnxruntime-web` WASM execution provider (multi-threaded when COI is on)
+| backend              | runs |
+| -------------------- | ---- |
+| TF.js CPU            | reference only (pure JS — very slow; capped at 32×32) |
+| TF.js WASM           | always (multi-threaded when COI is on) |
+| TF.js WebGL          | if non-software WebGL is available |
+| TF.js WebGPU         | if non-software WebGPU adapter is available |
+| onnxruntime-web WASM | always |
+| onnxruntime-web WebGL EP | if non-software WebGL is available |
+| onnxruntime-web WebGPU EP | if non-software WebGPU adapter is available |
+| onnxruntime-web WebNN EP | if `navigator.ml` is available (Chrome Canary + flag) |
 
-WebGPU is **not** benchmarked here. The only WebGPU adapter available in a
-headless-Chrome-on-Linux-in-a-container environment is SwiftShader, which
-is a software emulation of GPU — any numbers would measure the emulator,
-not the runtime. Real WebGPU results require a machine with an actual GPU.
+Each backend records cold-start load time, per-size inference median
+(p25/p75/min/max), patch-loop wall time (8 × 64² patches), and a parity
+check against whichever backend ran first successfully (loose 5e-3
+threshold since GPU kernels legitimately differ from CPU).
 
 ## Setup
 
@@ -19,11 +27,13 @@ mkdir -p public/models/tfjs public/models/onnx public/vendor/tfjs public/vendor/
 cp ../../../../models/esrgan-medium/models/x4/* public/models/tfjs/
 cp /path/to/esrgan_medium_x4.onnx public/models/onnx/model.onnx
 
-# Copy runtime assets. Exact filenames depend on the version.
+# Runtime assets (exact filenames depend on version).
 cp node_modules/@tensorflow/tfjs/dist/tf.min.js public/vendor/tfjs/
 cp node_modules/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.min.js public/vendor/tfjs/
 cp node_modules/@tensorflow/tfjs-backend-wasm/dist/*.wasm public/vendor/tfjs/
-cp node_modules/onnxruntime-web/dist/ort.min.js public/vendor/ort/
+cp node_modules/@tensorflow/tfjs-backend-webgpu/dist/tf-backend-webgpu.min.js public/vendor/tfjs/
+# onnxruntime-web: use the "all" bundle so every EP (wasm/webgl/webgpu/webnn) is included
+cp node_modules/onnxruntime-web/dist/ort.all.min.js public/vendor/ort/
 cp node_modules/onnxruntime-web/dist/*.{mjs,wasm} public/vendor/ort/
 
 cp ../../../../assets/flower.png public/input.png
@@ -32,64 +42,101 @@ npm install
 npm run bench
 ```
 
-The driver serves `public/` with COOP/COEP headers (required for multi-
-threaded WASM via `SharedArrayBuffer`), launches headless Chrome, runs the
-page, and prints results.
+The driver serves `public/` with COOP/COEP headers (required for
+multi-threaded WASM via `SharedArrayBuffer`), launches headless Chrome
+with `--enable-unsafe-webgpu`, runs the page, and dumps the result JSON.
 
-## Results (in-browser, CPU via WASM)
+## Running on a real-GPU laptop
+
+The headless Chrome box in CI/containers usually has only SwiftShader
+(software WebGPU) and llvmpipe (software WebGL). The harness detects
+these and skips the GPU backends automatically — timing a software
+emulator is meaningless.
+
+**To get real GPU numbers, run the page directly in a regular Chrome
+on a machine with a GPU.** You can either:
+
+1. Let the puppeteer driver do it: `npm run bench` still works on a
+   real laptop; puppeteer will pick up the real GPU if available.
+2. Point any static server at `public/` (must send COOP/COEP headers)
+   and open `http://localhost:PORT/index.html` in your actual browser.
+
+The results auto-render in a table. Two buttons are provided:
+
+- **Copy JSON** — full result, for pasting into an issue/PR.
+- **Copy Markdown table** — human-readable summary with system info.
+
+## URL parameters
+
+All of these are optional — the page picks sensible defaults.
+
+| param       | default         | effect                                            |
+| ----------- | --------------- | ------------------------------------------------- |
+| `?sizes=`   | `32,64,128`     | comma-separated input sizes (square, RGB)         |
+| `?warmup=`  | `3`             | warmup iterations before timed runs               |
+| `?iters=`   | `10`            | timed iterations per size                          |
+| `?patch=`   | `64`            | patch size for the patch-loop test                 |
+| `?patches=` | `16`            | number of patches in the patch-loop                |
+| `?timeout=` | `90000`         | per-backend timeout in ms (kills hung GPUs)       |
+| `?forceGpu` | off             | attempt GPU backends even if the adapter looks like software emulation |
+| `?manual`   | off             | don't autostart; wait for the "Start" link to be clicked |
+
+Example:
+
+```
+http://localhost:4773/index.html?sizes=64,128,256&iters=20&warmup=5
+```
+
+## System info collected
+
+The page captures and reports:
+
+- `userAgent`, `platform`, `hardwareConcurrency`, `deviceMemory`
+- `crossOriginIsolated` (needed for threaded WASM)
+- WASM feature probe: `SharedArrayBuffer`, SIMD, threads
+- WebGL: vendor, renderer, version, max texture size (via `WEBGL_debug_renderer_info`)
+- WebGPU: adapter `vendor`, `architecture`, `device`, `description`,
+  `features[]`, key `limits`
+- `navigator.ml` (WebNN) presence
+- Runtime versions for tfjs and onnxruntime-web
+- Bundle bytes per file (so we can compare shipping cost)
+
+## What we already know (from a no-GPU container run)
 
 ```
 hardwareConcurrency: 16, crossOriginIsolated: true, multi-threaded WASM
-tfjs 4.22, onnxruntime-web 1.24
+tfjs 4.22, onnxruntime-web 1.17
 
 Cold start:
-  tfjs-wasm  setBackend+loadLayersModel   ~218 ms
-  ort-wasm   InferenceSession             ~1930 ms      (WASM compile dominates)
+  tfjs-wasm  setBackend+loadLayersModel   ~180–220 ms
+  ort-wasm   InferenceSession             ~1.9 s       (WASM compile dominates)
 
-Single-call inference (median of 5, after 2 warmup):
-  32  → 128    tfjs ~23 ms    ort ~318* ms
-  64  → 256    tfjs ~61 ms    ort ~72 ms
+Single-call inference (median of 10, after 3 warmup):
+  32  → 128    tfjs ~17 ms    ort ~22 ms
+  64  → 256    tfjs ~57 ms    ort ~71 ms
+  128 → 512    tfjs ~218 ms   ort ~280 ms
 
-Patch-loop (8 × 64² patches — end-to-end pipeline cost):
-  tfjs-wasm  474 ms   (59 ms/patch)
-  ort-wasm   624 ms   (78 ms/patch)
-  → tfjs-wasm is ~1.3× faster here
+Patch-loop (16 × 64² patches — end-to-end pipeline cost):
+  tfjs-wasm  ~915 ms
+  ort-wasm   ~1129 ms
+  → tfjs-wasm is ~1.2× faster on WASM
 
-* ORT's 32→128 median has large variance (min 22 ms, max 324 ms). Looks
-  like warmup=2 isn't long enough for ORT to settle — bump warmup if you
-  care about the small-tile number specifically. The larger sizes are stable.
+All four GPU backends (tfjs-webgl, tfjs-webgpu, ort-webgl, ort-webgpu)
+  → skipped (software adapter detected)
 ```
 
-## What this means (and doesn't)
+This is the fallback path. The comparison that actually matters for most
+browser users — **tfjs-webgpu vs ort-webgpu**, and **ort-webnn** (which
+hits CoreML/DirectML/TFLite via the OS) — requires a machine with a real
+GPU and a current Chrome. That's what this harness is built for; the
+WASM-only numbers above are the lower bound.
 
-Direct comparison against the Node numbers in `../README.md`:
+## Interpreting parity
 
-| path                        | patch-loop speedup | who wins       |
-| --------------------------- | ------------------ | -------------- |
-| Node CPU (tfjs-node vs ORT) | 2.3×               | ONNX           |
-| Browser WASM (tfjs-wasm vs ort-wasm) | 1.3×      | **TF.js**      |
-| Browser WebGPU              | not measured here  | ?              |
-
-The Node result doesn't transfer to browser users on WASM. Two likely
-reasons:
-
-1. **`tfjs-node` isn't `tfjs-wasm`.** tfjs-node uses the native C++
-   TensorFlow runtime; onnxruntime-node uses the native C++ ORT runtime.
-   Both are compiled kernels talking through bindings. In-browser, both
-   are WASM builds, and the kernel-quality comparison is different.
-2. **ORT's WASM cold-start is expensive** — ~2 s to compile the WASM
-   bundle. This is one-time cost per page load, but it's big.
-
-This doesn't negate the Node speedup or the case for ONNX long-term. It
-*does* mean the perf argument for ONNX in the browser hinges on **WebGPU**,
-not WASM, and that's the measurement still missing. On a machine with a
-real GPU, the comparison we actually need is:
-
-- tfjs-webgpu (or tfjs-webgl fallback)
-- onnxruntime-web with the WebGPU execution provider
-
-If ORT's WebGPU EP outperforms tfjs-webgpu by a meaningful margin on this
-model, the browser story lines up with the Node story. If it doesn't, then
-the browser migration is a wash on perf and the argument for ONNX has to
-rest on other grounds (larger model zoo, simpler packaging, vendor support,
-Node speedups for server-side use).
+Every successful backend's first sample (smallest size) is compared
+against the reference backend (first to succeed — usually tfjs-cpu).
+The threshold is `5e-3` max-abs because the ESRGAN-medium x4 model outputs
+unbounded floats, and WebGPU/WebGL kernels can differ from CPU/WASM by
+small amounts due to fused ops and fp32 accumulation order. Anything
+above `5e-3` is flagged `DIFF` in the table and should be investigated
+before trusting the timing.

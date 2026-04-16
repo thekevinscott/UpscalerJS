@@ -2,43 +2,165 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>tfjs vs onnxruntime-web benchmark</title>
+<title>tfjs vs onnxruntime-web benchmark (full matrix)</title>
+<style>
+  body { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; line-height: 1.4; }
+  h1, h2 { font-family: system-ui; }
+  pre { background: #f5f5f5; padding: 1rem; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+  .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .col { flex: 1 1 300px; min-width: 300px; }
+  button { font: inherit; padding: 0.4rem 0.8rem; margin-right: 0.4rem; }
+  textarea { width: 100%; min-height: 180px; font: inherit; }
+  .ok { color: #0a0; }
+  .bad { color: #a00; }
+  .muted { color: #888; }
+  table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; }
+  td, th { border: 1px solid #ddd; padding: 4px 8px; text-align: right; font-size: 13px; }
+  th { background: #f5f5f5; text-align: center; }
+  td:first-child, th:first-child { text-align: left; }
+</style>
 </head>
 <body>
-<h1>tfjs vs onnxruntime-web benchmark</h1>
-<pre id="log">starting...</pre>
+<h1>tfjs vs onnxruntime-web — full backend matrix</h1>
+<p class="muted">
+  Open directly in your browser (needs COOP/COEP headers served — use
+  <code>npm run bench</code> or any static server with the right headers).
+  <a href="#" id="start-btn">Start benchmark</a> (autostarts unless <code>?manual</code> is in the URL).
+</p>
+
+<div class="row">
+  <div class="col">
+    <h2>System</h2>
+    <pre id="sysinfo">gathering…</pre>
+  </div>
+  <div class="col">
+    <h2>Progress</h2>
+    <pre id="log"></pre>
+  </div>
+</div>
+
+<h2>Results</h2>
+<div id="results-table"></div>
+
+<h2>Raw JSON (copy to paste into PR)</h2>
+<button id="copy-btn">Copy JSON</button>
+<button id="copy-md-btn">Copy Markdown table</button>
+<textarea id="json-out" readonly></textarea>
+
 <script src="./vendor/tfjs/tf.min.js"></script>
 <script src="./vendor/tfjs/tf-backend-wasm.min.js"></script>
 <script src="./vendor/tfjs/tf-backend-webgpu.min.js"></script>
-<script src="./vendor/ort/ort.min.js"></script>
+<script src="./vendor/ort/ort.all.min.js"></script>
 <script>
 (async () => {
-  const log = (msg) => {
-    const el = document.getElementById('log');
-    el.textContent += '\n' + msg;
-    console.log(msg);
-  };
+  // ---------- config (overridable via URL params) ----------
+  //   ?sizes=32,64,128,192  ?warmup=3  ?iters=10  ?patch=64  ?patches=16  ?manual
+  const params = new URLSearchParams(location.search);
+  const SIZES       = (params.get('sizes') || '32,64,128').split(',').map(Number);
+  const WARMUP      = Number(params.get('warmup')  || 3);
+  const ITERS       = Number(params.get('iters')   || 10);
+  const PATCH_SIZE  = Number(params.get('patch')   || 64);
+  const PATCHES     = Number(params.get('patches') || 16);
+  const AUTO        = !params.has('manual');
+
   window.__done = false;
   window.__results = null;
 
-  // Keep it bounded. tfjs-wasm single-thread is slow; don't go beyond 64.
-  const SIZES = [32, 64];
-  const WARMUP = 2;
-  const ITERS = 5;
-  const PATCH_SIZE = 64;
-  const PATCHES = 8;
-
-  const fmt = (ms) => ms.toFixed(1).padStart(7) + ' ms';
+  const logEl = document.getElementById('log');
+  const log = (msg, cls) => {
+    const line = document.createElement('div');
+    if (cls) line.className = cls;
+    line.textContent = msg;
+    logEl.appendChild(line);
+    console.log(msg);
+  };
+  const fmt = (ms) => (ms == null ? '—' : ms.toFixed(1) + ' ms');
   const stats = (arr) => {
+    if (!arr.length) return null;
     const s = [...arr].sort((a, b) => a - b);
     return {
+      n: arr.length,
       mean: arr.reduce((a, b) => a + b, 0) / arr.length,
       median: s[Math.floor(s.length / 2)],
+      p25: s[Math.floor(s.length * 0.25)],
+      p75: s[Math.floor(s.length * 0.75)],
       min: s[0],
       max: s[s.length - 1],
     };
   };
 
+  // ---------- system info ----------
+  async function gatherSystemInfo() {
+    const info = {
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      deviceMemory: navigator.deviceMemory ?? null,
+      devicePixelRatio: window.devicePixelRatio,
+      crossOriginIsolated: self.crossOriginIsolated,
+      screen: { w: screen.width, h: screen.height, colorDepth: screen.colorDepth },
+      performance: {
+        hasMemoryApi: !!performance.memory,
+        jsHeapLimitMB: performance.memory ? (performance.memory.jsHeapSizeLimit / 1048576).toFixed(0) : null,
+      },
+      runtimes: {
+        tfjs: tf.version.tfjs,
+        ort: ort.env.versions?.common ?? 'unknown',
+      },
+      wasm: {
+        SharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+        simd: await (async () => {
+          try {
+            // feature test — minimal SIMD module
+            const b = Uint8Array.of(0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11);
+            return (await WebAssembly.validate(b));
+          } catch { return false; }
+        })(),
+        threads: typeof SharedArrayBuffer !== 'undefined' && self.crossOriginIsolated === true,
+      },
+      webgl: (() => {
+        const c = document.createElement('canvas');
+        const gl = c.getContext('webgl2') || c.getContext('webgl');
+        if (!gl) return { available: false };
+        const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+        return {
+          available: true,
+          version: gl.getParameter(gl.VERSION),
+          shadingLanguage: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
+          vendor: dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR),
+          renderer: dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+          maxTextureSize: gl.getParameter(gl.MAX_TEXTURE_SIZE),
+        };
+      })(),
+      webgpu: await (async () => {
+        if (!navigator.gpu) return { available: false };
+        try {
+          const adapter = await navigator.gpu.requestAdapter();
+          if (!adapter) return { available: false, reason: 'no adapter' };
+          const info = adapter.info || (await adapter.requestAdapterInfo?.()) || {};
+          const features = [...adapter.features].slice(0, 12);
+          return {
+            available: true,
+            vendor: info.vendor ?? null,
+            architecture: info.architecture ?? null,
+            device: info.device ?? null,
+            description: info.description ?? null,
+            features,
+            limits: {
+              maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize,
+              maxComputeWorkgroupSizeX: adapter.limits.maxComputeWorkgroupSizeX,
+            },
+          };
+        } catch (e) { return { available: false, reason: e.message }; }
+      })(),
+      webnn: typeof navigator.ml !== 'undefined',
+    };
+    return info;
+  }
+
+  // ---------- image loading ----------
   let imgEl;
   async function loadImage(size) {
     if (!imgEl) {
@@ -48,132 +170,311 @@
     }
     const c = document.createElement('canvas');
     c.width = size; c.height = size;
-    const ctx = c.getContext('2d');
+    const ctx = c.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(imgEl, 0, 0, size, size);
     const id = ctx.getImageData(0, 0, size, size);
     const f = new Float32Array(size * size * 3);
     for (let i = 0, j = 0; i < id.data.length; i += 4, j += 3) {
-      f[j]   = id.data[i]   / 255;
-      f[j+1] = id.data[i+1] / 255;
-      f[j+2] = id.data[i+2] / 255;
+      f[j]     = id.data[i]     / 255;
+      f[j + 1] = id.data[i + 1] / 255;
+      f[j + 2] = id.data[i + 2] / 255;
     }
     return { data: f, width: size, height: size };
   }
 
-  // ORT config — use absolute path so ORT's internal dynamic imports resolve
-  // from the document origin, not from the ort.min.js URL.
+  // Reference output for parity checks — we seed it from whichever backend
+  // runs first successfully at the smallest size. Everyone else compares
+  // against that. Threshold is loose (5e-3) because GPU kernels legitimately
+  // differ from CPU by small amounts.
+  let REFERENCE = null;
+  let REFERENCE_FROM = null;
+
+  function compare(a, b) {
+    if (!a || !b || a.length !== b.length) return { ok: false, reason: `len ${a?.length} vs ${b?.length}` };
+    let maxAbs = 0, sum = 0;
+    for (let i = 0; i < a.length; i++) {
+      const d = Math.abs(a[i] - b[i]);
+      if (d > maxAbs) maxAbs = d;
+      sum += d;
+    }
+    return { ok: maxAbs < 5e-3, maxAbs, meanAbs: sum / a.length };
+  }
+
+  // ---------- runtime config ----------
   ort.env.wasm.wasmPaths = location.origin + '/vendor/ort/';
   ort.env.wasm.simd = true;
-  // Let both runtimes use default threading — we have COOP/COEP set on the server.
-  // tfjs wasm paths (absolute)
   tf.wasm.setWasmPaths(location.origin + '/vendor/tfjs/');
-  log(`hardwareConcurrency: ${navigator.hardwareConcurrency}`);
-  log(`crossOriginIsolated: ${self.crossOriginIsolated}`);
 
-  log(`userAgent: ${navigator.userAgent}`);
-  log(`tfjs version: ${tf.version.tfjs}`);
-  log(`ort version: ${ort.env.versions.common}`);
-  log(`navigator.gpu: ${navigator.gpu ? 'yes' : 'no'}`);
+  // ---------- benchmark harness ----------
 
-  const results = { tfjs: {}, ort: {} };
-
-  async function benchTfjs(backend) {
-    log(`\n=== TF.js (${backend}) ===`);
-    const t0 = performance.now();
-    const ok = await tf.setBackend(backend);
-    if (!ok) { log(`  setBackend(${backend}) returned false`); return null; }
-    await tf.ready();
-    const tBackend = performance.now();
-    log(`  setBackend: ${fmt(tBackend - t0)}  (now=${tf.getBackend()})`);
-
+  async function benchTfjs(backend, { maxSize } = {}) {
     const tLoad0 = performance.now();
+    const ok = await tf.setBackend(backend);
+    if (!ok) throw new Error(`setBackend(${backend}) returned false`);
+    await tf.ready();
     const model = await tf.loadLayersModel('./models/tfjs/model.json');
-    const tLoad1 = performance.now();
-    log(`  loadLayersModel: ${fmt(tLoad1 - tLoad0)}`);
+    const load = performance.now() - tLoad0;
 
     const sizeResults = {};
+    const samples = {};
     for (const size of SIZES) {
+      if (maxSize != null && size > maxSize) { sizeResults[size] = null; continue; }
       const img = await loadImage(size);
       const input = tf.tensor4d(img.data, [1, size, size, 3]);
-      for (let i = 0; i < WARMUP; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+      for (let i = 0; i < WARMUP; i++) {
+        const y = model.predict(input); await y.data(); y.dispose();
+      }
       const times = [];
+      let sample;
       for (let i = 0; i < ITERS; i++) {
         const t0 = performance.now();
         const y = model.predict(input);
-        await y.data();
+        const d = await y.data();
         times.push(performance.now() - t0);
+        if (i === 0 && size === SIZES[0]) sample = Float32Array.from(d);
         y.dispose();
       }
       input.dispose();
-      const s = stats(times);
-      sizeResults[size] = s;
-      log(`  ${size}→${size*4}: median=${fmt(s.median)} mean=${fmt(s.mean)}`);
+      sizeResults[size] = stats(times);
+      if (sample) samples[size] = sample;
     }
 
-    const patch = await loadImage(PATCH_SIZE);
-    const input = tf.tensor4d(patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
-    for (let i = 0; i < WARMUP; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
-    const tP0 = performance.now();
-    for (let i = 0; i < PATCHES; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
-    const tPTotal = performance.now() - tP0;
-    input.dispose();
-    log(`  patch-loop (${PATCHES} × ${PATCH_SIZE}²): ${fmt(tPTotal)}`);
-    return { setBackend: tBackend - t0, loadModel: tLoad1 - tLoad0, sizes: sizeResults, patchLoop: tPTotal };
+    let patchLoop = null;
+    if (maxSize == null || PATCH_SIZE <= maxSize) {
+      const patch = await loadImage(PATCH_SIZE);
+      const input = tf.tensor4d(patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
+      for (let i = 0; i < WARMUP; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+      const t0 = performance.now();
+      for (let i = 0; i < PATCHES; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+      patchLoop = performance.now() - t0;
+      input.dispose();
+    }
+
+    return { load, sizes: sizeResults, patchLoop, sample: samples[SIZES[0]] ?? null };
   }
 
-  async function benchOrt(ep) {
-    log(`\n=== ORT (${ep}) ===`);
-    const t0 = performance.now();
+  async function benchOrt(ep, { maxSize } = {}) {
+    const tLoad0 = performance.now();
     const session = await ort.InferenceSession.create('./models/onnx/model.onnx', {
       executionProviders: [ep],
       graphOptimizationLevel: 'all',
     });
-    const tLoad = performance.now();
-    log(`  InferenceSession: ${fmt(tLoad - t0)}`);
+    const load = performance.now() - tLoad0;
     const inputName = session.inputNames[0];
     const outputName = session.outputNames[0];
+
     const sizeResults = {};
+    const samples = {};
     for (const size of SIZES) {
+      if (maxSize != null && size > maxSize) { sizeResults[size] = null; continue; }
       const img = await loadImage(size);
       const inputTensor = new ort.Tensor('float32', img.data, [1, size, size, 3]);
       for (let i = 0; i < WARMUP; i++) { await session.run({ [inputName]: inputTensor }); }
       const times = [];
+      let sample;
       for (let i = 0; i < ITERS; i++) {
         const t0 = performance.now();
         const out = await session.run({ [inputName]: inputTensor });
-        void out[outputName].data;
+        const d = out[outputName].data;
         times.push(performance.now() - t0);
+        if (i === 0 && size === SIZES[0]) sample = Float32Array.from(d);
       }
-      const s = stats(times);
-      sizeResults[size] = s;
-      log(`  ${size}→${size*4}: median=${fmt(s.median)} mean=${fmt(s.mean)}`);
+      sizeResults[size] = stats(times);
+      if (sample) samples[size] = sample;
     }
-    const patch = await loadImage(PATCH_SIZE);
-    const inputTensor = new ort.Tensor('float32', patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
-    for (let i = 0; i < WARMUP; i++) { await session.run({ [inputName]: inputTensor }); }
-    const tP0 = performance.now();
-    for (let i = 0; i < PATCHES; i++) { const out = await session.run({ [inputName]: inputTensor }); void out[outputName].data; }
-    const tPTotal = performance.now() - tP0;
-    log(`  patch-loop (${PATCHES} × ${PATCH_SIZE}²): ${fmt(tPTotal)}`);
-    return { load: tLoad - t0, sizes: sizeResults, patchLoop: tPTotal };
+
+    let patchLoop = null;
+    if (maxSize == null || PATCH_SIZE <= maxSize) {
+      const patch = await loadImage(PATCH_SIZE);
+      const inputTensor = new ort.Tensor('float32', patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
+      for (let i = 0; i < WARMUP; i++) { await session.run({ [inputName]: inputTensor }); }
+      const t0 = performance.now();
+      for (let i = 0; i < PATCHES; i++) {
+        const out = await session.run({ [inputName]: inputTensor });
+        void out[outputName].data;
+      }
+      patchLoop = performance.now() - t0;
+    }
+
+    return { load, sizes: sizeResults, patchLoop, sample: samples[SIZES[0]] ?? null };
   }
 
-  try {
-    // WASM: the realistic CPU-only browser deploy target for both runtimes.
-    try { results.tfjs.wasm = await benchTfjs('wasm'); } catch (e) { log('tfjs wasm: ' + e.message); }
-    try { results.ort.wasm  = await benchOrt('wasm');  } catch (e) { log('ort wasm: '  + e.message); }
+  // Backend registry. Each entry is independent — if one fails, others continue.
+  // `maxSize` caps input size for backends we know are slow (avoids hanging the page).
+  const REGISTRY = [
+    { id: 'tfjs-cpu',    label: 'TF.js CPU (pure JS, reference)', run: () => benchTfjs('cpu',    { maxSize: 32 }) },
+    { id: 'tfjs-wasm',   label: 'TF.js WASM',                     run: () => benchTfjs('wasm')                    },
+    { id: 'tfjs-webgl',  label: 'TF.js WebGL',                    run: () => benchTfjs('webgl')                   },
+    { id: 'tfjs-webgpu', label: 'TF.js WebGPU',                   run: () => benchTfjs('webgpu')                  },
+    { id: 'ort-wasm',    label: 'onnxruntime-web WASM',           run: () => benchOrt('wasm')                     },
+    { id: 'ort-webgl',   label: 'onnxruntime-web WebGL',          run: () => benchOrt('webgl')                    },
+    { id: 'ort-webgpu',  label: 'onnxruntime-web WebGPU',         run: () => benchOrt('webgpu')                   },
+    { id: 'ort-webnn',   label: 'onnxruntime-web WebNN',          run: () => benchOrt('webnn')                    },
+  ];
 
-    // WebGPU skipped in this environment — only SwiftShader (software GPU)
-    // is available, so any WebGPU numbers here would measure the emulator,
-    // not the runtime. Real WebGPU results require a machine with a GPU.
-    log('\n=== DONE ===');
+  async function runAll() {
+    const sys = await gatherSystemInfo();
+    document.getElementById('sysinfo').textContent = JSON.stringify(sys, null, 2);
+    log(`system: ${sys.platform} / ${sys.hardwareConcurrency}c / ${sys.webgpu.available ? `WebGPU:${sys.webgpu.vendor ?? '?'}` : 'no-WebGPU'} / ${sys.webgl.available ? `WebGL:${sys.webgl.renderer ?? '?'}` : 'no-WebGL'}`);
+
+    // Detect software-GPU fallbacks that will silently produce invalid results
+    // or hang. "swiftshader"/"llvmpipe"/"microsoft basic render" are all
+    // software emulators. Skip GPU backends in that case so the rest of the
+    // matrix still completes. Override with `?forceGpu` if you want to try
+    // anyway.
+    const softwareGpu = sys.webgpu.available && /swiftshader|llvmpipe|software|microsoft basic/i.test(
+      [sys.webgpu.vendor, sys.webgpu.architecture, sys.webgpu.device, sys.webgpu.description, sys.webgl.renderer].filter(Boolean).join(' ')
+    );
+    const softwareWebGl = sys.webgl.available && /swiftshader|llvmpipe|software|microsoft basic/i.test(sys.webgl.renderer || '');
+    const forceGpu = params.has('forceGpu');
+    if (softwareGpu && !forceGpu) log(`[note] WebGPU adapter looks like software emulation — skipping WebGPU backends. Use ?forceGpu to override.`, 'muted');
+    if (softwareWebGl && !forceGpu) log(`[note] WebGL renderer looks like software emulation — skipping WebGL backends. Use ?forceGpu to override.`, 'muted');
+
+    const results = {
+      config: { SIZES, WARMUP, ITERS, PATCH_SIZE, PATCHES },
+      system: sys,
+      backends: {},
+    };
+
+    for (const entry of REGISTRY) {
+      const isWebGpu = /webgpu/.test(entry.id);
+      const isWebGl  = /webgl/.test(entry.id);
+      const isWebNn  = /webnn/.test(entry.id);
+      if (isWebGpu && softwareGpu && !forceGpu) {
+        log(`→ ${entry.id} skipped (software WebGPU)`, 'muted');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: 'skipped: software WebGPU adapter (use ?forceGpu to override)' };
+        continue;
+      }
+      if (isWebGl && softwareWebGl && !forceGpu) {
+        log(`→ ${entry.id} skipped (software WebGL)`, 'muted');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: 'skipped: software WebGL renderer (use ?forceGpu to override)' };
+        continue;
+      }
+      if (isWebGpu && !sys.webgpu.available) {
+        log(`→ ${entry.id} skipped (no WebGPU)`, 'muted');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: 'skipped: no WebGPU adapter' };
+        continue;
+      }
+      if (isWebGl && !sys.webgl.available) {
+        log(`→ ${entry.id} skipped (no WebGL)`, 'muted');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: 'skipped: no WebGL' };
+        continue;
+      }
+      if (isWebNn && !sys.webnn) {
+        log(`→ ${entry.id} skipped (no navigator.ml / WebNN)`, 'muted');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: 'skipped: no WebNN (navigator.ml unavailable)' };
+        continue;
+      }
+
+      log(`→ ${entry.id} …`);
+      const t0 = performance.now();
+      // Per-backend timeout — if a backend hangs (e.g. SwiftShader WebGPU
+      // dispatching compute shaders that never complete), we want to skip
+      // and continue rather than kill the whole run.
+      const PER_BACKEND_TIMEOUT_MS = Number(params.get('timeout') || 90000);
+      try {
+        const r = await Promise.race([
+          entry.run(),
+          new Promise((_, reject) => setTimeout(() => reject(new Error(`timeout after ${PER_BACKEND_TIMEOUT_MS}ms`)), PER_BACKEND_TIMEOUT_MS)),
+        ]);
+        const dt = performance.now() - t0;
+        const sample = r.sample;
+        const rec = { ok: true, wallTime: dt, label: entry.label, load: r.load, sizes: r.sizes, patchLoop: r.patchLoop };
+
+        if (!REFERENCE && sample) { REFERENCE = sample; REFERENCE_FROM = entry.id; }
+        if (REFERENCE && sample) rec.parity = compare(REFERENCE, sample);
+
+        results.backends[entry.id] = rec;
+        const firstSize = Object.keys(r.sizes).find((k) => r.sizes[k]);
+        const m = firstSize ? r.sizes[firstSize].median : null;
+        log(`   ok  load=${fmt(r.load)}  ${firstSize ? firstSize + '→' + (firstSize * 4) + ' median=' + fmt(m) : ''}  patchLoop=${fmt(r.patchLoop)}`, 'ok');
+      } catch (e) {
+        log(`   skipped: ${e.message}`, 'bad');
+        results.backends[entry.id] = { ok: false, label: entry.label, error: e.message };
+      }
+    }
+
+    results.referenceFrom = REFERENCE_FROM;
+
+    const resources = performance.getEntriesByType('resource');
+    const bytes = (pred) => resources.filter(pred).reduce((a, r) => a + (r.transferSize || r.encodedBodySize || 0), 0);
+    results.bundleBytes = {
+      tfjs_core:       bytes((r) => r.name.includes('/vendor/tfjs/tf.min.js')),
+      tfjs_wasm_js:    bytes((r) => r.name.includes('tf-backend-wasm')),
+      tfjs_wasm_wasm:  bytes((r) => r.name.includes('tfjs-backend-wasm') && r.name.endsWith('.wasm')),
+      tfjs_webgpu_js:  bytes((r) => r.name.includes('tf-backend-webgpu')),
+      ort_js:          bytes((r) => r.name.includes('ort.all.min.js')),
+      ort_wasm:        bytes((r) => r.name.includes('/vendor/ort/') && r.name.endsWith('.wasm')),
+      model_tfjs:      bytes((r) => r.name.includes('/models/tfjs/')),
+      model_onnx:      bytes((r) => r.name.includes('/models/onnx/')),
+    };
+
+    renderTable(results);
+    document.getElementById('json-out').value = JSON.stringify(results, null, 2);
+    log('DONE', 'ok');
     window.__results = results;
     window.__done = true;
-  } catch (e) {
-    log('FATAL: ' + e.stack);
-    window.__results = { error: e.stack };
-    window.__done = true;
   }
+
+  function renderTable(results) {
+    const host = document.getElementById('results-table');
+    host.innerHTML = '';
+    const t1 = document.createElement('table');
+    const header = ['backend', 'load (cold)', ...SIZES.map((s) => `${s}→${s*4} median`), 'patch-loop', 'parity vs ref'];
+    t1.innerHTML = `<thead><tr>${header.map((h) => `<th>${h}</th>`).join('')}</tr></thead>`;
+    const tbody = document.createElement('tbody');
+    for (const id of Object.keys(results.backends)) {
+      const r = results.backends[id];
+      const tr = document.createElement('tr');
+      if (!r.ok) {
+        tr.innerHTML = `<td>${id}</td><td colspan="${header.length - 1}" class="bad">skipped: ${r.error}</td>`;
+      } else {
+        const cells = [
+          id,
+          fmt(r.load),
+          ...SIZES.map((s) => (r.sizes[s] ? fmt(r.sizes[s].median) : '—')),
+          fmt(r.patchLoop),
+          r.parity ? (r.parity.ok ? `match (${r.parity.maxAbs.toExponential(1)})` : `DIFF (${r.parity.maxAbs.toExponential(1)})`) : '(ref)',
+        ];
+        tr.innerHTML = cells.map((c) => `<td>${c}</td>`).join('');
+      }
+      tbody.appendChild(tr);
+    }
+    t1.appendChild(tbody);
+    host.appendChild(t1);
+  }
+
+  document.getElementById('copy-btn').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('json-out').value);
+  });
+  document.getElementById('copy-md-btn').addEventListener('click', () => {
+    if (!window.__results) return;
+    const r = window.__results;
+    const lines = [];
+    lines.push('### System');
+    const s = r.system;
+    lines.push(`- UA: \`${s.userAgent}\``);
+    lines.push(`- Platform: ${s.platform}, ${s.hardwareConcurrency} cores, crossOriginIsolated=${s.crossOriginIsolated}`);
+    lines.push(s.webgpu.available
+      ? `- WebGPU: ${s.webgpu.vendor ?? '?'} / ${s.webgpu.architecture ?? '?'} / ${s.webgpu.device ?? '?'}`
+      : `- WebGPU: unavailable (${s.webgpu.reason ?? 'n/a'})`);
+    if (s.webgl.available) lines.push(`- WebGL: ${s.webgl.vendor} / ${s.webgl.renderer} (${s.webgl.version})`);
+    lines.push(`- Runtimes: tfjs ${s.runtimes.tfjs}, ort ${s.runtimes.ort}`);
+    lines.push('');
+    lines.push('### Results');
+    lines.push('| backend | load | ' + SIZES.map((z) => `${z}→${z*4}`).join(' | ') + ' | patch-loop | parity |');
+    lines.push('|' + '---|'.repeat(SIZES.length + 4));
+    for (const id of Object.keys(r.backends)) {
+      const b = r.backends[id];
+      if (!b.ok) { lines.push(`| ${id} | *skipped: ${b.error}* |${'|'.repeat(SIZES.length + 2)}`); continue; }
+      const row = [id, fmt(b.load), ...SIZES.map((sz) => (b.sizes[sz] ? fmt(b.sizes[sz].median) : '—')), fmt(b.patchLoop), b.parity ? (b.parity.ok ? 'match' : 'DIFF') : '(ref)'];
+      lines.push('| ' + row.join(' | ') + ' |');
+    }
+    navigator.clipboard.writeText(lines.join('\n'));
+  });
+  document.getElementById('start-btn').addEventListener('click', (e) => { e.preventDefault(); runAll(); });
+
+  if (AUTO) runAll();
 })();
 </script>
 </body>
