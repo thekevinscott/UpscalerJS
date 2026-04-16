@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "setup": "bash setup.sh",
+    "prebench": "bash setup.sh",
     "bench": "node driver.mjs"
   },
   "dependencies": {

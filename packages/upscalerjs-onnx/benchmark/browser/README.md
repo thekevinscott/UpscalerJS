@@ -24,18 +24,27 @@ threshold since GPU kernels legitimately differ from CPU).
 ```sh
 cd packages/upscalerjs-onnx/benchmark/browser
 npm install
-npm run setup    # stages models + vendor JS/WASM + input.png into public/
-npm run bench    # launches headless Chrome via puppeteer
+npm run bench    # runs setup.sh via the prebench hook, then launches puppeteer
 ```
 
-`npm run setup` expects:
+No Python toolchain needed at run time — the ONNX model is committed
+pre-patched for WebGPU (see `../split-concat.py` for the transformation).
+The tfjs model is pulled from the in-repo `models/esrgan-medium/models/x4/`
+directory and the test image from `assets/flower.png`.
 
-- the tfjs model at `models/esrgan-medium/models/x4/model.json` (already
-  in the repo)
-- the converted ONNX model at
-  `packages/upscalerjs-onnx/benchmark/models/onnx/model.onnx` — generated
-  by the Node bench's `convert-tfjs-to-onnx.py` step. If you haven't run
-  the Node bench yet, do that first (see `../README.md`).
+### What's in the ONNX patch
+
+The original ONNX export has one 10-input `Concat` op (from the ESRGAN
+dense-block connections). On WebGPU, ORT-Web binds one storage buffer
+per Concat input — and the spec-default `maxStorageBuffersPerShaderStage`
+is 8. Adapters at that limit (Apple Metal, tier-1 mobile GPUs) reject
+the compute pipeline with "Invalid ComputePipeline", and ORT keeps
+submitting invalid command buffers — the timing looks fast but the
+output is garbage. The patch replaces that Concat with a left-fold of
+pairwise Concats, which is numerically exact (Concat is associative
+along an axis) and each pairwise op stays well below the buffer limit.
+Re-run `python split-concat.py <in.onnx> <out.onnx>` if you regenerate
+the ONNX from a fresh tfjs export.
 
 The driver serves `public/` with COOP/COEP headers (required for
 multi-threaded WASM via `SharedArrayBuffer`), launches headless Chrome
