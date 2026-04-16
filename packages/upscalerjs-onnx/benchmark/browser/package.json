@@ -1,0 +1,17 @@
+{
+  "name": "upscaler-onnx-browser-bench",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bench": "node driver.mjs"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
+    "onnxruntime-web": "^1.17.3",
+    "puppeteer": "^22.15.0",
+    "express": "^4.21.0"
+  }
+}

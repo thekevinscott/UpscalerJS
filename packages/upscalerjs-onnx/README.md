@@ -76,17 +76,57 @@ Patch-loop (16 × 64×64 patches — mirrors the real upscale pipeline):
 
 What this tells us:
 
-- **Cold-start and small tiles are ONNX's biggest wins.** Most of the gap is
-  per-call dispatch overhead in tfjs-node, not kernel quality. At compute-bound
-  sizes (128+) both backends land in the same ballpark.
-- **The realistic workload favours ONNX ~2.3×.** UpscalerJS runs the model
-  dozens of times per image via tile patching, so per-call overhead compounds.
-- **This is Node/CPU only.** Browser numbers (onnxruntime-web WebGPU vs
-  tfjs WebGL/WebGPU) and larger models will need their own measurements.
+- **Cold-start and small tiles are ONNX's biggest wins on Node.** Most of the
+  gap is per-call dispatch overhead in tfjs-node, not kernel quality. At
+  compute-bound sizes (128+) both backends land in the same ballpark.
+- **The Node patch-loop workload favours ONNX ~2.3×.** UpscalerJS runs the
+  model dozens of times per image via tile patching, so per-call overhead
+  compounds.
 - **Only esrgan-medium converts cleanly.** esrgan-thick uses custom Keras
   layers (MultiplyBeta, PixelShuffle4x) that `tf2onnx` can't resolve without
   Python-side class definitions — a concrete instance of the "Hard #8"
   caveat below.
+
+### Browser/WASM tells a different story
+
+Same model, same benchmark shape, run in headless Chrome with multi-threaded
+WASM (full setup/caveats in [`benchmark/browser/README.md`](./benchmark/browser/README.md)):
+
+```
+tfjs 4.22 (WASM backend) vs onnxruntime-web 1.24 WASM EP, 16-core multi-threaded
+
+Cold start:
+  tfjs-wasm   ~220 ms   (setBackend + loadLayersModel)
+  ort-wasm   ~1930 ms   (InferenceSession — WASM compile dominates)
+
+Inference (median, patch-sized 64→256):
+  tfjs-wasm    ~61 ms
+  ort-wasm     ~72 ms
+
+Patch-loop (8 × 64²):
+  tfjs-wasm   474 ms    (59 ms/patch)
+  ort-wasm    624 ms    (78 ms/patch)
+  → tfjs-wasm is 1.3× faster
+```
+
+**The Node win flips in the browser.** Likely reasons:
+- `tfjs-node` is native C++ TensorFlow; `tfjs-wasm` is a WASM port. Different
+  implementations, different kernel stack.
+- `onnxruntime-web`'s WASM compile adds ~2 s to cold start.
+- Both runtimes' in-browser kernels seem well-tuned; the "ORT wins by avoiding
+  tfjs-node's per-call overhead" story doesn't apply because we're comparing
+  WASM-to-WASM.
+
+**WebGPU was not measured.** The only WebGPU available in this environment is
+SwiftShader (software GPU), which would measure the emulator rather than the
+runtime. A real-GPU comparison of `tfjs-webgpu` vs `onnxruntime-web` WebGPU EP
+is the benchmark that still needs to happen — that's where the perf case for
+ONNX in the browser actually lives.
+
+**Practical implication for UpscalerJS v2:** the Node speedup holds and is
+meaningful for server-side users. The browser case for ONNX currently rests
+on WebGPU (unmeasured here) and on non-perf grounds (model zoo, single-file
+model packaging, vendor momentum, no `tf.tidy()`).
 
 ---
 

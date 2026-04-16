@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>tfjs vs onnxruntime-web benchmark</title>
+</head>
+<body>
+<h1>tfjs vs onnxruntime-web benchmark</h1>
+<pre id="log">starting...</pre>
+<script src="./vendor/tfjs/tf.min.js"></script>
+<script src="./vendor/tfjs/tf-backend-wasm.min.js"></script>
+<script src="./vendor/tfjs/tf-backend-webgpu.min.js"></script>
+<script src="./vendor/ort/ort.min.js"></script>
+<script>
+(async () => {
+  const log = (msg) => {
+    const el = document.getElementById('log');
+    el.textContent += '\n' + msg;
+    console.log(msg);
+  };
+  window.__done = false;
+  window.__results = null;
+
+  // Keep it bounded. tfjs-wasm single-thread is slow; don't go beyond 64.
+  const SIZES = [32, 64];
+  const WARMUP = 2;
+  const ITERS = 5;
+  const PATCH_SIZE = 64;
+  const PATCHES = 8;
+
+  const fmt = (ms) => ms.toFixed(1).padStart(7) + ' ms';
+  const stats = (arr) => {
+    const s = [...arr].sort((a, b) => a - b);
+    return {
+      mean: arr.reduce((a, b) => a + b, 0) / arr.length,
+      median: s[Math.floor(s.length / 2)],
+      min: s[0],
+      max: s[s.length - 1],
+    };
+  };
+
+  let imgEl;
+  async function loadImage(size) {
+    if (!imgEl) {
+      imgEl = new Image();
+      imgEl.src = './input.png';
+      await new Promise((r) => { imgEl.onload = r; });
+    }
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(imgEl, 0, 0, size, size);
+    const id = ctx.getImageData(0, 0, size, size);
+    const f = new Float32Array(size * size * 3);
+    for (let i = 0, j = 0; i < id.data.length; i += 4, j += 3) {
+      f[j]   = id.data[i]   / 255;
+      f[j+1] = id.data[i+1] / 255;
+      f[j+2] = id.data[i+2] / 255;
+    }
+    return { data: f, width: size, height: size };
+  }
+
+  // ORT config — use absolute path so ORT's internal dynamic imports resolve
+  // from the document origin, not from the ort.min.js URL.
+  ort.env.wasm.wasmPaths = location.origin + '/vendor/ort/';
+  ort.env.wasm.simd = true;
+  // Let both runtimes use default threading — we have COOP/COEP set on the server.
+  // tfjs wasm paths (absolute)
+  tf.wasm.setWasmPaths(location.origin + '/vendor/tfjs/');
+  log(`hardwareConcurrency: ${navigator.hardwareConcurrency}`);
+  log(`crossOriginIsolated: ${self.crossOriginIsolated}`);
+
+  log(`userAgent: ${navigator.userAgent}`);
+  log(`tfjs version: ${tf.version.tfjs}`);
+  log(`ort version: ${ort.env.versions.common}`);
+  log(`navigator.gpu: ${navigator.gpu ? 'yes' : 'no'}`);
+
+  const results = { tfjs: {}, ort: {} };
+
+  async function benchTfjs(backend) {
+    log(`\n=== TF.js (${backend}) ===`);
+    const t0 = performance.now();
+    const ok = await tf.setBackend(backend);
+    if (!ok) { log(`  setBackend(${backend}) returned false`); return null; }
+    await tf.ready();
+    const tBackend = performance.now();
+    log(`  setBackend: ${fmt(tBackend - t0)}  (now=${tf.getBackend()})`);
+
+    const tLoad0 = performance.now();
+    const model = await tf.loadLayersModel('./models/tfjs/model.json');
+    const tLoad1 = performance.now();
+    log(`  loadLayersModel: ${fmt(tLoad1 - tLoad0)}`);
+
+    const sizeResults = {};
+    for (const size of SIZES) {
+      const img = await loadImage(size);
+      const input = tf.tensor4d(img.data, [1, size, size, 3]);
+      for (let i = 0; i < WARMUP; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+      const times = [];
+      for (let i = 0; i < ITERS; i++) {
+        const t0 = performance.now();
+        const y = model.predict(input);
+        await y.data();
+        times.push(performance.now() - t0);
+        y.dispose();
+      }
+      input.dispose();
+      const s = stats(times);
+      sizeResults[size] = s;
+      log(`  ${size}→${size*4}: median=${fmt(s.median)} mean=${fmt(s.mean)}`);
+    }
+
+    const patch = await loadImage(PATCH_SIZE);
+    const input = tf.tensor4d(patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
+    for (let i = 0; i < WARMUP; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+    const tP0 = performance.now();
+    for (let i = 0; i < PATCHES; i++) { const y = model.predict(input); await y.data(); y.dispose(); }
+    const tPTotal = performance.now() - tP0;
+    input.dispose();
+    log(`  patch-loop (${PATCHES} × ${PATCH_SIZE}²): ${fmt(tPTotal)}`);
+    return { setBackend: tBackend - t0, loadModel: tLoad1 - tLoad0, sizes: sizeResults, patchLoop: tPTotal };
+  }
+
+  async function benchOrt(ep) {
+    log(`\n=== ORT (${ep}) ===`);
+    const t0 = performance.now();
+    const session = await ort.InferenceSession.create('./models/onnx/model.onnx', {
+      executionProviders: [ep],
+      graphOptimizationLevel: 'all',
+    });
+    const tLoad = performance.now();
+    log(`  InferenceSession: ${fmt(tLoad - t0)}`);
+    const inputName = session.inputNames[0];
+    const outputName = session.outputNames[0];
+    const sizeResults = {};
+    for (const size of SIZES) {
+      const img = await loadImage(size);
+      const inputTensor = new ort.Tensor('float32', img.data, [1, size, size, 3]);
+      for (let i = 0; i < WARMUP; i++) { await session.run({ [inputName]: inputTensor }); }
+      const times = [];
+      for (let i = 0; i < ITERS; i++) {
+        const t0 = performance.now();
+        const out = await session.run({ [inputName]: inputTensor });
+        void out[outputName].data;
+        times.push(performance.now() - t0);
+      }
+      const s = stats(times);
+      sizeResults[size] = s;
+      log(`  ${size}→${size*4}: median=${fmt(s.median)} mean=${fmt(s.mean)}`);
+    }
+    const patch = await loadImage(PATCH_SIZE);
+    const inputTensor = new ort.Tensor('float32', patch.data, [1, PATCH_SIZE, PATCH_SIZE, 3]);
+    for (let i = 0; i < WARMUP; i++) { await session.run({ [inputName]: inputTensor }); }
+    const tP0 = performance.now();
+    for (let i = 0; i < PATCHES; i++) { const out = await session.run({ [inputName]: inputTensor }); void out[outputName].data; }
+    const tPTotal = performance.now() - tP0;
+    log(`  patch-loop (${PATCHES} × ${PATCH_SIZE}²): ${fmt(tPTotal)}`);
+    return { load: tLoad - t0, sizes: sizeResults, patchLoop: tPTotal };
+  }
+
+  try {
+    // WASM: the realistic CPU-only browser deploy target for both runtimes.
+    try { results.tfjs.wasm = await benchTfjs('wasm'); } catch (e) { log('tfjs wasm: ' + e.message); }
+    try { results.ort.wasm  = await benchOrt('wasm');  } catch (e) { log('ort wasm: '  + e.message); }
+
+    // WebGPU skipped in this environment — only SwiftShader (software GPU)
+    // is available, so any WebGPU numbers here would measure the emulator,
+    // not the runtime. Real WebGPU results require a machine with a GPU.
+    log('\n=== DONE ===');
+    window.__results = results;
+    window.__done = true;
+  } catch (e) {
+    log('FATAL: ' + e.stack);
+    window.__results = { error: e.stack };
+    window.__done = true;
+  }
+})();
+</script>
+</body>
+</html>
