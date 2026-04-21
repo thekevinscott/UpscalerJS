@@ -7,7 +7,7 @@
 
 ## Semver framing
 
-The source spec (A8) states "Breaking changes for v2: None. Fully additive." Under strict semver this means the whole plan lives on `1.x` as minor releases; only A9's removals earn a `2.0`.
+The source spec (A8) states "Breaking changes for v2: None. Fully additive." Under strict semver this means the whole plan lives on `1.x` as minor releases; only genuine removals earn a `2.0`.
 
 Semver is a contract on the public API surface, not on user-visible behavior. For TypeScript libraries, types count as API:
 
@@ -19,24 +19,41 @@ Semver is a contract on the public API surface, not on user-visible behavior. Fo
 | New exported function / env var / export condition | minor |
 | `@deprecated` JSDoc on existing exports (docs only) | patch |
 | Import-time warning on existing exports (observable) | minor |
+| Demoting a peer dep from required to optional | debatable (treat as minor) |
 | Removal, rename, or required-field addition | major |
 
 Marketing-major (cutting `2.0` for additive work to signal direction) costs every downstream `^1.x.x` caret range its auto-update path. Recommendation: stay on `1.x` for all additive work; brand the ONNX era via docs/release-notes if the narrative matters.
 
 ---
 
-## Epic 1 — Engine seam *(minor)*
+## Epic 1 — TF.js runtime relocation + factory retrofit *(minor, multi-release)*
 
-**Scope:** Phase 1 of the spec. Add optional `engine: 'tfjs' | 'onnx'` to `ModelDefinition`. Teach `Upscaler` constructor to accept `Factory | ResolvedModel`. Dispatcher branches on `engine`; `'onnx'` throws "not yet available."
+**Rationale for going first:** A3's end state is "each model package ships its default runtime as a regular `dependencies` entry." A9 mis-defers this to v3. Doing it first makes the ecosystem consistent *before* the first ONNX model arrives, so ONNX packages aren't a special case, and it shrinks Epic 7 to just legacy-subpath removal. It's also the hairiest refactor in the plan — ~12 existing model packages — so front-loading it means every later epic plugs into a stable surface.
 
-**Why it exists:**
-- Narrowest possible intervention point — dispatch goes through the existing factory seam at `packages/upscalerjs/src/shared/upscaler.ts`.
-- Precondition for every other ONNX epic. Landing it invisibly proves the existing test matrix still passes before any real ONNX code merges.
-- Not a patch: `ModelDefinition` is a public type; adding `engine` expands the API surface. Users can write TS against it day one.
+**No user impact** is achieved by staging the work so every intermediate state is backward-compatible.
 
-**Gate:** green CI on existing test matrix, zero behavioral diff for existing users.
+### Stages
 
-**Risk:** near zero. Pure refactor of one factory function.
+**Stage 1 — Constructor polymorphism.** `Upscaler` accepts `Factory | ResolvedModel`. Internal normalize `typeof arg === 'function' ? arg() : arg`. Existing models still pass as bare objects. No model package changes yet.
+
+**Stage 2 — TF.js as a regular dep in every `@upscalerjs/*` model package.** Bulk `package.json` edit across the monorepo. Users who already have `@tensorflow/tfjs` get deduped by the PM. Users who were relying on core's peer-dep warning now auto-get it — strictly more forgiving than today.
+
+**Stage 3 — Retrofit each model package to factory-export shape.** Per-package refactor. Default export stays usable both ways because Stage 1 already normalizes. One package at a time; each is its own minor release.
+
+**Stage 4 — Add `engine: 'tfjs' | 'onnx'` to `ModelDefinition`.** Optional, defaults `'tfjs'`. All existing models retroactively conform without changes.
+
+**Stage 5 — Dispatcher on `engine`.** Routes to TF.js path today; `'onnx'` branch throws "not yet available."
+
+**Stage 6 — Demote TF.js peer dep on core to optional + `@deprecated`.** Don't remove yet — that's Epic 7. Optional means no warning for users who lack it (because model packages now supply it); deprecated signals to anyone reading the manifest.
+
+### Load-bearing details
+
+- `@upscalerjs/default-model` must be first through Stage 2. A7 requires `new Upscaler()` with no args to keep working; the zero-arg path pulls TF.js transitively through default-model before core's peer dep softens in Stage 6.
+- Stage 3 is per-package risk. Shipping Stages 1–2 globally, then doing Stage 3 one package at a time, limits any regression to its own package's users.
+- Stage 6 is the one subtle semver call. Demoting a peer dep from required to optional is *arguably* not breaking (fewer constraints = more permissive), but some installers log differently. Optional + deprecated preserves the declaration for introspection.
+
+### Gate
+Existing test matrix green after each stage. No behavioral diff for any existing user of any existing model package.
 
 ---
 
@@ -46,11 +63,11 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 
 **Why it exists:**
 - The only piece of Part 1 that delivers user value without touching ONNX. Edge-runtime deployers get served on a 1.x minor.
-- Conditional-exports rewrite (A5) is the riskiest single change in the whole plan for existing users — it touches import resolution everywhere. Landing it with TF.js as the only engine means any bundler/resolver fallout surfaces against a known-good runtime, not tangled with ONNX novelty.
+- Conditional-exports rewrite (A5) is the riskiest single change in the plan for existing users — it touches import resolution everywhere. Landing it with TF.js as the only engine means any bundler/resolver fallout surfaces against a known-good runtime, not tangled with ONNX novelty.
 
 **Gate:** real Workers deploy test + Node + browser (Playwright) all green on the same suite.
 
-**Independence:** can ship before Epics 3–5.
+**Independence:** can ship in parallel with Epic 1 after its Stage 1.
 
 ---
 
@@ -79,9 +96,9 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 **Scope:** Phase 2 of the spec. Promote spike code from `packages/upscalerjs-onnx/src/shared/` into `packages/upscalerjs/src/onnx/`. Dynamic-import `onnxruntime-web` on demand. Implement A10's import-time error UX when the runtime is missing.
 
 **Why it exists:**
-- Without it, the `'onnx'` branch from Epic 1 is still a stub.
+- Epic 1 Stage 5 left the `'onnx'` branch as a throwing stub. This epic fills it in.
 - The bundle-size gate ("TF.js-only bundle has zero ORT bytes") is a property of the adapter wiring, not of any specific model. Proving it in isolation means Epic 5 doesn't simultaneously debug model conversion and tree-shaking.
-- The dynamic-import boundary is where the "missing runtime" error UX lives — observable contract, deserves isolated testing.
+- Plugs into the already-consistent factory-export ecosystem from Epic 1. ONNX model packages won't look structurally different from TF.js ones.
 
 **Gate:** bundle-size CI check — TF.js-only bundle contains zero ORT bytes.
 
@@ -93,7 +110,7 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 
 **Why it exists:**
 - The actual payoff. PR #1301 measured ~2.3× Node/CPU speedup and 1.7e-6 numerical parity vs TF.js. Epics 1–4 are infrastructure; this is the product.
-- One model, not a fleet: A9 defers retrofitting existing TF.js packages to v3. Shipping one validates the full pipeline (NPM-inline threshold H4, manifest sha verification H7, external-data sharding H9, four env targets) against real weights without multiplying the debugging surface.
+- One model, not a fleet: shipping one validates the full pipeline (NPM-inline threshold H4, manifest sha verification H7, external-data sharding H9, four env targets) against real weights without multiplying the debugging surface.
 
 **Blocker:** concat-split Metal workaround (open arch #7) is mandatory for every ONNX conversion. Upstream issue must be filed and tracked before this ships, or every future model inherits hidden tribal knowledge.
 
@@ -106,8 +123,8 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 **Scope:** Phase 6 minus the version bump. `@deprecated` JSDoc on `/node` and `/node-gpu`. UMD-with-pinned-versions docs. "Nothing changes unless you want it to" migration guide.
 
 **Why it exists:**
-- A9's v3 cleanup is unscheduled. Users need to see the direction before then or they'll be surprised.
-- JSDoc on existing exports is a docs change → tsc and IDEs warn during the v2.x lifespan, giving users a grace window measured in minors rather than across a major boundary.
+- Users need to see the direction toward Epic 7 before it lands or they'll be surprised.
+- JSDoc on existing exports makes tsc and IDEs warn during the 1.x lifespan, giving users a grace window measured in minors rather than across a major boundary.
 - MIGRATION.md content isn't meaningful until the capabilities it describes exist. This epic trails the earlier work by design.
 - Covers open arch #6 (UMD global for ONNX — `window.ort` preloaded, pinned versions).
 
@@ -115,33 +132,33 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 
 ---
 
-## Epic 7 — Breaking cleanup *(major — 2.0)*
+## Epic 7 — Legacy cleanup *(major — 2.0)*
 
-**Scope:** A9 in full.
-- Remove `/node`, `/node-gpu` subpaths.
-- Relocate TF.js peer dep from core to TF.js model packages.
-- Retrofit existing TF.js model packages to factory-export shape (or grandfather — see open arch #4).
+**Scope:** what's left after Epic 1 already did the factory retrofit and peer-dep demotion:
+- Remove `/node` and `/node-gpu` subpaths.
+- Remove the now-optional-and-deprecated TF.js peer dep from core's manifest entirely.
 - Drop legacy tooling (pre-`exports` TypeScript, old webpack).
 
-**Why it exists:**
-- The only genuinely breaking work in the plan. There's no additive way to remove an entry point or change a peer-dep requirement.
-- Scheduled last because open arch #8 says timing needs v2 adoption data. Each 1.x minor's NPM download stats tell you who still imports `/node` vs the root entry — you can price the disruption before cutting the major.
-
-**Depends on open arch #4:** if existing TF.js packages get grandfathered (not retrofitted), Epic 7 shrinks and may not be worth cutting at all.
+**Why it exists (and might not need to):**
+- The only genuinely breaking work left. No additive way to remove an entry point.
+- Scheduled last because open arch #8 says timing needs 1.x adoption data. Each 1.x minor's NPM download stats tell you who still imports `/node` vs the root entry — you can price the disruption before cutting the major.
+- **Worth questioning whether this epic is necessary at all.** The `/node` and `/node-gpu` subpaths are deprecated, dormant aliases — leaving them in place through 1.x costs a few bytes of published metadata and nothing else. If there's no forcing function for a 2.0, indefinitely staying on 1.x is a legitimate option.
 
 ---
 
 ## Sequencing
 
-Critical path for the ONNX payoff: **1 → 4 → 5**.
+Epic 1 is the critical spine — nothing ONNX-facing can merge until its Stage 5 lands, and the retrofit (Stage 3) realistically spans several minors as packages migrate one at a time.
 
-Parallelizable once Epic 1 lands:
-- **Epic 2** (Workers) independent of all ONNX work.
-- **Epic 3** (hosting) independent of Epics 2, 4. Long lead time on unknowns.
-- **Epic 4** depends on Epic 1 only.
+Parallelizable alongside Epic 1:
+- **Epic 2** (Workers) depends on Epic 1 Stage 1 only. Can run concurrently with Stages 2–6.
+- **Epic 3** (hosting) depends on nothing from Epic 1. Can start immediately in parallel.
+
+Serial after Epic 1 completes:
+- **Epic 4** (ONNX adapter) → **Epic 5** (first ONNX model).
 
 **Epic 6** piggybacks on any later minor.
-**Epic 7** waits on adoption telemetry from 1.x minors.
+**Epic 7** waits on adoption telemetry from 1.x minors, and may never cut.
 
 ### Main tradeoff
 
@@ -156,14 +173,16 @@ Recommendation: **(a)**, given solo-maintainer + agent-workforce constraints (H1
 
 ## Proposed release mapping
 
-| Release | Epic(s) | Semver | Notes |
+| Release | Work | Semver | Notes |
 |---|---|---|---|
-| 1.(n+1).0 | Epic 1 | minor | Engine seam. No behavior change. |
-| 1.(n+2).0 | Epic 2 | minor | Workers ships for existing TF.js users. |
-| 1.(n+3).0 | Epic 3 | minor | `precache()`, progress API, hosting infra proven against existing models. |
-| 1.(n+4).0 | Epic 4 | minor | ONNX adapter wired. Still no ONNX model. |
-| 1.(n+5).0 | Epic 5 | minor | First ONNX model package. The payoff. |
-| 1.(n+6).x | Epic 6 | patch or minor | Deprecation + MIGRATION.md. |
-| 2.0.0 | Epic 7 | major | A9 cleanup. Post-adoption-data. |
+| 1.(n+1).0 | Epic 1 Stages 1–2 | minor | Constructor polymorphism + TF.js as dep on all model packages. |
+| 1.(n+2..k).0 | Epic 1 Stage 3 | minor (multiple) | One release per factory-retrofitted model package. |
+| 1.(k+1).0 | Epic 1 Stages 4–6 | minor | `engine` field, dispatcher, peer dep demoted. |
+| 1.(k+2).0 | Epic 2 | minor | Workers ships for existing TF.js users. Can shift earlier. |
+| 1.(k+3).0 | Epic 3 | minor | `precache()`, progress API, hosting infra proven against existing models. |
+| 1.(k+4).0 | Epic 4 | minor | ONNX adapter wired. |
+| 1.(k+5).0 | Epic 5 | minor | First ONNX model package. The payoff. |
+| 1.(k+6).x | Epic 6 | patch or minor | Deprecation + MIGRATION.md. |
+| 2.0.0 (optional) | Epic 7 | major | Legacy cleanup. Post-adoption-data. May never cut. |
 
-Order of 2–4 is flexible after Epic 1. Order above optimizes for value-per-release over critical-path.
+Epics 2 and 3 can shift earlier (run alongside Epic 1) at the cost of parallel maintenance attention.
