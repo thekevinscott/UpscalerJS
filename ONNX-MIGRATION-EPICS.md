@@ -32,28 +32,40 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 
 **No user impact** is achieved by staging the work so every intermediate state is backward-compatible.
 
+### Starting-point notes (confirmed against current code)
+
+- The `Upscaler` constructor already accepts object-or-function via `UpscalerOptions.model: ModelDefinitionObjectOrFn` (`packages/shared/src/types.ts:99-101`); `getModel` normalizes at `upscaler.ts:90`. **No constructor polymorphism work is needed** — that stage was an over-engineered answer to a solved problem.
+- Existing shipped models (`models/*/src/<scale>/index.ts`) export the eagerly-resolved object: `export default getModelDefinition(2, '...')`.
+- Current `ModelDefinition` lifecycle hooks (`setup`, `teardown`, `preprocess`, `postprocess`) take `tf` as a per-call parameter. The factory form moves runtime injection from four per-call seams to one per-instance seam (factory captures it in closure).
+
 ### Stages
 
-**Stage 1 — Constructor polymorphism.** `Upscaler` accepts `Factory | ResolvedModel`. Internal normalize `typeof arg === 'function' ? arg() : arg`. Existing models still pass as bare objects. No model package changes yet.
+**Stage 1 — Factory form as the canonical model shape.** Single coherent change.
+1. Strip `tf` parameter from `Setup`, `Teardown`, `PreProcess`, `PostProcess` type signatures in `packages/shared/src/types.ts`. Factories close over runtime.
+2. Add `engine?: 'tfjs' | 'onnx'` to `ModelDefinition` (optional, defaults `'tfjs'`). Note the unfortunate name collision with existing `modelType: 'graph' | 'layer'` — orthogonal concepts, both stay.
+3. Update `getESRGANModelDefinition` / `getMaximModelDefinition` to accept runtime as an argument and produce closures that capture it.
+4. Rewrite each shipped `@upscalerjs/*` model's entry file from `export default getModelDefinition(...)` to `export default (tf) => getModelDefinition(tf, ...)`. ~1 line per entry, ~12 packages × several scales each.
+5. Teach dispatcher in `getModel` / `loadModel` to select runtime based on `engine` and pass it to the factory. `'onnx'` branch throws "not yet available."
+6. Constructor continues accepting `ModelDefinitionObjectOrFn` so user-authored inline object configs still work — factory is canonical for shipped models, object form is the compat path for users.
 
-**Stage 2 — TF.js as a regular dep in every `@upscalerjs/*` model package.** Bulk `package.json` edit across the monorepo. Users who already have `@tensorflow/tfjs` get deduped by the PM. Users who were relying on core's peer-dep warning now auto-get it — strictly more forgiving than today.
+**Stage 2 — TF.js as a regular dep in every `@upscalerjs/*` model package.** Bulk `package.json` edit. Users who already have `@tensorflow/tfjs` get deduped by the PM. Users who were relying on core's peer-dep warning now auto-get it — strictly more forgiving than today.
 
-**Stage 3 — Retrofit each model package to factory-export shape.** Per-package refactor. Default export stays usable both ways because Stage 1 already normalizes. One package at a time; each is its own minor release.
-
-**Stage 4 — Add `engine: 'tfjs' | 'onnx'` to `ModelDefinition`.** Optional, defaults `'tfjs'`. All existing models retroactively conform without changes.
-
-**Stage 5 — Dispatcher on `engine`.** Routes to TF.js path today; `'onnx'` branch throws "not yet available."
-
-**Stage 6 — Demote TF.js peer dep on core to optional + `@deprecated`.** Don't remove yet — that's Epic 7. Optional means no warning for users who lack it (because model packages now supply it); deprecated signals to anyone reading the manifest.
+**Stage 3 — Demote TF.js peer dep on core to optional + `@deprecated`.** Don't remove yet — that's Epic 7. Optional means no warning for users who lack it (because model packages now supply it); deprecated signals to anyone reading the manifest.
 
 ### Load-bearing details
 
-- `@upscalerjs/default-model` must be first through Stage 2. A7 requires `new Upscaler()` with no args to keep working; the zero-arg path pulls TF.js transitively through default-model before core's peer dep softens in Stage 6.
-- Stage 3 is per-package risk. Shipping Stages 1–2 globally, then doing Stage 3 one package at a time, limits any regression to its own package's users.
-- Stage 6 is the one subtle semver call. Demoting a peer dep from required to optional is *arguably* not breaking (fewer constraints = more permissive), but some installers log differently. Optional + deprecated preserves the declaration for introspection.
+- `@upscalerjs/default-model` must be first through Stages 1 and 2. A7 requires `new Upscaler()` with no args to keep working; the zero-arg path pulls TF.js transitively through default-model before core's peer dep softens in Stage 3.
+- Stage 1 step 4 is per-package risk. Stages 1 steps 1–3 land atomically (shared-types + factory-producer changes); step 4 can migrate models one-at-a-time if the retrofit proves bumpy, keeping any regression scoped to its own package.
+- Stage 3 is the one subtle semver call. Demoting a peer dep from required to optional is *arguably* not breaking (fewer constraints = more permissive), but some installers log differently. Optional + deprecated preserves the declaration for introspection.
+
+### No-user-impact guarantees
+
+- Constructor accepts both forms (factory + object) throughout — existing `new Upscaler({ model: customObject })` inline configs keep working.
+- Shipped model imports (`import x2 from '@upscalerjs/esrgan-medium/x2'`) change shape from object to function, but any code feeding them into `new Upscaler({ model: x2 })` works unchanged because the constructor normalizes.
+- Code that reached into a shipped model's fields directly (`x2.scale`, `{...x2}`) breaks. Internal API; no documented user contract; acceptable.
 
 ### Gate
-Existing test matrix green after each stage. No behavioral diff for any existing user of any existing model package.
+Existing test matrix green after each stage. No behavioral diff for users using documented APIs.
 
 ---
 
@@ -96,7 +108,7 @@ Existing test matrix green after each stage. No behavioral diff for any existing
 **Scope:** Phase 2 of the spec. Promote spike code from `packages/upscalerjs-onnx/src/shared/` into `packages/upscalerjs/src/onnx/`. Dynamic-import `onnxruntime-web` on demand. Implement A10's import-time error UX when the runtime is missing.
 
 **Why it exists:**
-- Epic 1 Stage 5 left the `'onnx'` branch as a throwing stub. This epic fills it in.
+- Epic 1 Stage 1 step 5 left the `'onnx'` branch as a throwing stub. This epic fills it in.
 - The bundle-size gate ("TF.js-only bundle has zero ORT bytes") is a property of the adapter wiring, not of any specific model. Proving it in isolation means Epic 5 doesn't simultaneously debug model conversion and tree-shaking.
 - Plugs into the already-consistent factory-export ecosystem from Epic 1. ONNX model packages won't look structurally different from TF.js ones.
 
@@ -148,10 +160,10 @@ Existing test matrix green after each stage. No behavioral diff for any existing
 
 ## Sequencing
 
-Epic 1 is the critical spine — nothing ONNX-facing can merge until its Stage 5 lands, and the retrofit (Stage 3) realistically spans several minors as packages migrate one at a time.
+Epic 1 is the critical spine — nothing ONNX-facing can merge until Stage 1 step 5 (dispatcher) lands, and the per-package model retrofit (Stage 1 step 4) can span several minors if rolled out one-at-a-time.
 
 Parallelizable alongside Epic 1:
-- **Epic 2** (Workers) depends on Epic 1 Stage 1 only. Can run concurrently with Stages 2–6.
+- **Epic 2** (Workers) depends on nothing in Epic 1. Can start immediately in parallel.
 - **Epic 3** (hosting) depends on nothing from Epic 1. Can start immediately in parallel.
 
 Serial after Epic 1 completes:
@@ -175,14 +187,13 @@ Recommendation: **(a)**, given solo-maintainer + agent-workforce constraints (H1
 
 | Release | Work | Semver | Notes |
 |---|---|---|---|
-| 1.(n+1).0 | Epic 1 Stages 1–2 | minor | Constructor polymorphism + TF.js as dep on all model packages. |
-| 1.(n+2..k).0 | Epic 1 Stage 3 | minor (multiple) | One release per factory-retrofitted model package. |
-| 1.(k+1).0 | Epic 1 Stages 4–6 | minor | `engine` field, dispatcher, peer dep demoted. |
-| 1.(k+2).0 | Epic 2 | minor | Workers ships for existing TF.js users. Can shift earlier. |
-| 1.(k+3).0 | Epic 3 | minor | `precache()`, progress API, hosting infra proven against existing models. |
-| 1.(k+4).0 | Epic 4 | minor | ONNX adapter wired. |
-| 1.(k+5).0 | Epic 5 | minor | First ONNX model package. The payoff. |
-| 1.(k+6).x | Epic 6 | patch or minor | Deprecation + MIGRATION.md. |
+| 1.(n+1).0 | Epic 1 Stage 1 | minor | Factory-canonical: types stripped of `tf`, `engine` field, dispatcher, shipped models retrofitted. |
+| 1.(n+2).0 | Epic 1 Stages 2–3 | minor | TF.js as dep on all model packages + peer dep demoted to optional/deprecated. |
+| 1.(n+3).0 | Epic 2 | minor | Workers ships for existing TF.js users. Can shift earlier. |
+| 1.(n+4).0 | Epic 3 | minor | `precache()`, progress API, hosting infra proven against existing models. |
+| 1.(n+5).0 | Epic 4 | minor | ONNX adapter wired. |
+| 1.(n+6).0 | Epic 5 | minor | First ONNX model package. The payoff. |
+| 1.(n+7).x | Epic 6 | patch or minor | Deprecation + MIGRATION.md. |
 | 2.0.0 (optional) | Epic 7 | major | Legacy cleanup. Post-adoption-data. May never cut. |
 
 Epics 2 and 3 can shift earlier (run alongside Epic 1) at the cost of parallel maintenance attention.
