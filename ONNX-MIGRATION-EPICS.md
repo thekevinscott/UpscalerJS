@@ -40,13 +40,14 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 
 ### Stages
 
-**Stage 1 — Factory form as the canonical model shape.** Single coherent change.
-1. Strip `tf` parameter from `Setup`, `Teardown`, `PreProcess`, `PostProcess` type signatures in `packages/shared/src/types.ts`. Factories close over runtime.
-2. Add `engine?: 'tfjs' | 'onnx'` to `ModelDefinition` (optional, defaults `'tfjs'`). Note the unfortunate name collision with existing `modelType: 'graph' | 'layer'` — orthogonal concepts, both stay.
-3. Update `getESRGANModelDefinition` / `getMaximModelDefinition` to accept runtime as an argument and produce closures that capture it.
-4. Rewrite each shipped `@upscalerjs/*` model's entry file from `export default getModelDefinition(...)` to `export default (tf) => getModelDefinition(tf, ...)`. ~1 line per entry, ~12 packages × several scales each.
-5. Teach dispatcher in `getModel` / `loadModel` to select runtime based on `engine` and pass it to the factory. `'onnx'` branch throws "not yet available."
-6. Constructor continues accepting `ModelDefinitionObjectOrFn` so user-authored inline object configs still work — factory is canonical for shipped models, object form is the compat path for users.
+**Stage 1 — Factory form as the *only* model shape.** Tightens both runtime and type contract. Functions become the single accepted shape; Upscaler owns runtime invocation, setting up the seam for runtime injection (Epic 4) without committing to the option name yet.
+
+1. **Upstream helpers accept runtime.** Refactor `getESRGANModelDefinition` (`packages/shared/src/esrgan/esrgan.ts`) and `getMaximModelDefinition` (`packages/shared/src/maxim/maxim.ts`) to accept runtime as an argument and produce closures that capture it.
+2. **Rewrite each shipped scale-entry file.** `export default getModelDefinition(2, '...')` becomes `export default (tf) => getModelDefinition(tf, 2, '...')`. Mechanical; ~14 esrgan/pixel-upsampler files plus the maxim set. Constructor already normalizes at `upscaler.ts:90`, so runtime behavior is unchanged at this step.
+3. **Strip `tf` parameter from lifecycle type signatures.** `Setup`, `Teardown`, `PreProcess`, `PostProcess` in `packages/shared/src/types.ts` all lose their `(tf: TF) => ...` wrapper. Factories close over runtime instead.
+4. **Narrow `UpscalerOptions.model` from `ModelDefinitionObjectOrFn` to `ModelDefinitionFn`.** Object form no longer accepted at the type level. Breaking for any user passing inline object literals.
+5. **Upscaler internally invokes the factory with a runtime it owns.** Runtime source is hardcoded to default TFJS for now. When ONNX arrives (Epic 4), the dispatcher reads `engine` on the returned `ModelDefinition` and selects runtime accordingly. User-facing runtime override (e.g. `new Upscaler({ model, runtime })`) lands when there's a forcing function — likely `onnxruntime-node` in Epic 4.
+6. **Add `engine?: 'tfjs' | 'onnx'` to `ModelDefinition`** (optional, defaults `'tfjs'`). Name collision with existing `modelType: 'graph' | 'layer'` is unfortunate but the concepts are orthogonal — both stay.
 
 **Stage 2 — TF.js as a regular dep in every `@upscalerjs/*` model package.** Bulk `package.json` edit. Users who already have `@tensorflow/tfjs` get deduped by the PM. Users who were relying on core's peer-dep warning now auto-get it — strictly more forgiving than today.
 
@@ -55,17 +56,22 @@ Marketing-major (cutting `2.0` for additive work to signal direction) costs ever
 ### Load-bearing details
 
 - `@upscalerjs/default-model` must be first through Stages 1 and 2. A7 requires `new Upscaler()` with no args to keep working; the zero-arg path pulls TF.js transitively through default-model before core's peer dep softens in Stage 3.
-- Stage 1 step 4 is per-package risk. Stages 1 steps 1–3 land atomically (shared-types + factory-producer changes); step 4 can migrate models one-at-a-time if the retrofit proves bumpy, keeping any regression scoped to its own package.
+- Stage 1 steps 1–2 land atomically (helper refactor + entry-file rewrites); step 3 is internal type cleanup; step 4 is the type-narrowing break. Steps 1–3 have zero user-facing impact; step 4 is the one break point.
+- Stage 1 step 5 is a seam, not a feature. Hardcoded-default-TF today; pluggable in Epic 4. This is where dropping A2's public `model()` / `model(ort)` invocation forms pays off — runtime injection becomes Upscaler's responsibility, not the user's call-site syntax.
 - Stage 3 is the one subtle semver call. Demoting a peer dep from required to optional is *arguably* not breaking (fewer constraints = more permissive), but some installers log differently. Optional + deprecated preserves the declaration for introspection.
 
-### No-user-impact guarantees
+### Departure from A2
 
-- Constructor accepts both forms (factory + object) throughout — existing `new Upscaler({ model: customObject })` inline configs keep working.
-- Shipped model imports (`import x2 from '@upscalerjs/esrgan-medium/x2'`) change shape from object to function, but any code feeding them into `new Upscaler({ model: x2 })` works unchanged because the constructor normalizes.
-- Code that reached into a shipped model's fields directly (`x2.scale`, `{...x2}`) breaks. Internal API; no documented user contract; acceptable.
+Source spec's A2 accepted three shapes: `new Upscaler(model)`, `new Upscaler(model())`, `new Upscaler(model(ort))`. This plan drops shapes 2 and 3 — only uncalled factories. Same DI capability, but relocated: instead of the user choosing when and how to inject runtime at the call site, Upscaler owns invocation and (in Epic 4) exposes a runtime-override option. Cleaner seam for the ONNX-node / custom-runtime story. ONNX-MIGRATION.md A2 should be revised on its next pass to reflect this.
+
+### User-impact guarantees
+
+- Shipped model imports (`import x2 from '@upscalerjs/esrgan-medium/x2'`) change shape from object to function. Any code doing `new Upscaler({ model: x2 })` works unchanged through step 4 because the call pattern is identical.
+- Users passing inline object literals (`new Upscaler({ model: { path: '...', scale: 2 } })`) get a TypeScript error at step 4. Migration is a one-line wrap: `model: () => ({ path: '...', scale: 2 })`. Flag prominently in release notes.
+- Code that reached into a shipped model's fields directly (`x2.scale`, `{...x2}`) breaks at step 2. Internal API; no documented user contract; acceptable.
 
 ### Gate
-Existing test matrix green after each stage. No behavioral diff for users using documented APIs.
+Existing test matrix green after each step. At step 4 (the type-narrowing commit), add a migration-notes entry and confirm no internal callers rely on the object branch.
 
 ---
 
