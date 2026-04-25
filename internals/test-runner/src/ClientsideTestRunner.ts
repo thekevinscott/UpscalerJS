@@ -291,7 +291,7 @@ export class ClientsideTestRunner {
     try {
       await this.browser.close();
       this.browser = undefined;
-    } catch (err) {
+    } catch {
       this._warn('No browser found');
     }
   }
@@ -301,7 +301,7 @@ export class ClientsideTestRunner {
       await this.context.close();
       this.context = undefined;
       this.page = undefined;
-    } catch (err) {
+    } catch {
       this._warn('No context found');
     }
   }
