@@ -121,6 +121,11 @@
   "dependencies": {
     "wireit": "^0.14.0"
   },
+  "pnpm": {
+    "overrides": {
+      "webpack": "5.96.1"
+    }
+  },
   "wireit": {
     "build": {
       "command": "pnpm --filter=\"upscaler\" build"

@@ -43,15 +43,9 @@
   },
   {
     "browserName": "Android",
-    "os_version": "12.0",
-    "device": "Google Pixel 5",
+    "os_version": "13.0",
+    "device": "Google Pixel 7",
     "real_mobile": "true"
-  },
-  {
-    "os_version": "16",
-    "device": "iPhone 12 Pro Max",
-    "real_mobile": "true",
-    "browserName": "iPhone"
   },
   {
     "os_version": "16",

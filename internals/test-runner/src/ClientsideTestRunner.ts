@@ -223,6 +223,7 @@ export class ClientsideTestRunner {
     this.browser = await launch({
       headless: 'new',
       protocolTimeout: 180_000 * 2,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     // connect is for connecting to an already running instance
