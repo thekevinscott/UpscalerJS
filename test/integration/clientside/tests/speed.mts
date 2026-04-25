@@ -68,7 +68,7 @@ describe('Speed Integration Tests', () => {
           const context = await testRunner.browser.createIncognitoBrowserContext();
           const page = await context.newPage();
           pages.push(page);
-          await page.goto(testRunner.serverURL);
+          await page.goto(await testRunner.getServerURL());
           // await page.waitForFunction(`document.title.endsWith("| Loaded}")`);
           return page.evaluate(([packageName, modelName]) => new Promise<[number, number]>(resolve => {
             const upscaler = new window['Upscaler']({
@@ -119,7 +119,7 @@ describe('Speed Integration Tests', () => {
           const context = await testRunner.browser.createIncognitoBrowserContext();
           const page = await context.newPage();
           pages.push(page);
-          await page.goto(testRunner.serverURL);
+          await page.goto(await testRunner.getServerURL());
           // await page.waitForFunction(`document.title.endsWith("| Loaded}")`);
           return page.evaluate(([packageName, modelName]) => new Promise<[number, number]>(resolve => {
             const patchSize = 8;

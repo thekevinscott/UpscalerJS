@@ -42,7 +42,7 @@ runs:
     - name: Install Chrome for Puppeteer
       if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
       shell: bash
-      run: npx puppeteer browsers install chrome
+      run: pnpm exec puppeteer browsers install chrome
 
     # - name: Install dependencies
     #   shell: bash
