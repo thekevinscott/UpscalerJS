@@ -39,6 +39,11 @@ runs:
       shell: bash
       run: pnpm install
 
+    - name: Install Chrome for Puppeteer
+      if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
+      shell: bash
+      run: npx puppeteer browsers install chrome
+
     # - name: Install dependencies
     #   shell: bash
     #   run: pnpm install
