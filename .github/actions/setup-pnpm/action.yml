@@ -10,11 +10,11 @@ runs:
   using: "composite"
   steps:
     - name: Use Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
 
-    - uses: pnpm/action-setup@v2
+    - uses: pnpm/action-setup@v4
       with:
         version: 8
         run_install: false
@@ -22,22 +22,39 @@ runs:
     - run: pnpm install -g node-gyp @mapbox/node-pre-gyp
       shell: bash
 
-    # - name: Get pnpm store directory
-    #   shell: bash
-    #   run: |
-    #     echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+    - name: Get pnpm store directory
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    #     #     - uses: actions/cache@v3
-    #     #       name: Setup pnpm cache
-    #     #       with:
-    #     #         path: ${{ env.STORE_PATH }}
-    #     #         key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-    #     #         restore-keys: |
-    #     #           ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
+    - uses: actions/cache@v4
+      name: Setup pnpm cache
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
 
     - name: Install dependencies
       shell: bash
       run: pnpm install
+
+    - name: Install Chrome for Puppeteer
+      if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
+      shell: bash
+      # Wrap in `timeout` because pnpm exec leaves orphan node processes alive
+      # after `puppeteer browsers install chrome` completes, hanging the step
+      # until the job timeout. Chrome install itself takes ~5s.
+      run: |
+        set +e
+        timeout 90 pnpm exec puppeteer browsers install chrome
+        exit_code=$?
+        # 124 = timed out (expected; install finished and orphans got reaped)
+        # 0 = clean exit (rare under pnpm 8 + puppeteer 21)
+        if [ $exit_code -ne 0 ] && [ $exit_code -ne 124 ]; then
+          exit $exit_code
+        fi
+        exit 0
 
     # - name: Install dependencies
     #   shell: bash

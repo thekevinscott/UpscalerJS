@@ -223,6 +223,7 @@ export class ClientsideTestRunner {
     this.browser = await launch({
       headless: 'new',
       protocolTimeout: 180_000 * 2,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     // connect is for connecting to an already running instance
@@ -290,7 +291,7 @@ export class ClientsideTestRunner {
     try {
       await this.browser.close();
       this.browser = undefined;
-    } catch (err) {
+    } catch {
       this._warn('No browser found');
     }
   }
@@ -300,7 +301,7 @@ export class ClientsideTestRunner {
       await this.context.close();
       this.context = undefined;
       this.page = undefined;
-    } catch (err) {
+    } catch {
       this._warn('No context found');
     }
   }

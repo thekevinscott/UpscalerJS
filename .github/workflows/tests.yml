@@ -1,6 +1,10 @@
 name: 'Tests'
 on: [push]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   TF_CPP_MIN_LOG_LEVEL: 2
 
@@ -8,9 +12,12 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -30,9 +37,10 @@ jobs:
   unit-browser-vite:
     name: 'Unit / Browser / Vite'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -46,7 +54,7 @@ jobs:
         run: pnpm test:unit:browser:vite
 
       - name: 'Upload Unit Browser Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts-test-unit-browser-vite
           path: |
@@ -55,9 +63,10 @@ jobs:
   unit-browser-playwright:
     name: 'Unit / Browser / Playwright'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -71,7 +80,7 @@ jobs:
         run: pnpm test:unit:browser:playwright
 
       - name: 'Upload Unit Browser Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts-test-unit-browser-playwright
           path: |
@@ -81,9 +90,12 @@ jobs:
   unit-node:
     name: 'Unit / Node'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -97,7 +109,7 @@ jobs:
         run: pnpm test:unit:node
 
       - name: 'Upload Unit Node Artifact'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: artifacts-test-unit-node
           path: ./packages/upscalerjs/coverage/coverage-final.json
@@ -105,9 +117,12 @@ jobs:
   shared-unit:
     name: 'Shared / Unit'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -123,9 +138,12 @@ jobs:
   internal-unit:
     name: 'Internals / Unit'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -141,19 +159,23 @@ jobs:
   upload-to-codecov:
     name: 'Upload to CodeCov'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [ unit-node, unit-browser-vite, unit-browser-playwright ]
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
 
       - name: 'Codecov'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           verbose: true
 
   integration-browserstack:
     name: 'Integration / Browserstack'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
@@ -162,7 +184,7 @@ jobs:
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
       
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -185,9 +207,10 @@ jobs:
   integration-clientside:
     name: 'Integration / Clientside'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -204,9 +227,12 @@ jobs:
   integration-serverside:
     name: 'Integration / Serverside'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -226,12 +252,13 @@ jobs:
   integration-models-browser:
     name: 'Models / Browser'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # strategy:
     #   matrix:
     #     node-version: [16]
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -250,9 +277,12 @@ jobs:
   integration-models-node:
     name: 'Models / Node'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -267,9 +297,10 @@ jobs:
   integration-memory-leaks:
     name: 'Integration / Memory Leaks'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
@@ -284,9 +315,12 @@ jobs:
   build-docs:
     name: 'Build Documentation'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
     steps:
       - name: 'Checkout repository'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           lfs: 'true'
 
