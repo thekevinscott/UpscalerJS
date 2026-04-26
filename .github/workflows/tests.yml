@@ -176,6 +176,7 @@ jobs:
     name: 'Integration / Browserstack'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
