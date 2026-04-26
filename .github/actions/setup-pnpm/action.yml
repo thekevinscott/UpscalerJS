@@ -42,7 +42,19 @@ runs:
     - name: Install Chrome for Puppeteer
       if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
       shell: bash
-      run: pnpm exec puppeteer browsers install chrome
+      # Wrap in `timeout` because pnpm exec leaves orphan node processes alive
+      # after `puppeteer browsers install chrome` completes, hanging the step
+      # until the job timeout. Chrome install itself takes ~5s.
+      run: |
+        set +e
+        timeout 90 pnpm exec puppeteer browsers install chrome
+        exit_code=$?
+        # 124 = timed out (expected; install finished and orphans got reaped)
+        # 0 = clean exit (rare under pnpm 8 + puppeteer 21)
+        if [ $exit_code -ne 0 ] && [ $exit_code -ne 124 ]; then
+          exit $exit_code
+        fi
+        exit 0
 
     # - name: Install dependencies
     #   shell: bash
