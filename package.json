@@ -233,7 +233,7 @@
       "command": "pnpm --filter @upscalerjs/scripts model:write-docs"
     },
     "update:npm:dependencies": {
-      "command": "pnpm --filter @upscalerjs/scripts update:npm:dependencies"
+      "command": "pnpm --filter @internals/scripts update:npm-dependencies"
     },
     "bundle:esbuild": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- esbuild",
