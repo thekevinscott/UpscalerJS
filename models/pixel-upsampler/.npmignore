@@ -7,3 +7,4 @@ demo
 DOC.mdx
 doc-snippets
 .gitattributes
+.DS_Store
