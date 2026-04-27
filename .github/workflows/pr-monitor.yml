@@ -14,4 +14,3 @@ jobs:
       - uses: clankerbot/pr-monitor@v1
         with:
           job-name: 'CI Gate'
-          excluded-jobs: 'update-lockfile'

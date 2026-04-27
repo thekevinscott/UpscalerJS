@@ -30,7 +30,6 @@
     "example:start": "wireit",
     "lint": "wireit",
     "model:write-docs": "wireit",
-    "update:npm:dependencies": "wireit",
     "test:start-test-server": "wireit",
     "test:integration:browserstack": "wireit",
     "test:integration:clientside": "wireit",
@@ -231,9 +230,6 @@
     },
     "model:write-docs": {
       "command": "pnpm --filter @upscalerjs/scripts model:write-docs"
-    },
-    "update:npm:dependencies": {
-      "command": "pnpm --filter @internals/scripts update:npm-dependencies"
     },
     "bundle:esbuild": {
       "command": "pnpm --filter @internals/bundlers run-bundle -- esbuild",

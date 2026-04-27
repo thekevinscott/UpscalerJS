@@ -22,7 +22,6 @@
     "write:model:folder": "wireit",
     "start:guide": "wireit",
     "validate": "wireit",
-    "update:npm-dependencies": "wireit",
     "build": "wireit",
     "copy-files": "wireit",
     "test:run": "wireit",
@@ -75,12 +74,6 @@
     },
     "start:guide": {
       "command": "node ./dist/bin/start/guide.js",
-      "dependencies": [
-        "build"
-      ]
-    },
-    "update:npm-dependencies": {
-      "command": "node ./dist/bin/update/npm-dependencies.js",
       "dependencies": [
         "build"
       ]
