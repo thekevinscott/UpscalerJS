@@ -227,7 +227,7 @@
   },
   "devDependencies": {
     "@tensorflow/tfjs": "~4.11.0",
-    "@tensorflow/tfjs-core": "~4.11.0",
+    "@tensorflow/tfjs-core": "~4.22.0",
     "@tensorflow/tfjs-layers": "~4.11.0",
     "@tensorflow/tfjs-node": "~4.11.0",
     "@tensorflow/tfjs-node-gpu": "~4.11.0",
