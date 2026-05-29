@@ -22,7 +22,8 @@
       "umd": "./dist/umd/models/maxim-dehazing-indoor/src/umd.min.js",
       "require": "./dist/cjs/models/maxim-dehazing-indoor/src/cjs.js",
       "import": "./dist/esm/models/maxim-dehazing-indoor/src/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "./dist/esm/models/maxim-dehazing-indoor/src/index.js",
   "types": "./dist/esm/models/maxim-dehazing-indoor/src/index.d.ts",

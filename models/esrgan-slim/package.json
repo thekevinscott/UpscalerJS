@@ -42,7 +42,8 @@
       "umd": "./dist/umd/models/esrgan-slim/src/x8/index.min.js",
       "require": "./dist/cjs/models/esrgan-slim/src/x8/cjs.js",
       "import": "./dist/esm/models/esrgan-slim/src/x8/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "./dist/esm/models/esrgan-slim/src/index.js",
   "types": "./dist/esm/models/esrgan-slim/src/index.d.ts",

@@ -24,7 +24,8 @@
       "umd": "./dist/umd/x4.min.js",
       "require": "./dist/cjs/models/pixel-upsampler/src/x4/cjs.js",
       "import": "./dist/esm/models/pixel-upsampler/src/x4/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "umd:main": "dist/umd/umd.min.js",
   "scripts": {

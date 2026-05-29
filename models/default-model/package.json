@@ -22,7 +22,8 @@
       "umd": "./dist/umd/index.min.js",
       "require": "./dist/cjs/models/default-model/src/cjs.js",
       "import": "./dist/esm/models/default-model/src/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "dist/esm/models/default-model/src/index.js",
   "types": "dist/esm/models/default-model/src/index.d.ts",

@@ -19,14 +19,15 @@
   },
   "exports": {
     ".": {
-      "umd": "./dist/umd/models/maxim-deblurring/src/umd.min.js",
-      "require": "./dist/cjs/models/maxim-deblurring/src/cjs.js",
-      "import": "./dist/esm/models/maxim-deblurring/src/index.js"
-    }
+      "types": "./dist/esm/models/maxim-deblurring/src/index.d.ts",
+      "import": "./dist/esm/models/maxim-deblurring/src/index.js",
+      "require": "./dist/cjs/models/maxim-deblurring/src/cjs.js"
+    },
+    "./package.json": "./package.json"
   },
+  "main": "./dist/cjs/models/maxim-deblurring/src/cjs.js",
   "module": "./dist/esm/models/maxim-deblurring/src/index.js",
   "types": "./dist/esm/models/maxim-deblurring/src/index.d.ts",
-  "umd:main": "./dist/umd/models/maxim-deblurring/src/umd.min.js",
   "scripts": {
     "lint": "wireit",
     "prepublishOnly": "wireit",

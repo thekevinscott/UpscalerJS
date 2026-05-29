@@ -22,7 +22,8 @@
       "umd": "./dist/umd/models/maxim-enhancement/src/umd.min.js",
       "require": "./dist/cjs/models/maxim-enhancement/src/cjs.js",
       "import": "./dist/esm/models/maxim-enhancement/src/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "./dist/esm/models/maxim-enhancement/src/index.js",
   "types": "./dist/esm/models/maxim-enhancement/src/index.d.ts",

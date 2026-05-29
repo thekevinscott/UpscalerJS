@@ -22,7 +22,8 @@
       "umd": "./dist/umd/models/maxim-denoising/src/umd.min.js",
       "require": "./dist/cjs/models/maxim-denoising/src/cjs.js",
       "import": "./dist/esm/models/maxim-denoising/src/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "module": "./dist/esm/models/maxim-denoising/src/index.js",
   "types": "./dist/esm/models/maxim-denoising/src/index.d.ts",

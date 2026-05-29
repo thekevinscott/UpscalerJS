@@ -14,7 +14,8 @@
     ".": {
       "types": "./dist/browser/esm/upscalerjs/src/browser/esm/index.d.ts",
       "import": "./dist/browser/esm/upscalerjs/src/browser/esm/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "engines": {
     "node": ">=16.0"
