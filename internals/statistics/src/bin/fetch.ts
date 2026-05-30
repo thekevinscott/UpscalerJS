@@ -1,4 +1,3 @@
-#!/usr/bin/env tsx
 /**
  * UpscalerJS stats fetcher.
  *
@@ -138,7 +137,7 @@ const printSummary = (results: RawPackage[]): void => {
   });
 
   const log = (...a: string[]): void => {
-    process.stderr.write(a.join(' ') + '\n');
+    process.stderr.write(`${a.join(' ')}\n`);
   };
 
   log('');
@@ -154,7 +153,7 @@ const printSummary = (results: RawPackage[]): void => {
       pad(fmt(r.npmYear), 14, true),
       pad(fmt(r.cdnYear), 16, true),
       pad(growth, 7, true),
-      '  ' + files,
+      `  ${files}`,
     );
   }
   log('');
@@ -171,8 +170,7 @@ const printSummary = (results: RawPackage[]): void => {
 // ---------------------------------------------------------------------------
 const main = async (): Promise<void> => {
   if (typeof fetch !== 'function') {
-    process.stderr.write(`This script needs Node 18+ for native fetch. Detected: ${process.version}\n`);
-    process.exit(1);
+    throw new Error(`This script needs Node 18+ for native fetch. Detected: ${process.version}`);
   }
   if (!QUIET) process.stderr.write(`Fetching stats for ${PACKAGES.length} packages...\n`);
 
@@ -197,5 +195,5 @@ const main = async (): Promise<void> => {
 
 main().catch((e: unknown) => {
   process.stderr.write(`${errMessage(e)}\n`);
-  process.exit(1);
+  process.exitCode = 1;
 });

@@ -26,8 +26,8 @@ const SCALE_RE_FILE = /\/(\d)x\.min\.js/; // /dist/umd/4x.min.js
  * Ported from analyze-stats.py:scale_factor.
  */
 export const scaleFactor = (name: string): string | null => {
-  const m = SCALE_RE_DIR.exec(name) ?? SCALE_RE_FILE.exec(name);
-  return m ? m[1] : null;
+  const match = SCALE_RE_DIR.exec(name) ?? SCALE_RE_FILE.exec(name);
+  return match ? match[1] : null;
 };
 
 /**
