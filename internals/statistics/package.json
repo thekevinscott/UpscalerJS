@@ -1,0 +1,24 @@
+{
+  "name": "@internals/statistics",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Download / CDN usage-analysis pipeline for UpscalerJS and its model packages",
+  "author": "Kevin Scott",
+  "license": "MIT",
+  "scripts": {
+    "fetch": "tsx src/bin/fetch.ts",
+    "condense": "tsx src/bin/condense.ts",
+    "analyze": "tsx src/bin/analyze.ts",
+    "test": "vitest --config ./vite.config.ts",
+    "test:run": "vitest run --config ./vite.config.ts"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "vitest": "^0.34.5"
+  }
+}
