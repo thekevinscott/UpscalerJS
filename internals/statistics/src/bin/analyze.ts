@@ -1,4 +1,3 @@
-#!/usr/bin/env tsx
 /**
  * Segmentation analysis on the condensed UpscalerJS stats.
  *
@@ -107,8 +106,8 @@ const fileTypeBreakdown = (data: SlimPackage[]): void => {
     if (!p.cdnFiles) continue;
     const buckets: Record<string, number> = {};
     for (const f of p.cdnFiles) {
-      const b = classifyFile(f.name);
-      buckets[b] = (buckets[b] ?? 0) + f.total;
+      const bucket = classifyFile(f.name);
+      buckets[bucket] = (buckets[bucket] ?? 0) + f.total;
     }
     const total = sum(Object.values(buckets));
     if (!total) continue;
@@ -216,12 +215,13 @@ const betaVsStable = (data: SlimPackage[]): void => {
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
-const main = (): number => {
+const main = (): void => {
   const defaultPath = path.join(__dirname, '..', '..', 'data', 'upscalerjs-stats.slim.json');
   const argPath = process.argv[2] ?? defaultPath;
   if (!fs.existsSync(argPath)) {
     process.stderr.write(`Could not find ${argPath}. Pass a path or run \`condense\` first.\n`);
-    return 1;
+    process.exitCode = 1;
+    return;
   }
 
   const data = JSON.parse(fs.readFileSync(argPath, 'utf8')) as SlimPackage[];
@@ -232,7 +232,6 @@ const main = (): number => {
   versionAdoption(data);
   coreDeliveryChannels(data);
   betaVsStable(data);
-  return 0;
 };
 
-process.exit(main());
+main();

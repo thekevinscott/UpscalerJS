@@ -1,0 +1,4 @@
+# Generated stats artifacts — regenerate with `pnpm fetch` + `pnpm condense`.
+# Not checked in: live data drifts and would diverge from the frozen REPORT.md.
+upscalerjs-stats.json
+*.slim.json

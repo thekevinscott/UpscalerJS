@@ -1,4 +1,3 @@
-#!/usr/bin/env tsx
 /**
  * Condense the output of `fetch` into a context-friendly summary.
  *
@@ -27,7 +26,7 @@ const TO_STDOUT = args.includes('--stdout');
 const outIdx = args.indexOf('--out');
 const outPath = outIdx >= 0
   ? args[outIdx + 1]
-  : path.join(path.dirname(inputPath), path.basename(inputPath, '.json') + '.slim.json');
+  : path.join(path.dirname(inputPath), `${path.basename(inputPath, '.json')}.slim.json`);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -69,18 +68,18 @@ const condense = (r: RawPackage): SlimPackage => {
 
   // ---- jsDelivr overall ----
   if (r.jsdelivr) {
-    const h = r.jsdelivr.hits ?? {};
-    const prev = h.prev?.total ?? null;
+    const hits = r.jsdelivr.hits ?? {};
+    const prev = hits.prev?.total ?? null;
     out.cdn = {
-      total: h.total ?? 0,
+      total: hits.total ?? 0,
       prev,
-      rank: h.rank ?? null,
-      typeRank: h.typeRank ?? null,
+      rank: hits.rank ?? null,
+      typeRank: hits.typeRank ?? null,
     };
     if (prev != null && prev > 0) {
       out.cdn.yoyPct = Math.round(((out.cdn.total - prev) / prev) * 100);
     }
-    if (WANT_MONTHLY) out.cdn.byMonth = monthlyFromJsdelivrDates(h.dates);
+    if (WANT_MONTHLY) out.cdn.byMonth = monthlyFromJsdelivrDates(hits.dates);
   } else if (r.jsdelivrError) {
     out.cdnError = r.jsdelivrError;
   }

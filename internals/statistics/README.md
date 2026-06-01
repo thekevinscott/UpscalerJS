@@ -23,8 +23,8 @@ internals/statistics/
 │       ├── types.ts                    ← raw + slim JSON shapes
 │       ├── classify.ts                 ← classifyFile / scaleFactor / isBeta (pure)
 │       └── classify.test.ts            ← unit tests for the classifiers
-└── data/
-    └── upscalerjs-stats.slim.json      ← condensed data from May 2026 (sample input)
+└── data/                              ← generated, git-ignored (see "Running it")
+    └── upscalerjs-stats.slim.json      ← condensed input, produced by fetch + condense
 ```
 
 ## Pipeline
@@ -66,16 +66,19 @@ pnpm --filter @internals/statistics condense upscalerjs-stats.json
 # Options: --out path/to/out.json   --stdout   --monthly
 
 # Step 3 — analyze
-pnpm --filter @internals/statistics analyze
-# → defaults to the bundled data/upscalerjs-stats.slim.json; pass a path to override
+pnpm --filter @internals/statistics analyze path/to/upscalerjs-stats.slim.json
+# → pass the condensed file from step 2 (it defaults to data/upscalerjs-stats.slim.json,
+#   which is git-ignored and only exists if you condensed it there)
 # → prints 6 rollups (totals, file types, scale factors, versions, delivery channels, beta vs stable)
 
 # Tests
 pnpm --filter @internals/statistics test:run
 ```
 
-A bundled `data/upscalerjs-stats.slim.json` from May 2026 is included so `analyze`
-can be run immediately without re-fetching.
+The condensed data is **not** checked in (`data/` is git-ignored): live npm/jsDelivr
+numbers drift daily and would diverge from the frozen snapshot in `REPORT.md`.
+Regenerate it with the three steps above; `REPORT.md` remains the canonical
+May 2026 result.
 
 ## Configuration
 
