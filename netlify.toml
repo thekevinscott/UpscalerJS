@@ -5,10 +5,5 @@
   publish = "docs/build"
 
 [build.environment]
-  NODE_VERSION = "16"          # parity with .github/workflows/docs.yml (EOL; bump separately)
-  PNPM_VERSION = "8"           # parity with .github/actions/setup-pnpm
+  NODE_VERSION = "24"          # parity with .github/workflows/docs.yml
   GIT_LFS_SKIP_SMUDGE = "1"    # docs build needs no model weights; skip the 140MB LFS pull
-
-# COEP/COOP removed: WebGL/CPU demo, no SharedArrayBuffer/WASM threads. The header
-# was orphaned legacy (#1014, 2023) tied to no feature, and require-corp only risks
-# blocking cross-origin subresources (jsdelivr model, Pixabay images, Shoelace, Plausible).
