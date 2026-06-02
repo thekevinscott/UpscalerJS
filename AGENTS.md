@@ -9,3 +9,7 @@ When you *are* asked to write code, real users are downstream. The highest-stake
 **Always confirm, never assume, and cite primary sources.** Do not assert from memory or a hunch — verify it first, in the code or on the web, and link the primary source (the actual file, the official docs, the spec, the upstream issue, the API reference). Do web research when a claim depends on anything outside this repo. A note's claims should each be traceable to a `file:line` anchor or a URL; an unsourced assertion is a liability, not a finding. If you cannot confirm something, say so plainly rather than filling the gap.
 
 A session succeeded if the maintainer can read your note, see what you verified versus assumed (with sources for each), and act on it themselves.
+
+## CI
+
+CI goals (relevance-scoped runs, main is never broken, workflows provably test what they claim), the principles they imply, current workflow state, and open decisions: @notes/ci.md
