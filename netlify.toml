@@ -1,13 +1,9 @@
-# [build.environment]
-#   NPM_FLAGS = "--version"
-# [build]
-#   base = "docs/"
-#   command = "pip install --upgrade pip && echo '>>>>>>>>' && pnpm i --store=node_modules/.pnpm-store && pnpm run build"
-#   # command = "npx pnpm i --store=node_modules/.pnpm-store && npx pnpm run build"
-#   # publish = "build"
-#   # ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ."
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Cross-Origin-Embedder-Policy = "require-corp"
-    # Cross-Origin-Opener-Policy = "same-origin"
+# Build runs from repo root (no `base`) so the pnpm workspace + wireit
+# cross-package deps (models/*, packages/upscalerjs, internals/scripts) resolve.
+[build]
+  command = "pnpm install --frozen-lockfile && pnpm --filter @upscalerjs/docs build"
+  publish = "docs/build"
+
+[build.environment]
+  NODE_VERSION = "24"          # parity with .github/workflows/docs.yml
+  GIT_LFS_SKIP_SMUDGE = "1"    # docs build needs no model weights; skip the 140MB LFS pull
