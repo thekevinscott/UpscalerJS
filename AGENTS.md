@@ -12,4 +12,4 @@ A session succeeded if the maintainer can read your note, see what you verified 
 
 ## CI
 
-CI goals (relevance-scoped runs, main is never broken, workflows provably test what they claim), the principles they imply, current workflow state, and open decisions: @notes/ci.md
+@notes/ci.md
