@@ -234,6 +234,6 @@
     "@types/jest": "^29.5.3",
     "eslint": "8.47.0",
     "seedrandom": "3.0.5",
-    "vitest": "^0.34.5"
+    "vitest": "^4.1.5"
   }
 }
