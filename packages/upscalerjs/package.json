@@ -219,14 +219,14 @@
   },
   "homepage": "https://github.com/thekevinscott/UpscalerJS#readme",
   "peerDependencies": {
-    "@tensorflow/tfjs": "~4.11.0"
+    "@tensorflow/tfjs": "~4.22.0"
   },
   "dependencies": {
     "@upscalerjs/default-model": "workspace:*",
     "wireit": "^0.14.0"
   },
   "devDependencies": {
-    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs": "~4.22.0",
     "@tensorflow/tfjs-core": "~4.11.0",
     "@tensorflow/tfjs-layers": "~4.11.0",
     "@tensorflow/tfjs-node": "~4.11.0",
