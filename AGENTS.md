@@ -13,3 +13,9 @@ A session succeeded if the maintainer can read your note, see what you verified 
 ## CI
 
 @notes/ci.md
+
+## Local Settings
+
+If present, additional local notes (generally private information) will be included here below.
+
+@notes/local.md

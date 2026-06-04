@@ -38,3 +38,4 @@ service-account.json
 .ipynb_checkpoints
 notebooks
 .wireit
+notes/local.md
