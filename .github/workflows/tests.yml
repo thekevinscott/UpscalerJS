@@ -26,10 +26,10 @@ jobs:
       #   with:
       #     detached: true
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Lint'
         run: 'pnpm lint'
@@ -44,10 +44,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Unit Tests / Vite'
         working-directory: ./packages/upscalerjs
@@ -70,10 +70,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Unit Tests / Playwright'
         working-directory: ./packages/upscalerjs
@@ -99,10 +99,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Unit Tests'
         working-directory: ./packages/upscalerjs
@@ -126,10 +126,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Unit Tests'
         working-directory: ./packages/shared
@@ -147,10 +147,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Unit Tests'
         working-directory: ./internals
@@ -189,10 +189,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -215,10 +215,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Integration Tests'
         run: pnpm test:integration:clientside
@@ -237,10 +237,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -263,10 +263,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
@@ -287,10 +287,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Integration Tests'
         run: pnpm test:integration:model:serverside
@@ -305,10 +305,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       - name: 'Memory Leak Tests'
         run: pnpm test:integration:memory-leaks
@@ -325,10 +325,10 @@ jobs:
         with:
           lfs: 'true'
 
-      - name: 'Setup PNPM with Node 20'
+      - name: 'Setup PNPM with Node 22'
         uses: ./.github/actions/setup-pnpm
         with:
-          node-version: 20
+          node-version: 22
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
