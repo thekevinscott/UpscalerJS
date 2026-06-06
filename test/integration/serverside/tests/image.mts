@@ -89,7 +89,7 @@ describe('Node Image Loading Integration Tests', () => {
         image: `new Uint8Array(${JSON.stringify(Array.from(image))})`,
         fixture: EXPECTED_UPSCALED_IMAGE_15,
         logErrors: false,
-      })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
+      })).rejects.toThrow(getInvalidChannelsOfTensor(mockedTensor).message);
     });
   });
 
@@ -108,7 +108,7 @@ describe('Node Image Loading Integration Tests', () => {
         image: `fs.readFileSync('${FOUR_CHANNEL_FIXTURE_PATH}')`,
         fixture: EXPECTED_UPSCALED_IMAGE_15,
         logErrors: false,
-      })).rejects.toThrowError(getInvalidChannelsOfTensor(mockedTensor));
+      })).rejects.toThrow(getInvalidChannelsOfTensor(mockedTensor).message);
     });
   });
 
@@ -127,7 +127,7 @@ describe('Node Image Loading Integration Tests', () => {
       await expect(() => runTest({
         image: `tf.ones([16,16,4])`,
         logErrors: false,
-      })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
+      })).rejects.toThrow(getInvalidChannelsOfTensor(t).message);
     });
 
     it("upscales a 4D Tensor", async () => {
@@ -143,7 +143,7 @@ describe('Node Image Loading Integration Tests', () => {
       await expect(() => runTest({
         image: `tf.ones([1,16,16,4])`,
         logErrors: false,
-      })).rejects.toThrowError(getInvalidChannelsOfTensor(t));
+      })).rejects.toThrow(getInvalidChannelsOfTensor(t).message);
     });
   });
 
@@ -160,7 +160,7 @@ describe('Node Image Loading Integration Tests', () => {
       await expect(() => runTest({
         image: JSON.stringify(input),
         logErrors: false,
-      })).rejects.toThrowError(getInvalidImageSrcInput(input));
+      })).rejects.toThrow(getInvalidImageSrcInput(input).message);
     });
 
     it("throws if string provided is an invalid image", async () => {

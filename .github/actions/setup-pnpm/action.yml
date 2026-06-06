@@ -16,11 +16,8 @@ runs:
 
     - uses: pnpm/action-setup@v4
       with:
-        version: 8
+        version: 11
         run_install: false
-
-    - run: pnpm install -g node-gyp @mapbox/node-pre-gyp
-      shell: bash
 
     - name: Get pnpm store directory
       shell: bash
@@ -35,26 +32,42 @@ runs:
         restore-keys: |
           ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
 
+    # Cache the Chrome that puppeteer's postinstall downloads to ~/.cache/puppeteer.
+    # Without this, every browser job re-downloads Chrome from Google's CDN on each
+    # run; on a cold cache they all hit it at once and time out (ETIMEDOUT / stall).
+    # Restoring here means postinstall finds Chrome already present and skips the
+    # download. `restore-keys` lets an older Chrome cache satisfy a lockfile bump
+    # when puppeteer itself didn't change. Skipped where the browser isn't needed.
+    - uses: actions/cache@v4
+      name: Setup puppeteer Chrome cache
+      if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
+      with:
+        path: ~/.cache/puppeteer
+        key: ${{ runner.os }}-puppeteer-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-puppeteer-
+
     - name: Install dependencies
       shell: bash
-      run: pnpm install
+      # Force-skip puppeteer's auto-download here regardless of the job-level
+      # setting: two workspace packages depend on puppeteer, so pnpm runs their
+      # postinstalls concurrently and they race on the shared ~/.cache/puppeteer
+      # (one unlinks the temp .zip the other still expects -> ENOENT). Chrome is
+      # installed once, serially, by the step below instead.
+      # `--frozen-lockfile` fails fast on lockfile drift; `timeout` is the backstop
+      # since composite-action steps don't support `timeout-minutes`.
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
+      run: timeout 600 pnpm install --frozen-lockfile
 
     - name: Install Chrome for Puppeteer
+      # Runs only for jobs that need a browser (job-level PUPPETEER_SKIP_DOWNLOAD
+      # unset). Single invocation of puppeteer's own installer -> no concurrent
+      # race. On a warm ~/.cache/puppeteer (restored above) it detects the existing
+      # browser and is a no-op; otherwise it downloads the pinned Chrome once.
       if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
       shell: bash
-      # Wrap in `timeout` because pnpm exec leaves orphan node processes alive
-      # after `puppeteer browsers install chrome` completes, hanging the step
-      # until the job timeout. Chrome install itself takes ~5s.
-      run: |
-        set +e
-        timeout 90 pnpm exec puppeteer browsers install chrome
-        exit_code=$?
-        # 124 = timed out (expected; install finished and orphans got reaped)
-        # 0 = clean exit (rare under pnpm 8 + puppeteer 21)
-        if [ $exit_code -ne 0 ] && [ $exit_code -ne 124 ]; then
-          exit $exit_code
-        fi
-        exit 0
+      run: node node_modules/puppeteer/install.mjs
 
     # - name: Install dependencies
     #   shell: bash

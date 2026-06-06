@@ -336,7 +336,8 @@ jobs:
       #     detached: true
 
       - name: 'Install dependencies'
-        run: pnpm install
+        timeout-minutes: 10
+        run: pnpm install --frozen-lockfile
 
       - name: 'Build'
         working-directory: ./docs
