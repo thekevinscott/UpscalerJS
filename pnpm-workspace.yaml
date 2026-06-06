@@ -9,3 +9,18 @@ packages:
   - '!models/**/demo/**'
   - '!dev/browser/public/models/**'
   - '!docs/workers/upscale/**'
+
+overrides:
+  webpack: 5.96.1
+
+# Migrated from package.json `pnpm.onlyBuiltDependencies` (removed in pnpm 11,
+# replaced by `allowBuilds`). These deps are permitted to run build scripts.
+allowBuilds:
+  '@tensorflow/tfjs-node': true
+  '@tensorflow/tfjs-node-gpu': true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  puppeteer: true
+  tunnelmole: true
+  workerd: true
