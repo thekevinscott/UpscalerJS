@@ -23,10 +23,6 @@
     "preinstall": "wireit",
     "liteinstall": "wireit",
     "postinstall": "wireit",
-    "update:dependency": "wireit",
-    "update:tfjs": "wireit",
-    "update:version": "wireit",
-    "commit-latest-version-changes": "wireit",
     "example:start": "wireit",
     "lint": "wireit",
     "model:write-docs": "wireit",
@@ -200,18 +196,6 @@
       "dependencies": [
         "./models/default-model:build"
       ]
-    },
-    "update:dependency": {
-      "command": "pnpm --filter @upscalerjs/scripts update:dependency"
-    },
-    "update:tfjs": {
-      "command": "pnpm --filter @upscalerjs/scripts update:tfjs"
-    },
-    "update:version": {
-      "command": "pnpm --filter @upscalerjs/scripts update:version && pnpm liteinstall"
-    },
-    "commit-latest-version-changes": {
-      "command": "git add packages/upscalerjs/src/shared/constants.ts *examples/*/package.json* && git commit -m \"Updating CDN && example versions\" --no-verify"
     },
     "example:start": {
       "command": "pnpm --filter @upscalerjs/scripts example:start",
