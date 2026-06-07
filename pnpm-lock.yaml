@@ -475,13 +475,13 @@ importers:
         specifier: ~4.22.0
         version: 4.22.0(seedrandom@3.0.5)
       '@upscalerjs/esrgan-thick':
-        specifier: latest
+        specifier: 1.0.0
         version: 1.0.0(@tensorflow/tfjs@4.22.0(seedrandom@3.0.5))
       seedrandom:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
-        specifier: latest
+        specifier: 1.0.0
         version: 1.0.0(@tensorflow/tfjs@4.22.0(seedrandom@3.0.5))
 
   docs/workers/image-search:
