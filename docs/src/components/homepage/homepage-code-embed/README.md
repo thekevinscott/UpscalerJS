@@ -8,4 +8,4 @@ sidebar_position: 1
 
 Shows a basic use case of UpscalerJS.
 
-<a href="https://githubbox.com/thekevinscott/upscalerjs/tree/main/examples/basic?file=index.js&title=UpscalerJS: Basic Example">Open in Codesandbox</a>.
+<a href="https://codesandbox.io/p/sandbox/github/thekevinscott/upscalerjs/tree/main/docs/src/components/homepage/homepage-code-embed?from-embed">Open in Codesandbox</a>.
