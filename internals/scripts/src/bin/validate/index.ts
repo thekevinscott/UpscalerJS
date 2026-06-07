@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { getPackageJSON, JSONSchema } from '@internals/common/package-json';
-import { sync } from 'glob';
+import { globSync as sync } from 'glob';
 import { ROOT_DIR } from '@internals/common/constants';
 import { output } from '@internals/common/logger';
 import { parseArgs } from 'node:util';

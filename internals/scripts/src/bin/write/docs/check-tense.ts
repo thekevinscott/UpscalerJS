@@ -2,7 +2,7 @@
 /*****
  * Script for checking tense in docs markdown files
  */
-import { sync } from 'glob';
+import { globSync as sync } from 'glob';
 import path from 'path';
 import { readFile } from '@internals/common/fs';
 import { DOCS_DIR } from '@internals/common/constants';
