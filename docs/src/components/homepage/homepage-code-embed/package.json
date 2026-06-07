@@ -10,9 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "@tensorflow/tfjs": "~4.22.0",
-    "@upscalerjs/esrgan-thick": "latest",
+    "@upscalerjs/esrgan-thick": "1.0.0",
     "seedrandom": "^3.0.5",
-    "upscaler": "latest"
+    "upscaler": "1.0.0"
   },
   "engines": {
     "npm": ">8.0.0"
