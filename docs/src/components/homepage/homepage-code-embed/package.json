@@ -12,7 +12,7 @@
     "@tensorflow/tfjs": "~4.11.0",
     "@upscalerjs/esrgan-thick": "latest",
     "seedrandom": "^3.0.5",
-    "upscaler": "workspace:*"
+    "upscaler": "latest"
   },
   "engines": {
     "npm": ">8.0.0"
