@@ -481,8 +481,8 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       upscaler:
-        specifier: workspace:*
-        version: link:../../../../../packages/upscalerjs
+        specifier: latest
+        version: 1.0.0(@tensorflow/tfjs@4.11.0(seedrandom@3.0.5))
 
   docs/workers/image-search:
     devDependencies:
@@ -3957,6 +3957,11 @@ packages:
   '@typescript-eslint/visitor-keys@6.4.0':
     resolution: {integrity: sha512-yJSfyT+uJm+JRDWYRYdCm2i+pmvXJSMtPR9Cq5/XQs4QIgNoLcoRtDdzsLbLsFM/c6um6ohQkg/MLxWvoIndJA==}
     engines: {node: ^16.0.0 || >=18.0.0}
+
+  '@upscalerjs/default-model@1.0.0':
+    resolution: {integrity: sha512-D17cokQBpciTBrlFuY5WtS7TH0WE3h5m44PYiPPCSq1jlWjG9BvH5/rnm9AhQPV6TT3Bqbg5GAPV8/qpR47/hQ==}
+    peerDependencies:
+      '@tensorflow/tfjs': ~4.11.0
 
   '@upscalerjs/esrgan-thick@1.0.0':
     resolution: {integrity: sha512-Xt7LAEa1WYVdU8teye1A2J3T2ylb3ihlU/x01x1ieM7zZh5FzTll6fwmeUC82mkztWloGZM65KdSEWOmhlXOdw==}
@@ -9518,6 +9523,12 @@ packages:
     resolution: {integrity: sha512-ItnICHbeMh9GqUy31hFPrD1kcuZ3rpxDZbf4KUDavXwS0bW5m7SLbDQpGX3UYr072cbrF5hFUs3r5tUsPwjfHw==}
     engines: {node: '>=10'}
 
+  upscaler@1.0.0:
+    resolution: {integrity: sha512-oQcxcShLj+HDHCtQBbdqQnFYwwgKeaU2wPNj4QL+Q/Gr05Vm9kXFU7TNl7ZpTR9ic0u4tOl70ZcQcUFODMUV/g==}
+    engines: {node: '>=16.0'}
+    peerDependencies:
+      '@tensorflow/tfjs': ~4.11.0
+
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
@@ -13589,6 +13600,10 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 6.4.0
       eslint-visitor-keys: 3.4.3
+
+  '@upscalerjs/default-model@1.0.0(@tensorflow/tfjs@4.11.0(seedrandom@3.0.5))':
+    dependencies:
+      '@tensorflow/tfjs': 4.11.0(seedrandom@3.0.5)
 
   '@upscalerjs/esrgan-thick@1.0.0(@tensorflow/tfjs@4.11.0(seedrandom@3.0.5))':
     dependencies:
@@ -20422,6 +20437,12 @@ snapshots:
       semver: 7.5.4
       semver-diff: 3.1.1
       xdg-basedir: 4.0.0
+
+  upscaler@1.0.0(@tensorflow/tfjs@4.11.0(seedrandom@3.0.5)):
+    dependencies:
+      '@tensorflow/tfjs': 4.11.0(seedrandom@3.0.5)
+      '@upscalerjs/default-model': 1.0.0(@tensorflow/tfjs@4.11.0(seedrandom@3.0.5))
+      wireit: 0.14.12
 
   uri-js@4.4.1:
     dependencies:
