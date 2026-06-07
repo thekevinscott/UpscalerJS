@@ -12,7 +12,7 @@
   "author": "Kevin Scott",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs": "~4.11.0",
+    "@tensorflow/tfjs": "~4.22.0",
     "@upscalerjs/esrgan-slim": "latest",
     "seedrandom": "^3.0.5",
     "upscaler": "latest"
