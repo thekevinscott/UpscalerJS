@@ -84,8 +84,8 @@ export interface ModelPackage {
 
 export type YieldedIntermediaryValue = undefined | Tensor4D | Tensor3D | Array<Tensor3D | Tensor4D | undefined>;
 
-/* eslint-disable @typescript-eslint/no-empty-interface */
-export interface WarmupArgs extends SharedArgs {}
+ 
+export type WarmupArgs = SharedArgs;
 export type CheckValidEnvironment<I> = (input: I, opts: {
   output?: ResultFormat;
   progressOutput?: ResultFormat;

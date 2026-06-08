@@ -152,13 +152,13 @@ export async function* processPixels<T extends TF, I>(
 
       upscaledTensor = concatTensors<Tensor4D>(tf, [upscaledTensor, colTensor,], 1);
 
-      /* eslint-disable @typescript-eslint/no-non-null-assertion */
+       
       colTensor!.dispose();
       yield [upscaledTensor,];
     }
     // https://github.com/tensorflow/tfjs/issues/1125
     /* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+     
     const processedUpscaledTensor = processAndDisposeOfTensor(
       tf,
       upscaledTensor!.clone(),
@@ -168,7 +168,7 @@ export async function* processPixels<T extends TF, I>(
     yield [processedUpscaledTensor,];
 
     const squeezedTensor = processedUpscaledTensor!.squeeze() as Tensor3D;
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
+     
     processedUpscaledTensor!.dispose();
     return squeezedTensor;
   }

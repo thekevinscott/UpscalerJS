@@ -30,8 +30,8 @@ export const padInput = (tf: TF, inputShape: Shape4D) => (pixels: Tensor4D): Ten
     return tf.tidy(() => {
       const height = Math.max(pixelsHeight, inputShape[1]);
       const width = Math.max(pixelsWidth, inputShape[2]);
-      const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]) as Tensor4D;
-      const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]) as Tensor4D;
+      const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]);
+      const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]);
       const topTensor = tf.concat([pixels, rightTensor,], 2);
       const final = tf.concat([topTensor, bottomTensor,], 1);
       return final;

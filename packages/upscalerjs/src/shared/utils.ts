@@ -77,9 +77,9 @@ export const checkModelDefinition = (modelDefinition?: ModelDefinition): void =>
     throw ERROR_UNDEFINED_MODEL;
   }
   if (!isValidModelType(modelDefinition.modelType ?? 'layers')) {
-    throw ERROR_INVALID_MODEL_TYPE(modelDefinition);
+    throw new Error(ERROR_INVALID_MODEL_TYPE(modelDefinition));
   }
   if (!modelDefinition.path && !modelDefinition._internals?.path) {
-    throw GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition);
+    throw new Error(GET_MODEL_CONFIGURATION_MISSING_PATH_AND_INTERNALS(modelDefinition));
   }
 };

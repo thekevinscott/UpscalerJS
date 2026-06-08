@@ -90,5 +90,5 @@ export const tensorAsBase64: TensorAsBase64<TFN> = (tf, tensor) => {
   return Buffer.from(arr).toString('base64');
 };
 
-/* eslint-disable @typescript-eslint/no-empty-function */
+ 
 export const checkValidEnvironment: CheckValidEnvironment<Input> = () => {};
