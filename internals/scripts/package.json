@@ -115,7 +115,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "vitest": "^0.34.2",
+    "vitest": "^3.2.6",
     "wireit": "latest"
   }
 }
