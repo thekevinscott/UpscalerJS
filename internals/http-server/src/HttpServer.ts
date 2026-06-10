@@ -1,8 +1,6 @@
 import { Server as HTTPServer, createServer } from 'http';
 import handler from 'serve-handler';
 import { exists } from '@internals/common/fs';
-import { info } from '@internals/common/logger';
-import { Tunnel } from './Tunnel.js';
 import { serverHeaders } from './serverHeaders.js';
 
 export const ERROR_NO_ADDRESS = 'No address found for server';
@@ -41,15 +39,11 @@ export class HttpServer {
   port?: number;
   dist: string;
   private httpServer?: HTTPServer;
-  private tunnel?: Tunnel;
-  // url?: string;
-  useTunnel: boolean;
 
-  constructor({ name, port, dist, useTunnel }: { name?: string; port?: number, dist: string, useTunnel: boolean }) {
+  constructor({ name, port, dist }: { name?: string; port?: number, dist: string }) {
     this.name = name;
     this.port = port;
     this.dist = dist;
-    this.useTunnel = useTunnel;
   }
 
   start = async () => {
@@ -71,12 +65,6 @@ export class HttpServer {
 
     await startHttpServer(httpServer, this.port);
     this.port = getServerPort(httpServer);
-    if (this.useTunnel) {
-      this.tunnel = new Tunnel(this.port);
-      info('Starting server with tunnel', this.name);
-      await this.tunnel.start();
-      info('Tunnel started', this.url, this.name);
-    }
     const url = this.url;
     if (!url) {
       throw new Error('No URL was created');
@@ -85,12 +73,6 @@ export class HttpServer {
   }
 
   get url() {
-    if (this.useTunnel) {
-      if (!this.tunnel) {
-        throw new Error('Tunnel was never set');
-      }
-      return this.tunnel?.url;
-    }
     if (!this.port) {
       throw new Error('Port was never set');
     }
@@ -100,21 +82,9 @@ export class HttpServer {
 
   close = async () => {
     const server = this.httpServer;
-    // const [server, tunnel] = [this.server, this.tunnel];
     if (!server) {
       throw new Error(`No server was set for name ${this.name}. Did you forget to call .start()?`);
     }
-    const closeTunnel = () => {
-      if (this.useTunnel) {
-        if (!this.tunnel) {
-          throw new Error('No tunnel was set.');
-        }
-        this.tunnel.close();
-      }
-    }
-    await Promise.all([
-      closeHttpServer(server),
-      closeTunnel(),
-    ]);
+    await closeHttpServer(server);
   }
 }

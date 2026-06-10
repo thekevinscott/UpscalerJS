@@ -53,8 +53,13 @@ describe('Desktop & Mobile Browser Integration Tests', () => {
     port: PORT,
     // verbose: VERBOSE,
     log: LOG,
-    useTunnel: true,
   });
+
+  // The test servers bind to localhost on the CI runner. The BrowserStack
+  // browser runs in the cloud, so it reaches them through the BrowserStack
+  // Local tunnel. Safari and mobile browsers don't reliably resolve
+  // "localhost" to the tunnel, so address the runner via bs-local.com.
+  const toRemoteURL = (url: string) => url.replace('localhost', 'bs-local.com');
 
   beforeAll(async function browserBeforeAll() {
     await testRunner.beforeAll();
@@ -71,15 +76,16 @@ describe('Desktop & Mobile Browser Integration Tests', () => {
 
   test.each(browserOptions)("%j", async (capabilities: BrowserOption) => {
     driver = getDriver({ ...capabilities, build }, { verbose: VERBOSE });
-    const ROOT_URL = await testRunner.getServerURL();;
+    const ROOT_URL = toRemoteURL(await testRunner.getServerURL());
     await driver.get(ROOT_URL);
     await driver.wait(async () => {
       const title = await driver.getTitle();
       return title.endsWith('| Loaded');
     }, 3000);
 
-    const fixturePath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/test/__fixtures__/fixture.png`;
-    const modelPath = `${await testRunner.getFixturesServerURL()}/pixel-upsampler/models/x4/x4.json`;
+    const fixturesURL = toRemoteURL(await testRunner.getFixturesServerURL());
+    const fixturePath = `${fixturesURL}/pixel-upsampler/test/__fixtures__/fixture.png`;
+    const modelPath = `${fixturesURL}/pixel-upsampler/models/x4/x4.json`;
     const result = await executeAsyncScript(driver, ({ fixturePath, modelPath }) => {
       const Upscaler = window['Upscaler'] as any;
       const model = window["@upscalerjs/pixel-upsampler/x4"];

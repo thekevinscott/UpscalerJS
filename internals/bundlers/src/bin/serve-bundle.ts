@@ -17,16 +17,14 @@ const bundlers: Record<BundlerName, typeof Bundler> = {
 
 interface ServeBundleOptions {
   port?: number;
-  useTunnel?: boolean;
 }
 
 export const serveBundle = async (bundlerName: BundlerName, {
   port,
-  useTunnel = false,
 }: ServeBundleOptions = {}): Promise<void> => {
   const Bundler = bundlers[bundlerName];
   const bundler = new Bundler(getBundlerOutputDir(Bundler));
-  const server = new HttpServer({ port, dist: bundler.absoluteDistFolder, useTunnel });
+  const server = new HttpServer({ port, dist: bundler.absoluteDistFolder });
   await server.start();
   process.on('exit', () => server.close());
   const url = await server.url;
@@ -52,10 +50,6 @@ const main = async () => {
         type: "string",
         short: "p",
       },
-      'use-tunnel': {
-        type: "boolean",
-        short: "t",
-      },
     },
     allowPositionals: true,
   });
@@ -69,7 +63,6 @@ const main = async () => {
   const port = values.port ? parseInt(values.port) : undefined;
   await serveBundle(bundlerName, {
     port,
-    useTunnel: values['use-tunnel'],
   });
 
 };

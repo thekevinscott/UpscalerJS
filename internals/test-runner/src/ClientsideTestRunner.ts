@@ -10,8 +10,6 @@ type Bundle = () => Promise<void>;
 // const DEFAULT_PORT = 8098;
 const DEFAULT_PORT = 0;
 
-const USE_TUNNEL = process.env.useTunnel === '1';
-
 type MockCDN = (server: HttpServer, model: string, pathToModel: string) => string;
 export type AfterEachCallback = () => Promise<unknown>;
 
@@ -45,7 +43,6 @@ export class ClientsideTestRunner {
   log: boolean;
   port: number;
   dist?: string;
-  useTunnel: boolean;
   private mock: boolean;
   private _server: HttpServer | undefined;
   private _fixtures: HttpServer | undefined;
@@ -62,7 +59,6 @@ export class ClientsideTestRunner {
     trackTime = false,
     log = true,
     showWarnings = false,
-    useTunnel = USE_TUNNEL,
   }: {
     name?: string;
     mock?: boolean;
@@ -71,7 +67,6 @@ export class ClientsideTestRunner {
     trackTime?: boolean;
     log?: boolean;
     showWarnings?: boolean;
-    useTunnel?: boolean;
   }) {
     this._name = name;
     this.mock = mock;
@@ -80,7 +75,6 @@ export class ClientsideTestRunner {
     this.trackTime = trackTime;
     this.port = port;
     this.log = log;
-    this.useTunnel = useTunnel;
   }
 
   /****
@@ -182,16 +176,13 @@ export class ClientsideTestRunner {
       name: name || this._name,
       port: this.port,
       dist,
-      useTunnel: this.useTunnel,
     });
 
     this.fixturesServer = new HttpServer({
       name: `${this._name}-fixtures`,
       dist: MODELS_DIR,
-      useTunnel: this.useTunnel,
     });
 
-    // Note: these must be done sequentially; there's a race condition bug in tunnelmole
     const timer = setTimeout(() => {
       throw new Error('Could not start servers within 3 seconds');
     }, 3000);

@@ -47,8 +47,11 @@ export const serverURL = `http://${username}:${accessKey}@hub-cloud.browserstack
 export const DEFAULT_CAPABILITIES = {
   'build': env.BROWSERSTACK_BUILD_NAME,
   'project': env.BROWSERSTACK_PROJECT_NAME,
-  // 'browserstack.local': true,
-  // 'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
+  // Route the remote browser back to the test server running on the CI
+  // runner via the BrowserStack Local tunnel. The localIdentifier must match
+  // the one passed to the setup-local GitHub Action (it exports it as env).
+  'browserstack.local': true,
+  'browserstack.localIdentifier': env.BROWSERSTACK_LOCAL_IDENTIFIER,
 }
 
 /****
