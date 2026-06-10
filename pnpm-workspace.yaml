@@ -22,5 +22,4 @@ allowBuilds:
   core-js-pure: true
   esbuild: true
   puppeteer: true
-  tunnelmole: true
   workerd: true

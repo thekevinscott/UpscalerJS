@@ -183,7 +183,13 @@ jobs:
         with:
           username: ${{ secrets.BROWSERSTACK_USERNAME }}
           access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      
+
+      - name: 'Start BrowserStack Local'  # Tunnels the runner's localhost to the cloud browsers
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: start
+          local-identifier: random
+
       - name: 'Checkout repository'
         uses: actions/checkout@v4
         with:
@@ -204,6 +210,12 @@ jobs:
         run: pnpm test:integration:browserstack
         env:
           NODE_OPTIONS: --max_old_space_size=8192
+
+      - name: 'Stop BrowserStack Local'
+        if: always()
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: stop
 
   integration-clientside:
     name: 'Integration / Clientside'
