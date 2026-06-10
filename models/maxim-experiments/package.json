@@ -128,7 +128,7 @@
   "license": "MIT",
   "wireit": {
     "lint": {
-      "command": "eslint -c ../.eslintrc.js src --ext .ts",
+      "command": "eslint src",
       "dependencies": [
         "scaffold"
       ]

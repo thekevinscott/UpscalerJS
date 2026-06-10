@@ -170,7 +170,7 @@
       "command": "echo 'Formatting code' && prettier --write \"src/**/*.ts\""
     },
     "lint": {
-      "command": "eslint -c .eslintrc.js src --ext .ts"
+      "command": "eslint src"
     },
     "test": {
       "command": "pnpm test:unit:browser:playwright && pnpm test:unit:browser:vite -- --run && pnpm test:unit:node -- --run"
@@ -232,7 +232,7 @@
     "@tensorflow/tfjs-node": "~4.22.0",
     "@tensorflow/tfjs-node-gpu": "~4.22.0",
     "@types/jest": "^30.0.0",
-    "eslint": "8.47.0",
+    "eslint": "10.4.1",
     "seedrandom": "3.0.5",
     "vitest": "^4.1.5"
   }

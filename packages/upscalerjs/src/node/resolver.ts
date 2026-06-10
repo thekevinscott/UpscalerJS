@@ -2,7 +2,7 @@
 export const resolver = (name: string): string => {
   try {
     return require.resolve(name);
-  } catch(err) {
+  } catch {
     return require.resolve(name, {
       paths: [process.cwd(),],
     });

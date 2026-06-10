@@ -52,8 +52,8 @@ export function getModelDefinitionOrModelDefinitionFnAsModelDefinition(tf: TF, m
 }
 
 export async function getModel(tf: TF, modelDefinition: ModelDefinitionObjectOrFn): Promise<ModelDefinition> {
-  /* eslint-disable @typescript-eslint/no-unsafe-call */
-  /* eslint-disable @typescript-eslint/no-unsafe-return */
+   
+   
   const modelDef = getModelDefinitionOrModelDefinitionFnAsModelDefinition(tf, modelDefinition);
   if (modelDef.setup) {
     await modelDef.setup(tf);
