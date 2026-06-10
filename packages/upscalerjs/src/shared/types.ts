@@ -84,7 +84,8 @@ export interface ModelPackage {
 
 export type YieldedIntermediaryValue = undefined | Tensor4D | Tensor3D | Array<Tensor3D | Tensor4D | undefined>;
 
-/* eslint-disable @typescript-eslint/no-empty-interface */
+ 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- named alias of SharedArgs (unexported); a type alias would break the public d.ts (TS4023)
 export interface WarmupArgs extends SharedArgs {}
 export type CheckValidEnvironment<I> = (input: I, opts: {
   output?: ResultFormat;

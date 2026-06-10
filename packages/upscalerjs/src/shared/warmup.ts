@@ -8,7 +8,7 @@ export const isWarmupSizeByPatchSize = (size: unknown): size is WarmupSizesByPat
   if (!size || typeof size !== 'object') {
     return false;
   }
-  return 'patchSize' in size && typeof (size as { patchSize: unknown }).patchSize === 'number';
+  return 'patchSize' in size && typeof size.patchSize === 'number';
 };
 export const isNumericWarmupSize = (size: unknown): size is NumericWarmupSizes => {
   return Boolean(size) && typeof size === 'number' && size > 0;
@@ -45,6 +45,7 @@ export async function* warmup(
     }
     const warmupSize = getWidthAndHeight(size);
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- tf.zeros types as Tensor<Rank>; the cast is required by the build tsconfigs (node-gpu/browser), which resolve tfjs differently than the lint tsconfig
     let dummyTensor = tf.zeros([1, warmupSize, warmupSize, 3,]) as Tensor4D;
     yield [dummyTensor,];
 

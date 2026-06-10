@@ -30,7 +30,9 @@ export const padInput = (tf: TF, inputShape: Shape4D) => (pixels: Tensor4D): Ten
     return tf.tidy(() => {
       const height = Math.max(pixelsHeight, inputShape[1]);
       const width = Math.max(pixelsWidth, inputShape[2]);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- tf.zeros types as Tensor<Rank>; the cast is required by the build tsconfigs (node-gpu/browser), which resolve tfjs differently than the lint tsconfig
       const rightTensor = tf.zeros([1, pixelsHeight, width - pixelsWidth, 3,]) as Tensor4D;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- tf.zeros types as Tensor<Rank>; the cast is required by the build tsconfigs (node-gpu/browser), which resolve tfjs differently than the lint tsconfig
       const bottomTensor = tf.zeros([1, height - pixelsHeight, width, 3,]) as Tensor4D;
       const topTensor = tf.concat([pixels, rightTensor,], 2);
       const final = tf.concat([topTensor, bottomTensor,], 1);

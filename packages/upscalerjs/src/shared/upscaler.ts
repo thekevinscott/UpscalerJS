@@ -35,7 +35,7 @@ import { getModel, } from './model-utils';
 
 // TODO: Why do we need to explicitly cast this to ModelDefinition?
 // This is an ESLint issue, Typescript picks this up correctly
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+ 
 const DEFAULT_MODEL: ModelDefinitionObjectOrFn = DefaultUpscalerModel;
 
 export function getUpscaler<T extends TF, Input>({
