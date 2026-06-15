@@ -18,7 +18,7 @@
     "@internals/http-server": "workspace:*",
     "fs-extra": "latest",
     "html-webpack-plugin": "^5.5.3",
-    "webpack": "^5.88.2"
+    "webpack": "^5.107.2"
   },
   "scripts": {
     "run-bundle": "wireit",
