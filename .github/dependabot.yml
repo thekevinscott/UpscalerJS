@@ -1,11 +1,12 @@
 version: 2
 updates:
+  # pnpm workspace: a single root lockfile (pnpm-lock.yaml) covers every member.
+  # Point Dependabot at '/' so the workspace root — and that shared lockfile — is
+  # in scope. Splitting updates by sub-package directory (e.g. /packages/upscalerjs)
+  # bumps the member package.json but leaves the root lockfile stale, breaking
+  # `pnpm install --frozen-lockfile` in CI. See dependabot-core#11135.
   - package-ecosystem: 'npm'
-    directory: '/packages/upscalerjs'
-    schedule:
-      interval: 'daily'
-  - package-ecosystem: 'npm'
-    directory: '/packages/models'
+    directory: '/'
     schedule:
       interval: 'daily'
 
