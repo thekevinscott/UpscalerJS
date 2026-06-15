@@ -17,7 +17,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
+    "@types/node": "^25.9.3",
     "tsx": "^4.7.0",
     "vitest": "^3.2.6"
   }
