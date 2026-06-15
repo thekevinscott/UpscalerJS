@@ -9,4 +9,14 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    # pnpm 11 enables `minimumReleaseAge: 1440` (1-day quarantine on freshly
+    # published packages) by default. Dependabot ignores it and resolves to the
+    # newest version, so its regenerated lockfile can contain sub-1-day packages
+    # that CI then rejects (ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION). Hold updates
+    # for 3 days so the picked versions clear the gate with margin. Note: cooldown
+    # constrains the directly-updated dependency, not transitives re-floated during
+    # lockfile regeneration — see dependabot-core#13165 — so occasional failures
+    # may persist until that's resolved upstream.
+    cooldown:
+      default-days: 3
 
