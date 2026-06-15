@@ -55,7 +55,7 @@
     "@internals/webdriver": "workspace:*",
     "@rollup/plugin-commonjs": "25.0.4",
     "@rollup/plugin-node-resolve": "15.2.0",
-    "@schemastore/package": "0.0.10",
+    "@schemastore/package": "1.0.5",
     "@tensorflow/tfjs": "~4.22.0",
     "@tensorflow/tfjs-node": "~4.22.0",
     "@tensorflow/tfjs-node-gpu": "~4.22.0",
