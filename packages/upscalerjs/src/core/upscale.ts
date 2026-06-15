@@ -7,7 +7,7 @@ import type {
   YieldedIntermediaryValue,
   SliceData,
   InternalConfig,
- } from './types';
+} from './types.js';
 import {
   wrapGenerator,
   warn,
@@ -15,10 +15,10 @@ import {
   isMultiArgTensorProgress,
   processAndDisposeOfTensor,
   isSingleArgProgress,
-} from './utils';
+} from './utils.js';
 import {
   parsePatchAndInputShapes,
-} from './model-utils';
+} from './model-utils.js';
 import {
   scaleIncomingPixels,
   padInput,
@@ -26,17 +26,17 @@ import {
   scaleOutput,
   concatTensors,
   getCopyOfInput,
-} from './tensor-utils';
+} from './tensor-utils.js';
 import type {
   FixedShape4D,
   TF,
-} from '../../../shared/src/types';
+} from '../../../shared/src/types.js';
 import {
   isTensor,
   isFourDimensionalTensor,
-} from '../../../shared/src/constants';
-import { makeTick, } from './makeTick';
-import { GraphModel, LayersModel, } from '@tensorflow/tfjs';
+} from '../../../shared/src/constants.js';
+import { makeTick, } from './makeTick.js';
+import type { GraphModel, LayersModel, } from '@tensorflow/tfjs';
 import {
   ERROR_INVALID_MODEL_PREDICTION,
   ERROR_INVALID_TENSOR_PREDICTED,
@@ -300,7 +300,7 @@ export async function* upscale<T extends TF, I>(
 export function cancellableUpscale<T extends TF, I>(
   tf: T,
   input: I,
-  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: TENSOR},
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: TENSOR },
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
@@ -309,7 +309,7 @@ export function cancellableUpscale<T extends TF, I>(
 export function cancellableUpscale<T extends TF, I>(
   tf: T,
   input: I,
-  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64},
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 },
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },
@@ -327,7 +327,7 @@ export function cancellableUpscale<T extends TF, I>(
 export async function cancellableUpscale<T extends TF, I>(
   tf: T,
   input: I,
-  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR},
+  { signal, awaitNextFrame, ...args }: Omit<PrivateUpscaleArgs, 'output'> & { output: BASE64 | TENSOR },
   internalArgs: ModelPackage & {
     signal: AbortSignal;
   },

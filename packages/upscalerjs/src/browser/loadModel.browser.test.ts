@@ -6,52 +6,52 @@ import {
   fetchModel,
   getLoadModelErrorMessage,
   loadModel,
-} from './loadModel.browser';
+} from './loadModel.browser.js';
 import {
   loadTfModel,
-} from '../shared/model-utils';
+} from '../core/model-utils.js';
 import * as tf from '@tensorflow/tfjs-node';
 
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from '../shared/errors-and-warnings';
+} from '../core/errors-and-warnings.js';
 import {
   ModelDefinition,
-} from '../../../shared/src/types';
+} from '../../../shared/src/types.js';
 
 import {
   checkModelDefinition,
-} from '../shared/utils';
+} from '../core/utils.js';
 
-import type * as sharedUtils from '../shared/utils';
-import type * as modelUtils from '../shared/model-utils';
-import type * as errorsAndWarnings from '../shared/errors-and-warnings';
-import type * as loadModelBrowser from './loadModel.browser';
+import type * as sharedUtils from '../core/utils.js';
+import type * as modelUtils from '../core/model-utils.js';
+import type * as errorsAndWarnings from '../core/errors-and-warnings.js';
+import type * as loadModelBrowser from './loadModel.browser.js';
 
-vi.mock('./loadModel.browser', async () => {
-  const { ...rest } = await vi.importActual('./loadModel.browser') as typeof loadModelBrowser;
+vi.mock('./loadModel.browser.js', async () => {
+  const { ...rest } = await vi.importActual('./loadModel.browser.js') as typeof loadModelBrowser;
   return {
     ...rest,
   }
 });
 
-vi.mock('../shared/model-utils', async () => {
-  const { loadTfModel, ...rest } = await vi.importActual('../shared/model-utils') as typeof modelUtils;
+vi.mock('../core/model-utils.js', async () => {
+  const { loadTfModel, ...rest } = await vi.importActual('../core/model-utils.js') as typeof modelUtils;
   return {
     ...rest,
     loadTfModel: vi.fn(),
   }
 });
 
-vi.mock('../shared/errors-and-warnings', async () => {
-  const { ...rest } = await vi.importActual('../shared/errors-and-warnings') as typeof errorsAndWarnings;
+vi.mock('../core/errors-and-warnings.js', async () => {
+  const { ...rest } = await vi.importActual('../core/errors-and-warnings.js') as typeof errorsAndWarnings;
   return {
     ...rest,
   }
 });
 
-vi.mock('../shared/utils', async () => {
-  const { checkModelDefinition, ...rest } = await vi.importActual('../shared/utils') as typeof sharedUtils;
+vi.mock('../core/utils.js', async () => {
+  const { checkModelDefinition, ...rest } = await vi.importActual('../core/utils.js') as typeof sharedUtils;
   return {
     ...rest,
     checkModelDefinition: vi.fn(checkModelDefinition),

@@ -1,14 +1,14 @@
 import path from 'path';
-import { loadTfModel, parseModelDefinition, } from '../shared/model-utils';
-import { resolver, } from './resolver';
-import { ParsedModelDefinition, LoadModel, } from '../shared/types';
+import { loadTfModel, parseModelDefinition, } from '../core/model-utils.js';
+import { resolver, } from './resolver.js';
+import { ParsedModelDefinition, LoadModel, } from '../core/types.js';
 import type {
   TF,
-} from '../../../shared/src/types';
+} from '../../../shared/src/types.js';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from '../shared/errors-and-warnings';
-import { checkModelDefinition, } from '../shared/utils.js';
+} from '../core/errors-and-warnings.js';
+import { checkModelDefinition, } from '../core/utils.js';
 
 export const getMissingMatchesError = (moduleEntryPoint: string): Error => new Error(
   `No matches could be found for module entry point ${moduleEntryPoint}`
