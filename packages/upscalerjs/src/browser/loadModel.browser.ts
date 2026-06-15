@@ -1,16 +1,16 @@
 import type { LayersModel, } from '@tensorflow/tfjs-layers';
-import type { ModelType, ModelConfigurationInternals, GraphModel, } from '../../../shared/src/types';
-import type { LoadModel, ParsedModelDefinition, } from '../core/types';
+import type { ModelType, ModelConfigurationInternals, GraphModel, } from '../../../shared/src/types.js';
+import type { LoadModel, ParsedModelDefinition, } from '../core/types.js';
 import {
   loadTfModel,
   parseModelDefinition,
-} from '../core/model-utils';
+} from '../core/model-utils.js';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from '../core/errors-and-warnings';
+} from '../core/errors-and-warnings.js';
 import type {
   TF,
-} from '../../../shared/src/types';
+} from '../../../shared/src/types.js';
 import { checkModelDefinition, } from '../core/utils.js';
 
 type CDN = 'jsdelivr' | 'unpkg';

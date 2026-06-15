@@ -1,6 +1,6 @@
 import Upscaler from '..';
-import { AbortError, } from '../../shared/errors-and-warnings';
-import { getPatchesFromImage, } from '../../shared/image-utils';
+import { AbortError, } from '../../core/errors-and-warnings.js';
+import { getPatchesFromImage, } from '../../core/image-utils.js';
 
 (
   Upscaler as typeof Upscaler & {

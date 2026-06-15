@@ -3,53 +3,53 @@ import {
   getModelPath,
   getModuleFolder,
   getMissingMatchesError,
-} from "./loadModel.node";
+} from "./loadModel.node.js";
 import { vi } from 'vitest';
 import path from 'path';
-import { resolver, } from './resolver';
+import { resolver, } from './resolver.js';
 import {
   ModelDefinition,
-} from "../../../shared/src/types";
+} from "../../../shared/src/types.js";
 import * as tf from '@tensorflow/tfjs-node';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from '../core/errors-and-warnings';
+} from '../core/errors-and-warnings.js';
 import {
   loadTfModel,
-} from '../core/model-utils';
+} from '../core/model-utils.js';
 import {
   checkModelDefinition,
-} from '../core/utils';
+} from '../core/utils.js';
 
-import type * as sharedUtils from '../core/utils';
-import type * as modelUtils from '../core/model-utils';
-import type * as errorsAndWarnings from '../core/errors-and-warnings';
-import type * as resolverModule from './resolver';
+import type * as sharedUtils from '../core/utils.js';
+import type * as modelUtils from '../core/model-utils.js';
+import type * as errorsAndWarnings from '../core/errors-and-warnings.js';
+import type * as resolverModule from './resolver.js';
 
-vi.mock('../core/model-utils', async () => {
-  const { loadTfModel, ...rest } = await vi.importActual('../core/model-utils') as typeof modelUtils;
+vi.mock('../core/model-utils.js', async () => {
+  const { loadTfModel, ...rest } = await vi.importActual('../core/model-utils.js') as typeof modelUtils;
   return {
     ...rest,
     loadTfModel: vi.fn(),
   }
 });
 
-vi.mock('../core/errors-and-warnings', async () => {
-  const { ...rest } = await vi.importActual('../core/errors-and-warnings') as typeof errorsAndWarnings;
+vi.mock('../core/errors-and-warnings.js', async () => {
+  const { ...rest } = await vi.importActual('../core/errors-and-warnings.js') as typeof errorsAndWarnings;
   return {
     ...rest,
   }
 });
 
-vi.mock('../core/utils', async () => {
-  const { checkModelDefinition, ...rest } = await vi.importActual('../core/utils') as typeof sharedUtils;
+vi.mock('../core/utils.js', async () => {
+  const { checkModelDefinition, ...rest } = await vi.importActual('../core/utils.js') as typeof sharedUtils;
   return {
     ...rest,
     checkModelDefinition: vi.fn(checkModelDefinition),
   }
 });
-vi.mock('./resolver', async () => {
-  const { resolver, ...rest } = await vi.importActual('./resolver') as typeof resolverModule;
+vi.mock('./resolver.js', async () => {
+  const { resolver, ...rest } = await vi.importActual('./resolver.js') as typeof resolverModule;
   return {
     ...rest,
     resolver: vi.fn(resolver),
@@ -70,7 +70,7 @@ describe('loadModel.node', () => {
     });
 
     it('returns the path to the module', () => {
-      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts.js'));
       expect(getModuleFolder('baz')).toEqual('./node_modules/@upscalerjs/default-model/');
     });
 
@@ -101,7 +101,7 @@ describe('loadModel.node', () => {
     });
 
     it('returns model path if not provided a path', () => {
-      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/@upscalerjs/default-model/dist/foo/foo.ts.js'));
       expect(getModelPath({
         _internals: {
           path: 'some-model',
@@ -116,7 +116,7 @@ describe('loadModel.node', () => {
 
   describe('loadModel', () => {
     it('throws if given a bad model definition', async () => {
-      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz.js'));
       const error = ERROR_MODEL_DEFINITION_BUG;
       vi.mocked(checkModelDefinition).mockImplementation(() => {
         throw new Error();
@@ -128,7 +128,7 @@ describe('loadModel.node', () => {
     });
 
     it('loads a valid layers model', async () => {
-      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz.js'));
       vi.mocked(checkModelDefinition).mockImplementation(() => true);
       vi.mocked(loadTfModel).mockImplementation(async () => 'layers model' as any);
 
@@ -144,7 +144,7 @@ describe('loadModel.node', () => {
     });
 
     it('loads a valid graph model', async () => {
-      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz'));
+      vi.mocked(resolver).mockImplementation(getResolver(() => './node_modules/baz.js'));
       vi.mocked(checkModelDefinition).mockImplementation(() => true);
       vi.mocked(loadTfModel).mockImplementation(async () => 'graph model' as any);
 
