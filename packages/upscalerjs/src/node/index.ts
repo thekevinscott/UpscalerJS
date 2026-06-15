@@ -1,14 +1,14 @@
-import { getUpscaler, } from '../shared';
+import { getUpscaler, } from '../core/index.js';
 import * as tf from '@tensorflow/tfjs-node';
-export * from '../shared';
-import { getUpscaleOptions, } from './args.node';
-import { loadModel, } from './loadModel.node';
+export * from '../core/index.js';
+import { getUpscaleOptions, } from './args.node.js';
+import { loadModel, } from './loadModel.node.js';
 import {
   getImageAsTensor,
   tensorAsBase64,
   checkValidEnvironment,
   Input,
-} from './image.node';
+} from './image.node.js';
 
 const Upscaler = getUpscaler<typeof tf, Input>({
   tf,
