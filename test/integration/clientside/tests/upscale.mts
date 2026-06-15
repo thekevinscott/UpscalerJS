@@ -5,7 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 import Upscaler from 'upscaler';
 import path from 'path';
 import { MODELS_DIR } from '@internals/common/constants';
-import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../packages/upscalerjs/src/shared/index.js';
+import { MultiArgStringProgress, MultiArgTensorProgress } from '../../../../packages/upscalerjs/src/core/index.js';
 import { ClientsideTestRunner } from '@internals/test-runner/clientside';
 
 const PIXEL_UPSAMPLER_DIR = path.resolve(MODELS_DIR, 'pixel-upsampler/test/__fixtures__');

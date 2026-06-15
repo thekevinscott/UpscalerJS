@@ -16,7 +16,7 @@ const EXPECTED_UPSCALED_IMAGE_16 = path.resolve(PIXEL_UPSAMPLER_DIR, 'x4/result.
 const USE_GPU = process.env.useGPU === '1';
 
 // TODO: How to import this, instead of copying it?
-// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/shared/image.node';
+// import { getInvalidImageSrcInput } from '../../../packages/upscalerjs/src/core/image.node';
 const getInvalidImageSrcInput = (input: string): Error => new Error([
   `Image specified at path ${input} could not be found`,
 ].join(' '));
