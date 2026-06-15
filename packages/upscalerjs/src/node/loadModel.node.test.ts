@@ -13,36 +13,36 @@ import {
 import * as tf from '@tensorflow/tfjs-node';
 import {
   ERROR_MODEL_DEFINITION_BUG,
-} from '../shared/errors-and-warnings';
+} from '../core/errors-and-warnings';
 import {
   loadTfModel,
-} from '../shared/model-utils';
+} from '../core/model-utils';
 import {
   checkModelDefinition,
-} from '../shared/utils';
+} from '../core/utils';
 
-import type * as sharedUtils from '../shared/utils';
-import type * as modelUtils from '../shared/model-utils';
-import type * as errorsAndWarnings from '../shared/errors-and-warnings';
+import type * as sharedUtils from '../core/utils';
+import type * as modelUtils from '../core/model-utils';
+import type * as errorsAndWarnings from '../core/errors-and-warnings';
 import type * as resolverModule from './resolver';
 
-vi.mock('../shared/model-utils', async () => {
-  const { loadTfModel, ...rest } = await vi.importActual('../shared/model-utils') as typeof modelUtils;
+vi.mock('../core/model-utils', async () => {
+  const { loadTfModel, ...rest } = await vi.importActual('../core/model-utils') as typeof modelUtils;
   return {
     ...rest,
     loadTfModel: vi.fn(),
   }
 });
 
-vi.mock('../shared/errors-and-warnings', async () => {
-  const { ...rest } = await vi.importActual('../shared/errors-and-warnings') as typeof errorsAndWarnings;
+vi.mock('../core/errors-and-warnings', async () => {
+  const { ...rest } = await vi.importActual('../core/errors-and-warnings') as typeof errorsAndWarnings;
   return {
     ...rest,
   }
 });
 
-vi.mock('../shared/utils', async () => {
-  const { checkModelDefinition, ...rest } = await vi.importActual('../shared/utils') as typeof sharedUtils;
+vi.mock('../core/utils', async () => {
+  const { checkModelDefinition, ...rest } = await vi.importActual('../core/utils') as typeof sharedUtils;
   return {
     ...rest,
     checkModelDefinition: vi.fn(checkModelDefinition),
