@@ -23,3 +23,5 @@ allowBuilds:
   esbuild: true
   puppeteer: true
   workerd: true
+
+useNodeVersion: 22.20.0

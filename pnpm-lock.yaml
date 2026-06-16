@@ -1055,6 +1055,64 @@ importers:
         specifier: workspace:*
         version: link:../upscalerjs
 
+  tmp/bundlers/node:
+    dependencies:
+      '@tensorflow/tfjs-node':
+        specifier: ^4.11.0
+        version: 4.22.0(seedrandom@3.0.5)
+      '@tensorflow/tfjs-node-gpu':
+        specifier: ^4.11.0
+        version: 4.22.0(seedrandom@3.0.5)
+      '@upscalerjs/default-model':
+        specifier: workspace:*
+        version: link:../../../models/default-model
+      '@upscalerjs/esrgan-legacy':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-legacy
+      '@upscalerjs/esrgan-medium':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-medium
+      '@upscalerjs/esrgan-slim':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-slim
+      '@upscalerjs/esrgan-thick':
+        specifier: workspace:*
+        version: link:../../../models/esrgan-thick
+      '@upscalerjs/maxim-deblurring':
+        specifier: workspace:*
+        version: link:../../../models/maxim-deblurring
+      '@upscalerjs/maxim-dehazing-indoor':
+        specifier: workspace:*
+        version: link:../../../models/maxim-dehazing-indoor
+      '@upscalerjs/maxim-dehazing-outdoor':
+        specifier: workspace:*
+        version: link:../../../models/maxim-dehazing-outdoor
+      '@upscalerjs/maxim-denoising':
+        specifier: workspace:*
+        version: link:../../../models/maxim-denoising
+      '@upscalerjs/maxim-deraining':
+        specifier: workspace:*
+        version: link:../../../models/maxim-deraining
+      '@upscalerjs/maxim-enhancement':
+        specifier: workspace:*
+        version: link:../../../models/maxim-enhancement
+      '@upscalerjs/maxim-retouching':
+        specifier: workspace:*
+        version: link:../../../models/maxim-retouching
+      '@upscalerjs/pixel-upsampler':
+        specifier: workspace:*
+        version: link:../../../models/pixel-upsampler
+      upscaler:
+        specifier: workspace:*
+        version: link:../../../packages/upscalerjs
+    devDependencies:
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+      tslib:
+        specifier: 2.6.1
+        version: 2.6.1
+
 packages:
 
   '@aashutoshrathi/word-wrap@1.2.6':
