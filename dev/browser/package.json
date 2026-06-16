@@ -22,7 +22,7 @@
     "@upscalerjs/maxim-retouching": "workspace:*",
     "seedrandom": "3.0.5",
     "upscaler": "workspace:*",
-    "vite": "^8.0.10"
+    "vite": "^8.0.16"
   },
   "dependencies": {
     "@tensorflow/tfjs": "~4.22.0",
