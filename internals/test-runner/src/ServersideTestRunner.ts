@@ -65,11 +65,15 @@ type ContentFn = (outputDir: string) => Promise<string>;
 const runNodeScript = (contentFn: ContentFn, cwd: string, stderr?: typeof process.stderr): Promise<Buffer> => withTmpDir(async (tmpDir) => {
   const dataFile = path.join(tmpDir, getHashedName());
   const contents = await contentFn(dataFile);
-  
+
   await callExec(`node -e "${contents.replace(/"/g, '\\"')}"`, {
     cwd,
     env: {
-      // Hide warnings about TFJS not being compiled to use AXA on the CPU 
+      // Preserve PATH etc. — replacing env entirely strips PATH, causing the
+      // child `node` to resolve to a different (system) install than the one
+      // running the tests.
+      ...process.env,
+      // Hide warnings about TFJS not being compiled to use AXA on the CPU
       TF_CPP_MIN_LOG_LEVEL: '3',
     },
   }, chunk => {
