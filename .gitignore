@@ -39,3 +39,4 @@ service-account.json
 notebooks
 .wireit
 notes/local.md
+.claude
