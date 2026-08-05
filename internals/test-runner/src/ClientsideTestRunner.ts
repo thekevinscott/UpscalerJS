@@ -212,7 +212,7 @@ export class ClientsideTestRunner {
   public async startBrowser() {
     // launch handles launching an instance and then connecting to it
     this.browser = await launch({
-      headless: 'new',
+      headless: true,
       protocolTimeout: 180_000 * 2,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
