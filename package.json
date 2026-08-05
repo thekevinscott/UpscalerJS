@@ -53,7 +53,7 @@
     "@internals/scripts": "workspace:*",
     "@internals/test-runner": "workspace:*",
     "@internals/webdriver": "workspace:*",
-    "@rollup/plugin-commonjs": "25.0.4",
+    "@rollup/plugin-commonjs": "29.0.3",
     "@rollup/plugin-node-resolve": "15.2.0",
     "@schemastore/package": "0.0.10",
     "@tensorflow/tfjs": "~4.22.0",
