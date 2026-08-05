@@ -55,12 +55,26 @@ export const npmInstall = async (cwd: string, {
   await runPackageCommand(command, cwd, 'npm');
 };
 
+// The bundler work dirs live under `tmp/bundlers/**`, which pnpm-workspace.yaml
+// includes as workspace packages, so this is a *workspace-wide* install, not a
+// local one. `--fix-lockfile` therefore re-resolves the whole graph: against the
+// current lockfile it rewrites ~4k lines, mostly adding `(supports-color@x)`
+// peer suffixes. A changed suffix means a changed depPath, which means pnpm
+// creates a *new* virtual store directory and repoints the symlinks at it.
+//
+// `--ignore-scripts` used to be passed here. Combined with the above it silently
+// destroyed @tensorflow/tfjs-node: the new directory is hard-linked from the
+// content-addressable store, which holds only the npm tarball, and tfjs-node
+// fetches its native addon (lib/napi-v8/tfjs_binding.node) in its own `install`
+// script. Skipping scripts left the addon behind in the old, now-unreferenced
+// directory, and every `require('@tensorflow/tfjs-node')` after this point threw
+// "The Node.js native addon module (tfjs_binding.node) can not be found".
+// Letting scripts run means anything pnpm re-creates here is rebuilt properly.
 export const pnpmInstall = async (cwd: string, _opts = {}) => {
   // const logLevel = getLogLevel();
   const command = [
     'pnpm',
     'install',
-    '--ignore-scripts',
     '--fix-lockfile'
     // isSilent ? '--silent' : '',
     // '--no-fund',

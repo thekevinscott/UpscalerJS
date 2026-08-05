@@ -355,12 +355,19 @@ jobs:
           echo '--- lockfile diff total lines ---'
           diff /tmp/lock-before.yaml pnpm-lock.yaml | wc -l || true
 
-      - name: 'Does pnpm rebuild restore it?'
+      - name: 'Does require still work?'
         if: always()
         run: |
-          pnpm rebuild @tensorflow/tfjs-node @tensorflow/tfjs-node-gpu || true
-          find node_modules/.pnpm -name 'tfjs_binding.node' -printf '%p %s\n' || true
           node -e "require('@tensorflow/tfjs-node'); console.log('REQUIRE OK')" || true
+
+      # The post-bundle lockfile is what pnpm 11 actually resolves to. Committing
+      # it makes the bundler's install a no-op instead of a 4k-line rewrite.
+      - name: 'Upload re-resolved lockfile'
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lockfile-after-bundle
+          path: pnpm-lock.yaml
 
   integration-models-node:
     name: 'Models / Node'
