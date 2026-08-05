@@ -13,6 +13,16 @@ packages:
 overrides:
   webpack: 5.96.1
 
+# pnpm caches the *result* of a package's build scripts in the store (recorded in
+# <store>/v11/index.db) and replays that snapshot into any project sharing the
+# store, skipping the build script entirely. @tensorflow/tfjs-node fetches its
+# native addon (lib/napi-v8/tfjs_binding.node) during its own `install` script,
+# so a snapshot taken from a build that produced no addon is indistinguishable
+# from a good one -- and is then replayed forever. CI restores the pnpm store
+# from cache, which is how one bad build in July 2026 kept every subsequent run
+# broken. Rebuilding from scratch costs a few seconds; a poisoned store costs days.
+sideEffectsCache: false
+
 # Migrated from package.json `pnpm.onlyBuiltDependencies` (removed in pnpm 11,
 # replaced by `allowBuilds`). These deps are permitted to run build scripts.
 allowBuilds:
