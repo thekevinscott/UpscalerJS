@@ -109,7 +109,7 @@
     "yargs": "17.7.2"
   },
   "engines": {
-    "node": ">=20 <23"
+    "node": ">=20 <=24"
   },
   "dependencies": {
     "wireit": "^0.14.0"
