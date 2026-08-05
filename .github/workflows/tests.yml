@@ -1,16 +1,8 @@
 name: 'Tests'
-# `push` alone means a pull request from a fork never runs these tests: the push
-# happens in the contributor's fork, so no run appears here and the `CI Gate` in
-# pr-monitor.yml times out waiting for one. Adding `pull_request` is what gives
-# external contributors CI at all.
-on: [push, pull_request]
+on: [push]
 
-# Keyed on the branch name rather than the ref so that a same-repo pull request,
-# which fires both `push` and `pull_request`, collapses into a single run instead
-# of testing the same commit twice. `github.head_ref` is set only on pull_request
-# events; `github.ref_name` covers the push side.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -184,13 +176,7 @@ jobs:
     name: 'Integration / Browserstack'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Secrets are not exposed to workflows triggered by a pull request from a
-    # fork, so this job cannot authenticate there and would fail for reasons
-    # unrelated to the change under test. Same-repo pull requests still run it.
-    if: >-
-      github.actor != 'dependabot[bot]' &&
-      (github.event_name != 'pull_request' ||
-       github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: 'BrowserStack Env Setup'  # Invokes the setup-env action
         uses: browserstack/github-actions/setup-env@master
