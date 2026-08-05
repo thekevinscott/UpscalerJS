@@ -24,17 +24,13 @@ runs:
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    # The `-v2` salt is an escape hatch. `restore-keys` falls back on a prefix
-    # match, so a corrupt store survives lockfile changes indefinitely -- that is
-    # how the July 2026 tfjs-node breakage persisted. Bump the salt to abandon
-    # every existing store without needing the cache API.
     - uses: actions/cache@v4
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
-        key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-v2-${{ hashFiles('**/pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
-          ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-v2-
+          ${{ runner.os }}-${{ inputs.node-version }}-pnpm-store-
 
     # Cache the Chrome that puppeteer's postinstall downloads to ~/.cache/puppeteer.
     # Without this, every browser job re-downloads Chrome from Google's CDN on each
@@ -64,28 +60,9 @@ runs:
         PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: timeout 600 pnpm install --frozen-lockfile
 
-    # @tensorflow/tfjs-node ships its native addon outside the npm tarball and
-    # fetches it in its own `install` script. That script runs node-pre-gyp via
-    # `cp.exec` without forwarding stdout/stderr, so when the addon is not
-    # produced the script still exits 0 and pnpm reports `Done` -- there is
-    # nothing in the log to see. The failure only surfaces minutes later as a
-    # vitest "Failed Suites" on `require('@tensorflow/tfjs-node')`. Assert the
-    # addon exists here so a bad install fails at install time.
     - name: Verify tfjs-node native addons
       shell: bash
-      run: |
-        node -e "
-        const fs = require('fs'), path = require('path');
-        for (const pkg of ['@tensorflow/tfjs-node', '@tensorflow/tfjs-node-gpu']) {
-          const dir = path.dirname(require.resolve(pkg + '/package.json'));
-          const addon = path.join(dir, 'lib', 'napi-v8', 'tfjs_binding.node');
-          if (!fs.existsSync(addon)) {
-            console.error('Missing native addon for ' + pkg + ': ' + addon);
-            process.exit(1);
-          }
-        }
-        require('@tensorflow/tfjs-node');
-        "
+      run: node ${{ github.action_path }}/verify-native-addons.mjs
 
     - name: Install Chrome for Puppeteer
       # Runs only for jobs that need a browser (job-level PUPPETEER_SKIP_DOWNLOAD

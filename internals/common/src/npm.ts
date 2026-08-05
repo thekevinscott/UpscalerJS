@@ -1,5 +1,4 @@
 import { spawn } from 'child_process';
-import { createRequire } from 'module';
 import fs from 'fs';
 import path from 'path';
 import { getLogLevel, verbose } from './logger.js';
@@ -67,20 +66,11 @@ const NATIVE_ADDON_PACKAGES = [
   '@tensorflow/tfjs-node-gpu',
 ];
 
-const ADDON_RELATIVE_PATH = path.join('lib', 'napi-v8', 'tfjs_binding.node');
-
-const getPackagesMissingTheirAddon = () => {
-  const requireFromRoot = createRequire(path.join(ROOT_DIR, 'noop.js'));
-  return NATIVE_ADDON_PACKAGES.filter(pkg => {
-    let packageDir: string;
-    try {
-      packageDir = path.dirname(requireFromRoot.resolve(`${pkg}/package.json`));
-    } catch {
-      return false; // not installed here; nothing to repair
-    }
-    return !fs.existsSync(path.join(packageDir, ADDON_RELATIVE_PATH));
-  });
-};
+// node_modules/<pkg> is a symlink into the virtual store, so this follows
+// whatever pnpm just repointed it at.
+const getPackagesMissingTheirAddon = () => NATIVE_ADDON_PACKAGES.filter(pkg => !fs.existsSync(
+  path.join(ROOT_DIR, 'node_modules', pkg, 'lib', 'napi-v8', 'tfjs_binding.node'),
+));
 
 // The bundler work dirs live under `tmp/bundlers/**`, which pnpm-workspace.yaml
 // includes as workspace packages, so the install above is *workspace-wide*, not
