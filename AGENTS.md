@@ -29,3 +29,4 @@ Use `pnpm`, never `npm`
 If present, additional local notes (generally private information) will be included here below.
 
 @notes/local.md
+
