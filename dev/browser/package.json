@@ -5,7 +5,7 @@
     "dev": "vite --host --config ./vite.config.ts"
   },
   "devDependencies": {
-    "@types/stats.js": "^0.17.0",
+    "@types/stats.js": "^0.17.4",
     "@upscalerjs/default-model": "workspace:*",
     "@upscalerjs/esrgan-legacy": "workspace:*",
     "@upscalerjs/esrgan-medium": "workspace:*",

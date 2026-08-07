@@ -212,7 +212,7 @@ export class ClientsideTestRunner {
   public async startBrowser() {
     // launch handles launching an instance and then connecting to it
     this.browser = await launch({
-      headless: 'new',
+      headless: true,
       protocolTimeout: 180_000 * 2,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
@@ -231,17 +231,17 @@ export class ClientsideTestRunner {
         if (!isIgnoredMessage(text)) {
           console.log(`[PAGE][${type}] ${text}`);
         }
-      })
-        .on('pageerror', ({ message }) => console.log(message))
-        .on('response', response => {
-          const status = response.status();
-          if (`${status}` !== `${200}`) {
-            console.log(`[PAGE][response][${status}] ${response.url()}`);
-          }
-        })
-        .on('requestfailed', request => {
-          console.log(`[PAGE][requestfailed][${request.failure()?.errorText}] ${request.url()}`);
-        })
+      });
+      this.page.on('pageerror', error => console.log(error instanceof Error ? error.message : error));
+      this.page.on('response', response => {
+        const status = response.status();
+        if (`${status}` !== `${200}`) {
+          console.log(`[PAGE][response][${status}] ${response.url()}`);
+        }
+      });
+      this.page.on('requestfailed', request => {
+        console.log(`[PAGE][requestfailed][${request.failure()?.errorText}] ${request.url()}`);
+      });
     }
   }
 
@@ -272,7 +272,7 @@ export class ClientsideTestRunner {
   }
 
   public async createNewPage() {
-    this.context = await this.browser.createIncognitoBrowserContext();
+    this.context = await this.browser.createBrowserContext();
     this.page = await this.context.newPage();
     this._attachLogger();
     this._bootstrapCDN();

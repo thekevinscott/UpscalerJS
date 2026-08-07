@@ -24,4 +24,4 @@ allowBuilds:
   puppeteer: true
   workerd: true
 
-useNodeVersion: 22.20.0
+useNodeVersion: 24.18.0
