@@ -61,9 +61,8 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     'pnpm',
     'install',
     '--ignore-scripts',
-    // This install adds tmp/bundlers/** workspace members that the committed
-    // lockfile doesn't cover, so it must be allowed to update the (local)
-    // lockfile; CI defaults to --frozen-lockfile otherwise.
+    // pnpm/pnpm#6600 - bug whereby lock files get hasBin stripped
+    // resulting in node-pre-gyp not being found
     '--no-frozen-lockfile',
     // isSilent ? '--silent' : '',
     // '--no-fund',
@@ -76,11 +75,7 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
   verbose(`${command.join(' ')} in ${cwd}`);
   await runPackageCommand(command, cwd, 'pnpm');
 
-  // This install can re-resolve peers and relink @tensorflow/tfjs-node into a
-  // fresh virtual-store dir whose native addon was never built (scripts are
-  // skipped above), so rerun its build script explicitly. -r is required: cwd
-  // is a bundler fixture that doesn't itself depend on tfjs-node, and a
-  // non-recursive rebuild only covers the current project's dependencies.
+  // we need to rebuild tfjs since --ignore-scripts above skips it
   await runPackageCommand(['pnpm', 'rebuild', '-r', '@tensorflow/tfjs-node'], cwd, 'pnpm');
 };
 
