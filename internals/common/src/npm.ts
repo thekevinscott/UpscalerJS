@@ -61,6 +61,10 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     'pnpm',
     'install',
     '--ignore-scripts',
+    // This install adds tmp/bundlers/** workspace members that the committed
+    // lockfile doesn't cover, so it must be allowed to update the (local)
+    // lockfile; CI defaults to --frozen-lockfile otherwise.
+    '--no-frozen-lockfile',
     // isSilent ? '--silent' : '',
     // '--no-fund',
     // '--no-audit',
