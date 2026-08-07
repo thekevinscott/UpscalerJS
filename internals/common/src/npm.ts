@@ -61,7 +61,9 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     'pnpm',
     'install',
     '--ignore-scripts',
-    '--fix-lockfile'
+    // pnpm/pnpm#6600 - bug whereby lock files get hasBin stripped
+    // resulting in node-pre-gyp not being found
+    '--no-frozen-lockfile',
     // isSilent ? '--silent' : '',
     // '--no-fund',
     // '--no-audit',
@@ -73,6 +75,8 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
   verbose(`${command.join(' ')} in ${cwd}`);
   await runPackageCommand(command, cwd, 'pnpm');
 
+  // we need to rebuild tfjs since --ignore-scripts above skips it
+  await runPackageCommand(['pnpm', 'rebuild', '-r', '@tensorflow/tfjs-node'], cwd, 'pnpm');
 };
 
 export const runPNPMCommand = (
