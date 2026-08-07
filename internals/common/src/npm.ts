@@ -61,7 +61,6 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
     'pnpm',
     'install',
     '--ignore-scripts',
-    '--fix-lockfile'
     // isSilent ? '--silent' : '',
     // '--no-fund',
     // '--no-audit',
@@ -73,6 +72,10 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
   verbose(`${command.join(' ')} in ${cwd}`);
   await runPackageCommand(command, cwd, 'pnpm');
 
+  // This install can re-resolve peers and relink @tensorflow/tfjs-node into a
+  // fresh virtual-store dir whose native addon was never built (scripts are
+  // skipped above), so rerun its build script explicitly.
+  await runPackageCommand(['pnpm', 'rebuild', '@tensorflow/tfjs-node'], cwd, 'pnpm');
 };
 
 export const runPNPMCommand = (
