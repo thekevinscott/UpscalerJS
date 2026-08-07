@@ -78,8 +78,10 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
 
   // This install can re-resolve peers and relink @tensorflow/tfjs-node into a
   // fresh virtual-store dir whose native addon was never built (scripts are
-  // skipped above), so rerun its build script explicitly.
-  await runPackageCommand(['pnpm', 'rebuild', '@tensorflow/tfjs-node'], cwd, 'pnpm');
+  // skipped above), so rerun its build script explicitly. -r is required: cwd
+  // is a bundler fixture that doesn't itself depend on tfjs-node, and a
+  // non-recursive rebuild only covers the current project's dependencies.
+  await runPackageCommand(['pnpm', 'rebuild', '-r', '@tensorflow/tfjs-node'], cwd, 'pnpm');
 };
 
 export const runPNPMCommand = (
