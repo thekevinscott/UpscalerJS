@@ -10,6 +10,17 @@
     {
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non-major dependencies"
+    },
+    {
+      "groupName": "docusaurus 3 migration",
+      "matchPackageNames": ["/docusaurus/", "react", "react-dom", "/^@types\\/react/", "@mdx-js/react", "react-dropzone", "react-icons", "react-markdown"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "groupName": "low-risk tooling majors",
+      "matchPackageNames": ["chalk", "commander", "concurrently", "date-fns", "nock", "ejs", "sass-loader", "typedoc-plugin-markdown", "@algolia/client-search", "@cloudflare/workers-types"],
+      "matchUpdateTypes": ["major"]
     }
   ],
   "vulnerabilityAlerts": { "minimumReleaseAge": "0" }
