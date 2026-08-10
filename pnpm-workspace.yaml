@@ -29,3 +29,5 @@ minimumReleaseAgeStrict: true
 minimumReleaseAgeExclude:
   # Renovate security update: ejs@3.1.10
   - ejs@3.1.10
+  # Renovate security update: esbuild@0.25.0
+  - esbuild@0.25.0
