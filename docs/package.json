@@ -57,7 +57,7 @@
     "upscaler": "workspace:*"
   },
   "devDependencies": {
-    "@algolia/client-search": "^4.19.1",
+    "@algolia/client-search": "^5.0.0",
     "@babel/cli": "7.23.0",
     "@babel/core": "7.23.2",
     "@babel/plugin-transform-modules-commonjs": "7.23.0",
