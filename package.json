@@ -98,7 +98,7 @@
     "uglify-js": "3.19.3",
     "upscaler": "workspace:*",
     "vite": "8.2.1",
-    "vitest": "^3.2.6",
+    "vitest": "^4.0.0",
     "yargs": "18.1.0"
   },
   "engines": {

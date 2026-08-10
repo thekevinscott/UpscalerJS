@@ -51,6 +51,6 @@
   "devDependencies": {
     "wireit": "^0.14.13",
     "@types/selenium-webdriver": "4.35.6",
-    "vitest": "^3.2.6"
+    "vitest": "^4.0.0"
   }
 }
