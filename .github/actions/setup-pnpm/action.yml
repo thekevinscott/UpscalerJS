@@ -24,7 +24,7 @@ runs:
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
@@ -38,7 +38,7 @@ runs:
     # Restoring here means postinstall finds Chrome already present and skips the
     # download. `restore-keys` lets an older Chrome cache satisfy a lockfile bump
     # when puppeteer itself didn't change. Skipped where the browser isn't needed.
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       name: Setup puppeteer Chrome cache
       if: env.PUPPETEER_SKIP_DOWNLOAD != 'true'
       with:
