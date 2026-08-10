@@ -65,7 +65,7 @@
     "@types/inquirer": "9.0.3",
     "@types/node": "20.5.1",
     "@types/pixelmatch": "5.2.4",
-    "@types/pngjs": "6.0.1",
+    "@types/pngjs": "6.0.5",
     "@types/selenium-webdriver": "4.1.15",
     "@types/serve-handler": "6.1.1",
     "@types/tar": "6.1.5",
