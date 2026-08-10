@@ -79,7 +79,7 @@
     "fs-extra": "11.4.0",
     "glob": "^13.0.0",
     "globals": "17.9.0",
-    "inquirer": "9.2.10",
+    "inquirer": "14.0.2",
     "mocha": "11.8.0",
     "pixelmatch": "5.3.0",
     "playwright-test": "14.1.15",
