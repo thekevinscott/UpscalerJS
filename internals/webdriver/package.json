@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "wireit": "^0.14.13",
-    "@types/selenium-webdriver": "4.1.15",
+    "@types/selenium-webdriver": "4.35.6",
     "vitest": "^3.2.6"
   }
 }
