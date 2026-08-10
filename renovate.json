@@ -19,8 +19,13 @@
     },
     {
       "groupName": "low-risk tooling majors",
-      "matchPackageNames": ["chalk", "commander", "concurrently", "date-fns", "nock", "ejs", "sass-loader", "typedoc-plugin-markdown", "@algolia/client-search", "@cloudflare/workers-types"],
+      "matchPackageNames": ["commander", "concurrently", "date-fns", "nock", "ejs", "sass-loader", "typedoc-plugin-markdown", "@algolia/client-search", "@cloudflare/workers-types"],
       "matchUpdateTypes": ["major"]
+    },
+    {
+      "matchPackageNames": ["chalk"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
     }
   ],
   "vulnerabilityAlerts": { "minimumReleaseAge": "0" }
