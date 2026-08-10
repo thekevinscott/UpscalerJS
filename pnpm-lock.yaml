@@ -130,8 +130,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       prettier:
-        specifier: 3.0.2
-        version: 3.0.2
+        specifier: 3.9.6
+        version: 3.9.6
       puppeteer:
         specifier: ^24.0.0
         version: 24.43.1(typescript@5.1.6)
@@ -7924,8 +7924,8 @@ packages:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
 
-  prettier@3.0.2:
-    resolution: {integrity: sha512-o2YR9qtniXvwEZlOKbveKfDQVyqxbEIWn48Z8m3ZJjBjcCmUy3xZGIv+7AkaeuaTr6yPXJjwv07ZWlsWbEy1rQ==}
+  prettier@3.9.6:
+    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -17941,7 +17941,7 @@ snapshots:
 
   prepend-http@2.0.0: {}
 
-  prettier@3.0.2: {}
+  prettier@3.9.6: {}
 
   pretty-error@4.0.0:
     dependencies:
