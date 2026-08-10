@@ -16,7 +16,7 @@
   "dependencies": {
     "@internals/common": "workspace:*",
     "@internals/http-server": "workspace:*",
-    "fs-extra": "latest",
+    "fs-extra": "^11.4.0",
     "html-webpack-plugin": "^5.5.3",
     "webpack": "^5.88.2"
   },
@@ -80,6 +80,6 @@
     "@types/js-yaml": "^4.0.5",
     "typescript": "^5.2.2",
     "vitest": "^3.2.6",
-    "wireit": "latest"
+    "wireit": "^0.14.13"
   }
 }
