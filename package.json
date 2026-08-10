@@ -80,7 +80,7 @@
     "glob": "^13.0.0",
     "globals": "17.9.0",
     "inquirer": "9.2.10",
-    "mocha": "10.2.0",
+    "mocha": "11.8.0",
     "pixelmatch": "5.3.0",
     "playwright-test": "12.1.1",
     "pngjs": "7.0.0",
