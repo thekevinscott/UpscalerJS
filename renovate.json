@@ -4,6 +4,7 @@
   "schedule": ["* * * * 1"],
   "minimumReleaseAge": "3 days",
   "internalChecksFilter": "strict",
+  "rebaseWhen": "behind-base-branch",
   "lockFileMaintenance": { "enabled": true, "schedule": ["* * * * 1"] },
   "packageRules": [
     {
