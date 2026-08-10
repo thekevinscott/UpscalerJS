@@ -13,8 +13,6 @@ packages:
 overrides:
   webpack: 5.96.1
 
-# Migrated from package.json `pnpm.onlyBuiltDependencies` (removed in pnpm 11,
-# replaced by `allowBuilds`). These deps are permitted to run build scripts.
 allowBuilds:
   '@tensorflow/tfjs-node': true
   '@tensorflow/tfjs-node-gpu': true
@@ -25,3 +23,6 @@ allowBuilds:
   workerd: true
 
 useNodeVersion: 24.18.0
+
+minimumReleaseAge: 4320
+minimumReleaseAgeStrict: true
