@@ -75,8 +75,12 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
   verbose(`${command.join(' ')} in ${cwd}`);
   await runPackageCommand(command, cwd, 'pnpm');
 
-  // we need to rebuild tfjs since --ignore-scripts above skips it
-  await runPackageCommand(['pnpm', 'rebuild', '-r', '@tensorflow/tfjs-node'], cwd, 'pnpm');
+  // we need to rebuild tfjs since --ignore-scripts above skips it.
+  // --workspace-concurrency=1: parallel rebuilds of the same package across
+  // projects race in the side-effects cache and corrupt store-hardlinked
+  // files (ERR_PNPM_JSON_PARSE on tfjs-node's package.json).
+  // (--config. form: pnpm rebuild rejects the bare --workspace-concurrency flag)
+  await runPackageCommand(['pnpm', 'rebuild', '-r', '--config.workspace-concurrency=1', '@tensorflow/tfjs-node'], cwd, 'pnpm');
 };
 
 export const runPNPMCommand = (
