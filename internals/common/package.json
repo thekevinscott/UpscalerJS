@@ -28,7 +28,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "ejs": "^3.1.9",
-    "fs-extra": "latest",
+    "fs-extra": "^11.4.0",
     "get-port": "^7.0.0",
     "wireit": "^0.14.0"
   },

@@ -14,7 +14,7 @@
     "@internals/common": "workspace:*",
     "@internals/http-server": "workspace:*",
     "puppeteer": "^24.0.0",
-    "fs-extra": "latest"
+    "fs-extra": "^11.4.0"
   },
   "wireit": {
     "copy-files": {
@@ -62,7 +62,7 @@
     "node": ">=20.0.0"
   },
   "devDependencies": {
-    "wireit": "latest",
-    "vitest": "latest"
+    "wireit": "^0.14.13",
+    "vitest": "^4.1.10"
   }
 }
