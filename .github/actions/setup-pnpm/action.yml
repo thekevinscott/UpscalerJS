@@ -60,6 +60,12 @@ runs:
         PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: timeout 600 pnpm install --frozen-lockfile
 
+    # tfjs-node's install script exits 0 even when it produces no native addon.
+    # Fail here, naming the missing path, instead of minutes later in a test job.
+    - name: Verify tfjs-node native addons
+      shell: bash
+      run: node ${{ github.action_path }}/verify-native-addons.mjs
+
     - name: Install Chrome for Puppeteer
       # Runs only for jobs that need a browser (job-level PUPPETEER_SKIP_DOWNLOAD
       # unset). Single invocation of puppeteer's own installer -> no concurrent

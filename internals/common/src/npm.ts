@@ -75,12 +75,33 @@ export const pnpmInstall = async (cwd: string, _opts = {}) => {
   verbose(`${command.join(' ')} in ${cwd}`);
   await runPackageCommand(command, cwd, 'pnpm');
 
-  // we need to rebuild tfjs since --ignore-scripts above skips it.
+  // The bundler work dirs live under `tmp/bundlers/**`, which pnpm-workspace.yaml
+  // lists as workspace packages, so the install above is *workspace-wide*.
+  // `--no-frozen-lockfile` re-resolves the graph and can change peer suffixes
+  // (`_supports-color@x`); a changed suffix is a changed depPath, so pnpm creates
+  // a new virtual store directory and repoints node_modules at it. That directory
+  // is hard linked from the content-addressable store, which holds only what was
+  // in the npm tarball -- and `--ignore-scripts` means the `install` script that
+  // fetches `lib/napi-v8/tfjs_binding.node` never runs. Both tfjs node packages
+  // therefore lose their native addon here and have to be rebuilt.
+  //
+  // Both, not just the CPU one: -gpu was omitted when this rebuild was first
+  // added, which is why `Integration / Serverside` failed on `loads a model with
+  // node-gpu` while every tfjs-node test passed.
+  //
   // --workspace-concurrency=1: parallel rebuilds of the same package across
   // projects race in the side-effects cache and corrupt store-hardlinked
-  // files (ERR_PNPM_JSON_PARSE on tfjs-node's package.json).
+  // files (ERR_PNPM_JSON_PARSE on tfjs-node's package.json). Kept as a backstop
+  // even though pnpm-workspace.yaml now sets `sideEffectsCache: false`.
   // (--config. form: pnpm rebuild rejects the bare --workspace-concurrency flag)
-  await runPackageCommand(['pnpm', 'rebuild', '-r', '--config.workspace-concurrency=1', '@tensorflow/tfjs-node'], cwd, 'pnpm');
+  await runPackageCommand([
+    'pnpm',
+    'rebuild',
+    '-r',
+    '--config.workspace-concurrency=1',
+    '@tensorflow/tfjs-node',
+    '@tensorflow/tfjs-node-gpu',
+  ], cwd, 'pnpm');
 };
 
 export const runPNPMCommand = (
