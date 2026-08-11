@@ -78,7 +78,7 @@
   "devDependencies": {
     "@types/ejs": "^3.1.2",
     "@types/js-yaml": "^4.0.5",
-    "typescript": "^5.2.2",
+    "typescript": "^6.0.0",
     "vitest": "^4.0.0",
     "wireit": "^0.14.13"
   }

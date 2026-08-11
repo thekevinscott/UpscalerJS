@@ -1,3 +1,7 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // See the note in tsconfig.cjs.json: rootDir must now be explicit.
+    "rootDir": "..",
+  }
 }

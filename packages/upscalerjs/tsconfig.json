@@ -1,12 +1,17 @@
 {
   "compilerOptions": {
-    "module": "es2022",
+    // module must match moduleResolution: node16 (TS5110).
+    "module": "node16",
     "moduleResolution": "node16",
     "target": "es6",
     "declaration": true,
     "declarationMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src",
+    // TypeScript 6 requires rootDir to be explicit when the common source
+    // directory sits outside the project; src also pulls in ../shared/src, so
+    // the common root is packages/. Pinning it keeps the existing
+    // dist/<platform>/upscalerjs/src/... layout the package exports rely on.
+    "rootDir": "..",
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,

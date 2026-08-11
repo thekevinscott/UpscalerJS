@@ -26,6 +26,11 @@
       "matchPackageNames": ["chalk"],
       "matchUpdateTypes": ["major"],
       "dependencyDashboardApproval": true
+    },
+    {
+      "description": "TypeScript 7 is the native compiler rewrite. typescript-eslint refuses to load against it (typescript-eslint#10940, targeting TS >=7.1) and typedoc crashes reading the compiler API. 6.0.x is the last release both support. Lift this once typescript-eslint ships TS 7 support.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<7.0.0"
     }
   ],
   "vulnerabilityAlerts": { "minimumReleaseAge": "0" }

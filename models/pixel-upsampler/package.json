@@ -110,7 +110,7 @@
       ]
     },
     "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
       "dependencies": [
         "scaffold"
       ],
@@ -129,7 +129,7 @@
       ]
     },
     "build:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
       "dependencies": [
         "scaffold"
       ],
