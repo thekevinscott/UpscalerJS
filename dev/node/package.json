@@ -34,7 +34,7 @@
   "dependencies": {
     "@internals/common": "workspace:*",
     "@tensorflow/tfjs-node-gpu": "~4.22.0",
-    "commander": "^11.0.0",
+    "commander": "^15.0.0",
     "seedrandom": "3.0.5",
     "ts-node": "^10.9.1",
     "upscaler": "workspace:*"

@@ -27,7 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "chalk": "^6.0.0",
-    "ejs": "^3.1.9",
+    "ejs": "^6.0.0",
     "fs-extra": "^11.4.0",
     "get-port": "^7.0.0",
     "wireit": "^0.14.0"
