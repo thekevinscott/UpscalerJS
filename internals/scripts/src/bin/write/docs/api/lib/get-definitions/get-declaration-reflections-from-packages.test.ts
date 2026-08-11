@@ -12,8 +12,8 @@ describe('getDeclarationReflectionsFromPackages', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
-  it('returns an array of DeclarationReflections', () => {
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+  it('returns an array of DeclarationReflections', async () => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [
           'foo',
@@ -21,25 +21,25 @@ describe('getDeclarationReflectionsFromPackages', () => {
         ],
       } as unknown as ProjectReflection;
     });
-    expect(getDeclarationReflectionsFromPackages([
+    await expect(getDeclarationReflectionsFromPackages([
       {
         tsconfigPath: 'tsconfig',
         projectRoot: 'projectRoot',
       },
-    ])).toEqual(['foo', 'bar']);
+    ])).resolves.toEqual(['foo', 'bar']);
   });
 
-  it('throws if receiving an empty children array', () => {
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+  it('throws if receiving an empty children array', async () => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [],
       } as unknown as ProjectReflection;
     });
-    expect(() => getDeclarationReflectionsFromPackages([
+    await expect(getDeclarationReflectionsFromPackages([
       {
         tsconfigPath: 'tsconfig',
         projectRoot: 'projectRoot',
       },
-    ])).toThrow();
+    ])).rejects.toThrow();
   });
 });

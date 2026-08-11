@@ -1,20 +1,18 @@
-import { Application, ProjectReflection, TSConfigReader, TypeDocReader } from "typedoc";
+import { Application, normalizePath, ProjectReflection, TSConfigReader, TypeDocReader } from "typedoc";
 
-export const getPackageAsTree = (entryPoint: string, tsconfig: string, projectRoot: string): ProjectReflection => {
-  const app = new Application();
-
-  app.options.addReader(new TSConfigReader());
-  app.options.addReader(new TypeDocReader());
-
-  app.bootstrap({
+export const getPackageAsTree = async (entryPoint: string, tsconfig: string, projectRoot: string): Promise<ProjectReflection> => {
+  const app = await Application.bootstrap({
     entryPoints: [entryPoint],
     tsconfig,
-  });
+  }, [
+    new TSConfigReader(),
+    new TypeDocReader(),
+  ]);
 
-  const project = app.convert();
+  const project = await app.convert();
 
   if (!project) {
     throw new Error('No project was converted.')
   }
-  return app.serializer.projectToObject(project, projectRoot) as unknown as ProjectReflection;
+  return app.serializer.projectToObject(project, normalizePath(projectRoot)) as unknown as ProjectReflection;
 };

@@ -11,6 +11,6 @@ const DECLARATION_REFLECTION_FILE_DEFINITIONS = [{
 }];
 
 export const getAllDeclarationReflections = async (): Promise<(DeclarationReflection | PlatformSpecificFileDeclarationReflection)[]> => ([
+  ...(await getDeclarationReflectionsFromPackages(DECLARATION_REFLECTION_FILE_DEFINITIONS)),
   ...(await getTypesFromPlatformSpecificUpscalerFiles([{ fileName: 'image', typeName: 'Input' }])),
-  ...getDeclarationReflectionsFromPackages(DECLARATION_REFLECTION_FILE_DEFINITIONS),
 ]);

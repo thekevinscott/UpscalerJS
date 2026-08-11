@@ -33,8 +33,8 @@ describe('getPlatformSpecificUpscalerDeclarationReflections', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
-  it('throws if it cannot find a matching type', () => {
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+  it('throws if it cannot find a matching type', async () => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [
           'foo',
@@ -43,26 +43,26 @@ describe('getPlatformSpecificUpscalerDeclarationReflections', () => {
       } as unknown as ProjectReflection;
     });
 
-    expect(() => getPlatformSpecificUpscalerDeclarationReflections('browser', {
+    await expect(getPlatformSpecificUpscalerDeclarationReflections('browser', {
       fileName: 'fileName',
       typeName: 'typeName',
-    })).toThrow();
+    })).rejects.toThrow();
   });
 
-  it('throws if it cannot find a matching type', () => {
+  it('returns the matching type', async () => {
     const child = {
       name: 'foo',
     };
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [child],
       } as unknown as ProjectReflection;
     });
 
-    expect(getPlatformSpecificUpscalerDeclarationReflections('browser', {
+    await expect(getPlatformSpecificUpscalerDeclarationReflections('browser', {
       fileName: 'fileName',
       typeName: child.name,
-    })).toEqual(child);
+    })).resolves.toEqual(child);
   });
 });
 
@@ -70,7 +70,7 @@ describe('getTypesFromPlatformSpecificUpscalerFile', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
-  it('gets types from platform specific upscaler file', () => {
+  it('gets types from platform specific upscaler file', async () => {
     const typeName = 'typeName';
     const child = {
       name: typeName,
@@ -78,12 +78,12 @@ describe('getTypesFromPlatformSpecificUpscalerFile', () => {
         type: 'functions',
       },
     };
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [child],
       } as unknown as ProjectReflection;
     });
-    const result = getTypesFromPlatformSpecificUpscalerFile({
+    const result = await getTypesFromPlatformSpecificUpscalerFile({
       fileName: 'fileName',
       typeName,
     });
@@ -105,7 +105,7 @@ describe('getTypesFromPlatformSpecificFiles', () => {
         type: 'functions',
       },
     };
-    vi.mocked(getPackageAsTree).mockImplementation(() => {
+    vi.mocked(getPackageAsTree).mockImplementation(async () => {
       return {
         children: [child],
       } as unknown as ProjectReflection;
