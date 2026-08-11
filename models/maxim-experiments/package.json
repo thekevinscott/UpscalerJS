@@ -174,7 +174,7 @@
       ]
     },
     "build:cjs": {
-      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",
@@ -191,7 +191,7 @@
       ]
     },
     "build:esm": {
-      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+      "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
       "files": [
         "src/**/*.ts",
         "!src/**/*.test.ts",

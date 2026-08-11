@@ -1,9 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "Node16",
     "moduleResolution": "Node16",
-    "target": "ES5",
+    // TypeScript 6 no longer includes every @types package implicitly.
+    "types": ["node"],
   },
   "include": ["src/shared/index.ts", "src/node-gpu/cjs/index.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]

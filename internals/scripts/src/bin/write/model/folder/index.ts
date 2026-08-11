@@ -164,7 +164,7 @@ const writeModelFolder = async (modelDirectoryName: string) => {
         ]
       },
       "build:cjs": {
-        "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs --baseUrl ./src",
+        "command": "tsc -p ./tsconfig.cjs.json --outDir ./dist/cjs",
         "dependencies": [
           "scaffold"
         ],
@@ -177,7 +177,7 @@ const writeModelFolder = async (modelDirectoryName: string) => {
         ]
       },
       "build:esm": {
-        "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm --baseUrl ./src",
+        "command": "tsc -p ./tsconfig.esm.json --outDir ./dist/esm",
         "dependencies": [
           "scaffold"
         ],

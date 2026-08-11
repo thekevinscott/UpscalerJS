@@ -3,6 +3,16 @@
   "compilerOptions": {
     "moduleResolution": "Node16",
     "module": "Node16",
-    "target": "ES5"
+    // TypeScript 6 removed target=ES5; ES2015 is the new floor.
+    "target": "ES2015",
+    // TypeScript 6 requires rootDir to be explicit whenever the common source
+    // directory sits outside the project. Model sources import from
+    // packages/shared, so the common root is the repo root; keeping it pinned
+    // here preserves the existing dist/cjs/models/<name>/src/... layout that
+    // each model's package.json "exports" points at.
+    "rootDir": "..",
+    // TypeScript 6 no longer pulls every @types package into the program
+    // implicitly; src/cjs.ts needs the `module` global.
+    "types": ["node"]
   }
 }

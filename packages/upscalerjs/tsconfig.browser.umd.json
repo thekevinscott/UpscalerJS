@@ -2,6 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
+    "moduleResolution": "bundler",
     "module": "ESNext",
   },
   "include": ["src/browser/umd/index.ts"],

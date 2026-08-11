@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "moduleResolution": "Node",
+    // TypeScript 6 removed moduleResolution=node10. The sources use
+    // extensionless relative imports, so "bundler" is the closest equivalent.
+    "moduleResolution": "bundler",
     "target": "ESNext",
     "module": "ESNext",
+    // See the note in tsconfig.cjs.json: rootDir must now be explicit.
+    "rootDir": "..",
   }
 }
