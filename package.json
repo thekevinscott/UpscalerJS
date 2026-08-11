@@ -93,7 +93,7 @@
     "serve-handler": "6.1.7",
     "tiny-async-pool": "2.1.0",
     "ts-node": "10.9.2",
-    "typescript": "5.1.6",
+    "typescript": "7.0.2",
     "typescript-eslint": "8.66.0",
     "uglify-js": "3.19.3",
     "upscaler": "workspace:*",
