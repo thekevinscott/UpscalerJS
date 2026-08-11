@@ -43,14 +43,14 @@ export const makeDeclarationReflection = (typeName: string, type: SomeType): Dec
   return declarationReflection;
 };
 
-export const getPlatformSpecificUpscalerDeclarationReflections = (
+export const getPlatformSpecificUpscalerDeclarationReflections = async (
   tfjsLibrary: TFJSLibrary, {
     fileName,
     typeName,
   }: PlatformSpecificFileDefinition
-): DeclarationReflection => {
+): Promise<DeclarationReflection> => {
   // await scaffoldUpscaler(tfjsLibrary);
-  const { children } = getPackageAsTree(
+  const { children } = await getPackageAsTree(
     path.resolve(UPSCALER_DIR, 'src', `${fileName}.${tfjsLibrary}.ts`),
     path.resolve(UPSCALER_DIR, `tsconfig.docs.${tfjsLibrary}.json`),
     UPSCALER_DIR,
@@ -62,8 +62,8 @@ export const getPlatformSpecificUpscalerDeclarationReflections = (
   return matchingType;
 };
 
-export const getTypesFromPlatformSpecificUpscalerFile = ({ fileName, typeName }: PlatformSpecificFileDefinition) => {
-  const [browser, node] = tfjsLibraries.map(tfjsLibrary => getPlatformSpecificUpscalerDeclarationReflections(tfjsLibrary, { fileName, typeName }));
+export const getTypesFromPlatformSpecificUpscalerFile = async ({ fileName, typeName }: PlatformSpecificFileDefinition) => {
+  const [browser, node] = await Promise.all(tfjsLibraries.map(tfjsLibrary => getPlatformSpecificUpscalerDeclarationReflections(tfjsLibrary, { fileName, typeName })));
   if (browser.type?.type !== node.type?.type) {
     throw new Error([
       'Some mismatch for file name',

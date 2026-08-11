@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "moduleResolution": "bundler",
   },
   "include": ["src/browser/umd/index.ts"],
   "exclude": ["node_modules"]

@@ -94,6 +94,9 @@ describe('getMatchingType', () => {
   beforeEach(() => {
     vi.spyOn(constants, 'INTRINSIC_TYPES', 'get').mockReturnValue([]);
     vi.spyOn(constants, 'EXTERNALLY_DEFINED_TYPES', 'get').mockReturnValue({});
+    // vi.clearAllMocks() clears calls but not implementations, so re-establish
+    // the default here to avoid leaking between tests.
+    vi.mocked(isLiteralType).mockImplementation(() => false);
   });
 
   afterEach(() => {

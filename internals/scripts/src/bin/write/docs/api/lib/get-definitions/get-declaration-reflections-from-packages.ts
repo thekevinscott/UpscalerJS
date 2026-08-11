@@ -7,16 +7,18 @@ export interface ProjectDefinition {
   projectRoot: string;
 }
 
-export const getDeclarationReflectionsFromPackages = (projectDefinitions: ProjectDefinition[]): DeclarationReflection[] => [
-  ...projectDefinitions,
-].reduce<DeclarationReflection[]>((arr, { tsconfigPath, projectRoot }) => {
-  const { children } = getPackageAsTree(
-    path.join(projectRoot, 'src'),
-    tsconfigPath,
-    projectRoot,
-  );
-  if (children === undefined || children.length === 0) {
-    throw new Error(`No children were found for ${projectRoot}. Indicates an error in the returned structure from getPackageAsTree`);
+export const getDeclarationReflectionsFromPackages = async (projectDefinitions: ProjectDefinition[]): Promise<DeclarationReflection[]> => {
+  const declarationReflections: DeclarationReflection[] = [];
+  for (const { tsconfigPath, projectRoot } of projectDefinitions) {
+    const { children } = await getPackageAsTree(
+      path.join(projectRoot, 'src'),
+      tsconfigPath,
+      projectRoot,
+    );
+    if (children === undefined || children.length === 0) {
+      throw new Error(`No children were found for ${projectRoot}. Indicates an error in the returned structure from getPackageAsTree`);
+    }
+    declarationReflections.push(...children);
   }
-  return arr.concat(children);
-}, []);
+  return declarationReflections;
+};

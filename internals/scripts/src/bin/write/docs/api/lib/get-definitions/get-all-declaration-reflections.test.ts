@@ -18,9 +18,9 @@ describe('getAllDeclarationReflections()', () => {
   });
   it('gets merged declaration reflections', async () => {
     vi.mocked(getDeclarationReflectionsFromPackages).mockImplementation(() => {
-      return [
+      return Promise.resolve([
         'foo',
-      ] as unknown as DeclarationReflection[];
+      ] as unknown as DeclarationReflection[]);
     });
 
     vi.mocked(getTypesFromPlatformSpecificUpscalerFiles).mockImplementation(() => {
