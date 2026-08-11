@@ -527,8 +527,8 @@ importers:
   internals/common:
     dependencies:
       chalk:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^6.0.0
+        version: 6.0.0
       ejs:
         specifier: ^3.1.9
         version: 3.1.10
@@ -4833,6 +4833,10 @@ packages:
   chalk@5.6.2:
     resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+
+  chalk@6.0.0:
+    resolution: {integrity: sha512-2uNTXIuTTxk7ciZgAU1BQcgnchcG0xXnrs6jzkQfj9SsRa9M2s5zE8WT96hS6KmG4MzWHSrvH43DF1m4XRkrFg==}
+    engines: {node: '>=22'}
 
   character-entities-legacy@1.1.4:
     resolution: {integrity: sha512-3Xnr+7ZFS1uxeiUDvV02wQ+QDbc55o97tIV5zHScSPJpcLm/r0DFPcoY3tYRp+VZukxuMeKgXYmsXQHO05zQeA==}
@@ -13950,7 +13954,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 7.0.1
-      chalk: 5.0.1
+      chalk: 5.6.2
       cli-boxes: 3.0.0
       string-width: 5.1.2
       type-fest: 2.19.0
@@ -14125,6 +14129,8 @@ snapshots:
   chalk@5.0.1: {}
 
   chalk@5.6.2: {}
+
+  chalk@6.0.0: {}
 
   character-entities-legacy@1.1.4: {}
 
