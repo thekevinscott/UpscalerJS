@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import chalk, { type ChalkInstance } from 'chalk';
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'verbose';
 
@@ -17,7 +17,7 @@ const level: { level: LogLevel } = {
   level: DEFAULT_LOG_LEVEL,
 }
 
-export const logTypes: Record<LogLevel, chalk.Chalk> = {
+export const logTypes: Record<LogLevel, ChalkInstance> = {
   error: chalk.bold.red,
   warn: chalk.hex('#FFA500'), // Orange color
   info: chalk.bold.blue,
