@@ -20,6 +20,9 @@ Worktrees and branch names should be identical. Omit slashes in branch names unl
 ### Tooling
 Use `pnpm`, never `npm`
 
+### Pull requests
+Never put links to Claude conversations (`claude.ai/code/session_...`) in PR descriptions. This is a public repo — the links are noise to outside readers and point at something they can't open.
+
 ## CI
 
 @notes/ci.md
