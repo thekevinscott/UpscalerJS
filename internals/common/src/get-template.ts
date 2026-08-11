@@ -1,5 +1,9 @@
 import { readFile } from './fs.js';
-import { compile } from 'ejs';
+// ejs >= 6 ships an ESM build whose only export is the default; named imports
+// resolve at type-check time (via @types/ejs) but blow up at runtime.
+import ejs from 'ejs';
+
+const { compile } = ejs;
 
 const parseValue = (value: unknown) => {
   if (value === undefined) {

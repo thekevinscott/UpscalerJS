@@ -36,7 +36,7 @@
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "crypto-browserify": "^3.12.0",
-    "date-fns": "^2.30.0",
+    "date-fns": "^4.0.0",
     "google-palette": "^1.1.1",
     "image-comparison-viewer": "0.5.4",
     "path-browserify": "^1.0.1",
@@ -57,7 +57,7 @@
     "upscaler": "workspace:*"
   },
   "devDependencies": {
-    "@algolia/client-search": "^4.19.1",
+    "@algolia/client-search": "^5.0.0",
     "@babel/cli": "8.0.4",
     "@babel/core": "8.0.1",
     "@babel/plugin-transform-modules-commonjs": "8.0.1",
@@ -72,7 +72,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/sql.js": "^1.4.4",
     "babel-plugin-add-module-exports": "1.0.4",
-    "concurrently": "^8.2.0",
+    "concurrently": "^10.0.0",
     "docusaurus-plugin-sass": "^0.2.5",
     "docusaurus-plugin-typedoc": "^0.19.2",
     "esbuild": "^0.25.0",
@@ -80,9 +80,9 @@
     "nodemon": "^3.0.1",
     "prop-types": "^15.8.1",
     "sass": "^1.66.1",
-    "sass-loader": "^13.3.2",
+    "sass-loader": "^17.0.0",
     "typedoc": "^0.24.8",
-    "typedoc-plugin-markdown": "^3.15.4",
+    "typedoc-plugin-markdown": "^4.0.0",
     "typescript": "^5.1.6",
     "webpack": "^5.88.2"
   },
