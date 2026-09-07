@@ -13,7 +13,7 @@
     "@tensorflow/tfjs-core": "~4.22.0"
   },
   "devDependencies": {
-    "vitest": "^4.0.0",
+    "vitest": "^5.0.0",
     "wireit": "^0.14.0"
   }
 }

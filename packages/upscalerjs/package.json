@@ -232,7 +232,7 @@
     "@tensorflow/tfjs-node-gpu": "~4.22.0",
     "eslint": "10.8.0",
     "seedrandom": "3.0.5",
-    "vitest": "^4.1.5",
+    "vitest": "^5.0.0",
     "wireit": "^0.14.13"
   }
 }
