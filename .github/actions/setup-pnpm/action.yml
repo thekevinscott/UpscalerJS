@@ -16,7 +16,7 @@ runs:
 
     - uses: pnpm/action-setup@v6
       with:
-        version: 11
+        version: 12
         run_install: false
 
     - name: Get pnpm store directory
