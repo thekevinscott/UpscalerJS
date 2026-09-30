@@ -32,3 +32,5 @@ minimumReleaseAgeExclude:
   - ejs@3.1.10
   # Renovate security update: esbuild@0.25.0
   - esbuild@0.25.0
+  # Renovate security update: vitest@4.1.11
+  - vitest@4.1.11
