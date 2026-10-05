@@ -82,7 +82,7 @@
     "inquirer": "14.0.2",
     "mocha": "11.8.0",
     "pixelmatch": "7.2.0",
-    "playwright-test": "14.1.15",
+    "playwright-test": "15.0.1",
     "pngjs": "7.0.0",
     "prettier": "3.9.6",
     "puppeteer": "^25.0.0",
