@@ -24,6 +24,10 @@ Use `pnpm`, never `npm`
 
 @notes/ci.md
 
+## Session handoff
+
+@notes/session-handoff.md
+
 ## Local Settings
 
 If present, additional local notes (generally private information) will be included here below.
