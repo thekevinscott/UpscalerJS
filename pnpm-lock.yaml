@@ -8366,8 +8366,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  shell-quote@1.10.0:
-    resolution: {integrity: sha512-w1aiOKwKuRgtwAReIIj89puqg+I7GvX4IbLrvmhXbzQsj1+Zwi4VO3+fa6ZF91TWSjIxoEkKnMeHcLEODK5ZXA==}
+  shell-quote@1.12.0:
+    resolution: {integrity: sha512-PcByqNyT/38F2kDNi006HAMRJaULuBzq/FOsw3qdZvX/GA9W/jamDaRskgHjubHiftXK5sIFxLNkvrXUwcof6Q==}
     engines: {node: '>= 0.4'}
 
   shelljs@0.8.5:
@@ -14351,7 +14351,7 @@ snapshots:
       date-fns: 2.30.0
       lodash: 4.18.1
       rxjs: 7.8.2
-      shell-quote: 1.10.0
+      shell-quote: 1.12.0
       spawn-command: 0.0.2
       supports-color: 8.1.1
       tree-kill: 1.2.2
@@ -16287,7 +16287,7 @@ snapshots:
   launch-editor@2.14.1:
     dependencies:
       picocolors: 1.1.1
-      shell-quote: 1.10.0
+      shell-quote: 1.12.0
 
   leven@3.1.0: {}
 
@@ -17606,7 +17606,7 @@ snapshots:
       prompts: 2.4.2
       react-error-overlay: 6.1.0
       recursive-readdir: 2.2.3
-      shell-quote: 1.10.0
+      shell-quote: 1.12.0
       strip-ansi: 6.0.1
       text-table: 0.2.0
       webpack: 5.96.1(clean-css@5.3.3)(cssnano@5.1.15(postcss@8.5.26))(csso@4.2.0)(esbuild@0.25.12)(html-minifier-terser@6.1.0)(lightningcss@1.33.0)(postcss@8.5.26)(uglify-js@3.19.3)
@@ -18272,7 +18272,7 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  shell-quote@1.10.0: {}
+  shell-quote@1.12.0: {}
 
   shelljs@0.8.5:
     dependencies:
