@@ -97,7 +97,7 @@
     "typescript-eslint": "8.66.0",
     "uglify-js": "3.19.3",
     "upscaler": "workspace:*",
-    "vite": "8.2.1",
+    "vite": "8.2.4",
     "vitest": "^4.0.0",
     "yargs": "18.1.0"
   },
